@@ -1,0 +1,731 @@
+{
+ "generated (recipe key)": [
+  {
+   "method": "cur_first",
+   "items": 1056,
+   "exact": 1027,
+   "abstain": 18,
+   "relative": 7,
+   "fifth": 4
+  },
+  {
+   "method": "cur_corr",
+   "items": 1056,
+   "exact": 1013,
+   "abstain": 32,
+   "relative": 11
+  },
+  {
+   "method": "cur_ks",
+   "items": 1056,
+   "exact": 909,
+   "relative": 21,
+   "other": 38,
+   "parallel": 19,
+   "fifth": 69
+  },
+  {
+   "method": "m21_KS",
+   "items": 1056,
+   "exact": 909,
+   "relative": 21,
+   "other": 38,
+   "parallel": 19,
+   "fifth": 69
+  },
+  {
+   "method": "m21_AE",
+   "items": 1056,
+   "exact": 627,
+   "relative": 283,
+   "parallel": 20,
+   "other": 45,
+   "fifth": 81
+  },
+  {
+   "method": "m21_BB",
+   "items": 1056,
+   "exact": 850,
+   "relative": 38,
+   "other": 53,
+   "fifth": 103,
+   "parallel": 12
+  },
+  {
+   "method": "m21_TKP",
+   "items": 1056,
+   "exact": 923,
+   "relative": 47,
+   "other": 34,
+   "fifth": 49,
+   "parallel": 3
+  },
+  {
+   "method": "augnet_first",
+   "items": 132,
+   "exact": 108,
+   "fifth": 11,
+   "parallel": 3,
+   "other": 6,
+   "relative": 4
+  },
+  {
+   "method": "augnet_mode",
+   "items": 132,
+   "exact": 113,
+   "parallel": 3,
+   "other": 5,
+   "fifth": 8,
+   "relative": 3
+  }
+ ],
+ "real with a key in the title": [
+  {
+   "method": "cur_first",
+   "items": 228,
+   "exact": 215,
+   "no result": 2,
+   "abstain": 5,
+   "fifth": 1,
+   "relative": 5
+  },
+  {
+   "method": "cur_corr",
+   "items": 228,
+   "exact": 214,
+   "no result": 2,
+   "other": 1,
+   "abstain": 5,
+   "fifth": 1,
+   "relative": 5
+  },
+  {
+   "method": "cur_ks",
+   "items": 228,
+   "exact": 179,
+   "fifth": 23,
+   "no result": 2,
+   "other": 9,
+   "parallel": 10,
+   "relative": 5
+  },
+  {
+   "method": "m21_KS",
+   "items": 228,
+   "exact": 179,
+   "fifth": 23,
+   "no result": 2,
+   "other": 9,
+   "parallel": 10,
+   "relative": 5
+  },
+  {
+   "method": "m21_AE",
+   "items": 228,
+   "exact": 201,
+   "no result": 2,
+   "fifth": 8,
+   "parallel": 7,
+   "other": 4,
+   "relative": 6
+  },
+  {
+   "method": "m21_BB",
+   "items": 228,
+   "exact": 202,
+   "no result": 2,
+   "other": 6,
+   "relative": 7,
+   "fifth": 6,
+   "parallel": 5
+  },
+  {
+   "method": "m21_TKP",
+   "items": 228,
+   "exact": 206,
+   "no result": 2,
+   "relative": 8,
+   "fifth": 4,
+   "other": 3,
+   "parallel": 5
+  },
+  {
+   "method": "augnet_first",
+   "items": 226,
+   "exact": 207,
+   "relative": 7,
+   "other": 5,
+   "fifth": 5,
+   "parallel": 2
+  },
+  {
+   "method": "augnet_mode",
+   "items": 226,
+   "exact": 198,
+   "relative": 14,
+   "fifth": 5,
+   "other": 7,
+   "parallel": 2
+  }
+ ],
+ "augnet set generated sample (every 8th)": [
+  {
+   "method": "cur_first",
+   "items": 132,
+   "exact": 129,
+   "relative": 1,
+   "abstain": 2
+  },
+  {
+   "method": "cur_corr",
+   "items": 132,
+   "exact": 126,
+   "abstain": 5,
+   "relative": 1
+  },
+  {
+   "method": "cur_ks",
+   "items": 132,
+   "exact": 114,
+   "parallel": 2,
+   "relative": 2,
+   "fifth": 9,
+   "other": 5
+  },
+  {
+   "method": "m21_KS",
+   "items": 132,
+   "exact": 114,
+   "parallel": 2,
+   "relative": 2,
+   "fifth": 9,
+   "other": 5
+  },
+  {
+   "method": "m21_AE",
+   "items": 132,
+   "exact": 83,
+   "relative": 32,
+   "parallel": 4,
+   "other": 3,
+   "fifth": 10
+  },
+  {
+   "method": "m21_BB",
+   "items": 132,
+   "exact": 110,
+   "other": 6,
+   "fifth": 11,
+   "parallel": 2,
+   "relative": 3
+  },
+  {
+   "method": "m21_TKP",
+   "items": 132,
+   "exact": 117,
+   "other": 4,
+   "fifth": 6,
+   "relative": 5
+  },
+  {
+   "method": "augnet_first",
+   "items": 132,
+   "exact": 108,
+   "fifth": 11,
+   "parallel": 3,
+   "other": 6,
+   "relative": 4
+  },
+  {
+   "method": "augnet_mode",
+   "items": 132,
+   "exact": 113,
+   "parallel": 3,
+   "other": 5,
+   "fifth": 8,
+   "relative": 3
+  }
+ ],
+ "augnet set real (all with a title key)": [
+  {
+   "method": "cur_first",
+   "items": 228,
+   "exact": 215,
+   "no result": 2,
+   "abstain": 5,
+   "fifth": 1,
+   "relative": 5
+  },
+  {
+   "method": "cur_corr",
+   "items": 228,
+   "exact": 214,
+   "no result": 2,
+   "other": 1,
+   "abstain": 5,
+   "fifth": 1,
+   "relative": 5
+  },
+  {
+   "method": "cur_ks",
+   "items": 228,
+   "exact": 179,
+   "fifth": 23,
+   "no result": 2,
+   "other": 9,
+   "parallel": 10,
+   "relative": 5
+  },
+  {
+   "method": "m21_KS",
+   "items": 228,
+   "exact": 179,
+   "fifth": 23,
+   "no result": 2,
+   "other": 9,
+   "parallel": 10,
+   "relative": 5
+  },
+  {
+   "method": "m21_AE",
+   "items": 228,
+   "exact": 201,
+   "no result": 2,
+   "fifth": 8,
+   "parallel": 7,
+   "other": 4,
+   "relative": 6
+  },
+  {
+   "method": "m21_BB",
+   "items": 228,
+   "exact": 202,
+   "no result": 2,
+   "other": 6,
+   "relative": 7,
+   "fifth": 6,
+   "parallel": 5
+  },
+  {
+   "method": "m21_TKP",
+   "items": 228,
+   "exact": 206,
+   "no result": 2,
+   "relative": 8,
+   "fifth": 4,
+   "other": 3,
+   "parallel": 5
+  },
+  {
+   "method": "augnet_first",
+   "items": 226,
+   "exact": 207,
+   "relative": 7,
+   "other": 5,
+   "fifth": 5,
+   "parallel": 2
+  },
+  {
+   "method": "augnet_mode",
+   "items": 226,
+   "exact": 198,
+   "relative": 14,
+   "fifth": 5,
+   "other": 7,
+   "parallel": 2
+  }
+ ],
+ "witness3 generated": {
+  "agree3/right": 807,
+  "not3/right": 206,
+  "not3/wrong": 11
+ },
+ "witness generated": {
+  "agree/right": 811,
+  "disagree/right": 202,
+  "disagree/wrong": 43
+ },
+ "witness3 real": {
+  "agree3/right": 193,
+  "not3/right": 21,
+  "not3/wrong": 3,
+  "agree3/wrong": 4
+ },
+ "witness real": {
+  "agree/right": 195,
+  "disagree/right": 19,
+  "disagree/wrong": 8,
+  "agree/wrong": 4
+ },
+ "witness4": {
+  "(False, 'agree', 'right')": 178,
+  "(True, 'agree', 'right')": 95,
+  "(True, 'not', 'right')": 34,
+  "(True, 'not', 'wrong')": 1,
+  "(False, 'not', 'right')": 35,
+  "(False, 'not', 'wrong')": 6
+ },
+ "kc": {
+  "inventions": [
+   {
+    "id": "invention-no-1-in-c-major-bwv-772",
+    "home": [
+     0,
+     "major"
+    ],
+    "cur_found": null,
+    "cur_first": null,
+    "cur_corr": null,
+    "m21_float": true,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": false
+   },
+   {
+    "id": "invention-no-2-in-c-minor-bwv-773",
+    "home": [
+     0,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-3-in-d-major-bwv-774",
+    "home": [
+     2,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-4-in-d-minor-bwv-775",
+    "home": [
+     2,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": true,
+    "cur_any_confirmed_first": true,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-5-in-e-flat-major-bwv-776",
+    "home": [
+     3,
+     "major"
+    ],
+    "cur_found": false,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": true,
+    "m21_win_BB": false,
+    "m21_win_AE": false,
+    "augnet": false
+   },
+   {
+    "id": "invention-no-6-in-e-major-bwv-777",
+    "home": [
+     4,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": false,
+    "cur_any_confirmed_first": true,
+    "m21_float": true,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-7-in-e-minor-bwv-778",
+    "home": [
+     4,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-8-in-f-major-bwv-779",
+    "home": [
+     5,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": false,
+    "cur_any_confirmed_first": true,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-9-in-f-minor-bwv-780",
+    "home": [
+     5,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-10-in-g-major-bwv-781",
+    "home": [
+     7,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-11-in-g-minor-bwv-782",
+    "home": [
+     7,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": true,
+    "cur_any_confirmed_first": true,
+    "m21_float": true,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-12-in-a-major-bwv-783",
+    "home": [
+     9,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": true,
+    "m21_win_BB": false,
+    "m21_win_AE": false,
+    "augnet": false
+   },
+   {
+    "id": "invention-no-13-in-a-minor-bwv-784",
+    "home": [
+     9,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": false,
+    "cur_corr": false,
+    "cur_any_confirmed_first": false,
+    "m21_float": false,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   },
+   {
+    "id": "invention-no-14-in-b-flat-major-bwv-785",
+    "home": [
+     10,
+     "major"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": false,
+    "cur_any_confirmed_first": true,
+    "m21_float": false,
+    "m21_win_BB": false,
+    "m21_win_AE": false,
+    "augnet": false
+   },
+   {
+    "id": "invention-no-15-in-b-minor-bwv-786",
+    "home": [
+     11,
+     "minor"
+    ],
+    "cur_found": true,
+    "cur_first": true,
+    "cur_corr": true,
+    "cur_any_confirmed_first": true,
+    "m21_float": true,
+    "m21_win_BB": true,
+    "m21_win_AE": true,
+    "augnet": true
+   }
+  ],
+  "song.classical.mozart-k545-i": {
+   "expected": [
+    {
+     "bars": [
+      12,
+      27
+     ],
+     "key": [
+      7,
+      "major"
+     ],
+     "relation": "dominant"
+    },
+    {
+     "bars": [
+      31,
+      34
+     ],
+     "key": [
+      2,
+      "minor"
+     ],
+     "relation": "other"
+    },
+    {
+     "bars": [
+      35,
+      39
+     ],
+     "key": [
+      9,
+      "minor"
+     ],
+     "relation": "relative"
+    },
+    {
+     "bars": [
+      40,
+      49
+     ],
+     "key": [
+      5,
+      "major"
+     ],
+     "relation": "subdominant"
+    }
+   ],
+   "extra": {
+    "current areas not in the annotation": [
+     [
+      [
+       19,
+       23
+      ],
+      "A minor",
+      "unconfirmed"
+     ],
+     [
+      [
+       54,
+       57
+      ],
+      "G major",
+      "unconfirmed"
+     ]
+    ],
+    "m21_float areas not in the annotation": [],
+    "m21_win_BB areas not in the annotation": [
+     [
+      [
+       20,
+       23
+      ],
+      "A minor"
+     ]
+    ],
+    "m21_win_AE areas not in the annotation": [
+     [
+      [
+       20,
+       23
+      ],
+      "A minor"
+     ]
+    ],
+    "augnet areas not in the annotation": []
+   }
+  },
+  "song.classical.bach-wtc1-prelude-1": {
+   "expected": [
+    {
+     "bars": [
+      5,
+      10
+     ],
+     "key": [
+      7,
+      "major"
+     ],
+     "relation": "dominant"
+    }
+   ],
+   "extra": {
+    "current areas not in the annotation": [
+     [
+      [
+       23,
+       28
+      ],
+      "G major",
+      "unconfirmed"
+     ]
+    ],
+    "m21_float areas not in the annotation": [
+     [
+      [
+       0,
+       20
+      ],
+      "A minor"
+     ]
+    ],
+    "m21_win_BB areas not in the annotation": [],
+    "m21_win_AE areas not in the annotation": [
+     [
+      [
+       1,
+       5
+      ],
+      "A minor"
+     ]
+    ],
+    "augnet areas not in the annotation": []
+   }
+  }
+ }
+}
