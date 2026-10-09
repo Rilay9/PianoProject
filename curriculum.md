@@ -116,6 +116,17 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **Aural.** Two, three or four time; sing back within an octave; major or minor (AB G3). Intervals m3, M3, P4, P5; root, third or fifth of a triad (R L3). Interval numbers 2nd–6th; locate a change on a printed copy (T G3).
 - **Creative.** A waltz or allegretto over I, ii, IV, V (T G3).
 
+### Grades 4–8: musicianship in prepared pieces
+
+The exam syllabuses describe technique, sight-reading and aural grade by grade; for prepared pieces they describe the *kinds* of piece and what is assessed, not a graded sequence of tone, voicing or phrasing. The method books carry those explicitly only up to about Grade 3: Faber's Technique Secrets move from voicing the melody and singing tone (F 3B) to weighted tone and drop-and-follow-through (F 4) to rotation and wrist circles (F 5). So for Grades 4–8 the lines headed **Pieces and musicianship** below record what the sources do give:
+- the kinds of piece required at each grade;
+- Trinity's exercise groups, which run at every grade: tone, balance and voicing; coordination; finger and wrist strength (T p. 79);
+- Trinity's Group A / Group B split from Grade 6;
+- the expressive, pedalling and texture demands of sight-reading and technique;
+- the ear tests on texture, style and structure.
+
+**Open point:** a finer progression for voicing, tone, phrasing and interpretation above Grade 3 is not set out in these sources. It comes from the demands of the actual pieces chosen in step 3, not from a scale invented here.
+
 ## Grade 4 (Al 5–6, R L4, AB G4, T G4)
 
 - **Technique.** B-flat, E-flat major and B, C minor hands together; B, F sharp, A-flat major and F sharp, F minor hands separately; contrary motion in E-flat and C harmonic minor; chromatic hands together two octaves; arpeggios in the same keys (AB G4). D, A, B-flat, E-flat major and B, G, C minor hands together; formula pattern in C minor; tonic arpeggios hands separately (R L4). A-flat, E major and F, C sharp minor, legato or staccato (T G4).
@@ -123,6 +134,8 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **At the keyboard.** Diminished and augmented triads; the diminished 7th; thirty-second and dotted-sixteenth notes (Al 6).
 - **Aural.** Sing or play back a melody from memory; sing five notes from a score; character; clap a rhythm and name the time (AB G4). Intervals to the octave; play back six to eight notes (R L4). Perfect or imperfect cadence; intervals by quality (T G4).
 - **Creative.** Twelve bars in 2/4; a syncopated motivic response (T G4).
+- **Pieces and musicianship.** Three contrasting pieces: one fast and agile, one lyrical and expressive, one in another style (AB G4, lists A/B/C); or Baroque, Classical and Romantic-to-21st-century (R L4), each period with its own style of playing (my reading of the list structure). Pedalling in pieces is assessed, and printed pedalling may be adapted (AB p. 12). Ornaments: appoggiatura, trill, mordent (Al 5). Scales legato or staccato (T G4).
+- **Keyboard harmony.** Diminished and augmented triads and the diminished 7th (Al 6); tonic triads hands together in all positions (R L4); melodic embellishment over chord symbols (I, II, IV, V7, VI, extensions allowed) (AZ G4).
 
 ## Grade 5 (R L5–6, AB G5, T G5)
 
@@ -130,6 +143,8 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **SR.** 8–12 bars; four-part chords (at most two notes per hand); simple syncopation; slowing at the end; ff (AB G5). A passage like Level 2 pieces, up to two sharps or flats, eight measures, or **a lead sheet realised with an accompaniment** (R L5–6). Modulation to the dominant; 6/8; tempo terms; simple pedalling (T G5).
 - **Aural.** Style and period (AB G5). Intervals to the major 6th; dominant 7th quality; I–IV–I and I–V–I; **play back or improvise an answer phrase** (R L5). Time signature; changing tonality; perfect, plagal, imperfect, interrupted cadences (T G5).
 - **Creative.** Twelve bars in 6/8 with up to two chords per bar (T G5).
+- **Pieces and musicianship.** Lists as at Grade 4, plus two technically contrasting études (R L5–6). Texture: four-part chords, two notes in each hand (AB G5 SR). Pedalling: simple pedalling in sight-reading (T G5); in jazz tunes pedalling is expected from G5 (J p. 33). Style and period recognised by ear (AB G5 aural) and discussed with form and structure (T G5 musical knowledge). Staccato as well as legato scales (AB G5).
+- **Keyboard harmony.** Dominant 7th chords in all positions; triads ending with I–V–I (R L5). A lead sheet realised with an accompaniment (R L5–6 option). Harmonic improvisation on I, ii, IV, V, vi (T G5). A two-bar introduction to an embellished lead sheet (AZ G5).
 
 ## Grade 6 (R L7–8, AB G6, T G6)
 
@@ -137,7 +152,8 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **SR.** 12–16 bars; 9/8, 5/8, 5/4; triplets; clef changes; right pedal (AB G6). Pedalling required but not always marked (T G6). A passage like Level 4 pieces, 8–12 measures, or a lead sheet (R L7).
 - **Aural.** Upper part of a two-part phrase from memory; sing with accompaniment; perfect or imperfect cadence; texture and structure (AB G6). All intervals within the octave; augmented triad; I–IV–V progressions (R L7). Modulation (T G6).
 - **Creative.** Sixteen bars in 12/8 with 7ths (T G6).
-- **Pieces.** Two groups from Grade 6 at Trinity (technique / expression); Bach Inventions appear (AB G6; R L7).
+- **Pieces and musicianship.** Trinity splits the pieces into Group A, technique "including hand coordination and independence (including elements of counterpoint)", and Group B, "expression, colour and tonal balance" (T pp. 76–77). Contrapuntal independence through Bach Inventions (AB G6, R L7 examples). Pedalling chosen by the player: "pedalling required but not always marked" (T G6); right pedal in sight-reading (AB G6). The full compass of the keyboard (T p. 71) and clef changes (AB G6 SR). Dynamics varied within scales and arpeggios (f, mf or p, T G6). Texture and structure heard and described (AB G6 aural).
+- **Keyboard harmony.** Four-note dominant and diminished 7th chords, hands together, and the I–IV–V–I progression (R L7). Harmonic improvisation with 7ths (T G6). Continuing a given accompaniment in style under a 12-bar lead sheet (AZ G6).
 
 ## Grade 7 (R L9, AB G7, T G7)
 
@@ -145,6 +161,8 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **SR.** 16–20 bars; 7/8, 7/4; tempo changes; 8va; una corda (AB G7). Any common terms; pedalling essential; modulation to any related key; 9/8 (T G7). Up to 16 measures, five sharps or flats (R L9).
 - **Aural.** Cadences including interrupted; name chords I, IV, V, V7, vi; modulations (AB G7). Four-chord progressions (R L9). Modulation (T G7).
 - **Creative.** Sixteen bars in 9/8 with all diatonic chords and 7ths (T G7).
+- **Pieces and musicianship.** Pieces from four periods: Baroque, Classical, Romantic, Post-Romantic to 21st century (R L8–9); Trinity's Groups A and B continue. A fugue appears (R L9 example). Una corda (AB G7 SR); "pedalling essential" (T G7). Tone control within technique: scales and arpeggios with crescendo and diminuendo, p–f–p (T G7). Double notes: scales in thirds (AB G7, T G7). Hearing separate lines: the lower part of a two-part phrase from memory; the upper part sung from a score (AB G7 aural).
+- **Keyboard harmony.** Cadences including interrupted; naming I, IV, V, V7 and vi; modulations (AB G7 aural). The progression I–VI–IV–V6/4–V7–I in technique (R L9). A 16-bar lead sheet with chords from related keys (AZ G7).
 
 ## Grade 8 (R L10, AB G8, T G8)
 
@@ -152,7 +170,19 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 - **SR.** About a page; 12/8; three-part chords per hand; spread chords; simple ornaments; accelerando (AB G8). Double sharps and flats; changing time signatures; duplets; different dynamics in each hand (T G8).
 - **Aural.** Lowest part of a three-part phrase; plagal cadence; chords with their positions; modulations; describe a piece (AB G8). Intervals to the 9th; 7th-chord qualities; five-chord progressions; harmonise a melody with I, IV, V (R L10).
 - **Creative.** Sixteen bars in 5/4 with 7ths, 9ths and suspensions (T G8).
-- **Pieces.** Three (AB, T) or five (R L10), including a Bach prelude and fugue (AB G8 and R L10 examples).
+- **Pieces and musicianship.** Three pieces (AB, T) or five from five lists: Bach, Classical, Romantic, Post-Romantic/Impressionist/early 20th century, 20th–21st century, memorised, up to 30 minutes (R L10). Examples include a Bach prelude and fugue, a Mozart sonata movement and a Debussy prelude (AB G8; R L10). Layered dynamics: different dynamics in each hand (T G8 SR); three-part chords in one hand, spread chords, simple ornaments (AB G8 SR). Tone control in technique as at G7 (T G8). The lowest part of a three-part phrase from memory (AB G8 aural).
+- **Keyboard harmony.** Harmonising a melody with I, IV, V in the left hand (R L10 playback); 9ths and suspensions in harmonic improvisation (T G8); a 32-bar lead sheet with introduction and coda (AZ G8).
+
+### Grades 4–8: what the app can teach, and what needs an ear
+
+- **Through real pieces:** period style, counterpoint (inventions, fugues), textures, pedalling and ornaments all need actual scores. Graded repertoire for these is plentiful in the syllabus lists, and availability as digital scores is tested in step 3.
+- **Through short exercises or modes:** scales, double notes, chord progressions, lead-sheet accompaniment, harmonisation and improvising over progressions can be generated or drilled.
+- **What MIDI can measure:**
+  - notes and timing;
+  - how well the hands line up;
+  - key velocity, which shows dynamics, the balance between hands and a voiced top line;
+  - pedal timing, but only if the piano sends pedal over MIDI (sustain is usually CC64; not checked on the owner's Roland, and una corda is less certain still).
+- **What needs an ear:** whether tone, phrasing, interpretation or a swing or comping feel *sounds* right. No one in this process can decide that. The app can measure the velocity and timing side of these, and the judgement stays open.
 
 ---
 
