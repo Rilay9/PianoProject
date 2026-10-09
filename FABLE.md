@@ -29,7 +29,7 @@ Each step is finished, checked by the owner's ChatGPT review, and given the owne
 - Styles: a style line stays only where a published syllabus or progression for it is found, and goes only as high as that source has substance (the owner: "We don't need styles going all the way up unless there's actual substance there").
 - Per source and level, extracted under fixed headings: reading range and clefs; keys; time signatures and rhythms; technique; hand coordination; dynamics, articulation and pedal; sight-reading; aural; style-specific skills. Each entry cites its source and level. Written theory away from the keyboard is out.
 - Source extracts go in `docs/sources/`, one file per source; the comparison, the adapted progression and the old curriculum's keep/fix/fill/drop marks go in `curriculum.md`.
-- Order: an RCM pilot (first levels) is looked at before the other sources are gathered.
+- Order: an RCM pilot (first levels) is checked by the orchestrator before the other sources are gathered. The owner sees nothing until the curriculum outline is finished (the owner: "No need to show me anything before the outline of the curriculum is finished"); work stays inside step 1.
 - Done when every named source has a cited extract per level, the comparison is complete, and every old stage and track is marked; then the owner's ChatGPT review.
 
 ## 3. How work runs
