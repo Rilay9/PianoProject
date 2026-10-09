@@ -87,7 +87,7 @@ def main():
             import pymupdf
             d = pymupdf.open(pdf)
             pg = d[0]
-            pg.get_pixmap(dpi=110, clip=pymupdf.Rect(0, 0, pg.rect.width, pg.rect.height * 0.45)).save(png)
+            pg.get_pixmap(dpi=130, clip=pymupdf.Rect(0, 0, pg.rect.width, pg.rect.height * 0.7)).save(png)
             o["png"] = os.path.relpath(png, ROOT).replace("\\", "/")
         except Exception as e:
             o["png"] = f"render failed: {type(e).__name__}"
