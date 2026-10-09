@@ -4,7 +4,7 @@ Every match here is a **candidate**. Nothing is confirmed until the quality chec
 
 ## Inputs
 
-- **Wanted** (`build/pieces/wanted.csv`, built by `tools/pieces/build_wanted.py`): 19,050 list rows, merged into 12,576 pieces.
+- **Wanted** (`build/pieces/wanted.csv`, built by `tools/pieces/build_wanted.py`): 18,924 list rows, merged into 12,576 pieces.
   - PSyllabus v1, 13 boards: 13,662 rows.
   - ABRSM Piano 2025 & 2026, Initial–Grade 8: 433 (`docs/sources/lists/abrsm-2025-26.csv`).
   - RCM Piano Syllabus 2022 with the 2024 errata, Prep A–Level 10: 2,310 (`rcm-2022.csv`).
