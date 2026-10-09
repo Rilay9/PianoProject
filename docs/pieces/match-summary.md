@@ -91,3 +91,12 @@ After the datasets downloaded on the owner's go (ASAP, OpenEWLD, Scriabin and th
 - **What "facts fit" means:** the file is a piano score, its key signature agrees with the title, and its title shows no arrangement. It is not a confirmation.
 
 Matcher tuning stops here. The high facts-fit tier is the pool; a piece is confirmed (right piece, right movement, against a printed score) when it is chosen for a rung. Medium candidates are used only after that individual look.
+
+## Format: MusicXML only (decided 2026-10-09)
+
+Only MusicXML files (.mxl, .musicxml, .xml) go forward. Humdrum (.krn), LilyPond, MIDI and ABC are dropped. The old project recorded that music21's Humdrum parser lost most of a mazurka's notes when spines split inside a split, and placed key signatures written between bars in the wrong bar (old branch `docs/08-test-map.md` lines 98–102, `docs/03-content-pipeline.md` line 458). Mutopia offers no MusicXML at all.
+
+With that filter, the best MusicXML candidate per piece:
+- **638 pieces whose facts fit, 390 of them high:** PDMX `.mxl`, ASAP `.musicxml` and musetrainer `.mxl`.
+- **By app level (high / medium):** A 0/1, B 0/6, 1 11/9, 2 15/13, 3 20/13, 4 33/18, 5 54/19, 6 50/26, 7 47/35, 8 54/23.
+- **Dropped from the pool:** the 252 Humdrum best candidates (Sapp kern editions, Scriabin) and 163 Mutopia candidates, unless a MusicXML file of the same piece exists.
