@@ -109,3 +109,5 @@ With that filter, the best MusicXML candidate per piece:
 - **MuseTrainer mislabels** (old branch `docs/decisions/2026-09-05-p4-content-licensing.md` §2) are listed in `docs/pieces/exclusions.csv` and dropped from the available list. They are *Mariage d'Amour* filed as Chopin's "Spring Waltz", a modern "G Minor Bach" filed as Bach, and a Clayderman piece filed as "Hungarian Sonata".
 
 After this rerun (copies excluded from "facts fit"): 3,110 candidate rows, 1,090 facts fit, 1,669 flagged, 351 not checked. MusicXML pieces whose canonical upload fits the facts: **513 (294 high)**. By level (high/medium): A 0/0, B 0/4, 1 11/9, 2 13/17, 3 19/11, 4 23/17, 5 37/15, 6 32/23, 7 39/32, 8 44/16.
+
+After the one-staff flag (606c9f40; files with one treble staff and no left hand, found by ChatGPT's review): MusicXML pieces whose canonical upload fits the facts: **481 (288 high)**. By level (high/medium): A 0/0, B 0/3, 1 11/8, 2 13/14, 3 19/10, 4 23/15, 5 37/13, 6 31/18, 7 39/29, 8 44/12.
