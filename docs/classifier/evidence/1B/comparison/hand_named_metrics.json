@@ -1,0 +1,102 @@
+{
+ "fam|five_finger": {
+  "current": 48,
+  "current_onepos": 48,
+  "fixed": 48,
+  "fixed_onepos": 48,
+  "pp": 45,
+  "pp_onepos": 45,
+  "items": 48,
+  "pp_extended": 4
+ },
+ "fam|interval_reading": {
+  "current": 16,
+  "current_onepos": 16,
+  "fixed": 16,
+  "fixed_onepos": 16,
+  "pp_onepos": 4,
+  "items": 16,
+  "pp_extended": 12
+ },
+ "fam|riff": {
+  "current": 4,
+  "current_onepos": 4,
+  "fixed": 4,
+  "fixed_onepos": 4,
+  "pp_onepos": 1,
+  "items": 4,
+  "pp_extended": 1
+ },
+ "drills": {
+  "drills": 10,
+  "cur_one": 10,
+  "cur_shift": 0,
+  "cur_near": 10,
+  "fix_one": 10,
+  "fix_shift": 10,
+  "fix_near": 10,
+  "pp_have": 10,
+  "pp_one": 0,
+  "pp_near": 8,
+  "pp_shift_near": 6,
+  "f1_shift_near": 10,
+  "f2_shift_near": 0,
+  "cur_shift_near": 0,
+  "fix_shift_near": 10
+ },
+ "blockchord_cadence_root": {
+  "current|shift": 24,
+  "current|crossing": 12,
+  "fixed|shift": 36,
+  "pp|shift": 24,
+  "f1|shift": 36,
+  "f2|shift": 36
+ },
+ "built_triads": {
+  "current": [
+   "crossing",
+   "crossing",
+   "crossing",
+   "crossing",
+   "crossing"
+  ],
+  "fixed": [
+   "shift",
+   "shift",
+   "shift",
+   "shift",
+   "shift"
+  ],
+  "F1 only": [
+   "crossing",
+   "crossing",
+   "crossing",
+   "crossing",
+   "crossing"
+  ],
+  "F2 only": [
+   "shift",
+   "shift",
+   "shift",
+   "shift",
+   "shift"
+  ]
+ },
+ "hanon": {
+  "current": {
+   "extended": 1406,
+   "five-finger": 734,
+   "beyond": 6
+  },
+  "fixed": {
+   "extended": 1406,
+   "five-finger": 734,
+   "beyond": 6
+  },
+  "pp": {
+   "extended": 1284,
+   "five-finger": 142,
+   "beyond": 4
+  }
+ }
+}

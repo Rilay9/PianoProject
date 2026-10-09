@@ -1,0 +1,3175 @@
+{
+ "truth": [
+  {
+   "id": "exercise.arpeggio.a-flat-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.a-flat-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.a-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.a-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.a-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.a-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.b-flat-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.b-flat-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.b-flat-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.b-flat-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.b-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.b-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.b-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.b-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.c-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.c-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.c-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.c-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.c-sharp-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.c-sharp-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.d-flat-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.d-flat-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.d-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.d-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.d-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.d-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.e-flat-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.e-flat-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.e-flat-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.e-flat-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.e-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.e-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.e-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.e-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.f-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.f-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.f-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.f-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.f-sharp-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.f-sharp-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.g-flat-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.g-flat-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.g-major.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.g-major.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.g-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.g-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.arpeggio.g-sharp-minor.4oct.both",
+   "file": "scores/generated/exercise.arpeggio.g-sharp-minor.4oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "arpeggio"
+  },
+  {
+   "id": "exercise.chromatic.c.1oct.both",
+   "file": "scores/generated/exercise.chromatic.c.1oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.c.1oct.left",
+   "file": "scores/generated/exercise.chromatic.c.1oct.left.mxl",
+   "hands": "left",
+   "eligible": [
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.c.1oct.right",
+   "file": "scores/generated/exercise.chromatic.c.1oct.right.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.c.2oct.both",
+   "file": "scores/generated/exercise.chromatic.c.2oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.d.1oct.both",
+   "file": "scores/generated/exercise.chromatic.d.1oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.d.1oct.left",
+   "file": "scores/generated/exercise.chromatic.d.1oct.left.mxl",
+   "hands": "left",
+   "eligible": [
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.d.1oct.right",
+   "file": "scores/generated/exercise.chromatic.d.1oct.right.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.d.2oct.both",
+   "file": "scores/generated/exercise.chromatic.d.2oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.e.1oct.both",
+   "file": "scores/generated/exercise.chromatic.e.1oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.e.1oct.left",
+   "file": "scores/generated/exercise.chromatic.e.1oct.left.mxl",
+   "hands": "left",
+   "eligible": [
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.e.1oct.right",
+   "file": "scores/generated/exercise.chromatic.e.1oct.right.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.e.2oct.both",
+   "file": "scores/generated/exercise.chromatic.e.2oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.g.1oct.both",
+   "file": "scores/generated/exercise.chromatic.g.1oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.g.1oct.left",
+   "file": "scores/generated/exercise.chromatic.g.1oct.left.mxl",
+   "hands": "left",
+   "eligible": [
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.g.1oct.right",
+   "file": "scores/generated/exercise.chromatic.g.1oct.right.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.chromatic.g.2oct.both",
+   "file": "scores/generated/exercise.chromatic.g.2oct.both.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "chromatic"
+  },
+  {
+   "id": "exercise.reading.steps-and-skips-c",
+   "file": "scores/authored/exercise.reading.steps-and-skips-c.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "exercise.scale.a-flat-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.a-flat-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-flat-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-flat-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-flat-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-flat-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-flat-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.a-flat-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-flat-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-flat-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.a-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.a-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.a-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.a-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.b-flat-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-flat-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-flat-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.b-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.b-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.b-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.b-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.c-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.c-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-sharp-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-sharp-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-sharp-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-sharp-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.c-sharp-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.c-sharp-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-flat-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.d-flat-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-flat-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-flat-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-flat-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-flat-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-flat-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.d-flat-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-flat-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-flat-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.d-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.d-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.d-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.d-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.e-flat-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-flat-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-flat-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.e-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.e-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.e-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.e-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.f-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.f-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-sharp-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-sharp-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-sharp-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-sharp-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-sharp-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-sharp-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.f-sharp-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.f-sharp-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-flat-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.g-flat-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-flat-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-flat-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-flat-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-flat-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-flat-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.g-flat-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-flat-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-flat-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-major.2oct.contrary.both.2",
+   "file": "scores/generated/exercise.scale.g-major.2oct.contrary.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-major.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-major.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-major.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-major.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-major.4oct.similar.both.1",
+   "file": "scores/generated/exercise.scale.g-major.4oct.similar.both.1.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-major.4oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-major.4oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "exercise.scale.g-sharp-natural-minor.2oct.similar.both.2",
+   "file": "scores/generated/exercise.scale.g-sharp-natural-minor.2oct.similar.both.2.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "generated",
+   "family": "scale"
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-12.pdmx",
+   "file": "scores/pdmx/QmcQsnnzorLzs1YRpa5YCzEWxHvxNEKLiF9Rih3C67Yo75.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-14.pdmx",
+   "file": "scores/pdmx/QmQVnDKSjV2kkfDoHYu92o9LAV29eJwX17WVw3ykkdAAb8.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-2.pdmx",
+   "file": "scores/pdmx/QmVw5uLZf9zfzqzkBWT8xKuBX9vXZ5SUCL4CCdRSnUJjmr.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-32.pdmx",
+   "file": "scores/pdmx/QmZFmBizj98vteXpGqpWfQ9Xf9oAKEJ8zw1WPQ5azLiCJ5.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-44.pdmx",
+   "file": "scores/pdmx/QmXUZtzTjArGemB7PvJFUBCSTa6frGBYzaNQ4gQtyT4zsy.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.lemoine-etude-op-37-no-49.pdmx",
+   "file": "scores/pdmx/QmTAoKvK1hKq24Wnw6FVSFugiEDPKgXurEKowycFN9tNTU.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx",
+   "file": "scores/pdmx/QmeswnMFsq7kKrfJU2KHcucQ55D1psa3djU7BiYUptXPPR.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.ode-to-joy.full",
+   "file": "scores/authored/song.classical.ode-to-joy.full.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.classical.ode-to-joy.g",
+   "file": "scores/authored/song.classical.ode-to-joy.g.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.classical.ode-to-joy.ht",
+   "file": "scores/authored/song.classical.ode-to-joy.ht.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.classical.ode-to-joy.rh",
+   "file": "scores/authored/song.classical.ode-to-joy.rh.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.classical.satie-erik-satie-enfantillages-pittoresques-berceuse.pdmx",
+   "file": "scores/pdmx/QmbVkdMiKVAo54sndFEXNvZ2HApnq4YSRXFkjTiGxHJMjq.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
+   "file": "scores/pdmx/QmfZco3VhadA7EzganEn6PvBhvDNghDwHgjFD1W8DEZRnT.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.folk.amazing-grace-easy-piano.pdmx",
+   "file": "scores/pdmx/QmcAYpPLdEUiDiE5wXWTbYR3E2A7cdbWya8APYgfz8SGxr.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "pdmx",
+   "family": null
+  },
+  {
+   "id": "song.folk.greensleeves.68",
+   "file": "scores/authored/song.folk.greensleeves.68.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.greensleeves.chords",
+   "file": "scores/authored/song.folk.greensleeves.chords.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.greensleeves.simple",
+   "file": "scores/authored/song.folk.greensleeves.simple.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.greensleeves.waltz",
+   "file": "scores/authored/song.folk.greensleeves.waltz.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.happy-birthday.simple",
+   "file": "scores/authored/song.folk.happy-birthday.simple.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.lightly-row",
+   "file": "scores/authored/song.folk.lightly-row.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.london-bridge",
+   "file": "scores/authored/song.folk.london-bridge.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.mary-had-a-little-lamb",
+   "file": "scores/authored/song.folk.mary-had-a-little-lamb.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.mary-had-a-little-lamb.ht",
+   "file": "scores/authored/song.folk.mary-had-a-little-lamb.ht.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.merrily-we-roll-along",
+   "file": "scores/authored/song.folk.merrily-we-roll-along.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.row-row-row-your-boat",
+   "file": "scores/authored/song.folk.row-row-row-your-boat.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.folk.when-the-saints.f",
+   "file": "scores/authored/song.folk.when-the-saints.f.mxl",
+   "hands": "both",
+   "eligible": [
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.holiday.jingle-bells.g",
+   "file": "scores/authored/song.holiday.jingle-bells.g.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.holiday.jingle-bells.ht",
+   "file": "scores/authored/song.holiday.jingle-bells.ht.mxl",
+   "hands": "both",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.holiday.jingle-bells.rh",
+   "file": "scores/authored/song.holiday.jingle-bells.rh.mxl",
+   "hands": "right",
+   "eligible": [
+    "R"
+   ],
+   "src": "authored",
+   "family": null
+  },
+  {
+   "id": "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
+   "file": "scores/pdmx/QmR4UtTxvC5roBwJ71MDEwJNpGKeKJSwfEEixvoimYXrrb.mxl",
+   "hands": "both",
+   "eligible": [
+    "R",
+    "L"
+   ],
+   "src": "pdmx",
+   "family": null
+  }
+ ],
+ "named": [
+  {
+   "id": "exercise.cadence.a-flat.plagal",
+   "file": "scores/generated/exercise.cadence.a-flat.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.a-flat.root",
+   "file": "scores/generated/exercise.cadence.a-flat.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.a-flat.voice-led",
+   "file": "scores/generated/exercise.cadence.a-flat.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.a.plagal",
+   "file": "scores/generated/exercise.cadence.a.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.a.root",
+   "file": "scores/generated/exercise.cadence.a.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.a.voice-led",
+   "file": "scores/generated/exercise.cadence.a.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b-flat.plagal",
+   "file": "scores/generated/exercise.cadence.b-flat.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b-flat.root",
+   "file": "scores/generated/exercise.cadence.b-flat.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b-flat.voice-led",
+   "file": "scores/generated/exercise.cadence.b-flat.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b.plagal",
+   "file": "scores/generated/exercise.cadence.b.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b.root",
+   "file": "scores/generated/exercise.cadence.b.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.b.voice-led",
+   "file": "scores/generated/exercise.cadence.b.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.c.plagal",
+   "file": "scores/generated/exercise.cadence.c.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.c.root",
+   "file": "scores/generated/exercise.cadence.c.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.c.voice-led",
+   "file": "scores/generated/exercise.cadence.c.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d-flat.plagal",
+   "file": "scores/generated/exercise.cadence.d-flat.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d-flat.root",
+   "file": "scores/generated/exercise.cadence.d-flat.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d-flat.voice-led",
+   "file": "scores/generated/exercise.cadence.d-flat.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d.plagal",
+   "file": "scores/generated/exercise.cadence.d.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d.root",
+   "file": "scores/generated/exercise.cadence.d.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.d.voice-led",
+   "file": "scores/generated/exercise.cadence.d.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e-flat.plagal",
+   "file": "scores/generated/exercise.cadence.e-flat.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e-flat.root",
+   "file": "scores/generated/exercise.cadence.e-flat.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e-flat.voice-led",
+   "file": "scores/generated/exercise.cadence.e-flat.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e.plagal",
+   "file": "scores/generated/exercise.cadence.e.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e.root",
+   "file": "scores/generated/exercise.cadence.e.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.e.voice-led",
+   "file": "scores/generated/exercise.cadence.e.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.f.plagal",
+   "file": "scores/generated/exercise.cadence.f.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.f.root",
+   "file": "scores/generated/exercise.cadence.f.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.f.voice-led",
+   "file": "scores/generated/exercise.cadence.f.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g-flat.plagal",
+   "file": "scores/generated/exercise.cadence.g-flat.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g-flat.root",
+   "file": "scores/generated/exercise.cadence.g-flat.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g-flat.voice-led",
+   "file": "scores/generated/exercise.cadence.g-flat.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g.plagal",
+   "file": "scores/generated/exercise.cadence.g.plagal.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g.root",
+   "file": "scores/generated/exercise.cadence.g.root.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.cadence.g.voice-led",
+   "file": "scores/generated/exercise.cadence.g.voice-led.mxl",
+   "hands": "left",
+   "family": "cadence",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-flat-major.both",
+   "file": "scores/generated/exercise.five-finger.a-flat-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-flat-major.left",
+   "file": "scores/generated/exercise.five-finger.a-flat-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-flat-major.right",
+   "file": "scores/generated/exercise.five-finger.a-flat-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-major.both",
+   "file": "scores/generated/exercise.five-finger.a-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-major.left",
+   "file": "scores/generated/exercise.five-finger.a-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-major.right",
+   "file": "scores/generated/exercise.five-finger.a-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.a-minor.both",
+   "file": "scores/generated/exercise.five-finger.a-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-flat-major.both",
+   "file": "scores/generated/exercise.five-finger.b-flat-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-flat-major.left",
+   "file": "scores/generated/exercise.five-finger.b-flat-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-flat-major.right",
+   "file": "scores/generated/exercise.five-finger.b-flat-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-flat-minor.both",
+   "file": "scores/generated/exercise.five-finger.b-flat-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-major.both",
+   "file": "scores/generated/exercise.five-finger.b-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-major.left",
+   "file": "scores/generated/exercise.five-finger.b-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-major.right",
+   "file": "scores/generated/exercise.five-finger.b-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.b-minor.both",
+   "file": "scores/generated/exercise.five-finger.b-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.c-major.both",
+   "file": "scores/generated/exercise.five-finger.c-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.c-major.left",
+   "file": "scores/generated/exercise.five-finger.c-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.c-major.right",
+   "file": "scores/generated/exercise.five-finger.c-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.c-minor.both",
+   "file": "scores/generated/exercise.five-finger.c-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.c-sharp-minor.both",
+   "file": "scores/generated/exercise.five-finger.c-sharp-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-flat-major.both",
+   "file": "scores/generated/exercise.five-finger.d-flat-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-flat-major.left",
+   "file": "scores/generated/exercise.five-finger.d-flat-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-flat-major.right",
+   "file": "scores/generated/exercise.five-finger.d-flat-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-major.both",
+   "file": "scores/generated/exercise.five-finger.d-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-major.left",
+   "file": "scores/generated/exercise.five-finger.d-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-major.right",
+   "file": "scores/generated/exercise.five-finger.d-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.d-minor.both",
+   "file": "scores/generated/exercise.five-finger.d-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-flat-major.both",
+   "file": "scores/generated/exercise.five-finger.e-flat-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-flat-major.left",
+   "file": "scores/generated/exercise.five-finger.e-flat-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-flat-major.right",
+   "file": "scores/generated/exercise.five-finger.e-flat-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-flat-minor.both",
+   "file": "scores/generated/exercise.five-finger.e-flat-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-major.both",
+   "file": "scores/generated/exercise.five-finger.e-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-major.left",
+   "file": "scores/generated/exercise.five-finger.e-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-major.right",
+   "file": "scores/generated/exercise.five-finger.e-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.e-minor.both",
+   "file": "scores/generated/exercise.five-finger.e-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.f-major.both",
+   "file": "scores/generated/exercise.five-finger.f-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.f-major.left",
+   "file": "scores/generated/exercise.five-finger.f-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.f-major.right",
+   "file": "scores/generated/exercise.five-finger.f-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.f-minor.both",
+   "file": "scores/generated/exercise.five-finger.f-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.f-sharp-minor.both",
+   "file": "scores/generated/exercise.five-finger.f-sharp-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-flat-major.both",
+   "file": "scores/generated/exercise.five-finger.g-flat-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-flat-major.left",
+   "file": "scores/generated/exercise.five-finger.g-flat-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-flat-major.right",
+   "file": "scores/generated/exercise.five-finger.g-flat-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-major.both",
+   "file": "scores/generated/exercise.five-finger.g-major.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-major.left",
+   "file": "scores/generated/exercise.five-finger.g-major.left.mxl",
+   "hands": "left",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-major.right",
+   "file": "scores/generated/exercise.five-finger.g-major.right.mxl",
+   "hands": "right",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-minor.both",
+   "file": "scores/generated/exercise.five-finger.g-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.five-finger.g-sharp-minor.both",
+   "file": "scores/generated/exercise.five-finger.g-sharp-minor.both.mxl",
+   "hands": "both",
+   "family": "five_finger",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.01.both",
+   "file": "scores/generated/exercise.hanon.01.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.01.left",
+   "file": "scores/generated/exercise.hanon.01.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.01.right",
+   "file": "scores/generated/exercise.hanon.01.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.02.both",
+   "file": "scores/generated/exercise.hanon.02.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.02.left",
+   "file": "scores/generated/exercise.hanon.02.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.02.right",
+   "file": "scores/generated/exercise.hanon.02.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.03.both",
+   "file": "scores/generated/exercise.hanon.03.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.03.left",
+   "file": "scores/generated/exercise.hanon.03.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.03.right",
+   "file": "scores/generated/exercise.hanon.03.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.04.both",
+   "file": "scores/generated/exercise.hanon.04.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.04.left",
+   "file": "scores/generated/exercise.hanon.04.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.04.right",
+   "file": "scores/generated/exercise.hanon.04.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.05.both",
+   "file": "scores/generated/exercise.hanon.05.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.05.left",
+   "file": "scores/generated/exercise.hanon.05.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.05.right",
+   "file": "scores/generated/exercise.hanon.05.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.06.both",
+   "file": "scores/generated/exercise.hanon.06.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.06.left",
+   "file": "scores/generated/exercise.hanon.06.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.06.right",
+   "file": "scores/generated/exercise.hanon.06.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.07.both",
+   "file": "scores/generated/exercise.hanon.07.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.07.left",
+   "file": "scores/generated/exercise.hanon.07.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.07.right",
+   "file": "scores/generated/exercise.hanon.07.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.08.both",
+   "file": "scores/generated/exercise.hanon.08.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.08.left",
+   "file": "scores/generated/exercise.hanon.08.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.08.right",
+   "file": "scores/generated/exercise.hanon.08.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.09.both",
+   "file": "scores/generated/exercise.hanon.09.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.09.left",
+   "file": "scores/generated/exercise.hanon.09.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.09.right",
+   "file": "scores/generated/exercise.hanon.09.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.10.both",
+   "file": "scores/generated/exercise.hanon.10.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.10.left",
+   "file": "scores/generated/exercise.hanon.10.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.10.right",
+   "file": "scores/generated/exercise.hanon.10.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.11.both",
+   "file": "scores/generated/exercise.hanon.11.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.11.left",
+   "file": "scores/generated/exercise.hanon.11.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.11.right",
+   "file": "scores/generated/exercise.hanon.11.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.12.both",
+   "file": "scores/generated/exercise.hanon.12.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.12.left",
+   "file": "scores/generated/exercise.hanon.12.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.12.right",
+   "file": "scores/generated/exercise.hanon.12.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.13.both",
+   "file": "scores/generated/exercise.hanon.13.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.13.left",
+   "file": "scores/generated/exercise.hanon.13.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.13.right",
+   "file": "scores/generated/exercise.hanon.13.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.14.both",
+   "file": "scores/generated/exercise.hanon.14.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.14.left",
+   "file": "scores/generated/exercise.hanon.14.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.14.right",
+   "file": "scores/generated/exercise.hanon.14.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.15.both",
+   "file": "scores/generated/exercise.hanon.15.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.15.left",
+   "file": "scores/generated/exercise.hanon.15.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.15.right",
+   "file": "scores/generated/exercise.hanon.15.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.16.both",
+   "file": "scores/generated/exercise.hanon.16.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.16.left",
+   "file": "scores/generated/exercise.hanon.16.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.16.right",
+   "file": "scores/generated/exercise.hanon.16.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.17.both",
+   "file": "scores/generated/exercise.hanon.17.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.17.left",
+   "file": "scores/generated/exercise.hanon.17.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.17.right",
+   "file": "scores/generated/exercise.hanon.17.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.18.both",
+   "file": "scores/generated/exercise.hanon.18.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.18.left",
+   "file": "scores/generated/exercise.hanon.18.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.18.right",
+   "file": "scores/generated/exercise.hanon.18.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.19.both",
+   "file": "scores/generated/exercise.hanon.19.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.19.left",
+   "file": "scores/generated/exercise.hanon.19.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.19.right",
+   "file": "scores/generated/exercise.hanon.19.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.20.both",
+   "file": "scores/generated/exercise.hanon.20.both.mxl",
+   "hands": "both",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.20.left",
+   "file": "scores/generated/exercise.hanon.20.left.mxl",
+   "hands": "left",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.hanon.20.right",
+   "file": "scores/generated/exercise.hanon.20.right.mxl",
+   "hands": "right",
+   "family": "hanon",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.01",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.01.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.02",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.02.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.03",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.03.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.04",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.04.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.05",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.05.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.06",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.06.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.07",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.07.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.left.08",
+   "file": "scores/generated/exercise.interval-reading.c-position.left.08.mxl",
+   "hands": "left",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.01",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.01.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.02",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.02.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.03",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.03.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.04",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.04.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.05",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.05.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.06",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.06.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.07",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.07.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.interval-reading.c-position.right.08",
+   "file": "scores/generated/exercise.interval-reading.c-position.right.08.mxl",
+   "hands": "right",
+   "family": "interval_reading",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.a.left",
+   "file": "scores/generated/exercise.position-shift.a.left.mxl",
+   "hands": "left",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.a.right",
+   "file": "scores/generated/exercise.position-shift.a.right.mxl",
+   "hands": "right",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.c.left",
+   "file": "scores/generated/exercise.position-shift.c.left.mxl",
+   "hands": "left",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.c.right",
+   "file": "scores/generated/exercise.position-shift.c.right.mxl",
+   "hands": "right",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.d.left",
+   "file": "scores/generated/exercise.position-shift.d.left.mxl",
+   "hands": "left",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.d.right",
+   "file": "scores/generated/exercise.position-shift.d.right.mxl",
+   "hands": "right",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.f.left",
+   "file": "scores/generated/exercise.position-shift.f.left.mxl",
+   "hands": "left",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.f.right",
+   "file": "scores/generated/exercise.position-shift.f.right.mxl",
+   "hands": "right",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.g.left",
+   "file": "scores/generated/exercise.position-shift.g.left.mxl",
+   "hands": "left",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.position-shift.g.right",
+   "file": "scores/generated/exercise.position-shift.g.right.mxl",
+   "hands": "right",
+   "family": "position_shift",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.riff.a.falling",
+   "file": "scores/generated/exercise.riff.a.falling.mxl",
+   "hands": "right",
+   "family": "riff",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.riff.a.rocking",
+   "file": "scores/generated/exercise.riff.a.rocking.mxl",
+   "hands": "right",
+   "family": "riff",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.riff.c.falling",
+   "file": "scores/generated/exercise.riff.c.falling.mxl",
+   "hands": "right",
+   "family": "riff",
+   "src": "generated"
+  },
+  {
+   "id": "exercise.riff.c.rocking",
+   "file": "scores/generated/exercise.riff.c.rocking.mxl",
+   "hands": "right",
+   "family": "riff",
+   "src": "generated"
+  },
+  {
+   "id": "song.classical.chopin-etude-op25-1.nifc",
+   "file": "scores/imported/song.classical.chopin-etude-op25-1.nifc.mxl",
+   "hands": "both",
+   "family": null,
+   "src": "kern"
+  },
+  {
+   "id": "song.classical.chopin-etude-op25-6.nifc",
+   "file": "scores/imported/song.classical.chopin-etude-op25-6.nifc.mxl",
+   "hands": "both",
+   "family": null,
+   "src": "kern"
+  }
+ ]
+}

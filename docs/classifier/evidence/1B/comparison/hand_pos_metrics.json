@@ -1,0 +1,251 @@
+{
+ "class|current|authored": {
+  "segments": 103,
+  "agree": 64
+ },
+ "class|current|generated arpeggio": {
+  "segments": 558,
+  "agree": 156
+ },
+ "class|current|generated chromatic": {
+  "segments": 344,
+  "agree": 42
+ },
+ "class|current|generated scale": {
+  "segments": 2268,
+  "agree": 2182
+ },
+ "class|current|pdmx": {
+  "segments": 211,
+  "agree": 127
+ },
+ "class|current|all": {
+  "segments": 3484,
+  "agree": 2571
+ },
+ "class|fixed|authored": {
+  "segments": 103,
+  "agree": 64
+ },
+ "class|fixed|generated arpeggio": {
+  "segments": 558,
+  "agree": 156
+ },
+ "class|fixed|generated chromatic": {
+  "segments": 344,
+  "agree": 42
+ },
+ "class|fixed|generated scale": {
+  "segments": 2268,
+  "agree": 2182
+ },
+ "class|fixed|pdmx": {
+  "segments": 211,
+  "agree": 127
+ },
+ "class|fixed|all": {
+  "segments": 3484,
+  "agree": 2571
+ },
+ "class|pp|authored": {
+  "segments": 103,
+  "agree": 30
+ },
+ "class|pp|generated arpeggio": {
+  "segments": 558,
+  "agree": 384
+ },
+ "class|pp|generated chromatic": {
+  "segments": 344,
+  "agree": 287
+ },
+ "class|pp|generated scale": {
+  "segments": 2268,
+  "agree": 1699
+ },
+ "class|pp|pdmx": {
+  "segments": 211,
+  "agree": 136
+ },
+ "class|pp|all": {
+  "segments": 3484,
+  "agree": 2536
+ },
+ "class|always-five-finger|authored": {
+  "segments": 103,
+  "agree": 84
+ },
+ "class|always-five-finger|generated arpeggio": {
+  "segments": 558,
+  "agree": 224
+ },
+ "class|always-five-finger|generated chromatic": {
+  "segments": 344,
+  "agree": 42
+ },
+ "class|always-five-finger|generated scale": {
+  "segments": 2268,
+  "agree": 2205
+ },
+ "class|always-five-finger|pdmx": {
+  "segments": 211,
+  "agree": 114
+ },
+ "class|always-five-finger|all": {
+  "segments": 3484,
+  "agree": 2669
+ },
+ "shift|current|authored": {
+  "truth": 77,
+  "pred": 63,
+  "matched": 41
+ },
+ "shift|current|generated arpeggio": {
+  "truth": 510,
+  "pred": 288,
+  "matched": 288
+ },
+ "shift|current|generated chromatic": {
+  "truth": 320,
+  "pred": 128,
+  "matched": 128
+ },
+ "shift|current|generated scale": {
+  "truth": 2052,
+  "pred": 1344,
+  "matched": 1001
+ },
+ "shift|current|pdmx": {
+  "truth": 199,
+  "pred": 192,
+  "matched": 163
+ },
+ "shift|current|all": {
+  "truth": 3158,
+  "pred": 2015,
+  "matched": 1621
+ },
+ "shift|fixed|authored": {
+  "truth": 77,
+  "pred": 63,
+  "matched": 41
+ },
+ "shift|fixed|generated arpeggio": {
+  "truth": 510,
+  "pred": 288,
+  "matched": 288
+ },
+ "shift|fixed|generated chromatic": {
+  "truth": 320,
+  "pred": 128,
+  "matched": 128
+ },
+ "shift|fixed|generated scale": {
+  "truth": 2052,
+  "pred": 1344,
+  "matched": 1001
+ },
+ "shift|fixed|pdmx": {
+  "truth": 199,
+  "pred": 192,
+  "matched": 163
+ },
+ "shift|fixed|all": {
+  "truth": 3158,
+  "pred": 2015,
+  "matched": 1621
+ },
+ "shift|pp|authored": {
+  "truth": 77,
+  "pred": 85,
+  "matched": 55
+ },
+ "shift|pp|generated arpeggio": {
+  "truth": 510,
+  "pred": 571,
+  "matched": 470
+ },
+ "shift|pp|generated chromatic": {
+  "truth": 320,
+  "pred": 140,
+  "matched": 140
+ },
+ "shift|pp|generated scale": {
+  "truth": 2052,
+  "pred": 1985,
+  "matched": 1797
+ },
+ "shift|pp|pdmx": {
+  "truth": 199,
+  "pred": 243,
+  "matched": 186
+ },
+ "shift|pp|all": {
+  "truth": 3158,
+  "pred": 3024,
+  "matched": 2648
+ },
+ "shift|union|all": {
+  "cur_pred": 2013,
+  "cur_true": 1634,
+  "cur_hit": 1813,
+  "pp_pred": 3024,
+  "pp_true": 2800,
+  "pp_hit": 2694,
+  "truth": 3158,
+  "pred": 4154,
+  "marks_true": 3625,
+  "truth_hit": 2855
+ },
+ "kind|current": {
+  "crossing>shift": 240,
+  "shift>shift": 241,
+  "crossing>crossing": 1120,
+  "shift>crossing": 20
+ },
+ "kind|fixed": {
+  "crossing>shift": 301,
+  "shift>shift": 258,
+  "crossing>crossing": 1059,
+  "shift>crossing": 3
+ },
+ "kind|pp": {
+  "crossing>crossing": 1927,
+  "shift>shift": 373,
+  "crossing>shift": 332,
+  "shift>crossing": 16
+ },
+ "kind|f1": {
+  "crossing>shift": 301,
+  "shift>shift": 257,
+  "crossing>crossing": 1059,
+  "shift>crossing": 4
+ },
+ "kind|f2": {
+  "crossing>shift": 240,
+  "shift>shift": 250,
+  "crossing>crossing": 1120,
+  "shift>crossing": 11
+ },
+ "agree|both": {
+  "n": 1721,
+  "true": 1485
+ },
+ "agree|only current": {
+  "n": 294,
+  "true": 151
+ },
+ "agree|only pianoplayer": {
+  "n": 1058,
+  "true": 949
+ },
+ "pp_digit_match": {
+  "match": 7325,
+  "printed": 12046
+ },
+ "runtime": {
+  "cur_view_mean": 0.060657303370786515,
+  "pp_n": 118,
+  "pp_mean": 17.75472881355932
+ }
+}

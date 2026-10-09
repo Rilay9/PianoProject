@@ -1,0 +1,931 @@
+{
+"words": [
+"song.classical.bach-little-prelude-in-d-minor-bwv-935.pdmx",
+"song.classical.chopin-etude-in-e-flat-minor-op-10-no-6.pdmx",
+"song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx",
+"song.classical.debussy-clair-de-lune",
+"song.classical.grieg-album-leaf-op-47-no-2.pdmx",
+"song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx",
+"song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx",
+"song.classical.nazareth-carioca-1913.pdmx",
+"song.classical.rimsky-flight-bumblebee",
+"song.folk.3-variations-on-happy-birthday.pdmx",
+"song.pop.laura-shigihara-loonboon.pdmx",
+"song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx"
+],
+"named": [
+"song.classical.albeniz-asturias.pdmx",
+"song.folk.amazing-grace-satb.pdmx",
+"song.classical.abide-with-me-william-henry-monk.pdmx",
+"song.classical.grieg-album-leaf-op-47-no-2.pdmx",
+"song.classical.bach-invention-no-8-in-f-major-bwv-779.pdmx",
+"exercise.clave.bossa.pulse",
+"song.classical.bach-adagio-bwv-974-after-marcello.pdmx",
+"excerpt.blues.wabash-blues.b1-4",
+"song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx",
+"excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28"
+],
+"generated": [
+"exercise.accompaniment.alberti.a-minor.both",
+"exercise.accompaniment.broken.f-major.both",
+"exercise.arpeggio.a-flat-major.4oct.both",
+"exercise.arpeggio.b-flat-minor.4oct.both",
+"exercise.arpeggio.c-minor.4oct.both",
+"exercise.arpeggio.d-minor.4oct.both",
+"exercise.arpeggio.e-minor.4oct.both",
+"exercise.arpeggio.g-flat-major.4oct.both",
+"exercise.arpeggio7.a-dominant7.2oct.both",
+"exercise.arpeggio7.b-diminished7.2oct.both",
+"exercise.arpeggio7.b-major7.2oct.both",
+"exercise.arpeggio7.d-diminished7.2oct.both",
+"exercise.arpeggio7.d-minor7.2oct.both",
+"exercise.arpeggio7.e-half-diminished7.2oct.both",
+"exercise.arpeggio7.f-sharp-diminished7.2oct.both",
+"exercise.arpeggio7.g-major7.2oct.both",
+"exercise.blues-scale.b-flat.1oct.both",
+"exercise.boogie.a.root-fifth",
+"exercise.boogie.c.pinetop",
+"exercise.boogie.d.walking-eighths",
+"exercise.boogie.e.root-fifth",
+"exercise.boogie.g.pinetop",
+"exercise.broken7.a-minor7.both",
+"exercise.broken7.c-major7.both",
+"exercise.broken7.e-dominant7.both",
+"exercise.broken7.f-minor7.both",
+"exercise.chromatic.c.2oct.both",
+"exercise.clave.rumba-3-2.pulse",
+"exercise.comping.a.off-beats.intro",
+"exercise.comping.b-flat.off-beats.intro",
+"exercise.comping.c.four-on-the-floor.intro",
+"exercise.comping.d.off-beats.intro",
+"exercise.comping.e-flat.off-beats.intro",
+"exercise.comping.f.bossa.intro",
+"exercise.comping.g.bossa",
+"exercise.coordination.c.hold",
+"exercise.five-finger.a-major.both",
+"exercise.five-finger.c-sharp-minor.both",
+"exercise.five-finger.f-major.both",
+"exercise.hanon.02.both",
+"exercise.hanon.10.both",
+"exercise.hanon.18.both",
+"exercise.ii-v-i.d",
+"exercise.independence.c.2v3",
+"exercise.independence.g.2v3",
+"exercise.inversions.a-flat-major.both",
+"exercise.inversions.c-minor.both",
+"exercise.inversions.e-minor.both",
+"exercise.latin-groove.a.son-3-2",
+"exercise.loop4.a.root",
+"exercise.loop4.d-flat.root",
+"exercise.loop4.f-sharp.root",
+"exercise.modal-vamp.a",
+"exercise.open-voicing.b-flat.add9",
+"exercise.open-voicing.e-flat.add9",
+"exercise.ostinato.a.arpeggio",
+"exercise.passing-chord.e-flat",
+"exercise.pedal.half-pedal.a",
+"exercise.power-chord.a",
+"exercise.scale.a-flat-major.4oct.similar.both.1",
+"exercise.scale.a-major.2oct.contrary.both.2",
+"exercise.scale.a-natural-minor.2oct.similar.both.2",
+"exercise.scale.b-flat-major.2oct.similar.both.2",
+"exercise.scale.b-harmonic-minor.1oct.contrary.both.2",
+"exercise.scale.b-major.3oct.similar.both.2",
+"exercise.scale.c-harmonic-minor.1oct.similar.both.2",
+"exercise.scale.c-major.4oct.similar.both.1",
+"exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2",
+"exercise.scale.d-flat-major.2oct.contrary.both.2",
+"exercise.scale.d-harmonic-minor.3oct.similar.both.2",
+"exercise.scale.d-melodic-minor.1oct.similar.both.2",
+"exercise.scale.e-flat-major.1oct.contrary.both.2",
+"exercise.scale.e-flat-melodic-minor.2oct.similar.both.2",
+"exercise.scale.e-major.1oct.similar.both.2",
+"exercise.scale.e-natural-minor.1oct.similar.both.2",
+"exercise.scale.f-major.2oct.contrary.both.2",
+"exercise.scale.f-natural-minor.2oct.similar.both.2",
+"exercise.scale.f-sharp-natural-minor.2oct.similar.both.2",
+"exercise.scale.g-harmonic-minor.1oct.contrary.both.2",
+"exercise.scale.g-major.3oct.similar.both.2",
+"exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2",
+"exercise.slash-bass.b-flat",
+"exercise.study.interval-reading.c-major.3-4.8bar.sustained.02",
+"exercise.study.position-shift.b-flat-major.4-4.12bar.broken.01",
+"exercise.study.syncopation.c-major.4-4.8bar.broken.01",
+"exercise.syncopation.sixteenth",
+"exercise.tritone-sub.f",
+"exercise.turnaround.e-flat.i-vi-ii-v.intro",
+"exercise.voicing.f",
+"exercise.voicing7.a.rootless-b",
+"exercise.voicing7.b.rootless-b",
+"exercise.voicing7.d-flat.rootless-b",
+"exercise.voicing7.e-flat.rootless-b",
+"exercise.voicing7.f-sharp.rootless-b",
+"exercise.voicing7.g.rootless-b",
+"exercise.walking-bass.c.minor-blues",
+"exercise.walking-bass.f.minor-blues"
+],
+"pdmx": [
+"excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
+"song.blues.rhythm-and-boogie",
+"song.classical.bach-invention-no-7-in-e-minor-bwv-778.pdmx",
+"song.classical.beethoven-fur-elise.beginner",
+"song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx",
+"song.classical.chopin-etude-op10-10.nifc",
+"song.classical.chopin-mazurka-op17-3.nifc",
+"song.classical.chopin-mazurka-op6-2.nifc",
+"song.classical.chopin-nocturne-op27-2.nifc",
+"song.classical.chopin-prelude-op28-11.nifc",
+"song.classical.chopin-rondo-op1.nifc",
+"song.classical.chopin-waltz-op70-1.nifc",
+"song.classical.czerny-the-school-of-velocity-op-299-no-22.pdmx",
+"song.classical.diabelli-diabelli-sonatina-in-f-major-op-168-no-1-1st-movement.pdmx",
+"song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx",
+"song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx",
+"song.classical.lemoine-etude-op-37-no-25.pdmx",
+"song.classical.lemoine-etude-op-37-no-50.pdmx",
+"song.classical.mozart-contredanse-in-f-major-k-15h.pdmx",
+"song.classical.mozart-rondo-alla-turca.fingered",
+"song.classical.petzold-minuet-g-bwv-anh114.alt",
+"song.classical.scarlatti-sonata-in-d-minor-k-32.pdmx",
+"song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
+"song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx",
+"song.folk.el-gordo-triste-piazzolla-ferrer.pdmx",
+"song.folk.mary-had-a-little-lamb.ht",
+"song.folk.your-song-elton-john-easy-piano.pdmx",
+"song.pop.abba-dancing-queen.pdmx",
+"song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx",
+"song.pop.misc-cartoons-resonance-soul-eater-opening-1.pdmx",
+"song.pop.ri-jeong-hyeok-ri-jeong-hyeok-s-piano.pdmx",
+"song.ragtime.joplin-bethena",
+"song.ragtime.joplin-leola",
+"song.ragtime.joplin-something-doing"
+],
+"missing_named": [],
+"list": [
+{
+"id": "song.classical.bach-little-prelude-in-d-minor-bwv-935.pdmx",
+"file": "scores/pdmx/QmdBfR996vfyD22i7aR5N2i94XcBU71KfneDWcgTrKM1t1.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.chopin-etude-in-e-flat-minor-op-10-no-6.pdmx",
+"file": "scores/pdmx/QmeL4DFPXz6yfY3bD9cqVsvqtEPHPFzsRYTVkaF5FFeDLE.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx",
+"file": "scores/pdmx/Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.debussy-clair-de-lune",
+"file": "scores/imported/song.classical.debussy-clair-de-lune.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.grieg-album-leaf-op-47-no-2.pdmx",
+"file": "scores/pdmx/QmUEcz2AnA4Ls7pGd9gYu8fPYfk9QRgB5hvFj1zBhLWQL3.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx",
+"file": "scores/pdmx/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx",
+"file": "scores/pdmx/QmXq44w8wcrN93Q3xDvwJLpqPSEDAE9vNAVcTj66o3YYKC.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.nazareth-carioca-1913.pdmx",
+"file": "scores/pdmx/QmYH1DJQdxPZabqsHWojoQRXzqj3NEvm4XWa5YiNfgtMHW.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.rimsky-flight-bumblebee",
+"file": "scores/imported/song.classical.rimsky-flight-bumblebee.mxl",
+"group": "words"
+},
+{
+"id": "song.folk.3-variations-on-happy-birthday.pdmx",
+"file": "scores/pdmx/QmVQHxcYKMJ9j3UVmsJxGbnMJBW2FcQkxbvtVj1rMjQ9cm.mxl",
+"group": "words"
+},
+{
+"id": "song.pop.laura-shigihara-loonboon.pdmx",
+"file": "scores/pdmx/QmRiPR5xWaprP19qHyMKr9a7MCwDaVj5GZR6pEv3Hip9zq.mxl",
+"group": "words"
+},
+{
+"id": "song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx",
+"file": "scores/pdmx/QmYTv8PgK28ApeTjxQjvznsckcvXCVW2w8VkfiShnwm8xc.mxl",
+"group": "words"
+},
+{
+"id": "song.classical.albeniz-asturias.pdmx",
+"file": "scores/pdmx/Qmb5NuVgSQPhVrei5UwHRAY8DQPHTuWETkqoN9WDyooPyi.mxl",
+"group": "named"
+},
+{
+"id": "song.folk.amazing-grace-satb.pdmx",
+"file": "scores/pdmx/QmZaM6TQAnnkNmeykGb8PKtMk4okYoCPa8CM4LFpR25KLx.mxl",
+"group": "named"
+},
+{
+"id": "song.classical.abide-with-me-william-henry-monk.pdmx",
+"file": "scores/pdmx/QmSzMTdDidpQfBsdi4WsKBwL2S8mxdaMgN9ZwBD3Heg1a5.mxl",
+"group": "named"
+},
+{
+"id": "song.classical.grieg-album-leaf-op-47-no-2.pdmx",
+"file": "scores/pdmx/QmUEcz2AnA4Ls7pGd9gYu8fPYfk9QRgB5hvFj1zBhLWQL3.mxl",
+"group": "named"
+},
+{
+"id": "song.classical.bach-invention-no-8-in-f-major-bwv-779.pdmx",
+"file": "scores/pdmx/QmZwC4zWei5ivTZDoe3z9V5YTBZWGKYhtNiZQVkyLRpuch.mxl",
+"group": "named"
+},
+{
+"id": "exercise.clave.bossa.pulse",
+"file": "scores/generated/exercise.clave.bossa.pulse.mxl",
+"group": "named"
+},
+{
+"id": "song.classical.bach-adagio-bwv-974-after-marcello.pdmx",
+"file": "scores/pdmx/QmcYdVAdoqPzSreBT2Aihn5XKTNFDreFh9mbuSgeRkEGoZ.mxl",
+"group": "named"
+},
+{
+"id": "excerpt.blues.wabash-blues.b1-4",
+"file": "scores/excerpts/excerpt.blues.wabash-blues.b1-4.mxl",
+"group": "named"
+},
+{
+"id": "song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx",
+"file": "scores/pdmx/QmUx9b8AB8eFp7hoX99ss9GHk5pSCkKL33zXrenFvhvJbW.mxl",
+"group": "named"
+},
+{
+"id": "excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28",
+"file": "scores/excerpts/excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28.mxl",
+"group": "named"
+},
+{
+"id": "exercise.accompaniment.alberti.a-minor.both",
+"file": "scores/generated/exercise.accompaniment.alberti.a-minor.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.accompaniment.broken.f-major.both",
+"file": "scores/generated/exercise.accompaniment.broken.f-major.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.a-flat-major.4oct.both",
+"file": "scores/generated/exercise.arpeggio.a-flat-major.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.b-flat-minor.4oct.both",
+"file": "scores/generated/exercise.arpeggio.b-flat-minor.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.c-minor.4oct.both",
+"file": "scores/generated/exercise.arpeggio.c-minor.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.d-minor.4oct.both",
+"file": "scores/generated/exercise.arpeggio.d-minor.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.e-minor.4oct.both",
+"file": "scores/generated/exercise.arpeggio.e-minor.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio.g-flat-major.4oct.both",
+"file": "scores/generated/exercise.arpeggio.g-flat-major.4oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.a-dominant7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.a-dominant7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.b-diminished7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.b-diminished7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.b-major7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.b-major7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.d-diminished7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.d-diminished7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.d-minor7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.d-minor7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.e-half-diminished7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.e-half-diminished7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.f-sharp-diminished7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.f-sharp-diminished7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.arpeggio7.g-major7.2oct.both",
+"file": "scores/generated/exercise.arpeggio7.g-major7.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.blues-scale.b-flat.1oct.both",
+"file": "scores/generated/exercise.blues-scale.b-flat.1oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.boogie.a.root-fifth",
+"file": "scores/generated/exercise.boogie.a.root-fifth.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.boogie.c.pinetop",
+"file": "scores/generated/exercise.boogie.c.pinetop.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.boogie.d.walking-eighths",
+"file": "scores/generated/exercise.boogie.d.walking-eighths.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.boogie.e.root-fifth",
+"file": "scores/generated/exercise.boogie.e.root-fifth.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.boogie.g.pinetop",
+"file": "scores/generated/exercise.boogie.g.pinetop.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.broken7.a-minor7.both",
+"file": "scores/generated/exercise.broken7.a-minor7.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.broken7.c-major7.both",
+"file": "scores/generated/exercise.broken7.c-major7.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.broken7.e-dominant7.both",
+"file": "scores/generated/exercise.broken7.e-dominant7.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.broken7.f-minor7.both",
+"file": "scores/generated/exercise.broken7.f-minor7.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.chromatic.c.2oct.both",
+"file": "scores/generated/exercise.chromatic.c.2oct.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.clave.rumba-3-2.pulse",
+"file": "scores/generated/exercise.clave.rumba-3-2.pulse.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.a.off-beats.intro",
+"file": "scores/generated/exercise.comping.a.off-beats.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.b-flat.off-beats.intro",
+"file": "scores/generated/exercise.comping.b-flat.off-beats.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.c.four-on-the-floor.intro",
+"file": "scores/generated/exercise.comping.c.four-on-the-floor.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.d.off-beats.intro",
+"file": "scores/generated/exercise.comping.d.off-beats.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.e-flat.off-beats.intro",
+"file": "scores/generated/exercise.comping.e-flat.off-beats.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.f.bossa.intro",
+"file": "scores/generated/exercise.comping.f.bossa.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.comping.g.bossa",
+"file": "scores/generated/exercise.comping.g.bossa.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.coordination.c.hold",
+"file": "scores/generated/exercise.coordination.c.hold.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.five-finger.a-major.both",
+"file": "scores/generated/exercise.five-finger.a-major.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.five-finger.c-sharp-minor.both",
+"file": "scores/generated/exercise.five-finger.c-sharp-minor.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.five-finger.f-major.both",
+"file": "scores/generated/exercise.five-finger.f-major.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.hanon.02.both",
+"file": "scores/generated/exercise.hanon.02.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.hanon.10.both",
+"file": "scores/generated/exercise.hanon.10.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.hanon.18.both",
+"file": "scores/generated/exercise.hanon.18.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.ii-v-i.d",
+"file": "scores/generated/exercise.ii-v-i.d.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.independence.c.2v3",
+"file": "scores/generated/exercise.independence.c.2v3.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.independence.g.2v3",
+"file": "scores/generated/exercise.independence.g.2v3.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.inversions.a-flat-major.both",
+"file": "scores/generated/exercise.inversions.a-flat-major.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.inversions.c-minor.both",
+"file": "scores/generated/exercise.inversions.c-minor.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.inversions.e-minor.both",
+"file": "scores/generated/exercise.inversions.e-minor.both.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.latin-groove.a.son-3-2",
+"file": "scores/generated/exercise.latin-groove.a.son-3-2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.loop4.a.root",
+"file": "scores/generated/exercise.loop4.a.root.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.loop4.d-flat.root",
+"file": "scores/generated/exercise.loop4.d-flat.root.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.loop4.f-sharp.root",
+"file": "scores/generated/exercise.loop4.f-sharp.root.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.modal-vamp.a",
+"file": "scores/generated/exercise.modal-vamp.a.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.open-voicing.b-flat.add9",
+"file": "scores/generated/exercise.open-voicing.b-flat.add9.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.open-voicing.e-flat.add9",
+"file": "scores/generated/exercise.open-voicing.e-flat.add9.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.ostinato.a.arpeggio",
+"file": "scores/generated/exercise.ostinato.a.arpeggio.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.passing-chord.e-flat",
+"file": "scores/generated/exercise.passing-chord.e-flat.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.pedal.half-pedal.a",
+"file": "scores/generated/exercise.pedal.half-pedal.a.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.power-chord.a",
+"file": "scores/generated/exercise.power-chord.a.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.a-flat-major.4oct.similar.both.1",
+"file": "scores/generated/exercise.scale.a-flat-major.4oct.similar.both.1.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.a-major.2oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.a-major.2oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.a-natural-minor.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.a-natural-minor.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.b-flat-major.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.b-flat-major.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.b-harmonic-minor.1oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.b-harmonic-minor.1oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.b-major.3oct.similar.both.2",
+"file": "scores/generated/exercise.scale.b-major.3oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.c-harmonic-minor.1oct.similar.both.2",
+"file": "scores/generated/exercise.scale.c-harmonic-minor.1oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.c-major.4oct.similar.both.1",
+"file": "scores/generated/exercise.scale.c-major.4oct.similar.both.1.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.d-flat-major.2oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.d-flat-major.2oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.d-harmonic-minor.3oct.similar.both.2",
+"file": "scores/generated/exercise.scale.d-harmonic-minor.3oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.d-melodic-minor.1oct.similar.both.2",
+"file": "scores/generated/exercise.scale.d-melodic-minor.1oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.e-flat-major.1oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.e-flat-major.1oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.e-flat-melodic-minor.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.e-flat-melodic-minor.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.e-major.1oct.similar.both.2",
+"file": "scores/generated/exercise.scale.e-major.1oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.e-natural-minor.1oct.similar.both.2",
+"file": "scores/generated/exercise.scale.e-natural-minor.1oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.f-major.2oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.f-major.2oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.f-natural-minor.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.f-natural-minor.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.f-sharp-natural-minor.2oct.similar.both.2",
+"file": "scores/generated/exercise.scale.f-sharp-natural-minor.2oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.g-harmonic-minor.1oct.contrary.both.2",
+"file": "scores/generated/exercise.scale.g-harmonic-minor.1oct.contrary.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.g-major.3oct.similar.both.2",
+"file": "scores/generated/exercise.scale.g-major.3oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2",
+"file": "scores/generated/exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.slash-bass.b-flat",
+"file": "scores/generated/exercise.slash-bass.b-flat.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.study.interval-reading.c-major.3-4.8bar.sustained.02",
+"file": "scores/generated/exercise.study.interval-reading.c-major.3-4.8bar.sustained.02.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.study.position-shift.b-flat-major.4-4.12bar.broken.01",
+"file": "scores/generated/exercise.study.position-shift.b-flat-major.4-4.12bar.broken.01.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.study.syncopation.c-major.4-4.8bar.broken.01",
+"file": "scores/generated/exercise.study.syncopation.c-major.4-4.8bar.broken.01.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.syncopation.sixteenth",
+"file": "scores/generated/exercise.syncopation.sixteenth.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.tritone-sub.f",
+"file": "scores/generated/exercise.tritone-sub.f.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.turnaround.e-flat.i-vi-ii-v.intro",
+"file": "scores/generated/exercise.turnaround.e-flat.i-vi-ii-v.intro.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing.f",
+"file": "scores/generated/exercise.voicing.f.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.a.rootless-b",
+"file": "scores/generated/exercise.voicing7.a.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.b.rootless-b",
+"file": "scores/generated/exercise.voicing7.b.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.d-flat.rootless-b",
+"file": "scores/generated/exercise.voicing7.d-flat.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.e-flat.rootless-b",
+"file": "scores/generated/exercise.voicing7.e-flat.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.f-sharp.rootless-b",
+"file": "scores/generated/exercise.voicing7.f-sharp.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.voicing7.g.rootless-b",
+"file": "scores/generated/exercise.voicing7.g.rootless-b.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.walking-bass.c.minor-blues",
+"file": "scores/generated/exercise.walking-bass.c.minor-blues.mxl",
+"group": "generated"
+},
+{
+"id": "exercise.walking-bass.f.minor-blues",
+"file": "scores/generated/exercise.walking-bass.f.minor-blues.mxl",
+"group": "generated"
+},
+{
+"id": "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
+"file": "scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.blues.rhythm-and-boogie",
+"file": "scores/pdmx/QmR9irNmXzcCoXLCFhLDW3RmagjbVFZrKfYavFk8aLCYrL.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.bach-invention-no-7-in-e-minor-bwv-778.pdmx",
+"file": "scores/pdmx/QmPd5AzwrvBgj6EwTiu1uvG5Hoc8X2GSxqyrDycqrCY6w4.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.beethoven-fur-elise.beginner",
+"file": "scores/imported/song.classical.beethoven-fur-elise.beginner.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx",
+"file": "scores/pdmx/QmePMZG99vKwzeFiQY5vD1JSohQk3ypPqNY8jSkU2cHTa1.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-etude-op10-10.nifc",
+"file": "scores/imported/song.classical.chopin-etude-op10-10.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-mazurka-op17-3.nifc",
+"file": "scores/imported/song.classical.chopin-mazurka-op17-3.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-mazurka-op6-2.nifc",
+"file": "scores/imported/song.classical.chopin-mazurka-op6-2.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-nocturne-op27-2.nifc",
+"file": "scores/imported/song.classical.chopin-nocturne-op27-2.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-prelude-op28-11.nifc",
+"file": "scores/imported/song.classical.chopin-prelude-op28-11.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-rondo-op1.nifc",
+"file": "scores/imported/song.classical.chopin-rondo-op1.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.chopin-waltz-op70-1.nifc",
+"file": "scores/imported/song.classical.chopin-waltz-op70-1.nifc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.czerny-the-school-of-velocity-op-299-no-22.pdmx",
+"file": "scores/pdmx/QmQ8P6f2cjiAZz7mmKMU6ype6FzErMJLZSUpRb2UwYUo9v.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.diabelli-diabelli-sonatina-in-f-major-op-168-no-1-1st-movement.pdmx",
+"file": "scores/pdmx/QmZLmH4rC6AGdK4MYd4L7bhADET4o9wRSjoVWYJRoW6mrV.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx",
+"file": "scores/pdmx/QmR7hknmXF7kVWhWN1oFmom5w7AnrgCimtuXfXWwajnXpk.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx",
+"file": "scores/pdmx/QmTErR15NKs5XS4LngRFQaHHPSVBCrJ4xqHdca3YdJJtgn.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.lemoine-etude-op-37-no-25.pdmx",
+"file": "scores/pdmx/QmcibUVKciUYWV84FmNEgG1Fz1KBDoGPapXVx6Y3KfS6B6.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.lemoine-etude-op-37-no-50.pdmx",
+"file": "scores/pdmx/QmR1XyEYYWU2FG9xBeFXDAihgM5Zh4JA73mHNPfHv1NVcr.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.mozart-contredanse-in-f-major-k-15h.pdmx",
+"file": "scores/pdmx/QmbL2idE5ykZoHvUMVzTdEWQvmyPqgHA5C4UWET1tkjqUk.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.mozart-rondo-alla-turca.fingered",
+"file": "scores/imported/song.classical.mozart-rondo-alla-turca.fingered.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.petzold-minuet-g-bwv-anh114.alt",
+"file": "scores/imported/song.classical.petzold-minuet-g-bwv-anh114.alt.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.scarlatti-sonata-in-d-minor-k-32.pdmx",
+"file": "scores/pdmx/QmdnDDmUhttjN2XpTUJHgk5NsnTyYPFbedPP1tP14Ce31j.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
+"file": "scores/pdmx/QmZV18xdpHyW6Yhdc2uFEALbKNFkHsBX6xbV2qzgLS2J42.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx",
+"file": "scores/pdmx/QmVM8sy9fma66nHKmyjHLAxQqF8mguPVoqTvUsXYxyfcKQ.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.folk.el-gordo-triste-piazzolla-ferrer.pdmx",
+"file": "scores/pdmx/QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.folk.mary-had-a-little-lamb.ht",
+"file": "scores/authored/song.folk.mary-had-a-little-lamb.ht.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.folk.your-song-elton-john-easy-piano.pdmx",
+"file": "scores/pdmx/QmcZnZByDzCDxRpXJfSGsPqDP9reRxzqpwmcxs3HR82kHc.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.pop.abba-dancing-queen.pdmx",
+"file": "scores/pdmx/QmQcCDWzkkQKt4z3XtcWdRffdizj7Lzeg5GUvNn6zCdufv.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx",
+"file": "scores/pdmx/QmWizyqY3aGJA683kdkYAEzKDen1QgCE684SUed8rRVeyo.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.pop.misc-cartoons-resonance-soul-eater-opening-1.pdmx",
+"file": "scores/pdmx/QmeqfQXBEZmbg4KCPV1DxXAoFgsJzyY6FCcU7WTRqTw2yY.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.pop.ri-jeong-hyeok-ri-jeong-hyeok-s-piano.pdmx",
+"file": "scores/pdmx/QmcNAemZBHj1k2AV5PcpjLWDEBsGF4ireD95xUnR8kW9hK.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.ragtime.joplin-bethena",
+"file": "scores/imported/song.ragtime.joplin-bethena.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.ragtime.joplin-leola",
+"file": "scores/imported/song.ragtime.joplin-leola.mxl",
+"group": "pdmx"
+},
+{
+"id": "song.ragtime.joplin-something-doing",
+"file": "scores/imported/song.ragtime.joplin-something-doing.mxl",
+"group": "pdmx"
+}
+]
+}
