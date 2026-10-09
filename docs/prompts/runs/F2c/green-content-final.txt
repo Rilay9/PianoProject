@@ -1,7 +1,0 @@
-(in tools/content) python -m unittest tests.test_taught_at tests.test_measured_truth tests.test_validate_claims tests.test_study
-.............................................................................................................................
-----------------------------------------------------------------------
-Ran 125 tests in 190.077s
-
-OK
-exit=0

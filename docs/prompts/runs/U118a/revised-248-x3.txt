@@ -1,9 +1,0 @@
-
-Running 3 tests using 3 workers
-
-  ok 1 tests\e2e\score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (3.3s)
-  ok 2 tests\e2e\score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (3.3s)
-  ok 3 tests\e2e\score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (3.3s)
-
-  3 passed (6.3s)
-revised-248 playwright exit 0

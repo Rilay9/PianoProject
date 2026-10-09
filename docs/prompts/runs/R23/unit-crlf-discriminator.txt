@@ -1,2 +1,0 @@
-LF form in ScoreScreen: False | CRLF form: True
-LF form in style.css: False | after CRLF->LF: True

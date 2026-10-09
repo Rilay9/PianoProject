@@ -1,4 +1,0 @@
-# the 78 files that failed on the fixed tree, run on the base source (scripts-base-compare.mjs)
- Test Files  78 failed (78)
-      Tests  34 failed | 87 passed | 1 skipped (122)
-FAIL lines on the base source: 99; on the fixed tree: 99; identical: True

@@ -1,6 +1,0 @@
-﻿(cd .) python docs/prompts/runs/G2/scripts-splice_vocabulary.py
-before baf43a3e97a84bd0a3597da8f282b0db4255e13c18114e3f930a3ceb8223fd62 skills.json
-before d4f6b6a4dbd688ddad864cce9fd01cd303764f88dd443ca9e86dfa7578ba894b skills.schema.json
-after  31c203b3c88fa5ff97e8a2921fdcd757c13e506161121fcd52bb95e0e1bfc5dd skills.json
-after  9ce049c58d879ea07ee3b2b1d7aef149b8f940ec9b7d20a179a2054bd86707c9 skills.schema.json
-exit=0

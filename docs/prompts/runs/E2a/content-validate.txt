@@ -1,7 +1,0 @@
-﻿  WARNING (taught at, E0b): demand interval.leap is taught at '1.5', whose concepts name none of leaps; its taughtAtNote reads the lesson by hand, until F reads it
-  WARNING (taught at, E0b): demand pitch.chromatic is taught at '3.1', whose concepts name none of accidentals, chromatic; its taughtAtNote reads the lesson by hand, until F reads it
-  WARNING (taught at, E0b): demand texture.walking-bass is taught at no rung on the path to 'latin', whose concepts name walking-bass: a teaching rung taughtAt omits, or a concept named in passing
-  excerpts (E1): 5 cut, on no rung
-  WARNING (rung claims, E0): 356 of 592 checkable claims on rung options are not established by the options' measured demands; 9 rung claims no option establishes; 467 concept claims no detector can measure, with 0 human teaching-use reviews. Nothing is removed from a rung: docs/prompts/rung-claims.md.
-content validation OK: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa9e0c26b0f85f0c7\app\public\content (2090 catalog items)
-exit 0

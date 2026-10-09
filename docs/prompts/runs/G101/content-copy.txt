@@ -1,5 +1,0 @@
-Copied read-only from the main checkout's app/public/content (<main checkout>/app/public/content)
-into this worktree's app/public/content on 2026-09-30, before any run:
-  catalog.json catalog.schema.json curriculum.json curriculum.schema.json lessons/ level-model.json review/ scores/ tips/
-audio/ is tracked and was left as checked out. The catalogue has 2,092 items. Nothing was written to the main checkout.
-Deleted at the end with app/node_modules and app/dist (cleanup.txt).

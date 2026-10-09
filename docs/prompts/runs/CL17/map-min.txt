@@ -1,6 +1,0 @@
-# checks for 3 path(s): 3 matched, 0 unmatched
-# docs/design/one-level.md: docs/**
-# docs/prompts/runs/CL17/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
-# docs/prompts/runs/CL17/trace.md: docs/**
-record-mirrors	.	python tools/docs/record_mirrors.py
-content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py

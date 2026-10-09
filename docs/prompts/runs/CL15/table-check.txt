@@ -1,6 +1,0 @@
-interval_reading: 16 items, v1 -> v2
-pentatonic: 6 items, v1 -> v2
-syncopation: 2 items, v1 -> v2
-tremolo_octaves: 12 items, v1 -> v2
-walking_bass: 28 items, v2 -> v3
-checked 64, mismatched 0

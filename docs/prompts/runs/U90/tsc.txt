@@ -1,2 +1,0 @@
-$ npx tsc -b   (final tree)
-exit=0

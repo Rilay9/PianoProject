@@ -1,9 +1,0 @@
-snapshot-skipped-on-open: caught (exit 1); src/ui/screens/TodayScreen.ts restored by sha256
-read-not-awaited: caught (exit 1); src/ui/screens/ScoreScreen.ts restored by sha256
-runFacts-writes-intent-alone: caught (exit 1); src/curriculum/material.ts restored by sha256
-RunFacts-type-widened: caught (exit 2); src/curriculum/material.ts restored by sha256
-recomputed-not-the-row: caught (exit 1); src/ui/screens/ScoreScreen.ts restored by sha256
-token-match-ignored: caught (exit 1); src/data/offerSnapshot.ts restored by sha256
-supersede-skipped: caught (exit 1); src/ui/screens/TodayScreen.ts restored by sha256
-leaving-guard-dropped: caught (exit 1); src/ui/screens/TodayScreen.ts restored by sha256
-harness exit 0

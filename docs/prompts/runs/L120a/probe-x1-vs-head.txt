@@ -1,6 +1,0 @@
-diff --strip-trailing-cr X1/probe-head-refusals.txt L120a/probe-head-refusals.txt
-61a62
-> 2.4 song.folk.cielito-lindo.simple: {"verdict":"ineligible","why":"untaught","demands":["range.beyond-position"]}
-400a402
-> ragtime.8 song.ragtime.joplin-pine-apple-rag.mutopia: {"verdict":"ineligible","why":"untaught","demands":["rhythm.sixteenths"]}
-exit=1

@@ -1,7 +1,0 @@
-
-Running 2 tests using 1 worker
-
-  ok 1 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2\pw\decision\d2-decision.spec.ts:13:1 › pictures: a music-family item and a PDMX item at 342 × 740 and 1280 × 800 (8.1s)
-  ok 2 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2\pw\decision\d2-decision.spec.ts:30:1 › the decision (4.8s)
-
-  2 passed (13.5s)

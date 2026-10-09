@@ -1,8 +1,0 @@
-﻿
-level 3: any 101/200; tie off the beat 80; leap after a tie 38; other leap past the cap 0
-level 4: any 129/200; tie off the beat 122; leap after a tie 42; other leap past the cap 0
-level 4 + accidentals (row 4 shape): any 119/200; tie off the beat 111; leap after a tie 42; other leap past the cap 0
-level 5: any 43/200; tie off the beat 0; leap after a tie 26; other leap past the cap 17
-level 7: any 44/200; tie off the beat 0; leap after a tie 28; other leap past the cap 18
-
-

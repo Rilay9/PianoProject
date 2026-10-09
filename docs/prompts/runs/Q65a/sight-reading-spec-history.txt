@@ -1,2 +1,0 @@
-$ (cwd .) git log --all --oneline -- app/tests/e2e/sight-reading.spec.ts
-exit=0

@@ -1,9 +1,0 @@
-      - name: Restore content build cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/cache
-            build/render-manifest.json
-          key: content-${{ hashFiles('tools/content/*.py', 'content/sources/*.json', 'app/package-lock.json') }}
-          restore-keys: |
-            content-

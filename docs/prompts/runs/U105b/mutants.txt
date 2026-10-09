@@ -1,3 +1,0 @@
-m1-refusal-clamped (the one-line clamp reinstated on the header's line in the refusal state (the fix undone, the run's clamp untouched)): browser exit 1 (killed)
-m2-run-unclamped (the clamp taken off the header's now line in every state, a run's included (`.help-strip__what` keeps its own)): browser exit 1 (killed)
-m3-refusal-wraps-mid-run (the refusal rule without its no-run condition: the refusal's sentence wraps during a paused run or a demonstration too): browser exit 0 (survived)

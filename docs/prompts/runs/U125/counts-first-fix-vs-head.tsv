@@ -1,4 +1,0 @@
-fix	r16@run	w8	round1	x24	{"pass":18,"fail:marks":5,"fail:note62-null":1}
-head	r16@run	w8	round1	x24	{"pass":10,"fail:marks":4,"fail:note60-null":6,"fail:note62-null":4}
-fix	r16@run	w8	round2	x24	{"pass":18,"fail:marks":6}
-head	r16@run	w8	round2	x24	{"pass":17,"fail:marks":5,"fail:note60-null":1,"fail:note62-null":1}

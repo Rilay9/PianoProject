@@ -1,2 +1,0 @@
-npx tsc -b   # from app/, after the last edit
-exit 0 (no output)

@@ -1,9 +1,0 @@
-﻿the three files the build rewrites, diffed against build\l120c-snapshot after the base build, then restored
---- content\scores\imported\SOURCES.md
- ...7b01a1901\\content\\scores\\imported\\SOURCES.md" | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
---- docs\prompts\inventory.md
-warning: in the working copy of 'C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\docs\prompts\inventory.md', LF will be replaced by CRLF the next time Git touches it
---- docs\prompts\rung-claims.md
-warning: in the working copy of 'C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\docs\prompts\rung-claims.md', LF will be replaced by CRLF the next time Git touches it
-?? docs/prompts/runs/L120c/

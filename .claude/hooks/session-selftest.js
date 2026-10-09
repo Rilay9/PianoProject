@@ -27,7 +27,6 @@ const registered = (event, script, matcher) =>
       (h.hooks || []).some((x) => String(x.command || '').includes(script))
   );
 if (!registered('Stop', 'stop-checklist.js')) fails.push('Stop checklist not registered');
-if (!registered('PreToolUse', 'commit-gate.js', 'Bash')) fails.push('rules commit gate not registered');
 // The independent brief auditor (an agent hook) must carry the repo's current prompt.
 try {
   const want = fs.readFileSync(path.join(__dirname, 'brief-auditor-prompt.md'), 'utf8').replace(/\r/g, '');
@@ -45,14 +44,12 @@ if (bare.status !== 2 || !/Before reporting any piece of work/.test(bare.stderr 
 if (!/Before sending any brief/.test(bare.stderr || '') || !/Reuse first/.test(bare.stderr || '')) fails.push('brief check does not print the brief questions');
 const checked = run('brief-check.js', { tool_input: { prompt: 'Brief check: nothing found\ndo x' } });
 if (checked.status !== 0) fails.push('brief check blocks a brief that has its check line');
-const rulesBare = run('brief-check.js', { tool_input: { prompt: 'Brief check: nothing found\nwrite docs/classifier/rules/area-2D.md' } });
-if (rulesBare.status !== 2) fails.push('brief check lets a rules brief through without a template binding block');
 const stop = run('stop-checklist.js', {});
 if (!/"decision":"block"/.test(stop.stdout || '')) fails.push('stop checklist does not block');
 
 process.stdout.write(
   fails.length
     ? 'Hook self-test FAILED: ' + fails.join('; ') + '. Tell the owner before any brief goes out.\n'
-    : 'Hook self-test OK: stop checklist, brief check, brief auditor and rules commit gate registered; the command hooks behave.\n'
+    : 'Hook self-test OK: stop checklist, brief check and brief auditor registered; the command hooks behave.\n'
 );
 process.exit(0);

@@ -1,8 +1,0 @@
-key.signature@classical.3@song.classical.bach-menuet-bwv-anh-113.pdmx: 1 parent(s), 220 window(s) (25 across a repeat, never proposed), 199 with the target; 5 candidate(s), 1 meeting every signal; 0 parent(s) skipped
-   11.00  song.classical.bach-menuet-bwv-anh-113.pdmx bars 25–32 both  (every signal met)
-    9.38  song.classical.bach-menuet-bwv-anh-113.pdmx bars 25–32 right  (occurrences)
-    7.38  song.classical.bach-menuet-bwv-anh-113.pdmx bars 13–16 right  (opportunity, occurrences)
-    7.28  song.classical.bach-menuet-bwv-anh-113.pdmx bars 17–24 right  (opportunity, occurrences)
-    5.41  song.classical.bach-menuet-bwv-anh-113.pdmx bars 4–8 right  (opportunity, occurrences, phraseStart, ending)
-wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\excerpts\candidates.json and C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\public\dev\review\excerpts.json
-exit 0

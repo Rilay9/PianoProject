@@ -1,7 +1,0 @@
-
-Running 1 test using 1 worker
-
-  ok 1 build\u105c\probe-sheet\sheet.spec.ts:19:1 › Hear it in the ⋯ sheet, refused during a paused run (after) (3.3s)
-
-  1 passed (6.2s)
-exit 0

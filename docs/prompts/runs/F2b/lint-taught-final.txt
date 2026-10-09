@@ -1,2 +1,0 @@
-(in app) npx eslint --max-warnings=0 tests/unit/taughtByAncestry.test.ts
-exit=0

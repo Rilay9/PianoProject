@@ -1,1 +1,0 @@
-Step(name='reports', ok=True, detail='550 checkable claims on 1015 options: 304 not established, 5 kept by no option; 784 works, 813 arrangements', skipped=False, warnings=[])

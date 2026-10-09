@@ -1,1 +1,0 @@
-The builder's captures for E2 (Entry 107): each run's exit-and-summary file, the red lines and mutants, and the orchestrator's chain on the merged tree (`orchestrator-exit.txt`). Left in the worktree's folder for size or kind: probe-every-gate-call.jsonl, probe-two-hands.json, and `scripts/`.

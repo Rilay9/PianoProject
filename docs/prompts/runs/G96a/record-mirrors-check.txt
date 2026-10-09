@@ -1,4 +1,0 @@
-$ (cd .) python tools/docs/record_mirrors.py --check
-record-mirrors: entry-without-brief: docs/prompts/runs/G96a/ENTRY.md:1: Entry 179 names 'G96a', which no record block declares
-record-mirrors: 1 failure(s); nothing written
-exit=2

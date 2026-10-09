@@ -1,8 +1,0 @@
-
-Running 2 tests using 2 workers
-
-  ok 1 build\u105d\probe\probe.spec.ts:153:7 › final667 rest stack base (4.7s)
-  ok 2 build\u105d\probe\probe.spec.ts:153:7 › final667 rest wider-face base (4.7s)
-
-  2 passed (7.5s)
-exit 0

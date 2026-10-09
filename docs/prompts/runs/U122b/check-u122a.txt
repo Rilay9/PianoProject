@@ -1,6 +1,0 @@
-chk-sideways-c1-780x360-t115-stack-moon.json rest stage 0 244 ink {'top': 25.76, 'bottom': 234.2} stave 31.6 height bar {'notes': 0, 'texts': 0, 'paths': 0}
-chk-sideways-c1-780x360-t115-stack-moon.json run-frozen stage 0 304 ink {'top': 47.76, 'bottom': 252.24} stave 31.6 read-ahead bar {'notes': 0, 'texts': 0, 'paths': 7}
-chk-sideways-c1-780x360-t115-stack-moon.json paused stage 0 304 ink {'top': 25.76, 'bottom': 230.24} stave 31.6 read-ahead bar {'notes': 0, 'texts': 0, 'paths': 0}
-chk-sideways-c6-780x360-t115-stack-moon.json rest stage 21.66 244 ink {'top': 47.29, 'bottom': 248.55} stave 31.6 height bar {'notes': 0, 'texts': 0, 'paths': 3}
-chk-sideways-c6-780x360-t115-stack-moon.json run-frozen stage 0 304 ink {'top': 44.54, 'bottom': 215.11} stave 26.36 read-ahead bar {'notes': 0, 'texts': 0, 'paths': 0}
-chk-sideways-c6-780x360-t115-stack-moon.json paused stage 0 304 ink {'top': 44.54, 'bottom': 215.11} stave 26.36 read-ahead bar {'notes': 0, 'texts': 0, 'paths': 0}

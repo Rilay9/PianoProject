@@ -1,9 +1,0 @@
-extension run: exit 0
-extended: T58 index ← docs/prompts/tasks/README.md:244 (state line reads with-reviewer: review it)
-extended: T58 inflight ← docs/prompts/in-flight.md:84 (state line reads with-reviewer: review it)
-created: Z99
---migrate: 2 moved, 2 extended, 1 block(s) created; 4 file(s) written
---check after: exit 0
-Z99 block: lane: Z99 · closes: — · entry: — / state question
-second run: exit 0: --migrate: 0 moved, 0 extended, 0 block(s) created; 0 file(s) written
-rewrite run: exit 2: record-mirrors: unparsed-record: docs/prompts/in-flight.md:84: --migrate refused: T58's inflight text differs from its block's at column 100; neither extends the other, nothing overwritten

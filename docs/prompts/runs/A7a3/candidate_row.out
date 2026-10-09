@@ -1,8 +1,0 @@
-{'title': 'St James Infirmary', 'song_name': 'st james infirmary', 'composer_name': "Early 1900's", 'artist_name': 'Misc Traditional', 'tracks': '0', 'n_tracks': '1', 'song_length.bars': '32', 'rating': '4.48', 'n_ratings': '20', 'n_views': '1926', 'license': 'cc-zero', 'genres': 'folk', 'subset:deduplicated': 'True', 'has_lyrics': 'True', 'metadata': './metadata/1/1434401.json', 'mxl': './mxl/3/54/Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs.mxl'}
-{'title': 'st louis blues', 'song_name': 'St. Louis Blues', 'composer_name': 'NA', 'artist_name': 'W. C. Handy', 'tracks': '0', 'n_tracks': '1', 'song_length.bars': '52', 'rating': '4.49', 'n_ratings': '3', 'n_views': '1585', 'license': 'cc-zero', 'genres': 'classical', 'subset:deduplicated': 'True', 'has_lyrics': 'False', 'metadata': './metadata/8/821091.json', 'mxl': './mxl/16/46/QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG.mxl'}
-with every gate: chosen 2 rejections {}
-gates run: ['mxl present', 'piano tracks', 'not a draft', 'size']
-rejections: {}
-chosen: [('QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG', 'classical', '3', False, 'unknown'), ('Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs', 'folk-hymn-carol', '1-2', False, 'pd')]
-wrote candidates.json; header {'pdmxDir': '<archive dir>', 'layout': 'mxl.tar.gz', 'csvSha256': '66d82911c027e08bff869df6f16a379570d742ca5ca4d7712da262bf74bcb1f7', 'csvBytes': 209574867, 'csvRows': 254077}
-exit=0

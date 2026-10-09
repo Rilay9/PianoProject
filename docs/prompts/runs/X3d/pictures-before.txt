@@ -1,8 +1,0 @@
-npx playwright test --config playwright.x3d-4363.config.ts --workers=1 tests/e2e/x3d-pictures.spec.ts (in app)
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\x3d-pictures.spec.ts:59:1 › the Score screen’s tempo on Row, Row, Row Your Boat and on an imported half-note file (3.4s)
-
-  1 passed (5.1s)
-exit=0

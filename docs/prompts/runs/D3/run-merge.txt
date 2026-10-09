@@ -1,7 +1,0 @@
-Merged C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D3\export\review-decisions-20260928T041824.jsonl: appended 3, already in the record 0, refused 0.
-  + ev-7d36285c-8371-44d7-b281-6037a6f6d9d9 exercise.study.interval-reading.c-major.4-4.8bar.sustained.01 usableScore yes notation
-  + ev-15879a8f-4f5a-4405-b1f7-cce2ecc23526 exercise.study.metre-compound.c-major.6-8.8bar.broken.01 usableScore yes notation
-  + ev-9afc10d8-adf2-4c53-986d-e68b4e8af8cd exercise.study.syncopation.d-minor.4-4.8bar.broken.01 usableScore yes notation
-exit 0
-Merged C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D3\export\review-decisions-20260928T041824.jsonl: appended 0, already in the record 3, refused 0.
-exit 0

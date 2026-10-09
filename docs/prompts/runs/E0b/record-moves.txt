@@ -1,6 +1,0 @@
-leaves: ('clave', 'latin.3', 'rhythm.syncopation', 4)
-leaves: ('coordination', 'holiday', 'texture.hands-together', 1)
-leaves: ('stride', 'jazz.7', 'texture.walking-bass', 1)
-leaves: ('stride', 'jazz.9', 'texture.walking-bass', 1)
-leaves: ('tresillo', 'latin.3', 'rhythm.syncopation', 1)
-129 -> 124 combinations written

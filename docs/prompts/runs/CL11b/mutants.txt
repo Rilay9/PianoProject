@@ -1,9 +1,0 @@
-L58-absent-is-off: caught (exit 1) — names-off met wherever the row does not say the names were on (absence read as proof)
-L58-standard: caught (exit 1) — names-off left off reading by interval's full standard in skills.json
-L58-stamp: caught (exit 1) — EVIDENCE_DEFINITIONS left at 5: the stored rows are never recomputed
-L57-ladder: caught (exit 1) — the ladder reads the shipped share whatever vocabulary it is handed
-L57-transfer: caught (exit 1) — supportedAtFull back to its own copy of the share
-L57-readings: caught (exit 1) — the demand readings read the shipped share whatever vocabulary they are handed
-L57-reader: caught (exit 1) — the reader's held-back demands read the shipped share whatever vocabulary it is handed
-L57-precision: caught (exit 1) — the evidence function reads the shipped precisions whatever vocabulary it is handed
-L58-gate: caught (exit 1) — validate.py without the guide-off-without-names-off refusal

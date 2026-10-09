@@ -1,7 +1,0 @@
-tests/unit/todayOfferSnapshot.test.ts(74,45): error TS2352: Conversion of type '{ role: "transfer"; provenance: { identity: { kind: "generator"; family: string; version: number; seed: null; recipe: { key: string; form: string; hands: string; }; tempoBpm: number; }; }; }' to type 'Partial<CatalogItem>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
-  Types of property 'provenance' are incompatible.
-    Type '{ identity: { kind: "generator"; family: string; version: number; seed: null; recipe: { key: string; form: string; hands: string; }; tempoBpm: number; }; }' is missing the following properties from type 'Provenance': source, facts, review
-tests/unit/transferOfferOnTheRun.test.ts(483,5): error TS2578: Unused '@ts-expect-error' directive.
-tests/unit/transferOfferOnTheRun.test.ts(485,5): error TS2578: Unused '@ts-expect-error' directive.
-tests/unit/transferOfferOnTheRun.test.ts(487,5): error TS2578: Unused '@ts-expect-error' directive.
-exit 2

@@ -1,3 +1,0 @@
-m1-cut-restored: vite build exit 0
-m1-cut-restored: score.screen.spec.ts exit 1
-style.css restored: yes (sha256 6a7bca3e2a51d4252c50a2415eeadde86ea848c6b06209bfa77905154cf1b839)

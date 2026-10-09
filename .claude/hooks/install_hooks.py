@@ -36,7 +36,6 @@ hooks = {
         cmd("brief-check.js", 10, "Brief check", "Agent|SendMessage"),
         # The independent brief auditor (process review P1): Agent calls only; agent hooks block on timeout.
         {"matcher": "Agent", "hooks": [{"type": "agent", "prompt": auditor, "timeout": 240, "statusMessage": "Brief auditor"}]},
-        cmd("commit-gate.js", 60, "Rules gate", "Bash|PowerShell"),
     ],
     "SessionStart": [cmd("session-selftest.js", 20, "Hook self-test")],
 }

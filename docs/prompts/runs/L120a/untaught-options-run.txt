@@ -1,3 +1,0 @@
-python tools/content/untaught_options.py --out docs/prompts/runs/L120a/untaught-options.txt --json build/l120a-untaught-options.json
-388 options, 641 pairs: A 14, B-claim 43, B-mapping 67, C-later 246, C-elsewhere 134, C-nowhere 137
-exit=0

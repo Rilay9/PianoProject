@@ -1,6 +1,0 @@
-$ (cwd .) git diff --numstat
-13	6	app/src/evidence/ladder.ts
-8	5	docs/01-architecture.md
-19	5	docs/04-ui-spec.md
-8	2	docs/08-test-map.md
-exit=0

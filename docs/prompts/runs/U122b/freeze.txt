@@ -1,7 +1,0 @@
-g 26.36
-g2 31.6
-g3-interrupted 31.6
-f 31.6
-ff 31.6
-chk-sideways-c1-780x360-t115-stack-moon.json 31.6
-chk-sideways-c6-780x360-t115-stack-moon.json 26.36

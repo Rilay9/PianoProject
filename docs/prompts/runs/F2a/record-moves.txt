@@ -1,9 +1,0 @@
-91 -> 91; gone 4, new 4
-  gone ('five_finger', 'practice.2', 'interval.step')
-  gone ('five_finger', 'practice.4', 'clef.bass')
-  gone ('five_finger', 'practice.4', 'interval.step')
-  gone ('five_finger', 'practice.4', 'texture.hands-together')
-  new  ('blues_scale', 'blues.3', 'pitch.chromatic') taughtAt ['3.3'] items 3
-  new  ('cadence', 'holiday', 'interval.leap') taughtAt ['2.1'] items 1
-  new  ('cadence', 'hymns.2', 'interval.leap') taughtAt ['2.1'] items 1
-  new  ('pentatonic', '3.1', 'pitch.chromatic') taughtAt ['3.3'] items 1

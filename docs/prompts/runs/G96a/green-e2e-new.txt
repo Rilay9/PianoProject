@@ -1,9 +1,0 @@
-$ (cd app) npx playwright test -c build/g96a/playwright.g96a-4591.config.ts --workers=1 -g G96a tests/e2e/library.spec.ts   [G96A_DIST=dist G96A_PHASE=]
-exists: tests/e2e/library.spec.ts
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\library.spec.ts:101:3 › Library › a PDF’s Details says an estimated level and PDF, never a guessed level or a song (G96a) (881ms)
-
-  1 passed (3.8s)
-exit=0

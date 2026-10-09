@@ -1,9 +1,0 @@
-== build/q88-strict/content: 2091 items, 306 without a file, 0 read as this build's fetch
-    154  Not bundled in a redistributable build: the composition is unknown. The owner's personal b
-     71  no hint (drill)
-     46  Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://
-     21  Not bundled in a redistributable build: the composition is in-copyright. The owner's perso
-      7  Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export
-      6  Not bundled in a redistributable build: the composition is still in copyright. The owner's
-      1  MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates t
-exit 0

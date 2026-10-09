@@ -1,7 +1,0 @@
-python -m unittest tools.content.tests.test_ci_order tools.content.tests.test_demands_tool tools.content.tests.test_measured_demands tools.content.tests.test_measured_truth (in .)
-................................................................................
-----------------------------------------------------------------------
-Ran 80 tests in 150.668s
-
-OK
-exit=0

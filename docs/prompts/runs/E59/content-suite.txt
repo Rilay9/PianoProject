@@ -1,5 +1,0 @@
-(trimmed: the full log was not kept; its summary and failing names follow)
-ERROR: test_committed_mirrors_equal_generated (tests.test_record_mirrors.TheCommittedMirrors.test_committed_mirrors_equal_generated)
-ERROR: test_the_tree_round_trips (tests.test_record_mirrors.TheCommittedMirrors.test_the_tree_round_trips)
-Ran 1664 tests in 1072.570s
-FAILED (errors=2, skipped=4)

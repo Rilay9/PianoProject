@@ -1,2 +1,0 @@
-blues.3 (test line 1568): ui/screens/ScoreScreen.ts has 4558 CRLF line endings; clause true as checked out: False; true on the same text with LF: True
-4.7 (test line 1778): style.css has 5980 CRLF line endings; clause true as checked out: False; true on the same text with LF: True

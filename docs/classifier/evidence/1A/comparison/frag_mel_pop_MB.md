@@ -1,8 +1,0 @@
-| method | pieces | bars with a melody | answered (coverage) | correct / bars (UNKNOWN wrong) | correct / answered | left-hand bars found / present | right-hand bars named left | note P | note R | note F1 | note accuracy | F1 inside bars it answered | seconds per piece mean / median / max | s per 1000 notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| always the right hand (no look at the notes) | 86 | 7115 | 7115 (100.0%) | 6962 (97.8%) | 97.8% | 0 / 153 | 0 | n/a | n/a | n/a | n/a | n/a | - | - |
-| current detector (r_melody rules 1, 2, 3) | 86 | 7115 | 187 (2.6%) | 182 (2.6%) | 97.3% | 9 / 153 | 5 | 59.1% | 1.5% | 2.8% | 64.0% | 68.4% | 0.61 / 0.59 / 1.69 | 0.37 |
-| skyline, plain (top note at each onset) | 86 | 7115 | 7115 (100.0%) | 6793 (95.5%) | 95.5% | 85 / 153 | 254 | 61.0% | 81.8% | 69.9% | 74.5% | 69.9% | 0.00 / 0.00 / 0.00 | 0.00 |
-| skyline, MidiBERT repo (notes >= 60, 8th grid) | 86 | 7115 | 7092 (99.7%) | 6944 (97.6%) | 97.9% | 0 / 153 | 0 | 81.3% | 55.7% | 66.1% | 79.3% | 66.2% | 0.02 / 0.01 / 0.03 | 0.01 |
-| MidiBERT-Piano, class 1 = melody | 86 | 7115 | 2660 (37.4%) | 2617 (36.8%) | 98.4% | 35 / 153 | 36 | 97.9% | 17.5% | 29.6% | 70.0% | 58.7% | 1.94 / 2.00 / 2.85 | 1.17 |
-| MidiBERT-Piano, class 1 or 2 = melody or bridge | 86 | 7115 | 5094 (71.6%) | 4976 (69.9%) | 97.7% | 78 / 153 | 100 | 93.9% | 35.5% | 51.5% | 75.8% | 61.1% | 1.94 / 2.00 / 2.85 | 1.17 |

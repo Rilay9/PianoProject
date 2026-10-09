@@ -1,3 +1,0 @@
-write_needs without the song-run gate: killed (exit 1) FAIL: test_a_rung_that_asks_for_no_song_is_short_of_no_song (tools.content.tests.test_finder.TestNeeds.test_a_rung_that_asks_for_no_song_is_short_of_no_song) | AssertionError: 2 != 0
-lessonShortfall without the song-run gate: killed (exit 1) FAIL  tests/unit/needs.test.ts > lessonShortfall > asks for no song on a rung whose requirements ask for no song run | AssertionError: expected { songs: 2, exercises: +0, floor: 3 } to deeply equal { songs: +0, exercises: +0, floor: 3 }
-exit 0

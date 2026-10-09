@@ -1,6 +1,0 @@
-node scripts/generate-icons.mjs (in app)
-wrote icon-192.png (987 bytes)
-wrote icon-512.png (4963 bytes)
-wrote icon-maskable-192.png (851 bytes)
-wrote icon-maskable-512.png (3982 bytes)
-exit=0

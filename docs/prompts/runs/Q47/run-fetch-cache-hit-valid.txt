@@ -1,7 +1,0 @@
-$ python tools/midi-cleanup/tests/fetch_maestro.py --cache-hit true
-# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
-# CI=<unset>
-
-C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real: the restored performances and SOURCE.md validated
-
-# exit code: 0

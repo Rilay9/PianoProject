@@ -1,5 +1,0 @@
-
-Running 7 tests using 2 workers
-·······
-  7 passed (14.6s)
-exit 0

@@ -1,8 +1,0 @@
-npx playwright test --config playwright.x3a-4303.config.ts tests/e2e/x3a-pictures.spec.ts --workers=1 (in app)
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\x3a-pictures.spec.ts:52:1 › the tempo line before and after a statement, a refusal, and the Score screen’s tempo label (4.0s)
-
-  1 passed (6.7s)
-exit=0

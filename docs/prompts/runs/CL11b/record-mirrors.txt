@@ -1,3 +1,0 @@
-record-mirrors: stale-record: docs/prompts/tasks/CL11b-names-on-is-practice.md:64: CL11b's record ends at drafted, and Entry 220 (docs/prompts/runs/CL11b/ENTRY.md:1) shows it landed
-record-mirrors: 1 failure(s); nothing written
-EXIT 2

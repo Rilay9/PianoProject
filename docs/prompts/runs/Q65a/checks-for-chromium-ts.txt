@@ -1,8 +1,0 @@
-$ (cwd .) python tools/docs/checks_for_paths.py app/tests/e2e/fixtures/chromium.ts
-# checks for 1 path(s): 1 matched, 0 unmatched
-# app/tests/e2e/fixtures/chromium.ts: app/tests/e2e/fixtures/**, app/tests/e2e/fixtures/chromium.ts
-tsc	app	npx tsc -b
-lint	app	npm run lint
-build-app	app	npm run build:app
-e2e	app	npx playwright test --workers=4
-exit=0

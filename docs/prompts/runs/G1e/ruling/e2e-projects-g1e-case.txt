@@ -1,8 +1,0 @@
-spec present: tests/e2e/projects.spec.ts
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\projects.spec.ts:290:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) (6.4s)
-
-  1 passed (11.0s)
-exit=0

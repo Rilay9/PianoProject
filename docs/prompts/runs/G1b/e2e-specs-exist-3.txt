@@ -1,7 +1,0 @@
-exists tests/e2e/score.screen.spec.ts
-exists tests/e2e/score.run.spec.ts
-exists tests/e2e/first-day.spec.ts
-exists tests/e2e/progress.hierarchy.spec.ts
-exists tests/e2e/plan.spec.ts
-exists tests/e2e/lesson-tools.spec.ts
-exists tests/e2e/settings-rules.spec.ts

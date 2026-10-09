@@ -1,5 +1,0 @@
-bash ../docs/prompts/runs/X3d/scripts-specs-exist.sh tests/e2e/import-experience.spec.ts tests/e2e/x3d-pictures.spec.ts playwright.x3d-4363.config.ts (in app)
-present: tests/e2e/import-experience.spec.ts
-present: tests/e2e/x3d-pictures.spec.ts
-present: playwright.x3d-4363.config.ts
-exit=0

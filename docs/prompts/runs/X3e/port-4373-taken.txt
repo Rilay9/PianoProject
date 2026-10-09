@@ -1,5 +1,0 @@
-port 4373: in use
-  TCP    [::1]:4373             [::]:0                 LISTENING       75844
-exists: tests/e2e/import-experience.spec.ts
-exit 1
-the listener: another worktree's preview (agent-a193e270fb5e43820: vite preview --port 4373 --strictPort), not this seam's; left alone

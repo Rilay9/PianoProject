@@ -1,8 +1,0 @@
-Running 6 tests using 2 workers
-  ok 2 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 4 342x740 (13.3s)
-  ok 1 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 6 342x740 (14.7s)
-  ok 4 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 4 360x780 (10.2s)
-  ok 3 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 8 342x740 (12.5s)
-  ok 5 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 6 360x780 (8.4s)
-  ok 6 build\u113\u113-probe.spec.ts:121:3 › u113 scherzo bars 8 360x780 (7.8s)
-  6 passed (40.6s)

@@ -1,4 +1,0 @@
-warning: in the working copy of 'docs/prompts/inventory.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'docs/prompts/rung-claims.md', LF will be replaced by CRLF the next time Git touches it
- content/scores/imported/SOURCES.md | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)

@@ -1,7 +1,0 @@
-aside: 6 files at HEAD's text, app/src/score/tempoFromXml.ts moved away
- M app/src/data/evidenceJob.ts
- M app/src/data/importStore.ts
- M app/src/score/OsmdView.ts
- M app/src/score/estimateImport.ts
- M app/src/score/extractScoreModel.ts
- M app/src/ui/importSheet.ts

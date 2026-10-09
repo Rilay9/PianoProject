@@ -1,6 +1,0 @@
-id	levelSource	catalogue level	tempo X31 → X31a	notesPerSecond X31 → X31a	model level X31 → X31a	lessons naming it (levelBand)
-song.classical.bach-wtc1-prelude-2	judged	7.1	145 → 100	17.8865 → 12.3355	7.43 → 7.28	none
-song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx	estimated	7.43	152 → 100	8.8588 → 5.8282	7.43 → 7.27	none
-song.pop.camille-le-festin-piano-arr-kno.pdmx	estimated	7.29	150 → 100	2.8809 → 1.9206	7.29 → 7.16	chords-pop.9 [5.3, 8.4]
-song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx	estimated	6.93	144 → 100	3.9647 → 2.7533	6.88 → 6.76	none
-exit=0

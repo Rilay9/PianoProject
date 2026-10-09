@@ -1,4 +1,0 @@
-folders: app/public/content/scores
-files read: 2011
-score-partwise: 2011
-exit 0

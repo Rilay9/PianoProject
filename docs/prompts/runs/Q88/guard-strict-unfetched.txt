@@ -1,4 +1,0 @@
-$ python tools/content/deploy_guard.py --dir build/q88-strict-unfetched/content
-deploy guard: not publishing — 1 item(s) this build could not fetch:
-  song.ragtime.joplin-pine-apple-rag.mutopia (the edition's .ly file was not fetched)
-exit 1

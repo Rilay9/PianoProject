@@ -1,8 +1,0 @@
-TARGET 831 PRE stage 657.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -12.7 gaps [24,24]
-   1 frame(s) 17 ms | stage 657.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -12.7
-   92 frame(s) 1533 ms | stage 622.1 slots 2 zoom 1.79 | 0-1[0+199 ink 11.5..198.7] 2-2[223+199 ink 234.5..421.7] | overlap -35.9 past -200.4
-   FRAMES after the shrink: 92; painted with ink overlapping or leaving the stage: 0
-TARGET 771 PRE stage 657.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -12.7 gaps [24,24]
-   1 frame(s) 17 ms | stage 657.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -12.7
-   94 frame(s) 1550 ms | stage 562.1 slots 2 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] | overlap -35.9 past -140.7
-   FRAMES after the shrink: 94; painted with ink overlapping or leaving the stage: 0

@@ -1,8 +1,0 @@
-﻿song.folk.carioquinha.pdmx played 137
-1-38 7-36 38 40-72 7-36 73-77
-song.folk.carioquinha.pdmx played 172
-1-38 7-36 38 40-72 7-36 38-77
-song.classical.nazareth-carioca-1913.pdmx played 169
-1-17 2-16 18-50 19-49 51 2-17 19-49 52-68 71-78
-song.classical.nazareth-carioca-1913.pdmx played 136
-1-17 2-16 18-50 19-49 51 2-16 53-68 71-78

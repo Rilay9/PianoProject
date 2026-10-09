@@ -1,7 +1,0 @@
-PDMX rows whose convertedSha256 moved since 122a5224: 96; files under content/scores/pdmx/ that moved: 96; the same rows: True; each moved file's sha256 its row's new convertedSha256: True
-   modes: re-converted 90, transplanted 6, unknown 0
-repaired_identities.json: 109 repairs (E50 7, E57 102) and 1 cut(s); undated 3
-   E57's relations: 102 — committed PDMX files 96 over 96 rows, files the build converts 6 over 3 rows; identities moved: 99
-   the PDMX rows E57's relations name are exactly the rows whose convertedSha256 moved: True
-the final catalogue: rows whose formerIdentities and tempoRepairedFrom carry an E57 relation's from: 99 (of 99 rows E57's relations name)
-consistent: True

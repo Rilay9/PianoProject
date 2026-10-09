@@ -1,7 +1,0 @@
-{'title': 'Blues Riff in C (120 bpm)', 'song_name': '12 bar blues', 'composer_name': 'Daniels Elizabeth Calvin', 'artist_name': 'Lessons - Blues', 'tracks': '0-0-0', 'n_tracks': '3', 'song_length.bars': '12', 'rating': '4.87', 'n_ratings': '5', 'license': 'publicdomain', 'genres': 'classical', 'subset:deduplicated': 'True', 'subset:no_license_conflict': 'False', 'has_lyrics': 'False', 'mxl': './mxl/1/6/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl'}
-with every gate: chosen 0 rejections {'piano tracks: 3 tracks (want 1 or 2)': 1}
-each gate on the row: {'mxl present': None, 'piano tracks': '3 tracks (want 1 or 2)', 'subsets': "licence conflict (the dataset's own recommendation)", 'not a draft': None, 'size': None}
-gates run: ['mxl present', 'not a draft', 'size']
-rejections: {}
-chosen: [('Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi', 'classical', '6', False, 'unknown')]
-wrote candidates.json; header {'pdmxDir': '<home>\\repos\\Piano Stuff', 'layout': 'mxl.tar.gz', 'csvSha256': '66d82911c027e08bff869df6f16a379570d742ca5ca4d7712da262bf74bcb1f7', 'csvBytes': 209574867, 'csvRows': 254077}

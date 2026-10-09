@@ -1,6 +1,0 @@
-specs-exist check: tests/e2e/session-run.spec.ts
-  exists: tests/e2e/session-run.spec.ts
-npx playwright test --config playwright.x1-4373.config.ts --workers=2 tests/e2e/session-run.spec.ts
-Error: Process from config.webServer was not able to start. Exit code: 2
-
-exit=1

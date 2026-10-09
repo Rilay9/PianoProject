@@ -1,5 +1,0 @@
-$ python -m unittest discover -s tools/content/tests -t tools/content
-(the full output is not kept: the totals and exit follow)
-Ran 1648 tests in 506.644s
-OK (skipped=4)
-exit=0

@@ -1,2 +1,0 @@
-cells (of 32) where the clip moved any box or changed the bar: []
-cells whose group fitted on the committed CSS: 11; same under the clip: 11; different: []; cells that overflowed: 21

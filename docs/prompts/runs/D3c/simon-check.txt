@@ -1,5 +1,0 @@
-﻿drill.ear.simon-blues-c runtime promise: None
-drill.ear.simon-c-major runtime promise: None
-drill.ear.simon-chromatic runtime promise: None
-3 simon drills; 0 carry a promise fact
-exit 0

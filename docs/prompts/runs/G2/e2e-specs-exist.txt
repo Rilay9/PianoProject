@@ -1,3 +1,0 @@
-﻿(cd app) Test-Path tests/e2e/transfer-offer.spec.ts tests/e2e/competence.spec.ts tests/e2e/progress.spec.ts
-missing: 
-exit=0

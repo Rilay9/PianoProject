@@ -1,5 +1,0 @@
-$ python scripts-compare-fails.py vitest-failing-files-committed-src.txt vitest-all.txt vitest-compare-all.txt
-before: 65 failing names in ['tests/unit/curriculumIntegrity.test.ts', 'tests/unit/everyOptionOpens.test.ts', 'tests/unit/firstThirtyDaysOnTheLadder.test.ts', 'tests/unit/legacyStorage.test.ts', 'tests/unit/lessonClaims.test.ts', 'tests/unit/lessonClaimsAboutApp.test.ts', 'tests/unit/lessonClaimsAboutMusic.test.ts', 'tests/unit/materialOnTheRecord.test.ts', 'tests/unit/planNoUnobtainableRungs.test.ts', 'tests/unit/scoreModelTempo.test.ts']
-after, same files: 65; after, every file it ran: 66
-identical
-exit=0

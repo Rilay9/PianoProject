@@ -1,8 +1,0 @@
-# CL11: the landing chain on the merged main checkout, as run (orchestrator's chain; machine paths removed)
-
-## Exit codes
-
-map-tests exit=0
-map-min exit=0
-CHAIN DONE 01:52:01
-

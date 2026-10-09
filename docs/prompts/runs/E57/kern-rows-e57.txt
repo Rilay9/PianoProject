@@ -1,5 +1,0 @@
-convert.py under test: tools/content; each row's kern source converted and read through the app's reader
-PASS song.classical.chopin-rondo-op16.nifc: *MM [48.0, 152.0, 96.0]; the reader plays [('0:0', 48), ('23:0', 152), ('52:0', 96)]
-PASS song.classical.chopin-waltz-op70-1.nifc: *MM [264.0, 96.0, 264.0]; the reader plays [('0:0', 264), ('33:0', 96), ('80:1.5', 264), ('80:2', 264)]
-PASS song.ragtime.joplin-combination-march: *MM [100.0, 120.0]; the reader plays [('0:0', 100), ('5:0', 120)]
-3 of 3 rows play every tempo their source states

@@ -1,3 +1,0 @@
-python docs/prompts/runs/F2b/splice_record.py
-untaught_on_rung.json: 4 combinations removed, comment extended; 16922 -> 16350 bytes
-exit=0

@@ -1,5 +1,0 @@
-split into two
-bar 1: 1:E4/quarter 1:D4/quarter 1:rest/half 2:rest/half 2:C4/quarter 2:B3/quarter
-bar 2: 1:rest/half 1:D4/quarter 2:A3/quarter 2:B3/quarter 2:C4/quarter 2:rest/quarter
-bar 3: 1:E4/quarter 1:F4/quarter 1:G4/quarter 1:E4/quarter 2:rest/whole
-bar 4: 1:rest/whole 2:C4/whole

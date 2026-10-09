@@ -1,2 +1,0 @@
-﻿files with repeat structure and a <sound> jump attribute in part 0: 1 of 329
-song.beautiful.hungarian-sonata {"printed": 49, "sound_attrs": ["coda", "dalsegno", "segno", "tocoda"], "jump_words": true, "pt_objects": {"DaCapo": 0, "DalSegno": 1, "Fine": 0, "Segno": 1, "Coda": 1, "ToCoda": 1, "Repeat": 0, "Ending": 0}, "error": "IndexError('list index out of range')"}

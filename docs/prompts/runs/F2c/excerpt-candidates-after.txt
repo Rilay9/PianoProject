@@ -1,2 +1,0 @@
-python tools/content/excerpts.py --candidate-rungs --out docs/prompts/runs/F2c/excerpt-candidate-rungs.md
-exit=0

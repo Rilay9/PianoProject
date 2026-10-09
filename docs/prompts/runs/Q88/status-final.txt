@@ -1,6 +1,0 @@
-﻿ M .github/workflows/pages.yml
-?? docs/prompts/runs/Q88/
-?? docs/prompts/tasks/Q88-deploy-guard.md
-?? docs/review/responses/2d9e7e2c.md
-?? tools/content/deploy_guard.py
-?? tools/content/tests/test_deploy_guard.py

@@ -1,9 +1,0 @@
-
-Running 2 tests using 1 worker
-
-  ok 1 walk\d3-walk.spec.ts:18:1 › the queue, and each study read window by window at 342 × 740 and whole at 1280 × 800 (37.8s)
-  -  2 walk\d3-walk.spec.ts:50:1 › the decisions
-
-  1 skipped
-  1 passed (40.0s)
-exit 0

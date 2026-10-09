@@ -1,4 +1,0 @@
-bash docs/prompts/runs/F2b/specs_exist.sh tests/e2e/plan.spec.ts playwright.f2b-4323.config.ts
-exists  tests/e2e/plan.spec.ts
-exists  playwright.f2b-4323.config.ts
-exit=0

@@ -1,5 +1,0 @@
-﻿cmd /c rmdir app\node_modules (in .; removes the junction only, never its target)
-
-worktree app\node_modules exists: False
-main checkout vitest package present: True
-exit=0

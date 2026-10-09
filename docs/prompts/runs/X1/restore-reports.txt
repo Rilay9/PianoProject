@@ -1,4 +1,0 @@
-restore the three reports the offline build rewrote to HEAD bytes: git show HEAD:<path> > <path>, then LF to CRLF (core.autocrlf=true)
-content/scores/imported/SOURCES.md (fetch dates only), docs/prompts/inventory.md and docs/prompts/rung-claims.md (line endings only)
-git status --short after: only docs/prompts/runs/X1/ untracked
-exit=0

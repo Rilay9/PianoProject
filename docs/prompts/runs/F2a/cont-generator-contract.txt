@@ -1,4 +1,0 @@
-﻿npx vitest run tests/unit/generatorContract.test.ts
- Test Files  1 passed (1)
-      Tests  21 passed (21)
-exit=0

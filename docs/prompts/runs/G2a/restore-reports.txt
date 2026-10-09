@@ -1,4 +1,0 @@
-python docs/prompts/runs/G2a/scripts-restore-reports.py (in .)
-docs/prompts/inventory.md restored; identical to HEAD (CRLF): True
-docs/prompts/rung-claims.md restored; identical to HEAD (CRLF): True
-exit=0

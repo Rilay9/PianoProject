@@ -1,9 +1,0 @@
-copied before-facts.json
-copied before-rung-asks-paused-342x740.png
-copied before-thin-paused-342x740.png
-copied before-thin-unpaused-342x740.png
-copied after-facts.json
-copied after-rung-asks-paused-342x740.png
-copied after-thin-paused-342x740.png
-copied after-thin-unpaused-342x740.png
-exit=0

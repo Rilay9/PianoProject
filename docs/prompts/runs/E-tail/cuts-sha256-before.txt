@@ -1,5 +1,0 @@
-ab221f8913be0384427418c639fd326119fb2f047f96eae4fa5a9a78aa9f6be8 *app/public/content/scores/excerpts/excerpt.blues.wabash-blues.b1-4.mxl
-854cba4a21e2b37d8850d4ea28b574cc165c70879a915eda069b725fd9aa344e *app/public/content/scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl
-6893f6d0725cf430d5ba8ad6c5c2401a2d2595f6e92a0c26efe9b69e8a125907 *app/public/content/scores/excerpts/excerpt.classical.beethoven-ode-to-joy.easy.b9-12.mxl
-c9e3eceb516493d0af4ac231db4401f8997b9e93fae7d3726b0c0a458a5426d2 *app/public/content/scores/excerpts/excerpt.classical.i-got-rythm.pdmx.b15-18.mxl
-45de8b0b8315635706cfe1e6506b6e78a8b3218cc21c755d1ed59c4340d9a353 *app/public/content/scores/excerpts/excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28.mxl

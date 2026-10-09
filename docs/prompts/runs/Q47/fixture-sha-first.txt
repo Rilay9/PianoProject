@@ -1,1 +1,0 @@
-9bd6b848906e1e0f8269b85170e0070f471d678ffa29baa4fffa4b0b9151bf6b */c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693/tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid

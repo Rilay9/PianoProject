@@ -1,3 +1,0 @@
-$ python tools/docs/record_mirrors.py --check
-record mirrors: fresh (docs/prompts/tasks/README.md, docs/prompts/in-flight.md)
-exit=0

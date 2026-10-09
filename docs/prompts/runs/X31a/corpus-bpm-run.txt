@@ -1,1 +1,0 @@
-scores read: 2013 -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0640d9cf113db364\docs\prompts\runs\X31a\corpus-bpm.jsonl

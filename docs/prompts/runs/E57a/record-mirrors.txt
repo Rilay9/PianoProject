@@ -1,4 +1,0 @@
-
---- stderr ---
-record-mirrors: stale-record: docs/prompts/tasks/E57a-the-three-held-pdmx-rows-land-with-their-lessons-corrected.md:105: E57a's record ends at drafted, and Entry 195 (docs/prompts/runs/E57a/ENTRY.md:1) shows it landed
-record-mirrors: 1 failure(s); nothing written

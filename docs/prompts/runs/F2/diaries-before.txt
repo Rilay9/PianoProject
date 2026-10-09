@@ -1,7 +1,0 @@
-﻿diaries before exit 0
-
- Test Files  2 passed (2)
-      Tests  25 passed (25)
-   Duration  17.47s (environment 75%, tests 15%, transform 7%, import 3%)
-
-

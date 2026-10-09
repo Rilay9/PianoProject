@@ -1,8 +1,0 @@
-validate.py exit=0
-  WARNING (rung claims, E0): 304 of 550 checkable claims on rung options are not established by the options' measured demands; 5 rung claims no option establishes; 467 concept claims no detector can measure, with 0 human teaching-use reviews. Nothing
-  WARNING (rung claims, F2): ragtime.5 claims oom-pah-bass (texture.left-hand-pattern) and none of its 9 checked options establishes it; deferred: the Joplin pieces carry a left-hand pattern in 87 of 92, 80 of 85, 87 of 94 and 109 of 148 bars and the
-  WARNING (rung claims, F2): jazz.6 claims walking-bass (texture.walking-bass) and none of its 12 checked options establishes it; deferred: its walking-bass exercises walk in 11 of 12 bars (C blues) and 3 of 4 (ii-V-I in F) by the detector's own read
-  WARNING (rung claims, F2): blues.6 claims walking-bass (texture.walking-bass) and none of its 8 checked options establishes it; deferred: its walking-bass exercise walks in 11 of its 12 bars under a right hand by the detector's own reading of each 
-  WARNING (rung claims, F2): jam.6 claims walking-bass (texture.walking-bass) and none of its 5 checked options establishes it; deferred: its two-hand walking-bass exercise in A walks in 11 of its 12 bars by the detector's own reading of each bar (E2
-  WARNING (rung claims, F2): blues.8 claims walking-bass (texture.walking-bass) and none of its 6 checked options establishes it; deferred: its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading of each bar; the 
-content validation OK: <worktree>\app\public\content (2090 catalog items)

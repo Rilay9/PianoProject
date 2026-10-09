@@ -1,8 +1,0 @@
-blues.6 exercise.walking-bass.c.blues: before 11 of 12, after 12 of 13; bars that do not walk after: [4]
-blues.8 exercise.walking-bass.e-flat.blues: before 11 of 12, after 12 of 13; bars that do not walk after: [4]
-jazz.6 exercise.walking-bass.c.blues: before 11 of 12, after 12 of 13; bars that do not walk after: [4]
-jazz.6 exercise.walking-bass.f.ii-v-i: before 3 of 4, after 3 of 4; bars that do not walk after: [2]
-jam.6 exercise.walking-bass.e.blues.intro: before 11 of 12, after 12 of 13; bars that do not walk after: [4]
-jam.6 exercise.walking-bass.a.blues.intro: before 11 of 12, after 12 of 13; bars that do not walk after: [12]
-jam.6 exercise.walking-bass.d.blues.intro: before 11 of 12, after 12 of 13; bars that do not walk after: [4]
-jam.6 exercise.walking-bass.a.blues: before 11 of 12, after 12 of 13; bars that do not walk after: [12]

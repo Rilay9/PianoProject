@@ -1,2 +1,0 @@
-(in app) npx eslint --max-warnings=0 src/ui/screens/ScoreScreen.ts tests/e2e/side-panel-prose.spec.ts tests/unit/scoreSidePanelDecision.test.ts
-exit=0

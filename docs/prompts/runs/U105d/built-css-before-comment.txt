@@ -1,4 +1,0 @@
-Built CSS of the dist every final browser run used, before the last edit to style.css (a comment rewrap only):
-f7f2a916b5d99cca08616581a01cd41183a715ac88de75226c4f9874c73cdaca *dist/assets/ScoreScreen-BxJCtwv2.css
-e57cca72aeb1fbce0fa707fcaee272438292382edcbacd112c0b0733df9b5228 *dist/assets/index-Cw_7yI-C.css
-After the edit and `npm run build:app` (exit 0, build-app-final-comment.txt): built-css-after-comment.txt.

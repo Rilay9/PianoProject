@@ -1,4 +1,0 @@
-head r4@run w8 x24	{"pass":21,"fail:note60-null":2,"fail:marks":1}
-head r6@run w8 x24	{"pass":13,"fail:note60-null":2,"fail:marks":8,"fail:setup":1}
-head r8@run w8 x24	{"pass":20,"fail:note60-null":4}
-head r12@run w8 x24	{"pass":14,"fail:note60-null":2,"fail:marks":7,"fail:note62-null":1}

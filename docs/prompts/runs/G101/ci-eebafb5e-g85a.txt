@@ -1,9 +1,0 @@
-gh run view 36691089557 --log-failed (CI on eebafb5e), the G85a case's lines only
-build-and-test	E2E tests	2026-09-30T09:15:50.5958525Z   ✘  301 tests/e2e/library.spec.ts:344:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) (2.1s)
-build-and-test	E2E tests	2026-09-30T09:15:54.6596937Z ##[error]  1) tests/e2e/library.spec.ts:344:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) 
-build-and-test	E2E tests	    Error: “Twinkle, Twinkle, Little Star (hands together)” is cut before any project
-build-and-test	E2E tests	    > 371 |     expect(before.clipped, `“${before.text}” is cut before any project`).toBe(false);
-build-and-test	E2E tests	2026-09-30T09:15:54.6616698Z ##[error]  1) tests/e2e/library.spec.ts:344:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) 
-build-and-test	E2E tests	    Error: “Twinkle, Twinkle, Little Star (hands together)” is cut before any project
-build-and-test	E2E tests	    > 371 |     expect(before.clipped, `“${before.text}” is cut before any project`).toBe(false);
-build-and-test	E2E tests	2026-09-30T09:15:54.6621851Z   ✘  302 tests/e2e/library.spec.ts:344:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) (retry #1) (2.5s)

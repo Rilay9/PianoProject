@@ -1,8 +1,0 @@
-npx playwright test --config playwright.u82-4333.config.ts --workers=2 tests/e2e/zz-u82-slide-head.spec.ts -g "draws more bars"   # the committed (unrevised) sideways case, copied from HEAD, under the mutant
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\zz-u82-slide-head.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into (933ms)
-
-  1 passed (4.1s)
-exit=0

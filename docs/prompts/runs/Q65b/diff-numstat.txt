@@ -1,4 +1,0 @@
-$ (cwd .) git diff --numstat
-4	4	docs/prompts/checks.json
-94	1	tools/content/tests/test_checks_for_paths.py
-exit=0

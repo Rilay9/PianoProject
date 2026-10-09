@@ -1,9 +1,0 @@
-== review-record-test  22:38:04
-review-record-test exit=0
-== tsc  22:38:22
-tsc exit=0
-== build-app  22:38:56
-build-app exit=0
-== e2e-offline-microscope  22:40:13
-e2e-offline-microscope exit=1
-CHAIN DONE 22:42:35

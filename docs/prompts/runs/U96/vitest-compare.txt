@@ -1,5 +1,0 @@
-$ python scripts-compare-fails.py vitest-lessonClaims-committed-src.txt vitest-named-fixed.txt vitest-compare.txt
-before: 23 failing names in ['tests/unit/lessonClaimsAboutApp.test.ts']
-after, same files: 23; after, every file it ran: 23
-identical
-exit=0

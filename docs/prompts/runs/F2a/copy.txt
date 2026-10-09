@@ -1,8 +1,0 @@
-﻿copies from the main checkout (read only)
-robocopy build\positions-cache.json exit=1
-robocopy build\demands-cache.json exit=1
-robocopy build\notation-cache.json exit=1
-robocopy build\cache\convert exit=1
-robocopy build\midi-real exit=1
-robocopy content\scores\imported\kern exit=1
-robocopy content\scores\imported\musetrainer exit=1

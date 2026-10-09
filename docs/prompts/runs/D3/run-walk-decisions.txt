@@ -1,7 +1,0 @@
-
-Running 1 test using 1 worker
-
-  ok 1 walk\d3-walk.spec.ts:50:1 › the decisions (6.6s)
-
-  1 passed (8.5s)
-exit 0

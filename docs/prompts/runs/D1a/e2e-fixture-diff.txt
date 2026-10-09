@@ -1,9 +1,0 @@
-skipLearner rows 5 -> 5
-  seed 1002 -> 1001 | generator {'family': 'sight-reading', 'version': 2, 'seed': 1001} | sight-reading [(21, 21)] -> [(14, 14)]
-  seed 1003 -> 1002 | generator {'family': 'sight-reading', 'version': 2, 'seed': 1002} | sight-reading [(15, 15)] -> [(15, 15)]
-  seed 1004 -> 1003 | generator {'family': 'sight-reading', 'version': 2, 'seed': 1003} | sight-reading [(21, 21)] -> [(17, 17)]
-  seed 1005 -> 1004 | generator {'family': 'sight-reading', 'version': 2, 'seed': 1004} | sight-reading [(15, 20)] -> [(10, 14)]
-  seed 1006 -> 1010 | generator {'family': 'sight-reading', 'version': 2, 'seed': 1010} | sight-reading [(12, 18)] -> [(17, 21)]
-ambiguous rows 2 -> 2
-  seed 5006 -> 5000 | generator {'family': 'sight-reading', 'version': 2, 'seed': 5000} | sight-reading [(15, 18)] -> [(12, 15)]
-  seed 5010 -> 5004 | generator {'family': 'sight-reading', 'version': 2, 'seed': 5004} | sight-reading [(13, 17)] -> [(12, 17)]

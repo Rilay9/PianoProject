@@ -1,3 +1,0 @@
-$ (cwd .) python tools/docs/evidence_manifest.py F2 --commit b41e19e
-wrote docs/prompts/runs/F2/MANIFEST.md: 49 file(s), 29 changed path(s); CI: run 36525222177: in_progress on `05c9e01` (4 earlier carrying run(s) cancelled)
-exit 0

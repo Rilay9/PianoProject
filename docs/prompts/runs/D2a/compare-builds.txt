@@ -1,6 +1,0 @@
-old path app/public/content/review/microscope.json exists: False
-old directory app/public/content/review exists: False
-new path app/public/dev/review/microscope.json exists: True
-catalog.json: committed build 70b7da44f71bd8de…, moved build e4a43433459ac582… — DIFFERENT
-curriculum.json: committed build aca53e9e98e4a430…, moved build aca53e9e98e4a430… — identical
-microscope.json: committed build 95105ece1b4c8d03…, moved build 95105ece1b4c8d03… — identical

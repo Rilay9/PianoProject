@@ -1,8 +1,0 @@
-﻿bundled scores whose build opening X31 moved: 178
-  137	the first mark had no number (a <sound tempo> alone, or a mark music21 cannot read): read as 100
-  21	a beat unit other than an undotted quarter: quarter.
-  9	a beat unit other than an undotted quarter: eighth
-  8	a beat unit other than an undotted quarter: half
-  2	a beat unit other than an undotted quarter: half.
-  1	a beat unit other than an undotted quarter: eighth.
-exit=0

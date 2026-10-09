@@ -1,9 +1,0 @@
-$ (cd app) npx playwright test -c build/g96a/playwright.g96a-4591.config.ts --workers=1  tests/e2e/zz-g96a-pictures.spec.ts   [G96A_DIST=build/g96a/dist-before G96A_PHASE=before]
-exists: tests/e2e/zz-g96a-pictures.spec.ts
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\zz-g96a-pictures.spec.ts:32:1 › a PDF import’s Details at 342 × 740 (1.4s)
-
-  1 passed (4.2s)
-exit=0

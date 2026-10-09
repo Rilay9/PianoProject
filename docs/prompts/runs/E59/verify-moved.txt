@@ -1,9 +1,0 @@
-authored: moved 0, the inventory 0
-excerpt: moved 3, the inventory 3
-generated: moved 0, the inventory 0
-kern: moved 60, the inventory 60
-musetrainer: moved 6, the inventory 6
-mutopia: moved 0, the inventory 0
-pdmx: moved 169, the inventory 169
-re-proved, every moved file the sound alone and its old identities named: authored 0, excerpt 3, generated 0, kern 60, musetrainer 6, mutopia 0, pdmx 169
-0 fault(s)

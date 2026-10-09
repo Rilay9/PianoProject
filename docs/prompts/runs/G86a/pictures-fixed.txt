@@ -1,8 +1,0 @@
-
-Running 3 tests using 2 workers
-
-  ok 1 build\g86a\probe\g86a-pictures.spec.ts:105:3 › upright, 342 x 740 › a fresh start whose sound did not start (2.5s)
-  ok 2 build\g86a\probe\g86a-pictures.spec.ts:116:3 › upright, 342 x 740 › a paused run whose sound did not start, then the chrome folded (4.4s)
-  ok 3 build\g86a\probe\g86a-pictures.spec.ts:140:3 › sideways, 740 x 342 › a fresh start whose sound did not start, sideways (2.1s)
-
-  3 passed (7.3s)

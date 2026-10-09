@@ -1,6 +1,0 @@
-$ npx tsc -b
-# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693/app
-# CI=<unset>
-
-
-# exit code: 0

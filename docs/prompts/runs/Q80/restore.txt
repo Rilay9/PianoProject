@@ -1,4 +1,0 @@
-copied back from the snapshot taken before the first build: docs/prompts/inventory.md docs/prompts/rung-claims.md content/scores/imported/SOURCES.md docs/generated/ladder.md
- M tools/content/validate.py
-?? docs/prompts/runs/Q80/
-?? tools/content/tests/test_validate_ladder.py

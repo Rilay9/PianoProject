@@ -1,6 +1,0 @@
-test_ci_order.py (20 tests) on the new ci.yml -> exit 0
-test_shard_coverage.py (11 tests) -> exit 0
-test_deploy_guard.py (read_steps consumer) -> exit 0
-test_checks_for_paths.py -> exit 0
-ci_order_reds.py (driver; red cases are in its output) -> exit 0
-lint (npm run lint, app/) -> exit 0; npx tsc -b (app/) -> exit 0; npx eslint playwright.config.ts -> exit 0 (run before the config copy was deleted; build/t62/lint.log)

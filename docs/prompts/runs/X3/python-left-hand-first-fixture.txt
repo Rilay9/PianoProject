@@ -1,2 +1,0 @@
-﻿wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a1a6623478c1a2198\app\tests\fixtures\imports\left-hand-first.mid (305 bytes, 23 notes on two tracks)
-exit 0

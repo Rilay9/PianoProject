@@ -1,5 +1,0 @@
-npx vitest run tests/unit/firstThirtyDays.test.ts tests/unit/firstThirtyDaysOnTheLadder.test.ts   (C4C_DIARY and C6_DIARY set to runs/F2a/diaries-cont)
- Test Files  2 passed (2)
-      Tests  25 passed (25)
-diaries-cont against diaries-after: all five files byte-identical (cmp)
-exit=0

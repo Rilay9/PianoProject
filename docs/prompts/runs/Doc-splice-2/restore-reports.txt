@@ -1,5 +1,0 @@
-$ (cwd .) python docs/prompts/runs/Doc-splice-2/scripts-restore_reports.py <scratchpad>/reports-before
-content\scores\imported\SOURCES.md: unchanged; now equal to the copy: True
-docs\prompts\inventory.md: restored; now equal to the copy: True
-docs\prompts\rung-claims.md: restored; now equal to the copy: True
-exit=0

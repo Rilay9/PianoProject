@@ -1,3 +1,0 @@
-﻿diaries after exit=0
- Test Files  2 passed (2)
-      Tests  25 passed (25)

@@ -1,3 +1,0 @@
-﻿UNKNOWN-layout rule: validators' survey_last.py ids 28 | f1_format.py ids 28 | identical: True
-survey_format.py table rows: 2020 items; f1_format.py rows without the UNKNOWN items: 1992
-rows that differ (validators, f1_format) - only the 28 UNKNOWN items should account for them: {('generated', 'piano score'): (1182, 1155), ('pdmx', 'piano score'): (413, 412)}

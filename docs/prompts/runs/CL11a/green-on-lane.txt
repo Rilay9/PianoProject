@@ -1,6 +1,0 @@
-# the same fifteen files on the lane's sources (before the last added cases; the whole suite is in the entry): lessonClaimsAboutApp's 2 failures are red on the base too
-
- FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
- FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
- Test Files  1 failed | 14 passed (15)
-      Tests  2 failed | 525 passed (527)

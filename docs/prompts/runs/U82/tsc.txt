@@ -1,2 +1,0 @@
-npx tsc -b   # final tree: the two revised test files, temporary files moved out
-exit=0

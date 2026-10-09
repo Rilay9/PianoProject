@@ -1,3 +1,0 @@
-rungs compared: 109; rungs whose claim rows differ: ['2.4', 'ragtime.8']
-  2.4: before [('skill', 'tie', 0, 7, 1), ('skill', 'dotted-quarter', 6, 7, 1), ('demand', 'rhythm.dotted-quarter', 6, 7, 1), ('demand', 'rhythm.ties', 0, 7, 1)] -> after [('skill', 'tie', 1, 8, 1), ('skill', 'dotted-quarter', 6, 8, 1), ('demand', 'rhythm.dotted-quarter', 6, 8, 1), ('demand', 'rhythm.ties', 1, 8, 1)]
-  ragtime.8: before [('skill', 'syncopation', 1, 6, 5), ('demand', 'texture.left-hand-pattern', 0, 6, 5)] -> after [('skill', 'syncopation', 2, 7, 5), ('demand', 'texture.left-hand-pattern', 1, 7, 5)]

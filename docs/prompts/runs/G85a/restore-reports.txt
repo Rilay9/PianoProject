@@ -1,5 +1,0 @@
-﻿docs/prompts/inventory.md: same bytes as its snapshot
-docs/prompts/rung-claims.md: same bytes as its snapshot
-content/scores/imported/SOURCES.md: same bytes as its snapshot
-git status on the three: clean
-exit=0

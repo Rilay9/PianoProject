@@ -1,7 +1,0 @@
-app/src/data/evidenceJob.ts: OK
-app/src/data/importStore.ts: OK
-app/src/score/OsmdView.ts: OK
-app/src/score/estimateImport.ts: OK
-app/src/score/extractScoreModel.ts: OK
-app/src/ui/importSheet.ts: OK
-app/src/score/tempoFromXml.ts: OK

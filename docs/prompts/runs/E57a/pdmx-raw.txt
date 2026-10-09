@@ -1,5 +1,0 @@
-archive layout mxl.tar.gz; 3 rows (E57a's three); 3 cids found in PDMX.csv; 3 member(s) streamed this run (extracted 3/3 member(s) in 10.0s after scanning 190796 tar entries)
-ok song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx (QmWpzkuQx23WPUoU1Lvta6hJtK7ccBjeSwL1ATyJ47UUMU): raw sha256 0fde55bcc284… equal to the row's rawSha256
-ok song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx (QmRx7Xqghks9vBikJpNFbaq6QKzkKghiePNRLvkGsUkZy7): raw sha256 80817de55cd2… equal to the row's rawSha256
-ok song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx (QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp): raw sha256 00f878ace8ac… equal to the row's rawSha256
-3 of 3 raw uploads extracted, each sha256 equal to its row's rawSha256; 0 fault(s)

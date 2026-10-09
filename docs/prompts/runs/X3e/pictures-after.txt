@@ -1,7 +1,0 @@
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\x3e-pictures.spec.ts:41:1 › the timewise half-note file: its import sheet and its Score screen at 342 x 740 (2.0s)
-
-  1 passed (4.9s)
-exit 0

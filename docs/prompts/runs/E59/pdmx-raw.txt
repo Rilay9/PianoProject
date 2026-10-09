@@ -1,2 +1,0 @@
-archive layout mxl.tar.gz; 542 committed rows; 542 cids found in PDMX.csv; 542 member(s) streamed this run (extracted 542/542 member(s) in 14.5s after scanning 254974 tar entries)
-542 of 542 raw uploads extracted, each sha256 equal to its row's rawSha256; 0 fault(s)

@@ -1,5 +1,0 @@
-﻿fit-report 0
-validate-plain 0
-content-suite 0
-vitest-all 1
-build-app 0

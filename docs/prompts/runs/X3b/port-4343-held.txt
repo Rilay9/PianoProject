@@ -1,6 +1,0 @@
-﻿netstat -ano | findstr LISTENING | findstr ":43" ; Get-CimInstance Win32_Process -Filter "ProcessId=4432" (in .; before any browser run)
-  TCP    0.0.0.0:4343           0.0.0.0:0              LISTENING       4432
-  TCP    [::]:4343              [::]:0                 LISTENING       4432
-  TCP    [::1]:4333             [::]:0                 LISTENING       72376
-pid 4432 = AcerCCAgent.exe
-exit=0

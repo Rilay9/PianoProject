@@ -1,8 +1,0 @@
-﻿start: exit 1
-ladder: exit 1
-check: exit 1
-duet-named: exit 1
-duet-song: exit 1
-helper: exit 1
-source restored byte for byte: True
-exit 0

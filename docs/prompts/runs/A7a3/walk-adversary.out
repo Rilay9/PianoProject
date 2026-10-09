@@ -1,9 +1,0 @@
-﻿clean C minor: []
-major third on bar 1: ["bar 1: roles ['root', 'other', 'fifth', 'approach'] want ['root', 'third', 'fifth', 'approach']"]
-whole-step approach bar 8: ["bar 8: roles ['root', 'third', 'fifth', 'other(2)'] want ['root', 'third', 'fifth', 'approach']"]
-major third on iv7 bar 5: ["bar 5: roles ['root', 'other', 'fifth', 'approach'] want ['root', 'third', 'fifth', 'approach']"]
-major sibling against the minor contract: 12 problems, e.g. ["bar 1: symbol C7 = (0, 'dominant'), form wants (0, 'minor-seventh')", "bar 2: symbol C7 = (0, 'dominant'), form wants (0, 'minor-seventh')", "bar 3: symbol C7 = (0, 'dominant'), form wants (0, 'minor-seventh')"]
-c fifths ['-3'] beat-4 spellings: 1:B01(natural) 2:B01(natural) 3:B01(natural) 4:E02(natural) 5:E02(natural) 6:B01(natural) 7:B01(natural) 8:G2 9:F12(sharp) 10:B01(natural) 11:F12(sharp) 12:B01(natural) 13:C3
-f fifths ['-4'] beat-4 spellings: 1:E02(natural) 2:E02(natural) 3:E02(natural) 4:A02(natural) 5:A02(natural) 6:E02(natural) 7:E02(natural) 8:C2 9:B01(natural) 10:E02(natural) 11:B01(natural) 12:E02(natural) 13:F3
-b-flat fifths ['-5'] beat-4 spellings: 1:A02(natural) 2:A02(natural) 3:A02(natural) 4:D02(natural) 5:D02(natural) 6:A02(natural) 7:A02(natural) 8:F2 9:E02(natural) 10:A02(natural) 11:E02(natural) 12:A02(natural) 13:B-13
-e-flat fifths ['-6'] beat-4 spellings: 1:D02(natural) 2:D02(natural) 3:D02(natural) 4:G02(natural) 5:G02(natural) 6:D02(natural) 7:D02(natural) 8:A12(sharp) 9:A02(natural) 10:D02(natural) 11:A02(natural) 12:D02(natural) 13:E-13

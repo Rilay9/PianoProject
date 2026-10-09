@@ -1,7 +1,0 @@
-test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) ... ok
-test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one (tests.test_measured_truth.TestTheMaterialIdentity.test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one) ... ok
-
-----------------------------------------------------------------------
-Ran 2 tests in 0.805s
-
-OK

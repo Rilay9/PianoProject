@@ -1,3 +1,0 @@
-exercise.broken7.e-major7.both ['E3', 'G#3', 'B3', 'E-4', 'E4', 'E-4', 'B3', 'G#3']
-exercise.broken7.a-flat-dominant7.both ['G#3', 'C4', 'E-4', 'F#4', 'G#4', 'F#4', 'E-4', 'C4']
-exercise.broken7.c-half-diminished7.both ['C3', 'E-3', 'F#3', 'B-3', 'C4', 'B-3', 'F#3', 'E-3']

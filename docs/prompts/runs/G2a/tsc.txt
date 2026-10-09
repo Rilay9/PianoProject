@@ -1,2 +1,0 @@
-npx tsc -b (in app)
-exit=0

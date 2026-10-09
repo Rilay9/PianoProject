@@ -1,7 +1,0 @@
-== map-tests  03:01:01
-map-tests exit=0
-== map-reader  03:01:10
-map-reader exit=0
-== content-validate  03:01:10
-content-validate exit=0
-CHAIN DONE 03:01:32

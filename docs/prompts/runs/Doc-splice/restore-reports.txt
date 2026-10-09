@@ -1,6 +1,0 @@
-$ python docs/prompts/runs/Doc-splice/scripts/restore_reports.py C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/pre-build
-content/scores/imported/SOURCES.md: aa43dcc049c89c9e -> 9d787e18111de9cb (the copy: 9d787e18111de9cb)
-docs/prompts/inventory.md: c045775747f7ccb7 -> 5c1f7b88079bf95d (the copy: 5c1f7b88079bf95d)
-docs/prompts/rung-claims.md: 546c0827efe2f4a0 -> a4a41d117d9bc25f (the copy: a4a41d117d9bc25f)
-git diff --quiet on the three: 0 (unchanged from HEAD)
-exit=0

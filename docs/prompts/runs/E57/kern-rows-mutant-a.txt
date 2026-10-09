@@ -1,5 +1,0 @@
-convert.py under test: build/e57/mutants/a; each row's kern source converted and read through the app's reader
-FAIL song.classical.chopin-rondo-op16.nifc: *MM [48.0, 152.0, 96.0]; the reader plays [('0:0', 48)]
-FAIL song.classical.chopin-waltz-op70-1.nifc: *MM [264.0, 96.0, 264.0]; the reader plays [('0:0', 264)]
-FAIL song.ragtime.joplin-combination-march: *MM [100.0, 120.0]; the reader plays [('0:0', 100)]
-0 of 3 rows play every tempo their source states

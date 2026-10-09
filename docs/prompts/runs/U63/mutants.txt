@@ -1,5 +1,0 @@
-M1 caught (test exit 1): the reason clamped back to one line -> today.spec.ts › the reason keeps its deciding clause at 342 × 740 (U63) › C6’s learner … (wholeReason: whole)
-M2 caught (test exit 1): the clause dropped (rowFor cuts the subtitle at its " — ") -> today.spec.ts › … › C6’s learner … (toHaveText)
-M3 caught (test exit 1): the reason’s clamp removed (the held line takes three lines) -> today.spec.ts › … › the held line … (two-line bound; everyRow height)
-M4 caught (test exit 1): G94’s mark removed from the swap sheet -> todaySwapWearsTheLifecycle.test.ts › paused: Paused beside the option (and put away, and the running card’s sheet)
-dist rebuilt from the restored sources: exit 0

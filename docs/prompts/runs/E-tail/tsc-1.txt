@@ -1,3 +1,0 @@
-tests/unit/importMeasuredTruth.test.ts(669,27): error TS6133: 'xml' is declared but its value is never read.
-tests/unit/textGlyphs.test.ts(27,68): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '{}'.
-exit 2

@@ -1,2 +1,0 @@
-$ (app) npx eslint . --max-warnings=0 --ignore-pattern playwright.u92-4423.config.ts
-exit=0

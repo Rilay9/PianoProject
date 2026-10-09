@@ -1,8 +1,0 @@
-copies from the main checkout (read only), without .git
-cp build/positions-cache.json exit=0
-cp build/demands-cache.json exit=0
-cp build/notation-cache.json exit=0
-tar build/cache/convert exit=0
-tar build/midi-real exit=0
-tar content/scores/imported/kern exit=0
-tar content/scores/imported/musetrainer exit=0

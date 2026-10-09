@@ -1,4 +1,0 @@
-(cd .) python docs/prompts/runs/G2/scripts-mutants.py established-not-reset-on-demotion
-established-not-reset-on-demotion (app/src/evidence/ladder.ts): caught, exit=1; Tests  1 failed | 73 passed (74); restored sha256 12bda3dadf83a5d9fa3abdef9ea6b1e85bdb2d321c625c2e5b418a0bd8aff62c
-1 of 1 caught
-exit=0

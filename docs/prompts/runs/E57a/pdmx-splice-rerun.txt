@@ -1,4 +1,0 @@
-round trip of pdmx.json byte-identical: False: spliced as text either way
-held as committed, not spliced: none
-spliced 0 row(s), 3 already carrying the new sha256; rows whose parsed fields differ from the original: 0, every one convertedSha256 alone: True
-0 fault(s)

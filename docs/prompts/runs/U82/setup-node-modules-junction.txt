@@ -1,5 +1,0 @@
-﻿cmd /c mklink /J "<worktree>\app\node_modules" "<main checkout>\app\node_modules"
-# npm ci failed with ENOSPC (npm-ci.txt): the disk had no space left; the partial install was removed and the main checkout's node_modules (same package.json and package-lock.json, compared with cmp) is used through a junction
-Junction created for <worktree>\app\node_modules <<===>> <main checkout>\app\node_modules
-free MB after: 577
-exit=0

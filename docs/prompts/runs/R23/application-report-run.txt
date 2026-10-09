@@ -1,2 +1,0 @@
-61 rungs; lower 13; upper 17; none 41; neither 3; not admitted 0; not offered 0; runtime 0 -> application-report.md
-exit 0

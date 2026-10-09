@@ -1,3 +1,0 @@
-== map-min  22:15:13
-map-min exit=0
-CHAIN DONE 22:15:41

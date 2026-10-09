@@ -1,8 +1,0 @@
-index: 107 base rows; 107 reproduced byte for byte; 0 not; 94 at another position (reordered by entry); generated rows 107
-index: authored text above the table unchanged: True; below: True
-in-flight: 65 base lane lines; every one reproduced byte for byte by its block's text: True; 18 still listed, 47 left in-flight (text kept in the brief and the index), 0 reworded
-in-flight: of the 18 kept, 14 at another relative position (reordered by entry)
-in-flight: left: D3 (closed), D2a (closed), D1 / D1a (closed), D0 / D0a (closed), Q24 (closed), D4 (closed), E2 (closed), F2 (closed), F2a (closed), G1b (closed), G1c (closed), X31 (closed), Q82 (closed), G85 (closed), Q83+Q84 (closed), L120a (closed), G1e (closed), U96 (closed), G87 (closed), X31a (closed), G85a (closed), U96a (closed), E51 (closed), E51a (closed), G86 (closed), G86a (closed), F3a (closed), L120b (closed), U102 (closed), G2 (closed), X1 (closed), D5 (closed), Q47 (closed), E1 (closed), E0 / E0a / E0b (closed), U74 (closed), X3 (closed), U80 (closed), U82 (closed), X3d (closed), X3e (closed), U90 (closed), Q75 (closed), Q76 (closed), Q80 (closed), E-tail (closed), Q65a (closed)
-in-flight: kept: G1, G1d, U92, L120, Q81, Q88, L120c, L120d, E50, E50a, Doc-splice-2, X3c, U32, G96, U63, T58, U105, X40
-in-flight: non-lane lines: 32 base; changes outside the lane lines: delete 1→0 (blank)
-blocks: 154 in 153 briefs; roles {'history': 59, 'live': 93, 'scoping': 1, 'handoff': 1}; states {'history': 59, 'closed': 75, 'landed': 4, 'approved': 3, 'dispatched': 4, 'verdict': 4, 'with-reviewer': 3}

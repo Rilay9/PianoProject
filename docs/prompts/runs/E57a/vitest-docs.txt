@@ -1,9 +1,0 @@
-
- RUN  v5.0.0 <worktree>/app
-
-
- Test Files  2 passed (2)
-      Tests  14 passed (14)
-   Start at  00:17:18
-   Duration  3.03s (tests 37%, environment 23%, import 22%, transform 18%)
-

@@ -40,7 +40,7 @@ process.stdin.on('end', () => {
   // The repository is two levels above this file. Not CLAUDE_PROJECT_DIR: sessions are
   // often opened on the parent folder, which has no CLAUDE.md and is not a git repo.
   const root = path.resolve(__dirname, '..', '..');
-  let checklist = '(CLAUDE.md could not be read — run §11 of docs/prompts/operating-procedure.md)';
+  let checklist = '(CLAUDE.md could not be read: run its "Before reporting any piece of work" questions)';
   try {
     const md = fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8');
     const start = md.indexOf('## Before reporting any piece of work');

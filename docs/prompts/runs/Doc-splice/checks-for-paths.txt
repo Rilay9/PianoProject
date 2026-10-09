@@ -1,8 +1,0 @@
-$ python tools/docs/checks_for_paths.py docs/03-content-pipeline.md docs/04-ui-spec.md docs/08-test-map.md docs/prompts/runs/Doc-splice/ENTRY.md
-# checks for 4 path(s): 4 matched, 0 unmatched
-# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
-# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
-# docs/08-test-map.md: docs/**
-# docs/prompts/runs/Doc-splice/ENTRY.md: docs/**
-unit	app	npx vitest run tests/unit/docsConsistency.test.ts
-exit=0

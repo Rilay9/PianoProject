@@ -1,8 +1,0 @@
-1 mutant(s); each file restored by its bytes after its run
-sheet-saves-on-open (src/ui/projectSheet.ts; opening the sheet makes nothing): caught, exit 1
-    × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 252ms
-    × names the piece, says it is no project yet, offers four ways in, says it was never opened, and writes nothing 71ms
-    × Learn this makes the project, and the sheet then says so, offers learning’s actions and the notes 132ms
-    × Put it away, then Bring it back: the history line says what it came from; the encounter line still says played 184ms
-1 of 1 caught
-

@@ -1,7 +1,0 @@
-python -m unittest tools/content/tests/test_checks_for_paths.py tools/content/tests/test_ci_order.py (from the worktree root)
-......................................
-----------------------------------------------------------------------
-Ran 38 tests in 0.984s
-
-OK
-exit=0

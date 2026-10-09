@@ -1,9 +1,0 @@
-$ python build/t62/analyse.py   (the real collection at 0d2c3472, 896 tests, as Playwright 1.63 assigns it to N shards via --list --shard=i/N; each test weighted by its own duration in run 36807990772's E2E step, 2 workers on GitHub's runner)
-unsharded collection: 896 tests, 896 distinct ids, 114 files
-CI baseline lines parsed: 870; matched to current ids: 870; unmatched current ids get the median
-N=2: sizes [448, 448]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 1; share of CI test-time per shard [0.294, 0.706]; largest share 0.706 (ideal 0.500)
-N=3: sizes [299, 299, 298]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 2; share of CI test-time per shard [0.196, 0.292, 0.511]; largest share 0.511 (ideal 0.333)
-N=4: sizes [224, 224, 224, 224]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 2; share of CI test-time per shard [0.14, 0.154, 0.284, 0.422]; largest share 0.422 (ideal 0.250)
-N=5: sizes [180, 179, 179, 179, 179]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 4; share of CI test-time per shard [0.109, 0.11, 0.194, 0.186, 0.4]; largest share 0.400 (ideal 0.200)
-N=6: sizes [150, 150, 149, 149, 149, 149]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 5; share of CI test-time per shard [0.097, 0.1, 0.098, 0.194, 0.153, 0.358]; largest share 0.358 (ideal 0.167)
-N=8: sizes [112, 112, 112, 112, 112, 112, 112, 112]; duplicated 0, missing 0, extra 0; files contributing to >1 shard: 6; share of CI test-time per shard [0.077, 0.063, 0.073, 0.08, 0.145, 0.139, 0.181, 0.241]; largest share 0.241 (ideal 0.125)

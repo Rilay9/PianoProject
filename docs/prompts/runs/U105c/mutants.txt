@@ -1,2 +1,0 @@
-m1-no-run-restriction-back (the refusal rule with U105b's no-run condition reinstated (`:not([data-running='true'])`)) [u69: tests/e2e/score.screen.spec.ts -g "U69"]: browser exit 1 (killed)
-m1-no-run-restriction-back (the refusal rule with U105b's no-run condition reinstated (`:not([data-running='true'])`)) [guard: tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts]: browser exit 0 (survived)

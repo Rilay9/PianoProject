@@ -1,6 +1,0 @@
-failing sight-reading: practised (3 records)
-failing interval-reading: practised (3 records)
-failing subdivision: proficient (3 records)
-skipLearner sight-reading: familiar (3 records)
-skipLearner interval-reading: familiar (3 records)
-skipLearner subdivision: proficient (3 records)

@@ -1,3 +1,0 @@
-﻿netstat -ano | findstr ":4353 " (a record: port 4353 before the browser runs)
-nothing listens on 4353
-exit=0

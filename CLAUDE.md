@@ -1,64 +1,30 @@
 # Working in this repository
 
-**Start every session with `docs/prompts/FABLE.md`** (the owner, 2026-10-06): the one operating contract. It holds the objective (the rules plan, 2026-10-08), its phases, when a list or rule set is done, and how work runs. Where an older document disagrees, FABLE.md wins. New instructions are edits to FABLE.md, never new governing documents.
+**Start every session with `FABLE.md`**: the one operating contract. It holds the objective, the steps in order, the current step and how work runs. Where any other document disagrees, FABLE.md wins. New instructions are edits to FABLE.md, never new governing documents.
 
-**Preflight, before every action:** name the current plan step (FABLE section 2), the unit of work and the finish condition. If you cannot, do not act. After finishing, stop: never select another task by momentum, and nothing moves to a new step without the owner's say-so (FABLE section 4).
+**Preflight, before every action:** name the current step (FABLE section 2), the unit of work and the finish condition. If you cannot, do not act. After finishing, stop: never pick another task by momentum, and nothing moves to a new step without the owner's say-so.
 
-## Reuse before reinvention: the first rule (the owner, 2026-10-03)
+This branch starts minimal (2026-10-09). The old project, with the whole app, is on `claude/piano-teaching-app-bo19td`: a source of candidates, not an authority (FABLE section 3).
 
-For every new or changed musical, pedagogical, content, analysis, curriculum, assessment
-or generation capability, **do not design custom code first.** Search, and record what you
-found:
-1. an existing usable asset: a score, an exercise, a fingering table, an annotated example;
+## Reuse before reinvention (the owner, 2026-10-03 and 2026-10-09)
+
+Do not reinvent piano pedagogy. Curricula, syllabuses, repertoire lists and teaching materials are published; start from them. For any musical, curriculum, content or app capability, look first for:
+1. established method books and graded syllabuses (RCM, ABRSM, Trinity and others) and their repertoire lists, including PSyllabus;
 2. a public-domain or openly licensed score or corpus: PDMX, Mutopia, OpenScore, IMSLP;
-3. an established library: music21 (already a dependency), Tonal, partitura;
-4. an annotated dataset: ASAP, the DCML corpora, When in Rome, CIPI;
-5. an open-source implementation of the same or a related feature, such as another piano
-   tutor or sight-reading trainer;
-6. a published algorithm, standard, syllabus (RCM, ABRSM) or authoritative text.
+3. an established library: music21, Tonal, partitura;
+4. an annotated dataset or an open-source implementation of the same feature;
+5. the old project, as a candidate.
 
-For each candidate, say:
-- what it solves;
-- its provenance;
-- its licence;
-- its fit with this project;
-- the adaptation it needs;
-- what it leaves unsolved.
-
-**Preference order:** existing asset → library → dataset or reference implementation with a
-thin adapter → published algorithm → small project-specific code → novel code only when
-nothing above can serve.
-
-Easy-to-write is never a justification. When existing work is rejected, the record says
-why. Never hand-reproduce known musical knowledge a maintained source supplies. Choose real or
-generated material by its teaching purpose: generated material is first-class when its
-required properties are verified, and real material when authentic transfer is the job. For the current rules-first objective, research the **full necessary set of abilities and characteristics**, not only the next implementation gap. Reuse research and libraries before custom rules; do not make a separate exhaustive search report for each trivial fact. The project assembles the best
-existing reliable pieces, adds only what is truly project-specific, and proves the seams.
-
-**Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
-
-**Read `docs/prompts/operating-procedure.md` before any substantial piece of work, and
-point every agent brief at it.** It is short: the common-sense rules for doing and
-reporting work here (swept 2026-10-08).
-
-## The five rules
-
-1. Solve the actual problem, not the literal request.
-2. Understand the existing system before changing it.
-3. Form and test a causal model rather than patching a symptom. Hypotheses are allowed:
-   name one, name its test, run the test, fix the mechanism.
-4. Verify the user-visible result, not the implementation.
-5. Be precise about evidence without letting verification replace judgement.
+Custom work only where none of these serves, with the reason recorded. Easy-to-write is never a justification. Research is targeted: where sources disagree, where something must be adapted to the app, or where a claim is unsupported. No new frameworks, inventories, taxonomies or literature reviews.
 
 ## Never teach anything wrong
 
-No wrong note name, invented concept or false "this teaches X"; correctness outranks
-everything else.
+No wrong note name, invented concept or false "this teaches X"; correctness outranks everything else.
 
-## The two technical rules broken most often
+## Two technical rules
 
 1. **Never present a number measured on this machine (a timing, a size) as general.** Say where it was measured, or express the relationship instead.
-2. **For musical classification, validated specifications govern implementation.** If code exposes a flaw in a rule, correct and revalidate the rule before treating the changed code as authoritative. For unrelated engineering details, keep specifications and code consistent without unnecessary paperwork.
+2. **Our own code that judges music needs evidence:** its judgments agree with musically defensible ones on real scores, including examples built to fool it. Passing tests alone do not show that.
 
 ## Before reporting any piece of work
 
@@ -82,21 +48,20 @@ earns a turn.
    as *no one in this process can decide this* and the item stays open, never moved to a
    later actor or phase. A paragraph its addressee does nothing with is cut. An owner
    correction is applied and confirmed by the change, in one line, without apology.
-6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? For a claim
-   of implemented behaviour: the file and line that implements it, the test that pins it and the
-   path that runs that test, checked on the current HEAD, never read off a report or the rulebook.
-   For a research or specification claim (an ability, a characteristic, a rule not yet built): its
-   source and its validation evidence; it is never called implemented. A clause with neither is
-   said to be absent, and the item stays open.
-7. **Sense in context.** Before reporting, inspect the actual current work state: every running task, committed/queued task, and task started this turn. Distinguish parked possibilities from approved work. State the owner's current goal and whether each active or committed task serves it now; stop or flag any that does not. Do not use a one-line 'nothing found' exit without checking actual state. For everything I started, triggered, dispatched or proposed this
+6. **Closure.** Is anything I call done, landed, wired or covered actually there? For a claim
+   of implemented behaviour: the file and line that implements it, the test or check that pins it,
+   checked on the current HEAD, never read off a report. For a curriculum or research claim (a
+   level, a sequence, a piece's grade, a teaching point): the published source it comes from (which
+   book or syllabus, which level). A claim with neither is said to be absent, and the item stays open.
+7. **Sense in context.** Before reporting, inspect the actual current work state: every running task, committed/queued task, and task started this turn. Distinguish parked possibilities from approved work. For everything I started, triggered, dispatched or proposed this
    turn: state the owner's current goal in one line, in the owner's words, not mine. Then
-   ask: does this serve that goal now? Is it what the owner asked for, or my extension of
-   it? Does it build on something not yet checked (code on unchecked rules), or read
-   something still changing (checks on tables builders are editing)? Is it paperwork
-   standing in for progress? Is a rule I am following really the owner's, or one I wrote?
-   Would the owner, seeing it, call it pointless or out of order? If so, stop or undo it
-   and say so in one line (the owner, 2026-10-07, after implementations were built before
-   their rules were checked and checkers were launched on moving tables).
+   ask: is it inside the step FABLE names as current? Is it what the owner asked for, or my
+   extension of it: a framework, an inventory, a survey, a broader scope? Does it build on
+   something not yet checked, or read something still changing? Is it paperwork standing in
+   for progress? Is a rule I am following really the owner's, or one I wrote? Would the owner,
+   seeing it, call it pointless, out of order or out of scope? If so, stop or undo it and say
+   so in one line (the owner, 2026-10-07 and 2026-10-09, after work was built on unchecked
+   foundations and after a whole classifier was built that the plan never asked for).
 8. **Convergence.** Does this help the app converge towards a polished, finished state, or does it
    leave things open and head down the route to a vibe-coding death loop: another pass, another
    finding, another rule, with no end condition (the owner, 2026-10-08, after check passes on the
@@ -107,73 +72,44 @@ earns a turn.
 
 The brief-check hook prints this section and the eight questions above before any agent
 brief or brief change goes out; the brief carries a line starting "Brief check:" saying what
-the pass changed. Each question below is a mistake already made here (the owner, 2026-10-08).
+the pass changed. Each question below is a mistake already made here (the owner, 2026-10-08 and 2026-10-09).
 
-1. **Reuse first.** Does the brief make the agent search existing libraries, trained models
-   and annotated datasets before writing anything custom, and give a reuse line for every
-   rule or detector it writes (what it used, or what it searched and why nothing serves)?
-   Hand-written detectors without that search failed on real scores in chunk 1.
-2. **This step only.** Does it do the step the owner named, in the owner's words, and nothing
-   from a later step (assignment inside a list, rules inside a survey)?
+1. **Reuse first.** Does the brief make the agent start from published pedagogy (method books,
+   graded syllabuses, repertoire lists), existing libraries and datasets before producing
+   anything of its own, and say what it used?
+2. **This step only.** Does it do the step FABLE names as current, in the owner's words, and
+   nothing from a later step?
 3. **Bounded and ending.** Are the sources it may read named, its output sized to the goal,
    and its end stated? No open-ended search, no catalogue dumps, no fixed number of passes.
 4. **Pilot before fan-out.** Is one small run tried and looked at before the same brief goes
    to several agents at once?
-5. **Run, not asserted.** Does it demand every example be run through the rule, real
-   positives and plausible counterexamples (another style, another instrument, an ordinary
-   look-alike), each claim labelled measured (by what) or reading, and corrections re-run
-   in the same step?
+5. **Sourced, not asserted.** Does every curriculum or repertoire claim it asks for name its
+   source (which book or syllabus, which level)? Is each claim labelled measured (by what) or
+   reading, is anything said about a score checked on the score itself, and are corrections
+   re-checked in the same step?
 6. **Inputs fixed.** Is its base commit named, and is nothing running that changes what it
    reads?
-7. **Common sense for a learner.** Would a piano learner need what it produces? Does a rule it
-   adds come from the owner or the task, not from me?
+7. **Common sense for a learner.** Would a piano learner need what it produces? Does a rule,
+   framework or list it adds come from the owner or the task, not from me?
 8. **Cost.** Is this the cheapest capable way (the model's strength, how many agents, whether
    they run at once), given the usage the owner has left?
 
-## Proportional verification and token cost
+## Verification, proportional to the step
 
-Choose verification by what could actually break. For a documentation-only or narrow non-behavioral change, inspect the diff and run the relevant lightweight integrity check if one exists; **do not automatically run E2E, the full suite, or a build**. For a focused rule change, use source validation, representative positive/negative/near-miss score checks and targeted tests. For a learner-facing flow or integration change, use the relevant browser/E2E tests; broad suites are for broad changes, shared foundations, release gates or credible cross-cutting risk. Batch expensive runs when safe, never skip an essential check just to save tokens. Record what was and was not run without padding the report.
+Choose verification by what could actually break. Until the app is integrated (FABLE step 6) there is no build or test suite to run: check a curriculum claim against its source, and a score or excerpt against its intended content. Record what was and was not checked without padding the report.
 
-## Two mechanical hazards
+## Mechanical hazards
 
-**Before re-serialising any JSON file, compare a round-trip against the raw bytes.** The
-hazard is formatting, not line endings: Python writes `0.0` where `JSON.stringify` writes
-`0` (`stage-0.json` and `stage-1.json` have these), `JSON.stringify` puts integer-like keys
-first in every object, and indentation and escapes can differ. On `pdmx.json` a three-row
-change came out as an 8,186-line diff for those reasons and as 17 lines when spliced as
-text. If the round-trip is not byte-identical, splice text. Line endings do not matter to
-git here: `core.autocrlf=true` normalises to LF on commit.
-
-`.claude/hooks/diff-growth.js` warns when one step removes 150 or more lines from a
-tracked file, which is the signature of an accidental reformat.
+- **Before re-serialising any JSON file, compare a round-trip against the raw bytes.** Python and `JSON.stringify` write numbers, key order, indentation and escapes differently; if the round-trip is not byte-identical, splice text. `.claude/hooks/diff-growth.js` warns when one step removes 150 or more lines from a tracked file.
+- Agents do not commit, push, stash, reset or checkout; commit named paths only, never `git add -A`.
 
 ## Orientation
 
 | What | Where |
 | --- | --- |
-| The objective, its phases and how work runs | `docs/prompts/FABLE.md` |
-| How work is done and reported | `docs/prompts/operating-procedure.md` |
-| The classifier tables, rules pages and route plan | `docs/classifier/` |
-| Work set aside for later | `docs/prompts/parked/README.md` |
-| The product and technical rules, with their stories | `docs/00-invariants.md` |
-| What the app is and why | `docs/00-overview.md` |
-| Screen contracts, `§0` R1–R7 | `docs/04-ui-spec.md` |
-| The curriculum and its tracks | `docs/02-curriculum.md` |
-| Which test proves which state machine; every spec file | `docs/08-test-map.md` |
-| The running record, newest entry last | `docs/pending-review.md` |
-
-## Commands
-
-From `app/`:
-
-```bash
-npx tsc -b              # typecheck — `tsc --noEmit -p` checks nothing
-npm run lint
-npx vitest run          # unit tests, no browser, free to run any time
-npx playwright test --workers=4
-```
-
-One Playwright suite at a time: every config shares port 4173 and `test-results/`.
-Local runs are pinned to four workers because ten Chromium instances rendering scores
-thrash this machine, and thrashing looks exactly like unrelated test failures. Agents do
-not commit, push, stash, reset or checkout; commit named paths only, never `git add -A`.
+| The objective, the steps and how work runs | `FABLE.md` |
+| The owner's words that set the direction | `docs/inputs/` |
+| The curriculum (written in step 1) | `curriculum.md` |
+| The old curriculum, reference only | `reference/old-curriculum.md` |
+| The old project, whole | branch `claude/piano-teaching-app-bo19td` |
+| The process hooks (checklists, brief audit, self-test) | `.claude/hooks/` |

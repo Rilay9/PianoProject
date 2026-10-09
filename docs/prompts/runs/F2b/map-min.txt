@@ -1,4 +1,0 @@
-# checks for 2 path(s): 2 matched, 0 unmatched
-# docs/prompts/in-flight.md: docs/**
-# docs/prompts/plan-2026-09-25.md: docs/**
-# no checks: nothing the map names reads these paths

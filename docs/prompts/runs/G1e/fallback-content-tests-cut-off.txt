@@ -1,5 +1,0 @@
-............................................FF...........................................................<home>\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
-  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
-..............................................................................................................................................ss<home>\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
-  self.adjustTimeAttributesFromMeasure(m)
-....................................................................................................................................................................................................................................................................................................................................................................................................exit=124

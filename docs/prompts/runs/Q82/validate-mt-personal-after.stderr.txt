@@ -1,3 +1,0 @@
-content validation FAILED (2 error(s)):
-  - song.classical.beethoven-ode-to-joy.easy: has named sections but its printed bar count could not be established from the render report or from the file, so they cannot be checked
-  - song.folk.greensleeves: has named sections but its printed bar count could not be established from the render report or from the file, so they cannot be checked

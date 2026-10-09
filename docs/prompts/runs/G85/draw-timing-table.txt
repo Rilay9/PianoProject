@@ -1,9 +1,0 @@
-﻿measure      | before rounds (ms, observed here) | after rounds (ms, observed here) | after / before (median of rounds)
-drawNone     | [1.6, 1.8, 1.7] | [1.6, 1.7, 1.6] | 0.94
-drawOne      | [1.7, 1.8, 1.7] | [1.5, 1.6, 1.8] | 0.94
-drawForty    | [1.7, 1.7, 1.7] | [1.8, 1.6, 1.8] | 1.06
-loadNone     | [116.8, 122.8, 122] | [128.8, 129, 130.2] | 1.06
-loadOne      | [129.4, 124.7, 139.3] | [121.9, 124.2, 130.7] | 0.96
-loadForty    | [146.1, 124.4, 124.6] | [127.2, 124.4, 140.7] | 1.02
-seeded: [40, 40, 40]
-exit 0

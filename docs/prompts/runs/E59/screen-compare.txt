@@ -1,4 +1,0 @@
-song.folk.i-remember-you.pdmx: SVG elements before 2008, after 2008; identical kind and box: true; bpm readout before "67 bpm", after "67 bpm"
-song.pop.misc-soundtrack-lavender-s-blue.pdmx: SVG elements before 2027, after 2027; identical kind and box: true; bpm readout before "67 bpm", after "67 bpm"
-song.classical.chopin-ballade-2.nifc: SVG elements before 6999, after 6999; identical kind and box: true; bpm readout before "67 bpm", after "67 bpm"
-song.classical.beethoven-fur-elise.easy: SVG elements before 1847, after 1847; identical kind and box: true; bpm readout before "67 bpm", after "67 bpm"

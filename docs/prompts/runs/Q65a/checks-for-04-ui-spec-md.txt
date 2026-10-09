@@ -1,5 +1,0 @@
-$ (cwd .) python tools/docs/checks_for_paths.py docs/04-ui-spec.md
-# checks for 1 path(s): 1 matched, 0 unmatched
-# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
-unit	app	npx vitest run tests/unit/docsConsistency.test.ts tests/unit/help.test.ts tests/unit/labHelp.test.ts tests/unit/progressHistoryLines.test.ts tests/unit/sightReadingFromReadingState.test.ts
-exit=0

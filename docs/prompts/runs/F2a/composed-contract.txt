@@ -1,3 +1,0 @@
-﻿composedContract (revised pin) exit=0
- Test Files  1 passed (1)
-      Tests  6 passed (6)

@@ -1,9 +1,0 @@
-﻿taughtByAncestry (red, baseline build) exit=1
-⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
-AssertionError: interval.leap at 1.5, which introduces it: expected true to be false // Object.is equality
-AssertionError: pitch.chromatic at 3.1, which introduces accidentals: expected true to be false // Object.is equality
-AssertionError: interval.leap: 1.5 introduces it, it teaches nothing of it: expected [ 'interval.leap' ] to deeply 
-AssertionError: row 2 opened from 1.5: interval.leap not held out: expected undefined to be false // Object.is equality
-AssertionError: practice.2 stands on practice.1: expected false to be true // Object.is equality
- Test Files  1 failed (1)
-      Tests  5 failed | 24 passed (29)

@@ -1,3 +1,0 @@
-568x320 t115 stack moon: f stage 182 stave 22.92 height bars 2/2 inked 3 | ff stage 195 stave 22.92 read-ahead bars 1/2 inked 3
-568x320 t115 wider moon: f stage 182 stave 22.92 height bars 2/2 inked 3 | ff stage 195 stave 22.92 read-ahead bars 1/2 inked 3
-22 cells with the same at-rest window, 2 differ

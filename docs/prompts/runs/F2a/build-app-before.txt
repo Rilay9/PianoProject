@@ -1,1 +1,0 @@
-﻿npm run build:app (before state: committed vocabulary and curriculum) exit=0

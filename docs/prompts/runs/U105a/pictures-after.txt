@@ -1,9 +1,0 @@
-
-Running 3 tests using 2 workers
-
-  ok 2 build\u105a\probe\pictures.spec.ts:147:1 › the refused summary, sideways (16.2s)
-  ok 1 build\u105a\probe\pictures.spec.ts:143:1 › the refused summary, upright (16.2s)
-  ok 3 build\u105a\probe\pictures.spec.ts:152:1 › the refused summary, a tablet sideways (15.9s)
-
-  3 passed (36.7s)
-exit 0

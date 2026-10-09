@@ -1,2 +1,0 @@
-$ (app) npx tsc -b
-exit=0

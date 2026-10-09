@@ -1,9 +1,0 @@
-$ python scripts-compare-fails.py <build>/vitest-all.txt vitest-failing-files-rerun-changed.txt vitest-failing-files-committed-src.txt
-whole suite on the change: 66 failing
-the failing files alone, on the change: 65 failing
-the failing files alone, on the committed source: 65 failing
-in the whole suite, not alone on the change (load): 1
-  - tests/unit/observationsFromRun.test.ts > what a run measured, by its own definitions > a Wait run stores timing as not measured, with no deltas, and its pitch as steps
-alone on the change, not on the committed source (the change's): 0
-on the committed source, not alone on the change: 0
-exit=0

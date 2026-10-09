@@ -1,8 +1,0 @@
-﻿chain-checks
-green-test_untaught_options exit=0
-content-validate exit=0
-review-check exit=0
-content-tests exit=0
-unit exit=1
-build-app exit=0
-done

@@ -1,3 +1,0 @@
-level 2, right hand, G: accidental, ties, dotted quarters, skips, eighths: 2000 seeds, refused 0; draws to the first valid: median 108, 99th percentile 712, most 1238, mean 157
-level 2, both hands, G: ledger, accidental, ties, dotted quarters, eighths: 2000 seeds, refused 0; draws to the first valid: median 165, 99th percentile 1047, most 1905, mean 235
-level 4, both hands, 8 bars: accidental (row 4): 2000 seeds, refused 0; draws to the first valid: median 7, 99th percentile 50, most 93, mean 10

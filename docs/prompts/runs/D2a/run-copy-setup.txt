@@ -1,5 +1,0 @@
-saved SOURCES.md committed bytes
-copied content/scores/imported/kern
-copied content/scores/imported/musetrainer
-convert cache files copied: 7062
-copied build/demands-cache.json

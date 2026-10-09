@@ -1,8 +1,0 @@
-[summary: the failing names and totals; the full log was over 300 KB and was not kept]
-ERROR: test_committed_mirrors_equal_generated (tests.test_record_mirrors.TheCommittedMirrors.test_committed_mirrors_equal_generated)
-record_mirrors.RecordError: stale-record: docs/prompts/tasks/CL11b-names-on-is-practice.md:64: CL11b's record ends at drafted, and Entry 220 (docs/prompts/runs/CL11b/ENTRY.md:1) shows it landed
-ERROR: test_the_tree_round_trips (tests.test_record_mirrors.TheCommittedMirrors.test_the_tree_round_trips)
-record_mirrors.RecordError: stale-record: docs/prompts/tasks/CL11b-names-on-is-practice.md:64: CL11b's record ends at drafted, and Entry 220 (docs/prompts/runs/CL11b/ENTRY.md:1) shows it landed
-Ran 1721 tests in 480.136s
-FAILED (errors=2, skipped=4)
-EXIT 1

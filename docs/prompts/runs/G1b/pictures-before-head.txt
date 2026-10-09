@@ -1,7 +1,0 @@
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\zz-g1b-before.spec.ts:13:1 › before: a Stage 9 unit’s page on HEAD (764ms)
-
-  1 passed (3.6s)
-exit=0

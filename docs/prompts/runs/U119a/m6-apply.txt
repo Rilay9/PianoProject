@@ -1,2 +1,0 @@
-m6 applied to ScoreScreen.ts: c86b745dc937 -> 26e25d36a183
-ScoreScreen.ts restored, c86b745dc937

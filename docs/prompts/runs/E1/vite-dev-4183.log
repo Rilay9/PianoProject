@@ -1,9 +1,0 @@
-
-  VITE v8.2.2  ready in 284 ms
-
-  ➜  Local:   http://localhost:4183/PianoProject/
-  ➜  Network: use --host to expose
-5:40:23 PM [vite] (client) [optimizer] scanning dependencies...
-5:41:57 PM [vite] (client) page reload src/ui/screens/DevExcerptView.ts
-5:42:57 PM [vite] (client) page reload src/ui/screens/DevExcerptView.ts
-5:43:40 PM [vite] (client) page reload src/ui/screens/DevExcerptView.ts

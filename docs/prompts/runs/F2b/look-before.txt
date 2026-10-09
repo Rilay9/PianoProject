@@ -1,8 +1,0 @@
-(in app) env F2B_LOOK=1 F2B_STATE=before npx playwright test --config=playwright.f2b-4323.config.ts --workers=1
-
-Running 1 test using 1 worker
-
-  ok 1 .probe\f2b-look.spec.ts:70:1 › F2b look (2.0s)
-
-  1 passed (4.6s)
-exit=0

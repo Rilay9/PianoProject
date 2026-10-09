@@ -1,7 +1,0 @@
-$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_named_by_what_they_are.py
-....
-----------------------------------------------------------------------
-Ran 4 tests in 28.626s
-
-OK
-exit=0

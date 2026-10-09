@@ -1,3 +1,0 @@
-﻿port 4253 listening before the run: False
-today.spec.ts (F2a state), port 4253, one worker exit=0
-  17 passed

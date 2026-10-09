@@ -1,5 +1,0 @@
-fuzz-committed.log:  3 passed (1.2m)
-fuzz-final.log:  3 passed (1.3m)
-shots-committed.log:  15 failed
-shots-committed-2.log:  15 passed (15.5s)
-shots-final.log:  15 passed (18.2s)

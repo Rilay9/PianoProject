@@ -1,6 +1,0 @@
-
-Running 1 test using 1 worker
-
-  ok 1 build\g86a\probe\g86a-pictures.spec.ts:140:3 › sideways, 740 x 342 › a fresh start whose sound did not start, sideways (2.4s)
-
-  1 passed (5.2s)

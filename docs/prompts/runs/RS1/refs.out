@@ -1,6 +1,0 @@
-A7a.1 (draft) with the row: 0 failure(s), 0 unresolved
-A7a.1 (draft) without the row (the base): 0 failure(s), 3 unresolved
-    Unresolved(file='docs/chains/A7a.1.yaml', field='steps[7].content.ref', ref='Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi', why='no such file, id, family or CID in the committed sources')
-    Unresolved(file='docs/chains/A7a.1.yaml', field='steps[8].content.ref', ref='Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi', why='no such file, id, family or CID in the committed sources')
-    Unresolved(file='docs/chains/A7a.1.yaml', field='steps[9].content.ref', ref='Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi', why='no such file, id, family or CID in the committed sources')
-the CID resolves to song.blues.blues-riff-in-c.pdmx file Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.restaff.mxl

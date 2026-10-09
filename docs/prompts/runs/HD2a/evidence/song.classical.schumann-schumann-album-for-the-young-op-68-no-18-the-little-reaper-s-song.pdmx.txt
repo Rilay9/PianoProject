@@ -1,8 +1,0 @@
-HD2a evidence: song.classical.schumann-schumann-album-for-the-young-op-68-no-18-the-little-reaper-s-song.pdmx (scores/pdmx/QmSWXZfDRB7aBd3rD3eRa5tMR4oP7SmxcPruY89nnZ8NBz.mxl), identity sha256 8ca0058c9292cbc7fe18350194441268bd872768141e17540edefd0756b84262
-The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
-Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
-
-ROW staff 2 voice 2 bars 37-37 -> L
-  bar 37 (source measure 36) st2 v2: R/x -> L; onsets 1 {'conflict': 1}; second voice(s) [1]; e.g. @105 R [76, 84] + v2 [48]
-  bar 37 onset 105 84/st1/v1/R:0.5 76/st1/v1/R:0.5 48/st2/v2/R/x:0.5
-

@@ -1,6 +1,0 @@
-# checks for 4 path(s): 4 matched, 0 unmatched
-# docs/prompts/in-flight.md: docs/**
-# docs/prompts/tasks/README.md: docs/**
-# docs/review/current.md: docs/**
-# docs/review/handoffs/bf8de2d2.md: docs/**
-# no checks: nothing the map names reads these paths

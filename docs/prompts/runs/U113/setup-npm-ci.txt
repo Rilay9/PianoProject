@@ -1,8 +1,0 @@
-
-3 vulnerabilities (1 low, 1 moderate, 1 high)
-
-To address all issues, run:
-  npm audit fix
-
-Run `npm audit` for details.
-

@@ -1,9 +1,0 @@
-ids only in personal: ['excerpt.classical.i-got-rythm.pdmx.b15-18']
-ids only in strict: []
-tagged in personal: 228 | placeholders in strict: 235 | placeholders in personal too (every build): 8
-strict placeholders the tags miss (beyond the every-build ones): []
-tagged rows the strict build bundles: []
-simulated    2.4: (claim, established, checked, unmeasured) [('tie', 0, 7, 1), ('rhythm.ties', 0, 7, 1)]
-simulated    ragtime.8: (claim, established, checked, unmeasured) [('texture.left-hand-pattern', 0, 6, 5)]
-real strict  2.4: (claim, established, checked, unmeasured) [('tie', 0, 7, 1), ('rhythm.ties', 0, 7, 1)]
-real strict  ragtime.8: (claim, established, checked, unmeasured) [('texture.left-hand-pattern', 0, 6, 5)]

@@ -1,7 +1,0 @@
-round 1 changed: exit 0; 8 passed (8); wall 5s
-round 1 committed: exit 0; 8 passed (8); wall 4s
-round 2 changed: exit 0; 8 passed (8); wall 3s
-round 2 committed: exit 0; 8 passed (8); wall 4s
-round 3 changed: exit 0; 8 passed (8); wall 4s
-round 3 committed: exit 0; 8 passed (8); wall 3s
-changed sources restored, sha256 equal: True

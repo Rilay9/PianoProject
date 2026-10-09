@@ -1,9 +1,0 @@
-study loaded from the worktree
-test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
-D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-exit 0

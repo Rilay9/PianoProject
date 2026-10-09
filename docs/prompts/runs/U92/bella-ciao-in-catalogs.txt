@@ -1,4 +1,0 @@
-$ grep -c '"song.folk.bella-ciao"' app/public/content/catalog.json (this worktree's offline build), then the main checkout's app/public/content/catalog.json
-worktree: 0
-main checkout: 2
-exit=0

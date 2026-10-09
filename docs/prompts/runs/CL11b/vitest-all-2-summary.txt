@@ -1,9 +1,0 @@
-[summary: the failing names and totals; the full log was over 300 KB and was not kept]
-⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
- FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
- FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
-AssertionError: expected false to be true // Object.is equality
- Test Files  1 failed | 332 passed (333)
-      Tests  2 failed | 7686 passed | 5 skipped | 1 todo (7694)
-   Duration  216.55s (tests 74%, environment 18%, import 6%, transform 1%)
-EXIT 1

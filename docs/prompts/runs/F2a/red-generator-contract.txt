@@ -1,7 +1,0 @@
-﻿npx vitest run tests/unit/generatorContract.test.ts   (red: UNREALISABLE_AT still declares the leap at 1.5)
- ❯ tests/unit/generatorContract.test.ts (21 tests | 1 failed)
-⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
-AssertionError: declared, but the move is made (or never asked): expected [ '1.5 interval.leap on' ] to deeply equal []
- Test Files  1 failed (1)
-      Tests  1 failed | 20 passed (21)
-exit=1

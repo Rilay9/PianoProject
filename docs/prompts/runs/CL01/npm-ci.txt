@@ -1,3 +1,0 @@
-$ npm ci   (in app/)
-added 610 packages, and audited 611 packages in 25s
-exit 0

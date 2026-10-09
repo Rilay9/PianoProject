@@ -1,5 +1,0 @@
-wrote 4 reference file(s) to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\build\midi-parity: rendered-clean.json, rendered-jitter35.json, crossed-hands.json, two-hands.json
-  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\build\midi-real\bach-bwv885-prelude-2011.mid
-  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\build\midi-real\grieg-op38-7-waltz-2014.mid
-  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\build\midi-real\scarlatti-k525-2008.mid
-exit 0

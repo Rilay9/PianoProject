@@ -1,4 +1,0 @@
-content/scores/imported/SOURCES.md: HEAD's blob written CRLF, sha256 9d787e18111de9cbd1633ffbb8b3d6e4da0202ef9725fe4de36c94cbc9e3fd91; git status: clean
-docs/prompts/inventory.md: HEAD's blob written CRLF, sha256 1c2a9680587412a09a6850fb4aa1ecf0d36db2d1b97f5970fe527d95345ebe31; git status: clean
-docs/prompts/rung-claims.md: HEAD's blob written CRLF, sha256 e4547dd160da9af97d255d586f1be41902394d8ec408c876f3912cd4b9410183; git status: clean
-exit=0

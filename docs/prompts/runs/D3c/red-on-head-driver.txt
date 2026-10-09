@@ -1,3 +1,0 @@
-﻿HEAD's LessonScreen: exit 1
-D3c's bytes restored: True
-exit 0

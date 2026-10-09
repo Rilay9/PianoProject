@@ -1,9 +1,0 @@
-specs: tests/e2e/lesson-flow.spec.ts
-exists: tests/e2e/lesson-flow.spec.ts
-
-Running 1 test using 1 worker
-
-  ok 1 tests\e2e\lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (22.3s)
-
-  1 passed (27.2s)
-exit=0

@@ -1,8 +1,0 @@
-
-Running 2 tests using 1 worker
-
-  ok 1 tests\d3b-probe\cardAt.spec.ts:54:3 › the card at jam (892ms)
-  ok 2 tests\d3b-probe\cardAt.spec.ts:54:3 › the card at holiday.5 (824ms)
-
-  2 passed (4.4s)
-exit 0
