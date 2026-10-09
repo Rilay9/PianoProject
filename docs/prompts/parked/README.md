@@ -52,6 +52,7 @@ The code-or-agent review (`docs/classifier/audits/code-or-agent-review/rows.md`,
 Content that teaches something wrong now:
 - Six Chopin catalogue titles name the wrong key (op. 10 no. 11, op. 67 no. 4, op. 68 nos. 2 and 4, the G minor and G-sharp minor polonaises), confirmed against a published list: `docs/classifier/audits/rules-1B/rows.md`.
 - 4 of the 12 generated half-diminished seventh arpeggios are misspelled (on A-flat, D-flat, E-flat, G-flat; for example the A-flat one has D for E double-flat): `rules-1B/validation.md`.
+- 5 more generated arpeggio items spell chord notes off the interval-by-root letters (4 diminished-seventh items and G-flat minor seventh); possibly the generator avoiding double flats, so the owner decides: `evidence/1A/comparison/spelling.md` (2026-10-08).
 - Generated blues-scale and tritone items in flat keys missing a restored flat (8 reported, 1 confirmed: `exercise.blues-scale.b-flat.1oct.right`): `rules-1A/rows.md`.
 - Catalogue items written for other instruments but labelled Piano (a Kreutzer violin etude, a Bach violin gavotte, a trombone solo), their fingerings read as piano fingerings: `rules-1A/rows.md`.
 - 154 generated scales, arpeggios and Hanon items run to 13 ledger lines with no clef change or 8va: `rules-1A/rows.md`.
