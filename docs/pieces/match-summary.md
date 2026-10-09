@@ -78,3 +78,36 @@ App level from each source's own level (curriculum.md, level spine; above Grade 
    - public-domain beginner methods (for example Beyer Op. 101, Czerny Op. 599, Türk, Gurlitt Op. 117, Köhler Op. 190, which appear in PSyllabus and the lists at low levels);
    - folk-song arrangements;
    - generated pieces (step 4).
+
+## Quality check of high and medium candidates (run 2026-10-09, `tools/pieces/quality_check.py`)
+
+2,791 candidate rows: **1,315 facts fit**, 1,065 flagged, 411 not checked (Mutopia files not downloaded). Results per row: `docs/pieces/quality.csv`.
+
+Flag reasons (a row can have several):
+
+| Reason | Rows |
+|---|---|
+| Not piano? | 553 |
+| Key differs from the title | 444 |
+| The list grades one specific arrangement | 122 |
+| More than 3 parts | ~170 |
+| Arrangement or instrument words in the file title | 69 |
+
+The "not piano?" count includes keyboard works uploaded with a harp or harpsichord sound; those may be usable and are left flagged for a look.
+
+Pieces with at least one candidate whose facts fit, by app level:
+
+| App level | with a high/medium candidate | facts fit | best is Mutopia (not checked) | all flagged |
+|---|---|---|---|---|
+| A | 1 | 1 | 0 | 0 |
+| B | 7 | 6 | 0 | 1 |
+| 1 | 31 | 21 | 2 | 8 |
+| 2 | 47 | 29 | 0 | 18 |
+| 3 | 62 | 34 | 5 | 23 |
+| 4 | 78 | 52 | 7 | 19 |
+| 5 | 108 | 80 | 8 | 20 |
+| 6 | 166 | 101 | 39 | 26 |
+| 7 | 169 | 112 | 39 | 18 |
+| 8 | 154 | 95 | 32 | 27 |
+
+"Facts fit" means the file is a piano score whose key signature agrees with the title and whose title shows no arrangement. It is still not a confirmation of identity or edition.
