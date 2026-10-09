@@ -27,13 +27,13 @@ Each step is finished, checked by the owner's ChatGPT review, and given the owne
 
 **Step 2, Rungs: written and revised after the rung-by-rung review (`rungs.md`, 122 rungs, 2026-10-09); waiting for the owner's ChatGPT review and the owner's go before step 3.**
 
-**Step 3, Real music: started on the owner's go (2026-10-09). Pilot 1 (ABRSM Grade 1 list) done: `docs/pieces/grade-1-pilot.md`; few usable files. Next move waits for the owner.** Working choices for this step:
+**Step 3, Real music: started on the owner's go (2026-10-09). Pilot 1 (ABRSM Grade 1 list) done: `docs/pieces/grade-1-pilot.md`; few usable files. Then, on the owner's go, the matching plan: `wanted.csv` (every graded piece from the published lists: PSyllabus, the current ABRSM, RCM and Trinity lists, the style lists) against `available.csv` (every score file we can get: PDMX, kern, musetrainer, Mutopia, OpenScore), matched by script, then a quality check on matches only. Matches are candidates; nothing is definite until checked.** Working choices for this step:
 - Sources: Faber Piano Adventures and Alfred's Basic Piano Library (the publishers' scope-and-sequence material) for the beginner levels; the RCM, ABRSM and Trinity piano syllabuses for the graded spine; publishers' level-correlation charts for aligning levels.
 - Top level: ABRSM/Trinity Grade 8, RCM Level 10. Diplomas are out.
 - Styles: a style line stays only where a published syllabus or progression for it is found, and goes only as high as that source has substance.
 - Per source and level, extracted under fixed headings: reading range and clefs; keys; time signatures and rhythms; technique; hand coordination; dynamics, articulation and pedal; sight-reading; aural; style-specific skills. Each entry cites its source and level. Written theory away from the keyboard is out.
 - Source extracts go in `docs/sources/`, one file per source; the comparison, the adapted progression and the old curriculum's keep/fix/fill/drop marks go in `curriculum.md`.
-- Order: an RCM pilot (first levels) is checked by the orchestrator before the other sources are gathered.
+- Order (step 1 only, done): an RCM pilot (first levels) was checked before the other sources were gathered.
 - Done when every named source has a cited extract per level, the comparison is complete, and every old stage and track is marked; then the owner's ChatGPT review.
 
 ## 3. How work runs
