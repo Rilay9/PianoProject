@@ -543,26 +543,214 @@ Characteristics: `quality.coherence`, `quality.idiomatic`
 
 **Recommendation.** No test. These stay agent judgements, as the characteristics list already marks them.
 
+## 22. Chunk-1 characteristics not surveyed before (2026-10-08)
+
+**What this is.** The 55 characteristics of sections 1.A to 1.C of `characteristics-list.md` that sections 1 to 21 give no row, each now placed in one of two ways: a **direct read** (a notation field, or plain arithmetic over fields, named with its reader) or **surveyed** (libraries, trained models and annotated data searched, up to three candidates). Done on the owner's go for handoff step 2, by one agent, from base commit 0fb1d9e3. Nothing was installed or run, no rule is written, and nothing was run on the catalogue. The readers were checked by reading the installed sources (`.venv`: music21 10.5.0, partitura 1.9.0); other facts follow the conventions in the header (GitHub API on 2026-10-08, the paper's own text, **not confirmed** where only a search summary or page-fetch summary was seen). Of the 55, 37 are direct reads and 18 are surveyed (6 candidate, 12 nothing found).
+
+### 22.0 Direct reads (37)
+
+The test applied: the answer is an element or field of the score, or a count, share, maximum or table lookup over fields, with no musical judgement that a library or trained model could do better. A threshold that a rule still has to fix (a stream length, a register boundary) is a parameter of that later rule, not a judgement in the read. These ids are written without backticks on purpose: a backticked id at the start of a row means "surveyed" in this file.
+
+| id | field and reader | why no judgement is needed |
+| --- | --- | --- |
+| notation.staves | MusicXML `<staves>` and the part count; music21 `Score.parts`; partitura note-array field `staff` (added by `feature_functions=['staff_feature']`, `staff_feature` in `note_features.py`) | A declared number. |
+| notation.clefs | The `<clef>` in force at each note: music21 `clef.Clef` found with `getContextByClass`; partitura `Clef` objects and `clef_feature` | Which clef governs a note is a lookup; the per-clef counts are sums. |
+| notation.clef-change | The same clef elements with their offsets (music21 `Stream.recurse()` filtered to `clef.Clef`; partitura `Clef`) | A change is a clef element after a staff's first. |
+| pitch.ledger | Written pitch against the staff: music21 `Pitch.diatonicNoteNum` against `Clef.lowestLine` (both read in the sources), minus the `spanner.Ottava` shift | Line-or-space and ledger count are subtraction on the diatonic number; the clef gives the staff's edges. |
+| mark.ottava | music21 `spanner.Ottava` (`type` 8va, 8vb, 15ma, 15mb); partitura `OctaveShiftDirection` (the importer reads `octave-shift`, `importmusicxml.py` line 1047); MusicXML `<octave-shift>` | An element with a kind and a span. |
+| notation.keys | music21 `key.KeySignature`; partitura `KeySignature` and note-array fields `ks_fifths`, `ks_mode`; MusicXML `<key>` | The `<fifths>` value and its position. |
+| key.signature-exercised | music21 `KeySignature.alteredPitches` (`key.py` line 457) against the notes' written letters | A count of notes whose letter the signature alters. |
+| reading.accidental-kinds | `<accidental>` text and its `cautionary` attribute from raw MusicXML (music21's import leaves `cautionary` a TODO, `xmlToM21.py` line 3428); music21 `pitch.Accidental.name` and `.displayStatus`; `Stream.makeAccidentals` applies the bar rule for carried accidentals | The kind is the element's text; the carry-over is the fixed bar rule that the library implements. |
+| reading.accidental-churn | music21 `Pitch.accidental` per note, grouped per bar by letter name and octave | A sequence test (cancelled, then returned) within one bar at one staff position. |
+| reading.visual-density | partitura note array (`onset_beat`, `staff`) grouped per staff per bar; accidental and ledger counts from the two rows above; jSymbolic R-10 as the published definition (music21 `NoteDensityFeature`, `jSymbolic.py` line 2124) | Counts per bar. |
+| reading.unusual-notation | Raw MusicXML `<cue>`, nested `<tuplet>`, `<staff>` on notes inside one beam, and `<notehead>` values (music21 `Note.notehead`). music21 leaves `<cue>` unread (a TODO in `xmlToM21.py`) and partitura skips cue notes (`importmusicxml.py` lines 616 to 620) | A closed list of element names and values. |
+| mark.fingering | music21 `articulations.Fingering` (`fingerNumber`, `substitution`, `alternate`); partitura `Fingering` (`parse_fingering`, `importmusicxml.py` line 1907); MusicXML `<fingering>` | Count and share of what is printed. |
+| notation.lyrics | music21 `note.Lyric` with its `number`; MusicXML `<lyric number>` | One element per syllable. |
+| harmony.figured-bass | Raw MusicXML `<figured-bass>` and `<figure>` (music21 skips the element: `'figured-bass': None`, `xmlToM21.py` line 2409); where figures are typed as text, music21 `figuredBass.notation.Notation` parses a figure string | The figures are element or string content. Limit: the characteristics list says the held PDMX files carry no `<figured-bass>`; recognising figures typed as lyrics is outside this read. |
+| mark.repeat | music21 `bar.Repeat`, `spanner.RepeatBracket`, `repeat.DaCapo`, `DalSegno`, `Segno`, `Coda`, `Fine` (classes read in `repeat.py`), and `repeat.Expander` for the bars played (as section 19 uses it for the length row); partitura `Repeat`, `Ending`, `DaCapo`, `DalSegno`, `Segno`, `Coda`, `Fine` | Each kind is a printed element or a word from a closed list; the expansion is a library routine. Chunk 1 recorded this row failing (section 19); that is a fault in the reading to fix, not a need for judgement. |
+| notation.slash-rhythm | music21 `Note.notehead == 'slash'`; raw `<measure-style><slash>` (music21's `handleMeasureStyle` leaves `slash` a TODO, `xmlToM21.py` line 6492) | An element or value, plus the durations already on the notes. |
+| hands.per-bar-range | music21 `analysis.discrete.Ambitus` and `Pitch.midi`; partitura `pitch` and `staff`; register shares by jSymbolic P-9 to P-11 (music21 `ImportanceOfBassRegisterFeature` and its two siblings) | Minimum, maximum and span per bar; the register boundaries are the published ones. The hand is the staff here; which hand plays a note is the hand-assignment row (section 3). |
+| pitch.black-key-share | music21 `Pitch.pitchClass`; partitura `pitch` (MIDI number) modulo 12 | A share over the fixed set of five black pitch classes. |
+| pitch.inventory | music21 `Pitch.nameWithOctave` per note per staff; partitura `pitch` with `staff`; jSymbolic P-4 and P-5 | The distinct written pitches with counts. |
+| reading.enharmonic-spelling | music21 `Pitch.name` against `Pitch.ps`, and `Pitch.isEnharmonic` | White-key accidentals are a closed list (E sharp, B sharp, C flat, F flat); one key under two names is two names with the same `ps`. Whether a spelling is wrong is the notation-sanity row (section 7), not this one. |
+| notation.times | music21 `meter.TimeSignature`; partitura `TimeSignature` with `ts_beats`, `ts_beat_type`; MusicXML `<time>` | An element and its position. |
+| metre.class | music21 `TimeSignature.classification`, `beatCount`, `beatDivisionCount` (`meter/base.py` lines 1116, 826, 948); partitura `ts_mus_beats` | A fixed table over numerator and denominator. The definition classes irregular signatures by written numerator, so the table applies the definition, not music21's label (it calls 7/8 "Simple Septuple"). |
+| mark.anacrusis | `<measure implicit="yes">` (read by music21, `xmlToM21.py` line 5830, and partitura, `importmusicxml.py` line 655); `Measure.paddingLeft`; or the first bar's notated length against `TimeSignature.barDuration` | A comparison of two lengths. |
+| rhythm.values | music21 `Duration.type` and `note.Rest`; native `UniqueNoteQuarterLengths`, `RangeOfNoteQuarterLengths`; partitura `duration_beat` | A count by value. |
+| rhythm.dotted-quarter | music21 `Duration.dots` with the next note's `Duration.type` | Two fields of adjacent notes. |
+| rhythm.ties | music21 `Note.tie` (a `tie.Tie` with start, continue, stop) with measure numbers; MusicXML `<tie>` | An element, and whether its two ends share a bar. |
+| rhythm.repeated-notes | partitura note array `pitch` per `voice`; music21 `RepeatedNotesFeature` (jSymbolic M-9, `jSymbolic.py` line 327) | Run lengths over consecutive equal values. |
+| rhythm.equal-stream | partitura `duration_beat` per staff | A run of equal values; the minimum length is a threshold a later rule sets (the characteristics list says it is still to source). |
+| notation.swing-mark | Raw MusicXML `<swing>`: neither reader makes an object for it (music21's `xmlToM21.py` has no swing handling, partitura's importer has none); the word "Swing" from music21 `expressions.TextExpression` | Element presence plus a closed word list. |
+| rhythm.beat-onset-share | partitura `is_downbeat` and `onset_beat`; music21 `Note.beat` | The fraction of beats (and of bar starts) that carry an onset. |
+| mark.tempo-text | `<metronome>` through music21 `tempo.MetronomeMark` (`.referent`, `.getQuarterBPM()`) or partitura `Tempo(bpm, unit)`; tempo words against the closed term table the libraries ship (partitura's `ConstantTempoDirection` table, `importmusicxml.py` line 84; music21 `tempo.defaultTempoValues`, `tempo.py` line 38) | A number and a beat unit; a word is matched to a table, and a word outside it is reported unclassified, not guessed. |
+| mark.tempo-change | partitura `DecreasingTempoDirection`, `IncreasingTempoDirection`, `ResetTempoDirection`; music21 `tempo.MetricModulation` (`tempo.py` line 860) | Closed word lists. |
+| technique.velocity | partitura `onset_quarter` and `duration_quarter` per staff with `Tempo.bpm` and `unit`, or music21 `MetronomeMark.getQuarterBPM()`; music21 `NoteDensityFeature` (jSymbolic RT-5) as a whole-item check | Notes divided by seconds. The characteristics list records a fault in the project's own code for this row (the numerator taken as quarter notes per bar); it is not a fault in a reader. |
+| technique.endurance | partitura note array and `rest_array`, music21 `note.Rest`: the longest stretch of a staff without a rest | A maximum over spans. |
+| metre.grouping | music21 `TimeSignature.beatSequence` and `beamSequence`; raw `<beats>` text with "+"; `note.beams` | The numerator's "+" parts or the beam groups; with neither, the answer is UNKNOWN, not a guess. |
+| rhythm.silence | partitura note array onsets and ends over all staves; music21 `spanner.MultiMeasureRest`; `Score.parts` for the other parts | The gaps in the union of note intervals. |
+| rhythm.bar-patterns | music21 `search.mostCommonMeasureRhythms` (`search/base.py` line 1047: returns the count, the bars and the rhythm string for each pattern), run once per staff | Counting identical rhythm strings. |
+
+### 22.1 Sounded-key, polytonal and tone-row reads
+
+Characteristics: `pitch.chromatic`, `key.polytonal`, `pitch.tone-row`
+
+| candidate | what it does here | licence | offline | input | published accuracy (source) | maintenance | leaves unsolved |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| music21 `scale.ConcreteScale.getScaleDegreeAndAccidentalFromPitch` (`scale/__init__.py` line 1854) and `deriveRanked` (sections 2 and 9) | Gives a pitch's scale degree and accidental against a key or scale, so a note outside the scale is a note with an accidental. | BSD-3 | yes, installed | any music21 stream | none (deterministic membership) | v10.5.0 | The key as sounded comes from section 1, and the raised notes of a minor key from section 2; the library gives neither. |
+| MusPy `pitch_in_scale_rate` (section 2) | Share of notes in a given scale. | MIT | yes | MusicXML, MIDI, ABC | none (descriptive) | last push 2026-03-11 (section 2) | Major and minor only, as section 2 records. |
+| music21 `search.serial` (`TransformedSegmentMatcher`, `ContiguousSegmentSearcher`) with `serial.ToneRow`, `TwelveToneRow` | Finds the transformations (transposed, inverted, retrograde) of a given pitch-class segment as contiguous segments of a score, with a setting for repeated notes and for chords. | BSD (file header) | yes, installed | any music21 score with measures | none (deterministic search) | v10.5.0 | It needs the row as input. Which twelve notes are the row, and statements with omitted or split notes, are not decided by it. |
+| AMADS `amads.pitch.serial` (github.com/music-computing/amads) | Row manipulations: hexachord rotation and Krenek's pair swaps. | MIT (GitHub API) | yes | pitch lists | none | v1.4.0 2026-08-06, last push 2026-10-01 | Transforms rows; does not look for them in a score. The README says much of the toolkit remains to be tested (page fetch). |
+
+Searched: "polytonality bitonality automatic detection symbolic score dataset". The results were about single-key detection (Ng, Boyle and Cooper 1996; Rizo, Iñesta and Ponce de León 2006; the TAVERN and When in Rome analyses). None labels or detects two keys at once, in the summaries seen (**not confirmed** beyond the search summary).
+
+**Annotated data to test against.**
+- `pitch.chromatic`: the sounded key comes from When in Rome (CC BY-SA 4.0, section 1). No set labels individual chromatic notes.
+- `key.polytonal`: none found.
+- `pitch.tone-row`: no annotated score set found. music21's `serial.py` ships a table of rows from named works (Berg, Schoenberg and others; `HistoricalTwelveToneRow`, `findHistorical`), a lookup of known rows, not a set of scores.
+
+| id | status | what serves it |
+| --- | --- | --- |
+| `pitch.chromatic` | candidate | music21 `getScaleDegreeAndAccidentalFromPitch` / `deriveRanked`, given the key from section 1 and the minor form from section 2; MusPy `pitch_in_scale_rate` for the whole-piece share |
+| `key.polytonal` | nothing found (building blocks: raw `<key>` per staff; the section 1 key finders run once per staff) | project rule, agent confirms |
+| `pitch.tone-row` | candidate | music21 `search.serial` `TransformedSegmentMatcher` for the statements of a given row; choosing the row is a project step |
+
+**Recommendation.** Nothing to test first for `pitch.chromatic` beyond section 1's key test. Try `TransformedSegmentMatcher` on a row taken from music21's `findHistorical` table once a score of that work is in hand.
+
+### 22.2 Reading-load measures, page turns, aids and chord symbols
+
+Characteristics: `reading.pitch-entropy`, `reading.redundancy`, `notation.reading-aids`, `notation.turn-opportunity`, `notation.chord-symbols`
+
+| candidate | what it does here | licence | offline | input | published accuracy (source) | maintenance | leaves unsolved |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| RubricNet extractor (section 17), `extractor/DifficultyFeatures/code/raw_data_extractors.py` | Calls `pitch_entropy` and `pitch_set_lz` per part (read in the source): the two descriptors the rows define. | MIT (section 17) | yes | CIPI MusicXML | none for the descriptors alone (difficulty figures in section 18) | last push 2025-12-02 | The repository's own notes call one of its feature files "erroneous" (the ISMIR submission's `basic-CIPI.json`) and say the debugged features are in a separate archive. Its extractor README is a placeholder. The code should be read before reuse. |
+| AMADS `amads.algorithms.entropy` and `amads.algorithms.complexity` | Relative (normalised) entropy of a distribution, after the MIDI Toolbox; Lempel-Ziv complexity by the LZ77 algorithm. | MIT | yes | lists of values | none | v1.4.0 2026-08-06 | The entropy is normalised to 0 to 1 and the complexity is LZ77, where the rows name Shannon entropy and LZ76. A different variant. |
+| Python package `lempel_ziv_complexity` (github.com/Naereen/Lempel-Ziv_Complexity) | A Python Lempel-Ziv complexity count over a sequence. | MIT (GitHub API) | yes | sequences | none | last push 2021-03-31 | Which variant (LZ76) it counts is **not confirmed**. Not installed; unmaintained since 2021. |
+| music21 `harmony.ChordSymbol`, `harmony.NoChord` (from `<harmony>`) | Printed chord symbols as objects with root, kind and bass. | BSD-3 | yes, installed | MusicXML `<harmony>` | none (deterministic) | v10.5.0 | Its text parser is the weak part: the characteristics list records that it rejects "Cm7/Bb". Symbols typed as plain text are outside the `<harmony>` route. |
+| Tonal `@tonaljs/chord` (`Chord.get`) | Parses a chord symbol string, including slash chords such as "Cmaj7/B", into tonic, bass and notes (README read). | MIT per section 2 (the GitHub API reports none) | yes | symbol strings | none | last push 2026-09-29 | JavaScript. It reads symbols, not scores, and does not name the symbol system (letter names against Roman numerals or Nashville numbers). |
+
+Nothing found for the other two rows:
+- `notation.turn-opportunity`: searched "automatic page turn points detection sheet music score rests analysis algorithm". The published systems turn pages by following a performance (for example Henkel, Schwaiger and Widmer, arXiv 2111.06643, a title seen in the results; its content is **not confirmed**). A claim that engravers place turns at rests came from one search summary (**not confirmed**). No tool measures free spans in a symbolic score.
+- `notation.reading-aids`: searched "detect letter names or counting syllables written in noteheads beginner sheet music MusicXML analysis". Found only that MusicXML carries note names in `<notehead-text>`, which music21 leaves unread (`xmlToM21.py` line 3091, a TODO), and that engraving tools can print letters in noteheads. No detector.
+
+**Annotated data to test against.** For chord symbols, the Jazz Harmony Treebank and Chordonomicon (section 10; licences not settled there). None for pitch entropy, redundancy, page turns or reading aids.
+
+| id | status | what serves it |
+| --- | --- | --- |
+| `reading.pitch-entropy` | candidate | RubricNet's `pitch_entropy` (section 17); AMADS relative entropy as a second implementation |
+| `reading.redundancy` | candidate | RubricNet's `pitch_set_lz` (section 17); the row's LZ76 variant is not confirmed in any listed library |
+| `notation.reading-aids` | nothing found (building blocks: raw `<notehead-text>` and `<notehead>`, music21 `note.Lyric` text) | project rule; the agent separates counting from real words in lyrics |
+| `notation.turn-opportunity` | nothing found (building blocks: partitura `rest_array` and note array per staff, music21 `note.Rest`) | project rule; the length that suffices for a turn is a rule |
+| `notation.chord-symbols` | candidate | music21 `ChordSymbol` / `NoChord` from `<harmony>`; Tonal `Chord.get` for symbols typed as text |
+
+**Recommendation.** For the two entropy and complexity rows, read RubricNet's extractor before reuse (its own notes flag an erroneous feature file) and compare it with the AMADS functions on one score.
+
+### 22.3 Syncopation, backbeat, hemiola and polyrhythm
+
+Characteristics: `rhythm.syncopation`, `rhythm.backbeat`, `rhythm.hemiola`, `texture.polyrhythm`
+
+| candidate | what it does here | licence | offline | input | published accuracy (source) | maintenance | leaves unsolved |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SynPy (Song, Pearce, Harte, "SynPy: a Python toolkit for syncopation modelling", SMC 2015) | Seven syncopation models behind one interface, one value per bar: Longuet-Higgins and Lee, Pressing, Toussaint's metric complexity, Sioros and Guedes, Keith, Toussaint's off-beatness, and the weighted note-to-beat distance. | code licence **not confirmed**: the repository page (code.soundsoftware.ac.uk/projects/syncopation-dataset) refused the connection on 2026-10-08. The paper footer says CC BY 3.0 and its Zenodo record (10.5281/zenodo.851079) says CC BY 4.0 | yes if obtained (Python) | standard MIDI files (type 0 and 1) or the toolkit's own text rhythm notation; results to XML or JSON. Not MusicXML | none: the paper plots each model's output over the 111 rhythms of its dataset and, in the text read, gives no agreement figure with listeners (paper read in the PDF) | paper 2015; repository activity **not confirmed** | Four models cannot process polyrhythms and one handles duple metre only (Table 1 caption). All use onsets, and only Sioros and Guedes uses velocity, so "an accent off the beat" is not an output of most. MIDI input means exporting the score. |
+| AMADS `amads.time.meter` (`syncopation`, `syncopation_span`, `inner_metric_analysis`), github.com/music-computing/amads | `syncopation` holds the weighted note-to-beat distance and loads a score through partitura `load_score`. `syncopation_span` is a new measure that its own docstring says lacks empirical testing. `inner_metric_analysis` computes metric and spectral weights from onsets (Volk 2008). | MIT (GitHub API) | yes | any format partitura reads, MusicXML included (`syncopation.py` source) | none read for these modules | v1.4.0 2026-08-06, last push 2026-10-01 | One published model only. The source warns that partitura takes beats from the time-signature denominator (6/8 has six). The README says much remains to be tested (page fetch). |
+| Beatsearch (github.com/Tomasito665/Beatsearch) | Symbolic rhythm features including monophonic and polyphonic syncopation vectors, syncopated-onset ratio and mean syncopation strength (names read in its docs source). | MIT (GitHub API) | yes | its own rhythm objects, strings such as "x--x--x---x-x---", MIDI (the MIDI loader's docs page was not read) | none read | last push 2018-08-02 | No push since 2018; MusicXML input is not listed. |
+| GrooveToolbox (github.com/fredbru/GrooveToolbox, ISMIR 2020) | Rhythm and microtiming features of drum loops: syncopation, density, complexity, swing ratio. | Apache-2.0 (GitHub API) | yes | MIDI drum loops, grouped by kit part | none read | last push 2026-07-13 | Drum kits only; the README lists Python 3.5 or 2.7. No backbeat function in the function names of `Groove.py` (read), so the test for beats 2 and 4 is not supplied. |
+
+Searches with no tool found:
+- `rhythm.hemiola`: "hemiola detection symbolic music automatic computational". Results: a DFT-of-onsets treatment of hemiola (Chander, a SysMus 2021 poster seen in a search summary, **not confirmed**, no code seen) and AMADS's inner metric analysis as a building block.
+- `texture.polyrhythm`: "polyrhythm detection symbolic MIDI cross-rhythm 3 against 2 algorithm library". No library found; the search summary suggested checking onsets against 1/2 and 1/3 grids (a suggestion, not a source).
+- `rhythm.backbeat`: "backbeat detection snare on beats 2 and 4 symbolic MIDI drum pattern classification library". No symbolic detector found; the one backbeat detector in the results works on live audio.
+
+**Annotated data to test against.**
+- `rhythm.syncopation`: Song's syncopation dataset, 111 rhythm patterns with perceptual ratings of syncopation strength (27 monorhythms in 4/4, 36 in 6/8, 48 polyrhythms in 4/4; SynPy paper section 4, read). Its licence and the repository link are **not confirmed**. Fitch and Rosenfeld (2007, Music Perception) appeared as a PDF title in the results and was not read.
+- The RAG-C ragtime collection (about 11,000 MIDI files, Kirlin ISMIR 2020 paper text, read; CC BY 4.0 paper): used there with the Longuet-Higgins and Lee measure per bar. It has no ratings, so it supplies material, not labels. Its licence is **not confirmed**.
+- `rhythm.backbeat`, `rhythm.hemiola`, `texture.polyrhythm`: no annotated set found.
+
+| id | status | what serves it |
+| --- | --- | --- |
+| `rhythm.syncopation` | candidate | SynPy (the onset-based kinds: off-beat onset held across a strong beat, rest on a strong beat before an off-beat onset); AMADS weighted note-to-beat distance; the accent kind is not served |
+| `rhythm.backbeat` | nothing found (building blocks: partitura `onset_beat` and `is_downbeat`, music21 `Note.beatStrength`; GrooveToolbox covers drum loops only) | project rule |
+| `rhythm.hemiola` | nothing found (building blocks: AMADS inner metric analysis, ties and onsets per bar) | project rule, agent confirms the grouping |
+| `texture.polyrhythm` | nothing found (building blocks: partitura `onset_beat` per staff, music21 `duration.Tuplet` per staff; section 16 counts) | project rule |
+
+**Recommendation.** Score SynPy (after exporting a score to MIDI) and AMADS's weighted note-to-beat distance against Song's ratings for the onset kinds. Neither covers the accent kind.
+
+### 22.4 Named rhythm cells and clave direction
+
+Characteristics: `rhythm.habanera`, `rhythm.tresillo`, `rhythm.cinquillo`, `rhythm.secondary-rag`, `rhythm.clave-alignment`
+
+| candidate | what it does here | licence | offline | input | published accuracy (source) | maintenance | leaves unsolved |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Jajoria, Krenn, Mäder, "Towards a computational definition of the tresillo rhythm and its tracing in popular music" (arXiv 2109.10256v1, 2021) | Folds a song's onsets into one bar and scores their cosine similarity to a tresillo template (a plain and a parametrised version). | paper CC BY 4.0 (its footer); code **not confirmed**, none mentioned in the text | n/a | MIDI, 4/4 assumed | none: its validation songs were picked by the authors by listening, and the text says the parametrised model "clearly outperformed" the plain one without a figure (paper read in the PDF) | 2021 preprint | Tresillo only; no habanera, cinquillo or clave; pop MIDI; no code. A later SMC 2024 version was seen in a search summary and not read. |
+| music21 `search.rhythmicSearch` (`search/base.py` line 341) | Finds a given sequence of consecutive note lengths in a stream; returns the start indices. | BSD-3 | yes, installed | any music21 stream | none (deterministic) | v10.5.0 | It matches the lengths of consecutive notes. An onset cell in the rows is a set of onset positions in a bar, which differs when a rest or a tie falls inside the cell. |
+| Kirlin, "A corpus-based analysis of syncopated patterns in ragtime" (ISMIR 2020), github.com/pkirlin/ragtime-ismir-2020 | Turns ragtime MIDI into binary onset patterns per bar and counts them, with a Longuet-Higgins and Lee score per pattern. | paper CC BY 4.0; the GitHub API reports no licence file | yes | MIDI | none (a corpus study) | last push 2024-04-22 | Rhythm only, no pitch: it cannot test the secondary rag's period-three pitch pattern. |
+
+Searched: "tresillo habanera cinquillo clave detection symbolic rhythm pattern MIDI dataset Afro-Cuban"; "clave direction 3-2 2-3 automatic detection MIDI or audio Latin music dataset"; "ragtime syncopation computational analysis secondary rag pattern detection symbolic corpus". No detector for habanera, cinquillo or the secondary rag; the search summary found no use of the phrase "secondary rag" in the ragtime corpus papers (**not confirmed**). Vurkaç's 2011 "Clave-direction analysis" (title seen in a search summary; paper not read, **not confirmed**) argues for automatic clave-direction identification.
+
+**Annotated data to test against.**
+- `rhythm.clave-alignment`: the UCI "FIRM Teacher Clave Direction Classification" dataset (Vurkaç 2011; CC BY 4.0; 10,800 instances of a 16-position onset vector for one 4/4 bar, classes neutral, reverse clave, forward clave and incoherent, labelled from the donor's listening tests and interviews; facts from the UCI page through a page-fetch summary, not checked against the file). It labels one bar's onset vector; the row asks per two-bar cycle and per line.
+- `rhythm.habanera`, `rhythm.tresillo`, `rhythm.cinquillo`, `rhythm.secondary-rag`: no annotated set found. RAG-C (above) has the bars but no cell labels.
+
+| id | status | what serves it |
+| --- | --- | --- |
+| `rhythm.habanera` | nothing found (building blocks: onset positions per bar from partitura `onset_beat`; music21 `rhythmicSearch` for a notated cell; Jajoria et al.'s template method for tresillo) | project rule |
+| `rhythm.tresillo` | nothing found (building blocks: the same) | project rule; Jajoria et al. as the published method (no code) |
+| `rhythm.cinquillo` | nothing found (building blocks: the same) | project rule |
+| `rhythm.secondary-rag` | nothing found (building blocks: partitura `pitch` and `onset_beat` for a period-three pitch test) | project rule |
+| `rhythm.clave-alignment` | nothing found (building blocks: onsets per two-bar cycle; the UCI clave set as labelled data) | project rule, agent confirms |
+
+**Recommendation.** No tool to test; these stay project rules with this search recorded as the reuse line. Use the UCI clave set as a check on a clave-direction rule.
+
+### 22.5 Long-short feel
+
+Characteristics: `rhythm.shuffle`
+
+| candidate | what it does here | licence | offline | input | published accuracy (source) | maintenance | leaves unsolved |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AMADS `amads.time.swing` (`beat_upbeat_ratio`) | The beat-upbeat ratio of consecutive eighth-note beats from beat and upbeat timestamps, with the 0.25 to 4.0 bounds of Corcoran and Frieler (2021) (docstring read). | MIT (GitHub API) | yes | lists of timestamps | none read | v1.4.0 2026-08-06 | It measures a ratio from timestamps. It does not find notated long-short pairs, and a score gives no timestamps beyond the notated values. |
+| GrooveToolbox `get_swing_ratio` (section 22.3) | Swing ratio of a drum loop from microtiming. | Apache-2.0 | yes | MIDI drum loops | none read | last push 2026-07-13 | Performance microtiming on drums, not notation. |
+
+Searched: "shuffle swing feel detection from symbolic score or quantized MIDI long-short eighth ratio triplet feel classification". The results measure swing from performances (audio or unquantised MIDI); none classifies a notated triplet or dotted pair as shuffle. A quantised grid cannot tell swing from a triplet feel by position alone (a patent seen in the results, **not confirmed**).
+
+Annotated data: none found for notated pairs. The Weimar Jazz Database, which the AMADS docstring cites through Corcoran and Frieler, holds performance timings, not notation (not opened).
+
+| id | status | what serves it |
+| --- | --- | --- |
+| `rhythm.shuffle` | nothing found (building blocks: music21 `Duration` pairs per beat; AMADS `beat_upbeat_ratio` for the ratio once the pairs are found) | project rule |
+
+**Recommendation.** None to test. The rule counts notated pairs and uses the ratio function only as arithmetic.
+
+### 22.6 Not confirmed in this section
+
+- SynPy's code licence and whether its repository is reachable (the page refused the connection); the Song dataset's licence; RAG-C's licence.
+- Facts seen only in a search summary or a page-fetch summary: Henkel et al.'s page-turning content; the claim that engravers place turns at rests; Chander's hemiola poster; Vurkaç's 2011 paper; the SMC 2024 tresillo version; the Fitch and Rosenfeld paper's content; the UCI clave dataset's figures; AMADS's README statements; the patent on swing and triplet feel; the polytonality search results.
+- Tonal's licence (the GitHub API reports none; section 2 reads MIT from `package.json`, not rechecked).
+- Which Lempel-Ziv variant `lempel_ziv_complexity` counts.
+- Whether code exists for Jajoria et al.
+- Beatsearch's MIDI loader (docs page not read).
+
 ---
 
 ## Counts (by script over this file)
 
-The script counted rows of the per-characteristic tables (lines starting `` | `id` | ``) by their status cell.
+The script counted rows of the per-characteristic tables (lines starting `` | `id` | ``) by their status cell. Section 22 also has direct-read lines, written without backticks, which are not counted as surveyed.
 
-| scope | surveyed | with a candidate | nothing found |
-| --- | --- | --- | --- |
-| chunk-1 list | 13 | 8 | 5 |
-| sections 1.D to 1.L (not direct reads) | 129 | 48 | 81 |
-| all | 142 | 56 | 86 |
+| scope | surveyed | with a candidate | nothing found | direct reads (no row) |
+| --- | --- | --- | --- | --- |
+| chunk-1 list (sections 1 to 21) | 13 | 8 | 5 | 0 |
+| sections 1.D to 1.L (not direct reads) | 129 | 48 | 81 | 16 (listed at the top) |
+| section 22: chunk-1 characteristics not surveyed before | 18 | 6 | 12 | 37 |
+| all | 160 | 62 | 98 | 53 |
 
 How the counts were checked:
 - Every id on a `Characteristics:` line has exactly one status row, and the reverse.
-- The 142 ids are the brief's 13 chunk-1 ids plus the 145 rows of sections 1.D to 1.L, less the 16 direct reads listed at the top. None is missing and none is extra.
-- The script is `build/tools-survey/check.sh`, run 2026-10-08.
+- The 142 ids of sections 1 to 21 are the brief's 13 chunk-1 ids plus the 145 rows of sections 1.D to 1.L, less the 16 direct reads listed at the top. None is missing and none is extra.
+- The script for sections 1 to 21 is `build/tools-survey/check.sh`, run 2026-10-08.
+- The 55 ids of section 22 are the chunk-1 characteristics of sections 1.A to 1.C that had no row: 37 direct-read lines and 18 status rows (6 candidate, 12 nothing found). `build/tools-survey/check22.py` (not committed), run 2026-10-08, checks that each of the 55 appears exactly once in section 22, that no other id has a new row, that the `Characteristics:` ids and the status rows match, and that the section 22 and all rows above equal a recount of this file.
 
-Of the 86 "nothing found", most are rules where libraries give the inputs and a project rule or count does the rest. Those rows name their building blocks.
+Of the 98 "nothing found", most are rules where libraries give the inputs and a project rule or count does the rest. Those rows name their building blocks.
 
-Of the 56 "candidate":
+Of the 62 "candidate":
 - some are deterministic library reads (music21, partitura), where no accuracy applies;
 - `form.sonata`, `form.song-sections` and `meta.published-grade` rest on published methods or data rather than runnable tools.
 
@@ -575,4 +763,4 @@ Of the 56 "candidate":
   - Midi Miner's accuracy;
   - the licences of Chordonomicon, the Jazz Harmony Treebank and the Algomus fugue data;
   - the Simonetta Mozart figure, the Algomus fugue figures and the POP909 structure figure (search summaries only).
-- Other chunk-1 rows marked uncertain or failing but not on the brief's list (`key.polytonal`, `pitch.tone-row`, `rhythm.syncopation`, `reading.accidental-kinds`, `mark.repeat`) were not surveyed.
+- The 55 chunk-1 characteristics of sections 1.A to 1.C that had no row (including `key.polytonal`, `pitch.tone-row`, `rhythm.syncopation`, `reading.accidental-kinds` and `mark.repeat`) are covered in section 22: 37 as direct reads with their readers named, 18 surveyed. Section 22.6 lists what in it is not confirmed.
