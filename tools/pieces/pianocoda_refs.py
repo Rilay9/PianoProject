@@ -19,6 +19,12 @@ from match import surname, catalogue, cat_compare, clean_title, fold  # noqa: E4
 import summarise as S  # noqa: E402
 
 
+def kfix(title):
+    """Köchel/Kirkpatrick numbers as the matcher reads them: Pianocoda slugs are lower case ("k-34") and lists write
+    "Kp. 380"; the matcher's K pattern needs an upper-case K."""
+    return re.sub(r"\b[Kk]p?\.?\s*(\d)", r"K \1", title)
+
+
 def curl(url, out=None):
     args = ["curl", "-sSL", "--compressed", "-A", "Mozilla/5.0", url]
     if out:
@@ -36,7 +42,7 @@ def main():
         if len(parts) < 5:
             continue
         comp, slug = parts[-2], parts[-1]
-        title = slug.replace("-", " ")
+        title = kfix(slug.replace("-", " "))
         pages.append({"url": url, "composer": comp, "surname": surname(comp.replace("-", " ")),
                       "title": title, "cat": catalogue(title), "clean": clean_title(title)})
     print(len(pages), "Pianocoda pages")
@@ -53,7 +59,7 @@ def main():
         sn = surname(comp)
         if not sn:
             continue
-        wcat, wclean = catalogue(title), clean_title(title, {sn})
+        wcat, wclean = catalogue(kfix(title)), clean_title(title, {sn})
         cands = []
         for p in pages:
             if p["surname"] != sn and sn not in p["composer"]:
@@ -83,6 +89,9 @@ def main():
                 continue
             o["drive_id"] = m.group(1)
             curl(f"https://drive.google.com/uc?export=download&id={m.group(1)}", pdf)
+        if open(pdf, "rb").read(4) != b"%PDF":  # Drive answers some ids with an HTML 404 page
+            o["png"] = "download is not a PDF"
+            continue
         try:
             import pymupdf
             d = pymupdf.open(pdf)
