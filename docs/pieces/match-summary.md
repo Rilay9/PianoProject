@@ -79,35 +79,15 @@ App level from each source's own level (curriculum.md, level spine; above Grade 
    - folk-song arrangements;
    - generated pieces (step 4).
 
-## Quality check of high and medium candidates (run 2026-10-09, `tools/pieces/quality_check.py`)
+## Quality check of high and medium candidates (final run 2026-10-09, `tools/pieces/quality_check.py`)
 
-2,791 candidate rows: **1,315 facts fit**, 1,065 flagged, 411 not checked (Mutopia files not downloaded). Results per row: `docs/pieces/quality.csv`.
+After the datasets downloaded on the owner's go (ASAP, OpenEWLD, Scriabin and the Mozart dice game in kern, Nottingham folk tunes; `content/scores/imported/SOURCES.md`) and three more matcher fixes found by sampling (mode kept in "in C minor", Roman numerals read, No. numbers compared when only one side names the opus):
 
-Flag reasons (a row can have several):
+- 3,080 high/medium candidate rows: **1,376 facts fit**, 1,357 flagged, 347 not checked (Mutopia files not downloaded). Per row: `docs/pieces/quality.csv`.
+- **Pieces whose best candidate fits the facts, by app level (high / medium):** A 0/1, B 0/6, 1 11/9, 2 15/13, 3 20/14, 4 33/18, 5 57/19, 6 63/32, 7 65/43, 8 75/36. That is 504 high and 313 medium pieces in all levels together, PSyllabus-only boards included.
+- **Precision, measured by reading a random sample of 20 per tier against the files:**
+  - *High:* 15 of 20 are the right piece; 5 are the right work but the wrong or an unclear part (a whole sonatina, another movement, a set without its number); 0 are a wrong piece.
+  - *Medium:* about 12–14 of 20 are the right piece, 3 partial, 3 wrong (Gymnopédie 2 against 1, Beethoven WoO 51 against Op. 53, a different Shostakovich waltz).
+- **What "facts fit" means:** the file is a piano score, its key signature agrees with the title, and its title shows no arrangement. It is not a confirmation.
 
-| Reason | Rows |
-|---|---|
-| Not piano? | 553 |
-| Key differs from the title | 444 |
-| The list grades one specific arrangement | 122 |
-| More than 3 parts | ~170 |
-| Arrangement or instrument words in the file title | 69 |
-
-The "not piano?" count includes keyboard works uploaded with a harp or harpsichord sound; those may be usable and are left flagged for a look.
-
-Pieces with at least one candidate whose facts fit, by app level:
-
-| App level | with a high/medium candidate | facts fit | best is Mutopia (not checked) | all flagged |
-|---|---|---|---|---|
-| A | 1 | 1 | 0 | 0 |
-| B | 7 | 6 | 0 | 1 |
-| 1 | 31 | 21 | 2 | 8 |
-| 2 | 47 | 29 | 0 | 18 |
-| 3 | 62 | 34 | 5 | 23 |
-| 4 | 78 | 52 | 7 | 19 |
-| 5 | 108 | 80 | 8 | 20 |
-| 6 | 166 | 101 | 39 | 26 |
-| 7 | 169 | 112 | 39 | 18 |
-| 8 | 154 | 95 | 32 | 27 |
-
-"Facts fit" means the file is a piano score whose key signature agrees with the title and whose title shows no arrangement. It is still not a confirmation of identity or edition.
+Matcher tuning stops here. The high facts-fit tier is the pool; a piece is confirmed (right piece, right movement, against a printed score) when it is chosen for a rung. Medium candidates are used only after that individual look.
