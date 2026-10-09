@@ -20,7 +20,7 @@ SESSION = os.path.dirname(ROOT)
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "build", "pieces", "available.csv")
 IMP = os.path.join(ROOT, "content", "scores", "imported")
 COLS = ["source", "file", "composer", "title", "subtitle", "catalogue", "bars", "tracks",
-        "rating", "n_ratings", "licence", "genres", "quarried_before"]
+        "rating", "n_ratings", "licence", "genres", "quarried_before", "dedup", "excluded"]
 csv.field_size_limit(10**9)
 
 
@@ -39,12 +39,16 @@ def pdmx_rows(cids):
     with open(os.path.join(SESSION, "PDMX.csv"), encoding="utf-8") as f:
         for d in csv.DictReader(f):
             cid = os.path.basename(d["mxl"]).rsplit(".", 1)[0]
-            yield {"source": "pdmx", "file": d["mxl"], "composer": d["composer_name"],
+            # composer_name is NA on many pop/film rows; the author is then in artist_name (old P14 finding)
+            comp = d["composer_name"] if d["composer_name"] not in ("", "NA") else d["artist_name"]
+            yield {"source": "pdmx", "file": d["mxl"], "composer": "" if comp == "NA" else comp,
                    "title": d["title"] if d["title"] != "NA" else d["song_name"],
                    "subtitle": d["subtitle"] if d["subtitle"] != "NA" else "",
                    "catalogue": "", "bars": d["song_length.bars"], "tracks": d["n_tracks"],
                    "rating": d["rating"], "n_ratings": d["n_ratings"], "licence": d["license"],
-                   "genres": d["genres"], "quarried_before": "yes" if cid in cids else ""}
+                   "genres": d["genres"], "quarried_before": "yes" if cid in cids else "",
+                   # the dataset's own duplicate flag: only the deduplicated copy of an upload counts as distinct
+                   "dedup": "yes" if d["subset:deduplicated"] == "True" else "no"}
 
 
 def kern_rows():
@@ -177,8 +181,15 @@ def catalogue_rows():
                        "licence": r.get("licence", ""), "genres": r.get("formats", ""), "quarried_before": ""}
 
 
+def exclusions():
+    """docs/pieces/exclusions.csv: files known to be wrong (source, file substring, reason, evidence)."""
+    p = os.path.join(ROOT, "docs", "pieces", "exclusions.csv")
+    return list(csv.DictReader(open(p, encoding="utf-8"))) if os.path.exists(p) else []
+
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    excl = exclusions()
     counts = {}
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS)
@@ -186,6 +197,8 @@ def main():
         for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows(), dataset_rows(),
                     catalogue_rows()):
             for r in gen:
+                hit = next((e for e in excl if e["source"] == r["source"] and e["file_contains"] in r["file"]), None)
+                r["excluded"] = hit["reason"] if hit else ""
                 w.writerow(r)
                 counts[r["source"]] = counts.get(r["source"], 0) + 1
     print(OUT, counts)

@@ -1,0 +1,5 @@
+source,file_contains,reason,evidence
+musetrainer,Mariage_dAmour,Mariage d'Amour (Paul de Senneville 1979) mislabelled as Chopin,old branch docs/decisions/2026-09-05-p4-content-licensing.md section 2
+musetrainer,Spring_Waltz,Mariage d'Amour (Senneville) filed under Chopin as 'Spring Waltz',old branch docs/decisions/2026-09-05-p4-content-licensing.md section 2
+musetrainer,G_Minor_Bach,Luo Ni's modern arrangement filed as Bach; not BWV 578,old branch docs/decisions/2026-09-05-p4-content-licensing.md section 2
+musetrainer,Hungarian_Sonata,Richard Clayderman piece filed as 'Hungarian Sonata',old branch docs/decisions/2026-09-05-p4-content-licensing.md section 2

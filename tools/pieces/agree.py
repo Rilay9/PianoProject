@@ -3,7 +3,8 @@
 For each wanted piece given (composer + title as in quality.csv), every MusicXML candidate file whose facts fit is
 read with music21; the first N measures of the top staff and of the lowest staff are reduced to (pitch, duration)
 sequences, transposition-free comparison is NOT done (a file in another key is a different edition and is reported
-as such). Two files agree when their sequences are identical. Agreement between files from different uploaders is
+as such). Two files agree when their sequences are identical. Agreement counts as independent only between files that are each PDMX's
+deduplicated copy (or come from different sources): PDMX marks 56% of its rows as copies. Independent agreement is
 evidence that the notes are right; it is weaker than comparing with a printed score, and it is not proof.
 
 Usage: python tools/pieces/agree.py "<title substring>" [measures]   (prints a table)
@@ -55,7 +56,10 @@ def main():
     for i, (r, top, low) in enumerate(res):
         same = [j for j, (_, t2, l2) in enumerate(res) if j != i and t2 == top and l2 == low]
         same_top = [j for j, (_, t2, _) in enumerate(res) if j != i and t2 == top]
-        print(f"  [{i}] {r['a_title'][:40]!r} keysig={r['keysig']} time={r['time']} bars={r['bars']} | "
+        canon = r.get("a_source") != "pdmx" or r.get("a_dedup") == "yes"
+        indep = [j for j in same if canon and (res[j][0].get("a_source") != "pdmx" or res[j][0].get("a_dedup") == "yes")]
+        print(f"  [{i}] {'canonical' if canon else 'COPY'} {r['a_title'][:36]!r} keysig={r['keysig']} time={r['time']} bars={r['bars']} | "
+              f"independent agreement with {indep or '-'} | "
               f"agrees fully with {same or '-'}; top staff with {same_top or '-'} | top: {' '.join(f'{a}/{b:g}' for a, b in top[:10])}")
 
 

@@ -100,3 +100,10 @@ With that filter, the best MusicXML candidate per piece:
 - **638 pieces whose facts fit, 390 of them high:** PDMX `.mxl`, ASAP `.musicxml` and musetrainer `.mxl`.
 - **By app level (high / medium):** A 0/1, B 0/6, 1 11/9, 2 15/13, 3 20/13, 4 33/18, 5 54/19, 6 50/26, 7 47/35, 8 54/23.
 - **Dropped from the pool:** the 252 Humdrum best candidates (Sapp kern editions, Scriabin) and 163 Mutopia candidates, unless a MusicXML file of the same piece exists.
+
+## Known source problems applied (old branch findings, 2026-10-09)
+
+- **PDMX duplicates.** By the dataset's own flag, 142,078 of 254,077 rows (56%) are not the deduplicated copy (old branch `docs/decisions/2026-09-06-p14-pdmx-quarry.md`). The available list now carries the flag. The matcher prefers the canonical copy; the quality check flags a non-canonical one; `agree.py` counts agreement as independent only between canonical copies or files from different sources.
+- **PDMX `composer_name` empty on many pop/film rows,** with the author in `artist_name` (same P14 record). The available list now uses the artist when the composer is empty. Names can also be mojibake or misspelt there; those matches are missed, not fixed.
+- **PDMX metadata is attribution, not fact:** composer, arranger and artist are conflated, and tempo marks go missing or are defaulted (old branch `docs/prompts/content-mistakes.md` item 17). Titles and composers stay candidates until checked. Tempo from a file is not trusted.
+- **MuseTrainer mislabels** (old branch `docs/decisions/2026-09-05-p4-content-licensing.md` §2) are listed in `docs/pieces/exclusions.csv` and dropped from the available list. They are *Mariage d'Amour* filed as Chopin's "Spring Waltz", a modern "G Minor Bach" filed as Bach, and a Clayderman piece filed as "Hungarian Sonata".

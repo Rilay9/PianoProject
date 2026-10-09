@@ -87,6 +87,8 @@ def judge(row, f):
                        {maj, mnr, ENHARMONIC.get(maj, maj), ENHARMONIC.get(mnr, mnr)}
             if root not in ok_roots:
                 flags.append(f"key: list says {root} {mode}".strip() + f", file has {f['keysig']} sharps")
+    if row.get("a_dedup") == "no":
+        flags.append("not the deduplicated copy (PDMX duplicate flag)")
     words = ARR_WORDS.findall(" ".join([row["a_title"], row["a_subtitle"]]))
     want_arr = bool(re.search(r"\barr\.", row["title"], re.I))
     if words:

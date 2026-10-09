@@ -177,6 +177,8 @@ def main():
     n = 0
     for a in csv.DictReader(open(avail_p, encoding="utf-8")):
         n += 1
+        if a.get("excluded"):  # known-wrong files (docs/pieces/exclusions.csv)
+            continue
         own = surname(a["composer"])
         # the file's composer field decides; only when it names nobody are surname words in the title used
         keys = {own} if own else (surname_keys(a.get("subtitle", "") + " " + a["title"]) & wanted_surnames)
@@ -199,7 +201,7 @@ def main():
     print(n, "available rows;", sum(len(v) for v in index.values()), "indexed under wanted composers")
 
     cols = ["confidence", "composer", "title", "sources", "cat_match", "title_score", "a_source", "a_file",
-            "a_composer", "a_title", "a_subtitle", "a_bars", "a_tracks", "a_rating", "a_n_ratings", "a_quarried_before"]
+            "a_composer", "a_title", "a_subtitle", "a_bars", "a_tracks", "a_rating", "a_n_ratings", "a_quarried_before", "a_dedup"]
     stats = defaultdict(int)
     with open(out_p, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)
@@ -218,7 +220,7 @@ def main():
                         else "low" if ts >= 0.60 else None)
                 if conf:
                     cands.append((("high", "medium", "low").index(conf), -ts, conf, cm, ts, a))
-            cands.sort(key=lambda c: (c[0], c[1], -(float(c[5].get("n_ratings") or 0) if (c[5].get("n_ratings") or "").replace(".", "").isdigit() else 0)))
+            cands.sort(key=lambda c: (c[0], c[1], c[5].get("dedup") == "no", -(float(c[5].get("n_ratings") or 0) if (c[5].get("n_ratings") or "").replace(".", "").isdigit() else 0)))
             best = cands[0][2] if cands else "none"
             stats[best] += 1
             for _, _, conf, cm, ts, a in cands[:5]:
@@ -227,7 +229,8 @@ def main():
                             "a_source": a["source"], "a_file": a["file"], "a_composer": a["composer"],
                             "a_title": a["title"], "a_subtitle": a.get("subtitle", ""), "a_bars": a.get("bars", ""),
                             "a_tracks": a.get("tracks", ""), "a_rating": a.get("rating", ""),
-                            "a_n_ratings": a.get("n_ratings", ""), "a_quarried_before": a.get("quarried_before", "")})
+                            "a_n_ratings": a.get("n_ratings", ""), "a_quarried_before": a.get("quarried_before", ""),
+                            "a_dedup": a.get("dedup", "")})
             if not cands:
                 w.writerow({"confidence": "none", "composer": p["composer"], "title": p["title"],
                             "sources": "; ".join(sorted(p["sources"]))})
