@@ -19,3 +19,17 @@ Six Grade 1 pieces were picked from the MusicXML pieces whose facts fit (`docs/p
 - **Printed-score comparison:** dropped on the owner's decision. IMSLP mostly offers PDFs and has no MusicXML for the pieces checked. Confirmation rests on independent uploads agreeing plus the catalogue-number match. A piece with a single upload stays unconfirmed until the owner has played it.
 - **Whole-piece checks:** bars after 8 are not compared.
 - **Loading in the app:** that comes in step 6.
+
+## Rerun with independence (2026-10-09, after the PDMX duplicate flag was applied)
+
+Agreement now counts only between canonical uploads (PDMX's deduplicated copies) or files from different sources:
+
+| Piece | Result |
+|---|---|
+| Beethoven, Russian Folk Song Op. 107 No. 3 | **Confirmed by independent agreement:** 3 canonical uploads identical in bars 1–8 (a fourth is a copy) |
+| Mozart, Minuet in F K. 2 | Not confirmed: the agreeing pair is a canonical upload and its own copy |
+| Mozart, Allegro in F K. 1c | Not confirmed: the two fully agreeing files are both copies; the canonical one agrees on the top staff only |
+| Schumann, Soldier's March Op. 68 No. 2 | Not confirmed: the agreeing file is a copy |
+| Bach, BWV 514; Haydn, Hob. IX:22 No. 3 | Not confirmed: a single upload each |
+
+**What this shows:** independent uploads of the same piece are rare, so this check can confirm few pieces. Most pieces rest on the catalogue-number match and the facts check, until the owner plays them.
