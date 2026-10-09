@@ -99,7 +99,8 @@ def mutopia_rows():
 def dataset_rows():
     """Any other dataset folder under content/scores/imported/ (downloaded on the owner's go): read by format.
     MusicXML: work-title / movement-title / creator[@type=composer]; Humdrum: !!!COM / !!!OTL; ABC: one row per tune
-    (T: title, C: composer), file given as path#X."""
+    (T: title, C: composer), file given as path#X. The folder path goes in "subtitle": some datasets (ASAP,
+    OpenEWLD) keep the composer and title there, and the matcher reads subtitle words when the composer is empty."""
     import zipfile
     import xml.etree.ElementTree as ET
     skip = {"kern", "musetrainer", "mutopia"}
@@ -112,7 +113,9 @@ def dataset_rows():
                 p = os.path.join(dp, fn)
                 rel = os.path.relpath(p, ROOT).replace("\\", "/")
                 low = fn.lower()
-                row = {"source": name, "file": rel, "composer": "", "title": "", "subtitle": "", "catalogue": "",
+                folder = os.path.relpath(dp, base).replace("\\", "/").replace("_", " ")
+                row = {"source": name, "file": rel, "composer": "", "title": "", "subtitle": "" if folder == "." else folder,
+                       "catalogue": "",
                        "bars": "", "tracks": "", "rating": "", "n_ratings": "", "licence": "see SOURCES.md",
                        "genres": "", "quarried_before": ""}
                 try:
