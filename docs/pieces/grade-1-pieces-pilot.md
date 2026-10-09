@@ -47,4 +47,24 @@ The comparison is the orchestrator reading a notation image.
 |---|---|---|
 | Mozart, Minuet in F K. 2 | Pianocoda engraving (pianocoda.com/?p=1612, PDF on Google Drive; editor and source not stated) | **Confirmed, bars 1–8:** "W. A. Mozart Minuet in F Major K2." (canonical) matches exactly. **Error found:** "Mozart: Minuet in F Major (K2) (easy)" (canonical) has a rest before the bar-7 triplet that the reference does not. "Minuet in F" is a different piece |
 
+| Schumann, Soldier's March Op. 68 No. 2 | Pianocoda (pianocoda.com/?p=1594) | **Confirmed, bars 1–8 both hands:** "Schumann: Soldier's March Op. 68 No. 2" (canonical) matches exactly |
+| Bach, Chorale BWV 514 | Pianocoda (pianocoda.com/?p=34) | **Confirmed, bars 1–8 both hands:** "Johann Sebastian Bach – Schaff's mit mir Gott" (canonical) matches exactly |
+| Haydn, German Dance in G Hob. IX:22 No. 3 | Pianocoda (pianocoda.com/?p=2222; title as on the RCM list) | **Neither candidate is this piece.** The reference opens with a D upbeat, then F♯–G–B–G. "Tedesca" (labelled Hob. IX/22 No. 3, so a high catalogue match) opens G–F♯–E, a different dance. "Haydn – German dance" is in C, and its bass staff duplicates the treble (a broken file) |
+| Mozart, Allegro K. 1c; Beethoven, Op. 107 No. 3 | none found outside IMSLP (Piano Street may need an account) | K. 1c unconfirmed; Op. 107 No. 3 stays confirmed by independent agreement |
+
 **Cost:** one search, one page fetch, one PDF download, one image read; a few minutes per piece.
+
+## Pilot result (all checks)
+
+| Piece | Status |
+|---|---|
+| Mozart, Minuet K. 2 | Confirmed (reference PDF) |
+| Schumann, Soldier's March Op. 68 No. 2 | Confirmed (reference PDF) |
+| Bach, BWV 514 | Confirmed (reference PDF) |
+| Beethoven, Op. 107 No. 3 | Confirmed (3 independent uploads agree) |
+| Mozart, Allegro K. 1c | Unconfirmed (no reference, no independent upload) |
+| Haydn, German Dance Hob. IX:22 No. 3 | No usable file: both candidates are other pieces |
+
+**What it shows:**
+- **4 of 6 confirmed.** The reference check also caught a high-confidence catalogue match that was the wrong piece, and a broken file.
+- **Pianocoda gives a usable reference for pieces on the RCM lists:** free engraved PDFs, titled as on the RCM list, with no editor or source stated.
