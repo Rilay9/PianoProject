@@ -10,7 +10,8 @@ How a pair is scored (plain text comparison; nothing musical is judged):
             catalogue number agrees, or opus and number agree; "partial" when the opus agrees but one side has no number.
   title     difflib ratio of the cleaned titles (composer names, keys and filler words removed).
   confidence  high = composer + catalogue match; medium = partial catalogue + title >= 0.60, or title >= 0.80;
-              low = title >= 0.60.
+              low = title >= 0.60; title-only = the wanted piece names no composer (ANZCA lists) and the cleaned
+              title (two words or more) is identical.
 
 Wanted rows are first merged into pieces (same composer surname + identical title text), keeping every source and level.
 
@@ -131,24 +132,29 @@ def main():
     pieces = {}
     for r in csv.DictReader(open(wanted_p, encoding="utf-8")):
         keys = surname_keys(r["composer"])
-        if not keys:
-            continue
-        sk = sorted(keys)[0] if len(keys) == 1 else max(keys, key=len)
+        sk = (sorted(keys)[0] if len(keys) == 1 else max(keys, key=len)) if keys else ""  # "" = no composer: title-only
         ct = clean_title(r["title"], keys)
         pk = (sk, re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", fold(r["title"]))).strip())  # merge only identical titles
         p = pieces.setdefault(pk, {"surname": sk, "composer": r["composer"], "title": r["title"], "clean": ct,
                                    "cat": catalogue(r["title"] + " " + r.get("catalogue", "")), "sources": set()})
         p["sources"].add(f"{r['source']}={r['board_level']}" + (f"(ps{r['ps_level']})" if r.get("ps_level") else ""))
-    wanted_surnames = {p["surname"] for p in pieces.values()}
+    wanted_surnames = {p["surname"] for p in pieces.values()} - {""}
+    title_only = {p["clean"] for p in pieces.values() if not p["surname"] and len(p["clean"].split()) >= 2}
     print(len(pieces), "wanted pieces;", len(wanted_surnames), "composers")
 
     index = defaultdict(list)
+    tindex = defaultdict(list)  # exact cleaned title -> rows, only for wanted pieces that have no composer
     n = 0
     for a in csv.DictReader(open(avail_p, encoding="utf-8")):
         n += 1
         hay = " ".join([a["composer"], a.get("subtitle", ""), a["title"]])
         keys = surname_keys(a["composer"]) | (surname_keys(hay) & wanted_surnames)
         hit = keys & wanted_surnames
+        if title_only:
+            tk = clean_title(a["title"])
+            if tk in title_only:
+                a.setdefault("_cat", {})
+                tindex[tk].append(a)
         if not hit:
             continue
         a["_clean"] = clean_title(a["title"] + " " + a.get("subtitle", ""), keys)
@@ -165,7 +171,10 @@ def main():
         w.writeheader()
         for p in pieces.values():
             cands = []
-            for a in index.get(p["surname"], []):
+            if not p["surname"]:
+                for a in tindex.get(p["clean"], []):
+                    cands.append((3, -1.0, "title-only", "none", 1.0, a))
+            for a in index.get(p["surname"], []) if p["surname"] else []:
                 cm = cat_compare(p["cat"], a["_cat"])
                 if cm == "conflict":
                     continue
