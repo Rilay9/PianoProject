@@ -16,6 +16,6 @@ Six Grade 1 pieces were picked from the MusicXML pieces whose facts fit (`docs/p
 **Caveat on "agree":** the uploads were not checked for independence. PDMX contains re-uploads and copies; two Op. 107 No. 3 files share the same title. Copies agreeing prove nothing, so an "agree" here counts only once independence is shown (different uploaders, or PDMX's deduplication fields).
 
 **Not yet done:**
-- **Printed-score comparison:** IMSLP shows a disclaimer to accept before giving a score; that waits for the owner.
+- **Printed-score comparison:** dropped on the owner's decision. IMSLP mostly offers PDFs and has no MusicXML for the pieces checked. Confirmation rests on independent uploads agreeing plus the catalogue-number match. A piece with a single upload stays unconfirmed until the owner has played it.
 - **Whole-piece checks:** bars after 8 are not compared.
 - **Loading in the app:** that comes in step 6.
