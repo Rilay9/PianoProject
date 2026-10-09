@@ -94,13 +94,25 @@ def mutopia_rows():
                    "licence": field("license"), "genres": "", "quarried_before": ""}
 
 
+def catalogue_rows():
+    """Online libraries catalogued in docs/sources/catalogues/*.csv (Mutopia, OpenScore): listed, not yet on disk."""
+    import glob
+    for p in sorted(glob.glob(os.path.join(ROOT, "docs", "sources", "catalogues", "*.csv"))):
+        with open(p, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                yield {"source": r.get("source", "") or os.path.basename(p)[:-4], "file": r.get("url", ""),
+                       "composer": r.get("composer", ""), "title": r.get("title", ""), "subtitle": r.get("instrument", ""),
+                       "catalogue": r.get("catalogue", ""), "bars": "", "tracks": "", "rating": "", "n_ratings": "",
+                       "licence": r.get("licence", ""), "genres": r.get("formats", ""), "quarried_before": ""}
+
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     counts = {}
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS)
         w.writeheader()
-        for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows()):
+        for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows(), catalogue_rows()):
             for r in gen:
                 w.writerow(r)
                 counts[r["source"]] = counts.get(r["source"], 0) + 1
