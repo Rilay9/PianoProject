@@ -4,7 +4,9 @@
 // checklist that we have", after briefs went out that did the next step's work and opened
 // open-ended searches; the stop checklist runs only after a reply, too late for a brief).
 // The brief must carry a line starting "Brief check:" saying the checklist was run on it and
-// what it changed.
+// what it changed. The line is a reminder that lets the brief through, not evidence that the
+// brief was checked: the hook cannot tell whether the pass happened, and nothing here verifies
+// a brief independently (2026-10-09). The brief auditor agent hook is the only independent look.
 const fs = require('fs');
 const path = require('path');
 
@@ -20,6 +22,7 @@ process.stdin.on('end', () => {
   }
   const root = path.resolve(__dirname, '..', '..');
 
+  // A reminder only: the line is accepted as written, never treated as proof of a check.
   if (/^\s*Brief check:/m.test(text)) process.exit(0);
   // Both sections of CLAUDE.md: the brief questions (mistakes made in briefs, the owner,
   // 2026-10-08) first, then the eight reporting questions.
@@ -39,7 +42,8 @@ process.stdin.on('end', () => {
     'Brief not sent. Run every question below against this brief, as if the brief were the report: ' +
     'its goal against the owner\'s words, its scope, its inputs, its end condition, its rules. ' +
     'Fix the brief where a question finds a fault, then add a line starting "Brief check:" ' +
-    'saying what the pass changed (or "nothing found"), and send again.\n\n' + checklist + '\n'
+    'saying what the pass changed (or "nothing found"), and send again. The line is a reminder, ' +
+    'not evidence that the brief was checked.\n\n' + checklist + '\n'
   );
   process.exit(2);
 });
