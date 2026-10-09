@@ -58,7 +58,12 @@ STRONG = ("bwv", "hwv", "k", "z", "hob", "woo", "d")
 MOVEMENTS = ("allemande", "courante", "sarabande", "gavotte", "minuet", "menuet", "gigue", "bourree", "polonaise",
              "prelude", "fugue", "aria", "air", "march", "rondo", "scherzo", "trio", "musette", "passepied",
              "loure", "anglaise", "variation", "andante", "adagio", "allegro", "presto", "largo")
-KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?:\s*|-)(flat|sharp|b|#)?(?:\s+(major|minor|maj|min))?|([a-g])(?:\s*|-)(flat|sharp|b|#)?\s*(major|minor|maj|min))\b")
+KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?:[\s-]?(flat|sharp)|(b|#))?(?:\s+(major|minor|maj|min))?\b|([a-g])(?:[\s-]?(flat|sharp)|(b|#))?\s*(major|minor|maj|min)\b)")
+ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7, "viii": 8, "ix": 9, "x": 10, "xi": 11,
+         "xii": 12, "xiii": 13, "xiv": 14, "xv": 15, "xvi": 16, "xvii": 17, "xviii": 18, "xix": 19, "xx": 20,
+         "xxi": 21, "xxii": 22, "xxiii": 23, "xxiv": 24}
+ROMAN_RE = re.compile(r"\b(partita|suite|sonata|sonatina|invention|sinfonia|prelude|preludium|etude|study|"
+                      r"nocturne|waltz|valse|mazurka|polonaise|ballade|impromptu|lesson|variation)\s+([ivx]+)\b")
 
 
 def fold(s):
@@ -101,13 +106,17 @@ def catalogue(title):
         ms = rx.findall(text)
         if ms:
             out[kind] = {":".join(m) if isinstance(m, tuple) else m for m in ms}
+    for m in ROMAN_RE.finditer(fold(title)):  # "Partita I", "Sinfonia II" -> No. 1, No. 2
+        if m.group(2) in ROMAN:
+            out.setdefault("no", set()).add(str(ROMAN[m.group(2)]))
     words = set(re.split(r"[^a-z]+", fold(title).replace("menuet", "minuet").replace("bourrée", "bourree")))
     mv = {m for m in MOVEMENTS if m in words}
     if mv:
         out["mvt"] = {m.replace("menuet", "minuet") for m in mv}
-    km = KEY_RE.search(fold(title).replace("-flat", " flat").replace("-sharp", " sharp"))
+    km = KEY_RE.search(fold(title))
     if km:
-        root, accw, mode = (km.group(1), km.group(2), km.group(3)) if km.group(1) else (km.group(4), km.group(5), km.group(6))
+        g = km.groups()
+        root, accw, mode = (g[0], g[1] or g[2], g[3]) if g[0] else (g[4], g[5] or g[6], g[7])
         acc = {"flat": "b", "b": "b", "sharp": "#", "#": "#"}.get(accw or "", "")
         out["key"] = {root + acc}
         if mode:
@@ -132,7 +141,7 @@ def cat_compare(want, have):
     if any(differ(k) for k in STRONG + ("op", "key", "mode", "mvt")):
         return "conflict"
     same_op = "op" in want and "op" in have
-    if (same_op or ("op" not in want and "op" not in have)) and differ("no"):
+    if differ("no"):  # different numbers: a conflict even when only one side names the opus
         return "conflict"
     if any(k in want and k in have for k in STRONG):
         return "partial" if ("mvt" in want) != ("mvt" in have) else "match"
