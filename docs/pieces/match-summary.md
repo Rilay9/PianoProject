@@ -54,7 +54,7 @@ App level from each source's own level (curriculum.md, level spine; above Grade 
   - Keys written without "major" were not compared.
   - First names were counted as surnames (Dennis Alexander matched Alexander Scriabin).
   - Surname-first names were misread.
-- **Unit checks:** each fix has a test on the failing example.
+- **Fix checks:** each fix was run once on its failing example (one-off runs, not saved as tests).
 - **High rows at Levels 1–2 read correctly** in the last sample: Mozart K. 2, K. 1e, K. 1c, K. 7; Beethoven WoO 86, WoO 23; Haydn Hob. IX:22 No. 3; Schumann Op. 68 No. 2; Handel HWV 494; Bach BWV 514.
 - **Medium rows still include wrong pieces** (a generic title with no number on one side). They are worth looking at, not trusting.
 - **Not checked:** title-only rows have not been sampled. No candidate file has been opened yet.
