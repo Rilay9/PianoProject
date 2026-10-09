@@ -23,7 +23,7 @@ Each step is finished, checked by the owner's ChatGPT review, and given the owne
 5. **Lessons and videos.** Instruction built around the verified activities and music.
 6. **Integrate the app.** Bring over the UI, MIDI, score rendering, playback, storage and other infrastructure the design needs, adapted to it rather than the reverse.
 
-**Current step: 1, Curriculum: in progress (2026-10-09).** Working choices for this step:
+**Current step: 1, Curriculum: outline written (`curriculum.md`, 2026-10-09); waiting for the owner's ChatGPT review and the owner's go before step 2.** Working choices for this step:
 - Sources: Faber Piano Adventures and Alfred's Basic Piano Library (the publishers' scope-and-sequence material) for the beginner levels; the RCM, ABRSM and Trinity piano syllabuses for the graded spine; publishers' level-correlation charts for aligning levels.
 - Top level: ABRSM/Trinity Grade 8, RCM Level 10. Diplomas are out.
 - Styles: a style line stays only where a published syllabus or progression for it is found, and goes only as high as that source has substance.
