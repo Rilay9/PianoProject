@@ -278,6 +278,12 @@ Old structure: stages 0–9 and 15 tracks (`reference/old-curriculum.md`, Part B
 | Track technique | keep | The technique lines of each level (scales, arpeggios, chords per grade). |
 | Track ragtime | keep, as a strand | Patterns and pieces from G1 (R1, F 3A, AZ); mostly pieces, since no stand-alone method was readable. |
 
+## Notes for building the rungs (step 2)
+
+1. **A level is not the union of every source.** Each app level lists several syllabuses side by side for comparison; together they ask more than any one syllabus does. The rungs take one core progression and mark the other sources' items as alternatives or extras, keeping each item's own source level.
+2. **First exposure, prepared playing and sight-reading are different.** A rhythm or key may appear in a prepared piece levels before it is expected at sight (the sight-reading lines run behind the pieces, at Trinity by about two grades). Rungs separate meeting something, playing it in a prepared piece, and reading it unseen, through the activities rather than through a separate list of skills.
+3. **The upper-level musicianship depends on real pieces.** Voicing, pedalling, counterpoint, phrasing and interpretation at Grades 4–8 are taught through the pieces chosen in step 3. If no suitable usable piece is found for a rung, the rung changes. Nothing is built to classify pieces for these qualities. Exercises and modes are used where they teach better than a piece; not every scale, interval or chord needs its own song.
+
 ## Open points
 
 - **Alignment above Grade 4.** The RCM–ABRSM correspondence for Grades 5–8 is my reading of the technical content; no published chart covering those levels was read.
