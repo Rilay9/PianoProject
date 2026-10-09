@@ -36,6 +36,8 @@ PILOT = {  # settled in docs/pieces/grade-1-pieces-pilot.md
 
 def value(q):
     q = round(float(q), 3)
+    if q == 0:
+        return "grace note"
     if q in VALUE:
         return VALUE[q]
     if abs(q - 1 / 3) < 0.01:

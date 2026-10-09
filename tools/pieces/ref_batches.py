@@ -30,6 +30,14 @@ def main():
         done = {(v["candidate_file"], v["pianocoda_url"]) for v in csv.DictReader(open(vp, encoding="utf-8"))
                 if v["verdict"] != "NOT READ"}
         rows = [r for r in rows if (r["candidate_file"], r["pianocoda_url"]) not in done]
+    pairs = {}  # one read per (file, reference page): several list titles can share both; keep all their levels
+    for r in rows:
+        k = (r["candidate_file"], r["pianocoda_url"])
+        if k in pairs:
+            pairs[k]["levels"] = " ".join(sorted(set(pairs[k]["levels"].split()) | set(r["levels"].split())))
+        else:
+            pairs[k] = dict(r)
+    rows = list(pairs.values())
     by_level = {}
     for r in rows:
         lv = [x for x in r["levels"].split() if x in S.ORDER]

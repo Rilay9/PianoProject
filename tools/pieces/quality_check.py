@@ -77,6 +77,8 @@ def judge(row, f):
             flags.append(f"not piano? ({inst[:60]})")
         if int(f["parts"] or 0) > 3:
             flags.append(f"{f['parts']} parts")
+        if f["staves"] == "1":  # a melody on one staff: no left hand (ChatGPT's review, 2026-10-09)
+            flags.append("one staff (no left hand)")
         want = catalogue(row["title"])
         if "key" in want and f["keysig"] not in ("", "None"):
             maj, mnr = SHARPS_TO_KEYS.get(int(f["keysig"]), ("", ""))
