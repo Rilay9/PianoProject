@@ -115,6 +115,8 @@ def catalogue(title):
         ms = rx.findall(text)
         if ms:
             out[kind] = {":".join(m) if isinstance(m, tuple) else re.sub(r"[\s.]", "", m) for m in ms}  # "Anh. 114" = "Anh 114"
+    for m in re.findall(r"\bop(?:us)?\.?\s*\d+\s*/\s*(\d+)\b", fold(title)):  # "Op. 23/6" = Op. 23 No. 6
+        out.setdefault("no", set()).add(m)
     for rx in MVTNO_RE:
         for m in rx.findall(title):
             n = ORD.get(m.lower()) or ROMAN.get(m.lower()) or (int(m) if m.isdigit() else None)
@@ -238,7 +240,7 @@ def main():
                 # the wanted title names a catalogue number and the file names none of that kind: a similar title
                 # alone ("Sonata" / "Sonatina") is not enough for medium (sampled passes, 2026-10-10: 9 of 30 wrong)
                 ids_w = {k for k in ("op",) + STRONG if k in p["cat"]}
-                if conf == "medium" and ids_w and not ids_w & {k for k in ("op",) + STRONG if k in a["_cat"]} and ts < 0.95:
+                if conf == "medium" and ids_w and not ids_w & {k for k in ("op",) + STRONG if k in a["_cat"]} and (ts < 0.95 or len(p["clean"].split()) < 2):  # one generic word ("sonata") is never enough
                     conf = "low"
                 if conf:
                     cands.append((("high", "medium", "low").index(conf), -ts, conf, cm, ts, a))

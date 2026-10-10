@@ -72,8 +72,17 @@ def features(path, mvts):
         if m.leftBarline is not None and "repeat" in type(m.leftBarline).__name__.lower() or \
                 m.rightBarline is not None and "repeat" in type(m.rightBarline).__name__.lower():
             f["repeat"] += 1
-    f["slur"] = len(list(s.recurse().getElementsByClass(music21.spanner.Slur)))
-    f["pedal"] = sum(1 for x in s.recurse() if "pedal" in type(x).__name__.lower())
+    # slurs and pedal marks inside the bars used (the named movement), not the whole file (ChatGPT's code review)
+    used = {id(n) for m in ms for n in m.recurse().notes}
+    used_m = {id(m) for m in ms}
+    def inside(x):
+        if isinstance(x, music21.spanner.Spanner):
+            first = x.getFirst()
+            return first is not None and id(first) in used
+        m = x.getContextByClass(music21.stream.Measure)
+        return m is not None and id(m) in used_m
+    f["slur"] = sum(1 for x in s.recurse().getElementsByClass(music21.spanner.Slur) if inside(x))
+    f["pedal"] = sum(1 for x in s.recurse() if "pedal" in type(x).__name__.lower() and inside(x))
     f["sfz"] = f.get("dyn_sfz", 0) + f.get("dyn_sf", 0)
     f["range"] = (lo, hi)
     ks = next(iter(s.recurse().getElementsByClass(music21.key.KeySignature)), None)

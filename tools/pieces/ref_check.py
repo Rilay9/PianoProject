@@ -100,6 +100,9 @@ def main():
                           "title": r["title"], "candidate_file": f, "candidate_title": r["candidate_title"],
                           "pianocoda_url": r["pianocoda_url"]})
         open(os.path.join(OUT, f"check-{n // PER + 1}.md"), "w", encoding="utf-8", newline="\n").write("\n".join(lines))
+    if not items:  # every pair already read or left out
+        print("no pairs to read")
+        return
     with open(os.path.join(OUT, "check-items.csv"), "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(items[0].keys()))
         w.writeheader()

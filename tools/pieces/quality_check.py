@@ -86,7 +86,7 @@ def judge(row, f):
             flags.append(f"not piano? ({inst[:60]})")
         elif not_piano(inst.split(" | ")):
             flags.append(f"not piano: part '{not_piano(inst.split(' | '))[:40]}'")
-        if int(f["parts"] or 0) > 3:
+        if int(f["parts"] or 0) > 2:  # a two-hand piano score has one or two parts (ChatGPT's code review)
             flags.append(f"{f['parts']} parts")
         if f["staves"] == "1":  # a melody on one staff: no left hand (ChatGPT's review, 2026-10-09)
             flags.append("one staff (no left hand)")
