@@ -12,7 +12,7 @@ import csv, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 COLS = ["id", "group", "fact", "chatgpt_ids", "reports", "definition", "implementation", "library_and_prior_evidence",
-        "pitfalls", "tests_pass_fail_fool", "in_our_files", "used_for", "why_easy"]
+        "pitfalls", "tests_pass_fail_fool", "in_our_files", "used_for", "why_easy", "review_change"]
 
 ROWS = [
     # ---------------------------------------------------------------- foundation
@@ -552,12 +552,131 @@ ROWS = [
 ]
 
 
+# Changes after ChatGPT's independent review (2026-10-10, README_ChatGPT_independent_review.md), with the measured
+# checks on our 842 candidate files that settled its four technical points. Each entry overrides fields of a row and
+# says what changed in review_change.
+UPDATES = {
+    "E01": dict(
+        reports="For every file: parts, part names, staves per part, and the staves list used by all per-staff rows (each staff of each pitched part). Two-staff relations (E42-E45) run only when there are exactly two piano staves: one part with two staves, or two one-staff parts neither of which names another instrument.",
+        definition="Every staff of every pitched part is a staff for the per-staff rows, whatever the layout. Two piano staves = one part with two staves, or two one-staff parts whose names pass quality_check.not_piano; staff 1 is the upper (first) one. Otherwise the two-staff rows return UNKNOWN.",
+        tests_pass_fail_fool="Pass: grand staff -> 2 staves, relations run. Pass: two one-staff parts named Right Hand / Left Hand -> 2 staves, relations run. Fail: three staves (voice plus a two-staff piano) -> per-staff rows run on all three; relations UNKNOWN. Fool: two one-staff parts 'Violin' and 'Piano' -> relations UNKNOWN.",
+        in_our_files="measured on 842: one part with two staves 675; two one-staff parts 127 (some may pair another instrument); two parts with two staves 35; other 5",
+        review_change="ChatGPT: do not drop other layouts. Measured: refusing all but one two-staff part would lose 167 of 842 files; now per-staff rows run on any layout and only the two-staff relations need two piano staves."),
+    "E02": dict(
+        reports="For each measure: a unique index (0, 1, 2 ...) and the printed number (with any suffix), implicit flag, notated length against the time signature (full, short, over-full); explicit rests and unfilled voice gaps reported apart.",
+        review_change="ChatGPT: keep a unique measure index beside the printed number; separate rests from unfilled gaps."),
+    "E04": dict(
+        definition="<octave-shift type='down|up|stop' size='8|15' number='n'>, matched by number within a staff. MusicXML stores the sounding pitch and the shift says how the print differs: a usual 8va is type='down' (printed an octave below the sound). Measured on our files: notes under type='down' spans sit in octaves 5-7 (13,196 in octave 6), under type='up' in octaves 0-3, so <pitch> is the sounding pitch.",
+        implementation="Raw walk; displayed pitch = sounding pitch moved by the shift (down 8 -> one octave lower on the page, up 8 -> one higher, 15 -> two). music21 spanner.Ottava as the second reader (in our probe its spans matched the raw starts on 4 of 4 files).",
+        review_change="ChatGPT: state the direction (8va = type down) and keep sounding and displayed pitch apart. Measured on our files and confirmed."),
+    "E05": dict(
+        definition="Displayed staff position from the clef in force and the displayed pitch (E04: sounding pitch moved by any ottava). Ledger lines = lines passed beyond the staff: middle C in treble 1 below; B3 in treble 1 (the space under the first ledger line); A5 in treble 1 above; C6 in treble 2; middle C in bass 1 above; E2 in bass 1 below. Counts above 5 are kept as data and also flagged 'possible missing 8va'.",
+        review_change="ChatGPT: keep high counts as data with a separate flag rather than hiding them; base on displayed pitch."),
+    "E08": dict(
+        library_and_prior_evidence="ChatGPT asked whether files omit <alter> on notes covered by the signature. Measured on our 842 files: of 246,796 notes on a signature-altered step, 235,106 carry the matching <alter>, 11,501 more are explained by a natural earlier in the bar or a tie, and 189 (0.08%, 61 files) are unexplained. So the encoded <alter> is used, with accidental carry within the bar.",
+        definition="A note counts when its step is one the signature alters and its effective alter equals the signature's (from <alter>, which MusicXML requires for the sounding pitch). Notes naturalised by an accidental, or carrying it forward in the bar, do not count.",
+        review_change="ChatGPT's concern that <alter> may be omitted: measured, 189 of 246,796 notes unexplained; definition kept, with accidental carry stated."),
+    "E09": dict(
+        reports="Each signature exactly as written (beats including additive strings like 3+2, beat-type, symbol) with its bar; changes; a class (simple, compound, irregular) when the signature fixes it, UNKNOWN when it does not (6/4 and 3/2 can be grouped more than one way; 5, 7, 11 numerators without a written sum).",
+        review_change="ChatGPT: class is a convention; keep the written signature first and UNKNOWN where the grouping is open (6/4 now UNKNOWN unless beaming is read later)."),
+    "E10": dict(
+        reports="Pickup CANDIDATE when the first bar is shorter than the signature; the implicit flag; the last bar's length; a pickup is called confirmed only when the short first bar and the implicit flag or a matching short last bar agree.",
+        review_change="ChatGPT: a short first bar is a candidate, not proof; report the observations and their agreement."),
+    "E11": dict(
+        definition="Written <type> and <dot> of each non-grace, non-cue note and rest, and the encoded <duration> beside it. A tie chain is linked by <tie> (sound) or <tied> (notation) between notes of the same pitch on the same staff; two tied notes are one chain, two written notes.",
+        review_change="ChatGPT: read both <tie> and <tied>; keep written type and encoded duration as separate facts."),
+    "E12": dict(
+        definition="Two consecutive NOTES (not rests) in the same voice and staff, the second starting where the first ends: (dotted quarter, eighth) or (dotted eighth, sixteenth), in a bar whose signature is simple (E09). Compound and UNKNOWN-class bars are excluded.",
+        tests_pass_fail_fool="Pass: 4/4 'dotted quarter, eighth, half' -> 1. Fail: even quarters -> 0. Fool: dotted quarter then an eighth REST -> 0; 6/8 dotted quarters -> 0.",
+        review_change="ChatGPT: notes only, never rests."),
+    "E13": dict(
+        reports="Per staff: notes and runs by tuplet ratio (3:2, 6:4, 5:4, 2:3 ...), whether a bracket or number is printed (separately), and notes with an implausible ratio listed as suspect.",
+        definition="A tuplet note has <time-modification> with actual-notes and normal-notes both between 2 and 12, unequal, and a ratio strictly between 0.5 and 2. Other ratios (e.g. 28:6, 80:12, 6:6, 2:1) are re-export artefacts: reported as suspect, not as tuplets. Printed <tuplet> elements are reported as a separate display fact.",
+        library_and_prior_evidence="ChatGPT: a bracket-only rule misses unbracketed tuplets. Measured on our files: 6,011 of 107,140 time-modified notes lie outside any <tuplet> span, 4,906 of them at 3:2 in 92 files, so bracket-only was wrong for us (the old branch's 230-of-231 figure was on its own catalogue). Suspect ratios outside spans include 28:6, 80:12, 21:32.",
+        tests_pass_fail_fool="Pass: three eighths at 3:2 with no <tuplet> element -> 3 triplet notes, bracket not printed. Fail: plain eighths -> 0. Fool: a 28:6 ratio -> 0 tuplet notes, 1 suspect.",
+        review_change="ChatGPT: required change (unbracketed tuplets). Measured: 4,906 unbracketed 3:2 notes in 92 files; definition now from time-modification with a plausibility rule."),
+    "E20": dict(
+        definition="Children of <direction-type><dynamics> and of <notations><dynamics>. The staff is the direction's <staff>; when absent in a two-staff part it is 'unspecified' (not staff 1). Ordinary levels (pppp..ffff, mp, mf) are ordered; accent dynamics (sf, sfz, fz, fp, rf ...) are listed apart, not placed on the scale.",
+        review_change="ChatGPT: staff unspecified rather than staff 1; accent dynamics kept off the loudness scale."),
+    "E23": dict(
+        definition="<slur type='start|stop' number> paired by number within the part (a slur may change voice or staff); notes under a slur = notes of the start note's staff between its start and stop.",
+        review_change="ChatGPT: pair by number within the part, not by staff and voice."),
+    "E24": dict(
+        definition="<direction-type><pedal type='start|stop|change|continue|sostenuto|resume|discontinue'>; staff 'unspecified' when the direction has none. Sustain, sostenuto and soft pedal (una corda, from words) are separate kinds, never one 'pedal' flag.",
+        review_change="ChatGPT: no invented staff; sustain, sostenuto and una corda kept apart."),
+    "E25": dict(
+        reports="Three separate observations: metronome marks (beat unit, dots, per minute, or the text when it is a range or an equation), <sound tempo> values, and the opening tempo word (Grave to Prestissimo, closed list). A tempo map in quarters per minute is built from metronome marks, else <sound tempo>; when they disagree both are kept and flagged.",
+        review_change="ChatGPT: keep metronome, sound tempo and text apart; ranges and metric equations are not parsed into one number."),
+    "E26": dict(
+        definition="<words> matched as whole words, case-insensitive, to this closed list: rit, rit., ritard, ritardando, rall, rall., rallentando, accel, accel., accelerando, a tempo, tempo I, tempo primo, rubato, allargando, stringendo, meno mosso, piu mosso / più mosso, swing, swung, straight (eighths), plus the <swing> element. Anything else is listed as other words. 'ritmico' and 'accelerated' do not match.",
+        review_change="ChatGPT: the definition now lists every promised word; whole-word matching."),
+    "E32": dict(
+        used_for="Difficulty (length; one of Sébastien et al.'s criteria), step 4 generator check",
+        review_change="ChatGPT: removed 'at most 48 bars at Level B', which came from my own level_fit.py filter, not a published source; multi-bar rests reported apart."),
+    "E33": dict(
+        definition="Sounding MIDI pitch of every non-cue note on the staff, read straight from <pitch> (already sounding; no ottava shift is added).",
+        tests_pass_fail_fool="Pass: C4-G4 -> 7 semitones. Fail: n/a. Fool: a note printed C6 under an 8va (encoded C7, type down) -> counted at C7, not shifted again to C8.",
+        review_change="ChatGPT: avoid shifting twice; <pitch> is already the sounding pitch (measured on our files, see E04)."),
+    "E36": dict(
+        reports="Per staff: histogram of notes starting together across voices, and the same within one written voice, side by side; unison doublings (same pitch twice) counted once with a flag; stacks of 7 or more flagged as possible encoding fault. These are notated clusters, not claims about one hand.",
+        review_change="ChatGPT: keep per-staff and per-voice figures side by side; no single-hand claim."),
+    "E38": dict(
+        reports="Per staff: pure octave dyads (two notes 12 semitones apart), attacks that contain an octave between their outer notes with notes inside (e.g. C-E-C), and the longest run of consecutive pure octave dyads; bars.",
+        definition="From E36 attacks: pure dyad = exactly two notes, highest - lowest = 12; octave-containing = highest - lowest = 12 with 3 or more notes.",
+        tests_pass_fail_fool="Pass: C3+C4 -> pure dyad. Fail: C3+G3 -> neither. Fool: C3+E3+C4 -> octave-containing, not a pure dyad.",
+        review_change="ChatGPT: a C-E-C chord is not an octave; split the two kinds."),
+    "E39": dict(
+        fact="Staff outer-edge movement and per-voice intervals",
+        definition="Two separate figures: (a) staff outer-edge movement: top note of each attack on staff 1, bottom note on staff 2, interval to the next attack, a displacement statistic and never called melody; (b) melodic intervals within each written voice. Jumps: over 12 semitones within 2 quarter notes (after Sébastien et al. 2012), from (a).",
+        review_change="ChatGPT: do not call the outer edge melodic; keep per-voice intervals separate; the time window is in quarter notes."),
+    "E40": dict(
+        fact="Repeated pitches; runs of equal values (two separate counts)",
+        reports="Per staff and voice, two outputs: (1) longest run of the same single pitch struck again and again; (2) longest run of consecutive attacks with the same written value. Count, value or pitch, bars for each.",
+        definition="Runs inside one written voice; a rest breaks both; a tie continuation is not an attack (it neither extends nor breaks a run of attacks).",
+        tests_pass_fail_fool="Pass: 16 different-pitch sixteenths -> equal-value run 16, repeated-pitch run 1. Pass: 8 repeated Cs in mixed values -> repeated-pitch run 8. Fool: 8 sixteenths, an eighth rest, 8 sixteenths -> two runs of 8.",
+        review_change="ChatGPT: split into two counters."),
+    "E42": dict(
+        reports="Per bar and overall: attacks per quarter note on each staff, and attacks per beat where the beat is fixed by the signature (dotted quarter in compound time; UNKNOWN for UNKNOWN-class signatures); the ratio between staves (undefined when one staff has none); share of beats with an attack on either staff.",
+        review_change="ChatGPT: declare the denominator (per quarter and per felt beat separately); ratio undefined at zero."),
+    "E43": dict(
+        reports="Shared-attack share = attack times common to both staves / all distinct attack times on either (union); bars where both staves SOUND at the same moment (overlapping written durations) and, separately, bars where both have notes at some point.",
+        review_change="ChatGPT: declare the denominator (union) and separate sounding overlap from shared attacks (needed for texture.hands-together)."),
+    "E44": dict(
+        reports="(1) Bars where both staves have notes but never sound at the same moment; (2) separately, hand-offs between bars: a bar with notes on one staff only followed by a bar with notes on the other only.",
+        tests_pass_fail_fool="Pass (1): in one 4/4 bar, staff 1 plays beats 1 and 3, staff 2 beats 2 and 4, quarters -> turn-taking bar. Pass (2): staff 1 alone in bar 1, staff 2 alone in bar 2 -> 1 hand-off, 0 turn-taking bars. Fool: staff 2's note held under staff 1's entry -> overlap, not turn-taking.",
+        review_change="ChatGPT: my pass example contradicted the definition; within-bar turn-taking and between-bar hand-offs are now two outputs."),
+    "E45": dict(
+        definition="A note or chord on one staff sounding at least 1 quarter note (ties merged) while the other staff has 2 or more attacks strictly inside that time; a re-struck note ends the hold.",
+        review_change="ChatGPT: state the time unit (quarter notes)."),
+    "D01": dict(
+        reports="Per staff and both together: attacks per second and notes per second (chord notes each counted), whole piece and densest 4 bars, with the tempo's source named (metronome, sound tempo, 8notes) or UNKNOWN; a lone <sound tempo> of 120 with no metronome mark is UNKNOWN (possible export default).",
+        review_change="ChatGPT: tempo source named; possible export default treated as UNKNOWN."),
+    "D02": dict(
+        group="difficulty experiment",
+        reports="For each statistic: its rank correlation with the published level; a simple combination's held-out error against baselines (always the middle level; always the most common level), per level; and a mismatch list (files whose statistics sit 3 or more levels from their listed level) for checking by reading. Used as an alarm, never to assign a level.",
+        definition="Labels only from chosen.csv (checked identity); exam-list matches with unchecked arrangement are not used as truth. Held-out testing keeps all files of one work together. No fixed pass mark; the result is judged against the baselines and by how many mismatch alarms turn out to be real problems when read.",
+        tests_pass_fail_fool="Control: shuffled levels must do no better than the baselines.",
+        why_easy="NOT easy: an experiment over the easy rows, run after them.",
+        review_change="ChatGPT: no arbitrary 70% gate; baselines, grouped held-out testing, checked labels only, alarm use only."),
+    "D03": dict(
+        group="difficulty experiment",
+        definition="compute_difficulty(path) from Ramoneda et al. 2024 (Expert Systems with Applications), trained on 652 Henle-graded classical scores; the paper reports 39.5% balanced accuracy over 9 Henle levels. (The 87.3% within-one figure came through a summariser and is unconfirmed.)",
+        why_easy="NOT easy: optional, after D02, in its own CPU environment.",
+        review_change="ChatGPT: deferred as an optional benchmark after D02; the unconfirmed 87.3% figure marked as such."),
+}
+
+
 def main():
     out = os.path.join(HERE, "characteristics-easy.csv")
     with open(out, "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=COLS)
         w.writeheader()
+        assert set(UPDATES) <= {r["id"] for r in ROWS}
         for r in ROWS:
+            r = {**r, "review_change": ""}
+            for k, v in UPDATES.get(r["id"], {}).items():
+                assert k in COLS, (r["id"], k)
+                r[k] = v
             assert set(r) == set(COLS), (r["id"], set(COLS) ^ set(r))
             w.writerow(r)
     print(out, len(ROWS), "rows")

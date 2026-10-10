@@ -1,6 +1,8 @@
 # Code-detectable score characteristics: the easy batch, for review
 
-On the owner's word (2026-10-10, `docs/inputs/2026-10-10.md`): a CSV of the definite, easy-to-implement characteristics, one implementation idea per row, drawing on the old branch's library work, newer libraries and ChatGPT's detectability review; then ChatGPT reviews; then we build. Nothing here is built yet.
+On the owner's word (2026-10-10, `docs/inputs/2026-10-10.md`): a CSV of the definite, easy-to-implement characteristics, one implementation idea per row, drawing on the old branch's library work, newer libraries and ChatGPT's detectability review; then ChatGPT reviews; then we build.
+
+**Built (2026-10-10):** `tools/pieces/characteristics/`, one function per row in its own file, each with a top comment saying which implementation was chosen and why (my row weighed against ChatGPT's review and its 213 rows). Shared helpers: `_notes.py` (which notes count), `_raw.py` (small raw reads for measured music21 gaps). Tests: `test_*.py` in that folder. Whole corpus: `run_all.py` -> `build/pieces/characteristics.jsonl`. The CSV below is the plan the code replaced; where they differ, the code's comments say why.
 
 ## Files
 
@@ -15,8 +17,9 @@ On the owner's word (2026-10-10, `docs/inputs/2026-10-10.md`): a CSV of the defi
 ## Conventions every row follows
 
 - **Staff, never hand.** Rows report staff 1 and staff 2. The old branch measured the staff rule disagreeing with a second reader on 3.3% of notes in a 33-item sample, and wrong on 41.5% of notes under printed hand words.
-- **One supported layout.** One pitched part with two staves (E01). Any other layout gives UNKNOWN for every per-staff row; nothing is guessed.
-- **Raw MusicXML is the reference reader; music21 is the second reader.** The old branch's raw walk read 2,020 files with 0 errors. partitura is avoided for tempo, dynamics and voices (it missed tempo marks, classed a word as a dynamic, and crashed on voice estimation and grace notes in 1.9.0).
+- **Layout.** Every staff of every pitched part is a staff (E01); only the two-staff relations (E42-E45) need exactly two piano staves and give UNKNOWN otherwise.
+- **music21 first; a raw read only for a measured music21 gap.** (Corrected 2026-10-10 on the owner's objection: the first build used a custom raw reader with music21 only as a check, against reuse-first.) Each raw read is named in its row's comment with the probe and the count from our 842 files (e.g. ottava, hairpin, pedal and slur ends paired by time; barline fermatas; senza-misura; written tuplet ratios). partitura is avoided for tempo, dynamics and voices (it missed tempo marks, classed a word as a dynamic, and crashed on voice estimation and grace notes in 1.9.0).
+- **Which notes count** (`_notes.py`, measured): printed notes, small (cue-size) ones included because in our files they are played; hidden notes (`print-object="no"`, playback helpers) and slash noteheads (placeholder pitches) left out.
 - **Encoded, not displayed.** Accidentals are the file's `<accidental>` elements. Which accidentals a renderer shows was 11.1% wrong in the old model, so it is left out.
 - **Locations use printed bar numbers** (E02), so a reader or a Haiku agent can find the bar.
 - **Unknown stays unknown.** Examples: no tempo gives no notes per second; an unclosed 8va is reported as unclosed; a word outside a closed list is listed, not classified.
