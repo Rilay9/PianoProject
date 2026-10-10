@@ -25,7 +25,7 @@ def main():
     import pymupdf
     src = sys.argv[1]
     done = {(v["candidate_file"], v["pianocoda_url"]) for v in csv.DictReader(open(os.path.join(
-        ROOT, "docs", "pieces", "review", "reference-verdicts.csv"), encoding="utf-8"))}
+        ROOT, "docs", "pieces", "review", "reference-verdicts.csv"), encoding="utf-8")) if v["verdict"] != "REREAD"}
     pairs = {}
     for r in csv.DictReader(open(src, encoding="utf-8")):
         k = (r["candidate_file"], r["pianocoda_url"])
