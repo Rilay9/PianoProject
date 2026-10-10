@@ -54,14 +54,25 @@ def main():
             if cm == "conflict":
                 continue
             ts = difflib.SequenceMatcher(None, wclean, p["clean"]).ratio() if wclean and p["clean"] else 0
-            if cm == "match" or ts >= 0.6:
-                cands.append((cm != "match", -ts, p, cm, ts))
+            strong = any(k in wcat and k in p["cat"] for k in ("bwv", "k", "hob", "d"))
+            if cm == "match" or ts >= 0.6 or (cm == "partial" and strong):
+                cands.append((cm == "none", -ts, p, cm, ts))
         if cands:
             cands.sort(key=lambda c: (c[0], c[1]))
+            # a "Prelude and Fugue" listed as one piece: Mutopia keeps the two apart; the opening is read against the
+            # Praeludium and the ending against the Fuga
+            if "prelude" in title.lower() and "fugue" in title.lower():
+                pre = [c for c in cands if "praeludium" in c[2]["title"].lower() or "prelude" in c[2]["title"].lower()]
+                fug = [c for c in cands if "fuga" in c[2]["title"].lower() or "fugue" in c[2]["title"].lower()]
+                if pre:
+                    cands = pre + [c for c in cands if c not in pre]
+                end_url = fug[0][2]["url"] if fug else ""
+            else:
+                end_url = ""
             _, _, p, cm, ts = cands[0]
             out.append({"composer": comp, "title": title, "levels": " ".join(sorted(S.app_levels(r["sources"])[0])),
                         "candidate_file": r["a_file"], "candidate_title": r["a_title"], "pianocoda_url": p["url"],
-                        "cat_match": cm, "title_score": f"{ts:.2f}", "drive_id": "", "png": ""})
+                        "cat_match": cm, "title_score": f"{ts:.2f}", "drive_id": "", "png": "", "end_url": end_url, "end_png": ""})
     print(len(out), "wanted pieces matched to a Mutopia page")
     import pymupdf
     for o in out:
@@ -78,6 +89,18 @@ def main():
         if not os.path.exists(pdf) or open(pdf, "rb").read(4) != b"%PDF":
             o["png"] = "download is not a PDF"
             continue
+        if o.get("end_url"):
+            eid = re.search(r"id=(\d+)", o["end_url"]).group(1)
+            epdf = os.path.join(REFS, f"mutopia-{eid}.pdf")
+            if not os.path.exists(epdf):
+                eh = curl(o["end_url"])
+                em = re.search(r'href="([^"]+-a4\.pdf)"', eh) or re.search(r'href="([^"]+\.pdf)"', eh)
+                if em:
+                    curl(em.group(1) if em.group(1).startswith("http") else "https://www.mutopiaproject.org/" + em.group(1).lstrip("/"), epdf)
+            if os.path.exists(epdf) and open(epdf, "rb").read(4) == b"%PDF":
+                epng = os.path.join(REFS, f"mutopia-{eid}-end.png")
+                pymupdf.open(epdf)[-1].get_pixmap(dpi=120).save(epng)
+                o["end_png"] = os.path.relpath(epng, ROOT).replace("\\", "/")
         try:
             d = pymupdf.open(pdf)
             pg = d[0]

@@ -19,7 +19,7 @@ from pianocoda_refs import fold  # noqa: E402
 import re  # noqa: E402
 
 
-def closing(path, n=3):
+def closing(path, n=3, whole=False):
     import music21
     s = music21.converter.parse(path)
     parts = list(s.parts)
@@ -27,7 +27,7 @@ def closing(path, n=3):
     last = min(len(x) for x in staves)
     # a file holding several movements: stop at the first movement's end (a final barline followed by a new tempo
     # word and time signature); the item says so, and the reference page must then be the first movement's end
-    for k in range(1, last):
+    for k in range(1, last if not whole else 1):
         m, nxt = staves[0][k - 1], staves[0][k]
         if m.rightBarline is not None and m.rightBarline.type == "final" and \
                 nxt.recurse().getElementsByClass(music21.meter.TimeSignature) and \

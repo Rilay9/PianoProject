@@ -65,6 +65,8 @@ def main():
             d = pymupdf.open(pdf)
             png2 = png1[:-4] + "-end.png"
             d[-1].get_pixmap(dpi=120).save(png2)
+            if r.get("end_png"):  # a separate reference for the ending (the Fuga of a prelude and fugue)
+                png2 = os.path.join(ROOT, r["end_png"])
             f = r["candidate_file"]
             path = os.path.join(FILES, os.path.basename(f)) if f.startswith("./mxl") else os.path.join(ROOT, f)
             lines += [f"## {iid} (level {r['level']}) {r['composer']}: {r['title']}", "",
@@ -75,7 +77,7 @@ def main():
                 for label, bars in opening(path, 3):
                     lines.append(f"- Candidate first bars, {label}:")
                     lines += [f"  - {b}" for b in bars]
-                for label, bars in closing(path):
+                for label, bars in closing(path, whole=bool(r.get("end_png"))):
                     lines.append(f"- Candidate last bars, {label}:")
                     lines += [f"  - {b}" for b in bars]
             except Exception as e:
