@@ -31,6 +31,10 @@ def main():
         path = os.path.join(OUT, x["slug"] + ".musicxml")
         curl(api + "/music/api/assistant/chorales/" + urllib.parse.quote(x["file"], safe=""),
              headers=("X-API-Key: " + key, "Origin: " + SITE), out=path)
+        raw = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+        if raw.lstrip().startswith("{"):  # the backend wraps the MusicXML in JSON with the shelf's metadata
+            open(path[:-9] + ".json", "w", encoding="utf-8").write(raw)
+            open(path, "w", encoding="utf-8", newline="").write(json.loads(raw)["musicxml"])
         ok = os.path.exists(path) and b"score-partwise" in open(path, "rb").read(4000)
         rows.append({k: x.get(k) for k in ("slug", "composer", "title", "collection", "era", "source", "source_pdf_url", "published_at")}
                     | {"verified_layers": " ".join(sorted((x.get("stamps") or {}).keys())), "file": os.path.relpath(path, ROOT), "ok": ok})
