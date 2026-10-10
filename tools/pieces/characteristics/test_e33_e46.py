@@ -107,6 +107,7 @@ def _():
     s, _ = score([chord("C3", "E4", dur=8, typ="half") + chord("C3", "D4", dur=8, typ="half")])
     r = span(s)[1]
     assert r["over_12"] == 2 and r["over_14"] == 1 and r["bars_over_14"] == ["1"]
+    assert r["span_median"] == 15  # spans 14 and 16: the median of an even count is the mean of the middle two
 
 
 @case("E38 octaves")
@@ -166,6 +167,9 @@ def _():
     hid = R(dur=2, typ="eighth").replace("<note>", '<note print-object="no">')
     s, _ = score([N("C", dur=2, typ="eighth") * 3 + hid + N("C", dur=2, typ="eighth") * 2 + N("C", dur=8, typ="half")])
     assert runs(s)[1]["equal_value_run"] == 5
+    sl = N("B", notehead="slash") * 4
+    s, _ = score([sl, sl])
+    assert runs(s)[1]["repeated_pitch_run"] == 0  # slash heads are placeholders, no pitch (ChatGPT's review)
 
 
 @case("E41 voices")
@@ -278,6 +282,17 @@ def _():
     # a lone sound tempo of 120 is UNKNOWN (E25's rule), so no rate
     s, p = score([D("<words></words>", sound='<sound tempo="120"/>') + BAR_C])
     assert "UNKNOWN" in rate(s, p)
+    # five bars, the last one dense: no window shorter than 4 bars may win (the old loop scored bar 5 alone)
+    sixteenths = "".join(N(x, dur=1, typ="16th") for x in "CDEFGABC" * 2)
+    s, p = score([mm("quarter", 60) + N("C", dur=16, typ="whole")] + [N("C", dur=16, typ="whole")] * 3 + [sixteenths])
+    r = rate(s, p)[1]
+    assert r["densest_4_bars_from"] == "2" and r["densest_4_bars_attacks_per_second"] == round(19 / 16, 2), r
+    s, p = score([mm("quarter", 60) + BAR_C])
+    assert rate(s, p)[1]["densest_4_bars_attacks_per_second"] is None  # fewer than four bars
+    # a unison doubling in two voices is one attack but two note heads
+    s, p = score([mm("quarter", 60) + N("C", dur=16, typ="whole") + back(4) + N("C", dur=16, typ="whole", voice=2)])
+    r = rate(s, p)[1]
+    assert r["attacks_per_second"] == 0.25 and r["notes_per_second"] == 0.5, r
 
 
 def main():

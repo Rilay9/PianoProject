@@ -36,6 +36,8 @@ def clefs(score):
                                 "from": "/".join(map(str, prev)), "to": "/".join(map(str, sig)),
                                 "inside_bar": meas is not None and c.getOffsetInHierarchy(meas) > 0})
             prev = sig
+    for k in range(len(layout(score)["staves"])):
+        start.setdefault(k + 1, "UNKNOWN")  # no clef on this staff (ChatGPT's review): reported, not dropped
     return {"start": start, "changes": changes, "n_changes": len(changes),
             "inside_bar": sum(c["inside_bar"] for c in changes),
             "per_staff": {k: sum(c["staff"] == k for c in changes) for k in start}}

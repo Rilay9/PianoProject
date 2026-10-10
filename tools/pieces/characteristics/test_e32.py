@@ -81,7 +81,7 @@ def _():
 def _():
     half = N("C") + N("D")
     r = rewritten([FULL, FULL, half, half, FULL], '<measure number="4">', '<measure number="X1">')
-    assert r["stored_measures"] == 5 and r["bars"] == 4 and r["excluded_from_count"] == ["3X1"]
+    assert r["stored_measures"] == 5 and r["bars"] == 4 and r["excluded_from_count"] == ["X1"]  # the file's printed label (music21 alone says "3X1")
     assert r["quarters"] == "16"
 
 

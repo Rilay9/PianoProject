@@ -99,6 +99,8 @@ def main():
     for rid, ex in examples.items():
         print(" ", rid, ex[0], ex[1], ex[2][-1] if ex[2] else "")
     print("seconds per row (summed over files):", {k: round(v) for k, v in times.most_common()})
+    if parse_errors or errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

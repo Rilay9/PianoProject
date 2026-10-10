@@ -31,7 +31,7 @@ def voices(score):
                          for n, _ in printed(v) if not n.duration.isGrace]
                 if spans:
                     noted.append(spans)
-            max_declared = max(max_declared, len(vs) if (len(vs) > 1 or meas.notesAndRests) else 0)
+            max_declared = max(max_declared, len(meas.voices) if meas.voices else (1 if meas.notesAndRests else 0))
             max_noted = max(max_noted, len(noted))
             if len(noted) >= 2:
                 bars2.append(bar_label(meas))

@@ -5,7 +5,8 @@
 # <measure implicit="yes"> (E02's raw read; music21 drops the flag); (3) the last bar is short by the complement, so
 # first + last = one full bar. music21's own Measure.paddingLeft (its pickup inference: Maple Leaf Rag bar 0 gives 1.5
 # of 2.0) is reported as a fourth, for comparison. Pickup is a CANDIDATE on (1) alone, and CONFIRMED only when (1)
-# agrees with (2) or (3). The displacement (nominal - first length, in quarters) is given for anything that counts
+# agrees with (2) or (3). "Confirmed" means two observations in the file agree, not that a printed score was checked
+# (ChatGPT's review asked for a weaker name; the key is kept because E32 reads it). The displacement (nominal - first length, in quarters) is given for anything that counts
 # beats from the bar line.
 #
 # Why: ChatGPT's review (adopted) - a short first bar can be an omitted rest, a clipped transcription or a cadenza,

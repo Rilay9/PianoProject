@@ -57,21 +57,25 @@ def rate(score, path):
         return total if covered == b - a else None
     known_secs = sum(float(b - a) * 60.0 / q for a, b, q, _ in known)
     att = {k + 1: _staff_attacks(score, idx) for k, idx in enumerate(L["staves"])}
+    # note heads per attack: every printed head, unison doublings included (ChatGPT's review: distinct pitches undercount)
+    heads = lambda a: len(a["pitches"]) + a.get("doublings", 0)  # noqa: E731
     together = {}
     for v in att.values():
         for a in v:
-            together.setdefault(a["time"], set()).update(a["pitches"])
+            together[a["time"]] = together.get(a["time"], 0) + heads(a)
     groups = dict(att)
-    groups["all"] = [{"time": tm, "pitches": sorted(ps)} for tm, ps in sorted(together.items())]
+    groups["all"] = [{"time": tm, "heads": n} for tm, n in sorted(together.items())]
     out = {"tempo_source": t.get("source"), "sources_used": sorted({src for _, _, _, src in known}),
            "known_tempo_share": round(float(sum(b - a for a, b, _, _ in known) / end), 3) if end else None,
-           "known_seconds": round(known_secs, 1)}
+           "known_seconds": round(known_secs, 1),
+           # E25 keeps printed metronome marks and sets aside later playback-only <sound tempo> values; if there are
+           # any, the printed tempo may not be what the file plays (ChatGPT's review): flagged, not silently used
+           "playback_only_tempo_marks_set_aside": len(t.get("sound_only_marks") or [])}
     for k, v in groups.items():
         timed = [a for a in v if qpm_at(a["time"])]
         best = None
-        for i in range(len(starts)):
-            j = min(i + 4, len(starts))
-            lo, hi = starts[i], (starts[j] if j < len(starts) else end)
+        for i in range(len(starts) - 3):  # exactly four bars (fixed after review: the end gave 1-3-bar windows)
+            lo, hi = starts[i], (starts[i + 4] if i + 4 < len(starts) else end)
             secs = seconds(lo, hi) if hi > lo else None
             if secs:
                 n = sum(1 for a in v if lo <= a["time"] < hi)
@@ -79,7 +83,7 @@ def rate(score, path):
                 if best is None or r > best[0]:
                     best = (r, i)
         out[k] = {"attacks_per_second": round(len(timed) / known_secs, 2) if known_secs else None,
-                  "notes_per_second": round(sum(len(a["pitches"]) for a in timed) / known_secs, 2) if known_secs else None,
+                  "notes_per_second": round(sum(a["heads"] if "heads" in a else heads(a) for a in timed) / known_secs, 2) if known_secs else None,
                   "densest_4_bars_attacks_per_second": round(best[0], 2) if best else None,
                   "densest_4_bars_from": bar_label(ref[best[1]]) if best else None}
     return out

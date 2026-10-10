@@ -5,7 +5,9 @@
 # signature in force on its staff is getContextByClass(key.KeySignature); KeySignature.accidentalByStep(step) gives the
 # signature's alteration for that letter (works for non-traditional signatures too, from alteredPitches). The note
 # counts when its step is one the signature alters and its encoded alter equals the signature's. Reported per
-# signature (span): which of the signature's letters occur that way, how often, and which never do.
+# signature, all of its spans merged (a G major section that returns counts once): which of the signature's letters
+# occur that way, how often, and which never do. Locations per span are not given (ChatGPT asked; not built until a
+# consumer needs them).
 #
 # Why music21 and the encoded alter: MusicXML's <alter> is the sounding pitch, which music21 reads into
 # Pitch.accidental. ChatGPT's review worried that exporters omit <alter> on notes covered by the signature; this was
@@ -18,7 +20,8 @@ from collections import Counter, defaultdict
 
 
 def signature_exercised(score):
-    """Per written signature: letters it alters, which occur with that alteration (counts), which never occur."""
+    """Per written signature (all places it is in force, merged; not one entry per span - ChatGPT's review): letters
+    it alters, which occur with that alteration (counts), which never occur."""
     import music21 as m
     from e01_layout import layout
     from _notes import printed, _keep

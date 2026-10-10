@@ -46,4 +46,4 @@ def dynamics(score):
             "softest": min(levels, key=LEVELS.index) if levels else None,
             "loudest": max(levels, key=LEVELS.index) if levels else None,
             "accent_dynamics": dict(accents), "per_staff": dict(Counter(x["staff"] for x in marks)),
-            "staves_differ_at": differ if two else "UNKNOWN (not two piano staves)", "marks": marks}
+            "conflicting_marks_same_moment": differ if two else "UNKNOWN (not two piano staves)", "marks": marks}

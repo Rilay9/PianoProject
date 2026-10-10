@@ -202,6 +202,10 @@ def _():
                   N("C", 1, dur=8, typ="half", staff=2) + D('<octave-shift type="stop" size="8"/>', staff=2)])
     o = ottava(s, p)
     assert o["spans"][0]["staff"] == 2 and o["spans"][0]["kind"] == "8vb" and o["spans"][0]["notes"] == 1
+    cont = D('<octave-shift type="continue" size="8"/>', staff=1)
+    s, p = score([on + N("C", 7) * 4, cont + N("C", 7) * 2 + off + N("C", 5, dur=8, typ="half")])
+    o = ottava(s, p)
+    assert o["n_spans"] == 1 and o["spans"][0]["notes"] == 6 and not o["unclosed"] and o["orphan_stops"] == 0
 
 
 @case("E05 ledger lines")
@@ -331,6 +335,10 @@ def _():
     assert r["senza_misura_bars"] == [0] and r["classes"] == ["UNKNOWN"] and not r["none"]
     s, p = score([BAR_C], first_attrs=attrs(time=None))
     assert times(s, p)["none"]
+    mid = "<attributes><time><beats>2</beats><beat-type>4</beat-type></time></attributes>"
+    s, p = score([N("C") * 3 + mid + N("C") * 2], first_attrs=attrs(time=("3", "4")))
+    r = times(s, p)
+    assert [x["time"] for x in r["signatures"]] == ["3/4", "2/4"] and r["signatures"][1]["offset"] == "3", r
 
 
 @case("E10 pickup")
@@ -466,6 +474,12 @@ def _():
                   N("G", 3, dur=16, typ="whole", voice=2)])
     r = grace(s, p)[1]
     assert r["runs"] == 2 and r["longest_run"] == 1
+    s, p = score([N("C") * 4 + N("D", grace=True, typ="16th") * 2, BAR_C])
+    r = grace(s, p)[1]
+    assert r["runs"] == 1 and r["after_runs"] == 0 and r["runs_across_barline"] == 1 and r["bars"] == ["1"], r
+    s, p = score([N("C", dur=16, typ="whole") + N("D", grace=True, typ="16th")])
+    r = grace(s, p)[1]
+    assert r["after_runs"] == 1  # nothing follows in that voice: a true after-run
 
 
 @case("E15 ornaments")
@@ -579,7 +593,7 @@ def _():
     s, _ = score([D("<dynamics><p/></dynamics>", staff=1) + BAR_C + back(4) + D("<dynamics><f/></dynamics>", staff=2) + BAR_LH,
                   D("<dynamics><mf/></dynamics>", staff=1) + BAR_C + back(4) + D("<dynamics><mf/></dynamics>", staff=2) + BAR_LH])
     r = dynamics(s)
-    assert r["staves_differ_at"] == 1 and r["per_staff"] == {1: 2, 2: 2}
+    assert r["conflicting_marks_same_moment"] == 1 and r["per_staff"] == {1: 2, 2: 2}
 
 
 @case("E21 hairpins")
@@ -603,6 +617,18 @@ def _():
     s, p = score([D('<wedge type="diminuendo"/>', staff=2) + BAR_C])
     r = hairpins(s, p)
     assert r["diminuendo"] == 0 and r["unclosed"][0]["staff"] == 2
+
+
+@case("bar labels are the file's printed numbers (_raw.bar_label)")
+def _():
+    import music21 as m
+    from _raw import bar_label
+    x = xml([BAR_C + back(4) + BAR_LH] * 3).replace('<measure number="2">', '<measure number="X1">')
+    path = os.path.join(TMP, "xlabel.musicxml")
+    open(path, "w", encoding="utf-8").write(x)
+    s = m.converter.parse(path, forceSource=True)
+    for staff in s.parts:  # both PartStaffs
+        assert [bar_label(ms) for ms in staff.getElementsByClass(m.stream.Measure)] == ["1", "X1", "3"]
 
 
 @case("hidden notes are not counted (_notes.py)")

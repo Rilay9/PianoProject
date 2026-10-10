@@ -38,7 +38,9 @@ def bar_label(meas):
     score.metadata.filePath; without it, music21's number and suffix are used."""
     import music21 as m
     part = meas.getContextByClass(m.stream.Part)
-    score = part.getContextByClass(m.stream.Score) if part is not None else None
+    # the part's own sites: getContextByClass(Score) returns None here (probed after ChatGPT's review exposed that
+    # every label had silently fallen back to music21's number + suffix)
+    score = next((x for x in part.sites.get() if isinstance(x, m.stream.Score)), None) if part is not None else None
     path = getattr(score.metadata, "filePath", None) if score is not None and score.metadata else None
     if path and part is not None:
         if path not in _NUMBERS:
@@ -124,21 +126,23 @@ def directions(root, tag):
     <duration>, <backup> moves it back, <forward> on; a direction's own <offset> is added. Only this cursor is walked
     here; notes themselves always come from music21."""
     from fractions import Fraction
+
+    def q(s):  # exact value of an XML number, also for "1.5" (ChatGPT's review: int(float(...)) truncated)
+        return Fraction(s.strip()) if s and s.strip() else Fraction(0)
     for pi, part in enumerate(root.iter("part")):
-        div = 1
+        div = Fraction(1)
         for mi, meas in enumerate(part.findall("measure")):
-            pos = 0
+            pos = Fraction(0)
             for el in meas:
                 if el.tag == "attributes" and el.findtext("divisions"):
-                    div = int(float(el.findtext("divisions")))
+                    div = q(el.findtext("divisions")) or Fraction(1)
                 elif el.tag == "note":
                     if el.find("chord") is None and el.find("grace") is None and el.findtext("duration"):
-                        pos += int(float(el.findtext("duration")))
+                        pos += q(el.findtext("duration"))
                 elif el.tag == "backup":
-                    pos -= int(float(el.findtext("duration") or 0))
+                    pos -= q(el.findtext("duration"))
                 elif el.tag == "forward":
-                    pos += int(float(el.findtext("duration") or 0))
+                    pos += q(el.findtext("duration"))
                 elif el.tag == "direction":
                     for x in el.iter(tag):
-                        off = int(float(el.findtext("offset") or 0))
-                        yield pi, mi, int(el.findtext("staff") or 1), Fraction(pos + off, div), x
+                        yield pi, mi, int(el.findtext("staff") or 1), (pos + q(el.findtext("offset"))) / div, x

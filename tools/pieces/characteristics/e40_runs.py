@@ -20,6 +20,7 @@ def runs(score):
     """Per staff: longest repeated-pitch run and longest equal-value run (within one written voice), with bars."""
     import music21 as m
     from e01_layout import layout
+    from _notes import _keep
     out = {}
     for k, idx in enumerate(layout(score)["staves"]):
         seqs = {}
@@ -34,7 +35,7 @@ def runs(score):
                         if not x.style.hideObjectOnPrint:
                             seqs.setdefault(vid, []).append(None)
                         continue
-                    members = [y for y in (x.notes if x.isChord else [x]) if not y.style.hideObjectOnPrint]
+                    members = [y for y in (x.notes if x.isChord else [x]) if _keep(y)]  # hidden and slash heads out
                     if not members or all(y.tie is not None and y.tie.type in ("stop", "continue") for y in members):
                         continue
                     t = x.duration.tuplets

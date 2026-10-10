@@ -18,6 +18,7 @@
 # Not adopted from ChatGPT: reading beam groups to settle 6/4 (3+3 vs 2+2+2). It is pattern reading with its own
 # failure cases, so 6/4 stays UNKNOWN here rather than being guessed from beams.
 
+from fractions import Fraction
 from _raw import bar_label  # printed bar numbers as written (MuseScore X1 bars)
 def _class(ts):
     if "+" in ts.ratioString:
@@ -49,13 +50,14 @@ def times(score, path):
             if sig == prev:
                 continue
             meas = ts.getContextByClass(m.stream.Measure)
-            key = (index.get(id(meas)), sig)
+            off = Fraction(ts.getOffsetInHierarchy(meas)).limit_denominator(10000) if meas is not None else Fraction(0)
+            key = (index.get(id(meas)), off, sig)  # bar, position in the bar, signature (position added after review)
             if key not in seen:
                 seen.add(key)
-                out.append({"bar_index": key[0], "bar": bar_label(meas) if meas is not None else None,
+                out.append({"bar_index": key[0], "offset": str(off), "bar": bar_label(meas) if meas is not None else None,
                             "time": ts.ratioString, "symbol": ts.symbol or None, "class": _class(ts), "change": prev is not None})
             prev = sig
-    out.sort(key=lambda x: (x["bar_index"] is None, x["bar_index"]))
+    out.sort(key=lambda x: (x["bar_index"] is None, x["bar_index"], Fraction(x["offset"])))
     first = next(raw_root(path).iter("part"), None)
     senza = [i for i, meas in enumerate(first.findall("measure")) if meas.find("attributes/time/senza-misura") is not None] \
         if first is not None else []

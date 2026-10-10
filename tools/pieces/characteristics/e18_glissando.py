@@ -33,7 +33,8 @@ def glissando(score):
         els = g.getSpannedElements()
         if not els or els[0].style.hideObjectOnPrint:
             continue
-        spans.append({"kind": "slide" if g.slideType == "continuous" else "glissando", "line": g.lineType,
+        kind = {"chromatic": "glissando", "continuous": "slide"}.get(g.slideType, "UNKNOWN")
+        spans.append({"kind": kind, "line": g.lineType,
                       "start": end(els[0]), "end": end(els[-1]) if len(els) > 1 else None})
     words = [x.content for x in score.recurse().getElementsByClass(m.expressions.TextExpression)
              if x.content and GLISS_WORD.search(x.content)]

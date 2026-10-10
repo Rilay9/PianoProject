@@ -125,7 +125,10 @@ def slash_notation(score, path):
             for bi, meas in enumerate(part.findall("measure")):
                 for ms in meas.iter("measure-style"):
                     num = ms.get("number")
-                    targets = ids if num is None else ids[int(num) - 1:int(num)]
+                    try:
+                        targets = ids if num is None else ids[int(num) - 1:int(num)]
+                    except ValueError:  # a non-numeric number attribute (ChatGPT's review): no staff, not a crash
+                        targets = []
                     for child in ms:
                         if child.tag not in ("slash", "beat-repeat", "measure-repeat") or child.get("type") not in ("start", "stop"):
                             continue

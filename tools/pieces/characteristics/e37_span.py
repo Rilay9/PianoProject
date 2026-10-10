@@ -14,6 +14,7 @@
 
 def span(score):
     """Per staff: largest / median span of unrolled attacks, counts and bars over 12 and 14, wide rolled chords."""
+    from statistics import median
     from e01_layout import layout
     from e36_simultaneous import _staff_attacks
     out = {}
@@ -29,7 +30,7 @@ def span(score):
                     b.append(a["bar"])
             return b
         out[k + 1] = {"span_max": spans[-1] if spans else 0,
-                      "span_median": spans[len(spans) // 2] if spans else 0,
+                      "span_median": median(spans) if spans else 0,  # statistics.median (fixed after review)
                       "over_12": sum(x > 12 for x in spans), "over_14": sum(x > 14 for x in spans),
                       "bars_over_12": bars(12), "bars_over_14": bars(14),
                       "wide_but_rolled": sum(1 for a in at if a["rolled"] and a["pitches"][-1] - a["pitches"][0] > 12)}

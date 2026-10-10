@@ -2,8 +2,9 @@
 #
 # Chosen implementation: music21 Duration.isGrace (a GraceDuration) for which notes are grace notes and for runs: in
 # each voice of each bar, in score order, consecutive grace events (a grace chord is one event) form a run; the run
-# belongs to the next main note in that voice, or is an after-run (Nachschlag) when the voice has no further main note
-# in the bar. Count = grace note heads, small-size ones included (printed notes only, small ones
+# belongs to the next main note in that voice - in the next bar if the run ends a bar (fixed after ChatGPT's review:
+# such runs had been called after-runs; runs_across_barline counts them) - or is an after-run when the voice has no
+# later main note at all. Count = grace note heads, small-size ones included (printed notes only, small ones
 # included: see _notes.py).
 #
 # Why music21: it already orders grace notes in their voice at the main note's offset (probed), which is what pairing
@@ -40,28 +41,35 @@ def grace(score, path):
                     slash[(k, "slashed" if g.get("slash") == "yes" else "unslashed")] += 1
     out = {}
     for idx, k in staff_no.items():
-        heads, runs, after, longest, bars = 0, 0, 0, 0, []
+        heads, runs, after, cross, longest, bars = 0, 0, 0, 0, 0, []
+        pending = {}  # voice id -> (run length, bar label where it started): carried across the barline
         for meas in score.parts[idx].getElementsByClass(m.stream.Measure):
             for v in (list(meas.voices) or [meas]):
-                run = 0
+                vid = str(v.id) if v is not meas else "1"
+                run, start_bar = pending.pop(vid, (0, None))
+                carried = run > 0
                 for x in v.notes:
                     if isinstance(x, (m.harmony.ChordSymbol, m.note.Unpitched)) or x.style.hideObjectOnPrint:
                         continue
                     if x.duration.isGrace:
                         heads += len(x.pitches)
+                        if not run:
+                            start_bar = bar_label(meas)
                         run += 1
                         continue
                     if run:
                         runs += 1
+                        cross += carried
                         longest = max(longest, run)
-                        bar = bar_label(meas)
-                        if not bars or bars[-1] != bar:
-                            bars.append(bar)
-                    run = 0
-                if run:  # grace notes after the last main note of the voice in this bar
-                    runs += 1
-                    after += 1
-                    longest = max(longest, run)
+                        if not bars or bars[-1] != start_bar:
+                            bars.append(start_bar)
+                    run, carried = 0, False
+                if run:  # grace notes after the last main note of this voice in the bar: wait for the next bar
+                    pending[vid] = (run, start_bar)
+        for run, start_bar in pending.values():  # no later main note in that voice: an after-run
+            runs += 1
+            after += 1
+            longest = max(longest, run)
         out[k] = {"n": heads, "slashed": slash[(k, "slashed")], "unslashed": slash[(k, "unslashed")],
-                  "runs": runs, "longest_run": longest, "after_runs": after, "bars": bars}
+                  "runs": runs, "longest_run": longest, "after_runs": after, "runs_across_barline": cross, "bars": bars}
     return out

@@ -232,6 +232,8 @@ def repeats_and_jumps(score, path):
         "forward": sum(r["direction"] == "forward" for r in repeats),
         "backward": sum(r["direction"] == "backward" for r in repeats),
         "repeats": repeats, "endings": out_endings, "marks": out_marks, "mark_counts": kinds,
+        # a simple linear check (a forward repeat followed by another forward before any backward); nested repeats,
+        # rare in printed music, would be flagged too (ChatGPT's review) - a diagnostic, not proof of a fault
         "flags": {"forward_repeats_not_closed": [{"bar_index": r["bar_index"], "bar": r["bar"]} for r in unclosed_forward],
                   "endings_not_closed": sum(not e["closed"] for e in out_endings),
                   "orphan_ending_stops": orphan_stops,

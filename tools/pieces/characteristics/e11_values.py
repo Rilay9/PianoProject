@@ -31,7 +31,7 @@ ORDER = ["breve", "whole", "half", "quarter", "eighth", "16th", "32nd", "64th", 
 
 
 def values(score, path):
-    """Per staff: notes and rests by written type, dots, whole-bar rests, mismatches, tie chains and crossings, and
+    """Per staff: note events (a chord counts once) and rests by written type, dots, whole-bar rests, mismatches, tie chains and crossings, and
     how many printed notes are small (<cue/> or <type size="cue">; they count like any printed note)."""
     import music21 as m
     from e01_layout import layout

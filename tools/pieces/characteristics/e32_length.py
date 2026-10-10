@@ -69,6 +69,7 @@
 # (ChatGPT, removed: it was the project's own filter); played length (needs verified repeat expansion, mark.repeat);
 # merging multi-bar rests (<multiple-rest> occurs in 0 of 842 files; a rest stored as one long measure is reported as an
 # over-full bar, its bars are not split).
+import re
 from fractions import Fraction
 
 TOLERANCE = Fraction(1, 8)  # a difference smaller than this is encoding noise, not a different bar length
@@ -92,9 +93,10 @@ def length(score, path):
                  for x in ms if "corrected_from" in x]
     p = pickup(score, path)
     status = "unknown" if p.get("UNKNOWN") else "confirmed" if p["confirmed"] else "candidate" if p["candidate"] else "none"
-    excluded = [x["number"] for x in ms if "X" in x["number"]]
+    xbar = re.compile(r"^X\d*$")  # MuseScore's split-bar numbering ("X1"), not any number containing X (review)
+    excluded = [x["number"] for x in ms if xbar.match(x["number"] or "")]
     bars_counted = len(ms) - len(excluded)
-    off = 0 if "X" in ms[0]["number"] else 1  # a pickup already outside the count is not taken off twice
+    off = 0 if xbar.match(ms[0]["number"] or "") else 1  # a pickup already outside the count is not taken off twice
     quarters = sum(lengths)
     return {"stored_measures": len(ms), "per_staff_measures": [len(s) for s in staves], "excluded_from_count": excluded,
             "bars": bars_counted, "pickup": status,
