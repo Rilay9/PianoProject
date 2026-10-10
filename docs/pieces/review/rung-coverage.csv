@@ -1,0 +1,324 @@
+rung,level,item,label,row_field,note
+B.1,B,"the five C's to two ledger lines, then the notes between",CODE,"E05.<staff>.max_above, max_below, by_count","PROXY: gives the deepest ledger lines used per staff and how many notes use 1, 2 ... lines; not which C's, nor whether the notes between occur"
+B.1,B,"6ths, 7ths, octaves",CODE,"E39.<staff>.voice_generic (melodic generic sizes); E36.<staff>.two_note_intervals (harmonic, named)",
+B.2,B,eighth-note patterns,CODE,"E11.<staff>.notes_by_type.eighth; E40.<staff>.equal_value, equal_value_run",presence and longest run of equal values; 'pattern' itself is not classified
+B.2,B,eighth rest,CODE,E11.<staff>.rests_by_type.eighth,
+B.2,B,dotted quarter–eighth,CODE,"E12.<staff>.dotted_quarter_eighth, bars",simple-time bars only (E09 class)
+B.2,B,a change of time signature (prepare),CODE,"E09.n_changes, E09.signatures",
+B.2,B,swung eighths (meet only),CODE,E26.swing_elements; E26.other_words (a 'swing' word),PROXY: only when the score prints a swing instruction; straight-written swing is invisible
+B.3,B,W-W-H-W,NOT-IN-NOTES,,"a theory pattern, not a property of a piece"
+B.3,B,"major and minor patterns and chords on C, D, G, A",READ,E06.start (key); E33.<staff>.per_bar span,"five-finger positions are visible as a small per-bar span, but no row decides a pattern or chord"
+B.3,B,reading a piece written in another key and playing a known piece in a new position,NOT-IN-NOTES,,a learner activity (transposing); E06.start gives only the key as written
+B.4,B,"C major and D minor, one octave, hands separately, thumb under",NOT-IN-NOTES,,scale drill
+B.4,B,"C major contrary motion over a fifth, hands together",NOT-IN-NOTES,,scale drill
+B.4,B,"the key signature of each scale played, read and named",NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; playing the scale is NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+B.4,B,finger substitution (Al 2 p. 7),CODE,E27.<staff>.substitutions,PROXY: counts only substitutions an editor printed; silence says nothing
+B.4,B,"alt: C, G, F major (F 2B)",NOT-IN-NOTES,,alternative scale list (drill)
+B.4,B,"alt: C, G, D (Al 2)",NOT-IN-NOTES,,alternative scale list (drill)
+B.4,B,"alt: C, G, A natural minor (R Prep B)",NOT-IN-NOTES,,alternative scale list (drill)
+B.4,B,"alt: C major, A minor (T Initial)",NOT-IN-NOTES,,alternative scale list (drill)
+B.5,B,"I–IV–V7 in C, G, F, blocked and broken (from F)",NOT-IN-NOTES,,harmony knowledge and chord drill; E29 lists chord symbols only where printed
+B.5,B,first arpeggios across a fifth in C major and D minor (from AB),NOT-IN-NOTES,,arpeggio drill
+B.5,B,alt: broken tonic triads in all positions (R Prep B),NOT-IN-NOTES,,drill
+B.5,B,alt: cross-hand arpeggios I–V–I (F 2B),NOT-IN-NOTES,,drill
+B.6,B,block chords and waltz bass (prepare),READ,E36.<staff>.per_staff; E43.shared_attack_share; E45,accompaniment pattern is visible in the lower staff; no row names block chords or waltz bass
+B.6,B,ostinato and boogie bass (meet),READ,E40.<staff>.repeated_pitch_run,ostinato/boogie bass visible as repetition; no row decides it
+B.7,B,"reading chord symbols (letter, major or minor) and turning them into left-hand chords under the melody",CODE,"E29.n, n_chords, distinct_symbols, kinds, symbols",decides whether chord symbols are printed and of which kinds; turning them into chords is the learner's act
+B.8,B,phrases and phrase marks,READ,"E23.<staff>.slurs, bars",slurs are the printed phrase marks; phrase shape is not decided
+B.8,B,crescendo/diminuendo,CODE,"E21.hairpins, E21.words",
+B.8,B,pp,CODE,"E20.levels_used, softest",
+B.8,B,"connected (legato) pedalling, changing with the harmony",CODE,"E24.staves.<staff>.spans, changes; E24.words",PROXY: shows where pedal is written and its changes; whether changes follow the harmony is not decided
+B.9,B,major or minor after a scale and triad,NOT-IN-NOTES,,
+B.9,B,"playing back a four-note melody in C, G or A minor",NOT-IN-NOTES,,
+B.9,B,clapping back,NOT-IN-NOTES,,
+B.9,B,"alt: sing back, loud/quiet, smooth/detached (AB Initial)",NOT-IN-NOTES,,
+B.9,B,alt: highest/lowest note (T Initial),NOT-IN-NOTES,,
+B.10,B,four bars improvised over I and V in C,NOT-IN-NOTES,,
+B.10,B,improvising with five-finger and full major scales,NOT-IN-NOTES,,
+B.11,B,"pieces of contrasting kinds: agile, lyrical, another style (a guide to choosing, not three gates)",KIND,E25.tempo_words; E26.other_words,"kind of piece (agile, lyrical, style) is read from the score, not decided; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+B.12,B,four bars of 4/4 or six of 2/4,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+B.12,B,five-finger position,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+B.12,B,hands separately,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+B.12,B,"C major, D minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+B.12,B,"legato, staccato, f, p",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+B.13,B,"writing down a short rhythm of one's own, then a short melody in a known five-finger position, in binary form",NOT-IN-NOTES,,composing
+1.1,1,ledger lines above and below,CODE,"E05.<staff>.max_above, max_below, by_count",
+1.1,1,the 7th,CODE,"E39.<staff>.voice_generic; E36.<staff>.two_note_intervals (m7, M7)",
+1.1,1,five-finger positions on any note of the grade's keys,READ,E33.<staff>.per_bar span; E06.start,five-finger position is visible as a small per-bar span; no row decides it
+1.1,1,occasional accidentals in minor keys,CODE,"E07.<staff>.n, by_kind, top_bars",PROXY: counts encoded accidentals; whether the key is minor is not decided (E06 gives mode only if written)
+1.2,1,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+1.2,1,C major one octave hands together,NOT-IN-NOTES,,scale drill
+1.2,1,"G, F major and A, D minor (one minor form, the learner's choice) two octaves hands separately",NOT-IN-NOTES,,scale drill
+1.2,1,C major contrary motion one octave,NOT-IN-NOTES,,scale drill
+1.2,1,a scale passed from hand to hand (All-in-One V.5),NOT-IN-NOTES,,scale drill
+1.2,1,"alt: six keys two octaves including harmonic minors, and a chromatic scale from C (R L1)",NOT-IN-NOTES,,scale drill
+1.2,1,alt: chromatic contrary motion from D (T G1),NOT-IN-NOTES,,scale drill
+1.3,1,"G major and A minor arpeggios, one octave, hands separately",NOT-IN-NOTES,,arpeggio drill
+1.3,1,alt: one-octave arpeggios in the method's keys (F 3A),NOT-IN-NOTES,,arpeggio drill
+1.3,1,alt: RCM has none before Level 4,NOT-IN-NOTES,,
+1.4,1,6/8 and triplets (prepare in pieces),CODE,"E09.signatures (class compound); E13.<staff>.notes_by_ratio, runs",
+1.4,1,"3/8, swing and cut time (meet only). Sight-reading stays in simple time until Grade 4 (curriculum.md)",CODE,"E09.signatures (3/8, symbol cut); E26.swing_elements",the swing part is PROXY (printed swing instruction only)
+1.5,1,Alberti bass and ostinato (prepare),READ,E36.<staff>.per_staff; E40; E45,no Alberti row exists; the pattern is visible in the lower staff
+1.5,1,a second waltz-bass shape and the ragtime bass (meet),READ,,waltz-bass shape and ragtime bass are visible; no row decides them
+1.5,1,simple intros and endings around a left-hand groove (All-in-One IV.2),READ,,intros and endings are visible; no row decides them
+1.6,1,changing the pedal by listening,NOT-IN-NOTES,,listening skill
+1.6,1,overlapping pedal,NOT-IN-NOTES,,pedal technique; E24 shows only written marks
+1.6,1,the soft pedal (Piano For Dummies ch. 15),CODE,"E24.words (una corda, tre corde), words_by_kind",
+1.6,1,"slurs, accents, mf, mp and hairpins",CODE,E23.<staff>.slurs; E22.<staff>.by_kind.accent; E20.levels_used; E21.hairpins,
+1.7,1,primary chords in D major,NOT-IN-NOTES,,chord drill
+1.7,1,i–iv–V7 in A minor,NOT-IN-NOTES,,chord drill
+1.7,1,binary and ternary form recognised in pieces,READ,"E31.repeats, endings (signs only)",form is not decided from the presence of repeats
+1.7,1,phrases and periods (question and answer) in pieces (All-in-One III.4),READ,E23.<staff>.slurs (phrase marks),question-and-answer phrases are read from the score
+1.7,1,harmonising a melody with a single-note or two-note left-hand part (Piano For Dummies ch. 12; All-in-One III.4),NOT-IN-NOTES,,harmonising is a learner activity
+1.8,1,clap back two to three bars,NOT-IN-NOTES,,
+1.8,1,minor or major 3rd,NOT-IN-NOTES,,
+1.8,1,major or minor triad,NOT-IN-NOTES,,
+1.8,1,"play back five notes in C, G or A minor",NOT-IN-NOTES,,
+1.8,1,"alt: AB G1 tests (pulse in two or three, sing back, where a pitch changes)",NOT-IN-NOTES,,
+1.9,1,four bars improvised twice over I and V in F or G,NOT-IN-NOTES,,
+1.9,1,a motivic response of four to eight bars to a given motif,NOT-IN-NOTES,,
+1.10,1,"contrasting pieces (agile, lyrical, another style) using the Grade 1 rungs: accompaniment patterns, pedalling, dynamics",KIND,"E24, E20, E36","contrasting kinds are read from the score; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+1.10,1,"alt: Baroque–Classical, Romantic–21st century, Inventions (R L1)",NOT-IN-NOTES,,a period label is not in the notes
+1.11,1,3/4 added,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+1.11,1,"G, F major, A minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+1.11,1,"any five-finger position, hands separately",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+1.11,1,"dotted half, four eighths, half and quarter rests",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+1.11,1,"slurs, accents, mf, mp, hairpins",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+1.12,1,"naming the major key of a signature and writing the signature of a named key, up to two sharps or flats",NOT-IN-NOTES,,a theory exercise; E06 gives the piece's own signature
+1.12,1,the circle of fifths as the order in which sharps and flats are added,NOT-IN-NOTES,,theory
+1.13,1,"Hanon, *The Virtuoso Pianist*, exercises 1–6 in eighth notes over one octave, hands separately, then together",NOT-IN-NOTES,,
+1.13,1,"even fingers, legato",NOT-IN-NOTES,,
+2.1,2,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+2.1,2,"G, F major and A, D minor two octaves hands together",NOT-IN-NOTES,,scale drill
+2.1,2,"D, A major and E, G minor hands separately",NOT-IN-NOTES,,scale drill
+2.1,2,C contrary motion two octaves,NOT-IN-NOTES,,scale drill
+2.1,2,"chromatic from D, one octave, hands separately",NOT-IN-NOTES,,scale drill
+2.1,2,"alt: harmonic and melodic minors G, D, E (R L2)",NOT-IN-NOTES,,scale drill
+2.1,2,"alt: B-flat, D major, G, B minor hands together (T G2)",NOT-IN-NOTES,,scale drill
+2.2,2,"D, A major and E, G minor arpeggios, two octaves, hands separately",NOT-IN-NOTES,,
+2.2,2,the thumb passing smoothly at the octave,NOT-IN-NOTES,,
+2.2,2,"leaps across the keyboard, landing accurately (All-in-One V.4)",NOT-IN-NOTES,,
+2.3,2,"major and minor triads on all 12 roots (Faber's ""the 12 major and minor triads"", read here as both qualities on every root)",NOT-IN-NOTES,,chord drill
+2.3,2,"root position and inversions, blocked and broken",NOT-IN-NOTES,,"chord drill; E36 gives stack sizes only, not inversions"
+2.3,2,octaves,CODE,"E38.<staff>.octave_dyads, octave_span_chords","PROXY: per staff, not per hand; counts octaves as written in the piece"
+2.3,2,"the triads on each degree of a major key, named by Roman numeral (I–vii°)",NOT-IN-NOTES,,theory naming
+2.4,2,sixteenth-note patterns (prepare),CODE,E11.<staff>.notes_by_type.16th; E40.<staff>.equal_value,
+2.4,2,syncopation (prepare),READ,E42.beat_onset_share,syncopation is not decided by any row; E42 is only a rough hint
+2.4,2,swing (meet),CODE,E26.swing_elements; E26.other_words,PROXY: printed swing instruction only
+2.4,2,triplets and dotted eighth–sixteenth (prepare),CODE,"E13.<staff>.notes_by_ratio, runs; E12.<staff>.dotted_eighth_sixteenth",
+2.5,2,singing tone,NOT-IN-NOTES,,tone
+2.5,2,the melody louder than its accompaniment in the same or the other hand,READ,E36; E39 outer-edge; E20.conflicting_marks_same_moment,which line is the melody is visible; no row decides it; loudness is performance
+2.6,2,motive and sequence recognised in pieces,READ,,motive and sequence are visible in the score; no row decides them
+2.6,2,the 12-bar blues in Roman numerals and chord letters,READ,E29 symbols if printed; E02 bars,the 12-bar form is read from the score
+2.6,2,grace notes,CODE,"E14.<staff>.n, slashed, unslashed, runs, bars",
+2.6,2,alt: seventh chords met (Al 4),READ,E29.kinds where symbols are printed,seventh chords are not decided from the notes
+2.7,2,"minor 3rd, major 3rd, perfect 5th (heard melodically, answered by naming or playing)",NOT-IN-NOTES,,
+2.7,2,major or minor,NOT-IN-NOTES,,
+2.7,2,"play back five notes in G, F or D minor",NOT-IN-NOTES,,
+2.7,2,alt: AB G2 tests,NOT-IN-NOTES,,
+2.8,2,"eight bars over I, IV, V in A minor (tango or andante)",NOT-IN-NOTES,,
+2.8,2,a motivic response of six to eight bars with dotted notes and staccato,NOT-IN-NOTES,,
+2.9,2,"contrasting pieces using the Grade 2 rungs: sixteenths and syncopation, a voiced melody, the grade's keys",KIND,"E11, E12, E13, E42","contrasting kinds are read from the score; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+2.10,2,hands together,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+2.10,2,"D major, E and G minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+2.10,2,"whole note, dotted quarter–eighth, ties",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+2.10,2,pp,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+2.10,2,alt: moving beyond five-finger position already (R L2),NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+2.11,2,"Hanon exercises 7–13, as in 1.13",NOT-IN-NOTES,,finger exercise
+3.1,3,"key signatures of every scale listed, and all major key signatures in circle-of-fifths order (F 4–5)",NOT-IN-NOTES,"E06.start.<staff>.fifths, E06.changes","decides the piece's own signature(s); scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+3.1,3,"D, A major and E, G minor hands together",NOT-IN-NOTES,,scale drill
+3.1,3,"B-flat, E-flat major and B, C minor hands separately, harmonic or melodic",NOT-IN-NOTES,,scale drill
+3.1,3,E major contrary motion,NOT-IN-NOTES,,scale drill
+3.1,3,chromatic contrary motion from D,NOT-IN-NOTES,,scale drill
+3.1,3,alt: formula pattern in D (R L3),NOT-IN-NOTES,,scale drill
+3.1,3,"alt: E-flat, A major, C, F-sharp minor (T G3)",NOT-IN-NOTES,,scale drill
+3.1,3,alt: two-octave Power Scales in sixteenths (F 4–5),NOT-IN-NOTES,,scale drill
+3.2,3,"D, A major and E, G minor hands together",NOT-IN-NOTES,,
+3.2,3,"B-flat, E-flat major and B, C minor hands separately",NOT-IN-NOTES,,
+3.2,3,two octaves,NOT-IN-NOTES,,
+3.3,3,sixteenths in 6/8,CODE,E09.signatures (class compound); E11.<staff>.notes_by_type.16th,two rows together
+3.3,3,12/8,CODE,E09.signatures (12/8),
+3.3,3,changing time signatures,CODE,"E09.n_changes, E09.signatures",
+3.4,3,"trill, appoggiatura, mordent",CODE,"E15.per_staff.by_kind (trill, mordent); E14.<staff>.n, unslashed","PROXY for the appoggiatura: a grace note, whether acciaccatura or appoggiatura is not inferred"
+3.4,3,glissando (Piano For Dummies ch. 15; All-in-One IV.1),CODE,"E18.glissando, slide, spans",
+3.4,3,sforzando (prepare),CODE,"E20.accent_dynamics (sf, sfz)",
+3.4,3,"weighted tone, drop and follow-through, rotation (meet, as the method's technique guidance)",NOT-IN-NOTES,,tone and technique
+3.5,3,chords named with Roman numerals,NOT-IN-NOTES,,harmony knowledge
+3.5,3,the four-note V7,NOT-IN-NOTES,,harmony knowledge
+3.5,3,I–IV–I–V–I in several keys,NOT-IN-NOTES,,harmony knowledge
+3.5,3,"intervals named as perfect, major, minor",NOT-IN-NOTES,,knowledge; E36.two_note_intervals and E39 list interval names in the piece
+3.5,3,cadences in major and minor,NOT-IN-NOTES,,harmony knowledge
+3.6,3,"intervals m3, M3, P4, P5",NOT-IN-NOTES,,
+3.6,3,major or minor triad,NOT-IN-NOTES,,
+3.6,3,"whether a note is root, third or fifth",NOT-IN-NOTES,,
+3.6,3,play back five to six notes,NOT-IN-NOTES,,
+3.6,3,alt: AB G3 tests,NOT-IN-NOTES,,
+3.7,3,"a waltz or allegretto over I, ii, IV, V",NOT-IN-NOTES,,
+3.7,3,a motivic response with ties,NOT-IN-NOTES,,
+3.8,3,"contrasting pieces using the Grade 3 rungs: compound or changing metres, ornaments, the grade's keys",KIND,"E09, E15, E06","contrasting kinds are read from the score; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+3.9,3,up to 8 bars,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,3/8,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,"A, B-flat, E-flat major, B minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,outside five-finger position,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,two-note chords,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,dotted eighth–sixteenth and simple semiquavers,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.9,3,eighth rest,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+3.10,3,"Hanon exercises 14–20, as in 1.13",NOT-IN-NOTES,,finger exercise
+3.11,3,building a melody from a motive and its sequence,NOT-IN-NOTES,,composing
+3.11,3,a short piece in binary or ternary form over chords met so far,NOT-IN-NOTES,,composing
+4.1,4,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+4.1,4,"B-flat, E-flat major and B, C minor hands together",NOT-IN-NOTES,,scale drill
+4.1,4,"B, F-sharp, A-flat major and F-sharp, F minor hands separately",NOT-IN-NOTES,,scale drill
+4.1,4,contrary motion E-flat major and C harmonic minor,NOT-IN-NOTES,,scale drill
+4.1,4,"chromatic from F-sharp hands together, two octaves",NOT-IN-NOTES,,scale drill
+4.1,4,alt: legato or staccato scales (T G4),NOT-IN-NOTES,,scale drill
+4.1,4,alt: formula pattern in C minor (R L4),NOT-IN-NOTES,,scale drill
+4.2,4,"arpeggios in the Grade 4 scale keys: B-flat, E-flat major and B, C minor hands together",NOT-IN-NOTES,,
+4.2,4,"B, F-sharp, A-flat major and F-sharp, F minor hands separately",NOT-IN-NOTES,,
+4.3,4,diminished and augmented triads and the diminished 7th,NOT-IN-NOTES,,harmony knowledge; E36.two_note_intervals shows d5/A4 dyads only
+4.3,4,thirty-second and dotted-sixteenth notes (Al 6),CODE,"E11.<staff>.notes_by_type.32nd, dotted","PROXY for the dotted-sixteenth half: E11.dotted counts every dotted value, not dotted sixteenths"
+4.3,4,tonic triads hands together in all positions,NOT-IN-NOTES,,chord drill
+4.3,4,"embellishing a melody over chord symbols (I, II, IV, V7, VI)",NOT-IN-NOTES,,learner activity
+4.4,4,"contrasting pieces (agile, lyrical, other style), with pedalling adapted to the piece, ornaments in style and the style of each piece's period",KIND,E24 pedal; E15 ornaments,"pedal and ornament parts are decided by those rows; the style and period are not in the notes; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+4.4,4,"alt: Baroque, Classical, Romantic–21st century (R L4)",NOT-IN-NOTES,,a period label is not in the notes
+4.5,4,intervals to the octave,NOT-IN-NOTES,,
+4.5,4,"play back six to eight notes in D, A major or G, C minor",NOT-IN-NOTES,,
+4.5,4,"alt: AB G4 tests (play back a melody from memory; character; clap and name the time), optional, never added on",NOT-IN-NOTES,,
+4.6,4,twelve bars in 2/4 in G or B minor,NOT-IN-NOTES,,
+4.6,4,a syncopated motivic response of eight to twelve bars,NOT-IN-NOTES,,
+4.7,4,about 8 bars,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+4.7,4,6/8,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+4.7,4,anacrusis,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+4.7,4,chromatic notes,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+4.7,4,pause,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+4.7,4,tenuto,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.1,5,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+5.1,5,"legato scales hands together, two octaves, in A, E, B, F-sharp, D-flat major and F-sharp, C-sharp, G-sharp, E-flat, B-flat minor",NOT-IN-NOTES,,scale drill
+5.1,5,"staccato scales A-flat major, F minor",NOT-IN-NOTES,,scale drill
+5.1,5,"contrary motion D-flat major, C-sharp harmonic minor",NOT-IN-NOTES,,scale drill
+5.1,5,chromatic contrary motion a major third apart,NOT-IN-NOTES,,scale drill
+5.1,5,alt: sixteenth-note scales and chromatic hands together (R L6),NOT-IN-NOTES,,scale drill
+5.1,5,"alt: D-flat, B major, B-flat, G-sharp minor (T G5)",NOT-IN-NOTES,,scale drill
+5.2,5,two-octave arpeggios hands together in the Grade 5 keys,NOT-IN-NOTES,,
+5.2,5,"the diminished 7th from B, hands separately",NOT-IN-NOTES,,
+5.2,5,alt: dominant 7th chords and arpeggios (R L5),NOT-IN-NOTES,,
+5.2,5,alt: leading-tone diminished 7ths (R L6),NOT-IN-NOTES,,
+5.3,5,dominant 7th chords in all positions,NOT-IN-NOTES,,chord drill
+5.3,5,triads ending with I–V–I,NOT-IN-NOTES,,chord drill
+5.3,5,a lead sheet realised with an accompaniment (keys up to two sharps or flats). Core here by curriculum decision (RCM makes it an option),CODE,"E29.n, symbols",PROXY: shows chord symbols are printed (lead-sheet piece); realising an accompaniment is the learner's act
+5.4,5,contrasting pieces,KIND,,"contrasting kinds are read from the score; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+5.4,5,four-part textures (two notes in each hand),CODE,"E36.<staff>.largest, per_staff; E41.<staff>","PROXY: per staff and written voices, not per hand"
+5.4,5,pedalling chosen for the piece,NOT-IN-NOTES,,the player's choice; E24 shows only written pedal
+5.4,5,style and period recognised and described,NOT-IN-NOTES,,recognising style is not a property of the notes
+5.4,5,alt: two technically contrasting études (R L5–6),NOT-IN-NOTES,,a period/type label
+5.5,5,"intervals to the major 6th, melodic then harmonic",NOT-IN-NOTES,,
+5.5,5,"major, minor and dominant 7th chords",NOT-IN-NOTES,,
+5.5,5,I–IV–I and I–V–I,NOT-IN-NOTES,,
+5.5,5,"play back up to eight notes, or play back a question phrase and improvise an answer (either route)",NOT-IN-NOTES,,
+5.5,5,alt: AB G5 tests (style and period),NOT-IN-NOTES,,
+5.6,5,"twelve bars in 6/8 in A or E-flat major, up to two chords per bar on I, ii, IV, V, vi",NOT-IN-NOTES,,
+5.6,5,an eight-to-twelve-bar motivic response,NOT-IN-NOTES,,
+5.7,5,about 8–12 bars,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,"E, A-flat major, F-sharp, C minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,four-part chords,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,simple syncopation,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,slowing at the end,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,ff,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+5.7,5,alt: pedal (T G5; the curriculum's choice brings pedal into sight-reading at Grade 5),NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.1,6,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+6.1,6,"D, F, A-flat, B major and D, F, G-sharp, B minor (harmonic and melodic), four octaves hands together, legato or staccato",NOT-IN-NOTES,,scale drill
+6.1,6,contrary motion two octaves,NOT-IN-NOTES,,scale drill
+6.1,6,"chromatic from G-sharp and B, four octaves",NOT-IN-NOTES,,scale drill
+6.1,6,alt: C major in thirds (T G6),NOT-IN-NOTES,,scale drill
+6.2,6,arpeggios four octaves hands together,NOT-IN-NOTES,,
+6.2,6,"dominant 7ths in D, F, A-flat, B resolving on the tonic",NOT-IN-NOTES,,
+6.2,6,diminished 7ths from G-sharp and B,NOT-IN-NOTES,,
+6.3,6,four-note dominant and diminished 7th chords hands together,NOT-IN-NOTES,,
+6.3,6,I–IV–V–I,NOT-IN-NOTES,,
+6.3,6,continuing a given accompaniment in style under a 12-bar lead sheet with a two-bar introduction and coda,NOT-IN-NOTES,,
+6.4,6,"at least one piece focused on technique, coordination and counterpoint (for example an invention) and at least one on expression, colour and tonal balance",READ,"E41.<staff>.max_note_voices; E43, E44, E45",technique/counterpoint vs expression is read from the score
+6.4,6,pedalling chosen by the player,NOT-IN-NOTES,,the player's choice
+6.4,6,the full compass,CODE,"E33.<staff>.low, high, span",
+6.4,6,alt: A/B/C lists (AB G6),NOT-IN-NOTES,,list label
+6.4,6,"alt: Baroque, Classical, Romantic–21st century (R L7–8)",NOT-IN-NOTES,,period label
+6.5,6,all intervals within the octave,NOT-IN-NOTES,,
+6.5,6,"major, minor and augmented triads, dominant and diminished 7ths",NOT-IN-NOTES,,
+6.5,6,I–IV–V progressions,NOT-IN-NOTES,,
+6.5,6,"play back up to ten notes, or improvise a contrasting answer phrase (either route)",NOT-IN-NOTES,,
+6.6,6,sixteen bars in 12/8 in F-sharp or C minor with 7ths,NOT-IN-NOTES,,
+6.6,6,a one-bar stimulus answered in twelve to sixteen bars with acciaccaturas,NOT-IN-NOTES,,
+6.7,6,about 12–16 bars,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.7,6,"9/8, 5/8, 5/4",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.7,6,"C-sharp, F minor",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.7,6,triplets,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.7,6,clef changes,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+6.7,6,right pedal,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+7.1,7,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+7.1,7,"D-flat, E, G, B-flat major and C-sharp, E, G, B-flat minor, four octaves legato or staccato",NOT-IN-NOTES,,scale drill
+7.1,7,a third apart,NOT-IN-NOTES,,scale drill
+7.1,7,contrary motion,NOT-IN-NOTES,,scale drill
+7.1,7,chromatic contrary motion a minor third apart,NOT-IN-NOTES,,scale drill
+7.1,7,alt: scales in octaves (R L9),NOT-IN-NOTES,,scale drill
+7.1,7,alt: tone control with crescendo and diminuendo in scales (T G7),NOT-IN-NOTES,,scale drill
+7.2,7,"G major in thirds, legato and staccato, two octaves, hands separately, with the method's fingering and a relaxed hand",NOT-IN-NOTES,,double-note drill
+7.2,7,alt: E major in thirds (T G7),NOT-IN-NOTES,,double-note drill
+7.3,7,"arpeggios in first inversion, four octaves",NOT-IN-NOTES,,
+7.3,7,"dominant and diminished 7ths, four octaves",NOT-IN-NOTES,,
+7.4,7,"pieces from different periods, including a contrapuntal piece (a fugue where one suits)",KIND,"E41.<staff>.max_note_voices, bars_2plus_note_voices","contrapuntal writing is read from the score; E41 counts written voices only; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+7.4,7,una corda where the piece asks for it,CODE,"E24.words (una corda, tre corde)",
+7.4,7,hearing and shaping separate lines,READ,E41; E39.<staff>.voice_semitones,written voices only; shaping lines is performance
+7.4,7,period style,NOT-IN-NOTES,,a style label
+7.5,7,"perfect, imperfect and interrupted cadences",NOT-IN-NOTES,,
+7.5,7,"chords I, IV, V, V7, vi",NOT-IN-NOTES,,
+7.5,7,"modulation to dominant, subdominant or relative minor",NOT-IN-NOTES,,
+7.5,7,the I–VI–IV–V6/4–V7–I progression,NOT-IN-NOTES,,
+7.5,7,a 16-bar lead sheet with chords from related keys,NOT-IN-NOTES,,
+7.6,7,the Grade 6 intervals plus augmented 4th/diminished 5th,NOT-IN-NOTES,,
+7.6,7,major and minor four-note chords,NOT-IN-NOTES,,
+7.6,7,"four-chord progressions on I, IV, V, vi",NOT-IN-NOTES,,
+7.6,7,"play back the upper part of a two-part phrase, or complete and answer a phrase (either route)",NOT-IN-NOTES,,
+7.7,7,sixteen bars in 9/8 in E or A-flat major on all diatonic chords with 7ths,NOT-IN-NOTES,,
+7.7,7,a twelve-to-sixteen-bar motivic response with 7ths,NOT-IN-NOTES,,
+7.8,7,about 16–20 bars,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+7.8,7,"7/8, 7/4",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+7.8,7,tempo changes,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+7.8,7,8va,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+7.8,7,una corda,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.1,8,key signatures of every scale listed,NOT-IN-NOTES,E06.start.<staff>.fifths,"decides the piece's own signature; scales are NOT-IN-NOTES; relabelled after the pilot: knowing the signatures of the scale list is a theory/scale item, not a property of a piece (the piece's own key is in E06)"
+8.1,8,"C, E-flat, F-sharp, A major and minor, four octaves legato or staccato",NOT-IN-NOTES,,scale drill
+8.1,8,a sixth apart,NOT-IN-NOTES,,scale drill
+8.1,8,contrary motion,NOT-IN-NOTES,,scale drill
+8.1,8,chromatic a major sixth apart,NOT-IN-NOTES,,scale drill
+8.1,8,whole-tone scales on E-flat and C,NOT-IN-NOTES,,scale drill
+8.1,8,"alt: scales separated by a 3rd or a 6th, chromatic in octaves (R L10)",NOT-IN-NOTES,,scale drill
+8.2,8,E-flat major in legato thirds,NOT-IN-NOTES,,double-note drill
+8.2,8,C major in staccato sixths,NOT-IN-NOTES,,double-note drill
+8.2,8,"two octaves, hands separately, without strain",NOT-IN-NOTES,,double-note drill
+8.2,8,alt: B major and C harmonic minor in thirds (T G8),NOT-IN-NOTES,,double-note drill
+8.3,8,"arpeggios in second inversion, four octaves",NOT-IN-NOTES,,
+8.3,8,dominant and diminished 7ths,NOT-IN-NOTES,,
+8.4,8,"pieces of advanced range, for example a Bach prelude and fugue, a Classical sonata movement and a later work (illustrations, not required titles)",KIND,E33 range; E36,"'advanced range' is a judgement; a property of a set of pieces: for one piece, name its kind (agile, lyrical, other style) and period instead of present/absent"
+8.4,8,layered dynamics with different levels in each hand,CODE,"E20.conflicting_marks_same_moment, per_staff","PROXY: staves, not hands"
+8.4,8,three-part chords in one hand,CODE,E36.<staff>.largest,"PROXY: stack size per staff, not per hand"
+8.4,8,spread chords,CODE,"E16.<staff>.arpeggiated_chords, by_direction",
+8.4,8,ornaments,CODE,E15.per_staff.by_kind; E14.<staff>.n; E17,
+8.4,8,phrasing,READ,E23.<staff>.slurs,phrasing is not decided
+8.4,8,"alt: five memorised pieces from five periods, up to 30 minutes (R L10)",NOT-IN-NOTES,,memorised repertoire
+8.5,8,"harmonising a four-bar melody with I, IV, V in the left hand",NOT-IN-NOTES,,
+8.5,8,"separately, a 32-bar lead-sheet melody, the first phrase as written and the rest embellished, over a consistent accompaniment, with introduction and coda",NOT-IN-NOTES,,
+8.6,8,intervals to the 9th,NOT-IN-NOTES,,
+8.6,8,four-note chord qualities including major and minor 7ths,NOT-IN-NOTES,,
+8.6,8,five-chord progressions with the cadential 6/4,NOT-IN-NOTES,,
+8.6,8,"play back and harmonise a melody, or complete and answer a phrase (either route)",NOT-IN-NOTES,,
+8.6,8,alt: the lowest part of a three-part phrase,NOT-IN-NOTES,,
+8.6,8,alt: plagal among the cadences,NOT-IN-NOTES,,
+8.6,8,alt: chords named with their positions (AB G8),NOT-IN-NOTES,,
+8.7,8,"sixteen bars in 5/4 in C-sharp or F minor with 7ths, 9ths and suspensions",NOT-IN-NOTES,,
+8.7,8,"a motivic response with triplets, duplets and sfz",NOT-IN-NOTES,,
+8.8,8,about a page,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,12/8,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,"B, D-flat major",NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,three-part chords in either hand,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,spread chords,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,simple ornaments,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
+8.8,8,accelerando,NOT-IN-NOTES,,"reading unseen material is not a property of a piece; the notation content named in the item can be looked up in the rows, but the rung is about sight-reading"
