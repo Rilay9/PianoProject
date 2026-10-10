@@ -91,7 +91,7 @@ Learns: eighth-note patterns; eighth rest; dotted quarter–eighth; a change of 
 Learns: W-W-H-W; major and minor patterns and chords on C, D, G, A; reading a piece written in another key and playing a known piece in a new position. | Needs: A.2, A.5 | Activities: exercise; piece. | Done when: each pattern and its chord in both hands; one short piece read in its written key and one played in a new position [threshold: step 4]. | Source: F 2A Units 2, 4–7.
 
 **B.4 One-octave scales** · core · prepare
-Learns: C major and D minor, one octave, hands separately, thumb under; C major contrary motion over a fifth, hands together. *Alt:* C, G, F major (F 2B); C, G, D (Al 2); C, G, A natural minor (R Prep B); C major, A minor (T Initial). | Needs: B.3 | Activities: exercise. | Done when: each scale hands separately, and the contrary-motion pattern, from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 54 (AB Initial speed guide). | Source: AB Initial p. 20; F 2B Units 4, 5, 10; Al 2 pp. 24–29.
+Learns: C major and D minor, one octave, hands separately, thumb under; C major contrary motion over a fifth, hands together; the key signature of each scale played, read and named. *Alt:* C, G, F major (F 2B); C, G, D (Al 2); C, G, A natural minor (R Prep B); C major, A minor (T Initial). | Needs: B.3 | Activities: exercise. | Done when: each scale hands separately, and the contrary-motion pattern, from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 54 (AB Initial speed guide). | Source: AB Initial p. 20; F 2B Units 4, 5, 10; Al 2 pp. 24–29. Key signature at this level: F 2B, R Prep B, AB and T Initial; Al 1B pp. 40–44 (curriculum.md, Level A differences).
 
 **B.5 Triads and primary chords** · core · prepare
 Learns: I–IV–V7 in C, G, F, blocked and broken (from F); first arpeggios across a fifth in C major and D minor (from AB). *Alt:* broken tonic triads in all positions (R Prep B); cross-hand arpeggios I–V–I (F 2B). | Needs: B.3, A.5 | Activities: exercise; piece. | Done when: I–IV–V7–I in each of the three keys, blocked and broken, in time; and each arpeggio hands separately, correct and even [threshold: step 4]; arpeggio target ♩ = 52 (AB Initial). | Source: F 2B Unit 9; AB Initial p. 20; R Prep B.
@@ -117,13 +117,16 @@ Learns: pieces of contrasting kinds: agile, lyrical, another style (a guide to c
 **B.12 Reading unseen, Level B** · core · unseen
 Learns: four bars of 4/4 or six of 2/4; five-finger position; hands separately; C major, D minor; legato, staccato, f, p. | Needs: B.1, A.9 | Activities: read. | Done when: plays several such unfamiliar pieces in time after a short look (exam format: half a minute, AB p. 15) [threshold: step 4]. | Source: AB Initial p. 16.
 
+**B.13 Composing a short melody** · core · meet
+Learns: writing down a short rhythm of one's own, then a short melody in a known five-finger position, in binary form. | Needs: B.1, B.2 | Activities: compose; self-review. | Done when: notates and plays a short melody of their own, in time [threshold: step 4]. | Source: Hoffman Academy L12 "Rhythm Composition", L77 "Composing in Binary Form", L98; PianoVideoLessons 4-14 "Melody Writing" (free courses, rung-suggestions.md); composing tasks in the F theory books and the T own-composition option (curriculum.md, Track improv-compose). Added on the owner's word (2026-10-10).
+
 ## Grade 1 (F 3A, Al 3, R L1, AB G1, T G1)
 
 **1.1 Reading further** · core · prepare
 Learns: ledger lines above and below; the 7th; five-finger positions on any note of the grade's keys; occasional accidentals in minor keys. | Needs: B.1 | Activities: exercise; piece. | Done when: reads and plays short passages containing these [threshold: step 4]. | Source: F 3A; AB G1 p. 16.
 
 **1.2 Grade 1 scales** · core · prepare
-Learns: C major one octave hands together; G, F major and A, D minor (one minor form, the learner's choice) two octaves hands separately; C major contrary motion one octave. *Alt:* six keys two octaves including harmonic minors, and a chromatic scale from C (R L1); chromatic contrary motion from D (T G1). | Needs: B.4 | Activities: exercise. | Done when: each scale and the contrary-motion scale from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 60 (AB G1). | Source: AB G1 p. 23; R L1 p. 19; T G1 pp. 100–101.
+Learns: key signatures of every scale listed; C major one octave hands together; G, F major and A, D minor (one minor form, the learner's choice) two octaves hands separately; C major contrary motion one octave. *Alt:* six keys two octaves including harmonic minors, and a chromatic scale from C (R L1); chromatic contrary motion from D (T G1). | Needs: B.4 | Activities: exercise. | Done when: each scale and the contrary-motion scale from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 60 (AB G1). | Source: AB G1 p. 23; R L1 p. 19; T G1 pp. 100–101.
 
 **1.3 First arpeggios** · core · prepare
 Learns: G major and A minor arpeggios, one octave, hands separately. *Alt:* one-octave arpeggios in the method's keys (F 3A); RCM has none before Level 4. | Needs: B.5 | Activities: exercise. | Done when: each from memory with correct fingering and shape, even [threshold: step 4]; target ♩ = 58 (AB G1). | Source: AB G1 p. 23.
@@ -152,16 +155,22 @@ Learns: contrasting pieces (agile, lyrical, another style) using the Grade 1 run
 **1.11 Reading unseen, Grade 1** · core · unseen
 Learns: 3/4 added; G, F major, A minor; any five-finger position, hands separately; dotted half, four eighths, half and quarter rests; slurs, accents, mf, mp, hairpins. | Needs: B.12, 1.1 | Activities: read. | Done when: several unfamiliar pieces covering these features played in time [threshold: step 4]. | Source: AB G1 p. 16.
 
+**1.12 Key signatures and the circle of fifths** · core · meet
+Learns: naming the major key of a signature and writing the signature of a named key, up to two sharps or flats; the circle of fifths as the order in which sharps and flats are added. | Needs: B.4 | Activities: exercise (signature to key, key to signature; play the scale of a named signature). | Done when: names the key of any signature up to two sharps or flats and plays its scale [threshold: step 4]. | Source: key signature from Level B (F 2B, R Prep B, AB and T Initial); circle of fifths: Hoffman Academy Unit 6 L114, Unit 8 L157, L159; Zebra Keys Beginner L12, L16; PianoVideoLessons 6-1 (free courses, rung-suggestions.md; Grade 1 is a reading of their order, not a syllabus level). Leads into 3.1 (all signatures, F 4–5). Added on the owner's word (2026-10-10).
+
+**1.13 Finger exercises: Hanon 1–6** · core · prepare
+Learns: Hanon, *The Virtuoso Pianist*, exercises 1–6 in eighth notes over one octave, hands separately, then together; even fingers, legato. | Needs: 1.2 | Activities: exercise. | Done when: each exercise from memory, even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 1 (exercises 1–6, "Late Elementary"); Hanon's preface asks for a year of study before the full book; Hanon also in Hoffman Academy Units 14–18 and PianoVideoLessons 3-4, 3-8, 3-12, 3-16 (rung-suggestions.md). Grade 1 for "Late Elementary" is a reading. Added on the owner's word (2026-10-10).
+
 ## Grade 2 (F 3B–4, Al 3–4, R L2, AB G2, T G2)
 
 **2.1 Grade 2 scales** · core · prepare
-Learns: G, F major and A, D minor two octaves hands together; D, A major and E, G minor hands separately; C contrary motion two octaves; chromatic from D, one octave, hands separately. *Alt:* harmonic and melodic minors G, D, E (R L2); B-flat, D major, G, B minor hands together (T G2). | Needs: 1.2 | Activities: exercise (hands separately, then together). | Done when: each scale, the contrary-motion scale and the chromatic scale from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 66 (AB G2). | Source: AB G2 p. 26.
+Learns: key signatures of every scale listed; G, F major and A, D minor two octaves hands together; D, A major and E, G minor hands separately; C contrary motion two octaves; chromatic from D, one octave, hands separately. *Alt:* harmonic and melodic minors G, D, E (R L2); B-flat, D major, G, B minor hands together (T G2). | Needs: 1.2 | Activities: exercise (hands separately, then together). | Done when: each scale, the contrary-motion scale and the chromatic scale from memory with correct fingering, legato and even [threshold: step 4]; target ♩ = 66 (AB G2). | Source: AB G2 p. 26.
 
 **2.2 Two-octave arpeggios** · core · prepare
 Learns: D, A major and E, G minor arpeggios, two octaves, hands separately; the thumb passing smoothly at the octave. | Needs: 1.3 | Activities: exercise. | Done when: each from memory with correct fingering, shape and an even join at the octave [threshold: step 4]; target ♩ = 63 (AB G2). | Source: AB G2 p. 26; T G2 p. 104.
 
 **2.3 Triads in all keys and positions** · core · prepare
-Learns: major and minor triads on all 12 roots (Faber's "the 12 major and minor triads", read here as both qualities on every root); root position and inversions, blocked and broken; octaves. | Needs: 1.7 | Activities: exercise (staged: root position in all keys, then inversions in the known keys, then the rest). | Done when: plays a named triad in root position on any root, and in each inversion in the keys met so far, in time [threshold: step 4]. | Source: F 3B (p. 48).
+Learns: major and minor triads on all 12 roots (Faber's "the 12 major and minor triads", read here as both qualities on every root); root position and inversions, blocked and broken; octaves; the triads on each degree of a major key, named by Roman numeral (I–vii°). | Needs: 1.7 | Activities: exercise (staged: root position in all keys, then inversions in the known keys, then the rest). | Done when: plays a named triad in root position on any root, and in each inversion in the keys met so far, in time [threshold: step 4]. | Source: F 3B (p. 48). Triads on each degree: Hoffman Academy Unit 10 L185 ("all diatonic chords in the key of C"); PianoVideoLessons 5-5, 5-6; Zebra Keys L15 (major), L33 (natural minor) (free courses, docs/pieces/review/rung-suggestions.md).
 
 **2.4 Sixteenths, syncopation, swing** · core · meet → prepare
 Learns: sixteenth-note patterns (prepare); syncopation (prepare); swing (meet); triplets and dotted eighth–sixteenth (prepare). | Needs: 1.4 | Activities: piece; exercise; self-review (swing feel). | Done when: prepared pieces with sixteenths, syncopation, triplets and dotted eighth–sixteenth at a steady pulse [threshold: step 4]; swing is met and checked by self-review, not by timing alone. | Source: F 3B (pp. 54–55); Al 4.
@@ -184,10 +193,13 @@ Learns: contrasting pieces using the Grade 2 rungs: sixteenths and syncopation, 
 **2.10 Reading unseen, Grade 2** · core · unseen
 Learns: hands together; D major, E and G minor; whole note, dotted quarter–eighth, ties; pp. *Alt:* moving beyond five-finger position already (R L2). | Needs: 1.11, A.4 | Activities: read (short two-hand fragments first, then whole pieces). | Done when: several unfamiliar hands-together pieces played in time [threshold: step 4]. | Source: AB G2 p. 16.
 
+**2.11 Finger exercises: Hanon 7–13** · core · prepare
+Learns: Hanon exercises 7–13, as in 1.13. | Needs: 1.13 | Activities: exercise. | Done when: each exercise from memory, even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 2 (exercises 7–13, "Early Intermediate"). Added on the owner's word (2026-10-10).
+
 ## Grade 3 (F 4–5, Al 4–5, R L3, AB G3, T G3)
 
 **3.1 Grade 3 scales** · core · prepare
-Learns: D, A major and E, G minor hands together; B-flat, E-flat major and B, C minor hands separately, harmonic or melodic; E major contrary motion; chromatic contrary motion from D. *Alt:* formula pattern in D (R L3); E-flat, A major, C, F-sharp minor (T G3); two-octave Power Scales in sixteenths and the circle of fifths (F 4–5). | Needs: 2.1 | Activities: exercise. | Done when: each listed scale and pattern from memory, correct and even [threshold: step 4]; target ♩ = 80 (AB G3). | Source: AB G3 p. 29.
+Learns: key signatures of every scale listed, and all major key signatures in circle-of-fifths order (F 4–5); D, A major and E, G minor hands together; B-flat, E-flat major and B, C minor hands separately, harmonic or melodic; E major contrary motion; chromatic contrary motion from D. *Alt:* formula pattern in D (R L3); E-flat, A major, C, F-sharp minor (T G3); two-octave Power Scales in sixteenths (F 4–5). | Needs: 2.1 | Activities: exercise. | Done when: each listed scale and pattern from memory, correct and even [threshold: step 4]; target ♩ = 80 (AB G3). | Source: AB G3 p. 29.
 
 **3.2 Grade 3 arpeggios** · core · prepare
 Learns: D, A major and E, G minor hands together; B-flat, E-flat major and B, C minor hands separately; two octaves. | Needs: 2.2 | Activities: exercise (hands separately before together). | Done when: each from memory with correct fingering and smooth joins, hands lined up where together [threshold: step 4]; target ♩ = 72 (AB G3). | Source: AB G3 p. 29.
@@ -213,10 +225,16 @@ Learns: contrasting pieces using the Grade 3 rungs: compound or changing metres,
 **3.9 Reading unseen, Grade 3** · core · unseen
 Learns: up to 8 bars; 3/8; A, B-flat, E-flat major, B minor; outside five-finger position; two-note chords; dotted eighth–sixteenth and simple semiquavers; eighth rest. | Needs: 2.10 | Activities: read. | Done when: several unfamiliar pieces covering the new keys, two-note chords and rhythms, played in time [threshold: step 4]. | Source: AB G3 p. 16.
 
+**3.10 Finger exercises: Hanon 14–20** · core · prepare
+Learns: Hanon exercises 14–20, as in 1.13. | Needs: 2.11 | Activities: exercise. | Done when: each exercise from memory, even at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 3 (exercises 14–20; the publisher's level not found, placed after Book 2). Added on the owner's word (2026-10-10).
+
+**3.11 Composing with sequences** · core · meet
+Learns: building a melody from a motive and its sequence; a short piece in binary or ternary form over chords met so far. | Needs: B.13, 2.6 | Activities: compose; self-review. | Done when: notates and plays a short piece of their own that uses a motive, its sequence and a clear form [threshold: step 4]. | Source: F 4 Theory Book ("Composing with Sequences", Hal Leonard listing); Hoffman Academy L235 "Composition Project", L291 "Composition Project: Chord Progressions" (rung-suggestions.md). Added on the owner's word (2026-10-10).
+
 ## Grade 4 (Al 5–6, R L4, AB G4, T G4)
 
 **4.1 Grade 4 scales** · core · prepare
-Learns: B-flat, E-flat major and B, C minor hands together; B, F-sharp, A-flat major and F-sharp, F minor hands separately; contrary motion E-flat major and C harmonic minor; chromatic from F-sharp hands together, two octaves. *Alt:* legato or staccato scales (T G4); formula pattern in C minor (R L4). | Needs: 3.1 | Activities: exercise. | Done when: each listed scale, contrary-motion and chromatic pattern from memory, correct and even [threshold: step 4]; target ♩ = 100 (AB G4). | Source: AB G4 p. 32.
+Learns: key signatures of every scale listed; B-flat, E-flat major and B, C minor hands together; B, F-sharp, A-flat major and F-sharp, F minor hands separately; contrary motion E-flat major and C harmonic minor; chromatic from F-sharp hands together, two octaves. *Alt:* legato or staccato scales (T G4); formula pattern in C minor (R L4). | Needs: 3.1 | Activities: exercise. | Done when: each listed scale, contrary-motion and chromatic pattern from memory, correct and even [threshold: step 4]; target ♩ = 100 (AB G4). | Source: AB G4 p. 32.
 
 **4.2 Grade 4 arpeggios** · core · prepare
 Learns: arpeggios in the Grade 4 scale keys: B-flat, E-flat major and B, C minor hands together; B, F-sharp, A-flat major and F-sharp, F minor hands separately. | Needs: 3.2 | Activities: exercise. | Done when: each from memory with correct fingering and smooth joins [threshold: step 4]; target ♩ = 80 (AB G4). | Source: AB G4 p. 32.
@@ -239,7 +257,7 @@ Learns: about 8 bars; 6/8; anacrusis; chromatic notes; pause; tenuto. | Needs: 3
 ## Grade 5 (R L5–6, AB G5, T G5)
 
 **5.1 Grade 5 scales** · core · prepare
-Learns: legato scales hands together, two octaves, in A, E, B, F-sharp, D-flat major and F-sharp, C-sharp, G-sharp, E-flat, B-flat minor; staccato scales A-flat major, F minor; contrary motion D-flat major, C-sharp harmonic minor; chromatic contrary motion a major third apart. *Alt:* sixteenth-note scales and chromatic hands together (R L6); D-flat, B major, B-flat, G-sharp minor (T G5). | Needs: 4.1 | Activities: exercise. | Done when: each scale and pattern from memory, correct and even, the staccato scales detached [threshold: step 4]; target 𝅗𝅥 = 60 (AB G5; the beat note becomes the half note at this grade). | Source: AB G5 p. 35.
+Learns: key signatures of every scale listed; legato scales hands together, two octaves, in A, E, B, F-sharp, D-flat major and F-sharp, C-sharp, G-sharp, E-flat, B-flat minor; staccato scales A-flat major, F minor; contrary motion D-flat major, C-sharp harmonic minor; chromatic contrary motion a major third apart. *Alt:* sixteenth-note scales and chromatic hands together (R L6); D-flat, B major, B-flat, G-sharp minor (T G5). | Needs: 4.1 | Activities: exercise. | Done when: each scale and pattern from memory, correct and even, the staccato scales detached [threshold: step 4]; target 𝅗𝅥 = 60 (AB G5; the beat note becomes the half note at this grade). | Source: AB G5 p. 35.
 
 **5.2 Grade 5 arpeggios and the diminished 7th** · core · prepare
 Learns: two-octave arpeggios hands together in the Grade 5 keys; the diminished 7th from B, hands separately. *Alt:* dominant 7th chords and arpeggios (R L5); leading-tone diminished 7ths (R L6). | Needs: 4.2, 4.3 | Activities: exercise. | Done when: each arpeggio, and the diminished 7th as a separate item, from memory with correct shape and fingering [threshold: step 4]; target 𝅗𝅥 = 44 (AB G5). | Source: AB G5 p. 35.
@@ -262,7 +280,7 @@ Learns: about 8–12 bars; E, A-flat major, F-sharp, C minor; four-part chords; 
 ## Grade 6 (R L7–8, AB G6, T G6)
 
 **6.1 Four-octave scales** · core · prepare
-Learns: D, F, A-flat, B major and D, F, G-sharp, B minor (harmonic and melodic), four octaves hands together, legato or staccato; contrary motion two octaves; chromatic from G-sharp and B, four octaves. *Alt:* C major in thirds (T G6). | Needs: 5.1 | Activities: exercise. | Done when: each scale in both minor forms and both touches, and the contrary-motion and chromatic patterns, from memory, correct and even [threshold: step 4]; target 𝅗𝅥 = 72 (AB G6). Never a gate for unrelated pieces. | Source: AB G6 p. 38.
+Learns: key signatures of every scale listed; D, F, A-flat, B major and D, F, G-sharp, B minor (harmonic and melodic), four octaves hands together, legato or staccato; contrary motion two octaves; chromatic from G-sharp and B, four octaves. *Alt:* C major in thirds (T G6). | Needs: 5.1 | Activities: exercise. | Done when: each scale in both minor forms and both touches, and the contrary-motion and chromatic patterns, from memory, correct and even [threshold: step 4]; target 𝅗𝅥 = 72 (AB G6). Never a gate for unrelated pieces. | Source: AB G6 p. 38.
 
 **6.2 Four-octave arpeggios and 7ths** · core · prepare
 Learns: arpeggios four octaves hands together; dominant 7ths in D, F, A-flat, B resolving on the tonic; diminished 7ths from G-sharp and B. | Needs: 5.2 | Activities: exercise. | Done when: each arpeggio, the dominant 7ths with their resolution, and the diminished 7ths, from memory with correct shape [threshold: step 4]; target 𝅗𝅥 = 50 (AB G6). | Source: AB G6 p. 38.
@@ -285,7 +303,7 @@ Learns: about 12–16 bars; 9/8, 5/8, 5/4; C-sharp, F minor; triplets; clef chan
 ## Grade 7 (R L9, AB G7, T G7)
 
 **7.1 Grade 7 scales** · core · prepare
-Learns: D-flat, E, G, B-flat major and C-sharp, E, G, B-flat minor, four octaves legato or staccato; a third apart; contrary motion; chromatic contrary motion a minor third apart. *Alt:* scales in octaves (R L9); tone control with crescendo and diminuendo in scales (T G7). | Needs: 6.1 | Activities: exercise. | Done when: each listed scale and pattern from memory, correct and even [threshold: step 4]; targets 𝅗𝅥 = 80, a third apart 60 (AB G7). | Source: AB G7 p. 41.
+Learns: key signatures of every scale listed; D-flat, E, G, B-flat major and C-sharp, E, G, B-flat minor, four octaves legato or staccato; a third apart; contrary motion; chromatic contrary motion a minor third apart. *Alt:* scales in octaves (R L9); tone control with crescendo and diminuendo in scales (T G7). | Needs: 6.1 | Activities: exercise. | Done when: each listed scale and pattern from memory, correct and even [threshold: step 4]; targets 𝅗𝅥 = 80, a third apart 60 (AB G7). | Source: AB G7 p. 41.
 
 **7.2 Double notes: thirds** · core · prepare
 Learns: G major in thirds, legato and staccato, two octaves, hands separately, with the method's fingering and a relaxed hand. *Alt:* E major in thirds (T G7). | Needs: 6.1 | Activities: exercise (slowly first); self-review (no strain). | Done when: legato and staccato thirds correct and even, both notes of each third together [threshold: step 4]; targets 𝅗𝅥 = 46 legato, 54 staccato (AB G7). | Source: AB G7 p. 41.
@@ -311,7 +329,7 @@ Learns: about 16–20 bars; 7/8, 7/4; tempo changes; 8va; una corda. | Needs: 6.
 ## Grade 8 (R L10, AB G8, T G8)
 
 **8.1 Grade 8 scales** · core · prepare
-Learns: C, E-flat, F-sharp, A major and minor, four octaves legato or staccato; a sixth apart; contrary motion; chromatic a major sixth apart; whole-tone scales on E-flat and C. *Alt:* scales separated by a 3rd or a 6th, chromatic in octaves (R L10). | Needs: 7.1 | Activities: exercise. | Done when: each listed scale and pattern, including the chromatic-sixth and whole-tone scales as separate items, from memory, correct and even [threshold: step 4]; targets 𝅗𝅥 = 88, a sixth apart 60 (AB G8). | Source: AB G8 p. 44.
+Learns: key signatures of every scale listed; C, E-flat, F-sharp, A major and minor, four octaves legato or staccato; a sixth apart; contrary motion; chromatic a major sixth apart; whole-tone scales on E-flat and C. *Alt:* scales separated by a 3rd or a 6th, chromatic in octaves (R L10). | Needs: 7.1 | Activities: exercise. | Done when: each listed scale and pattern, including the chromatic-sixth and whole-tone scales as separate items, from memory, correct and even [threshold: step 4]; targets 𝅗𝅥 = 88, a sixth apart 60 (AB G8). | Source: AB G8 p. 44.
 
 **8.2 Double notes: thirds and sixths** · core · prepare
 Learns: E-flat major in legato thirds; C major in staccato sixths; two octaves, hands separately, without strain. *Alt:* B major and C harmonic minor in thirds (T G8). | Needs: 7.2 | Activities: exercise (slowly first); self-review (no strain). | Done when: both correct and even, both notes together [threshold: step 4]; targets 𝅗𝅥 = 52 thirds, 54 sixths (AB G8). | Source: AB G8 p. 44.
@@ -441,6 +459,12 @@ Learns: wider bass-and-chord alternation, built up from smaller leaps; sixth and
 - Split: pop and rock PR.4 into PR.4 and PR.5, the old PR.6 into PR.7 and PR.8 (the old PR.5 is now PR.6). B.6 and 1.5 now prepare two patterns and meet the rest.
 - Corrected: 6.4 (voices distinct, not "lined up"); B.10 (no required tonic ending); P.6 (no pass or fail); 2.3 (triads on all 12 roots, staged); MT.1 (thumb doubling as K1's voicing, not a rule); J.8 (bebop head one option); J.7 (solo length set by the tune).
 - Kept as decided: 5.3's lead sheet is core (a curriculum decision; RCM makes it optional); A.4 does not need A.3 (its pieces use the P.2 rhythms).
+
+## Added on the owner's word (2026-10-10)
+
+- Key signatures were missing although curriculum.md places them at Level B: now in B.4 and in every grade's scale rung; 1.12 key signatures and the circle of fifths (meet); 3.1 all major signatures in circle-of-fifths order (F 4–5, formerly only an alternative).
+- 2.3 adds the triads on each degree of a major key (I–vii°). Composing: B.13 and 3.11. Finger exercises: Hanon 1–6 (1.13), 7–13 (2.11), 14–20 (3.10), placed by Alfred's *Hanon for Students* levels.
+- Sources for the free-course placements: docs/pieces/review/rung-suggestions.md (Hoffman Academy, PianoVideoLessons, Zebra Keys).
 
 ## Open points for review
 

@@ -270,7 +270,7 @@ Old structure: stages 0–9 and 15 tracks (`reference/old-curriculum.md`, Part B
 | Track chords-pop | keep | Pop and rock line (RK, TR, AZ, K1). |
 | Track blues-boogie | keep, as a strand | Blues strand from Level B to about G5 (B1, B2, J, RK, AZ); pieces beyond. |
 | Track theory-ear | fix | Becomes the aural strand and the "at the keyboard" lines of each level; written theory is out. |
-| Track improv-compose | fix | Improvisation becomes a strand through every level. Composing stays as an occasional activity (F composing tasks; T own-composition option). |
+| Track improv-compose | fix | Improvisation becomes a strand through every level. Composing stays as an occasional activity (F composing tasks; T own-composition option); on the owner's word (2026-10-10) it has two rungs, B.13 and 3.11 (rungs.md). |
 | Track rock-metal | keep, inside pop and rock | Rock in the pop and rock line (K1, K2, TR); metal as a strand from about G4–6 (K1 p. 13, K2 ch. 8, TR G6). |
 | Track latin | pieces only | Not one of the owner's styles. |
 | Track jazz | keep | Jazz line (J G1–8, RK). |
