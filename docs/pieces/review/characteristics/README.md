@@ -2,7 +2,7 @@
 
 On the owner's word (2026-10-10, `docs/inputs/2026-10-10.md`): a CSV of the definite, easy-to-implement characteristics, one implementation idea per row, drawing on the old branch's library work, newer libraries and ChatGPT's detectability review; then ChatGPT reviews; then we build.
 
-**Built (2026-10-10):** `tools/pieces/characteristics/`, one function per row in its own file, each with a top comment saying which implementation was chosen and why (my row weighed against ChatGPT's review and its 213 rows). Shared helpers: `_notes.py` (which notes count), `_raw.py` (small raw reads for measured music21 gaps). Tests: `test_*.py` in that folder. Whole corpus: `run_all.py` -> `build/pieces/characteristics.jsonl`. The CSV below is the plan the code replaced; where they differ, the code's comments say why.
+**Built (2026-10-10):** `tools/pieces/characteristics/`, one function per row in its own file, each with a top comment saying which implementation was chosen and why (my row weighed against ChatGPT's review and its 213 rows). Shared helpers: `_notes.py` (which notes count), `_raw.py` (small raw reads for measured music21 gaps). Tests: `test_*.py` in that folder. Whole corpus: `run_all.py` -> `build/pieces/characteristics.jsonl`; `summarize.py` -> `docs/pieces/characteristics-summary.csv` (one row per file) and `docs/pieces/characteristics.jsonl.gz` (full results). Code review: `chatgpt-code-review-with-claude.csv`. The CSV below is the plan the code replaced; where they differ, the code's comments say why.
 
 ## Files
 
