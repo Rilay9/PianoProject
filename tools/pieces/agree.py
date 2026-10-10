@@ -6,6 +6,9 @@ sequences, transposition-free comparison is NOT done (a file in another key is a
 as such). Two files agree when their sequences are identical. Agreement counts as independent only between files that are each PDMX's
 deduplicated copy (or come from different sources): PDMX marks 56% of its rows as copies. Independent agreement is
 evidence that the notes are right; it is weaker than comparing with a printed score, and it is not proof.
+Limits (ChatGPT's script review M3, 2026-10-10): the sequences hold pitch and duration in order only, with no onsets
+within the bar and no voices, so agreement means "the same notes in the same order in these bars"; and PDMX's
+deduplicated flag does not show that two uploads were engraved independently (one may copy the other's source).
 
 Usage: python tools/pieces/agree.py "<title substring>" [measures]   (prints a table)
 """

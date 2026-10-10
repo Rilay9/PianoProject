@@ -31,7 +31,7 @@ def features(path, mvts):
             tss.append(t.ratioString)
     f["meters"] = sorted(set(tss))
     f["meter_change"] = len(set(tss)) > 1
-    f["compound"] = any(t.split("/")[0] in ("6", "9", "12") and t.split("/")[1] == "8" for t in tss)
+    f["compound"] = any(t.split("/")[0] in ("6", "9", "12") and t.split("/")[1] in ("4", "8", "16") for t in tss)  # 6/4 too
     lo, hi = 200, 0
     for m in ms:
         notes = list(m.recurse().notes)
@@ -48,6 +48,8 @@ def features(path, mvts):
                 f["eighth"] += 1
             if abs(q - 0.25) < 1e-6:
                 f["sixteenth"] += 1
+            if 0 < q < 0.5 - 1e-6 and not n.duration.isGrace and not n.duration.tuplets:
+                f["under_eighth"] += 1  # sixteenths, dotted sixteenths, 32nds... (ChatGPT's script review M2)
             if n.duration.tuplets:
                 f["tuplet"] += 1
             if prev is not None and abs(prev - 1.5) < 1e-6 and abs(q - 0.5) < 1e-6:

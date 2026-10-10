@@ -89,7 +89,7 @@ def main():
                 continue
             o["drive_id"] = m.group(1)
             curl(f"https://drive.google.com/uc?export=download&id={m.group(1)}", pdf)
-        if open(pdf, "rb").read(4) != b"%PDF":  # Drive answers some ids with an HTML 404 page
+        if not os.path.exists(pdf) or open(pdf, "rb").read(4) != b"%PDF":  # no file, or Drive's HTML 404 page
             o["png"] = "download is not a PDF"
             continue
         try:

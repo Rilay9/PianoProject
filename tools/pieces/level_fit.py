@@ -36,8 +36,8 @@ def fits_b(f, big, bars):
     why = []
     if abs(f["keysig"]) > 2:
         why.append(f"key signature {f['keysig']}")
-    if f["sixteenth"] > 0:  # none at all, as the docstring says (ChatGPT's code review, 2026-10-10)
-        why.append("sixteenths")
+    if f["sixteenth"] > 0 or f["under_eighth"] > 0:  # none at all, as the docstring says; any note shorter than an
+        why.append("sixteenths or shorter")         # eighth, not only exact sixteenths (ChatGPT's script reviews)
     if f["tuplet"]:
         why.append("tuplets")
     if f["grace"]:

@@ -80,12 +80,10 @@ def main():
                 if ex:  # the list names later movement(s) of a file that holds several
                     lines.append(f"- The list names movement(s) {mv}; the bars below are those movements' first and last bars")
                     first, last = ex
+                elif mv and mv != [1]:  # a later movement was asked for and the file shows no such movement: no bars are
+                    # substituted (ChatGPT's script reviews, 2026-10-10); a person picks the bars or the item is dropped
+                    raise LookupError(f"MOVEMENT UNRESOLVED: the list names movement(s) {mv}; the file shows no movement {mv[-1]}")
                 else:
-                    if mv and mv != [1]:  # a later movement was asked for and the file shows no such movement: say so, never
-                        # compare silently (ChatGPT's code review, 2026-10-10); the file may hold only that movement, or another
-                        lines.append(f"- WARNING: the list names movement(s) {mv}, but the file shows no movement {mv[-1]}; the bars "
-                                     "below are the file's own opening and ending. If they are not movement "
-                                     f"{mv[0]} of the reference, the verdict is WRONG PIECE")
                     first, last = opening(path, 3), closing(path, whole=bool(r.get("end_png")))
                 for label, bars in first:
                     lines.append(f"- Candidate first bars, {label}:")
@@ -94,7 +92,7 @@ def main():
                     lines.append(f"- Candidate last bars, {label}:")
                     lines += [f"  - {b}" for b in bars]
             except Exception as e:
-                lines.append(f"- Candidate bars could not be read ({type(e).__name__}): verdict UNREADABLE")
+                lines.append(f"- Candidate bars could not be read ({type(e).__name__}: {str(e)[:120]}): verdict UNREADABLE")
             lines.append("")
             items.append({"id": iid, "batch": n // PER + 1, "level": r["level"], "composer": r["composer"],
                           "title": r["title"], "candidate_file": f, "candidate_title": r["candidate_title"],

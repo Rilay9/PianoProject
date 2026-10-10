@@ -6,8 +6,9 @@ A wanted title names movements as "3rd and 4th movements", "2nd movt", "mvt 3", 
 """
 import re
 
-ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5}
-ORD = r"(\d)\s*(?:st|nd|rd|th)"
+ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7, "viii": 8, "ix": 9, "x": 10}
+ORD = r"\b(\d+)\s*(?:st|nd|rd|th)"  # whole numbers: "10th" is 10, not 0 (ChatGPT's script review H6)
+RN = r"(x|ix|viii|vii|vi|v|iv|iii|ii|i)"
 
 
 def named_movements(title):
@@ -16,10 +17,13 @@ def named_movements(title):
     m = re.search(ORD + r"\s+and\s+" + ORD + r"\s+mov", t)
     if m:
         return [int(m.group(1)), int(m.group(2))]
-    m = re.search(ORD + r"\s+mov", t) or re.search(r"\bmvt\.?\s*(\d)", t) or re.search(r"\bmovement\s+(\d)", t)
+    m = re.search(r"\b(?:mvts?|movts?|movements?)\.?\s*(\d+)\s*(?:and|&|-)\s*(\d+)\b", t)  # "mvt 2 and 3"
+    if m:
+        return [int(m.group(1)), int(m.group(2))]
+    m = re.search(ORD + r"\s+mov", t) or re.search(r"\bmvt\.?\s*(\d+)", t) or re.search(r"\bmovement\s+(\d+)", t)
     if m:
         return [int(m.group(1))]
-    m = re.search(r"\bmovement\s+(i{1,3}|iv|v)\b", t) or re.search(r":\s*(i{1,3}|iv|v)\s*$", t)
+    m = re.search(r"\bmovement\s+" + RN + r"\b", t) or re.search(r":\s*" + RN + r"\s*$", t)
     if m:
         return [ROMAN[m.group(1)]]
     return []

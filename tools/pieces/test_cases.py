@@ -6,6 +6,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from match import catalogue as c, cat_compare as cc  # noqa: E402
 from quality_check import not_piano, NONPIANO  # noqa: E402
 from summarise import app_levels  # noqa: E402
+from movements import named_movements  # noqa: E402
+from candidates import key_warning, in_pool  # noqa: E402
+import build_wanted  # noqa: E402
+from collections import defaultdict  # noqa: E402
+from level_fit import fits_b  # noqa: E402
 
 CAT = [  # (wanted title, file title, expected cat_compare)
     ("Sonata in C Major, K 545: I", "Sonata No. 16 K. 545 II. Andante", "conflict"),       # different movement
@@ -31,7 +36,20 @@ LEVELS = [  # (sources, expected app levels)
     ("PSyllabus:AMEB=11(ps10); PSyllabus:NZMEB=10(ps10); PSyllabus:RCM=9(ps10)", set()),  # Revolutionary Etude
     ("PSyllabus:RCM=10(ps9)", {"8"}), ("PSyllabus:ABRSM=0(ps1)", {"B"}), ("Trinity=2", {"2"}),
     ("PSyllabus:AMEB=3(ps3)", {"3"}),
+    ("PSyllabus:RCM=9(ps8)", {"7"}),                      # PSyllabus agrees within one
+    ("PSyllabus:RCM=9(ps9)", set()),                      # PSyllabus puts it above Grade 8: no automatic placement
+    ("RCM=9; PSyllabus:RCM=9(ps10)", {"7"}),              # the current RCM list itself says 9
 ]
+MOVEMENTS = [("Sonata mvt 10", [10]), ("Sonata 10th movement", [10]), ("Sonata Movement VI", [6]),
+             ("Sonatina Op 20 No 1 - mvt 2 and 3", [2, 3]), ("Sonata in C: II", [2]), ("Prelude No. 4", [])]
+KEYS = [  # (wanted title, file key signature, warning expected)
+    ("Minuet in G major", 1, False), ("Minuet in G major", 0, True), ("Prelude in E minor", 1, False),
+    ("Prelude in E minor", 4, True), ("Waltz in D flat major", -5, False), ("Gigue", 3, False)]
+FITS_B = [  # (features, biggest chord, bars, fits Level B)
+    ({"keysig": 0}, 2, 16, True), ({"keysig": 0, "sixteenth": 1}, 2, 16, False),
+    ({"keysig": 0, "under_eighth": 1}, 2, 16, False),     # a 32nd or dotted sixteenth, no exact sixteenth
+    ({"keysig": 3}, 2, 16, False), ({"keysig": 0}, 4, 16, False), ({"keysig": 0}, 2, 60, False)]
+POOL = [({"source": "pdmx", "dedup": "no"}, False), ({"source": "pdmx", "dedup": "yes"}, True), ({"source": "shelf"}, True)]
 
 
 def main():
@@ -52,6 +70,26 @@ def main():
         got = app_levels(src)[0]
         bad += got != want
         print("ok " if got == want else "BAD", got, src)
+    for t, want in MOVEMENTS:
+        got = named_movements(t)
+        bad += got != want
+        print("ok " if got == want else "BAD", got, t)
+    for t, ks, want in KEYS:
+        got = bool(key_warning(c(t), ks))
+        bad += got != want
+        print("ok " if got == want else "BAD", got, t, ks)
+    for feats, big, bars, want in FITS_B:
+        got = fits_b(defaultdict(int, feats), big, bars)[0]
+        bad += got != want
+        print("ok " if got == want else "BAD", got, feats, big, bars)
+    for row, want in POOL:
+        got = in_pool(row)
+        bad += got != want
+        print("ok " if got == want else "BAD", got, row)
+    srcs = {r["source"] for r in build_wanted.board_list_rows()}  # exam lists only (ChatGPT's review H1)
+    got = "" not in srcs and not any(x.startswith("8notes") for x in srcs)
+    bad += not got
+    print("ok " if got else "BAD", "wanted.csv sources:", sorted(srcs)[:6], "...")
     print("all cases pass" if not bad else f"{bad} cases fail")
     sys.exit(1 if bad else 0)
 

@@ -79,6 +79,9 @@ def main():
         open(os.path.join(OUT, f"{'new' if new else 'batch'}-{n}.md"), "w", encoding="utf-8", newline="\n").write("\n".join(lines))
         print(f"batch {n}: {len(batch)} items, levels {sorted({b[0] for b in batch}, key=S.ORDER.index)}")
     with open(os.path.join(OUT, "new-items.csv" if new else "items.csv"), "w", encoding="utf-8", newline="") as fh:
+        if not items:  # nothing left to read (ChatGPT's script review M6)
+            print("no items")
+            return
         w = csv.DictWriter(fh, fieldnames=list(items[0].keys()))
         w.writeheader()
         w.writerows(items)

@@ -42,7 +42,13 @@ def psyllabus_rows(path):
 def board_list_rows():
     for p in sorted(glob.glob(os.path.join(ROOT, "docs", "sources", "lists", "*.csv"))):
         with open(p, encoding="utf-8") as f:
-            for r in csv.DictReader(f):
+            rd = csv.DictReader(f)
+            # exam-format lists only (ABRSM, RCM, Trinity, styles): the book, course and 8notes lists in the same folder
+            # have other columns and are read by candidates.songs() (ChatGPT's script review H1, 2026-10-10)
+            if not {"source", "board_level", "title"} <= set(rd.fieldnames or []):
+                print("  not an exam list, skipped:", os.path.basename(p))
+                continue
+            for r in rd:
                 row = {c: r.get(c, "") for c in COLS}
                 if not row["catalogue"]:
                     row["catalogue"] = catalogue(row["title"])

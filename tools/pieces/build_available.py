@@ -22,6 +22,7 @@ IMP = os.path.join(ROOT, "content", "scores", "imported")
 COLS = ["source", "file", "composer", "title", "subtitle", "catalogue", "bars", "tracks",
         "rating", "n_ratings", "licence", "genres", "quarried_before", "dedup", "excluded"]
 csv.field_size_limit(10**9)
+SKIPPED = {}  # dataset files not listed, by reason
 
 
 def quarried_cids():
@@ -126,14 +127,23 @@ def dataset_rows():
                     if low.endswith((".xml", ".musicxml", ".mxl")):
                         if low.endswith(".mxl"):
                             with zipfile.ZipFile(p) as z:
-                                inner = next((n for n in z.namelist() if n.endswith((".xml", ".musicxml"))
-                                              and not n.startswith("META-INF")), None)
+                                inner = None
+                                if "META-INF/container.xml" in z.namelist():  # the archive's declared root score
+                                    rf = ET.fromstring(z.read("META-INF/container.xml")).find(".//{*}rootfile")
+                                    inner = rf.get("full-path") if rf is not None else None
+                                inner = inner or next((n for n in z.namelist() if n.endswith((".xml", ".musicxml"))
+                                                       and not n.startswith("META-INF")), None)
                                 if not inner:
+                                    SKIPPED["mxl without a score"] = SKIPPED.get("mxl without a score", 0) + 1
                                     continue
                                 root = ET.fromstring(z.read(inner))
                         else:
                             root = ET.parse(p).getroot()
+                        for el in root.iter():  # namespace-qualified MusicXML ("{ns}score-partwise"; ChatGPT's review M5)
+                            if isinstance(el.tag, str) and "}" in el.tag:
+                                el.tag = el.tag.split("}", 1)[1]
                         if not root.tag.startswith("score-"):
+                            SKIPPED["not a score"] = SKIPPED.get("not a score", 0) + 1
                             continue
                         wt = root.findtext("work/work-title") or ""
                         mt = root.findtext("movement-title") or ""
@@ -165,7 +175,8 @@ def dataset_rows():
                                     tune["composer"] = line[2:].strip()
                         if tune and tune["title"]:
                             yield tune
-                except Exception:
+                except Exception as e:  # counted and printed, not silent (ChatGPT's review M5)
+                    SKIPPED[f"read failed ({type(e).__name__})"] = SKIPPED.get(f"read failed ({type(e).__name__})", 0) + 1
                     continue
 
 
@@ -202,6 +213,7 @@ def main():
                 w.writerow(r)
                 counts[r["source"]] = counts.get(r["source"], 0) + 1
     print(OUT, counts)
+    print("dataset files skipped:", SKIPPED or "none")
 
 
 if __name__ == "__main__":

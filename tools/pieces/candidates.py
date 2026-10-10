@@ -106,6 +106,7 @@ def examine(path):
     try:
         st, parts, names = layout(path)
         r["staves"] = f"{st} staves, {parts} parts"
+        r["instruments"] = " | ".join(n.strip() for n in names) if any(n.strip() for n in names) else "unknown (parts unnamed)"
         if st < 2 and parts < 2:
             return {**r, "fault": "one staff"}
         if parts > 2:
@@ -121,6 +122,48 @@ def examine(path):
     except Exception as e:
         r["fault"] = f"parse failed ({type(e).__name__})"
     return r
+
+
+EXAMINE_VERSION = "2026-10-10b"
+
+
+def in_pool(row):
+    """A file row the candidate pass may match: not a PDMX duplicate copy."""
+    return not (row["source"] == "pdmx" and row.get("dedup") == "no")
+
+
+def code_version():
+    """A fingerprint of the code that produces the cached facts (ChatGPT's script review H5)."""
+    import hashlib
+    h = hashlib.sha1()
+    h.update(EXAMINE_VERSION.encode())  # bump when examine() or layout() below changes
+    for name in ("file_checks.py", "rung_pieces.py", "level_fit.py", "quality_check.py", "match.py", "movements.py"):
+        h.update(open(os.path.join(os.path.dirname(__file__), name), "rb").read())
+    return h.hexdigest()[:12]
+
+
+def fingerprint(path, code):
+    try:
+        st = os.stat(path)
+        return f"{st.st_size}:{int(st.st_mtime)}:{code}"
+    except OSError:
+        return ""
+
+
+def key_warning(want, keysig):
+    """'' when the list names no key or the file's key signature fits it; otherwise a short warning."""
+    from quality_check import SHARPS_TO_KEYS, ENHARMONIC
+    if "key" not in want or keysig in (None, ""):
+        return ""
+    maj, mnr = SHARPS_TO_KEYS.get(int(keysig), ("", ""))
+    fits = {maj, mnr, ENHARMONIC.get(maj, ""), ENHARMONIC.get(mnr, "")}
+    mode = next(iter(want.get("mode", [])), "")
+    k = next(iter(want["key"]))
+    if mode == "major":
+        fits = {maj, ENHARMONIC.get(maj, "")}
+    elif mode == "minor":
+        fits = {mnr, ENHARMONIC.get(mnr, "")}
+    return "" if k in fits else f"list says {k} {mode}".strip() + f"; file key signature {keysig}"
 
 
 def path_of(f):
@@ -148,7 +191,9 @@ def main():
         rd = csv.DictReader(a)
         w = csv.DictWriter(o, fieldnames=rd.fieldnames)
         w.writeheader()
-        w.writerows(rd)
+        # PDMX duplicate copies are left out here, before match.py keeps its best five per song, so five copies cannot
+        # crowd out the canonical upload (ChatGPT's script review H3)
+        w.writerows(x for x in rd if in_pool(x))
         for r in csv.DictReader(open(os.path.join(B, "shelf", "shelf.csv"), encoding="utf-8")):
             if r["ok"] == "True":
                 w.writerow({"source": "shelf", "file": r["file"].replace("\\", "/"), "composer": r["composer"],
@@ -165,10 +210,11 @@ def main():
     for c in chosen:
         chosen_by[(surname(c["composer"]), clean_title(c["title"], surname_keys(c["composer"])))].append(catalogue(kfix(c["title"])))
 
-    def already(m):  # same composer and words, and no catalogue, movement or key clash (Invention No. 8 is not No. 10)
+    def already(m):  # same composer and words and an agreeing catalogue identity; no identity = not known to be chosen
+        # (ChatGPT's script review M4: a generic "Minuet" with no number is not proof of the same piece)
         k = (surname(m["composer"]), clean_title(m["title"], surname_keys(m["composer"])))
         cw = catalogue(kfix(m["title"]))
-        return any(cat_compare(cw, cc) != "conflict" for cc in chosen_by.get(k, []))
+        return any(cat_compare(cw, cc) == "match" for cc in chosen_by.get(k, []))
 
     per = defaultdict(list)
     exam = {}
@@ -196,21 +242,23 @@ def main():
                     open(os.path.join(FILES, os.path.basename(mem.name)), "wb").write(tf.extractfile(mem).read())
     cache_p = os.path.join(B, "file-facts.json")
     cache = json.load(open(cache_p, encoding="utf-8")) if os.path.exists(cache_p) else {}
-    jobs = sorted({path_of(m["a_file"]) for v in per.values() for m in v} - set(cache))
+    code = code_version()
+    paths = {path_of(m["a_file"]) for v in per.values() for m in v}
+    jobs = sorted(x for x in paths if cache.get(x, {}).get("sig") != fingerprint(x, code))
     print(len(jobs), "files to examine (others cached)", flush=True)
     with Pool(3) as p:  # FABLE: at most 3 worker processes
         for n, (j, r) in enumerate(zip(jobs, p.imap(examine, jobs, chunksize=4)), 1):
-            cache[j] = r
+            cache[j] = {**r, "sig": fingerprint(j, code)}
             if n % 250 == 0:
                 print(n, "examined", flush=True)
                 json.dump(cache, open(cache_p, "w", encoding="utf-8"))
     json.dump(cache, open(cache_p, "w", encoding="utf-8"))
     # 3. one row per (song in a list, file); the title check is per song, on the file's title and subtitle
-    by_key = defaultdict(list)
-    for s in cands:
-        by_key[("lists", s["composer"], s["title"])].append(s)
-    for k, s in exam.items():
-        by_key[k].append(s)
+    def songs_of(k, m):  # every list song behind a match row: match.py merges songs with the same surname and title
+        # and writes their ids ("c2=; c5032=") in sources; looking songs up by one spelling lost the others
+        if k[0] == "exam-lists":
+            return [exam[k]]
+        return [cands[int(i)] for i in re.findall(r"\bc(\d+)=", m["sources"])]
     rows = []
     for k, ms in per.items():
         for m in ms:
@@ -222,21 +270,22 @@ def main():
             inst = NONPIANO.search(ftitle)  # "Theme for Cello + Piano": the parts may be unnamed, the title says it
             if not fault and inst and not NONPIANO.search(m["title"]):
                 fault = f"file title names another instrument ({inst.group(0)})"
-            out = {"staves": r.get("staves", ""), "code_checks": ("fail: " + fault) if fault else ("pass" + (f" ({r['notes']})" if r.get("notes") else ""))}
+            kw = key_warning(catalogue(m["title"]), r.get("features", {}).get("keysig"))
+            out = {"staves": r.get("staves", ""), "instruments": r.get("instruments", ""), "key_warning": kw, "code_checks": ("fail: " + fault) if fault else ("pass" + (f" ({r['notes']})" if r.get("notes") else ""))}
             if "features" in r:
                 f = defaultdict(int, r["features"])
                 ok, why = fits_b(f, r["biggest_chord"], r["file_bars"])
                 out.update({"fits_b": ok, "outside_b": "; ".join(why), "keysig": f["keysig"], "file_bars": r["file_bars"],
                             "range": f"{f['range'][0]}-{f['range'][1]}", "biggest_chord": r["biggest_chord"],
                             "rungs_shown": " ".join(g for g, (_, t) in RULES.items() if t(f))})
-            for s in by_key.get(k, []):
+            for s in songs_of(k, m):
                 rows.append({"list": s["list"], "list_level": s["level"], "skill": s["skill"], "rung": s["rung"],
                              "composer": s["composer"], "title": s["title"], "confidence": m["confidence"],
                              "cat_match": m["cat_match"], "title_score": m["title_score"],
                              "file": m["a_file"], "file_source": m["a_source"], "file_composer": m["a_composer"],
                              "file_title": ftitle, "n_ratings": m["a_n_ratings"], **out, "url": s["url"]})
     cols = ["list", "list_level", "skill", "rung", "composer", "title", "confidence", "cat_match", "title_score", "file",
-            "file_source", "file_composer", "file_title", "n_ratings", "staves", "code_checks", "fits_b", "outside_b",
+            "file_source", "file_composer", "file_title", "n_ratings", "staves", "instruments", "code_checks", "key_warning", "fits_b", "outside_b",
             "keysig", "file_bars", "range", "biggest_chord", "rungs_shown", "url"]
     out = os.path.join(B, "new-candidates.csv")
     with open(out, "w", encoding="utf-8", newline="") as f:
