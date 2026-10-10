@@ -1,0 +1,30 @@
+item,grade,composer,title,file,verdict,note
+g1-01,1,Spindler,Song without Words,./mxl/9/5/QmR6EvqAfwKFoN3pUqZoaGcpjeniWGbqPM6G4VMxwVeEHo.mxl,USE,
+g1-02,1,"Haydn, Franz Joseph","German Dance in G Major, Hob. IX:22, no. 3",./mxl/2/28/QmckmojBrTAqVmHQDE4JBYkfHWPKSkofN1C1a18MrRy8KS.mxl,USE,
+g1-03,1,"Shostakovich, Dmitri",Waltz (no. 2),./mxl/12/56/QmUzm1GTJEUgCB4W25AZRSY64ou2CvavRXZFu4TSLYUUif.mxl,SKIP,harder than Grade 1; a left-hand voice two beats short
+g1-04,1,"Ludwig van Beethoven, ed. Hans-Günter Heumann","Russian Folk Song (no. 3 from 10 National Airs with Variations, op. 107)",./mxl/10/20/QmSFQPhud8fyzntGn3N3YD33PrRYpSyVCg2633ZqtqgFFn.mxl,USE,
+g1-05,1,Hook J.,Gavotta in C major Op 81 No 3,./mxl/9/35/QmRoFSajCk4vvaM9QPDeKhwvWCPShtyDB95r2oT5iHc22Y.mxl,USE,
+g1-06,1,Beethoven L.,Air from Little Russia Op 107 No 3,./mxl/10/20/QmSFQPhud8fyzntGn3N3YD33PrRYpSyVCg2633ZqtqgFFn.mxl,USE,
+g1-07,1,Kabalevsky D.,Waltz (No 13 from 24 Easy Pieces Op 39),./mxl/17/3/QmZ4h7B9xHfCQ4FHw7ZzBDUkJm4ieRRA6ePMXrgKDK2Jkz.mxl,USE,
+g1-08,1,Lully J.,Minuet,./mxl/12/35/QmUoMdNqL5ZDFsFR2EqHF5ERBjvwW5MPYDiXzXZQ8faH5z.mxl,USE (agent SKIP overruled),"only flag: a one-beat pickup with a full final bar, common in editions"
+g1-09,1,Bach J.C.,Aria in F major BWV Anh 131 from Notenbuch der Anna Magdalena Bach,./mxl/13/18/QmVESzhQqB1q62QNkPUUhFj5jgEdJduukkuYsY51SmLt1x.mxl,SKIP,left-hand octave in bar 1 and an ending on D to check
+g1-10,1,Krieger J.,Minuet in A minor,./mxl/14/48/QmWvqJ4DsjCW5sX4hvZVNUe4ZjChaWrFmrE6uDxFPQnwGa.mxl,USE (agent SKIP overruled),"only flag: four empty bars at the end, to trim"
+g1-11,1,Schubert F.,Ecossaise,./mxl/12/10/QmUAYToMDU5C6wFwA5QXxdnqJR1X68bfFtXd9EQ74WTNsY.mxl,USE,
+g1-12,1,Mozart W.,Allegro - K 1c in F major,./mxl/3/45/QmdTZbbMT8VGXoYtr8S8LCfqDpmCd6go7ydUsMVVTCjP6K.mxl,SKIP,"bars 5, 6 and 14 the wrong length"
+g1-13,1,Haydn J.,Hob XVI15 mvt 3 Minuet,./mxl/13/52/QmVx2ieHXtQbAG2Qnshq1BajHqV43zJPhoDJxWjSvYy7AB.mxl,USE,
+g1-14,1,Mozart W.,Menuet and Trio in G major K 1 (K 1e),./mxl/5/14/QmfCULDvejZyShSRANTgFLGt4TudSaWNcuAfbV89RhdFPP.mxl,USE (agent SKIP overruled),only flag: pickup with a full final bar
+g2-16,2,Beethoven,"Écossaise in G Major, WoO 23",./mxl/9/25/QmRipx42u9ytmDMa37VT6UEZvDJamYHxtrDPCWq4rp5fTe.mxl,USE,
+g2-18,2,"Purcell, Henry","Hornpipe, ZT 685",./mxl/13/36/QmVpdcjWdND2L9S47zwYHzUVhhShG2gqGjqCQeuhZMstXB.mxl,SKIP,several bars the wrong length
+g2-19,2,Imagine Dragons,Radioactive,./mxl/11/50/QmTwGSN3sTvj2bqqJD3Vy8pzArHwkCNeRhz68GqveUyFJJ.mxl,USE,
+g2-20,2,Koji Kondo,The Legend of Zelda: Main Theme,./mxl/12/0/QmU1nszC4coRA3qvzTpZW7MeKGb5D7P1GqvcGA6ZVr4uXd.mxl,SKIP,looks harder than its Trinity Grade 2 placement (agent reading)
+g2-21,2,Christian Petzold,Minuet in G minor,./mxl/13/51/QmVWM6wbvpu5KUmBMSMconXZsAM3AAay5LdxCNFzKpQt7g.mxl,USE,
+g2-23,2,Sam Smith & Jimmy Napes,Writing's on the Wall (from Spectre) (Sam Smith),./mxl/4/19/Qmefzkf62X872kvmxmwSifjtzMULe6p9uA3PG2rAsYzCXs.mxl,USE (agent SKIP overruled),"flagged F1 is half of an F1+F2 octave, normal bass writing"
+g2-24,2,Armstrong J.,Dusty Blue,./mxl/17/26/QmZjFTWZhtvzmkVnXk5M7PGBgGBVP69KMs7ZhNXCUwJuqx.mxl,USE (agent SKIP overruled),only flag: a 2-beat pickup with a full final bar
+g3-25,3,Reinecke,"Vivace (4th movt from Sonatina in A minor, Op. 136 No. 4)",./mxl/10/45/QmSTdxMvMqwFtoxTnEnLjWmd8ymDZEWdfNVX3gmuEfdost.mxl,USE,
+g3-26,3,Petzold,"Minuet in G Major, BWV Anh. 114",./mxl/17/15/QmZdCAPv5TJshahGMxm9Agrg8gaqRsfcxAAxYBua71u5Tr.mxl,USE,
+g3-28,3,attr. J.S. Bach,"Musette in D Major, BWV Anh. 126",./mxl/8/31/QmQm27B2vFqPqKFK6adJFpBA7zoKsYtzLXTTHZBV8y2Agp.mxl,USE,
+g3-29,3,"Attwood, Thomas",Sonatina in G Major: 1st movement,./mxl/12/16/QmUDoLwg9ihL1tkEX3EJZ4RoSSi8G4irTc9NuX5ozQCcTc.mxl,USE,
+g3-30,3,"Gurlitt, Cornelius",Sonatina in A Minor (no. 5): 3rd movement,./mxl/13/29/QmVK4gcjHfrLd24KVX82mzzNM9ACraY2rgb5QewMDRRurt.mxl,HOLD,"titled A minor but opens in C major: possibly the wrong movement, to check"
+g3-31,3,Bart Howard,Fly Me To The Moon,./mxl/10/1/QmS2enG17nJVrbMvvCcHDW9wAN8nLSV1CPMmtghD7SZFVQ.mxl,SKIP,"chords written as grace notes, duplicated in both hands"
+g3-32,3,THE CINEMATIC ORCHESTRA,To Build a Home,./mxl/11/24/QmTH3sdxyWB4viM3xeLr7WRBHEA3mfwYkqdJ1DsDzwWYi5.mxl,SKIP,"right hand silent, bass skeleton only"
+g3-33,3,Domenico Scarlatti,Sonata in G,./mxl/10/54/QmSyWcw2w5kLWB2VDfM9a9vVvNKD7mPrXQmYAsd1xCwM1F.mxl,SKIP,reads as G minor; looks harder than Grade 3
