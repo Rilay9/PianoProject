@@ -25,6 +25,15 @@ def closing(path, n=3):
     parts = list(s.parts)
     staves = [list(p.getElementsByClass(music21.stream.Measure)) for p in (parts[0], parts[-1])]
     last = min(len(x) for x in staves)
+    # a file holding several movements: stop at the first movement's end (a final barline followed by a new tempo
+    # word and time signature); the item says so, and the reference page must then be the first movement's end
+    for k in range(1, last):
+        m, nxt = staves[0][k - 1], staves[0][k]
+        if m.rightBarline is not None and m.rightBarline.type == "final" and \
+                nxt.recurse().getElementsByClass(music21.meter.TimeSignature) and \
+                nxt.recurse().getElementsByClass(music21.expressions.TextExpression):
+            last = k
+            break
     while last > 0 and not any(x[last - 1].recurse().notes for x in staves):  # trailing empty bars
         last -= 1
     out = []
@@ -40,7 +49,7 @@ def closing(path, n=3):
                     ev.append("+".join(p.nameWithOctave.replace("-", "b") for p in e.pitches) + " " + value(e.quarterLength))
                 else:
                     ev.append(e.nameWithOctave.replace("-", "b") + " " + value(e.quarterLength))
-            bars.append(f"bar {i} of {len(ms)}: " + ", ".join(ev))
+            bars.append(f"bar {i} of {len(ms)}" + (f" (end of the first movement; the file has {len(allms)} bars)" if len(allms) > last + 2 else "") + ": " + ", ".join(ev))
         out.append((label, bars))
     return out
 
@@ -61,7 +70,7 @@ def main():
         f = r["candidate_file"]
         path = os.path.join(FILES, os.path.basename(f)) if f.startswith("./mxl") else os.path.join(ROOT, f)
         lines += [f"## {i} {r['composer']}: {r['title']}", "",
-                  f"- Reference: last page of a {len(d)}-page score: `{png}`"]
+                  f"- Reference: last page of a {len(d)}-page score: `{png}` (if the candidate bars say 'end of the first movement' and this page ends a later movement, render the earlier pages of `{pdf}` and find where the first movement ends)"]
         for label, bars in closing(path):
             lines.append(f"- Candidate {label}:")
             lines += [f"  - {b}" for b in bars]
