@@ -1,0 +1,24 @@
+# Music-characteristic code detectability review — reading notes
+
+**Scope**: 213 / 213 characteristics in `docs/classifier/characteristics-list.md` on the old PianoProject branch at immutable commit `c8b33af64d75c07a8c15efe08f15959d458c50d0`. The 213-row list superseded an older 237-row `characteristics.yaml` inventory; both were consulted. The 22 runtime demand detectors in `app/src/demands/detect.ts` are a much narrower, overlapping subset, not 22 additional characteristics.
+
+**Output**: `PianoProject_characteristics_detectability_213.csv`, one individually reasoned row per characteristic, original source order. Each row has a detection approach, independent code-feasibility category, limitations, example new rungs, original implementation-status claim, old AB ability IDs, practical teaching implications, verification work, sources and (where statically located) actual old code function.
+
+**Feasibility terms**:
+- **DIRECT (51)**: direct observable score fact or mechanical statistic; recoverable to high accuracy if the MusicXML and track/voice interpretation are sound. This does **not** certify the score's engraving or educational suitability.
+- **CONDITIONAL (98)**: a named pattern or rule can be coded, but must distinguish plausible counterexamples; some passages legitimately return UNKNOWN.
+- **INFERRED (45)**: the code may propose a useful candidate with provenance and uncertainty; cannot assert the interpretive claim for every score.
+- **NO (11)**: the complete interpretation or reliable global difficulty/quality judgment cannot be established by a simple deterministic detector or currently justified code alone. Constituent measurable facts may still be extracted.
+- **EXTERNAL (8)**: needs metadata, historical identities, published graded lists, or other outside records; *reading fields in a file* is easy but does not validate them.
+
+**Old status**: `EXISTS / PARTLY / MISSING / New draft row` is the old project's original `characteristics.yaml` claim, not the reviewer's claim that the characteristic passed behavioral verification. Counts: 22 / 75 / 73 / 43, respectively, over the final 213 IDs. **57** entries are linked to functions seen in the old `app/src/demands/detect.ts` or `tools/classifier/rules/*.py`; these are **static function-presence links only**. Many other characteristics have suggested music21/partitura implementations that were **not** confirmed installed or run in this review.
+
+**Abilities**: `explicit_old_ability_ids` are exact mentions in the old `docs/classifier/ability-characteristics.md` assignment (571 references covering 153 different `AB-` IDs). Some characteristics are building blocks for broader abilities and have no direct explicit mention; this is **not** a conclusion that they are irrelevant. `relevant_new_rungs_examples` is a reviewer's proposed linkage to current `claude/piano-rebuild` rungs, **not** a claim that old AB and new rung curricula are one-to-one.
+
+**Important boundary**: finding a feature in a piece is an *opportunity to learn or practise* something, not evidence that a student has mastered it. A melody under a left-hand pattern does not establish rhythmic independence; any moving bass does not establish walking bass; a reported style or key estimate does not establish idiomatic performance. Use the located bars/excerpts to design the instructional activity and verify learner work separately.
+
+**What was checked**: the complete source list and ability assignment, old-status intersection, 22 runtime detector definitions, actual functions in `tools/classifier/rules/{harmony,rhythm,texture,form,technique}.py`, targeted historical tests' existence and old classifier design, every CSV row for identifiers/required fields, all new rung examples against the 128-rung list, and all explicit old-ability IDs for basic format/count consistency.
+
+**What was not independently verified**: the behavior of all 213 detectors on real MusicXML (many are proposals rather than existing functions), accuracy of every old test or source citation, learner performance, listening/idiomatic judgment, or full replacement of the older classifier. The environment did not support running the original music21/partitura pipelines. Treat the CSV as a grounded detector-feasibility and curriculum-linkage **review**, not evidence that 213 working extractors already exist.
+
+**Resume trail**: `PianoProject_characteristics_review_progress.txt` logs individual row writes. The `char_review_rows_*.psv` files preserve authored batches and `music_characteristics_review_build.py` performs the one-row-at-a-time append; `enrich_char_reviews.py` adds the old ability crosswalk, and `enrich_characteristic_code_locations.py` adds static function links. This audit file is explanatory only—nothing has been committed to the repository.
