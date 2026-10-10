@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from match import surname, catalogue, cat_compare, clean_title  # noqa: E402
 from pianocoda_refs import curl, kfix  # noqa: E402
 import summarise as S  # noqa: E402
+from movements import named_movements  # noqa: E402
 
 
 def main():
@@ -61,7 +62,15 @@ def main():
             cands.sort(key=lambda c: (c[0], c[1]))
             # a "Prelude and Fugue" listed as one piece: Mutopia keeps the two apart; the opening is read against the
             # Praeludium and the ending against the Fuga
-            if "prelude" in title.lower() and "fugue" in title.lower():
+            mv = named_movements(title)
+            ordw = {n: f"{n}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(n if n < 20 else n % 10, 'th')}" for n in range(1, 40)}
+            if mv:  # the list names movement(s): opening from the first named, ending from the last named
+                st = [c for c in cands if ordw[mv[0]] + " movement" in c[2]["title"].lower()]
+                en = [c for c in cands if ordw[mv[-1]] + " movement" in c[2]["title"].lower()]
+                if st:
+                    cands = st + [c for c in cands if c not in st]
+                end_url = en[0][2]["url"] if en and en[0] is not cands[0] else ""
+            elif "prelude" in title.lower() and "fugue" in title.lower():
                 pre = [c for c in cands if "praeludium" in c[2]["title"].lower() or "prelude" in c[2]["title"].lower()]
                 fug = [c for c in cands if "fuga" in c[2]["title"].lower() or "fugue" in c[2]["title"].lower()]
                 if pre:

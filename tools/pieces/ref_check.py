@@ -17,6 +17,7 @@ import summarise as S  # noqa: E402
 from worklist import opening  # noqa: E402
 from ref_ends import closing  # noqa: E402
 from file_checks import check  # noqa: E402
+from movements import named_movements, excerpt  # noqa: E402
 
 PER = 10
 
@@ -74,10 +75,17 @@ def main():
                       f"- Reference first page (top): `{png1}`",
                       f"- Reference last page: `{png2}` ({len(d)} pages; full PDF `{pdf}`)"]
             try:
-                for label, bars in opening(path, 3):
+                mv = named_movements(r["title"])
+                ex = excerpt(path, mv) if mv else None
+                if ex:  # the list names later movement(s) of a file that holds several
+                    lines.append(f"- The list names movement(s) {mv}; the bars below are those movements' first and last bars")
+                    first, last = ex
+                else:
+                    first, last = opening(path, 3), closing(path, whole=bool(r.get("end_png")))
+                for label, bars in first:
                     lines.append(f"- Candidate first bars, {label}:")
                     lines += [f"  - {b}" for b in bars]
-                for label, bars in closing(path, whole=bool(r.get("end_png"))):
+                for label, bars in last:
                     lines.append(f"- Candidate last bars, {label}:")
                     lines += [f"  - {b}" for b in bars]
             except Exception as e:
