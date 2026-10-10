@@ -197,7 +197,7 @@ def main():
         for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows(), dataset_rows(),
                     catalogue_rows()):
             for r in gen:
-                hit = next((e for e in excl if e["source"] == r["source"] and e["file_contains"] in r["file"]), None)
+                hit = next((e for e in excl if e["source"] == r["source"] and e["file_contains"] and e["file_contains"] in r["file"]), None)
                 r["excluded"] = hit["reason"] if hit else ""
                 w.writerow(r)
                 counts[r["source"]] = counts.get(r["source"], 0) + 1

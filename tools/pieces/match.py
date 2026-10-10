@@ -71,7 +71,7 @@ KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?:[\s-]?(flat|sharp)|(b|#))?(?:\s+(major
 ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7, "viii": 8, "ix": 9, "x": 10, "xi": 11,
          "xii": 12, "xiii": 13, "xiv": 14, "xv": 15, "xvi": 16, "xvii": 17, "xviii": 18, "xix": 19, "xx": 20,
          "xxi": 21, "xxii": 22, "xxiii": 23, "xxiv": 24}
-ROMAN_RE = re.compile(r"\b(partita|suite|sonata|sonatina|invention|sinfonia|prelude|preludium|etude|study|"
+ROMAN_RE = re.compile(r"\b(partita|suite|sonata|sonate|sonatina|sonatine|invention|sinfonia|prelude|preludium|etude|study|"
                       r"nocturne|waltz|valse|mazurka|polonaise|ballade|impromptu|lesson|variation)\s+([ivx]+)\b")
 
 
@@ -239,8 +239,10 @@ def main():
                         else "low" if ts >= 0.60 else None)
                 # the wanted title names a catalogue number and the file names none of that kind: a similar title
                 # alone ("Sonata" / "Sonatina") is not enough for medium (sampled passes, 2026-10-10: 9 of 30 wrong)
-                ids_w = {k for k in ("op",) + STRONG if k in p["cat"]}
-                if conf == "medium" and ids_w and not ids_w & {k for k in ("op",) + STRONG if k in a["_cat"]} and (ts < 0.95 or len(p["clean"].split()) < 2):  # one generic word ("sonata") is never enough
+                ids_w = {k for k in ("op", "no") + STRONG if k in p["cat"]}
+                if conf == "medium" and ids_w and not ids_w & {k for k in ("op", "no") + STRONG if k in a["_cat"]} and (ts < 0.95 or len(p["clean"].split()) < 2):
+                    conf = "low"
+                if conf == "medium" and cm == "none" and len(p["clean"].split()) < 2:  # one generic word ("sonatina") is never enough
                     conf = "low"
                 if conf:
                     cands.append((("high", "medium", "low").index(conf), -ts, conf, cm, ts, a))

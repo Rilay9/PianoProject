@@ -5,7 +5,8 @@ RCM PrepA -> A, PrepB -> B, L1-4 -> 1-4, L5-6 -> 5, L7-8 -> 6, L9 -> 7, L10 -> 8
 style lists by their grade (0 -> B). PSyllabus rows count under their board when it is ABRSM, Trinity or RCM;
 other boards (AMEB, NZMEB, LCM, ...) are placed by PSyllabus's own normalised level when the piece has no ABRSM,
 Trinity or RCM level: ps 0 -> B, ps 1-8 -> 1-8. The mapping is read off PSyllabus's ABRSM/RCM/Trinity rows, where ps N
-falls mostly at Grade N (ps 0 at B); ps 9-10 are above Grade 8 and stay off the spine (2026-10-09).
+falls mostly at Grade N (ps 0 at B); ps 9-10 are above Grade 8 and stay off the spine (2026-10-09). A board level
+recorded by PSyllabus counts only when that row's PSyllabus level is no more than one above it (2026-10-10).
 A piece counts once per app level, under its best candidate. Candidates are not confirmations.
 """
 import csv, os, re, sys
@@ -27,9 +28,16 @@ def app_levels(sources):
             continue
         board, lvl, ps = m.group(1).strip(), m.group(2).strip(), m.group(3)
         if board == "RCM":
-            out.add(RCM.get(lvl, lvl))
+            lv = RCM.get(lvl, lvl)
         elif board in ("ABRSM", "Trinity") or board.startswith(("ABRSM Jazz", "ANZCA", "Trinity Rock", "RSL")):
-            out.add("B" if lvl == "0" else lvl)
+            lv = "B" if lvl == "0" else lvl
+        else:
+            lv = None
+        # a board level PSyllabus records (often an old syllabus) counts only when PSyllabus's own level for the row
+        # agrees within one (Chopin Op. 10/12: "RCM=9(ps10)" had put a level-10 piece at Grade 7; ChatGPT's review)
+        n = 0 if lv == "B" else int(lv) if lv and lv.isdigit() else None
+        if lv is not None and not (ps is not None and n is not None and int(ps) - n >= 2):
+            out.add(lv)
         elif ps is not None:
             other.add("ps" + ps)
     if not out:  # no exam-board level: place by PSyllabus level 0-8

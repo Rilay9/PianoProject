@@ -132,6 +132,7 @@ def main():
     from pianocoda_refs import kfix
     from rung_pieces import RULES
     from level_fit import fits_b
+    from quality_check import NONPIANO
     cands = songs()
     print(len(cands), "songs from", dict(Counter(s["list"] for s in cands)))
     # 1. a wanted-style list and an available pool with the shelf files added; match.py does the matching, for the
@@ -218,6 +219,9 @@ def main():
             fault = r.get("fault", "")
             if not fault and cat_compare(catalogue(kfix(m["title"])), catalogue(kfix(ftitle))) == "conflict":
                 fault = f"number: file title '{ftitle[:50]}' conflicts"
+            inst = NONPIANO.search(ftitle)  # "Theme for Cello + Piano": the parts may be unnamed, the title says it
+            if not fault and inst and not NONPIANO.search(m["title"]):
+                fault = f"file title names another instrument ({inst.group(0)})"
             out = {"staves": r.get("staves", ""), "code_checks": ("fail: " + fault) if fault else ("pass" + (f" ({r['notes']})" if r.get("notes") else ""))}
             if "features" in r:
                 f = defaultdict(int, r["features"])
