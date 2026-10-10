@@ -14,7 +14,7 @@ FILES = os.path.join(ROOT, "build", "pieces", "files")
 REFS = os.path.join(ROOT, "build", "pieces", "refs")
 OUT = os.path.join(ROOT, "build", "pieces", "batches", "ends-1.md")
 sys.path.insert(0, os.path.dirname(__file__))
-from worklist import value  # noqa: E402
+from worklist import value, bar_text  # noqa: E402
 from pianocoda_refs import fold  # noqa: E402
 import re  # noqa: E402
 
@@ -41,15 +41,7 @@ def closing(path, n=3):
         ms = allms[:last]
         bars = []
         for i, m in enumerate(ms[-n:], len(ms) - n + 1):
-            ev = []
-            for e in m.recurse().notesAndRests:
-                if e.isRest:
-                    ev.append(f"rest {value(e.quarterLength)}")
-                elif e.isChord:
-                    ev.append("+".join(p.nameWithOctave.replace("-", "b") for p in e.pitches) + " " + value(e.quarterLength))
-                else:
-                    ev.append(e.nameWithOctave.replace("-", "b") + " " + value(e.quarterLength))
-            bars.append(f"bar {i} of {len(ms)}" + (f" (end of the first movement; the file has {len(allms)} bars)" if len(allms) > last + 2 else "") + ": " + ", ".join(ev))
+            bars.append(f"bar {i} of {len(ms)}" + (f" (end of the first movement; the file has {len(allms)} bars)" if len(allms) > last + 2 else "") + ": " + bar_text(m))
         out.append((label, bars))
     return out
 

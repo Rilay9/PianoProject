@@ -3,7 +3,7 @@ page and last page as images, with the candidate's first 3 and last 3 bars as te
 the first movement when the file holds several), for a reader to compare both ends at once.
 
 Input: a matches file (pianocoda_refs.py or mutopia_refs.py output). Pairs already in reference-verdicts.csv are
-left out; one item per (file, reference) pair; pieces off the app's level spine are left out. Batches of 10.
+left out, and so are files failing the code checks (file_checks.py); one item per (file, reference) pair; pieces off the app's level spine are left out. Batches of 10.
 Output: build/pieces/batches/check-<n>.md and build/pieces/batches/check-items.csv.
 Usage: python tools/pieces/ref_check.py docs/pieces/review/mutopia-matches.csv
 """
@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import summarise as S  # noqa: E402
 from worklist import opening  # noqa: E402
 from ref_ends import closing  # noqa: E402
+from file_checks import check  # noqa: E402
 
 PER = 10
 
@@ -40,6 +41,19 @@ def main():
         if lv:
             r["level"] = min(lv, key=S.ORDER.index)
             rows.append(r)
+    kept = []
+    for r in rows:  # code checks first: obviously broken files never reach a reader
+        f = r["candidate_file"]
+        path = os.path.join(FILES, os.path.basename(f)) if f.startswith("./mxl") else os.path.join(ROOT, f)
+        try:
+            notes, fail = check(path, r["title"], r["candidate_title"])
+        except Exception as e:
+            notes, fail = [f"parse failed: {type(e).__name__}"], True
+        if fail:
+            print("  dropped by code checks:", r["title"][:40], "|", "; ".join(notes))
+        else:
+            kept.append(r)
+    rows = kept
     rows.sort(key=lambda r: S.ORDER.index(r["level"]))
     items = []
     for n in range(0, len(rows), PER):

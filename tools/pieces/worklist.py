@@ -49,23 +49,41 @@ def value(q):
     return f"{q:g} beats"
 
 
+def _event(e):
+    if e.isRest:
+        return f"rest {value(e.quarterLength)}"
+    if e.isChord:
+        return "+".join(p.nameWithOctave.replace("-", "b") for p in e.pitches) + " " + value(e.quarterLength)
+    return e.nameWithOctave.replace("-", "b") + " " + value(e.quarterLength)
+
+
+def bar_text(m):
+    """One bar as text. A bar with several voices lists each voice ("v1: ... | v2: ..."); a voice of rests only
+    (often hidden) is left out. Without this, voices were strung together and read as an over-full bar."""
+    import music21
+    voices = list(m.getElementsByClass(music21.stream.Voice))
+    if not voices:
+        return ", ".join(_event(e) for e in m.recurse().notesAndRests)
+    texts = []
+    for v in voices:
+        evs = list(v.recurse().notesAndRests)
+        if any(not e.isRest for e in evs):
+            texts.append(", ".join(_event(e) for e in evs))
+    loose = [e for e in m.getElementsByClass(music21.note.GeneralNote)]
+    if loose:
+        texts.insert(0, ", ".join(_event(e) for e in loose))
+    if len(texts) == 1:
+        return texts[0]
+    return " | ".join(f"v{i}: {t}" for i, t in enumerate(texts, 1)) or "rest"
+
+
 def opening(path, n=8):
     import music21
     s = music21.converter.parse(path)
     parts = list(s.parts)
     out = []
     for label, part in (("RH (top staff)", parts[0]), ("LH (bottom staff)", parts[-1])):
-        bars = []
-        for i, m in enumerate(list(part.getElementsByClass(music21.stream.Measure))[:n], 1):
-            ev = []
-            for e in m.recurse().notesAndRests:
-                if e.isRest:
-                    ev.append(f"rest {value(e.quarterLength)}")
-                elif e.isChord:
-                    ev.append("+".join(p.nameWithOctave.replace("-", "b") for p in e.pitches) + " " + value(e.quarterLength))
-                else:
-                    ev.append(e.nameWithOctave.replace("-", "b") + " " + value(e.quarterLength))
-            bars.append(f"b{i}: " + ", ".join(ev))
+        bars = [f"b{i}: " + bar_text(m) for i, m in enumerate(list(part.getElementsByClass(music21.stream.Measure))[:n], 1)]
         out.append((label, bars))
     return out
 
