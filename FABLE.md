@@ -52,3 +52,4 @@ Each step is finished, checked by the owner's ChatGPT review, and given the owne
 - The app is for the owner's own personal use.
 - No one in this process hears music: anything that needs an ear stays unverified as music.
 - Never teach anything wrong: no wrong note name, invented concept or false "this teaches X".
+- The library will also hold candidate songs that are not in the curriculum, under a tag it can be filtered by (the owner, 2026-10-10; built in step 6). Step 3 keeps what that needs: `docs/pieces/candidates-passing.csv` with each song's list, list level and match, and chosen.csv's record of how each chosen piece was checked.
