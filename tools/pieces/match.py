@@ -67,7 +67,12 @@ STRONG = ("bwv", "hwv", "k", "z", "hob", "woo", "d")
 MOVEMENTS = ("allemande", "courante", "sarabande", "gavotte", "minuet", "menuet", "gigue", "bourree", "polonaise",
              "prelude", "fugue", "aria", "air", "march", "rondo", "scherzo", "trio", "musette", "passepied",
              "loure", "anglaise", "variation", "andante", "adagio", "allegro", "presto", "largo")
-KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?:[\s-]?(flat|sharp)|(b|#))?(?:\s+(major|minor|maj|min))?\b|([a-g])(?:[\s-]?(flat|sharp)|(b|#))?\s*(major|minor|maj|min)\b)")
+# "in X" is a key only when a mode, accidental, punctuation, a number, a catalogue word or the end follows: "Away in
+# a Manger" is not in A (found in a sampled run, 2026-10-10)
+# atomic groups: the accidental and mode, once read, are never given back ("in B-flat major B. 84" is B flat, not B)
+KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?>(?:[\s-]?(flat|sharp)|(b|#))?)(?>(?:\s+(major|minor|maj|min))?)"
+                    r"(?=\s*$|\s*[^a-z\s]|\s+(?:op|opus|no|nr|bwv|hwv|kv?|hob|woo|d|l|from|for|and|with|by|mvt|movement)\b)"
+                    r"|([a-g])(?:[\s-]?(flat|sharp)|(b|#))?\s*(major|minor|maj|min)\b)")
 ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7, "viii": 8, "ix": 9, "x": 10, "xi": 11,
          "xii": 12, "xiii": 13, "xiv": 14, "xv": 15, "xvi": 16, "xvii": 17, "xviii": 18, "xix": 19, "xx": 20,
          "xxi": 21, "xxii": 22, "xxiii": 23, "xxiv": 24}

@@ -27,6 +27,9 @@ CAT = [  # (wanted title, file title, expected cat_compare)
     ("Sonatina in C major Op 151 No 4", "SONATINE I Anton Diabelli Op. 151.", "conflict"),  # French spelling
     ("Sonatina Op 36 No 1", "Sonatina Op. 36 No. 1", "match"),
     ("Prelude in C, BWV 846", "Prelude and Fugue No. 1 in C major BWV 846", "match"),
+    ("Cantabile in Bb major B 84", "Chopin: Cantabile in B-flat major B. 84", "none"),     # B flat both sides
+    ("Away in a Manger", "Away in a Manger in F", "none"),                                # "in a" is no key
+    ("Minuet in G major", "Minuet in G minor", "conflict"),
 ]
 PIANO = [(["Piano"], ""), (["Voice", "Piano"], "Voice"), (["Piano RH", "Piano LH"], ""), (["Harpsichord"], ""),
          (["Violin", "Violin"], "Violin"), (["Organ"], "Organ"), (["", ""], "")]
@@ -44,7 +47,8 @@ MOVEMENTS = [("Sonata mvt 10", [10]), ("Sonata 10th movement", [10]), ("Sonata M
              ("Sonatina Op 20 No 1 - mvt 2 and 3", [2, 3]), ("Sonata in C: II", [2]), ("Prelude No. 4", [])]
 KEYS = [  # (wanted title, file key signature, warning expected)
     ("Minuet in G major", 1, False), ("Minuet in G major", 0, True), ("Prelude in E minor", 1, False),
-    ("Prelude in E minor", 4, True), ("Waltz in D flat major", -5, False), ("Gigue", 3, False)]
+    ("Prelude in E minor", 4, True), ("Waltz in D flat major", -5, False), ("Gigue", 3, False),
+    ("Away in a Manger", -1, False), ("Alone in a Crowd", 2, False), ("Born in a Barn in C", 2, True)]  # "in a" is no key
 FITS_B = [  # (features, biggest chord, bars, fits Level B)
     ({"keysig": 0}, 2, 16, True), ({"keysig": 0, "sixteenth": 1}, 2, 16, False),
     ({"keysig": 0, "under_eighth": 1}, 2, 16, False),     # a 32nd or dotted sixteenth, no exact sixteenth

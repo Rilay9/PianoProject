@@ -137,7 +137,7 @@ def code_version():
     import hashlib
     h = hashlib.sha1()
     h.update(EXAMINE_VERSION.encode())  # bump when examine() or layout() below changes
-    for name in ("file_checks.py", "rung_pieces.py", "level_fit.py", "quality_check.py", "match.py", "movements.py"):
+    for name in ("file_checks.py", "rung_pieces.py", "level_fit.py", "quality_check.py", "movements.py"):  # examine() reads no titles
         h.update(open(os.path.join(os.path.dirname(__file__), name), "rb").read())
     return h.hexdigest()[:12]
 
