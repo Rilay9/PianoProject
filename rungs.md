@@ -159,7 +159,7 @@ Learns: 3/4 added; G, F major, A minor; any five-finger position, hands separate
 Learns: naming the major key of a signature and writing the signature of a named key, up to two sharps or flats; the circle of fifths as the order in which sharps and flats are added. | Needs: B.4 | Activities: exercise (signature to key, key to signature; play the scale of a named signature). | Done when: names the key of any signature up to two sharps or flats and plays its scale [threshold: step 4]. | Source: key signature from Level B (F 2B, R Prep B, AB and T Initial); circle of fifths: Hoffman Academy Unit 6 L114, Unit 8 L157, L159; Zebra Keys Beginner L12, L16; PianoVideoLessons 6-1 (free courses, rung-suggestions.md; Grade 1 is a reading of their order, not a syllabus level). Leads into 3.1 (all signatures, F 4–5). Added on the owner's word (2026-10-10).
 
 **1.13 Finger exercises: Hanon 1–6** · core · prepare
-Learns: Hanon, *The Virtuoso Pianist*, exercises 1–6 in eighth notes over one octave, hands separately, then together; even fingers, legato. | Needs: 1.2 | Activities: exercise. | Done when: each exercise from memory, even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 1 (exercises 1–6, "Late Elementary"); Hanon's preface asks for a year of study before the full book; Hanon also in Hoffman Academy Units 14–18 and PianoVideoLessons 3-4, 3-8, 3-12, 3-16 (rung-suggestions.md). Grade 1 for "Late Elementary" is a reading. Added on the owner's word (2026-10-10).
+Learns: Hanon, *The Virtuoso Pianist*, exercises 1–6 in eighth notes over one octave, hands separately, then together; even fingers, legato. | Needs: 1.2 | Activities: exercise. | Done when: each exercise even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 1 (exercises 1–6, "Late Elementary"); Hanon's preface asks for a year of study before the full book; Hanon also in Hoffman Academy Units 14–18 and PianoVideoLessons 3-4, 3-8, 3-12, 3-16 (rung-suggestions.md). Grade 1 for "Late Elementary" is a reading. Added on the owner's word (2026-10-10).
 
 ## Grade 2 (F 3B–4, Al 3–4, R L2, AB G2, T G2)
 
@@ -194,7 +194,7 @@ Learns: contrasting pieces using the Grade 2 rungs: sixteenths and syncopation, 
 Learns: hands together; D major, E and G minor; whole note, dotted quarter–eighth, ties; pp. *Alt:* moving beyond five-finger position already (R L2). | Needs: 1.11, A.4 | Activities: read (short two-hand fragments first, then whole pieces). | Done when: several unfamiliar hands-together pieces played in time [threshold: step 4]. | Source: AB G2 p. 16.
 
 **2.11 Finger exercises: Hanon 7–13** · core · prepare
-Learns: Hanon exercises 7–13, as in 1.13. | Needs: 1.13 | Activities: exercise. | Done when: each exercise from memory, even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 2 (exercises 7–13, "Early Intermediate"). Added on the owner's word (2026-10-10).
+Learns: Hanon exercises 7–13, as in 1.13. | Needs: 1.13 | Activities: exercise. | Done when: each exercise even and legato at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 2 (exercises 7–13, "Early Intermediate"). Added on the owner's word (2026-10-10).
 
 ## Grade 3 (F 4–5, Al 4–5, R L3, AB G3, T G3)
 
@@ -226,7 +226,7 @@ Learns: contrasting pieces using the Grade 3 rungs: compound or changing metres,
 Learns: up to 8 bars; 3/8; A, B-flat, E-flat major, B minor; outside five-finger position; two-note chords; dotted eighth–sixteenth and simple semiquavers; eighth rest. | Needs: 2.10 | Activities: read. | Done when: several unfamiliar pieces covering the new keys, two-note chords and rhythms, played in time [threshold: step 4]. | Source: AB G3 p. 16.
 
 **3.10 Finger exercises: Hanon 14–20** · core · prepare
-Learns: Hanon exercises 14–20, as in 1.13. | Needs: 2.11 | Activities: exercise. | Done when: each exercise from memory, even at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 3 (exercises 14–20; the publisher's level not found, placed after Book 2). Added on the owner's word (2026-10-10).
+Learns: Hanon exercises 14–20, as in 1.13. | Needs: 2.11 | Activities: exercise. | Done when: each exercise even at a steady tempo [threshold: step 4]. | Source: Alfred, *Hanon for Students* Book 3 (exercises 14–20; the publisher's level not found, placed after Book 2). Added on the owner's word (2026-10-10).
 
 **3.11 Composing with sequences** · core · meet
 Learns: building a melody from a motive and its sequence; a short piece in binary or ternary form over chords met so far. | Needs: B.13, 2.6 | Activities: compose; self-review. | Done when: notates and plays a short piece of their own that uses a motive, its sequence and a clear form [threshold: step 4]. | Source: F 4 Theory Book ("Composing with Sequences", Hal Leonard listing); Hoffman Academy L235 "Composition Project", L291 "Composition Project: Chord Progressions" (rung-suggestions.md). Added on the owner's word (2026-10-10).

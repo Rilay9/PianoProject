@@ -81,6 +81,11 @@ def main():
                     lines.append(f"- The list names movement(s) {mv}; the bars below are those movements' first and last bars")
                     first, last = ex
                 else:
+                    if mv and mv != [1]:  # a later movement was asked for and the file shows no such movement: say so, never
+                        # compare silently (ChatGPT's code review, 2026-10-10); the file may hold only that movement, or another
+                        lines.append(f"- WARNING: the list names movement(s) {mv}, but the file shows no movement {mv[-1]}; the bars "
+                                     "below are the file's own opening and ending. If they are not movement "
+                                     f"{mv[0]} of the reference, the verdict is WRONG PIECE")
                     first, last = opening(path, 3), closing(path, whole=bool(r.get("end_png")))
                 for label, bars in first:
                     lines.append(f"- Candidate first bars, {label}:")

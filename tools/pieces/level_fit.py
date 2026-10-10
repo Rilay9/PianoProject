@@ -36,7 +36,7 @@ def fits_b(f, big, bars):
     why = []
     if abs(f["keysig"]) > 2:
         why.append(f"key signature {f['keysig']}")
-    if f["sixteenth"] > 2:
+    if f["sixteenth"] > 0:  # none at all, as the docstring says (ChatGPT's code review, 2026-10-10)
         why.append("sixteenths")
     if f["tuplet"]:
         why.append("tuplets")

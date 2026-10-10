@@ -48,12 +48,21 @@ CAT_RE = {
     "no": re.compile(r"\b(?:no|nr|n°|nº)\.?\s*(\d+)", re.I),
     "bwv": re.compile(r"\bbwv\s*((?:anh\.?\s*)?\d+[a-z]?)", re.I),
     "hwv": re.compile(r"\bhwv\s*(\d+)", re.I),
-    "k": re.compile(r"\bK(?:V)?\.?\s*(\d+[a-z]?)\b"),
+    "k": re.compile(r"\b(?:K(?:V|p)?|k[vp]?)[.\-]?\s*(\d+[a-z]?)\b"),  # K. 545, KV 545, Kp. 380, k-34 (Pianocoda)
     "z": re.compile(r"\bZ\.?\s*T?\s*(\d+)\b"),
     "hob": re.compile(r"\bhob\.?\s*([xvi]+)\s*[:/]?\s*(\d+)", re.I),
+    "book": re.compile(r"\b(?:book|vol(?:ume)?|heft)\.?\s*(\d+)\b", re.I),
     "woo": re.compile(r"\bwoo\s*(\d+)", re.I),
     "d": re.compile(r"\bD\.?\s*(\d{2,3})\b"),
 }
+# Movement numbers: "mvt 3", "Movement 1", "3rd movt", "1st movement", "Partita V 6th", "Sonata ...: II", "II. Andante"
+ORD = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7}
+MVTNO_RE = [re.compile(r"\b(?:mvt|movt|mvmt|movement|satz)\.?\s*(\d+)\b", re.I),
+            re.compile(r"\b(\d)(?:st|nd|rd|th)\b", re.I),
+            re.compile(r"\b(\d)\.\s*satz\b", re.I),
+            re.compile(r"\b(first|second|third|fourth|fifth|sixth|seventh)\s+(?:movement|movt|mvt)\b", re.I),
+            re.compile(r":\s*([IVX]+)\s*$"),
+            re.compile(r"(?:^|[\s,;:-])([IVX]+)\.\s+[A-Z][a-z]")]
 STRONG = ("bwv", "hwv", "k", "z", "hob", "woo", "d")
 MOVEMENTS = ("allemande", "courante", "sarabande", "gavotte", "minuet", "menuet", "gigue", "bourree", "polonaise",
              "prelude", "fugue", "aria", "air", "march", "rondo", "scherzo", "trio", "musette", "passepied",
@@ -68,7 +77,7 @@ ROMAN_RE = re.compile(r"\b(partita|suite|sonata|sonatina|invention|sinfonia|prel
 
 def fold(s):
     s = unicodedata.normalize("NFKD", s or "")
-    return "".join(c for c in s if not unicodedata.combining(c)).lower()
+    return "".join(c for c in s if not unicodedata.combining(c)).lower().replace("_", " ")  # "Minuet_in_C_Minor"
 
 
 def surname(name):
@@ -105,11 +114,17 @@ def catalogue(title):
         text = title if kind in ("k", "z", "d") else fold(title)
         ms = rx.findall(text)
         if ms:
-            out[kind] = {":".join(m) if isinstance(m, tuple) else m for m in ms}
+            out[kind] = {":".join(m) if isinstance(m, tuple) else re.sub(r"[\s.]", "", m) for m in ms}  # "Anh. 114" = "Anh 114"
+    for rx in MVTNO_RE:
+        for m in rx.findall(title):
+            n = ORD.get(m.lower()) or ROMAN.get(m.lower()) or (int(m) if m.isdigit() else None)
+            if n:
+                out.setdefault("mvtno", set()).add(str(n))
     for m in ROMAN_RE.finditer(fold(title)):  # "Partita I", "Sinfonia II" -> No. 1, No. 2
         if m.group(2) in ROMAN:
             out.setdefault("no", set()).add(str(ROMAN[m.group(2)]))
-    words = set(re.split(r"[^a-z]+", fold(title).replace("menuet", "minuet").replace("bourrée", "bourree")))
+    words = set(re.split(r"[^a-z]+", fold(title).replace("menuetto", "minuet").replace("minuetto", "minuet").replace("menuet", "minuet")
+                     .replace("bourrée", "bourree").replace("corrente", "courante")))
     mv = {m for m in MOVEMENTS if m in words}
     if mv:
         out["mvt"] = {m.replace("menuet", "minuet") for m in mv}
@@ -138,14 +153,16 @@ def cat_compare(want, have):
     either side); 'partial' when the opus agrees but one side lacks the number; 'none' otherwise."""
     def differ(kind):
         return kind in want and kind in have and not (want[kind] & have[kind])
-    if any(differ(k) for k in STRONG + ("op", "key", "mode", "mvt")):
+    if any(differ(k) for k in STRONG + ("op", "key", "mode", "mvt", "mvtno", "book")):
         return "conflict"
     same_op = "op" in want and "op" in have
     if differ("no"):  # different numbers: a conflict even when only one side names the opus
         return "conflict"
     if any(k in want and k in have for k in STRONG):
-        return "partial" if ("mvt" in want) != ("mvt" in have) else "match"
+        return "partial" if ("mvt" in want) != ("mvt" in have) or ("mvtno" in want) != ("mvtno" in have) else "match"
     if same_op:
+        if ("mvtno" in want) != ("mvtno" in have):  # one side names a movement, the other the whole work
+            return "partial"
         if "no" in want and "no" in have:
             return "match"
         if "no" not in want and "no" not in have:
@@ -218,6 +235,11 @@ def main():
                 ts = difflib.SequenceMatcher(None, p["clean"], a["_clean"]).ratio() if p["clean"] and a["_clean"] else 0.0
                 conf = ("high" if cm == "match" else "medium" if (cm == "partial" and ts >= 0.60) or ts >= 0.80
                         else "low" if ts >= 0.60 else None)
+                # the wanted title names a catalogue number and the file names none of that kind: a similar title
+                # alone ("Sonata" / "Sonatina") is not enough for medium (sampled passes, 2026-10-10: 9 of 30 wrong)
+                ids_w = {k for k in ("op",) + STRONG if k in p["cat"]}
+                if conf == "medium" and ids_w and not ids_w & {k for k in ("op",) + STRONG if k in a["_cat"]} and ts < 0.95:
+                    conf = "low"
                 if conf:
                     cands.append((("high", "medium", "low").index(conf), -ts, conf, cm, ts, a))
             cands.sort(key=lambda c: (c[0], c[1], c[5].get("dedup") == "no", -(float(c[5].get("n_ratings") or 0) if (c[5].get("n_ratings") or "").replace(".", "").isdigit() else 0)))

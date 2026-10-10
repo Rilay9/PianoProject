@@ -54,7 +54,9 @@ def main():
     lines = ["# End check", ""]
     for i in want:
         r = rows[i]
-        name = re.sub(r"[^a-z0-9]+", "-", fold(r["pianocoda_url"].split("pianocoda.com/")[1])).strip("-")
+        if "pianocoda.com/" not in r["pianocoda_url"]:  # Mutopia pairs get both ends from ref_check.py in one pass
+            sys.exit(f"{i}: not a Pianocoda reference ({r['pianocoda_url'][:60]}); use ref_check.py for Mutopia pairs")
+        name =re.sub(r"[^a-z0-9]+", "-", fold(r["pianocoda_url"].split("pianocoda.com/")[1])).strip("-")
         pdf = os.path.join(REFS, name + ".pdf")
         d = pymupdf.open(pdf)
         png = os.path.join(REFS, name + "-end.png")

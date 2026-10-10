@@ -30,6 +30,15 @@ ARR_WORDS = re.compile(r"\b(easy|easier|simplified|simple version|beginner|arr\.
                        r"version|cover|duet|4 hands|four hands|flute|violin|cello|guitar|ukulele|clarinet|sax\w*|"
                        r"trumpet|voice|vocal|choir|satb|orchestra\w*|organ|accordion|lead sheet|melody only)\b", re.I)
 KEYBOARD = re.compile(r"piano|klavier|pianoforte|keyboard|harpsichord|cembalo|clavecin|clavichord|fortepiano", re.I)
+# a part named for another instrument (ChatGPT's code review, 2026-10-10: piano plus voice passed the old test)
+NONPIANO = re.compile(r"\b(voice|vocals?|vocalist|vox|soprano|mezzo|alto|tenor|baritone|choir|chorus|singer|violin|viola|violoncello|cello|contrabass|flute|piccolo|oboe|clarinet|bassoon|horn|trumpet|cornet|trombone|tuba|sax\w*|guitar|ukulele|banjo|mandolin|drums?|drumset|percussion|timpani|harp|organ|accordion|recorder|strings|bass guitar|electric bass|fretless)\b", re.I)
+
+
+def not_piano(names):
+    """The first part name that names a non-keyboard instrument (and no keyboard), or "" when none does."""
+    return next((n for n in names if NONPIANO.search(n) and not KEYBOARD.search(n)), "")
+
+
 SHARPS_TO_KEYS = {n: (maj, mnr) for n, maj, mnr in [
     (-7, "cb", "ab"), (-6, "gb", "eb"), (-5, "db", "bb"), (-4, "ab", "f"), (-3, "eb", "c"), (-2, "bb", "g"),
     (-1, "f", "d"), (0, "c", "a"), (1, "g", "e"), (2, "d", "b"), (3, "a", "f#"), (4, "e", "c#"), (5, "b", "g#"),
@@ -75,6 +84,8 @@ def judge(row, f):
         inst = f["instruments"]
         if inst.strip(" |") and not KEYBOARD.search(inst) and int(f["parts"] or 0) > 1:  # unnamed parts (kern) pass
             flags.append(f"not piano? ({inst[:60]})")
+        elif not_piano(inst.split(" | ")):
+            flags.append(f"not piano: part '{not_piano(inst.split(' | '))[:40]}'")
         if int(f["parts"] or 0) > 3:
             flags.append(f"{f['parts']} parts")
         if f["staves"] == "1":  # a melody on one staff: no left hand (ChatGPT's review, 2026-10-09)

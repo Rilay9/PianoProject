@@ -4,7 +4,8 @@ broken ones first). Each check is one the reference reading found by hand:
   bars      two or more bars in the section used hold more music than the time signature allows (one may be a
             free-rhythm cadenza bar; short bars are normal at pickups and repeats)
   opening   the first two bars hold no notes in either staff
-  number    the file's title names a catalogue number (K, Op./No., BWV, Hob, D) that conflicts with the wanted title
+  number    the file's title names a catalogue number (K, Op./No., BWV, Hob, D), movement number, book or key
+            that conflicts with the wanted title
   movements the file holds several movements (noted, not a failure: the first movement's bars are named)
 
 Input: a check-items.csv / items.csv / reference-verdicts.csv style file (columns title, candidate_file,
@@ -47,10 +48,9 @@ def check(path, title, ftitle):
     if n >= 2 and not any(st[k].recurse().notes for st in staves for k in (0, 1)):
         out.append("opening: first two bars empty")
         fail = True
-    import re
-    wnums = {x for v in catalogue(kfix(title)).values() for x in v if x[:1].isdigit()}
-    fnums = set(re.findall(r"\d+", ftitle))
-    if cat_compare(catalogue(kfix(title)), catalogue(kfix(ftitle))) == "conflict" and not wnums <= fnums:
+    # any clash fails (ChatGPT's code review, 2026-10-10: the old exception, "every wanted number appears somewhere in
+    # the file title", let "Op. 12 No. 10" pass for "Op. 10 No. 12")
+    if cat_compare(catalogue(kfix(title)), catalogue(kfix(ftitle))) == "conflict":
         out.append(f"number: file title '{ftitle[:50]}' conflicts with '{title[:50]}'")
         fail = True
     return out, fail

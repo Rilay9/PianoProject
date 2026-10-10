@@ -3,22 +3,28 @@ owner, 2026-10-10: books and sites give song candidates and placement; files com
 
 Candidate lists: docs/sources/lists/8notes-piano*.csv (8notes' own levels), the book and method lists
 (8notes-candidates, archive-methods, beginner-methods, faber-*, learnandmaster-songs, piano-aio-dummies,
-pianofordummies), and the songs named per rung in docs/pieces/review/rung-suggestions.md. The exam lists
-(ABRSM, RCM, Trinity, styles) are not here: they went through wanted.csv already.
+pianofordummies), the songs named per rung in docs/pieces/review/rung-suggestions.md, and the exam lists (ABRSM,
+RCM, Trinity, styles, PSyllabus) through build/pieces/wanted.csv.
 
 Files: available.csv plus the shelf files (build/pieces/shelf/shelf.csv), matched by match.py (high, medium and
-title-only matches kept; low dropped); every matched file, up to match.py's five per song, MusicXML only; songs or files already in
-docs/pieces/chosen.csv are left out. On each file: two staves in one or two parts, the code checks (file_checks.check), the Level B fit
-(level_fit.fits_b, a reading of rungs.md, not a published grading) and the rungs a file shows (rung_pieces.RULES).
+title-only matches kept; low dropped); every matched file, up to match.py's five per song (the owner, 2026-10-10:
+check them all), MusicXML only, PDMX duplicate copies left out. Songs already in docs/pieces/chosen.csv (same
+composer and title words with no catalogue, movement or key clash) and files already chosen are left out.
+The exam lists (wanted.csv) are matched again with the current matcher and their unchosen matches added as list
+"exam-lists" with their sources.
+
+On each file: two staves in one or two parts and no part named for another instrument (quality_check.not_piano),
+the code checks (file_checks.check: bars, opening; the title check against each song's title), the Level B fit
+(level_fit.fits_b, a reading of rungs.md, not a published grading) and the rungs a file may show (rung_pieces.RULES:
+possible examples found by notation features, not proof that a piece teaches the skill). Per-file facts are cached in
+build/pieces/file-facts.json.
 
 A list's level is the level of that source's own arrangement or lesson, not of the file found; the file's facts are
 listed beside it so a reader can see whether the file is the same kind of arrangement.
 
-Also the exam-list matches (build/pieces/matches.csv) not chosen yet, as list "exam-lists" with their sources.
-
 Output: build/pieces/new-candidates.csv. Usage: python tools/pieces/candidates.py
 """
-import csv, glob, os, re, subprocess, sys, tarfile
+import csv, glob, json, os, re, subprocess, sys, tarfile
 from collections import Counter, defaultdict
 from multiprocessing import Pool
 
@@ -76,7 +82,8 @@ def songs():
     return [s for s in out if s["title"]]
 
 
-def staves(path):
+def layout(path):
+    """Staves, parts and part names, read from the MusicXML text."""
     import zipfile
     if path.endswith(".mxl"):
         z = zipfile.ZipFile(path)
@@ -84,32 +91,35 @@ def staves(path):
     else:
         xml = open(path, "rb").read()
     xml = xml.decode("utf-8", "replace")
-    return max([int(s) for s in re.findall(r"<staves>(\d+)</staves>", xml)] or [1]), xml.count("<score-part ")
+    blocks = re.findall(r"<score-part\b.*?</score-part>", xml, re.S)
+    names = [" ".join(re.findall(r"<(?:part-name|instrument-name)[^>]*>([^<]*)<", b)) for b in blocks]
+    return max([int(s) for s in re.findall(r"<staves>(\d+)</staves>", xml)] or [1]), len(blocks), names
 
 
-def examine(job):
-    path, title, ftitle = job
+def examine(path):
+    """Facts of one file that need parsing (cached by path): layout, bar and opening checks, features."""
     from file_checks import check
-    from rung_pieces import features, RULES
-    from level_fit import extra, fits_b
+    from rung_pieces import features
+    from level_fit import extra
+    from quality_check import not_piano
     r = {}
     try:
-        st, parts = staves(path)
+        st, parts, names = layout(path)
         r["staves"] = f"{st} staves, {parts} parts"
         if st < 2 and parts < 2:
-            return {**r, "code_checks": "fail: one staff"}
+            return {**r, "fault": "one staff"}
         if parts > 2:
-            return {**r, "code_checks": f"fail: {parts} parts (not a two-hand piano layout)"}
-        notes, fail = check(path, title, ftitle)
+            return {**r, "fault": f"{parts} parts (not a two-hand piano layout)"}
+        if not_piano(names):
+            return {**r, "fault": f"not piano: part '{not_piano(names)[:40]}'"}
+        notes, fail = check(path, "", "")  # bars and opening; the title check is done per song in main()
         f = features(path, [])
         big, bars = extra(path)
-        ok, why = fits_b(f, big, bars)
-        r.update({"code_checks": ("fail: " if fail else "pass") + ("; ".join(notes) if notes else ""),
-                  "fits_b": ok, "outside_b": "; ".join(why), "keysig": f["keysig"], "file_bars": bars,
-                  "range": f"{f['range'][0]}-{f['range'][1]}", "biggest_chord": big,
-                  "rungs_shown": " ".join(k for k, (_, t) in RULES.items() if t(f))})
+        r.update({"fault": "; ".join(notes) if fail else "", "notes": "; ".join(n for n in notes if not fail),
+                  "features": {k: (list(v) if isinstance(v, tuple) else v) for k, v in f.items()},
+                  "biggest_chord": big, "file_bars": bars})
     except Exception as e:
-        r["code_checks"] = f"fail: parse failed ({type(e).__name__})"
+        r["fault"] = f"parse failed ({type(e).__name__})"
     return r
 
 
@@ -118,9 +128,14 @@ def path_of(f):
 
 
 def main():
+    from match import catalogue, cat_compare
+    from pianocoda_refs import kfix
+    from rung_pieces import RULES
+    from level_fit import fits_b
     cands = songs()
     print(len(cands), "songs from", dict(Counter(s["list"] for s in cands)))
-    # 1. a wanted-style list and an available pool with the shelf files added; match.py does the matching
+    # 1. a wanted-style list and an available pool with the shelf files added; match.py does the matching, for the
+    #    lists and again for wanted.csv (the exam lists), so both use the current matcher
     want = os.path.join(B, "cand-wanted.csv")
     with open(want, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
@@ -137,19 +152,32 @@ def main():
             if r["ok"] == "True":
                 w.writerow({"source": "shelf", "file": r["file"].replace("\\", "/"), "composer": r["composer"],
                             "title": r["title"], "dedup": "yes"})
-    out_m = os.path.join(B, "cand-matches.csv")
-    subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "match.py"), want, pool, out_m], check=True)
-    # 2. files to examine: up to two per song, not already chosen
+    out_m, out_x = os.path.join(B, "cand-matches.csv"), os.path.join(B, "cand-exam-matches.csv")
+    me = os.path.join(os.path.dirname(__file__), "match.py")
+    subprocess.run([sys.executable, me, want, pool, out_m], check=True)
+    subprocess.run([sys.executable, me, os.path.join(B, "wanted.csv"), pool, out_x], check=True)
+    # 2. files to examine: every matched file not already chosen (the owner: check them all); PDMX's duplicate
+    #    copies left out (FABLE: PDMX copies excluded)
     chosen = list(csv.DictReader(open(os.path.join(ROOT, "docs", "pieces", "chosen.csv"), encoding="utf-8")))
     chosen_files = {c["candidate_file"].replace("\\", "/") for c in chosen}
-    chosen_keys = {(surname(c["composer"]), clean_title(c["title"], surname_keys(c["composer"]))) for c in chosen}
-    per = defaultdict(list)  # every matched file (match.py keeps the best five per song), the owner: check them all
+    chosen_by = defaultdict(list)
+    for c in chosen:
+        chosen_by[(surname(c["composer"]), clean_title(c["title"], surname_keys(c["composer"])))].append(catalogue(kfix(c["title"])))
+
+    def already(m):  # same composer and words, and no catalogue, movement or key clash (Invention No. 8 is not No. 10)
+        k = (surname(m["composer"]), clean_title(m["title"], surname_keys(m["composer"])))
+        cw = catalogue(kfix(m["title"]))
+        return any(cat_compare(cw, cc) != "conflict" for cc in chosen_by.get(k, []))
+
+    per = defaultdict(list)
     exam = {}
-    for tag, mp in (("lists", out_m), ("exam-lists", os.path.join(B, "matches.csv"))):
+    for tag, mp in (("lists", out_m), ("exam-lists", out_x)):
         for m in csv.DictReader(open(mp, encoding="utf-8")):
             if m["confidence"] not in ("high", "medium", "title-only") or not m["a_file"].endswith((".mxl", ".xml", ".musicxml")):
                 continue
-            if m["a_file"] in chosen_files or (surname(m["composer"]), clean_title(m["title"], surname_keys(m["composer"]))) in chosen_keys:
+            if m["a_source"] == "pdmx" and m["a_dedup"] == "no":
+                continue
+            if m["a_file"] in chosen_files or already(m):
                 continue
             k = (tag, m["composer"], m["title"])
             per[k].append(m)
@@ -160,37 +188,52 @@ def main():
     need = {m["a_file"].lstrip("./") for v in per.values() for m in v
             if m["a_file"].startswith("./mxl") and not os.path.exists(path_of(m["a_file"]))}
     if need:
-        print(len(need), "files to take from mxl.tar.gz")
+        print(len(need), "files to take from mxl.tar.gz", flush=True)
         with tarfile.open(os.path.join(SESSION, "mxl.tar.gz"), "r:gz") as tf:
             for mem in tf:
                 if mem.name.lstrip("./") in need:
                     open(os.path.join(FILES, os.path.basename(mem.name)), "wb").write(tf.extractfile(mem).read())
-    jobs = sorted({(path_of(m["a_file"]), m["title"], m["a_title"]) for v in per.values() for m in v})
-    print(len(jobs), "files to examine", flush=True)
-    res = {}
-    with Pool(max(1, os.cpu_count() - 2)) as p:
+    cache_p = os.path.join(B, "file-facts.json")
+    cache = json.load(open(cache_p, encoding="utf-8")) if os.path.exists(cache_p) else {}
+    jobs = sorted({path_of(m["a_file"]) for v in per.values() for m in v} - set(cache))
+    print(len(jobs), "files to examine (others cached)", flush=True)
+    with Pool(3) as p:  # FABLE: at most 3 worker processes
         for n, (j, r) in enumerate(zip(jobs, p.imap(examine, jobs, chunksize=4)), 1):
-            res[j] = r
+            cache[j] = r
             if n % 250 == 0:
                 print(n, "examined", flush=True)
-    # 3. one row per (song in a list, file)
+                json.dump(cache, open(cache_p, "w", encoding="utf-8"))
+    json.dump(cache, open(cache_p, "w", encoding="utf-8"))
+    # 3. one row per (song in a list, file); the title check is per song, on the file's title and subtitle
     by_key = defaultdict(list)
-    for i, s in enumerate(cands):
+    for s in cands:
         by_key[("lists", s["composer"], s["title"])].append(s)
     for k, s in exam.items():
         by_key[k].append(s)
     rows = []
     for k, ms in per.items():
         for m in ms:
-            r = res[(path_of(m["a_file"]), m["title"], m["a_title"])]
+            r = cache[path_of(m["a_file"])]
+            ftitle = (m["a_title"] + " " + m.get("a_subtitle", "")).strip()
+            fault = r.get("fault", "")
+            if not fault and cat_compare(catalogue(kfix(m["title"])), catalogue(kfix(ftitle))) == "conflict":
+                fault = f"number: file title '{ftitle[:50]}' conflicts"
+            out = {"staves": r.get("staves", ""), "code_checks": ("fail: " + fault) if fault else ("pass" + (f" ({r['notes']})" if r.get("notes") else ""))}
+            if "features" in r:
+                f = defaultdict(int, r["features"])
+                ok, why = fits_b(f, r["biggest_chord"], r["file_bars"])
+                out.update({"fits_b": ok, "outside_b": "; ".join(why), "keysig": f["keysig"], "file_bars": r["file_bars"],
+                            "range": f"{f['range'][0]}-{f['range'][1]}", "biggest_chord": r["biggest_chord"],
+                            "rungs_shown": " ".join(g for g, (_, t) in RULES.items() if t(f))})
             for s in by_key.get(k, []):
                 rows.append({"list": s["list"], "list_level": s["level"], "skill": s["skill"], "rung": s["rung"],
                              "composer": s["composer"], "title": s["title"], "confidence": m["confidence"],
+                             "cat_match": m["cat_match"], "title_score": m["title_score"],
                              "file": m["a_file"], "file_source": m["a_source"], "file_composer": m["a_composer"],
-                             "file_title": m["a_title"], "n_ratings": m["a_n_ratings"], **r, "url": s["url"]})
-    cols = ["list", "list_level", "skill", "rung", "composer", "title", "confidence", "file", "file_source",
-            "file_composer", "file_title", "n_ratings", "staves", "code_checks", "fits_b", "outside_b", "keysig",
-            "file_bars", "range", "biggest_chord", "rungs_shown", "url"]
+                             "file_title": ftitle, "n_ratings": m["a_n_ratings"], **out, "url": s["url"]})
+    cols = ["list", "list_level", "skill", "rung", "composer", "title", "confidence", "cat_match", "title_score", "file",
+            "file_source", "file_composer", "file_title", "n_ratings", "staves", "code_checks", "fits_b", "outside_b",
+            "keysig", "file_bars", "range", "biggest_chord", "rungs_shown", "url"]
     out = os.path.join(B, "new-candidates.csv")
     with open(out, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols, restval="")
@@ -198,14 +241,12 @@ def main():
         w.writerows(rows)
     ok = [r for r in rows if r["code_checks"].startswith("pass")]
     print(out, len(rows), "rows;", len(ok), "pass the code checks")
+    print("Passing rows by match confidence:", Counter(r["confidence"] for r in ok))
     for lst in sorted({r["list"] for r in rows}):
         songs_ok = {(r["composer"], r["title"]) for r in ok if r["list"] == lst}
         print(f"  {lst}: {len({(r['composer'], r['title']) for r in rows if r['list'] == lst})} songs with a file, "
               f"{len(songs_ok)} with a file passing")
-    print("Passing files by 8notes level:", Counter(r["list_level"] for r in ok if r["list"] == "8notes"))
-    print("Passing files that fit Level B:", len({r["file"] for r in ok if r["fits_b"] is True}))
-    print("Empty rungs shown by passing files:",
-          {g: len({r["file"] for r in ok if g in r["rungs_shown"].split()}) for g in ("B.7", "B.8", "1.5", "1.6", "2.6", "3.3")})
+    print("Fails:", Counter(r["code_checks"].split(":")[1].strip().split(" ")[0] for r in rows if not r["code_checks"].startswith("pass")).most_common(8))
 
 
 if __name__ == "__main__":
