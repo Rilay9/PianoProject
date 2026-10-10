@@ -3,7 +3,9 @@
 App level from each source's own level (curriculum.md, level spine): ABRSM/Trinity 0 -> B, N -> N;
 RCM PrepA -> A, PrepB -> B, L1-4 -> 1-4, L5-6 -> 5, L7-8 -> 6, L9 -> 7, L10 -> 8 (above Grade 4 approximate);
 style lists by their grade (0 -> B). PSyllabus rows count under their board when it is ABRSM, Trinity or RCM;
-other boards are counted separately by PSyllabus level 0-10 (no app-level mapping is claimed for them).
+other boards (AMEB, NZMEB, LCM, ...) are placed by PSyllabus's own normalised level when the piece has no ABRSM,
+Trinity or RCM level: ps 0 -> B, ps 1-8 -> 1-8. The mapping is read off PSyllabus's ABRSM/RCM/Trinity rows, where ps N
+falls mostly at Grade N (ps 0 at B); ps 9-10 are above Grade 8 and stay off the spine (2026-10-09).
 A piece counts once per app level, under its best candidate. Candidates are not confirmations.
 """
 import csv, os, re, sys
@@ -30,6 +32,11 @@ def app_levels(sources):
             out.add("B" if lvl == "0" else lvl)
         elif ps is not None:
             other.add("ps" + ps)
+    if not out:  # no exam-board level: place by PSyllabus level 0-8
+        for o in other:
+            n = int(o[2:])
+            if n <= 8:
+                out.add("B" if n == 0 else str(n))
     return out, other
 
 
