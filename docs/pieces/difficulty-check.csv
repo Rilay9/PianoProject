@@ -1,0 +1,843 @@
+file,title,published_level,prediction,prediction_kind,alarm,alarm_drivers,work_group,attacks_per_second,notes_per_quarter,shortest_depth,largest_chord,range_semitones,ledger_max,accidentals_per_100,has_tuplets,key_sig_size,pitch_entropy
+./mxl/16/53/QmYXGJHJVBzWH49y5pr4LRhNv1XyoGQV1GHMmrKmADwKfr.mxl,Minuet in F Major,B,1,held-out,,,mozart-minuetinfmajor,,0.501,3,2,43,2,0,0,1,3.844
+./mxl/17/54/QmZyzujpizy8vQaR7acjN5TB6FDJsWsVd4hLDwYjV2TF9P.mxl,Old German Dance,B,B,held-out,,,praetorius-oldgermandance,2.16,1.5,3,1,19,1,0,0,0,3.228
+./mxl/2/56/QmcziG7TmxfmZADkf3EZ2UQ5A6o23ngn1tTFU5aKxamAcQ.mxl,Ode to Joy,B,B,held-out,,,beethoven-odetojoy,,1.75,3,3,19,1,0,0,0,3.11
+./mxl/8/33/QmQnTd8DBifKHHb1am9f2p9ggWLTDeJeuFyafvmFdKY2ew.mxl,Amazing Grace,B,1,held-out,,,johnnewtontradarr-amazinggrace,2,1.667,3,1,31,1,0,0,1,3.665
+./mxl/7/32/QmPMQT5T7bMiFTa9EVyZqPVJieRGqnXoArFAYhPSBZ1FjD.mxl,Sonatina in C Major,1,1,held-out,,,duncombe-sonatinaincmajor,3.59,2.5,3,1,38,3,0,1,0,3.665
+./mxl/12/10/QmUAQv7PsWCJFAFSk1Ksz1UzaPFJe46s2PBqqNzZCyBhz2.mxl,"Choral ‘Deal with Me, Lord’, BWV 514",1,2,held-out,,,bwv-514,,2,4,1,43,2,1.96,0,0,4.272
+./mxl/0/32/QmaMe5Ru85vNPdhyqhDey5Dz1eYH2cKL6mU7EuigXGXQXj.mxl,Soldatenmarsch (Soldiers March) Op 68 No 2,1,3,held-out,ALARM,largest_chord=3 (z+0.3); ledger_max=3 (z+0.3); shortest_depth=4 (z+0.1),schumann-op68-no2,2.21,3.25,4,3,31,3,1.32,0,1,4.047
+./mxl/0/22/QmaGkwceqGBDhCQ8j8S2qAaCKyrVrUXU3Y1PD2NHVF5EL4.mxl,"Ukrainian Folk Song, op. 107, no. 3",1,2,held-out,,,beethoven-op107-no3,5.02,2.75,4,1,43,1,0,0,1,3.835
+./mxl/7/23/QmPh9E2SVDigz7bhQx3CqCFNxD33a9G5uFVGWf2536dG7J.mxl,"Allegro in B flat Major, K 3",1,3,held-out,ALARM,key_sig_size=2 (z+0.6); shortest_depth=4 (z+0.1),mozart-k3,3.02,3,4,2,32,2,5.42,0,2,4.153
+./mxl/14/37/QmWPFpLyAkm7gcKYZHuEZ8NgeASsVGdyzGVrisSGKAmpvX.mxl,"Minuet in F Major, K 2",1,2,held-out,,,mozart-k2,2.92,2,3,1,40,1,4.53,1,1,4.178
+./mxl/7/51/QmPW5kiDM4MteJEvBfcYg9rW2GE2EUFMX8mm828QD3x8dy.mxl,Andante in C major K1a,1,2,held-out,,,mozart-k1a,2.28,3.5,4,1,36,2,8.85,0,0,3.903
+./mxl/0/38/QmaqiaWjuxahsy4GiTg3WNNMEhngex9Jcq448jYfkfCTyU.mxl,"Minuet in D, K. 7",2,3,held-out,,,mozart-k7,3.63,3,3,1,45,2,3.9,0,2,4.23
+./mxl/17/19/QmZfHayYiHJJBpxa5yZpMwR9RDMcDRYGvFC25NyyKa8ziH.mxl,Arabesque in A minor Op 100 No 2,2,3,held-out,,,burgm-op100-no2,4.45,4.5,4,3,48,4,1.595,0,0,4.112
+./mxl/2/35/Qmcoy66kBYb1u3xpnPyzD4xidHGTXQcXFk6aTvzXMQX6xS.mxl,"Impertinence, HWV 494",2,3,held-out,,,handel-impertinencehwv494,3.75,1.5,3,1,41,2,3.75,0,2,4.417
+./mxl/11/48/QmTvMxdMwcpLqNRRV8UBcFWvezab2dcr66WS7kVSAcF4dH.mxl,Arabesque in A minor Op 100 No 2,2,3,held-out,,,burgm-op100-no2,,4.5,4,3,48,4,1.875,0,0,4.121
+./mxl/12/38/QmUqattmpsJ6uXKQ6PyuP4TRkYWGohcSDU4CiALZBmzreW.mxl,"March in D major, BWV Anh. 122",2,3,held-out,,,bwv-anh122,2.49,2.5,4,1,49,2,2.66,0,2,4.407
+./mxl/17/2/QmZ3RfASNhTtAmVg1sF7DUhxgPjNSWRfpijSrmvJfX14Bu.mxl,Little Prelude in C BWV 939,3,3,held-out,,,bwv-939,,3,4,3,48,2,3.16,0,0,4.432
+./mxl/7/10/QmPAsudN4jHYo1ZLjSocNUD8EpFJgBJiw5XrtjUyKPvKHf.mxl,"Sonatina in C Major, op. 36, no. 1: I",3,6,held-out,ALARM,pitch_entropy=5.07 (z+1.3); largest_chord=4 (z+1.1); has_tuplets=1 (z+2.0),clementi-op36-no1,5.79,4.5,5,4,58,3,4.25,1,0,5.071
+./mxl/17/42/QmZsHHxzDb2d1gvFyqdkKeAPDWueRYWjs4reFvHbH6fCw9.mxl,"Polonaise in G Minor, BWV Anh. 119",3,3,held-out,,,bwv-anh119,,3.167,4,1,36,2,2.895,0,2,4.135
+./mxl/15/39/QmXQUxkVLSZUanTaciCVpsBfNdnovofwRzybJp6aAda382.mxl,Petit Reunion in C major Op 100 No 4,3,2,held-out,,,burgm-op100-no4,1.48,3.5,3,2,40,3,1.07,0,0,4.32
+./mxl/14/56/QmWzoWDuMenyrawN3s8bNz9s5NLADBmSSm1jJZKkBb6ZUM.mxl,Op 37 No 7,3,4,held-out,,,lemoine-op37-no7,4.2,4,3,3,48,4,7.925,0,1,4.404
+./mxl/6/26/QmNjDJ1X5fmH6pi6PzAysdfn1WMKDgHfb6nGxgaP3D2yBL.mxl,"Little Prelude in C Major, BWV 939",3,3,held-out,,,bwv-939,3.26,3,4,3,48,2,5.115,0,0,4.42
+./mxl/13/11/QmVbzhavuDhKE6tdzG6QG1RuFtXg9SBaPmnQNyG7x375MS.mxl,Allegro scherzando in F,4,4,held-out,,,haydn-allegroscherzandoinf,3.91,4,4,3,57,4,2.295,0,1,4.513
+./mxl/0/42/QmasAcd9tbsewBQFVVbZNZGg35JCV94UF42JFrqCNngLdM.mxl,Arietta (Lyric Pieces Op 12 No 1),4,6,held-out,ALARM,notes_per_quarter=6.5 (z+1.5); key_sig_size=3 (z+1.3); accidentals_per_100=12.88 (z+1.6),grieg-op12-no1,,6.5,4,2,40,2,12.875,0,3,4.587
+./mxl/5/29/QmfKWGMd7CRmVVYsnHEeNcERCrZ9KqRZWTj969wUVyHAvw.mxl,Italian Song (no. 15),4,3,held-out,,,tchaikovsky-italiansongno15,4.02,4.666,4,2,38,3,1.26,0,2,3.59
+./mxl/2/3/Qmc4b2rFy4zrUxf8kroU5PVWXv9MRF6uckxua3AJ8MZ6pi.mxl,"Study in A minor, Op. 45 No. 2",4,4,held-out,,,heller-op45-no2,4.08,2.5,3,4,63,3,8.78,1,0,4.804
+./mxl/17/30/QmZLmH4rC6AGdK4MYd4L7bhADET4o9wRSjoVWYJRoW6mrV.mxl,"Sonatina in F Major, op. 168, no. 1: I",4,4,held-out,,,diabelli-op168-no1,4.42,3.25,4,4,48,3,6.57,0,1,4.651
+./mxl/1/37/QmbPqcXHQGWvs9JAfcAmAUdSAVK7Hrc8FocG84tY7KzVDy.mxl,"The Happy Farmer, op. 68, no. 10",4,3,held-out,,,schumann-op68-no10,3.98,4.5,3,3,31,2,0.835,0,1,3.83
+./mxl/4/36/Qmepg1r1PyQ5N2bT28PjPV6ZRVVBNopDd8nHJjbcJc3np9.mxl,"Sicilienne (no. 11 from Album for the Young, op. 68)",4,4,held-out,,,schumann-op68-no11,3.54,3.667,4,3,32,2,11.46,0,0,4.336
+./mxl/16/19/QmYf4ZSAidzdYov56Bt21Wg8sq1CNabhXjR8NB74VpsCxL.mxl,"Sonata in D Minor, K 32",4,5,held-out,,,scarlatti-k32,2.02,5,5,4,44,2,9.49,0,1,4.538
+./mxl/12/5/QmU6N3TkyWQa4ZByjNMwXt86J5N5cLFAUZ4R7gnUUoqmfW.mxl,"Ballade, Op. 100 No. 15",4,4,held-out,,,burgm-op100-no15,,4,4,3,53,3,9.395,0,3,3.906
+./mxl/17/30/QmZLB5s1pGDSPhmWx5Zwkt1APsVUQpbvyEqwvi9WP1xxzF.mxl,"Minuet in F Major, BWV Anh. 113",4,3,held-out,,,bwv-anh113,,3,4,1,44,2,4.385,1,1,4.557
+./mxl/17/32/QmZMAg8KBp5Rtd8yAtjuXvvtDJ8HqPzUmP6mFZv4jAG6a8.mxl,"Minuet in A Minor, BWV Anh. 120",4,3,held-out,,,bwv-anh120,2.78,2,5,1,45,3,7.455,0,0,4.733
+./mxl/12/38/QmUqCoSTSoifrWw21QNi9mDvUpyJTkjx7qLuWB1LT55Euv.mxl,"Minuet in C Minor, BWV Anh. 121",4,4,held-out,,,bwv-anh121,2.84,2,3,1,39,1,18.95,1,3,4.575
+./mxl/11/8/QmT9NqLb9PRKSzEJQhgM2iaYrLhUDVQMFc3Vp7BXe4r2eR.mxl,"Little Prelude in D Minor, BWV 926",5,4,held-out,,,bwv-926,,3,4,3,46,2,12.18,0,1,4.685
+./mxl/0/13/QmacRUvugXM4ARuvKy3w2Mwttj7MFjWE9ezrc9SJTYuW9S.mxl,"Spiritoso (1st movt from Sonatina in C, Op. 36 No. 3)",5,4,held-out,,,clementi-op36-no3,4.55,4.5,4,3,53,3,2.825,0,0,4.754
+./mxl/15/12/QmXBTmTs5nddMCxeoQXdYD449AgBmfcHcv2oFDMNTn4Se3.mxl,Etude in A minor (No 2 from 25 etudes faciles Op 50),5,4,held-out,,,farrenc-op50-no2,,5.333,4,4,44,3,6.905,0,0,4.46
+./mxl/10/14/QmSCiwAKoRY8r6EsmBqzJhvdyYTP5EqQnN3gdNAMfELbzw.mxl,"Minuet in G Minor, BWV 842",5,4,held-out,,,bwv-842,,3,4,2,43,2,8.57,0,2,4.634
+./mxl/14/44/QmWtmdgRHpAfkEhet1VrX1ZDpqGFGMDCd8y2BsFzL3yAXj.mxl,"Little Prelude in A Minor, BWV 942",5,5,held-out,,,bwv-942,,3.778,4,1,44,3,18.635,0,0,4.875
+./mxl/16/39/QmYQnU8bSLrm9DYcBMyvh3UVC93hAbNU4MCBBZzSzwHQQF.mxl,"Prelude in C, BWV 846 (from The Well-Tempered Clavier book 1)",5,4,held-out,,,bwv-846,5,4.5,4,3,45,3,2.28,0,0,4.415
+./mxl/9/39/QmRQ3eoq759Z6aMk6uJxun1gS1AVazFPhuYAyNgxjgsmpd.mxl,"Invention No. 8 in F, BWV 779",5,6,held-out,,,bwv-779,,7,4,3,50,3,4.52,0,1,4.839
+./mxl/12/21/QmUgKKU4f6dAocxy7yJ75kF1v47RaPfK1ysUvqZWD7twTS.mxl,"March in E flat Major, BWV Anh. 127",5,4,held-out,,,bwv-anh127,,3,3,2,50,2,3.25,1,3,4.473
+./mxl/16/16/QmYDvsjMFNH9ZdPZKuo8JEQihnXgG5cKPYZdQscgEdyKNn.mxl,"Invention No. 10 in G Major, BWV 781",5,4,held-out,,,bwv-781,11.05,4,5,1,46,3,1.43,0,1,4.379
+./mxl/10/16/QmSDCwHjSSFa5GvZL9fzKZgXjk9bK7VSXiaHXhKomLydpf.mxl,"Invention No. 11 in G Minor, BWV 782",5,6,held-out,,,bwv-782,,6.25,4,1,46,2,15.39,0,2,4.938
+./mxl/12/11/QmUbCP81miGkFzFSk3cTqCXyNV4psQm4UM33sjmc4Twpae.mxl,"Invention No. 13 in A Minor, BWV 784",5,5,held-out,,,bwv-784,7.28,5.75,4,1,46,3,9.925,0,0,4.85
+./mxl/3/53/QmdXWkWbF5xQQnBwYR2LFiiSDjY7kWswUocDNAwKbeviFe.mxl,Bagatelle No 25 in A minor WoO 59 (Fur Elise),5,6,held-out,,,beethoven-woo59,4.57,4.667,5,4,67,3,12.095,1,0,4.693
+./mxl/17/50/QmZwC4zWei5ivTZDoe3z9V5YTBZWGKYhtNiZQVkyLRpuch.mxl,"Invention No. 8 in F, BWV 779",5,6,held-out,,,bwv-779,7.18,7,4,3,48,3,5.185,0,1,4.836
+./mxl/4/20/QmeFe141bz3q769xSR2M7uBnWqLdMXWgje81eFkbaVoX1A.mxl,Suite in D minor HWV 437 - mvt 3 Sarabande,5,2,held-out,ALARM,notes_per_quarter=1.75 (z-1.3); shortest_depth=2 (z-2.2); attacks_per_second=1.56 (z-1.6),handel-suiteindminorhwv437mvt3sarabande,1.56,1.751,2,3,39,2,3.635,0,1,4.426
+./mxl/11/15/QmTdWdv8SDSC62Hnxm4gCoDbFsJ4vcSwnWbEAbnY7f3kvz.mxl,Prelude in C minor Op 28 No 20,5,8,held-out,ALARM,accidentals_per_100=19.36 (z+3.2); largest_chord=6 (z+2.8); pitch_entropy=4.93 (z+1.1),chopin-op28-no20,0.78,5,4,6,51,5,19.355,0,3,4.929
+./mxl/11/50/QmTweH6fqVhz4zYvL7uDEj1Lj4vGcSsuG8E2ou1swGDHo2.mxl,Etude in Bb major Op 821 No 11,5,6,held-out,,,czerny-op821-no11,7.56,9.375,4,3,47,5,2.325,0,2,4.384
+./mxl/12/42/QmUsAkreJDYuBXm1cxjLDGSghwYUmUbe7J2XbxN9hnyDAH.mxl,Sonatina in C major Op 20 No 1 - mvt 2 Andante,5,6,held-out,,,kuhlau-op20-no1,5.19,5,5,4,61,5,5.565,1,0,4.884
+./mxl/3/42/QmdsaGvFWZ8VSzf5PFPfbLkbQvvDSjvRXyjP7MfkKq4C8s.mxl,"Für Elise, WoO 59",6,6,held-out,,,beethoven-woo59,3.71,4.667,5,4,67,3,11.335,1,0,4.705
+./mxl/11/26/QmTjtmaXgH4Xr81Xkdgs4YFRTwvuoXcoGagyjmez2pkuEJ.mxl,Gnossienne No. 3,6,3,held-out,ALARM,key_sig_size=0 (z-0.9); notes_per_quarter=3 (z-0.6); attacks_per_second=1.35 (z-1.7),satie-gnossienneno3,1.35,3,3,3,51,4,12.365,0,0,4.524
+./mxl/1/15/Qmbdw8eizXb9tc5HvoQkKgBeNqDWPgvLWcZuKu8coKyXJP.mxl,"Sonata in C Major, K 545: I",6,5,held-out,,,mozart-k545,4.8,6,5,3,53,3,6.595,0,0,4.825
+./mxl/15/46/QmXuaSpKjt2d9DGbnQ9wX6jnKJVcL2fAXkuKPM89ErM5Zf.mxl,Cantabile in Bb major B 84,6,5,held-out,,,chopin-cantabileinbbmajorb84,1.56,5.833,4,3,48,3,9.585,1,2,4.46
+./mxl/2/44/QmctmRvB7JG2SER77Ns1bRND7hebrG2NuXAwVKiJ7Wk4iJ.mxl,"Invention No. 6 in E, BWV 777",6,6,held-out,,,bwv-777,5.72,4.667,5,1,48,2,9.21,0,4,4.861
+./mxl/7/15/QmPd5AzwrvBgj6EwTiu1uvG5Hoc8X2GSxqyrDycqrCY6w4.mxl,"Invention No. 7 in E Minor, BWV 778",6,5,held-out,,,bwv-778,5.89,7.25,5,1,48,3,5.925,0,1,4.745
+./mxl/7/53/QmPXBnwYth7knzNKpr3uWgZqxfnQ7DLkhjj9Zo8tHQN8t3.mxl,"Invention No. 9 in F Minor, BWV 780",6,7,held-out,,,bwv-780,,6.333,5,1,48,4,15.28,0,4,5.042
+./mxl/16/22/QmYGyXrZr23KUSiWzFpzbmwbRQdk6Y35dpjVQU7PD5yg56.mxl,Waltz No 10 in G major Op 39,6,4,held-out,ALARM,shortest_depth=3 (z-1.0); key_sig_size=1 (z-0.2); has_tuplets=0 (z-0.5),brahms-op39-no10,3.85,4.667,3,3,51,4,6.65,0,1,4.694
+./mxl/0/4/Qma58kekAvv9TsecniR4ja9nDEv3GD4os1aDq9r8ZfzvD8.mxl,"Little Prelude in C Major, BWV 933",6,5,held-out,,,bwv-933,5.71,5.875,5,3,48,3,3.425,1,0,4.557
+./mxl/7/44/QmPtDiCNEdqSNMe1JDkfNEBrcwQtsWNo43WNCpa8X2gpct.mxl,"Little Prelude in D Major, BWV 936",6,5,held-out,,,bwv-936,4.15,5.25,4,2,50,3,9.65,0,2,4.817
+./mxl/5/57/QmfZTrMTJo9d1fYkQhrfRZYJ5T1qUAo6tyBo1CGDY6yiLm.mxl,"Sinfonia No. 2 in C Minor, BWV 788",7,5,held-out,ALARM,largest_chord=2 (z-0.5); has_tuplets=0 (z-0.5); attacks_per_second=missing (z-0.1),bwv-788,,4.25,5,2,48,3,9.405,0,3,4.796
+./mxl/12/56/QmUzEXuuy2xGqdaAD2Yv2sjPTg1TBHecppsHjr7cqidhxp.mxl,"Sinfonia No. 1 in C Major, BWV 787",7,5,held-out,ALARM,key_sig_size=0 (z-0.9); largest_chord=2 (z-0.5); accidentals_per_100=4.56 (z-0.3),bwv-787,,8.25,5,2,47,3,4.56,0,0,4.815
+content/scores/imported/musetrainer/scores/Chopin_-_Nocturne_Op_9_No_2_E_Flat_Major.mxl,"Nocturne in E flat Major, op. 9, no. 2",7,8,held-out,,,chopin-op9-no2,2.6,6,5,3,67,5,15.49,1,3,5.144
+./mxl/11/26/QmTjD7qrdZCaNYy77zdiBjVy3NKkS1bbyj4LvTyivfZTPW.mxl,"Waltz in D flat Major, op. 64, no. 1 (“Minute”)",7,6,held-out,,,chopin-op64-no1,6.16,3.667,3,4,65,7,6.55,1,5,4.63
+./mxl/16/9/QmYabfdUM8Lsp5UYzUaznfApPGC7uA2vShMR6xTFXtMGJ2.mxl,Impromptu in A flat Major (no. 2),7,7,held-out,,,schubert-impromptuinaflatmajorno2,,4,4,6,69,4,8.3,1,4,5.094
+./mxl/14/24/QmWHjTTbQJFLQHZ94V55odFCFxDY5n2sKoDBy9sSLBthdj.mxl,"Aria (from Goldberg Variations, BWV 988)",7,7,held-out,,,bwv-988,5.76,6,6,4,55,4,8.08,1,1,4.937
+./mxl/9/36/QmRpQq3Bg9fZA6hAhAjQQ7vrd986k5BqSenkWwE9U83V6x.mxl,Magnetic Rag,7,6,held-out,,,joplin-magneticrag,3.22,4.5,5,5,54,3,8.655,0,2,5.076
+./mxl/17/50/QmZwDV4StECtWiuytYnbuNyftu958qcTv726nQZjbtPbLe.mxl,Prelude - op 16 no 4 Eb minor,7,6,held-out,,,scriabin-op16-no4,1.26,5.167,4,4,45,3,5.415,1,6,4.586
+./mxl/2/16/QmcDjQjrg1tFYcDQGB8ZysNffHXaZWtwzf2TmUPe2Zc5YC.mxl,Prelude - op 16 no 3 Gb major,7,6,held-out,,,scriabin-op16-no3,1.53,4.25,4,4,57,5,4.685,1,6,4.717
+./mxl/1/19/Qmbfda5RowJHgjva4RjA34oPiZ38G1EjEEgomygxKcqXKi.mxl,"Prelude and Fugue in C Minor, BWV 847",7,7,held-out,,,bwv-847,6.68,8,6,4,48,3,8.9,0,3,4.806
+./mxl/17/26/QmZjvcr2jKehXfKzwznakmHNVAdwN2zX86NGYD7DHw4Qgz.mxl,Nocturne in E minor Op 72 No 1,8,7,held-out,,,chopin-op72-no1,3.01,4.75,6,4,65,4,18.47,1,1,5.094
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_875/xml_score.musicxml,"Prelude and Fugue in D Minor, BWV 875",8,6,held-out,ALARM,ledger_max=2 (z-0.6); key_sig_size=1 (z-0.2); has_tuplets=0 (z-0.5),bwv-875,,6,5,4,46,2,9.995,0,1,4.802
+./mxl/9/17/QmReAFwCejeyHAoBsegKGqiJQDXNkpP2qdvtsXqf6ot1Lz.mxl,"Sonata in C Minor, op. 10, no. 1: 2nd and 3rd movements",8,8,held-out,,,beethoven-op10-no1,3.12,3.25,7,6,63,4,13.73,1,3,5.322
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_854/xml_score.musicxml,"Prelude and Fugue in E Major, BWV 854",8,5,held-out,ALARM,notes_per_quarter=3.17 (z-0.5); ledger_max=2 (z-0.6); has_tuplets=0 (z-0.5),bwv-854,,3.167,4,3,43,2,12.91,0,4,4.873
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_856/xml_score.musicxml,"Prelude and Fugue in F Major, BWV 856",8,5,held-out,ALARM,largest_chord=2 (z-0.5); ledger_max=2 (z-0.6); key_sig_size=1 (z-0.2),bwv-856,,5.167,5,2,48,2,9.43,0,1,5.017
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_862/xml_score.musicxml,"Prelude and Fugue in A flat Major, BWV 862",8,5,held-out,ALARM,accidentals_per_100=3.55 (z-0.5); has_tuplets=0 (z-0.5); range_semitones=43 (z-0.2),bwv-862,,4.666,4,4,43,3,3.55,0,4,4.482
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_870/xml_score.musicxml,"Prelude and Fugue in C Major, BWV 870",8,6,held-out,ALARM,key_sig_size=0 (z-0.9); has_tuplets=0 (z-0.5); attacks_per_second=missing (z-0.1),bwv-870,,7.875,5,4,48,3,12.835,0,0,5.007
+./mxl/1/38/QmbqtVefsYhcUMf4pSjdRxPWtCTcEiXhQhuJxs2jUyJ9Du.mxl,"Sonata in F Minor, op. 2, no. 1: 3rd and 4th movements",8,6,held-out,ALARM,notes_per_quarter=2.67 (z-0.8),beethoven-op2-no1,4.46,2.666,4,5,54,3,8.49,1,4,4.95
+./mxl/4/25/QmeiQHfME19zDJRRtzk4cWwxtqY4wWMug36kMbrb97gu3S.mxl,"Ballade in D Minor, op. 10, no. 1",8,7,held-out,,,brahms-op10-no1,2.66,5.5,3,5,70,5,10.505,1,1,5.711
+./mxl/12/52/QmUxEb9UmpcoNvB3gAcoLJL91wPkD3EWyTd1QXnKZ2DkBb.mxl,Moment Musical - op 16 no 5 Db major,8,6,held-out,ALARM,pitch_entropy=4.16 (z-0.4); shortest_depth=3 (z-1.0); attacks_per_second=2.77 (z-0.7),rachmaninoff-op16-no5,2.77,5.75,3,5,58,5,7.895,1,5,4.157
+./mxl/15/16/QmXDXrpGtS2Qqd3THCYxcjaBrU53rHRfMMXLSLtN9wVhU1.mxl,Sonata in B minor K 27 (L 449),8,5,held-out,ALARM,largest_chord=2 (z-0.5); has_tuplets=0 (z-0.5); accidentals_per_100=5.68 (z-0.0),scarlatti-k27,6.06,5.333,4,2,49,3,5.685,0,2,4.632
+./mxl/6/21/QmNgyL9ZcLdpvKhcPFMh6N57ipjbVwjutxpxGWpfegvVmT.mxl,aus der Sammlung Op.82.,B,1,held-out,,,gurlitt-ausdersammlungop82,2.86,1.333,2,2,26,1,2.63,0,1,3.785
+./mxl/11/9/QmTa7YTepiTQEhLAhtQAVJjTCEVxC2rQVQ9Sd33k8NZK1p.mxl,Yankee Doodle,B,1,held-out,,,misctunes-yankeedoodle,,1.625,3,2,25,1,0,0,1,3.527
+./mxl/15/41/QmXR2bxfj7zhSi9mUHEa2SA63ktfM4kixXs2XjUHtixqwh.mxl,Lightly Row,B,B,held-out,,,unknown-lightlyrow,1.97,2,2,1,32,0,0,0,0,3.001
+./mxl/5/41/QmfRYEUhXHSj9a8yk5s4b5ErUsrQ3QkNNxgcJhfU65VjfE.mxl,Minuet,B,B,held-out,,,hook-minuet,,2.167,3,1,26,1,0,0,0,3.119
+./mxl/7/20/QmPF6A3wPLm5irBgVWgQCshAoZRDUN1f4rNfYZ4VLaDKmt.mxl,Mary Had A Little Lamb TWO HANDS,B,B,held-out,,,misctraditional-maryhadalittlelambtwohands,1.08,1.375,2,1,24,1,0,0,0,2.548
+./mxl/14/23/QmWhyQKnEU8xgcB4Tpaa12xZ5AiFmL4xeyoCtwt876ciiX.mxl,Row Row Row Your Boat,B,1,held-out,,,profbelltraditional-rowrowrowyourboat,,2.167,3,3,26,1,0,0,0,3.244
+./mxl/13/25/QmViUNieMPGGYJuPCjQj5AnP8a6uUUveHbEbkbXusEaeBm.mxl,Hallelujah (easy),B,B,held-out,,,pcchin-hallelujaheasy,1.34,1.666,3,2,23,2,1.085,0,0,3.399
+./mxl/9/5/QmR6EvqAfwKFoN3pUqZoaGcpjeniWGbqPM6G4VMxwVeEHo.mxl,Song without Words,1,1,held-out,,,spindler-songwithoutwords,2.85,2.667,3,1,25,2,6.415,0,0,3.696
+./mxl/2/28/QmckmojBrTAqVmHQDE4JBYkfHWPKSkofN1C1a18MrRy8KS.mxl,"German Dance in G Major, Hob. IX:22, no. 3",1,2,held-out,,,haydn-germandanceingmajorhobix22no3,2.65,2,3,1,45,3,4.535,0,1,4.017
+./mxl/10/20/QmSFQPhud8fyzntGn3N3YD33PrRYpSyVCg2633ZqtqgFFn.mxl,"Russian Folk Song (no. 3 from 10 National Airs with Variations, op. 107)",1,2,held-out,,,beethoven-op107-no3,,2.75,4,1,43,1,0,0,1,3.835
+./mxl/9/35/QmRoFSajCk4vvaM9QPDeKhwvWCPShtyDB95r2oT5iHc22Y.mxl,Gavotta in C major Op 81 No 3,1,B,held-out,,,hook-op81-no3,,2.5,3,1,26,0,0,0,0,3.128
+./mxl/17/3/QmZ4h7B9xHfCQ4FHw7ZzBDUkJm4ieRRA6ePMXrgKDK2Jkz.mxl,Waltz (No 13 from 24 Easy Pieces Op 39),1,2,held-out,,,kabalevsky-op39-no13,1.82,2,2,3,27,2,7.015,0,1,3.898
+./mxl/12/35/QmUoMdNqL5ZDFsFR2EqHF5ERBjvwW5MPYDiXzXZQ8faH5z.mxl,Minuet,1,3,held-out,ALARM,accidentals_per_100=9.18 (z+0.8); largest_chord=3 (z+0.3),lully-minuet,,1.834,3,3,44,1,9.185,0,1,4.113
+./mxl/14/48/QmWvqJ4DsjCW5sX4hvZVNUe4ZjChaWrFmrE6uDxFPQnwGa.mxl,Minuet in A minor,1,1,held-out,,,krieger-minuetinaminor,,0.666,3,2,39,1,1.925,0,0,3.832
+./mxl/12/10/QmUAYToMDU5C6wFwA5QXxdnqJR1X68bfFtXd9EQ74WTNsY.mxl,Ecossaise,1,4,held-out,ALARM,largest_chord=4 (z+1.1); accidentals_per_100=6.64 (z+0.2); range_semitones=36 (z-0.9),schubert-ecossaise,2.66,3.5,3,4,36,2,6.645,0,1,4.372
+./mxl/13/52/QmVx2ieHXtQbAG2Qnshq1BajHqV43zJPhoDJxWjSvYy7AB.mxl,Hob XVI15 mvt 3 Minuet,1,4,held-out,ALARM,accidentals_per_100=7.68 (z+0.4); largest_chord=3 (z+0.3); pitch_entropy=4.43 (z+0.1),haydn-hobxvi15mvt3minuet,3.07,3.667,4,3,40,3,7.685,0,1,4.434
+./mxl/5/14/QmfCULDvejZyShSRANTgFLGt4TudSaWNcuAfbV89RhdFPP.mxl,Menuet and Trio in G major K 1 (K 1e),1,3,held-out,ALARM,pitch_entropy=4.57 (z+0.4); has_tuplets=1 (z+1.9); shortest_depth=4 (z+0.1),mozart-k1,3.08,2.333,4,2,48,2,3.6,1,1,4.567
+./mxl/9/25/QmRipx42u9ytmDMa37VT6UEZvDJamYHxtrDPCWq4rp5fTe.mxl,"Écossaise in G Major, WoO 23",2,3,held-out,,,beethoven-woo23,4.66,4.833,4,2,38,1,0.625,0,1,3.883
+./mxl/11/50/QmTwGSN3sTvj2bqqJD3Vy8pzArHwkCNeRhz68GqveUyFJJ.mxl,Radioactive,2,4,held-out,ALARM,key_sig_size=3 (z+1.3); pitch_entropy=4.63 (z+0.5); ledger_max=4 (z+1.2),imaginedragons-radioactive,,3.25,4,3,55,4,0,0,3,4.63
+./mxl/13/51/QmVWM6wbvpu5KUmBMSMconXZsAM3AAay5LdxCNFzKpQt7g.mxl,Minuet in G minor,2,3,held-out,,,petzold-minuetingminor,2.56,2.167,4,3,39,1,6.44,0,2,4.457
+./mxl/4/19/Qmefzkf62X872kvmxmwSifjtzMULe6p9uA3PG2rAsYzCXs.mxl,Writing's on the Wall (from Spectre) (Sam Smith),2,6,held-out,ALARM,key_sig_size=4 (z+2.1); largest_chord=4 (z+1.1); shortest_depth=5 (z+1.3),samsmithjimmynapes-writingsonthewallfromspectresamsmith,2.22,4,5,4,56,4,3.37,0,4,4.499
+./mxl/17/26/QmZjFTWZhtvzmkVnXk5M7PGBgGBVP69KMs7ZhNXCUwJuqx.mxl,Dusty Blue,2,3,held-out,,,armstrong-dustyblue,,3.25,3,3,38,1,9,1,1,3.887
+./mxl/17/15/QmZdCAPv5TJshahGMxm9Agrg8gaqRsfcxAAxYBua71u5Tr.mxl,"Minuet in G Major, BWV Anh. 114",3,3,held-out,,,bwv-anh114,3.81,2.334,3,3,40,2,2.505,0,1,4.221
+./mxl/8/31/QmQm27B2vFqPqKFK6adJFpBA7zoKsYtzLXTTHZBV8y2Agp.mxl,"Musette in D Major, BWV Anh. 126",3,4,held-out,,,bwv-anh126,,4.5,4,1,43,2,3.46,0,2,4.354
+./mxl/12/16/QmUDoLwg9ihL1tkEX3EJZ4RoSSi8G4irTc9NuX5ozQCcTc.mxl,Sonatina in G Major: 1st movement,3,2,held-out,,,attwood-sonatinaingmajor1stmovement,,2.875,3,2,27,1,1.49,0,1,3.797
+build\pieces\shelf\invention-in-a-major-bwv-783.musicxml,Invention in A major (BWV 783),7,5,held-out,ALARM,largest_chord=1 (z-1.4); accidentals_per_100=5.19 (z-0.1); has_tuplets=0 (z-0.5),bwv-783,,5.5,4,1,46,3,5.19,0,3,4.781
+build\pieces\shelf\invention-in-b-flat-major-bwv-785.musicxml,Invention in B flat major (BWV 785),6,6,held-out,,,bwv-785,,8.75,5,2,46,2,3.37,0,2,4.749
+build\pieces\shelf\invention-in-d-minor-bwv-775.musicxml,Invention in D minor (BWV 775),5,5,held-out,,,bwv-775,,6.667,4,1,46,2,10.99,0,1,4.946
+build\pieces\shelf\la-candeur-op-100-no-1.musicxml,La candeur (Op. 100 No. 1),2,2,held-out,,,burgm-op100-no1,,2.75,3,3,37,2,2.145,0,0,4.138
+build\pieces\shelf\pastorale-op-100-no-3.musicxml,Pastorale (Op. 100 No. 3),2,3,held-out,,,burgm-op100-no3,3.17,3.333,3,4,48,4,2.12,0,1,3.704
+build\pieces\shelf\innocence-op-100-no-5.musicxml,Innocence (Op. 100 No. 5),2,5,held-out,ALARM,pitch_entropy=4.65 (z+0.5); range_semitones=55 (z+1.0); attacks_per_second=5.05 (z+0.8),burgm-op100-no5,5.05,4.333,4,3,55,3,4.795,0,1,4.653
+build\pieces\shelf\progres-op-100-no-6.musicxml,Progres (Op. 100 No. 6),3,3,held-out,,,burgm-op100-no6,4.81,3.375,4,2,40,3,6.615,0,0,4.515
+build\pieces\shelf\courant-limpide-op-100-no-7.musicxml,Courant limpide (Op. 100 No. 7),3,4,held-out,,,burgm-op100-no7,8.57,3.5,3,1,48,4,6.595,1,1,4.014
+build\pieces\shelf\la-gracieuse-op-100-no-8.musicxml,La gracieuse (Op. 100 No. 8),4,6,held-out,ALARM,notes_per_quarter=6.83 (z+1.7); pitch_entropy=4.62 (z+0.5); shortest_depth=5 (z+1.3),burgm-op100-no8,5.69,6.833,5,3,60,4,8.715,0,1,4.615
+build\pieces\shelf\la-chasse-op-100-no-9.musicxml,La chasse (Op. 100 No. 9),3,2,held-out,,,burgm-op100-no9,3.84,2.666,3,3,41,2,2.545,0,0,3.886
+build\pieces\shelf\tendre-fleur-op-100-no-10.musicxml,Tendre fleur (Op. 100 No. 10),2,3,held-out,,,burgm-op100-no10,4.91,3.125,3,2,38,3,3.415,0,2,4.089
+build\pieces\shelf\la-bergeronette-op-100-no-11.musicxml,La bergeronette (Op. 100 No. 11),3,4,held-out,,,burgm-op100-no11,5.21,4.5,4,3,43,4,4.125,0,0,4.299
+build\pieces\shelf\adieu-op-100-no-12.musicxml,Adieu (Op. 100 No. 12),4,4,held-out,,,burgm-op100-no12,7.91,3,3,4,48,4,4.465,1,0,4.262
+build\pieces\shelf\consolation-op-100-no-13.musicxml,Consolation (Op. 100 No. 13),3,2,held-out,,,burgm-op100-no13,4.83,2.75,3,3,36,2,7.155,0,0,3.884
+build\pieces\shelf\knecht-ruprecht-op-68-no-12.musicxml,Knecht Ruprecht (Op. 68 No. 12),6,6,held-out,,,schumann-op68-no12,5.56,6,4,4,48,3,9.38,0,0,4.927
+build\pieces\shelf\harvest-song-op-68-no-24.musicxml,Harvest song (Op. 68 No. 24),5,4,held-out,,,schumann-op68-no24,3.44,4,4,3,31,3,3.865,0,3,3.944
+build\pieces\shelf\piano-sonata-16-in-c-major-movement-1-k-545.musicxml,Piano Sonata 16 in C major - Movement 1 (K.545),6,4,held-out,ALARM,key_sig_size=0 (z-0.9); has_tuplets=0 (z-0.5); accidentals_per_100=5.3 (z-0.1),mozart-k545,,4,5,3,53,3,5.305,0,0,4.771
+build\pieces\shelf\sonatina-in-c-major-ii-andante-op-36-no-1.musicxml,"Sonatina in C major, II. Andante (Op. 36 No. 1)",3,4,held-out,,,clementi-op36-no1,,3.666,4,2,45,2,3.685,1,1,4.292
+build\pieces\shelf\sonatina-in-c-major-iii-vivace-op-36-no-1.musicxml,"Sonatina in C major, III. Vivace (Op. 36 No. 1)",3,3,held-out,,,clementi-op36-no1,,4.667,4,3,43,2,0.935,0,0,4.285
+build\pieces\shelf\sonatina-in-c-major-ii-allegretto-op-36-no-2.musicxml,"Sonatina in C major, II. Allegretto (Op. 36 No. 2)",4,3,held-out,,,clementi-op36-no2,,2.833,4,4,48,2,5.275,0,0,4.489
+build\pieces\shelf\sonatina-in-g-major-i-allegretto-op-36-no-2.musicxml,"Sonatina in G major, I. Allegretto (Op. 36 No. 2)",4,4,held-out,,,clementi-op36-no2,,5,4,3,48,2,4.435,0,1,4.55
+build\pieces\shelf\sonatina-in-g-major-iii-allegro-op-36-no-2.musicxml,"Sonatina in G major, III. Allegro (Op. 36 No. 2)",4,4,held-out,,,clementi-op36-no2,,4.667,4,3,43,2,5.01,0,1,4.299
+build\pieces\shelf\sonatina-in-c-major-iii-allegro-op-36-no-3.musicxml,"Sonatina in C major, III. Allegro (Op. 36 No. 3)",5,4,held-out,,,clementi-op36-no3,,6,4,3,41,3,1.835,0,0,4.455
+build\pieces\shelf\sonatina-in-c-major-i-spiritoso-op-36-no-3.musicxml,"Sonatina in C major, I. Spiritoso (Op. 36 No. 3)",5,4,held-out,,,clementi-op36-no3,,4.5,4,3,53,3,4.86,0,0,4.847
+build\pieces\shelf\sonatina-in-g-major-ii-un-poco-adagio-op-36-no-3.musicxml,"Sonatina in G major, II. Un poco adagio (Op. 36 No. 3)",5,2,held-out,ALARM,notes_per_quarter=2 (z-1.2); pitch_entropy=4.1 (z-0.5); accidentals_per_100=2.15 (z-0.8),clementi-op36-no3,,2,4,2,38,2,2.15,0,1,4.101
+build\pieces\shelf\sonatina-in-b-flat-major-ii-andante-con-espressione-op-36-no-4.musicxml,"Sonatina in B flat major, II. Andante con espressione (Op. 36 No. 4)",4,5,held-out,,,clementi-op36-no4,,6,5,2,52,2,4.995,0,2,4.4
+build\pieces\shelf\sonatina-in-f-major-i-con-spirito-op-36-no-4.musicxml,"Sonatina in F major, I. Con spirito (Op. 36 No. 4)",4,5,held-out,,,clementi-op36-no4,,4.333,4,3,53,3,7.26,0,1,4.673
+build\pieces\shelf\sonatina-in-f-major-iii-allegro-vivace-op-36-no-4.musicxml,"Sonatina in F major, III. Allegro vivace (Op. 36 No. 4)",4,6,held-out,ALARM,notes_per_quarter=6.5 (z+1.5); largest_chord=4 (z+1.1); pitch_entropy=4.59 (z+0.4),clementi-op36-no4,,6.5,5,4,52,3,3.44,1,1,4.591
+./mxl/0/13/QmacHkEMLbKiN7YagLdNjR2WPRvZAZW6ahjHjtPgvRNCdn.mxl,Little Prelude in C minor BWV 999,,5,provisional,,,,6.52,4,4,3,34,4,14.945,0,3,4.168
+./mxl/0/17/Qmaej71cef7XHxx5PtNX1rk3onqMdRojphJhurMPbmE41Z.mxl,Prelude in G minor Op 28 No 22 (Impatience),,8,provisional,,,,,6,4,5,66,5,18.155,0,2,5.269
+./mxl/0/19/QmafakcXebeu6x8zwL5bLNJVJ3jhyh6hjbUUA68Ukju1Mt.mxl,Sussex Carol,,2,provisional,,,,,2.166,3,3,31,1,0,0,1,3.975
+./mxl/0/2/Qma3izFKJZDpy3fdCgqwuU7DobXwpmciEMKHDDCyGo8FYS.mxl,Tournament Galop,,8,provisional,,,,6.58,7.5,4,4,78,6,12.265,1,3,5.241
+./mxl/0/22/QmaG4vR4XJuZCdBvYvUpCxaPW2kLmKuqbMXehuVCPcXcsX.mxl,Fur Elise,,3,provisional,,,,2.56,4.667,4,2,48,3,10.92,0,0,3.911
+./mxl/0/26/QmajKn3QRxvyFoz2BQmTiYzCW7GvKzQsDrjpbEzZuanrhg.mxl,Lascia ch'io pianga from Rinaldo,,3,provisional,,,,1.27,3,4,3,20,2,6.445,1,2,4.326
+./mxl/0/26/QmajS54M42icZ8tpMCSpgtRQkq4bLaBFM6WRsWzZXfrQtA.mxl,Partita II 1 Sinfonia BWV 826,,7,provisional,,,,6.39,4,5,4,48,8,9.65,1,3,4.806
+./mxl/0/26/QmajoqasFqLVpcBBrPNzbLLyfzNqbZD7A4k8uMa3WX1FhA.mxl,Blessed Assurance,,3,provisional,,,,,4.444,4,2,33,3,0.96,0,2,3.786
+./mxl/0/29/QmaKaMJzkFmZ1eSZcNJEFc3sBXqG8jEga7Q7Hq56dsADNx.mxl,HAVE YOURSELF A MERRY LITTLE CHRISTMAS.,,7,provisional,,,,2.08,4.5,4,8,58,4,11.69,1,0,5.314
+./mxl/0/30/QmaLVzjqDHcFnwFupNyDw4SL2Nb62LowJiJVs7WAsmgVYv.mxl,The St Louis rag,,8,provisional,,,,5.4,9,5,4,62,4,12.61,1,0,5.125
+./mxl/0/32/QmaMpgrTyNA91orJSn7i1ia4ehryvNfmEj2tpkVZWHZyYS.mxl,Prince of Denmark's March,,1,provisional,,,,3.15,4,4,1,21,1,0.595,0,2,2.908
+./mxl/0/35/QmaoBQBMEzuL3sLiES14SR6LMiVcMxA41ytaiWW1kDTzZ1.mxl,Sonata in G major K 431 L 83,,4,provisional,,,,6.47,4,3,4,55,3,2.045,1,1,4.535
+./mxl/0/40/QmarBgiCsy7fz2VooAx3sZwzNSqnqYzg52D1BRVazz6bYX.mxl,Beauty and the Beast,,B,provisional,,,,1.26,2,3,1,26,1,0,0,0,3.212
+./mxl/0/41/QmaRXYTm6evibs9z12kxir9gD1raU6MKuDLdDU89RuujRK.mxl,Sebben Crudele,,5,provisional,,,,2.88,4,4,3,23,3,12.635,0,3,4.294
+./mxl/0/41/QmaRsE5c9hRzcbbzPKArb2pXW1FXR7qPG4VzF1iTQpteEn.mxl,Etude in C minor Op 25 No 12,,5,provisional,,,,,1.5,2,4,56,5,13.47,0,3,4.756
+./mxl/0/44/QmatNEo3Bqbyy5mghPTJeoUc1KsYn6UoqN14N8WadpQ17c.mxl,Sonatina in C major Op 34  No 1 - mvt 3 Rondo,,4,provisional,,,,3.65,4,4,3,48,6,3.16,0,0,4.339
+./mxl/0/48/QmavUdj7PrGU19iDsZxPcUsmHWUfELrYVAcifUueqAKoCM.mxl,"Keyboard Sonata in G minor, K.4",,6,provisional,,,,6.54,6,4,4,46,2,12.735,0,2,4.86
+./mxl/0/48/Qmavfs15JxCqRndc5j8qHWg3mSqHdiC9i5H1TzMoiyKpnK.mxl,Cockles and Mussels,,1,provisional,,,,,2,3,3,20,1,0,0,0,3.454
+./mxl/0/48/QmavsLDZgT7TEKkRLXknVMVcFfw9nZWnxWJN5JbnXQZc6f.mxl,"Piano Sonata, Op.10",,8,provisional,,,,3.66,6.333,4,5,72,5,18.6,1,3,5.659
+./mxl/0/48/Qmavwniavih7ELK7Z2pDwpCXoiKPhieynVrY8muxBtuf64.mxl,We Wish You a Merry Christmas,,5,provisional,,,,4.3,3.333,5,4,72,8,1.73,0,2,4.791
+./mxl/0/50/QmawJ7uHzgwB6RUqi63x81eeuUeGvwppDdRDxJSmVEhW1F.mxl,Valse romantique L 71,,7,provisional,,,,3.39,3.667,3,4,78,5,11.145,1,4,5.327
+./mxl/0/50/QmawJtKKyBddS58FH65LopHpdcDvruq35FLh5J7i5MV2Wt.mxl,Harmony Club Waltz,,5,provisional,,,,3.19,4,3,4,63,4,5.305,0,2,5.008
+./mxl/0/51/QmaWUmXP6sdMEyaCacAQZZQUVykcAn7cCqVqueAbwz9NsB.mxl,Toccata and Fugue for Organ (BWV 565) in D minor arr. Busoni,,8,provisional,,,,5.19,7,6,6,60,5,10.98,1,1,5.027
+./mxl/0/9/QmaaP5iEA7EKyMpD2padbK96VYihBpWPYmQk4ohCW2JTm5.mxl,Fur Elise,,6,provisional,,,,4.53,4.667,5,4,67,3,11,1,0,4.702
+./mxl/0/9/QmaaSoCEo4BaH323RKr9AUsKRon8axis5849SGNamampGS.mxl,Theme From Schindler's List,,5,provisional,,,,1.79,4,4,4,55,4,5.46,0,2,4.492
+./mxl/1/10/QmbAYiTUovJRsnoouG6MqVAye1bTzSxRWkoirdscKA7UJE.mxl,"Piano Sonata No.14 in C# minor, Op.27/2 (Moonlight)",,6,provisional,,,,3.27,4.5,4,3,46,5,9.995,1,4,4.494
+./mxl/1/12/QmbBTmMd4ErdB5bowgQ2sFvj58KXP1n1ckhKWAHHwa9Ypq.mxl,Water in the Moonlight,,6,provisional,,,,,4.667,4,4,53,5,14.065,1,2,4.623
+./mxl/1/16/QmbDbAfxTnqNEhXfq245iVvujJYrCkNTsnYBx8eQ7jnBRE.mxl,Sonata in F Major K6 L479,,7,provisional,,,,7.33,7.333,5,4,49,2,8.2,1,1,4.874
+./mxl/1/17/QmbeTPuLm3FqX4JNzC8Wc78rKLb2iFU7g8AKgtWFPkSCAZ.mxl,The Easy Winners (A Rag Time Two Step),,7,provisional,,,,3.97,8.5,4,4,53,3,7.6,0,1,4.993
+./mxl/1/17/QmbeUDXEYwzWzcPvvsppmpyUkMWKeGp4HHHx1xfsrhL7UZ.mxl,Minuet and Trio D 41 No 21,,3,provisional,,,,,2.833,4,3,47,3,0.65,0,2,4.245
+./mxl/1/2/Qmb3gznnMduJeN7hzR9sAbqNva61AUuraFE9C3cuwYp2xZ.mxl,I Saw Three Ships,,1,provisional,,,,,4,4,1,31,0,0,0,1,3.152
+./mxl/1/20/QmbFt6yc1EUxZvqTVUg7xQY531BbkUcxn8uL3VYrB2uwjB.mxl,"The Well-Tempered Clavier, Book 1, BWV 846-869 (Complete)",,4,provisional,,,,,4.5,4,3,45,3,2.045,0,0,4.406
+./mxl/1/22/QmbGkTUZDmd4LJxmNckDTj5knX5EE8sVGupvzyM4LZJqPC.mxl,Fantasia and Fugue in A minor BWV 944,,7,provisional,,,,8.51,6.667,5,5,48,3,10.695,0,0,4.995
+./mxl/1/22/QmbGudm6JgoWnHfyAHN6FkUhrVe38XyMkfmzXJLyczWSWh.mxl,Silent Night,,1,provisional,,,,1.62,1.667,3,1,36,1,0,0,0,3.807
+./mxl/1/24/QmbHVHcPydUcehdVr3wqeAr7x4gBws9UEf1j3wHBBZqW7m.mxl,Raindrops keep falling on my head,,2,provisional,,,,,2.25,3,3,30,1,1.715,0,1,3.931
+./mxl/1/26/QmbjNvkeAsVhrMMhK6QgTPcc8SRtJdSVqMm6u1jsvNYZ7N.mxl,Wonderful Words of Life,,2,provisional,,,,,5.334,3,2,33,2,0,0,1,3.358
+./mxl/1/27/QmbJXNcUfabd1RNA4zq9VbxhLEUkgdJxTAzjZMPugdho5X.mxl,The Entertainer arr. Onac,,2,provisional,,,,1.91,2.5,3,1,45,3,7.085,0,0,4.22
+./mxl/1/29/QmbK4YvxizaQkvp5hL26LkU9R9HXGMnGMiv8c6HtBYy9ZM.mxl,"Slumber Song, Guitar Album, Op. 27",,3,provisional,,,,2.7,5.334,3,4,27,3,4.14,0,0,3.847
+./mxl/1/29/QmbK668qNAyakCxE6yt6SBtRjpK4DoemKykdxujS9Mf9CY.mxl,Do You Hear the People Sing,,4,provisional,,,,2.47,4,4,4,48,3,1.43,1,1,4.705
+./mxl/1/31/Qmbm31yzqfv42Zrv9xeiH6nnDAe6LDisUNwb2ym5HNku3r.mxl,"6 Concert Etudes after Paganini Caprices, Op.10",,8,provisional,,,,3.7,12.5,5,9,72,5,15.795,1,3,5.545
+./mxl/1/33/Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT.mxl,Just A Closer Walk With Thee,,B,provisional,,,,,1,2,1,28,0,3.125,0,0,3.41
+./mxl/1/38/QmbqmQjEVxiyCmmdmGPBAMDYTSDsfDFxgS8HdQe7kgFm6v.mxl,Piano Piece - op 37 no 6 in C major,,4,provisional,,,,3.05,5.667,5,3,41,3,6.235,0,0,4.236
+./mxl/1/38/QmbqpSiNFv6aoPjWxU5osb2LiJPAGRm6qDL5UnagkjxkgS.mxl,Happy Birthday to You,,1,provisional,,,,,2.167,3,3,32,1,1.85,0,0,3.794
+./mxl/1/39/QmbQobrJEBs4ejDtzbbveYRBYgJmczQxL4Fqp6U7SdJR2J.mxl,Christ Was Born on Christmas Day,,2,provisional,,,,2.59,5,3,2,26,1,0,0,1,3.588
+./mxl/1/40/Qmbr5wFrt5dnLrAUky3VCNfCrCQLG9bPTTWMqdPrNLU9dd.mxl,America the Beautiful,,4,provisional,,,,,4,3,2,33,2,2.945,0,5,4.002
+./mxl/1/40/QmbrdXPYHECGyFgbkL8adrnPH8qec9VqGVxxjjTPDyXzGS.mxl,School of Velocity Op 299 No 9,,6,provisional,,,,,6,4,4,65,4,6.625,0,0,5.173
+./mxl/1/41/QmbRwoKn5qtop14tjmgEURzkzgFbhVQsdN7HY2pUBAx35a.mxl,Love Me Like You Used To,,4,provisional,,,,1.48,3.75,4,3,48,2,18.94,0,0,4.403
+./mxl/1/44/QmbtqGpbZ6U9DECtd1YBPf2fXQP2kPyRnEU2A8odVEfzb1.mxl,Sonata in A Kp 323,,4,provisional,,,,,2.667,3,2,45,3,5.5,0,3,4.443
+./mxl/1/45/QmbTopuMgbQW17EXKEVAKhk4cPnB2JTKrkjUgXccKjFheF.mxl,12 Valses Nobles D.969,,5,provisional,,,,3.04,4,3,3,49,4,6.495,0,3,4.571
+./mxl/1/46/Qmbu31rSDnwndReghPNC2EBocGeKXZP1qZchns1zp8Xnbh.mxl,Hes a Pirate (Pirates of the Caribbean),,5,provisional,,,,6.07,4.333,4,4,65,6,1.48,0,1,4.838
+./mxl/1/46/QmbugpTc8Mn4LijK68jAwSsJr966ZNuHdQQJcgsa77DR3W.mxl,Visions fugitives Op 22 No 6 Con Elegenza  No 10 Ridicolosamente,,7,provisional,,,,3.77,6,5,3,46,4,18.91,0,5,3.995
+./mxl/1/48/QmbvNgJewmJ4MEB9seLm9ymiQXoahKWafxeT5F6cfsCs2x.mxl,Album for the Young. Op. 68. No 8,,2,provisional,,,,3.83,4,3,3,29,2,3.86,0,0,3.823
+./mxl/1/50/QmbwFzQgTqJqpUDNdD6t2JshPsrC8FbQxaceSsCeDBiB4y.mxl,Le Piccadilly,,6,provisional,,,,4.04,7.5,4,4,63,5,3.855,0,2,4.827
+./mxl/1/51/QmbWGz7ejcyNAKP9exVeBeFpvDttuow7Z3g1BAxbBLdmc1.mxl,We Three Kings of Orient Are,,3,provisional,,,,2.02,4,4,3,39,2,4.055,0,1,4.299
+./mxl/1/51/QmbWhh9XHvZUR6njYZgXiDqgUQtHouDJoJKxQkszHJrcKF.mxl,A Dream is a Wish Your Heart Makes,,3,provisional,,,,,1.25,2,2,33,1,15.315,0,1,4.357
+./mxl/1/52/Qmbx2G4kGQ45oPi4qVqSYnGQ1s1LgVwhfYsCDhbPpDSUpN.mxl,"160 kurze Ubungen, Op.821",,4,provisional,,,,7.05,7.5,4,3,36,2,0.32,0,0,3.911
+./mxl/1/55/QmbY56iawPVEWk3XuKdVhRkc6isHwhHuAoMCuPAT4wP9Ye.mxl,Turkey in the Straw,,4,provisional,,,,5.67,3.25,4,4,48,2,5.075,0,0,4.273
+./mxl/1/55/QmbYdGXCffhnEdmatVhyiUeez5UUx15hGojRcur5299Boi.mxl,Little Prelude in C minor BWV 999,,5,provisional,,,,,4,4,3,34,3,11.75,0,3,4.154
+./mxl/1/57/QmbZaNDzKXjgR2Q5dZ7LnwKMZPcSqAQcoefjjLU9sTYS7M.mxl,"Swing Low, Sweet Chariot",,B,provisional,,,,,2,3,1,14,1,0.795,0,1,2.721
+./mxl/1/57/QmbZwfRXiu55xZEnvc4VQEF5HRQKAvF4wyckFsm78UpedQ.mxl,Jingle Bells!,,3,provisional,,,,4.11,3.5,4,2,48,2,0,0,1,3.922
+./mxl/1/9/QmbaGWkrzj6fG1XeGZxQWAzRdQmqV8xJJwpYyyQHBK1uRY.mxl,The Pink Panther,,5,provisional,,,,1.35,1.25,4,2,28,1,39.19,1,3,4.225
+./mxl/10/0/QmS1FmNRJdaZjyCpjGZvnWr8GxSZeosRjnq11Tk6Eoh7eA.mxl,Study in G minor No 50 from Die Kunst der Fingerfertigkeit The art of finger dexterity Op 740,,8,provisional,,,,11.77,6,4,5,79,9,15.2,0,2,5.687
+./mxl/10/0/QmS1cheYT3GeeH7RMZLYkTNCr58vj54Z5uRvZmFW97Tkn7.mxl,Sonata - K 526 C minor,,6,provisional,,,,6.34,3,6,2,55,9,10.755,1,2,4.774
+./mxl/10/1/QmS2enG17nJVrbMvvCcHDW9wAN8nLSV1CPMmtghD7SZFVQ.mxl,Fly Me To The Moon,,5,provisional,,,,,2.625,2,5,40,3,17.44,0,0,4.787
+./mxl/10/13/QmSccT9YmWqoJ6HFjVRnHfyFwC3fNso59ukB2P2RmH2g9r.mxl,Weeping Willow,,7,provisional,,,,,9,4,4,51,3,10.045,0,1,5.036
+./mxl/10/13/QmSczokV1j5DT3UMtm4YQG2ZGvU4UsC8bCA9kbeAMtoXW4.mxl,Lohengrin Prelude to Act I,,7,provisional,,,,1.08,4.25,5,4,67,3,13.935,1,3,5.329
+./mxl/10/14/QmSCFycf8NBkcyhemv2X2ZVVVucp1v6sG1Emook2w7Qo1K.mxl,"Minuet in D Minor, BWV Anh. 132",,4,provisional,,,,,2.667,4,2,44,3,8.84,0,1,4.62
+./mxl/10/15/QmSd8iw4LSxdLT5B28Fv2jg9QeLdcY7BQT2zsoeNxqqSDW.mxl,Take five,,5,provisional,,,,3.64,3,4,3,37,2,5.55,0,6,4.164
+./mxl/10/18/QmSEWJzcpsLMznkW4XGW2e6UbBUZt2BMhgELCyoHCWn6Ad.mxl,"50 Exercises progressifs dans tous les tons majeurs et mineurs, Op.840",,5,provisional,,,,5.69,5.5,4,3,52,4,4.45,1,1,4.77
+./mxl/10/19/QmSfWTFmZQMvojLFLuL7dfUmmnVnhbNnhx5vKd7vbFJZYW.mxl,Party Time,,1,provisional,,,,6.67,2.125,3,1,36,2,0,0,0,3.618
+./mxl/10/2/QmS3hx3h71TRHBusV5PzWTZeCa727depEF2TSwRDHbotcV.mxl,Lo ballo dellIntorcia,,5,provisional,,,,4.89,7,5,3,43,3,4.595,0,1,4.449
+./mxl/10/20/QmSFqZSVAYQTZ5wsk3MFDMWL5WfRgbddC6gzPQLa1RzbzY.mxl,The Returning Hunter (No 2 from Eskimos Op 64),,5,provisional,,,,4.87,3.5,4,4,62,3,9.13,1,1,4.945
+./mxl/10/23/QmSham5oUp4k6FZ8yeduMkJyfgvWCZh3RVC1Wswsy3MCY5.mxl,In the hall of the mountain king arr. Bastien,,5,provisional,,,,3.21,2.75,4,4,62,3,10.375,0,0,4.972
+./mxl/10/25/QmSi4QSQ9CCi1VQZCwBhAtx6sj738PouciqdpAtFN9iG9c.mxl,"Come, Thou Almighty King",,2,provisional,,,,,4,3,3,33,2,0,0,1,3.597
+./mxl/10/27/QmSJebudN4xms6Xa2yr5Z8Gi6oe8HrxnuiHVTBfjg3CrwB.mxl,"Have Thine Own Way, Lord!",,2,provisional,,,,1.17,2.222,2,2,30,1,2.085,0,3,3.726
+./mxl/10/28/QmSkpv88AXBwfQVSki4Lja1uAi1SiabTExoBT7fJmkVgyd.mxl,"Invention No. 15 in B Minor, BWV 786",,5,provisional,,,,4.45,5.375,4,1,47,2,9.17,0,2,4.966
+./mxl/10/29/QmSKtqFdY6nBVxGGpGmMY3ris5sing2p3ih139vDjQs73S.mxl,Palm Leaf Rag,,7,provisional,,,,3.37,8,4,4,53,3,8.655,0,2,5.027
+./mxl/10/30/QmSLpwuAGvCouQPv2tcuEYxL3opfuVnpD25jnapY9NY7Wk.mxl,O SOLE MIO.,,1,provisional,,,,,1.25,3,3,19,2,3.82,0,1,3.402
+./mxl/10/37/QmSPgyoaikeBuhxLLbp6LevuJLjj6KXNPwsJQaD54boxbE.mxl,Solfeggietto in C minor Wq 1172,,6,provisional,,,,7.71,3.75,4,2,52,3,11.68,0,3,4.802
+./mxl/10/37/QmSPmyZVe81hgJcKmYDyadC9svaiGGBQVFbcwyNgxSBHcZ.mxl,Left Behind,,5,provisional,,,,2.49,3.25,4,2,63,3,5.04,0,3,5.049
+./mxl/10/38/QmSqoPiQaeUegVC4PYWSfP7Ru6tCLoc64zdDZyTb6pfqNi.mxl,"160 kurze Ubungen, Op.821",,6,provisional,,,,11.34,11,5,2,39,4,0,0,1,3.899
+./mxl/10/43/QmSSZAHjALT7zf8hpZpLFXaBHB9ytuBETs4QbhvYDFSAaa.mxl,"Minuet in G Major, K 1e",,3,provisional,,,,4.79,2.333,4,2,48,2,3.03,1,1,4.576
+./mxl/10/44/QmStycC8F8rRhRhqsgL2PCMWH2y7h4eVyDicHbzS6jce99.mxl,Heart and Soul,,3,provisional,,,,,3.75,4,4,29,2,0,1,0,4.501
+./mxl/10/45/QmST6G67gqh7Zt2RK6a2N5vZmWePxzbhttqf2RmuFQSVqj.mxl,Drink to Me Only With Thine Eyes,,3,provisional,,,,1.68,5.904,3,2,24,8,0,0,3,3.428
+./mxl/10/45/QmSTdxMvMqwFtoxTnEnLjWmd8ymDZEWdfNVX3gmuEfdost.mxl,Sonatina in A minor Op 136 No 4 - mvt 4 Vivace,,4,provisional,,,,4.1,2.5,3,3,46,2,10.415,0,0,4.633
+./mxl/10/47/QmSU2sZYSBSygK3ekE7pHrFyYEPPGSZjzm7zASX4jsCzM6.mxl,Jesus Christ is Risen Today,,2,provisional,,,,,4,3,2,33,1,1.87,0,0,3.928
+./mxl/10/47/QmSUDHGgsU29t731Aar6xWBZnkp2QLrs6mPQWMk8uPsiNh.mxl,"Prélude, op. 3, no. 2",,8,provisional,,,,3.2,5.5,3,4,70,5,16.775,1,4,5.282
+./mxl/10/47/QmSUYJzmhovQkP8eK86QF8yi9pkN7k4jw371jrQexaNv93.mxl,Nothing But the Blood of Jesus,,B,provisional,,,,1.48,2.25,4,2,15,2,0,0,1,3.095
+./mxl/10/50/QmSwhkg7TzeRQrM4DDfN3gfPVPGqVeWdqtYahW7se7xK9H.mxl,Unto us is Born a Son,,2,provisional,,,,2,4,3,2,34,2,0,0,2,3.928
+./mxl/10/51/QmSWXZfDRB7aBd3rD3eRa5tMR4oP7SmxcPruY89nnZ8NBz.mxl,Album for the Young Op 68 No 18,,2,provisional,,,,3.42,3.666,3,2,36,3,1.77,0,0,4.155
+./mxl/10/54/QmSyKy9tQzT1b71Lg5BF23cwcS1UpPbsePYDN78yzZt4aq.mxl,Freddie Freeloader,,2,provisional,,,,0.65,1.25,3,2,18,2,18.61,0,2,3.692
+./mxl/10/54/QmSyWcw2w5kLWB2VDfM9a9vVvNKD7mPrXQmYAsd1xCwM1F.mxl,Sonata in G minor K 35,,5,provisional,,,,5.62,4.875,4,2,46,2,8.41,0,2,4.738
+./mxl/10/54/QmSyodLkPUFGtnQwYZk41mHh3HkaLCbdceZ2LFKvvLXKBL.mxl,"Piano Sonata No. 1 in C Major, K. 279 1st movement",,6,provisional,,,,6.02,4.75,5,4,57,3,8.735,1,0,4.987
+./mxl/10/57/QmSZvFxemdgARWvSnuamy1ZQPAN4RpdiFbeB19TTaUqee6.mxl,Glory Be to the Father,,2,provisional,,,,1.19,2,3,2,31,2,3.57,0,3,3.708
+./mxl/10/6/QmS7TExDFFHBuTy6SdrpzZv1M7UHUUrwKMQiGnb6C1KQUC.mxl,How Firm A Foundation,,2,provisional,,,,,3,2,3,31,2,0,0,1,3.647
+./mxl/11/1/QmT2Fednhnpvwp5DLd9xYTLnufWm4AT1Aqk5BVn4kZuoXs.mxl,"Sonata in B flat Major, K 570: 1st movement",,5,provisional,,,,5.34,3,5,3,55,3,12.135,0,2,4.929
+./mxl/11/15/QmTdNYvnAAcCpsLYHBiHVK13kCpsbjsD3biNASJjGEzqAF.mxl,Nobody Knows the Trouble I've Seen,,4,provisional,,,,2.69,3,5,4,36,3,4.235,1,1,4.474
+./mxl/11/15/QmTdg5xHzNAL4Z5v3tpSsj9sjA76csVEf3dD6fHjrpct3F.mxl,"Piano Sonata No.16 in C major, K.545",,5,provisional,,,,6.78,4,5,3,53,4,4.995,0,0,4.77
+./mxl/11/16/QmTDBFbPLYF24o8ihUjDJ5XUYpstJj2VexoBQovTLXXNsS.mxl,Minuet in C major K 1f,,3,provisional,,,,3.85,3.333,4,2,43,2,1.99,0,0,4.424
+./mxl/11/16/QmTDP6qSVY3d2trWGcrbHVY5iCk8FzYsyR8ytsxJsb5WzW.mxl,Funiculi - Funicula,,2,provisional,,,,,1.333,3,2,31,1,1.995,0,3,3.893
+./mxl/11/18/QmTEJEKQA3BoBiMBmAqhmes4QvaP6cGC5ZAL1Ao8X15ccu.mxl,Magnetic Rag,,6,provisional,,,,7.35,4.5,5,4,54,3,8.63,0,2,5.072
+./mxl/11/2/QmT34q9w9QBs4cQ3NsMV7ku2ssXXLtr8CB741M3E6PVEd9.mxl,The Strenuous Life - A Ragtime Two Step,,7,provisional,,,,3.7,8.5,4,4,60,4,7.72,0,0,5.13
+./mxl/11/24/QmTHVhMGxTbMdmcnvPf7cZVrixf9Yrg1pVTGnC7X7cZha9.mxl,How Great Thou Art,,4,provisional,,,,3.08,4,4,3,53,4,1.42,0,1,4.517
+./mxl/11/25/QmTi4nCKDgusXctqQNPh5HUtVucwYY3hoP25UBmAZ5fDoa.mxl,We Gather Together,,2,provisional,,,,,4,3,2,33,2,1.045,0,0,3.91
+./mxl/11/26/QmTjSfWYErf2odme6Sg7BBjcjvQMJjRQzWMyMKG3vrxxvd.mxl,Praeludium III BWV 847,,7,provisional,,,,4.02,6.25,4,4,48,2,14.91,0,3,4.941
+./mxl/11/26/QmTjiLGXNinictMHmYdBbgoKnt3cJ2KbjsHFpFx6xkkoXf.mxl,Menuet sur le nom dHaydn in G major,,6,provisional,,,,1.94,3.833,3,6,57,3,19.74,0,0,5.001
+./mxl/11/27/QmTJENYHPL17Yj2pnVcVmdeMC43hVHWP9Vb5sC47i579Ya.mxl,Scarborough Fair,,1,provisional,,,,,1.667,3,1,26,1,10.035,0,0,3.676
+./mxl/11/28/QmTk2BviXAGX8NPpECergw3ihn5ef4KbmrZY8jwHiRj3Bg.mxl,It is Well with My Soul (Philip P. Bliss),,3,provisional,,,,,3,3,2,31,2,1.78,0,5,3.964
+./mxl/11/29/QmTKdPpR2beDZ5Uij5uhhyVnHNR8huLrF4w1Y8FLoV1Gtd.mxl,The Arrival of the Queen of Sheeba,,4,provisional,,,,,5.5,4,4,39,3,2.26,0,2,4.168
+./mxl/11/33/QmTntdv2DhJ1tp4YJU8YYPYbWfJKntb2xwQVXz8a6vwtn9.mxl,Short and Sweet,,6,provisional,,,,2.11,1.875,4,5,50,2,14.025,0,4,5.034
+./mxl/11/39/QmTQSWcrdVtXgW3eCvoHM5i33DKm3kFscQ2a2sb37AYEvh.mxl,Prelude in D minor Op 40 No3,,5,provisional,,,,1.68,3.667,3,3,46,2,17.69,0,1,4.72
+./mxl/11/4/QmT5Jn5VxKbNgHL8QYYXGCdpxWH4aHXTNJVwuuC4zKm1y4.mxl,Bella Ciao,,4,provisional,,,,4.08,5,4,4,55,3,2.58,0,1,4.404
+./mxl/11/41/QmTRPZhYJzrAhjguwW93X9djKmqXbW4je5uv15yoRf7GBu.mxl,Moment Musical - op 16 no 4 E minor,,8,provisional,,,,10.63,10.5,5,4,70,4,17.675,1,1,5.208
+./mxl/11/42/QmTsVxUk3GDBu8QjtjKHoNLgPv4jWTdSaM92u74yhMxryX.mxl,Round Dance 1 No 6 from For Children 2 BB 53 Sz 42,,3,provisional,,,,1.52,2.5,3,3,31,2,9.64,0,1,4.058
+./mxl/11/43/QmTStqcNWoVNn8R2HhuUiaodhwqfoaiH6otkY4uU68bCPP.mxl,"Jesu, Joy of Man’s Desiring",,7,provisional,,,,4.57,7.75,5,6,58,5,2.695,1,1,4.659
+./mxl/11/44/QmTtLk5hBKbrtBUsPhwxD2zZGssq86zXAKoDgJiXJLuiLz.mxl,Hallowe'en Dance,,6,provisional,,,,4.6,6,5,4,57,3,7.13,0,2,4.938
+./mxl/11/44/QmTtdJCiUBma2gSHVosJGMe1v5buW1rwpPD1UaKZ3GgscW.mxl,French Suite No 2 BWV 813 - mvt 4 Air,,6,provisional,,,,5.85,3.75,5,3,48,2,10.21,0,3,4.912
+./mxl/11/48/QmTvJh1vZRJXz5St8CwcgBRSUvuw84jPyMCksH31x6shJf.mxl,"Capriccio sopra la lontananza del fratello dilettissimo, BWV 992: 4th, 5th, and 6th movements",,6,provisional,,,,,4.5,4,5,48,3,11.255,0,2,4.842
+./mxl/11/5/QmT6K7ER9YD8LgZpsR7NhGM69UpFWwosuv3tdCd5oe8r8p.mxl,Prelude in G major Op 28 no 3,,4,provisional,,,,,5,4,4,62,2,2.525,0,1,4.268
+./mxl/11/50/QmTweiRjwpiqZhaDuKLrPBLeAQX8yd7BHjCeCFx2jg7DRN.mxl,12th Street Rag,,4,provisional,,,,,5,4,4,42,2,5.41,0,0,4.361
+./mxl/11/51/QmTWY2phdiw6hycPX7Yotyyn2myzbNm7rnPaJB1VbHzuPv.mxl,"Prelude and Fugue in B Major, BWV 868",,6,provisional,,,,,6.5,4,3,46,3,6.465,0,5,4.78
+./mxl/11/52/QmTxZEKxW5oQWXhxqmTvs9mpFNBxaoSaapqaZsApQi2xWz.mxl,"Minuet in D Minor, BWV Anh. 132",,4,provisional,,,,,2.667,5,1,44,1,9.71,0,1,4.615
+./mxl/11/53/QmTXubLH9z9fbDxvB3v1dxpudTHiuYcp4nGdvSx4o33zZm.mxl,The Augustan Club Waltzes,,5,provisional,,,,2.44,4.333,3,4,63,5,5.38,0,2,4.93
+./mxl/11/54/QmTyJP8L4pYMJhNSfVZcQRqHDsva878sPAVGaamsTZ3bwF.mxl,Praeludium III BWV 847,,7,provisional,,,,4.05,6.25,4,4,48,2,14.705,0,3,4.929
+./mxl/11/57/QmTZNZKbmjups1k5dXfBz5V65QP1FMRnfsSFpfyUwutStj.mxl,"Allegro in B♭, K. 3",,3,provisional,,,,3.02,3,4,2,32,2,3.875,0,2,4.162
+./mxl/11/57/QmTZx5tHXaGszNQLxjJhhwFeBp36i4BuF2vat8UZJemfQY.mxl,Do You Want to Build a Snowman?,,6,provisional,,,,3.29,1.875,4,4,79,8,7.695,0,3,4.851
+./mxl/11/7/QmT8tyVYRu3rHA4RF6EXxGoHcW6SCcjWTB9C5vtag9tVUD.mxl,Russian Dance - op 40 no 10 A minor,,2,provisional,,,,,2,3,2,36,2,5.08,0,1,3.632
+./mxl/11/8/QmT9XDNSgFWba7QNTGdYHQe85DDX9vioPVZPt2kTxo7Aik.mxl,"Keyboard Sonata in B minor, K.87",,5,provisional,,,,,4.333,3,3,48,4,10.63,0,2,4.58
+./mxl/12/0/QmU1nszC4coRA3qvzTpZW7MeKGb5D7P1GqvcGA6ZVr4uXd.mxl,The Legend of Zelda: Main Theme,,7,provisional,,,,4.22,4.5,5,4,63,6,6.595,1,5,5.231
+./mxl/12/11/QmUbTsKid7RNsExQmDuXQ9ndY654ANe9sFbgaWLghDa242.mxl,Down by the Riverside,,B,provisional,,,,,1.5,3,1,12,1,1.77,0,1,2.729
+./mxl/12/13/QmUc8BQMT7v4hRdkJpUxGixmLgYe5MnZoyW5J2WBztEsFy.mxl,"La fille aux cheveux de lin (No. 8 from Préludes, Book 1)",,5,provisional,,,,2.29,3,4,4,39,4,4.985,1,4,4.937
+./mxl/12/15/QmUdVExcBhmih8kpm7zCrQBhLbnAXmtPHnEWy3pPvcNkWu.mxl,Por una cabeza arr. Farrington,,6,provisional,,,,,4.5,5,3,50,2,11.005,0,2,5.094
+./mxl/12/16/QmUDYpWTgiqpRaT1GF6FE2izqYyDBqVNrxNgYmdtkwJjHJ.mxl,"German Dance, D.420, No. 2",,3,provisional,,,,2.6,3.5,3,3,32,2,5.91,0,3,4.015
+./mxl/12/17/QmUe1wyPu65HWLn7PfGr52jQP1ovLveVQQTRcG7jxsDGmp.mxl,Let It Go,,4,provisional,,,,3.66,1.5,4,3,38,2,12.42,0,0,4.672
+./mxl/12/18/QmUEcz2AnA4Ls7pGd9gYu8fPYfk9QRgB5hvFj1zBhLWQL3.mxl,Album Leaf - op 47 no 2 F major,,6,provisional,,,,4.92,3.667,4,4,60,5,15.07,0,1,5.179
+./mxl/12/19/QmUfTS6K5Js8oBzGHXSD3f8QqxKq2q7yJH5zxG5FzhiHEe.mxl,"Minuet in F major, K.5",,3,provisional,,,,5.45,3.667,4,1,46,2,4.38,1,1,4.279
+./mxl/12/2/QmU3n5oSFgbxPHLaqH83zdqWhsxdRuttHFExiwFasiagaN.mxl,"Apparitions, S.155",,8,provisional,,,,5.11,5.5,6,4,68,6,16.14,1,0,5.467
+./mxl/12/21/QmUgYFhqprnmF5QujhEqcA8zPnePUdujuJV8CwvD4c95MB.mxl,Intermezzo in A minor Op 116 No 2,,6,provisional,,,,1.83,5,4,4,67,5,13.425,1,0,5.08
+./mxl/12/26/QmUjQcdggQtHbN2TzoDSX3B367Vi9zUSfn5hAvbWkR9H8B.mxl,D'un vieux jardin (no. 1 from Trois morceaux pour piano),,8,provisional,,,,1.98,3.667,4,6,68,5,56.825,1,4,5.463
+./mxl/12/28/QmUkCd5kX3tLNtrCNzmMgNSLJ7GGFsjfGbMBsNgq7612ox.mxl,Ballade No 4 in F minor Op 52,,8,provisional,,,,4.07,8.667,6,5,77,5,21.54,1,4,5.557
+./mxl/12/28/QmUkD6wP1EPZxe1mpMMgQeTVsMi427XzpC1EmKQp828Dpn.mxl,Etude in F minor No 2 from Etudes Op 25CT 27,,8,provisional,,,,10.48,5.5,3,4,75,8,14.09,1,4,5.164
+./mxl/12/28/QmUkagEb3mJWASbpfehGiouwogp2zz6t6jDRCA3m5qnfdq.mxl,Mazurka in Db major Op 30 No 3 CT 70,,7,provisional,,,,2.82,3.333,4,4,59,5,16.92,1,5,5.209
+./mxl/12/30/QmUL5FoZ2Zg4oU4EyzEuMA141jEmeDt3unxLUQLaSxuker.mxl,Black and White Rag,,8,provisional,,,,6.35,8,5,3,65,5,35.515,1,4,5.14
+./mxl/12/30/QmULjRwQATKqBtn4TVhMChfzMQihrRUe3bV26ZiRpVn7TE.mxl,Over the Rainbow,,2,provisional,,,,2.16,0.5,2,2,15,1,9.37,0,0,4.695
+./mxl/12/31/QmUmv3WU3DWjbc28shFzi6RvheRGRfnXffmn3kmP4xaRA8.mxl,Diabelli Variations Op. 120 Variations 11-22,,7,provisional,,,,4.12,3.833,4,4,72,5,16.4,1,0,5.527
+./mxl/12/32/QmUM6KmupxpxrQbDtz8DTYF8XArV438ioFRZr6R18vssbj.mxl,Jingle Bells,,3,provisional,,,,3.59,2.5,3,4,56,4,0.445,1,1,4.163
+./mxl/12/32/QmUMigT6mP1oyQrbsnkHXGZ6QayCCGFdBpMYvAdJ8uc9ZS.mxl,All Hail the Power of Jesus' Name,,2,provisional,,,,1.75,4,3,2,33,2,0.525,0,1,3.835
+./mxl/12/33/QmUnKz5z8g7DMZZT9uf1U64B3PomN5qJ1DbrboqxXPjAm8.mxl,"Cantique de Jean Racine, Op. 11",,3,provisional,,,,1.6,0.75,3,1,20,1,11.55,0,5,4.551
+./mxl/12/34/QmUNJw7pTgLBo4NMqxZgEwcC9waupHgJKSvpPtbwaPFBCq.mxl,Amazing Grace,,B,provisional,,,,1.43,1.667,3,1,31,1,0,0,1,3.406
+./mxl/12/34/QmUNyRgpPQDwo6vXQhQRZEajVWHHfaPubVX9qDg1PJhJce.mxl,Sonata - K 247 C minor,,7,provisional,,,,,6.666,6,3,46,3,13.425,0,4,4.839
+./mxl/12/36/QmUp3SgxNM2ahtjae3LtspeahHjDdeQaqQJNY1BDMWYY4F.mxl,Menuet from Water Music,,4,provisional,,,,2.21,2.667,4,3,44,2,4.78,0,2,4.477
+./mxl/12/36/QmUpiFk3oDTHiQVjvZvDAWEL6mymJSEupBYhNLpA2kebgC.mxl,"Prelude, Fugue and Allegro in E-flat major, BWV 998",,6,provisional,,,,7.41,4.5,5,3,43,4,7.83,0,3,4.606
+./mxl/12/4/QmU5Dv5TxAi9SEpv5i6yRvB6BShwQ5oo6L3EoDcjFDdRbR.mxl,"6 Piano Sonatinas, Op.36",,3,provisional,,,,4.96,1.875,3,2,50,2,2.955,0,0,4.59
+./mxl/12/40/QmUr8dRqvboQSfcSdHNRGyN4im9yomq2CgDcDfy6mhwrdd.mxl,School of Velocity Op 299 No 5,,6,provisional,,,,5.15,5.75,4,4,70,4,4.17,0,0,5.274
+./mxl/12/40/QmUr9XcFgah9Geo3GbotP17i7hCFVFGLouLadeKKyDhbrH.mxl,There Is Power in the Blood,,3,provisional,,,,2.19,5,4,3,30,1,1.42,0,2,3.706
+./mxl/12/40/QmUrL8yVPcMX1eYSkgfvrZ8sUgxwFZaPXrh77X6txfgP73.mxl,I've Got Peace Like a River,,2,provisional,,,,1.24,3,3,3,28,1,2.47,0,1,3.854
+./mxl/12/41/QmURLW9jiCtt9RNU6tycsK4jFXJm8RMamp5uW4tGafNd6U.mxl,"6 Fugues, Op.17",,6,provisional,,,,2.62,3,3,3,44,3,27.625,0,1,4.971
+./mxl/12/44/QmUtgJT1X2UUXW5t4MwyuD3zizCXQL6VWCBwNRK5TPAkwo.mxl,Solfeggietto in C minor Wq 1172,,6,provisional,,,,8.08,4.5,6,2,52,3,12.67,0,3,4.799
+./mxl/12/5/QmU6zYz4vErP49ycNjXDfZp6a7Ys7H78dEoZGQ8zrLQv5S.mxl,Album Leaf Op 45 No 1,,6,provisional,,,,3.28,3,3,3,47,3,19.665,1,3,4.681
+./mxl/12/52/QmUxYp3ifduS7euXVyBxYN8bim2sedynmqXnrFNVPcwLsX.mxl,Where He Leads me,,2,provisional,,,,1.72,4,4,2,28,1,1.515,0,1,3.453
+./mxl/12/54/QmUyYMBMPyXmKTjd836HY8fY7B82mX1jk9CCM8iyHapsax.mxl,Caprice - op 3 no 5 Eb major,,6,provisional,,,,5.6,3.5,4,4,68,5,9.08,0,3,4.929
+./mxl/12/55/QmUY5NA2JtWYvHtzhAY6XXEVms9mAwXmv843PKeRsgP6Lg.mxl,Wake Up!,,1,provisional,,,,3.9,3,3,1,37,2,0,0,0,3.32
+./mxl/12/57/QmUZSdMpnmadMnkRaiLVxQAwyMbvu5SFsT2vXpx6zjYJu1.mxl,Op 37 No 28,,5,provisional,,,,6.18,8,3,3,45,3,1.455,0,0,4.371
+./mxl/12/8/QmU9SDE1zj64UvBxWuhxmoRyZEJvRUykLjmMy1vFutv8va.mxl,School of Velocity Op 299 No 2,,5,provisional,,,,,5.25,4,4,69,3,1.43,0,0,5.04
+./mxl/12/9/QmUaMYfUz6j7Nm7kVkfTk783ZzZpMn5mfHuaPDuUsGEwXk.mxl,Studies Op 29 No 4,,4,provisional,,,,3.5,7.5,4,2,43,2,4.55,0,2,3.946
+./mxl/13/10/QmVAXNW2BeVGDSvfLyEeSJNWV2WnyJRTzPAVMb5myBZhtA.mxl,"Invention No. 2 in C Minor, BWV 773",,6,provisional,,,,5.2,7,5,1,48,3,5.725,0,3,4.651
+./mxl/13/15/QmVdSgAbAUJqSPaZPcQ7PETkZ8oaERCWfwpaxhtCNhnhYx.mxl,In the Hall of the Mountain King (Peer Gynt),,2,provisional,,,,2.35,1.5,3,3,36,1,7.54,0,0,3.959
+./mxl/13/15/QmVdTMNyYdTqLsjGCHepLaoMBJ9h8FUJQxjsUUtHJjAgVU.mxl,The House of the Rising Sun,,3,provisional,,,,4.12,2.667,4,3,40,1,5.96,0,0,4.023
+./mxl/13/16/QmVDi754bgi3RZhZ8yaMJMgCgdk18vcQSrKBpj3GfdbrTy.mxl,Caprice - op 3 no 3 C major,,6,provisional,,,,1.98,5,4,4,51,4,20.835,1,0,4.84
+./mxl/13/2/QmV3AkPAaYWFmn1bMEGwWoDLgKdGTWNN9CnyHSSFjkhRiA.mxl,When the Roll Is Called Up Yonder,,4,provisional,,,,2.79,6,4,2,31,2,0.28,0,4,3.673
+./mxl/13/21/QmVgS9cYzFWrEHrvGnKFqmg7rd9mfCpX3LgkP6LtqxWSbR.mxl,Away in a Manger,,2,provisional,,,,,4,3,2,31,2,0,0,1,3.686
+./mxl/13/22/QmVGYTQRTV2JYQbYBJfWYE13MTngyJoAr4Hn5Ku7JPtk3J.mxl,Let It Go,,3,provisional,,,,,1.5,4,3,34,2,6.075,0,4,3.957
+./mxl/13/23/QmVhF7hxQyXaKvaKQYgTfvQdXpMgXhpn6h895qqLdHTfvF.mxl,Le Tombeau de Couperin V. Menuet,,8,provisional,,,,5.03,5.666,5,7,80,6,19.585,1,2,5.456
+./mxl/13/23/QmVhPU59vZdU9M92Jnt7jsKTS7zwttSJYLRt4tctbGHJKD.mxl,DEEP RIVER,,3,provisional,,,,,3.125,4,2,35,2,6.415,0,2,4.187
+./mxl/13/24/QmVHCi8bHsUw897xZG7FmtJmp2C6vuV2xBHQnuK1XNDqL5.mxl,Prelude for the Left Hand - op 9 no 1,,8,provisional,,,,3.51,6.208,5,5,82,6,13.33,1,4,5.32
+./mxl/13/24/QmVHUd6BTGULkMtqLqby7oXHsTfn7zfvnfL6x8sv6mQ4FS.mxl,Joy to the World (in C minor),,5,provisional,,,,1.82,5,5,6,64,5,0,0,2,4.497
+./mxl/13/27/QmVJhKEJ7eio1MEPaWiZ6ztGgnPs21NsiRkm1YffHawfHU.mxl,Lavender's Blue,,3,provisional,,,,,2.833,3,3,40,3,2.06,0,0,4.272
+./mxl/13/28/QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj.mxl,La Cumparsita (G Minor),,7,provisional,,,,3.2,7.5,5,4,56,3,12.425,0,2,4.759
+./mxl/13/28/QmVkWV8DMxrNwYb94NAczQsrKxCpynQuD9xq8SdxdTPCUE.mxl,Happy Birthday,,2,provisional,,,,,2,3,3,32,2,0.78,0,0,3.948
+./mxl/13/28/QmVksrwa8dvy8BbpLvoEDkxZ5KE5y4KVa5URqrogUztTXt.mxl,Dance of the Sugar Plum Fairy Op 71,,8,provisional,,,,,9,6,4,68,5,19.63,1,1,5.499
+./mxl/13/29/QmVK44qaWeSLL9wmB2PCaiCqK635N6LLRFCGZQGmWAatSG.mxl,From Heaven Above to Earth I Come,,3,provisional,,,,1.79,5.267,4,3,31,2,1.065,0,3,3.719
+./mxl/13/32/QmVM8sy9fma66nHKmyjHLAxQqF8mguPVoqTvUsXYxyfcKQ.mxl,To Zanarkand (from Final Fantasy X),,6,provisional,,,,2.41,3.334,6,4,63,4,5.54,1,1,5.085
+./mxl/13/41/QmVRRhVe1JxmJxxFzQCzFh8NGxQ88c9KXyjrSPneCVdVS5.mxl,"Le jardin feerique, No. 5 from Ma Mere l'Oye",,6,provisional,,,,2.19,2.333,6,5,57,10,7.77,1,0,5.448
+./mxl/13/41/QmVRS9xFTgLyVgV8UsfzUu3288cSpevbPVmhYPWG1mYDnp.mxl,"18 German Dances and Ecossaises, D.783",,5,provisional,,,,3.06,4.25,3,3,55,3,6.66,0,2,4.64
+./mxl/13/43/QmVSikuhj8U8Bz88hSuShdraTpzzJW6qnm9C26qZCF4oUP.mxl,Inspector Gadget main theme arr. Faber,,7,provisional,,,,,4.5,5,3,72,6,18.825,0,0,5.494
+./mxl/13/45/QmVTjHqYbLYhNx51GWA3UpsFjpUheTHKiSMUPMwtPrEebx.mxl,Morning Has Broken,,1,provisional,,,,1.35,1.778,3,2,33,2,1.54,0,0,3.928
+./mxl/13/46/QmVuJLUUcwV2iHaGU9CFAuduXo9k1NQPQQeHK9LMgfERFq.mxl,"Mazurka in A Minor, op. 7, no. 2",,6,provisional,,,,,3.667,4,4,52,3,14.06,1,3,4.725
+./mxl/13/46/QmVuXjx3jktEh52D5nja24GcpkNPHS5nNHyUNbFhC5vb2t.mxl,Schindlers List (Theme),,5,provisional,,,,2.79,5,4,4,60,5,5.815,0,1,4.825
+./mxl/13/47/QmVUz4W1ofyonZTGGYKedzo71ohQbkwMQkmzuvmikLeWLw.mxl,"God Rest You Merry, Gentlemen",,2,provisional,,,,1.69,1.5,3,2,29,0,7.545,0,1,3.875
+./mxl/13/49/QmVVZQsjBHyzG3c8ghfMMGm1Kpu16wB37qtUKv6BwKBa2U.mxl,Thou Didst Leave Thy Throne,,3,provisional,,,,2.19,5,3,2,32,1,3.97,0,2,4.138
+./mxl/13/49/QmVVc5wodpt4UVgjBaPFzGRKgZ71SRh5XY1oz6sdKSkgL3.mxl,If Only...,,1,provisional,,,,,2.75,4,1,17,1,1.115,0,1,3.708
+./mxl/13/51/QmVW49UyiaK7vtbv3pS3ENj9zxQaariqcv43xbXToz5LWE.mxl,Mississippi Rag (Two-step),,6,provisional,,,,2.82,7.5,4,4,62,4,2.03,1,1,4.979
+./mxl/13/51/QmVWUefyKkQD8m6hZApjRweJcAiMQLRpCjQh9JGCzXDEtz.mxl,"GO DOWN, MOSES.",,2,provisional,,,,,2.25,3,2,31,1,2.94,0,3,3.639
+./mxl/13/55/QmVYp6q8CopcwTKfGLTiT9Fawa8wAtDqeiQtcb9gCRQk8Y.mxl,The Wheels on the Bus,,B,provisional,,,,,1.5,3,1,27,1,0,0,0,3.21
+./mxl/13/7/QmV8CHxe9M9mTTGPX66JuP7aAjfzG7A6xJeUdDvYb9cuU1.mxl,Since Jesus Came into My Heart,,3,provisional,,,,2.28,5.25,3,2,31,2,0.925,0,3,3.784
+./mxl/13/8/QmV9GqqMQs9wcbpmLpxuqx73vZc1vUMnUCXBABqv4rL6B5.mxl,Through all the changing scenes of life (Wiltshire),,2,provisional,,,,,3.667,3,2,30,2,0,0,1,3.893
+./mxl/13/9/QmVa3v1f1ZmoqjiAveiLbTUv5NZAS4D3ibaMudNwcL5oWT.mxl,Can you feel the love tonight arr. Kember,,3,provisional,,,,1.87,3,4,3,34,3,0,0,3,4.086
+./mxl/13/9/QmVa7hSTAHsWrbxQ5iTo1Xr3gJw6RgRNWHXSdVfS5fjgHt.mxl,Erlkonig - solo piano version - op 1 G minor D328 arr. Liszt,,7,provisional,,,,5.45,5.625,4,6,75,4,7.205,1,2,5.337
+./mxl/14/12/QmWBNsYLfFDoG9G2iUAWwn8Hp7Cir7ESx81jKXgKEpzG2j.mxl,"Jesus, the Very Thought of Thee",,2,provisional,,,,1.23,2.666,2,2,29,1,3.705,0,1,4.009
+./mxl/14/13/QmWc4DZGFTQBaYaTuQuEx7oU8m7iHJMCXtDYjmjL9LgHcG.mxl,Scarborough Fair,,B,provisional,,,,1.28,0.667,3,1,14,1,2.63,0,0,2.93
+./mxl/14/15/QmWdv6KowAARbx5s5JVye1exxw2ZH3Cy49r55T7Ao5ahRm.mxl,Wiegenlied (No 4 from Five Songs Op 49) arr. Litten,,3,provisional,,,,3.59,3.667,3,3,25,2,0.695,0,3,3.938
+./mxl/14/17/QmWewFJYkCbpuyPMnUofsghkiPzUzH2RYURT6Dsoq7MKxW.mxl,"Minuet in D Minor, BWV Anh. 132",,3,provisional,,,,,2.667,4,1,44,1,9.17,0,1,4.61
+./mxl/14/18/QmWEwo7KqesGn9PP1AVXaqEbUo4J17fDehkxCY7gncPZDw.mxl,"Adagio cantabile (2nd movt from Sonata in C minor ‘Pathétique’, Op. 13)",,7,provisional,,,,2.89,5.333,7,4,60,7,6.94,1,4,4.78
+./mxl/14/23/QmWhYLo8JPz5PYpH3fsTGqwMyurmx3PyASN8p7UqaViVqo.mxl,"Songs without words, Op.38",,7,provisional,,,,7.01,6.666,4,4,69,4,2.965,0,3,4.971
+./mxl/14/23/QmWhggti1rnkVcm2Le3Lcnk7ZEGGF5j8xp3wd4gPu4AA2i.mxl,Yankee Doodle,,4,provisional,,,,,8,4,2,29,2,0,0,3,3.604
+./mxl/14/24/QmWHYEAX4AmV1nJiSsabYUip5QYg6WcnRFB1b912dU2yEp.mxl,Circle of Life,,B,provisional,,,,1.5,0.5,2,1,14,1,0,0,0,2.702
+./mxl/14/25/QmWiYmyGdR57srpmX1LC6NQMGmvqrAhCZzxmkxQ43rKSkJ.mxl,Can-Can,,B,provisional,,,,1.53,0.5,2,1,12,1,0,0,1,2.648
+./mxl/14/26/QmWjPSjGM8HcN9peVFR6XzF1ckAiu2ESSNkkjfnZfVpTaQ.mxl,River Flows in You,,2,provisional,,,,,1.5,4,2,38,3,0.465,0,0,3.892
+./mxl/14/27/QmWJSHw8HUXTRjgqJGNke5bLY9J9Kc4T6GYfyjbWXPXXCY.mxl,Are You Washed in the Blood?,,3,provisional,,,,2.52,5.334,3,3,29,2,0.335,0,4,3.702
+./mxl/14/27/QmWJdiYuEhYiFuw3BLwmCazxsAGQAHeda76sGqXMVTjBLw.mxl,The Yellow Rose of Texas,,2,provisional,,,,,5,4,2,43,2,0,0,1,3.487
+./mxl/14/28/QmWkvjEfXH43QWggnHznD6w7mDmBCuj8FeVmrnujs4Li1m.mxl,Ave Maria,,8,provisional,,,,3.12,8.25,4,4,76,6,11.63,1,2,4.917
+./mxl/14/33/QmWnQ8rxjbYRPrHN3F4ApQyEVHxRMEDqzhTHtV1CbBpcza.mxl,Happy Birthday,,1,provisional,,,,,2.333,3,4,24,2,0,0,0,3.623
+./mxl/14/37/QmWPfcCVSoPo5w5MY5XUv7L3B2dqjxTrfhBfPzZFmmVdKH.mxl,He Keeps Me Singing,,3,provisional,,,,1.63,3.5,3,2,31,2,3.98,0,4,3.981
+./mxl/14/38/QmWqwAqr8yGcvHzHU6tyLhF2YL6551xx84brEx7uYoK4Z7.mxl,Waltz in B minor Op 69 No 2,,5,provisional,,,,3.97,3.666,4,3,55,3,9.205,0,2,4.691
+./mxl/14/41/QmWRxYQDfXpXsQj9RbrcVMza6LNZk7PLTYYcXTcZnurZD5.mxl,"Practical Exercises for Beginners, Op.599",,4,provisional,,,,5.38,4.5,3,3,46,3,1.41,1,2,4.376
+./mxl/14/42/QmWsqnyqgpTvxHUrMhbmKPT8mgW5Me7p7CQyVoDhpLA9Hv.mxl,In the Hall of the Mountain King Op 46 No 1 arr. White,,7,provisional,,,,4.36,4.5,4,4,76,6,11.895,1,2,5.384
+./mxl/14/51/QmWWAyZTXdQkB7UkiBdnvL7ko6SEhzwmDZs5RSz986xxsA.mxl,Cradle Song,,B,provisional,,,,,2.75,3,1,17,0,0,0,1,3.009
+./mxl/14/51/QmWWq7NELZbyX1hrLYtw4p71t7ApCSs5yGfuXQXZQzEMiy.mxl,"Bagatelles, op. 5, no. 10",,5,provisional,,,,3.93,4.25,3,3,84,8,5.05,0,3,4.509
+./mxl/14/54/QmWyEhtrtPbp21hj4EKNUKeZV5iaC8UBZqb8nrGPXHUX7U.mxl,"Piano Sonata No.17, Op.31 No.2",,8,provisional,,,,,7,6,4,58,3,11.8,1,4,5.354
+./mxl/14/54/QmWyFckvyoMiNLFawUiRMTeH2USzFHijjt8TdEWbTRDQ7N.mxl,"Holy, Holy, Holy (Nicaea)",,3,provisional,,,,1.75,3.375,3,3,32,2,1.5,0,2,3.997
+./mxl/14/54/QmWyxCGR79XU4NLc2fzUfi7vmVQB5HzXEovUxUFQH81cq6.mxl,The Great Physician,,2,provisional,,,,,5.334,3,2,29,2,0,0,3,3.305
+./mxl/14/55/QmWY8qwejrP1LFbKn5yFXZAyCX3abvncsjQJxLCcaeekTt.mxl,"Oh, Susannah",,1,provisional,,,,,1.75,3,2,22,1,0,0,2,3.349
+./mxl/14/55/QmWYCjUnxN8ZY2fSLhUBtmHsGDURBc6wPUrGNyZKBUGsyc.mxl,Little Song,,3,provisional,,,,,4,3,2,36,2,0,0,3,4.093
+./mxl/14/55/QmWYit69PTRCdRJdpb3Poo8f7Zzh82sEqU8BqSBPrR7Cvq.mxl,I've Found a Friend,,3,provisional,,,,1.67,4,3,2,32,2,3.65,0,1,4.135
+./mxl/14/57/QmWZup6ktoRQb3rZCBgY3StrCXq43SshF2QLekRb6SquRs.mxl,Marche Funebre - op 72 no 2 in C minor,,3,provisional,,,,1.07,3.5,4,3,55,3,2.67,0,0,4.527
+./mxl/14/57/QmWZy9P8JQmf77Xg8JvL3ZXw49JSMxynhZEC31eFFMo6VY.mxl,The Mountaineers Song - op 73 no 7 G minor,,5,provisional,,,,2.31,2,3,2,64,4,15.005,0,2,5.087
+./mxl/14/7/QmW8wywozM6GmjiBePAtWdyzPkA1bnX5sMg22TavXxs54q.mxl,"Rock of Ages, Cleft for Me",,2,provisional,,,,,2.666,3,2,28,2,0,0,2,3.64
+./mxl/15/11/QmXbDPsYystddE8aTYmppxzXmJej8j1xV2xXSsbnNo4MKf.mxl,Prelude 21 BWV 866 from The Well Tempered Clavier,,3,provisional,,,,4.39,4,5,1,45,4,3.435,0,0,4.415
+./mxl/15/14/QmXCYYCjkTZxTtYmMYo1jYLCZmKAdo8cB7QjEBQZNcMoM1.mxl,Moments musicaux Nos 4 and 5 (Cm and Fm) D780 Op94,,6,provisional,,,,3.25,6,4,4,45,3,6.9,0,4,4.548
+./mxl/15/18/QmXE1WdGrE1gpqSKkJCTykxmPbtw3ECSypsdoz41WvVmjr.mxl,As Time Goes By,,5,provisional,,,,2.29,3.75,4,5,26,3,7.415,1,1,4.705
+./mxl/15/18/QmXEe4TZkbG568G87njLiw9tXJ3wdQKceVZ7B17Q6JjBYs.mxl,Suite in G minor HWV 432,,5,provisional,,,,5.02,4.5,4,4,51,3,6.04,1,2,4.785
+./mxl/15/23/QmXhWvBZCz5R8GCAcpyAfZqxyX9MrWZzHfoaUuTH8qYC9z.mxl,Flight of the Bumble Bee in A minor arr. Rachmaninoff,,8,provisional,,,,11.5,6.5,4,4,56,3,31.72,0,0,5.154
+./mxl/15/24/QmXH7UowvxLRyffsi2q1895FqmrLSifjBM1gLbWy4wmC8r.mxl,"Sonatina in F Major, Anh. 5, no. 2: I",,5,provisional,,,,4.4,4,4,4,53,3,7.345,0,1,4.748
+./mxl/15/25/QmXiANoF15wqxY1T8hka5xUpgtC7ZNWWHciJ5qJe9mEgXf.mxl,La fille aux cheveux de lin (no. 8),,7,provisional,,,,2.28,5.333,4,7,60,4,5.83,1,6,4.779
+./mxl/15/26/QmXj499TQXR72Unv86zV7aaCPKuzbfjh1o5MLAiNypNeRc.mxl,"Minuet in G Major, WoO 10, no. 2",,5,provisional,,,,,4,4,4,60,4,5.3,1,0,5.32
+./mxl/15/26/QmXjZNbCPy31urEuop2WNi8D2jfcYXwi77tXGMMcJPv9wk.mxl,Plaisir d'Amour,,4,provisional,,,,2.66,4.333,4,4,36,2,1.685,0,3,4.244
+./mxl/15/3/QmX4y9HqzeCv1rTcbd5dCjkJKEC5yyjNagY3VRm6MPqyHp.mxl,Fantaisie-Impromptu in C minor Op 66,,8,provisional,,,,9.32,7.25,5,4,69,5,9.9,1,4,5.146
+./mxl/15/30/QmXLvpURSXcYETq2hFDZ84LTiVs8v4jMQbxaarhA5oe8sx.mxl,"Mazurka in D major, Op. 33, No. 2",,6,provisional,,,,5.22,4.667,4,4,66,3,8.04,1,2,4.756
+./mxl/15/33/QmXnXtt6mECo4x9TwcZTeTjimPqPuPpkp9TmP2nFVsja1K.mxl,Sonatina in G major Op 151 No 1,,5,provisional,,,,4.52,5,4,4,55,4,5.305,1,1,4.674
+./mxl/15/33/QmXnhQJy7fQLcWkcmFj1kGJtgEZrmCWgc4pHsFrFUd5xb9.mxl,Nocturne in Db major Op 27 No 2CT 115,,8,provisional,,,,3.62,7.333,5,3,70,4,19.415,1,5,5.312
+./mxl/15/33/QmXnpmnc9mAkzPAzpxN1rFm5eqKNnwDhQKtAmN1ecYDABf.mxl,"Waltz Facile, Guitar Album, Op.27",,3,provisional,,,,3.33,4,3,4,31,3,3.76,0,4,3.55
+./mxl/15/34/QmXNgDZcrSbtyz7qHr1FqnSM5FF8c5wYLfWun6K5bQm88p.mxl,"Mephisto Waltz No.2, S.515",,8,provisional,,,,6.64,3.833,5,4,51,4,21.245,1,0,5.894
+./mxl/15/35/QmXom3xfLqpDKxYrY64g6PeiDisGDxPfC3FDpSFCBRaXsc.mxl,Six Variations on an Allegretto K 54,,7,provisional,,,,5.89,5.5,5,4,55,3,12.755,1,1,4.971
+./mxl/15/36/QmXp4qcv5nmY2hbptnMu22MMMkjB4AEo59SzEXCphyhsfq.mxl,"6 Partitas, BWV 825-830",,6,provisional,,,,6.7,4.333,6,4,53,4,7.43,1,2,4.892
+./mxl/15/36/QmXpXcjYaBtF3mBA6ao8VXAv9xQrpUgBQDsEMdMrZqVgiF.mxl,"38 Waltzes, Landler and Ecossaises D.145",,6,provisional,,,,2.02,9,4,4,57,3,6.175,0,2,4.438
+./mxl/15/36/QmXpuRwDh2cgEEd8NQedXeNhswbYG9YoF14vPzJTBopqHD.mxl,What a Friend We Have in Jesus,,2,provisional,,,,1.75,4,3,2,28,2,1.25,0,1,3.508
+./mxl/15/38/QmXqK3udSEJjr51sd3k7mHyBkRP2JuM1bK3oNdgNdEjcjn.mxl,La Cumparsita (G Minor),,6,provisional,,,,2.85,4.5,4,5,70,5,7.245,1,2,4.574
+./mxl/15/4/QmX5Y2NJTbQ8RySuX9bho7gDp6tfz9qMKiR448ucfRHsHz.mxl,Love Lifted Me,,2,provisional,,,,1.81,4,3,2,28,1,0.98,0,2,3.727
+./mxl/15/44/QmXtKLWzgF5HGBN1N5D8sg3usK6WaqK3BVnZiz3sY3pinE.mxl,The Rainbow Connection,,3,provisional,,,,1.38,1.667,3,4,36,3,3.505,0,2,4.172
+./mxl/15/46/QmXusicmzuQ9Ph4kVB1e3nP6dSVvyAP6vdRNhaxqBg2iLe.mxl,"Menuetto II in F Major, from Sonata in C Major, K 6",,4,provisional,,,,,2,4,3,60,4,3.815,0,0,4.754
+./mxl/15/49/QmXVCHa77YaePBAo6DsB6cmJhkwEigmn5fJxywamKqtgih.mxl,Fly Me to the Moon,,3,provisional,,,,,2.75,4,3,37,3,4.26,0,0,4.12
+./mxl/15/5/QmX6h2bMsbEtsxGunS9pDhD46ZDpLwYVtoNuUnvLJLjF7m.mxl,Tango-Prelude II (duet),,4,provisional,,,,3.31,2.5,4,2,32,1,9.18,0,2,5.011
+./mxl/15/51/QmXWjjPu3qjHCThtQ9XzRDPXCUF16csWkW78ZqMcrxeHH5.mxl,"Allegretto Op.120, No.5",,3,provisional,,,,2.86,3.334,3,3,29,3,2.235,0,3,3.793
+./mxl/15/53/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl,In the hall of the mountain king arr. Bastien,,8,provisional,,,,4.48,5.75,4,4,84,6,11.14,1,2,5.502
+./mxl/15/56/QmXzn9pMQ77ExKANBhrWVR3dUSpbj3X3G9dZE3uHXt2gmk.mxl,Danny Boy,,5,provisional,,,,2.4,5,3,4,48,3,8.24,0,3,4.871
+./mxl/15/56/QmXzssKd21dCAyGCZtbvdt6QdtjyEUfWQtPPLF6nK6Zpyg.mxl,Toccata in E minor BWV 914,,6,provisional,,,,5.5,5.5,5,4,48,7,11.955,0,1,4.88
+./mxl/15/6/QmX7FqRKaQ9rxcr6jHhSxUVnvwCPhssmEKuxRu1rmWsoEw.mxl,Etude in Ab major op.25 no.1 Aeolian Harp,,8,provisional,,,,7.65,7,5,5,77,5,14.39,1,4,5.766
+./mxl/15/6/QmX7UE4wSHonpKWehzs93aU5ChsdQLbYcGhorMTs1pDCNJ.mxl,Scarborough Fair,,2,provisional,,,,2.29,1.667,3,4,29,2,0,0,2,3.701
+./mxl/15/7/QmX8vPWgtgQapKMw2n1EkUJ8Y6ir21WPKuKB5pFCpdHD3b.mxl,Prelude in G major Op 28 no 3,,5,provisional,,,,10.58,5,4,4,62,2,2.525,0,1,4.277
+./mxl/15/9/QmXav4npxd21fF1V23k2i3VcUYFupV8P4RhZwwYcLy9gV5.mxl,"The Well-Tempered Clavier, Book 1, BWV 846-869 (Complete)",,5,provisional,,,,6.04,4.5,5,3,48,3,5.15,0,0,4.675
+./mxl/16/16/QmYDb3m4xuBjrpWqeh6kW7JX3JFDgK6nE2ZYknu4G3u7sF.mxl,"18 German Dances and Ecossaises, D.783",,3,provisional,,,,2.13,4.667,3,3,43,2,2.195,0,2,4.011
+./mxl/16/17/QmYeG6Kh3vFFFFxCcUQFxwqCVMtM9QJSpobztsDS85WfSo.mxl,Studies Op 849 No 3,,6,provisional,,,,4.33,3,5,4,72,6,3.655,1,0,5.379
+./mxl/16/19/QmYf6wWUpWm2gMJEDHwq9SipkzcUP91nhsUDhn67aD6uxX.mxl,Joy to the World (in C minor),,5,provisional,,,,4.73,3.75,4,3,65,6,10.245,1,1,4.779
+./mxl/16/2/QmY31zbcQUaNEUZH8A5JKxU3JucV4g14cY2NYSbKjqXLFU.mxl,Etude Op.25 No.6 in G sharp minor,,8,provisional,,,,8.25,10.5,4,5,71,4,22.695,0,5,5.504
+./mxl/16/2/QmY3br4YFUSsbyuiswdpBBkQnrYmucjiKByH1icFvQrmBQ.mxl,Six etudes Op 52 No 3 in F minor,,8,provisional,,,,6.61,4.25,3,4,68,4,19.515,0,4,5.396
+./mxl/16/21/QmYg5Aw4cC4wQBgTsxe1UqfzSJoMy3UGiTBoeFWqkfHvAq.mxl,Nocturne in Bb minor Op 9 No 1,,8,provisional,,,,2.76,6.417,6,3,67,6,15.98,0,3,5.15
+./mxl/16/21/QmYgtP78cxBzv4eFgaaDVYaiG7fib6Xhcoos45oSFpnbUC.mxl,Etude in F major Op 25 No 3,,8,provisional,,,,7.26,8,5,3,72,4,9.49,0,1,5.406
+./mxl/16/23/QmYh6wkAiDSjGJTFqCgKkWDHasZ8xg2AoaSVywzEFxzUNx.mxl,Warm-Up in G,,2,provisional,,,,,3,4,4,38,1,0,0,0,3.916
+./mxl/16/26/QmYjdUUpTqFVfu1LJinznWrRhCryfkDk8LPMGtLAnKnEcg.mxl,Prelude in F minor Op 28 No 18,,8,provisional,,,,5.68,6.75,5,5,77,5,24.26,1,4,5.445
+./mxl/16/28/QmYkwGqdPV2gFv7GS3Lv59K6pvwbH7tzEbp2uPFvzBzFzz.mxl,"Piano Sonata No.8 in A minor, K.310/300d",,6,provisional,,,,7.16,6,5,5,58,3,10.07,0,0,5.049
+./mxl/16/29/QmYKnM8JQRTUvnGvPsrknWKmx9Rwt7R91n5NMs6j4NLYsd.mxl,"Piano Sonata, Op.7",,6,provisional,,,,,3.833,4,4,67,5,11.075,1,0,5.334
+./mxl/16/29/QmYKt5HK7iCtKbgQqKUjpgukJBibWHpdNNbRJS1ZMVp86r.mxl,I Must Tell Jesus,,2,provisional,,,,2.01,4.444,3,2,29,2,1.315,0,3,3.558
+./mxl/16/30/QmYL9pBTgjiP1stspbBX5eGAkTEofyrSYf56YansXmUqEN.mxl,Rolling Downward Through the Midnight,,3,provisional,,,,,3.167,3,2,33,1,1.22,0,4,3.822
+./mxl/16/31/QmYmqEimBSWESDV6EG4W8jvPY4QPqBSzPyhQmW5RLNoiXa.mxl,Prelude and Fugue no.8 in Eb minor BWV853 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,4,5,5,49,2,10.825,1,1,5.132
+./mxl/16/36/QmYpAfy9yiFrgXBRNUAPmZL7hNUEHGuzEdE82fKkZeW1gA.mxl,Sonata No 3 in B minor Op 58,,8,provisional,,,,,6.167,4,4,68,4,20.525,1,2,5.203
+./mxl/16/36/QmYpQfBmMeXzwcKNm8YRanBAzoroPyfHpBZkiThhAcTF2L.mxl,Allegro scherzando in F,,4,provisional,,,,3.82,4,4,3,57,4,1.765,0,1,4.504
+./mxl/16/38/QmYq4TPtLqHvSSNJTKRqGvco97CGzAhLNV4X8tySxNNAU2.mxl,Etude in E major Op 10 No 3 Tristesse,,7,provisional,,,,3.14,11,4,4,45,2,1.665,0,4,4.401
+./mxl/16/42/QmYsjZnB8RwNs8npM1fvM4y7VMu4vB1p9dprCohjPPv6tL.mxl,Heart and Soul,,1,provisional,,,,2.63,1.333,2,3,28,3,0,0,0,4.035
+./mxl/16/42/QmYsvuAhMmDSnFy3fyHJfxnDQVn5j6S2XBq4ZDbQkCCC7M.mxl,May Dearest May - op 68 no 13 E major,,6,provisional,,,,4.48,7.5,4,3,36,3,8.975,0,4,4.31
+./mxl/16/44/QmYtP5CKb85dNm7A2rSoL4TwNBxx6z1TZht5h2kq35gGXN.mxl,"Le Papillon, Op.174",,8,provisional,,,,,8.5,4,4,78,6,15.545,1,1,5.42
+./mxl/16/48/QmYvtEvj46KBb8697zTdqdq3pjp6W21CxokSTbuoawB1XU.mxl,Nocturne in B major Op 9 No 3,,5,provisional,,,,2.47,4,6,2,41,2,10.405,0,3,4.301
+./mxl/16/49/QmYVMFYvyKpLVCoUu62j69jMYPD9zso8GVajrL4qLuUtau.mxl,Make You Feel My Love,,5,provisional,,,,2.45,4.5,4,4,41,4,4.495,0,3,4.324
+./mxl/16/5/QmY63vCc7hoaanzoZd2uQSozekAJdhg6pdRL1SdEJ1yHfS.mxl,Jingle Bells!,,2,provisional,,,,2.58,3,3,4,21,2,0,0,1,3.801
+./mxl/16/5/QmY6mqCKaHEkaxGNsPYpUTmNATKcGFjvN8zVjmmAd5oVZo.mxl,Marche Funebre - op 72 no 2 in C minor,,6,provisional,,,,2,4.5,4,4,53,8,6.905,0,3,4.829
+./mxl/16/50/QmYwDQBhtRrtThNmmdkLV6wb2fgZT5A69su5xsVb9unDQT.mxl,Sonatina in C Major Op 39 No 1 - mvt 3 Rondo,,4,provisional,,,,4.43,4.5,4,3,43,2,3.28,0,0,4.457
+./mxl/16/51/QmYWmUsNVG8s3soRcqYFyESsiQsQTcrE94oAZn6MjrzuGi.mxl,High Germany,,3,provisional,,,,,2.625,3,4,24,3,0.33,0,1,4.541
+./mxl/16/52/QmYxgSmXCWt6N5hnb7t3KaXUAjNXScx7Ce9K3e22FqgrPu.mxl,Das Abends Op 12 No 1,,8,provisional,,,,3.4,10,4,3,53,4,12.37,1,5,4.878
+./mxl/16/56/QmYz2hYiEpfeRqGCeuJRaFiB5on1nuYdK1dawDE8MFLbeR.mxl,Partita No 1 in Bb major BWV 825 - mvt 3 Courante and mvt 4 Sarabande,,6,provisional,,,,3.5,6.5,6,4,46,2,7.2,1,2,4.593
+./mxl/16/56/QmYztEjWTbNpQ9cabesrwpmZqpinLojGobUqbQF9DBwauW.mxl,Happy Birthday to You,,6,provisional,,,,5.6,7.667,5,4,67,7,0,0,1,4.519
+./mxl/16/57/QmYZQ4BkXea1hyd1SMUCoaQ4DSeAVzt9JEWQMMvbdKBQG9.mxl,English Suite No 2 in A minor BWV 807 mvt 5 Bouree No 1,,6,provisional,,,,8.82,6.333,5,3,48,3,10.07,0,0,4.922
+./mxl/16/8/QmY9YSF68nyyqtvH8SCjqQQTbZYq4h1V56QdqnBf6C7ehH.mxl,Bourre in E minor BWV 996 arr Heumann,,4,provisional,,,,,2.5,4,3,33,3,13.8,0,1,4.518
+./mxl/16/9/QmYa4wRs9HwyBp5vw3BFnBaF5aAupvyS7fbhjBVb8BSTZf.mxl,God Will Take Care of You,,2,provisional,,,,2.05,4.167,3,2,28,1,2.965,0,2,3.778
+./mxl/17/0/QmZ1qBZMSQgS2kxTEPFhG8vgskcJMtMCPd7umwvjjCDgP4.mxl,Hungarian Dance (solo piano version) No 5 in F minor WoO1,,6,provisional,,,,4.31,6,4,4,60,4,4.795,1,2,4.942
+./mxl/17/11/QmZbJbz47SVt6G77saSfKKyKVwScuVRuh8QJyzU67X93US.mxl,Tom Dooley,,B,provisional,,,,,1.625,3,3,29,0,0,0,0,3.206
+./mxl/17/11/QmZbNAMRKkgzJRW14vUZ6gMYGnmjEDgavyu5frW7bimEgu.mxl,There Will Never Be Another You,,1,provisional,,,,,1,3,1,19,1,1.02,0,3,3.162
+./mxl/17/13/QmZcUwdJEKU3DXk6fWYRkzTJ1UCC3JUxpgHymdEa2bYtpW.mxl,Fantaisie Impromptu Op.66 in C-sharp minor,,8,provisional,,,,4.87,7,5,4,69,4,10.29,1,4,5.109
+./mxl/17/15/QmZdt4a6GjmGgJMjX6LW5yW8xZXG4LFfKqDq9p5SNyPr5w.mxl,A Child of the King,,3,provisional,,,,1.76,4,4,2,31,2,4.545,0,3,3.603
+./mxl/17/17/QmZebw69299pYc7Fqdd8xyUXETMoHumsgE1RNeNzdZgZrR.mxl,"Sonatina in C Major, op. 55, no. 1: 2nd movement",,5,provisional,,,,3.34,4,4,4,53,4,4.73,1,0,4.714
+./mxl/17/17/QmZemC7gWAYDe4okFcu2wxmEeipCEE94dyUrzSwmuMgG5x.mxl,"Apparitions, S.155",,8,provisional,,,,4.36,5.334,5,4,71,6,17.635,1,6,5.542
+./mxl/17/19/QmZff9fTcDAENh43naGPWS3mKEXGMWprjpmkvmrmiqU8ED.mxl,Etude in Db major Op 25 No 8,,8,provisional,,,,6.37,11.5,3,4,67,5,13.17,1,5,5.204
+./mxl/17/2/QmZ31v5ggoN6i7BuE9UwK7aiovN1bxAWaePNCfBLnqher8.mxl,O Holy Night,,4,provisional,,,,3.12,3.333,4,1,46,2,0.69,1,4,4.231
+./mxl/17/20/QmZFau8eVC8urSQozHRpk1KkyvXscc1aiYMVVAmS67wr16.mxl,Wayfaring Stranger,,3,provisional,,,,2.14,4.666,3,3,34,3,0,1,1,3.973
+./mxl/17/22/QmZGc9nRyAXHadwAktdqQwXyyDkA8P4Z5EDsswBhtkuYtq.mxl,"Keyboard Sonata in G minor, K.111",,5,provisional,,,,4.94,2.834,3,5,55,3,12.755,0,2,4.957
+./mxl/17/24/QmZHsbKJkzKvFKmcW2BMk1TRGwuU1VpRJvgT9LebzTr63M.mxl,Mazurka in C minor Op 30 No 4 CT 71,,8,provisional,,,,2.42,4.667,5,4,68,6,15.925,1,4,5.134
+./mxl/17/25/QmZiUaj5UMfMXdcbFM4BQPzdXomp8MPGS8U7CwguWE6mbo.mxl,I've Been Working on the Railroad,,7,provisional,,,,3.05,8,4,4,53,3,2.52,0,5,4.564
+./mxl/17/25/QmZifudH59xFY9xYBDQ5CE6t2S49vZK5h12xjzpGEFpFDV.mxl,Memories of Childhood,,8,provisional,,,,4.15,4.667,4,4,75,10,14.39,1,2,5.264
+./mxl/17/26/QmZjq49N3CDGkGuSc9zpvy13byPQgzRpgb6BPgAE2U6pxA.mxl,La Lisonjera Op 50,,7,provisional,,,,4,4.25,4,6,63,4,7.3,1,6,4.82
+./mxl/17/26/QmZjz6EuyUKYTfqSDQRc1fds8dnV1vCTPS8yYuHaKaa5bU.mxl,Children's Album (Album for the Young) Op.39,,6,provisional,,,,2.86,4,4,4,62,4,7.7,1,1,5.083
+./mxl/17/27/QmZJVpb2BDc3u2xW7fVfkWEmyLg1G4GwBgFfPuxyD1BoYb.mxl,Allegro scherzando in F,,4,provisional,,,,2.36,4,4,3,57,4,1.53,0,1,4.515
+./mxl/17/29/QmZKna9E8zfnV3rG3KeNafWy2rqXcBiaQwxci1Z8BjuTNH.mxl,The Poor Orphan - op 68 no 6 A minor,,3,provisional,,,,1.64,6.25,5,2,27,3,7.12,0,0,3.829
+./mxl/17/32/QmZMSZVTRE6kLNgMvyM32asyjqaN5uEdAjApBGzkY67g3Z.mxl,"Merry Christmas, Mr Lawrence (Ryuichi Sakamoto)",,6,provisional,,,,2.89,3.5,4,5,72,4,1.11,0,5,4.85
+./mxl/17/32/QmZMwN2GDf3DQvMjrdRVsiMuZLqbaVG5mddQqsCAvqACN7.mxl,Georgia on My Mind,,2,provisional,,,,1.27,2.25,3,4,33,0,6.25,0,1,3.955
+./mxl/17/33/QmZnFoFBvkxaSFZGNvwTiTQHLyDb5c9fbqdujySrZriKPn.mxl,Lift Every Voice and Sing,,4,provisional,,,,,4.167,4,3,33,2,9.52,0,1,4.352
+./mxl/17/37/QmZP46gSjSaZ1wbg6dn8yHYw8K66T2gzF3YhocxdmQapko.mxl,12 Gratzer Walzer D 924,,4,provisional,,,,1.94,5,3,4,56,2,8.22,0,0,4.777
+./mxl/17/37/QmZPTixGZBYzQL3tR47884doHRpdpAt4C9PwZRPijL6sRv.mxl,"Come, Thou Fount of Every Blessing",,3,provisional,,,,2.33,5.334,4,2,32,2,0,0,3,3.651
+./mxl/17/38/QmZq95t9yu9JmYP47Hksx9aXGvrmxJ6KZfrWshwAetiuas.mxl,Tico-Tico no fuba,,7,provisional,,,,5.95,7,5,4,60,4,9.555,0,0,5.2
+./mxl/17/41/QmZR6JdDCEJPQhWewEALxwFS3XkpueuzHMPxPdM7zJRJvu.mxl,The Easy Winners (A Rag Time Two Step),,7,provisional,,,,3.97,8.5,4,4,53,3,7.6,0,4,4.993
+./mxl/17/41/QmZRCCXDkEqkTc9rUxWB3Zsf2fhQQuDj1q8iqn12Q3GnMc.mxl,Over the rainbow arr. Shearing,,1,provisional,,,,1.81,3.5,3,3,17,1,3.82,0,1,2.97
+./mxl/17/43/QmZSs3Wcn9AnxDC6jyeiy7iNk3JriXicmAVjLvA5V2g71H.mxl,"Etudes after Paganini Caprices, Op.3",,8,provisional,,,,5.4,8,5,4,70,5,5.865,1,4,5.026
+./mxl/17/49/QmZVQFm2Uk8r1SLDZSLrQwVBgKAjT1uEecBEu5JaiTS4G8.mxl,12 Variations on Twinkle twinkle (Ah vous dirai-je maman) - K 265 C major,,6,provisional,,,,5.79,4.5,5,4,60,4,8.66,1,0,4.97
+./mxl/17/49/QmZVhfXtqtjgk9W4G6R83wRyycvtZcGuLi5oo8S83iEfV3.mxl,Ave Maria,,3,provisional,,,,4.22,3.25,4,3,28,2,1.395,0,1,4.592
+./mxl/17/49/QmZVy7EZ7nTDjKrLFPsawgpGD9vbZzSPUVy9mwovEiu4iz.mxl,Etude-tableau in A minor No 2 from Etudes-tableaux Op39,,7,provisional,,,,3.23,4.666,3,5,71,5,20.41,1,0,5.166
+./mxl/17/5/QmZ6w4evm31UCVM8hEdZdfWDAGwwoMuwz3BnVVW9WCbkYh.mxl,2-Part Invention No 1 in C major BWV 772,,4,provisional,,,,4.12,4.875,5,3,48,2,5.785,0,0,4.679
+./mxl/17/50/QmZwBQqA2jm7eN5t9EVLQKR4Aevu3QzMmfYwgBLw2cyS1C.mxl,"6 Concert Etudes after Paganini Caprices, Op.10",,8,provisional,,,,7.73,7.333,4,5,68,5,21.575,0,2,5.341
+./mxl/17/50/QmZwo2Muh2rip4gGET7fkkXFgaLQiK6kc6p89ssZbqysxB.mxl,"Joyful, Joyful, We Adore You",,2,provisional,,,,,4,3,2,31,1,2.89,0,1,3.979
+./mxl/17/51/QmZWJJN5kk7AyXe7ZD2tBfamirHj3Z9eqquQ89PedtdaH9.mxl,"Waltz Facile, Guitar Album, Op.27",,4,provisional,,,,3.01,3.334,3,6,36,3,5.63,0,2,4.313
+./mxl/17/51/QmZWQbVD4e5eM8Vf9LRos1TmF8HFbg7QfTWm8EhjZTjD9n.mxl,Ballade in D major Op 10 No 2,,7,provisional,,,,,3.25,4,8,68,6,12.435,1,2,5.4
+./mxl/17/52/QmZxx1yzTynEMJSaBUhmaNnJ4z5vSDS6wenvX8FiuybMve.mxl,In Loving-Kindness Jesus Came,,3,provisional,,,,,5.334,3,3,33,1,1.13,0,1,3.881
+./mxl/17/53/QmZXA3Gq3kNCFhSGCWXHQ4GCmcj4m2aQtANSHadW65X7e1.mxl,"Musette, from English Suite No. 3 in G Minor, BWV 808",,7,provisional,,,,5.68,5,6,4,51,3,14.585,1,2,5.086
+./mxl/17/54/QmZy4ZR3YFGv5wffKZpBZCTwDQimjsc3NUUpVJytYbMLEy.mxl,Suite Bergamasque I. Prelude,,7,provisional,,,,2.83,5.25,5,5,70,5,6.785,1,1,5.144
+./mxl/17/54/QmZyi8gtK8quGzsGtM4jr8Nkrk3jswuCLTf1ASKo4My9Uj.mxl,Study - op 849 no 26 G minor,,8,provisional,,,,8.77,9.75,4,4,60,4,7.245,1,2,4.918
+./mxl/2/0/Qmc1fUWeRjqbJjMqjS4uBmDdyo1GcgDUhRiavhNan899QX.mxl,The Star Spangled Banner,,2,provisional,,,,,2,4,2,39,1,1.455,0,0,4.188
+./mxl/2/11/QmcbunzedZKdrjB2kFsMhu9EJJASoEdr2gurmDYgByVA1Z.mxl,Lied ohne Worte (No 3 from Lieder ohne Worte Op 102),,4,provisional,,,,6.17,4,3,4,55,4,6.655,0,0,4.635
+./mxl/2/15/QmcdbsHc5YAcM8uo34753p6JrPsutPMF8P8K3zTknarxBV.mxl,He’s a Pirate,,4,provisional,,,,4.49,3.834,3,4,58,4,0.975,0,1,4.79
+./mxl/2/16/QmcDKU98adBY3Vtffgk2iDgC6HqB3wSvX3CHLMqVdWnC6v.mxl,More About Jesus,,3,provisional,,,,2.04,4.666,4,2,31,1,0,0,4,3.658
+./mxl/2/17/QmceUd7T4GgvzX3Mr39Dfi21xmVRtcw6FEtRCPELBWy25f.mxl,Carmen Overture (Prelude),,7,provisional,,,,4.98,4,5,4,59,4,7.99,1,3,5.229
+./mxl/2/2/Qmc32HE7LJp4vS26SSCarXsDbhxDUa7X8PS1QiEcUbdND8.mxl,I Hear the Savior Say,,3,provisional,,,,,5.334,3,2,29,2,0.505,0,3,3.439
+./mxl/2/2/Qmc3MuLZ8Q4UU2PAMjmcpqZwYFcvvoujXAgkkmsKW7914p.mxl,Andante sostenuto - op 72 no 2 Eb major,,6,provisional,,,,2.47,7,5,3,49,3,8.03,0,3,4.317
+./mxl/2/21/QmcgB3DYZQbaR69BEWWBMmhjHsjv8sYP5XwRbfCDWAaYS8.mxl,Waltzing Matilda,,1,provisional,,,,2.73,2.375,3,2,25,2,0,0,2,3.519
+./mxl/2/21/QmcgPrR41ikm5Ci6ABVf4r58KCVov3VKepGZTgAnGRCoPD.mxl,Invention No 5 in Eb major BWV 776,,6,provisional,,,,5.73,6.5,5,1,45,2,6.655,0,3,4.874
+./mxl/2/21/QmcgjQVzWTS3bA51emSjoVANNB8B6uCZ6mQMA5qG7jbKWD.mxl,Etude in A minor Op 25 No 11,,8,provisional,,,,3.08,9,4,5,77,5,23.13,1,0,5.852
+./mxl/2/22/QmcGMritNExjUGrwx4M49g5wn2icrqDSH3rCmqk73yofqo.mxl,Ding Dong Merrily on High,,5,provisional,,,,,4.25,4,4,57,4,0.585,1,0,4.934
+./mxl/2/22/QmcGZzeY6UF3xg8vL9JHv1G8k4zN3s5zY5VnHA8DCSrQkK.mxl,Etude in C minor Op 2 No 1,,7,provisional,,,,3.03,8,4,4,53,4,5.72,1,4,4.83
+./mxl/2/27/QmcJnpCN6cz8sgQEbEPawNrDd9UTKV3GsdshVVQB3HSjEE.mxl,Prelude in B minor Op 11 No 1,,7,provisional,,,,3.26,8,5,3,62,5,8.37,1,2,4.795
+./mxl/2/3/Qmc42cgofgHnCDDG613AcmEpJ95ch7WBt5N4YNBkikeJMZ.mxl,Air from Little Russia Op 107 No 3,,2,provisional,,,,,2.75,4,1,43,1,0,0,1,3.835
+./mxl/2/33/QmcnHx5NQFbrBC7NxcNec9Zn4WcEVxTi9JQc3ZcqtRht3y.mxl,"Practical Exercises for Beginners, Op.599",,6,provisional,,,,,9,5,3,55,4,1.765,0,2,4.635
+./mxl/2/37/QmcPpKc66Y5sbz3k5wtgASCeMGdTvmuYTg4MHDDww1ej23.mxl,Sonata in A Major D.664,,8,provisional,,,,,4.125,4,6,71,5,11.82,1,3,5.423
+./mxl/2/38/QmcqNexj8MBZpBrjaFTUCRGRiPSfsYLxXto8GCakozL3nj.mxl,Angels We Have Heard On High,,2,provisional,,,,,3.5,3,2,29,1,0,0,1,3.796
+./mxl/2/39/QmcQoygH7hjNEjjC1zEwfc6AZm9tAGMrb2wbxLiCphymsP.mxl,Prelude in Bb minor Op 28 No 16,,8,provisional,,,,1.95,6.5,4,4,74,4,21.625,1,5,5.685
+./mxl/2/40/QmcrPvcivKX5XFBkqheUuQq68rg8uU9ft3Xif4jBTxjRCW.mxl,Matin (Musique denfants Op 65 No 1),,5,provisional,,,,3.36,2.666,3,1,54,4,17.35,0,1,5.308
+./mxl/2/41/QmcRfYZGjX4W6phNstFQV4SUvyYY7j7ZCqg6dY53rB6Btj.mxl,When the Saints Go Marching In,,2,provisional,,,,,1.25,3,3,48,2,3.86,0,0,3.963
+./mxl/2/41/QmcRkqTkTZarjJDmdGUknRfZ8yPJhwtc8xBiJJ3f8pbJvR.mxl,When the Saints Go Marching In,,3,provisional,,,,2.82,2.5,3,4,36,2,2.38,1,1,4.127
+./mxl/2/42/Qmcs7JRPs1PRhksfrKDH2SxY9Eq4HEr7HkEvEn4hXVkmUu.mxl,"Allemande in E flat from 12 Allemandes, Op. 4 No. 4",,4,provisional,,,,3.5,2.667,3,4,48,2,4.93,0,3,4.572
+./mxl/2/42/QmcsZVheVtcaFM4mn9qVLAW9Vh3D8tTG4r54452M6vFWvg.mxl,Sleeping Beauty Waltz,,5,provisional,,,,5.43,2,4,3,34,5,8.24,0,2,5.267
+./mxl/2/47/QmcUD6aXYAZ42JUjEGmNXCNwzq8G8j59WyAYHNoUek8p7d.mxl,Butterfly No 1 from Lyric Pieces Op 43 in A major,,8,provisional,,,,9.72,5.25,4,3,72,9,16.195,0,3,5.075
+./mxl/2/47/QmcUnBd4434aAoJ3qn82XwZ2mZKBu8zC8BJL4vWUXhPWuF.mxl,"America, the Beautiful",,1,provisional,,,,1.26,1,3,1,14,0,1.8,0,5,2.949
+./mxl/2/49/QmcVLsCUT8bZV1K2MYUyHNBDxSJUUK8eDFR3GTZU2ih3xH.mxl,Down by the Riverside,,4,provisional,,,,3.09,2.75,3,4,55,4,6.075,1,1,4.518
+./mxl/2/49/QmcVfnCm9pkyvx48GZQACf4CYJB46RkFjVNP6SEj4PNyUT.mxl,Mazurka in C major No 3 from Four Mazurkas Op 33,,4,provisional,,,,,3.666,4,4,47,3,9.02,0,0,4.561
+./mxl/2/50/QmcwciG4bzxK7wgQQSyqU5uF2KaXjdNdCn8aa52oDgMBpi.mxl,Minuet K.94,,3,provisional,,,,,2.167,4,2,41,2,5.815,0,2,4.423
+./mxl/2/51/QmcWuHWBQJwASExQi9qC11ZUeRHnSxU6Dxti5B5Bbgod78.mxl,Leaning on the Everlasting Arms,,2,provisional,,,,2.25,4.25,4,2,28,1,0,0,3,3.649
+./mxl/2/54/QmcyP6kLSZ8Ea5CLkziSCcgiaMxnEBcJVy2E84Q7C8ySCY.mxl,School of Velocity Op 299 No 6,,5,provisional,,,,,5.5,4,3,60,3,5.905,0,0,4.714
+./mxl/2/55/QmcYXSxYsj8B4kgJX5X7TayL9pXY4fcYNsY4HcQ4pxyD72.mxl,Mazurka in Ab major Op posth. B 85,,8,provisional,,,,2.23,4,3,3,45,3,38.83,0,4,5.043
+./mxl/2/55/QmcYdVAdoqPzSreBT2Aihn5XKTNFDreFh9mbuSgeRkEGoZ.mxl,Adagio arr. Bach BWV 974 (after Marcello),,6,provisional,,,,,7.666,6,4,46,3,6.695,0,1,4.667
+./mxl/2/55/QmcYjsNJFvAZSsiaX2rAG6j14mx8e2jUikQf4fjgYfSWXn.mxl,"Pass Me Not, O Gentle Savior",,2,provisional,,,,1.37,2.125,4,2,31,2,1.545,0,4,3.656
+./mxl/2/56/QmczrVBCXLWp4njUygUtPaMz8gtCZetE9UyUD8NXdcTPnt.mxl,Scarborough Fair,,3,provisional,,,,4.57,2.333,4,2,60,5,0.655,0,1,4.02
+./mxl/3/1/Qmd2Q45jhSgC9BLEvL1J39gTWpS9KTHgXSKmosfCSaq6zH.mxl,'Spring' from the Four Seasons,,2,provisional,,,,2.58,2.125,3,3,33,3,1.165,0,2,3.635
+./mxl/3/1/Qmd2a9jGTMQKA3LkLZyDjcq46ypGUpLb8bJxHNcWrFPkwF.mxl,Mission Impossible,,4,provisional,,,,3.53,2.5,3,4,50,4,10.005,0,2,4.286
+./mxl/3/1/Qmd2vTckqKPuSxxA5yu1xs8o5zXnxVS4dvoE8WdUCKuNwR.mxl,The Irish Rover,,2,provisional,,,,3.97,3,4,3,33,1,0,0,0,3.704
+./mxl/3/12/QmdBfR996vfyD22i7aR5N2i94XcBU71KfneDWcgTrKM1t1.mxl,"Prelude in D minor, BWV 935",,6,provisional,,,,6.96,6,6,1,46,3,9.185,0,1,4.797
+./mxl/3/13/Qmdcmsy6jQRqQsDMeHR9Vqti7W67LiF7gZsqoEFYruC5yT.mxl,Heart and Soul,,1,provisional,,,,3.38,2.375,3,1,38,1,0,0,0,3.713
+./mxl/3/15/Qmdd97Gg3wapUpvbkHqxB1cMzTgm2NntauTiLuLHWd3Dt1.mxl,Hallelujah arr. Miller,,3,provisional,,,,,3.333,4,6,35,3,0,0,0,4.066
+./mxl/3/16/QmdD7gkFEvdZBMkV9ooyPULRXVgr2pp1R5fTdyKLpKsM7W.mxl,100 Progressive Recreations,,B,provisional,,,,,1.333,2,1,19,1,0,0,0,2.832
+./mxl/3/19/QmdfyMFpSZmt9TjqXN5JBxUBUZJWWenmsEDfEJEV4o6yc5.mxl,Your Song,,3,provisional,,,,3.19,2.25,3,3,49,5,3.085,0,2,4.312
+./mxl/3/2/Qmd3sC7g9RyjsLvVCwNgtS2tC2bFbhLR29JcZsagWKcYy8.mxl,"O God, Our Help in Ages Past (St. Anne)",,2,provisional,,,,1.69,4,3,2,31,1,2.63,0,0,3.971
+./mxl/3/28/QmdkLiURnDeF2XHAodLc8MximXLJAshPtHjdCXQn5tjwhj.mxl,Faith is the Victory,,3,provisional,,,,2.26,5.334,3,2,32,2,1.165,0,1,3.877
+./mxl/3/37/QmdPjReRn2xf8pU9pyEGDf2k3VqmV7jaQEDAxo2E5rAzKD.mxl,Etude in C minor Op 10 No 4,,8,provisional,,,,11.24,7.25,4,5,75,5,22.435,0,4,5.487
+./mxl/3/40/QmdrtefCD8SnNpKKW3PMv2SVvscajjNm9o2vU5LqNXbC9p.mxl,"Danse Creole, Op.94",,8,provisional,,,,3.34,5.25,5,5,80,6,9.825,1,6,5.236
+./mxl/3/43/QmdSdXPCpYDpXmHqsryBBtNZo2aV3cQaQf1TJG7ojrPZqd.mxl,Old Folks at Home,,3,provisional,,,,1.81,4,4,2,27,9,0,0,2,3.641
+./mxl/3/44/QmdtHTM5ezYirknXMW19bu7nDt5ckKKMFYQ463AmhZiKpe.mxl,Sonata - K 531 E major,,6,provisional,,,,7.06,2.667,3,3,53,3,17.76,0,4,5.087
+./mxl/3/45/QmdTZbbMT8VGXoYtr8S8LCfqDpmCd6go7ydUsMVVTCjP6K.mxl,Allegro - K 1c in F major,,2,provisional,,,,3.34,4.5,4,1,43,3,0,0,1,3.701
+./mxl/3/46/Qmduj4rwk9Ftb4648ZXgTJM6emaj7E3V3MUKat9Jhr5fPx.mxl,Mary Had a Little Lamb,,B,provisional,,,,,1.875,2,1,19,1,0,0,0,2.805
+./mxl/3/46/QmdutfVD4XXY4PgLMGV3182HooKGV3xCCCqDuUmQ6tfRjJ.mxl,Partita No 1 in Bb major - BWV 825 - mvts 5 and 6 Menuet 1 and Menuet 2,,4,provisional,,,,,3,4,2,41,4,6.045,0,2,4.546
+./mxl/3/47/QmdUauH9VqGnEtRTkQF4EXmh4Kk4UsEoMpLrsmwqs66Bip.mxl,Theme from the Surprise Symphony,,1,provisional,,,,,1.375,3,3,33,2,2.105,0,0,3.884
+./mxl/3/48/QmdvFCVvG7nUS3bL9CkN5bdKaAUzQmiefKYdiK7r5nXwQd.mxl,Sonatina in G major Anh 51,,B,provisional,,,,2.75,1.375,3,1,12,1,0,0,1,2.793
+./mxl/3/49/QmdVeJb4QjMx5kcpVHjdd6AQVXwpsMzTUidvPtoo8GfdDn.mxl,Intermezzo in A major No 2 from Clavierstucke Op 118,,7,provisional,,,,2.39,5,4,4,57,4,11.84,1,3,5.034
+./mxl/3/51/QmdW7voGooa8aQgtnVTjhpK148FU3dms84nQA9M9JUNWCQ.mxl,Spinnliedchen Op. 14 No. 5,,4,provisional,,,,4.07,5.5,4,3,40,2,7.19,0,1,4.059
+./mxl/3/51/QmdWo18ehCso3gXAy1BpcJ7fWjisUKViTbPA7X93KZcKU6.mxl,Fuga III BWV 848,,8,provisional,,,,7.64,6.25,5,4,47,3,6.945,0,7,4.824
+./mxl/3/52/Qmdxy33S8g8Teqyarysz4Wq5VcacGFXuJWJxUTi4zDynzf.mxl,French Suite No 5 in G major BWV 816 mvt 7 Gigue,,6,provisional,,,,5.95,7.651,4,2,46,3,5.205,0,1,4.92
+./mxl/3/54/QmdyZ27LcdC89sy9asH8ZoR98nCXSgCrvLrfH7b7EMQYmE.mxl,Waltz in Ab major Op 64 No 3CT 214,,7,provisional,,,,4.39,4,4,4,69,3,18.24,0,4,5.265
+./mxl/3/54/Qmdye71EVqEvQ24Qy6dPy9J7aP637DYiWJNjsGVBEnCSwS.mxl,Satin Doll,,4,provisional,,,,2.11,2.25,3,3,48,2,16.14,0,0,4.66
+./mxl/3/55/QmdY69qbeK5BBhuPSdFQhZ5fPoMBugB6rtXngDJaBiyuHj.mxl,Sadness and Sorrow,,5,provisional,,,,2.83,3.5,5,4,76,8,0,0,1,4.849
+./mxl/3/55/QmdYnRk3V5JCVsfQjGkko66GNcfARCmw116EEhow3ATS1o.mxl,"Perhaps, Perhaps, Perhaps",,7,provisional,,,,,5,5,5,62,4,12.565,1,1,5.113
+./mxl/3/56/Qmdzq8ZsxY3npCAJKqYaXzGGHLA6N71265Jgc2mnCwLpda.mxl,Daghela avanti un passo,,7,provisional,,,,,9,4,4,69,5,2.215,0,1,5.036
+./mxl/3/56/QmdzyR1BEzkK5eUDmP3YUszShZ77TLYoPTfRmEM1rddCc5.mxl,"God Rest You Merry, Gentlemen",,2,provisional,,,,,1.5,2,3,31,0,0,0,3,3.702
+./mxl/3/7/Qmd86zGKZevHmYAHnCEj4d3yW4bq9iK6QDtDw4XKWZHnLs.mxl,How Firm A Foundation,,1,provisional,,,,1.26,1.5,2,3,20,1,0,0,4,3.257
+./mxl/3/7/Qmd8nfVoRXZckQi5XMygRbKDmLRSa4PZif38hSyGCFif7X.mxl,"Piano Sonata No.14 in C# minor, Op.27/2 (Moonlight)",,8,provisional,,,,9.35,7.25,5,8,59,4,7.03,1,4,5.256
+./mxl/3/8/Qmd9krjmxX9dD9aR8S4M2gGMghqyBKFyDGzNgmBvSG7zLU.mxl,Etude in F major Op 10 No 8,,8,provisional,,,,12.17,6.5,4,5,76,5,10.315,0,1,5.468
+./mxl/4/0/Qme1vC9NH2hnPmfa7h8R3weUaV6E9SdzzFxnxvHs7hoPee.mxl,"Come, Thou Almighty King",,2,provisional,,,,,3.666,3,2,33,2,0,0,1,3.653
+./mxl/4/1/Qme2p6FB8XxVyrWPk4bcggeTNh7QW28tukHSeJGCZaXyZY.mxl,"Prelude No.12 in G-sharp minor, Op.28",,7,provisional,,,,2.24,5.333,3,4,55,5,13.63,0,5,5.106
+./mxl/4/10/QmeAwGCaQq4ST5D3fnVQ4Y64tu8VvL5dVnLFLU112Puhm4.mxl,Sometimes I Feel Like a Motherless Child,,3,provisional,,,,,2.75,3,2,34,2,13.94,0,1,3.889
+./mxl/4/10/QmeAx52MBc5ea57mgxZAgo5TAC2fg2wQswfiC3UNZhHC2w.mxl,Mission: Impossible Theme,,8,provisional,,,,,8.333,6,6,77,6,26.34,1,5,5.143
+./mxl/4/12/QmeB9Qgwss3EtX43xsvjNZJYGjHtoHj7gcTNDYLY9hAZVU.mxl,Le coucou (The Cuckoo),,5,provisional,,,,8.12,5,5,3,45,2,4.78,0,1,4.374
+./mxl/4/13/QmecdkkSeqYbyHJYP8m1s2sNV2Un2c5P1kX7D6NR5ykG8z.mxl,Prelude in C major Op 28 no 1,,7,provisional,,,,,12,4,2,55,3,6.695,1,0,4.632
+./mxl/4/16/QmeDASLRDvYVeroFT8dJHMQJMGCDgzy9DRSem6y6M8jSrT.mxl,"Piano Sonata No.17 in D minor, Op.31/2 (The Tempest)",,8,provisional,,,,6.82,6.667,5,5,60,4,19.19,1,1,5.334
+./mxl/4/17/QmeeUM3amVoKCRAmKaQ1AQASCxoRTLUGq85YJroH2feD7P.mxl,Praeludium 20 - BWV 865,,6,provisional,,,,7.53,7,5,4,48,3,9.035,0,0,4.928
+./mxl/4/18/QmeEXeR9k3QGi4GKHwRw4qNUNBK5BrEVh37DAAWgjswthx.mxl,"6 Little Preludes, BWV 933-938",,4,provisional,,,,4.83,5.375,4,3,48,3,3.565,0,0,4.58
+./mxl/4/18/QmeEejJZ5MQEzJjJzqnEFhW9Y4nDyWrK5Py3psjuCTENEe.mxl,Fugue in A major on a Theme by Albinoni BWV 950,,7,provisional,,,,5.24,6.75,5,3,47,3,14.695,0,2,4.976
+./mxl/4/22/QmeGRbC8CS8ofhZDSDUNkiAYKR3eK3VFdDEywFN5KhcPbd.mxl,Old MacDonald,,B,provisional,,,,1.69,0.25,3,1,9,1,0,0,0,1.88
+./mxl/4/26/QmejAvfGAAdj9ZNpU76p7BCpSvxnzSdW2RwfhxbB2mQzZF.mxl,Ode to Joy,,B,provisional,,,,,0,3,1,16,1,0,0,0,2.826
+./mxl/4/28/QmekJemP7Nd4EV4DCqZmCdp76Hsh6r32A51EYZHKKgqiZu.mxl,"Prelude No. 6 from The Well-Tempered Clavier, Book I",,4,provisional,,,,5.71,4.5,4,3,45,4,2.9,0,0,4.437
+./mxl/4/29/QmeKeAYAEpmCrm8NaHEUmqs58D4e28DhC9ECHcknJhpuUr.mxl,Jesus Is Tenderly Calling You Home,,3,provisional,,,,,5.667,4,3,28,1,1.9,0,0,3.678
+./mxl/4/29/QmeKgGDR4DbYdrbk1SoRSeA5JnopvvDGx1YFPgRbg1oKeo.mxl,"Onward, Christian Soldiers",,3,provisional,,,,1.65,3.625,3,3,36,2,0.7,0,2,3.904
+./mxl/4/3/Qme4QYAn916MeagaLdKZJRCjaWXXmqb1E2Y3Q24kVdjMma.mxl,"Lyric Pieces, Op.12 (Complete)",,5,provisional,,,,2.36,3.334,4,4,38,2,12.06,1,3,4.413
+./mxl/4/30/QmeLvEs8Wc6mXjq5EeFKJgQhtRwL2ciZvJQRC8vEhKbqBm.mxl,Witches Dance Op 4 No 2,,4,provisional,,,,4.13,3.333,4,4,55,3,10.085,0,0,4.708
+./mxl/4/31/QmemRRA7t1XiDzMPB3SWLBKDYdV2RnbC5GbcUub9SVbgzp.mxl,Dancing Queen,,2,provisional,,,,3.46,2,4,2,28,1,0,0,0,4.16
+./mxl/4/31/QmemjuhU2UbA5z4RFjxvWXXueYwNKhJNbARshowt8Ar7Rm.mxl,Dance of the Elves No 4 from Lyric Pieces Op 12 in E minor,,4,provisional,,,,3.4,3.333,3,3,48,3,7.37,0,1,4.348
+./mxl/4/35/QmeoQbX6EjVU1nwHU527kQT83kZVxepbGzunnX4BEte2ou.mxl,Etude in E minor Op 25 No 5,,7,provisional,,,,6.19,5.333,4,4,73,5,14.9,1,1,5.42
+./mxl/4/36/QmepdEgDRkBfNLzy9QE7zjnA8ooBKWKZWHQFgErQ2XaDPb.mxl,"Song without Words, op. 53, no. 1",,6,provisional,,,,5.61,5.5,4,4,54,4,9.675,0,4,4.7
+./mxl/4/38/Qmeq6Qkqd2n8fEEdHEZziKY6Nin9osXFxUcvGMYvp3jWDk.mxl,Karma Police,,3,provisional,,,,,0,4,2,47,4,9.775,0,0,4.46
+./mxl/4/38/QmeqmJYpbARpZhz7BWVGbCf3crHupgn8DJWVPtm3bdAnUa.mxl,Black and White Rag,,7,provisional,,,,4.76,8,4,3,65,4,7.225,0,1,5.163
+./mxl/4/4/Qme5Ex9Bw8m9cSM57qvf11pAB2uALfvXBiydCUmoAywGGS.mxl,12 German Dances/5 Ecossaises D.420/529,,3,provisional,,,,3.05,3.666,3,3,41,2,1.615,0,2,3.992
+./mxl/4/41/QmeRRKKzDXC64NQmzfcKVWMmbef53TF8RJUkw3EV9DVqk2.mxl,"Someone You Loved, arr. Iles",,6,provisional,,,,3.21,7.25,5,4,52,4,0,0,5,4.38
+./mxl/4/42/QmeswnMFsq7kKrfJU2KHcucQ55D1psa3djU7BiYUptXPPR.mxl,Theme from Sonata K331,,B,provisional,,,,,1,2,1,31,0,0,0,0,3.182
+./mxl/4/44/QmetT8GVL76bxCnqVhbZdf2WG8DfpcsmQLdRNi528R5mUs.mxl,11 Ecossaises D.781,,7,provisional,,,,,4,4,4,66,5,5.975,0,6,5.545
+./mxl/4/46/QmeuK3Unr7ybzDCvVVbU4Eu878nUjDhRJpZMyzzMY5EQyr.mxl,Moonlight Sonata (1st mvt),,6,provisional,,,,2.24,4.5,4,4,58,4,9.57,1,4,4.899
+./mxl/4/47/QmeU8XSDpxiR44jD8iERtaMGqLpgjxQqLr8mFEg8jhVPT4.mxl,See Amid the Winter's Snow,,2,provisional,,,,2.12,3.875,3,2,31,2,1.73,0,1,4.05
+./mxl/4/47/QmeUVxEndLc6aw266S2VLdh5zbhBaxQ9SasQ3C5YPxU7Bb.mxl,Under the Sea,,5,provisional,,,,3.66,3,5,4,58,4,1.405,0,2,4.903
+./mxl/4/49/QmeVkP7EWTjxJBHryaXqsMjgTkkjk7Eu1pXYXLGCZ2v48o.mxl,Etude in Ab major Op 10 No 10,,8,provisional,,,,11.11,10,5,4,69,5,4.245,1,6,4.816
+./mxl/4/5/Qme6kbC9VxbzvXbnxbMC71d7QC2vPdoQvN7kw8emCcrvJB.mxl,Oh My Darling Clementine,,1,provisional,,,,,3,3,3,24,1,0,0,1,3.402
+./mxl/4/51/QmeWbQT39PyNhkPKYbthTT4PpKktFzvRgvbQdpAhZXfKWN.mxl,"160 kurze Ubungen, Op.821",,3,provisional,,,,8.53,6,4,2,31,3,1.075,0,0,3.779
+./mxl/4/55/QmeYyrNzPbPP7qPvH1mF2KhqMdXGgTGRWyJGUcC911em8v.mxl,Adagio for Glass Harmonica in C major,,3,provisional,,,,,2.5,4,3,28,3,12.055,0,0,4.139
+./mxl/4/56/QmezpeoQXq371mDHCQG7s8Nb7Ej5iTbhN9GSK1cq1ZM2CW.mxl,"Onward, Christian Soldiers",,3,provisional,,,,1.5,3.653,3,2,32,2,0.715,0,3,3.908
+./mxl/4/57/QmeZGCq4yEPgFQahrVwV5AsP1bvLtv8zwaxRhD7tBwPRJH.mxl,Minuet in G major BWV Anh 114 (Notenbuch der Anna Magdalena Bach),,2,provisional,,,,2.62,2.334,3,3,40,2,1.835,0,1,4.223
+./mxl/4/7/Qme88a7Fvz73EWc6i6ba61XjfTNxj1cJPeZBRsh1EGqVrC.mxl,Ballade in F major Op 38,,8,provisional,,,,3.7,5.667,5,5,74,5,18.885,1,1,5.621
+./mxl/4/7/Qme8Dz2TtWJPTk6QauUhcmxxzbGz9xhnwj4DMYfMDUxZPb.mxl,Ballade L 70,,7,provisional,,,,4.22,6,4,5,67,4,8.53,1,1,5.427
+./mxl/4/8/Qme9ePDW9tzuX4sRdXnzyhVtbqFtGNBfVmLjov2me6M9ck.mxl,"Prelude in D minor, BWV 935",,5,provisional,,,,,6,5,2,46,3,9.58,0,1,4.82
+./mxl/5/12/QmfBcXne3RYUgUuZPhqQqE4giJfdumupz4r86NE8ZEgdBz.mxl,Etude in C major Op 10 No 1,,7,provisional,,,,11.41,4.25,4,2,77,5,15.81,0,0,5.669
+./mxl/5/16/QmfDbYzSNHbKmagNd7PwVSMh2AbHKKe3GcqJoeqt8vFf9Y.mxl,"Piano Sonata No.1 in F minor, Op.2/1",,7,provisional,,,,5.4,2.5,4,5,57,3,13.52,1,4,5.018
+./mxl/5/18/QmfE3SooM2mDSw7pg9uQxPQ1NvneVsyKn4mUndqJeivxkL.mxl,Fantasia  Fugue in A minor BWV 904,,5,provisional,,,,2.77,3,3,4,44,7,16.78,0,0,4.844
+./mxl/5/18/QmfEQXQiKEECdXdC5jDNTRDLY9rExwk3TN9SoBpFDqMASw.mxl,Albumblatter Op 124 Schlummerlied  Slumber Song (No 16),,6,provisional,,,,3.87,4,4,5,49,3,11.385,1,3,4.782
+./mxl/5/18/QmfEfZr8xdbhm1shXXMESpsorjiEfY2b1v62jwUCEJKs2W.mxl,25 Progressive Studies Op 100 No 21,,4,provisional,,,,5.76,3,3,3,52,4,2.405,1,1,4.438
+./mxl/5/2/Qmf335ZPmatmsBC4ajto382k7o7UorS5U6F5juS1bjTEUg.mxl,"O the Deep, Deep Love of Jesus",,3,provisional,,,,,4.375,4,2,29,1,4.115,1,1,3.998
+./mxl/5/2/Qmf3dcvTaY1U8F9gJm5LKCPuoAyjnJY43E7ogTsRqeyB36.mxl,"On the Sunny Side of the Street, arr. Iles",,6,provisional,,,,3.63,3,4,4,72,3,16.19,1,0,5.231
+./mxl/5/20/QmfFJjpsY4YPf4ztZygibno2UKVyAumLx2uhnxMzAJAM6H.mxl,A Sad Song,,3,provisional,,,,,2,4,4,50,4,0,0,0,4.522
+./mxl/5/22/QmfGu9RHmpLworz84xZoUpEgbKDLQaWkPdVVxEy2YSVSXg.mxl,"Chaconne in F minor, P. 43",,5,provisional,,,,3.38,3.333,5,3,48,3,4.145,0,4,4.424
+./mxl/5/32/QmfM3EXchFuJmHHM4QpqbubwQyAdoT4USe9BDNJq5JrcZY.mxl,Alligator Crawl,,7,provisional,,,,,5,4,4,69,4,23.115,1,0,5.3
+./mxl/5/32/QmfM3JtYkeZXaQbaDJrJV3V54mujUrEcGLBEn1djBtaUHM.mxl,Prelude in F major Op 28 No 13,,8,provisional,,,,4.2,6,5,5,77,8,15.995,1,0,5.633
+./mxl/5/32/QmfMAhtDv3usTXwu6xjxG1EDCf376j7CP9sVmAGQcoia7w.mxl,Sonata No 31 in Ab major Op 110,,6,provisional,,,,,5,5,5,49,3,6.535,0,4,4.489
+./mxl/5/34/QmfNseniSwST8r2CM6MKccHfJ4BB5rEu1MiZdmrP9kh2q2.mxl,Prelude in C minor Op 45,,8,provisional,,,,3.44,3.75,4,5,75,7,43.57,0,4,5.567
+./mxl/5/39/QmfQKXZf9jRfYbvmZU8usVRg2ktCbtqbsJG6inTLH19D6g.mxl,Etude in C minor Op 10 No 12 (Revolutionary),,8,provisional,,,,10.51,5.875,5,6,68,11,19.61,1,3,5.423
+./mxl/5/39/QmfQRgKvJD1HzBT8fe3sYsqEiDVk6wKysDxDokriTrhfVS.mxl,Stars and Stripes Forever,,6,provisional,,,,3.81,3,3,5,60,4,9.315,0,3,4.995
+./mxl/5/39/QmfQUCzMimagAnE27ef1xcaVy8NykmgZhc4GzcEkgvvoUr.mxl,Anitras Dance - op 46 no 3 A minor,,6,provisional,,,,3.66,3.333,4,4,60,4,19.715,0,0,4.93
+./mxl/5/39/QmfQocSypoDC3tVaiozeyXpYyPmr4sVxfuCQmG6qHSmkRj.mxl,How Great Thou Art,,3,provisional,,,,,5,3,2,34,2,1.92,0,2,3.956
+./mxl/5/4/Qmf5A79nYB7UV5dZpK9KwSi8Ne8zG48mrMkibh1aWcjSXe.mxl,"Breathe on Me, Breath of God",,2,provisional,,,,,2.666,3,2,31,2,1.885,0,1,3.72
+./mxl/5/4/Qmf5xURa1EHTgU8S2gyeFcLR3emKPHJf3tDzVaiutfAnEX.mxl,Little Brown Church in the Vale,,3,provisional,,,,2.08,4.75,4,3,28,2,0,0,2,3.622
+./mxl/5/4/Qmf5xjwaUVxayxPHUcG4muhnABJ2E2QQgcfejkQYKefk2P.mxl,"Prelude in D minor, BWV 935",,5,provisional,,,,5.48,6,5,1,46,3,9.565,0,1,4.818
+./mxl/5/49/QmfVxuMNNjmxtqevava6E3tUC9A7vTRhVaUdpjZ2KumeK1.mxl,7th Symphony 2nd mvt theme,,5,provisional,,,,,3.5,4,4,43,3,16.86,0,1,4.417
+./mxl/5/5/Qmf6PErv95W6XRHWfnwo5x8m3XtFfkqZ2Jt5zT69Ss4wPR.mxl,Etude Op 299 No 10,,5,provisional,,,,6.12,4.625,4,4,65,3,6.63,0,0,4.967
+./mxl/5/55/QmfYhywhYp5v5dLCaVTVfzUNyAMLArwCXovZgaVTSEPDaN.mxl,Silent Night,,4,provisional,,,,1.51,3.667,3,4,60,4,1.035,0,4,4.339
+./mxl/5/6/Qmf7qmPWUk3TFENDyd5Hf65h3BkLBVvtnbg4kE3AuHQJBJ.mxl,Dizzy Fingers,,5,provisional,,,,7,2.75,3,3,48,3,7.91,0,3,4.572
+./mxl/6/13/QmNcyXXbFxoRp4yPYWPVZN11ygBBtYA6ykcmpL3pjjupAt.mxl,Fairest Lord Jesus,,2,provisional,,,,1.19,2.25,3,2,22,3,2.47,0,3,4.006
+./mxl/6/15/QmNdJ4uAzqMEatfvqR7AoHKzE6sXYFEsw2VPkYsSRXsW5h.mxl,Sonata in D minor K 213 L 108,,6,provisional,,,,3.46,5.5,5,3,48,6,13.2,0,1,4.933
+./mxl/6/15/QmNdR3zY5SS9bfYGV8K8gzWGnd52nDm1K9jRPifXhsXvnC.mxl,English Suite No 2 in A minor BWV 807 mvt 5 Bouree No 1,,6,provisional,,,,6.4,6.333,4,3,48,3,10.305,0,0,4.919
+./mxl/6/17/QmNecetm6r2YzsBRcQ1mCGFLxhvpNusxJF4cJbzHBzRtCq.mxl,Happy Birthday to You,,B,provisional,,,,,1.167,3,1,12,0,0,0,0,2.709
+./mxl/6/19/QmNfC6fPqeR7yL9itPc19BGcpaNn4y8F8ZiVegEzrSuqkP.mxl,Fugue in Bb major HWV 607,,5,provisional,,,,,4.125,4,3,50,2,5.485,0,2,4.769
+./mxl/6/23/QmNhMwJyexpk6vePQ89AN3uw5uG7Ue2iwJDJEq1ua7gxzB.mxl,Camptown Races,,4,provisional,,,,3.44,6.75,4,4,48,5,0,0,0,4.023
+./mxl/6/28/QmNkuosBpVNqAdUBEsC7j2chDgGXUZJdjNKNZzaDZiLske.mxl,Count Your Blessings,,3,provisional,,,,2.4,4.75,4,2,29,2,0.3,0,3,3.484
+./mxl/6/28/QmNkvT8jr5LJPb9Pu9hHsT9CMX1ghW3KAPbrrbuW2nBE7k.mxl,"Polonaise in G Minor, BWV Anh. 125",,5,provisional,,,,4.61,5,4,3,44,2,8.355,0,2,4.466
+./mxl/6/31/QmNmhQ9a43aNtYEUQGyiWJWjF8dLsr8HounSzKeKwLXq8o.mxl,Sonata in G major K 391 L 79,,3,provisional,,,,3.47,2,3,2,55,3,2.135,1,1,4.635
+./mxl/6/32/QmNMrmAX9M6y6ye7vJVmFwerT5WsfzxHeKvFw2ZySzveh6.mxl,Etude-tableau Op 33 No 8 Grave in C minor,,8,provisional,,,,4.53,6,5,5,75,5,15.375,1,2,5.179
+./mxl/6/33/QmNn3mLEW2GbdARLc5iZrZVV4K8NJMgX42ci6MY9kLScBy.mxl,Jesus Is Tenderly Calling You Home,,2,provisional,,,,2.25,5.667,4,3,28,1,1.9,0,0,3.678
+./mxl/6/33/QmNnKqxQrUPJm5EyiRExBg4e81iHGsRwccGeKSYi1PgZoR.mxl,"The Art of Preluding, Op.300",,5,provisional,,,,2.23,3.75,3,3,61,4,11.995,1,1,5.128
+./mxl/6/34/QmNNEw95ndQ6v6hcAffQnp1pNB4WwjCn3u9qtsxXREG8DZ.mxl,Salut damour Op 12 arr. Jones,,7,provisional,,,,2.22,6.5,4,4,65,4,6.365,0,4,5.1
+./mxl/6/34/QmNNGiimJDmcNwbeChBnHzumr66vetyisDfaTn3AxkM8iK.mxl,Be Thou My Vision,,2,provisional,,,,2.58,2.333,3,3,37,3,0,0,1,4.182
+./mxl/6/36/QmNpKpq82DUBdAwPxBR1iK4gK7p5jZDPDaJH1aU3fAiWsH.mxl,"The Seasons Op. 37a, No.3. March - Song of the Lark",,6,provisional,,,,3.06,6.25,6,3,48,2,12.045,1,2,4.545
+./mxl/6/36/QmNpmEYdfCWUtEqnNkSX4LKDaVUFDZNrefuf2BgNRKTTQh.mxl,Mii Channel Theme,,6,provisional,,,,2.78,2,4,1,27,2,40.2,1,3,4.314
+./mxl/6/38/QmNqgvKQnizaZFxxExpjXuyizpUx6X1z9oDAPXoYdV4ke6.mxl,Forrest Gump – Main Title,,4,provisional,,,,,3.25,3,3,54,4,1.155,0,3,4.669
+./mxl/6/39/QmNQUCJXnx7RiSRGrK4w6Err8gzbuAwrutoHH8XfpWJ1rv.mxl,Through Moanin’ Pines (no. 1 from From the Southland),,5,provisional,,,,1.33,3.375,3,5,52,3,12.54,0,3,4.678
+./mxl/6/40/QmNrd7h2qw73efHz922LhEEhRJitKNjRQtP7RGkM6fnwP8.mxl,Peaches and Cream,,7,provisional,,,,4.92,7.5,5,4,62,10,7.055,0,0,5.078
+./mxl/6/43/QmNSDSW8PtGef71CEvbYbzE8ZDXKFqmVEVRmV3NmYkfM6b.mxl,"Piano Sonata No.1 in C major, K.279/189d",,6,provisional,,,,5.1,4.875,5,4,57,5,8.295,1,0,4.992
+./mxl/6/47/QmNUb9naFC7iTu4pG8qErcXarTucy5V6jiGEWqKvjvBHXP.mxl,Fuga a 4 BWV 846,,6,provisional,,,,3.38,8.25,5,3,44,3,8.425,0,0,4.709
+./mxl/6/54/QmNy8h1hS93uqwdXgFTkjjGo4MXvi5xM5mmrePTcRPLJkU.mxl,Etude-tableau in A minor No 2 from Etudes-tableaux Op39,,6,provisional,,,,0.38,0,5,4,70,5,16.035,1,3,5.342
+./mxl/6/54/QmNyaupjnP2L7AgSvjuq5TmDoDhqCJiKhGd8rT9CefbkMY.mxl,Clair de lune (no. 3),,2,provisional,,,,1.26,2.445,3,3,43,2,2.205,1,0,4.172
+./mxl/6/56/QmNzLaGaVjZwdhMa4qPUZRypAk9fbPHdiCpV5pPeKHEkSF.mxl,Like a River Glorious,,2,provisional,,,,1.36,3.125,2,2,33,2,2.3,0,1,3.977
+./mxl/6/9/QmNa7CMGVoZ9xNXBffWqnJSX9hmAd2LGxKi94R9MHJZ5ju.mxl,Fairest Lord Jesus,,B,provisional,,,,,1.5,2,1,13,1,0.48,0,2,2.683
+./mxl/6/9/QmNaqD2Nuzp8hPCEAucgS8JvuyUkmdnv6faRRJGGPvdgp3.mxl,Op 45 No 19 in F major - Spinning Song,,5,provisional,,,,,6.5,4,4,69,10,2.465,0,1,4.249
+./mxl/7/10/QmPAiAnfCj6XrH3ofvRLy5yjCQbidz8WoCAb738C2v2NtQ.mxl,Piano Concerto No.21 K467 2nd mvt Elvira Madigan,,5,provisional,,,,4.6,1.375,5,3,53,3,11.605,1,1,5.083
+./mxl/7/12/QmPBMKck7ktzCM82ggWXePzbzpXPxrAP7euW2HmrX4oF3o.mxl,12 German Dances/5 Ecossaises D.420/529,,3,provisional,,,,3.18,3.667,3,3,44,2,3.255,0,2,4.083
+./mxl/7/13/QmPcZ5vXeX5YEK77qDFMLrNkswKpMsRczQgeg3wfWeki6V.mxl,Minuet in G major BWV Anh 114 (Notenbuch der Anna Magdalena Bach),,3,provisional,,,,,2.334,3,3,40,2,2.5,0,1,4.218
+./mxl/7/13/QmPcq4TB1ENfcbt3DLoQCPuma3TyfpPQauL5BD3tdciZSG.mxl,"6 Concert Etudes after Paganini Caprices, Op.10",,8,provisional,,,,2.15,6.125,4,10,72,6,29.63,1,1,5.367
+./mxl/7/16/QmPD8KJxtDLSJ8TXNt9NWEkfVBmKDFWbRDr7RjECeWzz8V.mxl,A La Claire Fontaine,,B,provisional,,,,,2,4,1,19,1,0,0,0,2.467
+./mxl/7/16/QmPD9REJU9ssdA78fLwzoFYeWFS1SpiGuUvx2TcTqNST15.mxl,Gigue in G major K 574,,7,provisional,,,,5.68,4.4,3,4,55,3,25.025,0,1,5.255
+./mxl/7/17/QmPeNkeB5bQroiUhMR7SW343pzY9G7Y9qVDniLthP3Zf4e.mxl,Cielito Lindo,,2,provisional,,,,,2.667,3,3,48,3,0.24,0,0,4.118
+./mxl/7/19/QmPfuNsdEtFJHYiNnsd493vNW1ULx6ADCP737YpjePWbEW.mxl,"Keyboard Sonata in D major, K.335",,4,provisional,,,,3.56,1.75,3,2,48,2,10.64,0,2,4.703
+./mxl/7/21/QmPg3YVnGmALX7TUEjpNtHobhqaizy6pDCmuSkW4xEvT5H.mxl,Rondo a Capriccio (Rage over a lost penny) Op 129,,7,provisional,,,,8.73,5,4,4,60,4,14.995,1,1,5.39
+./mxl/7/21/QmPgFprxSsW4RuKEDB5rHrHEigDSxRft3HjDiHVnEARFEL.mxl,Mazurka in C minor Op 30 No 1 CT 68,,5,provisional,,,,,3.334,4,3,48,3,13.59,0,3,4.598
+./mxl/7/25/QmPijiohPK3Hqk3WnVhsRqiZMimuksJaXQCu62y5DtKWpK.mxl,Lullaby of Birdland,,7,provisional,,,,,4.625,3,4,48,4,20.13,0,4,4.848
+./mxl/7/25/QmPizTH53rTEhhJtndw4AhnokFkkcxQYmbTj39dFH3isk4.mxl,Angry Birds Theme,,4,provisional,,,,,5,4,3,53,6,2.54,0,1,4.337
+./mxl/7/26/QmPjXQ2p97GXTXHn39M1srmcMWMoejeqDWKV5sC7VnLV9t.mxl,Flower Duet (from Lakmé),,2,provisional,,,,2.43,4.333,4,1,28,2,1.61,0,1,3.819
+./mxl/7/3/QmP459Gg8em3qE6QpfaoCogABdTCaPp16WSM2ZP41nUu4o.mxl,Frog Legs Rag,,8,provisional,,,,5.82,9,4,4,64,4,7.82,0,5,5.162
+./mxl/7/31/QmPmJvn4UQxr2ucn5xMwBcTcXPqiP6DnnCrDryJw2XCR4D.mxl,Sonata in C major Hob XVI7,,4,provisional,,,,4.21,3.583,5,4,50,3,5.14,1,0,4.624
+./mxl/7/32/QmPMGUoKCzpnHAGzMPQdMbmXS731juBmSKujW1cpkr57ES.mxl,Minuet and Trio K.1,,3,provisional,,,,3.42,2.333,4,2,48,2,3.045,1,1,4.58
+./mxl/7/32/QmPMz5JDxxaTcP1niToyM4tWFv48S9KV4RdvZa32uGdV1A.mxl,Preludes Op.28 (Complete Score),,4,provisional,,,,0.9,2.25,4,3,56,4,11.225,1,1,4.583
+./mxl/7/34/QmPNEWBL1zh2dThcv7LTwDZ74rxKgedDdCWrrzRcgaKJCb.mxl,A Merry Christmas,,2,provisional,,,,,2,3,1,36,1,0,1,2,3.904
+./mxl/7/34/QmPNZH9ot8nd2986cULq7bW7YfACNtsezLgW4vkoMMfZtK.mxl,Think of Me,,5,provisional,,,,3.22,6.5,5,4,67,5,0,1,1,4.15
+./mxl/7/35/QmPofJKXBYyLeFkgBJGG5uDk1pKw2xkfZSnLi7mBGrCQay.mxl,Palm Leaf Rag,,8,provisional,,,,,9.5,4,4,60,4,9.185,0,4,5.019
+./mxl/7/35/QmPonJGxaesb13WhENtmiUTNRYWsBc17UoVt4tfJpiKgP6.mxl,12 Valses Nobles D.969,,5,provisional,,,,3.06,4.334,4,4,64,4,3.485,0,0,5.021
+./mxl/7/38/QmPqGTx8iM8rNKu75hjZoyvpyNHxL18XwVnsqqLTrpaJAw.mxl,Fur Elise,,3,provisional,,,,2.98,2.333,3,2,55,3,13.02,0,0,3.975
+./mxl/7/39/QmPQGicV5mt3LHeNv1BjDKhCPWmsS1JxBThUKFXccL4MjZ.mxl,Chanson triste,,5,provisional,,,,2.09,3.2,3,4,53,3,8.305,0,2,4.742
+./mxl/7/47/QmPUyKD5Kmw2KAExu3bqXJCffS3UUaPtU1erBRwJZyaRAT.mxl,Prelude in F major Op 28 No 23,,5,provisional,,,,5.14,5.25,4,4,65,4,2.6,1,1,4.774
+./mxl/7/48/QmPvTP4paoGfAPpd3kGfVW23KT5gcpYKpd7ZxUD8RCcdHS.mxl,Weeping Willow - A Rag Time Two Step,,7,provisional,,,,3.47,9,4,4,51,3,8.555,0,1,5.045
+./mxl/7/49/QmPVkCjbtKAtfg4p44C8C3hCHDWUrp2aFaqtc9YUsGsMnd.mxl,"Come, Thou Long Expected Jesus",,2,provisional,,,,1.58,2.334,3,2,29,5,0.985,0,1,3.989
+./mxl/7/5/QmP6mzoeTj9T8qXhhg1sQ8BZvxUpHmKWjNbR2dx2YmkAWG.mxl,100 Progressive Recreations,,B,provisional,,,,,1.25,1,2,19,1,0,0,0,2.813
+./mxl/7/52/QmPxLJ7CnzLzmnumP9FTcybCHjESQSSgKefE9pjVTzup6W.mxl,"May Time, Sehnsucht nach dem Fruhling, K.596",,3,provisional,,,,3.17,3.667,3,2,40,2,2.915,0,1,4.164
+./mxl/7/55/QmPYYe6pALobPqiNuvLhX7SnqonB6aLXxztqnMhHNgR1xn.mxl,"Piano Sonata No.21, Op.53",,6,provisional,,,,,2.5,4,4,52,4,18.79,1,0,5.69
+./mxl/7/55/QmPYotWtap1ACGEHgJDwmxjomKW1Hpj9oc1AdrdMV5EgQr.mxl,Cradle Song,,3,provisional,,,,2.37,3.667,3,3,25,2,0.695,0,3,3.883
+./mxl/7/55/QmPYp85u2g1APGGJtWQuK7sqAUZe5QGxyMEVPvQCfakvn3.mxl,"No Time to Die, arr. Önaç",,7,provisional,,,,3.83,7.25,4,7,74,7,2.165,0,1,4.894
+./mxl/7/55/QmPYz499tmENyjq6sXyZx7PU85D1xYW13RrNkLLKY2YMpC.mxl,Tarantella In Ab major Op 43,,8,provisional,,,,6.07,4,3,5,72,4,22.915,0,4,5.336
+./mxl/7/56/QmPz8ot3H9kHbT1STkre6DWsejxc1tmnCqPYFSrq8Z68a7.mxl,Menuet - BWV Ahn. 113,,2,provisional,,,,,2.334,3,3,36,2,0,0,1,3.896
+./mxl/7/57/QmPZATLgDs91oVs35pA5e2py7g9An1rrwJzUYKqvdmu8gH.mxl,My Way,,3,provisional,,,,,1.25,3,3,46,2,6.095,0,0,4.474
+./mxl/7/6/QmP72hCMtEN3AhRVvLodL3zak9gsktuiLJptYcwuv8p88p.mxl,Waltzes Op. 39,,5,provisional,,,,2.24,2,2,2,41,3,22.33,0,1,5.511
+./mxl/7/7/QmP8mqJ2dS2cgD38fZNKJkjXY2gfPonVyYzMwbWv344Ekp.mxl,"The School of Legato and Staccato, Op.335",,8,provisional,,,,8.98,7,3,4,65,3,22.15,1,0,5.447
+./mxl/7/8/QmP9F78FRSdcpxrBdUuGazFJhpmWV1dtPstLZMnhpAgTYK.mxl,"Fantasia in C Minor, K 475",,6,provisional,,,,1.65,3.25,6,3,49,3,28.61,0,0,4.742
+./mxl/7/8/QmP9oEvzGLgupYF7PtV9QRNQ86mEsT35cBs47FcpVMJ4s2.mxl,Fur Elise,,2,provisional,,,,,2.333,3,1,21,3,21.385,0,0,3.507
+./mxl/7/9/QmPaDt5oro5S5MxK47tRyuppCxwhyyTfe5568yRv4494KE.mxl,Sonata in C K545 3rd Movement Allegretto,,5,provisional,,,,5.55,6,4,3,53,3,7.085,0,0,4.703
+./mxl/7/9/QmPaXpgXuvTdHVJskneb3w1qh6vxLGvTpX5bAUDDyPBCWc.mxl,Venetian Boat Song - op 62 no 5 A minor,,7,provisional,,,,3.87,6,4,5,67,7,15.78,0,0,4.85
+./mxl/8/0/QmQ1oAyujgC9hJiDj1w3zmLDoXW3x7WqxuSjDW5amuYLv3.mxl,Etude in C minor Op 2 No 1,,7,provisional,,,,3.49,8.333,4,4,53,4,5.79,1,4,4.841
+./mxl/8/13/QmQcCDWzkkQKt4z3XtcWdRffdizj7Lzeg5GUvNn6zCdufv.mxl,Dancing Queen,,2,provisional,,,,2.28,2.25,4,1,45,2,0,0,3,3.963
+./mxl/8/13/QmQcJu4RamxNqFo6aPnvg5cjvwtb9cnpphWjqHx1moCfaC.mxl,100 Progressive Recreations,,B,provisional,,,,,1.5,2,1,19,1,0,0,0,3.145
+./mxl/8/13/QmQcT4HGFjAVGzLUuLS3TKRcUwEdVPw1UPeh52DYtK3iK6.mxl,Turn Your Eyes Upon Jesus (The Heavenly Vision),,3,provisional,,,,1.88,4,3,2,31,1,5.425,0,1,4.046
+./mxl/8/14/QmQCiAkXJAdetmkVPsNTgr8EdKKtJYJagMNGiYqwcUCs7E.mxl,Allegro in C major K1b,,2,provisional,,,,3.77,3,4,3,48,3,0,0,0,3.856
+./mxl/8/15/QmQdk4xggDNEpKL3W3icspEHysThfNoKxCcjZwmsViTZ3z.mxl,Kum Ba Yah,,2,provisional,,,,,5,4,2,28,2,0,0,2,3.353
+./mxl/8/16/QmQD2gCz8DdiQi2PXv5NGqFNjXjCyTkiNYKXJwonegt3Wm.mxl,Sometimes I Feel Like a Motherless Child,,B,provisional,,,,2.04,2.375,3,1,17,2,2.68,0,1,2.579
+./mxl/8/18/QmQEfnVmc5Poq6YJmLzK2SUVQufQnrMB1QLw7C9VmDGo1M.mxl,Nocturne in Db major Op 27 No 2CT 115,,8,provisional,,,,3.9,7.333,6,3,69,7,19.76,1,5,5.314
+./mxl/8/23/QmQhzUSydUnjxi2oWuPA5d6XPY4Sqpp81q8TwUt8r45ZrE.mxl,"Keyboard Sonata in E minor, K.98",,5,provisional,,,,,5.333,5,4,46,3,7.625,0,1,4.149
+./mxl/8/25/QmQi66LaH3iJtjyobrqPddx37p2BoNfpP4SFjqzdwRcGCs.mxl,Les sauvages (from Pièces de clavecin),,5,provisional,,,,4.11,2,3,3,53,3,11.16,0,2,4.89
+./mxl/8/26/QmQjjtEVQpEBdzsbFjzhXE4ayv9Xvcjcqk5CCbMRzg59W7.mxl,Diabelli Variations Op. 120 Variations 11-22,,8,provisional,,,,3.67,4.333,7,7,72,5,16.4,1,0,5.598
+./mxl/8/26/QmQjvgg33cR212MK8mgFpreXpQTU2UowTAip1jhDpZiDqt.mxl,Concerto 9 - BWV 980 in G major (after Vivaldi),,5,provisional,,,,5.33,4,5,5,48,3,5.485,0,1,4.755
+./mxl/8/27/QmQJ5MnvjcXiscqsGrnPxiqKPSuyd5hQFc35jzWgJkDqN6.mxl,The Star Spangled Banner,,5,provisional,,,,1.83,6,5,5,48,4,2.29,0,2,4.645
+./mxl/8/27/QmQJy266yVm7QfRbSrhMCVdr2WjeE2cUjN2aSqs5o1V8ik.mxl,There's a Wideness in God's Mercy,,3,provisional,,,,,4.25,3,2,33,2,4.46,0,2,4.077
+./mxl/8/29/QmQKqmdrEgXeTGmhyGXkAWJU85TcXwpLjG3GuUBn77D1GN.mxl,If I Ain’t Got You,,2,provisional,,,,,3.667,3,2,33,1,1.18,1,1,3.81
+./mxl/8/30/QmQLPGiBzr6iXUGfZe7codZt1aX4tE6yxSNbx21nRQF26V.mxl,Sonata No 1 in C major Op 24 - mvt 4 Rondo,,8,provisional,,,,11.67,7,4,5,74,5,18.86,0,0,5.497
+./mxl/8/30/QmQLncrAJVJX6LApiiGCdBbfVkFBH4CmsL6s6xdAW6sN8g.mxl,All Of Me,,3,provisional,,,,,3,3,4,22,4,0,0,4,3.957
+./mxl/8/31/QmQmxCfft8FrQC5YyRdnucv3SypmxbVBrGDm1WwGwAZeoq.mxl,Prelude and Fugue no.2 in C minor BWV847 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,8,6,3,44,3,7.55,0,3,4.502
+./mxl/8/33/QmQn2sjU689p3jyCGDNwWuvq6TrKn2rGjqfRGFu1U72m8m.mxl,Toccata in C major Op 7,,8,provisional,,,,7.74,13,5,5,77,5,17.315,0,0,5.435
+./mxl/8/35/QmQohTi3FT5uE9yZf1A2X9Y6Ki9PVR8oujTJFjGipF6Qt3.mxl,Moon River,,2,provisional,,,,1.88,1.667,3,2,38,2,2.8,0,0,4.314
+./mxl/8/38/QmQq4J8K85BY367fGpiGsEaiBwGnJZbfF3hBgvcVD5GMHv.mxl,Memories of You,,4,provisional,,,,1.03,2.5,2,4,35,1,12.44,0,3,4.561
+./mxl/8/39/QmQQEL7FLJcmMKFc8YwXi7VYTcP79eZ5dG2t9DqM2mWDhZ.mxl,Waltz Sentimental Op 50 No 13 D779 A major,,4,provisional,,,,2.04,4,3,3,49,3,6.48,0,3,4.581
+./mxl/8/40/QmQr1v9qT6Ya277DbRxkLrU8TBkX8E2BMNSyTrsZ1238MH.mxl,Over the Rainbow,,3,provisional,,,,1.84,2.75,3,4,38,2,10.105,0,0,4.269
+./mxl/8/41/QmQR6PUBEzWWcB7AYyPja37sh6Djg9RPgiPhFHr7jBQrrL.mxl,Sonatina in C major Op 20 No 1 - mvt 2 and 3,,4,provisional,,,,5.75,3.125,4,3,61,4,6.625,1,0,4.702
+./mxl/8/46/QmQubL18zzrgXGGsMH2uUYisijegkzjdYB6N41A28Bs5LE.mxl,"Invention No. 15 in B Minor, BWV 786",,5,provisional,,,,4.15,5.375,4,2,35,4,9.515,0,2,4.409
+./mxl/8/47/QmQUUswQs2fm1evi92dGMSg9gZ89UnktQDQVwmUn9pXDcL.mxl,In the Cross of Christ I Glory,,2,provisional,,,,1.8,2.666,3,2,33,2,0.78,0,2,3.713
+./mxl/8/49/QmQVVuwYafbqSxBTZKXUBtKmuRDtZAGRwRtBrGvYpj7vVf.mxl,Leaning on the Everlasting Arms,,3,provisional,,,,2.15,4.25,4,2,28,1,0,0,4,3.598
+./mxl/8/5/QmQ69pQ8vazfN2JxhjU93N7PhHGGJnG6FYQfCJ1A8462nQ.mxl,Le Petit Negre L114 C major,,5,provisional,,,,,3.5,4,3,46,2,17.97,0,0,4.942
+./mxl/8/50/QmQwbzJxX8Qsr5FKKmvGVQm3MteDfUQZKQojt4BpTuBDkB.mxl,Fantasie in D minor K 397,,7,provisional,,,,4.15,3.5,6,4,56,5,15.49,1,1,5.184
+./mxl/8/51/QmQWJgHTagzfGjxWE4r69cKARhNZ7nqBdgACt6zoNbGfR8.mxl,My Heart Will Go On,,5,provisional,,,,2.54,2.75,4,4,75,5,0.145,0,4,4.998
+./mxl/8/51/QmQWr1UengcgoHx2v2AWwUytQY3KhwxvBRp3TZtvYNhqfy.mxl,"160 kurze Ubungen, Op.821",,5,provisional,,,,9.45,5,4,3,52,3,2.48,0,0,4.67
+./mxl/8/52/QmQxbdo9nTLg8AKb9jDcbEoGceZxAEsvjZxZ3wcuY3g9LR.mxl,Autumn Leaves,,3,provisional,,,,2.14,2,3,3,38,2,8.545,0,2,4.541
+./mxl/8/53/QmQXuXEWSadbYMs4pz7cEjHqD5qPGDiuHe2JJ3Yb58rCfp.mxl,Moment Musical - op 16 no 2 Eb minor,,8,provisional,,,,8.82,13.5,4,5,76,4,34.82,1,6,5.371
+./mxl/8/55/QmQYwvSgox8YATYtWQ8w6iwnGrR5jY3dLmm2Jxd6remcEC.mxl,The Coventry Carol,,2,provisional,,,,,1.501,3,2,31,2,8.07,0,0,3.881
+./mxl/8/56/QmQzDPdAkQ9Vhy4VwS2eXdYu6zpPGY9ebbdaEyjinMcFa5.mxl,The Star Spangled Banner,,8,provisional,,,,,13.167,6,6,67,5,6.22,1,0,5.31
+./mxl/8/9/QmQagsBqLF4aH3h6PqPQyphvusDzyvv6WUffymN5mx8MUE.mxl,Etude in F minor No 2 from Etudes Op 25CT 27,,7,provisional,,,,9.2,4.5,3,3,50,3,16.09,1,4,4.771
+./mxl/9/1/QmR2S4ewuJMo2RXj7w6jVetMtCvDGskxJKmjSYRNZ1882a.mxl,When the Saints Go Marching In,,6,provisional,,,,2.87,3.5,4,5,72,5,9.47,1,0,5.218
+./mxl/9/1/QmR2v9dPbzTZ2KVByFCbt1E6zqvNJwce9pyXqnusk2q5R2.mxl,Rondo Alla Turca (Sonata Opus KV 331),,4,provisional,,,,,5,4,4,33,3,4.08,0,0,4.092
+./mxl/9/11/QmRbY9fx5Ak6XsbqYpjFQzDuTTNC2WXA53LruQesyUxuZW.mxl,Away in a Manger,,5,provisional,,,,1.84,5.333,3,4,46,3,9.15,0,1,4.492
+./mxl/9/11/QmRbc1q3dqg2qVEgg9c1gJnB454c8znj1pXaWEYDXQXGE5.mxl,"King of Anything, arr. Baker",,4,provisional,,,,3.09,3,3,3,46,4,0,0,5,4.292
+./mxl/9/11/QmRbzKhmjYeoxdEVnMKNZhWUYntbdvKNR1jnx8ctmTUtj8.mxl,The Entertainer arr. Onac,,4,provisional,,,,3,3,3,4,57,5,6.29,0,0,4.664
+./mxl/9/13/QmRc72qvsdoJZcp9zVjKXy7qskvXtMCpxjhp59DreLwzv4.mxl,TURKISH MARCH,,4,provisional,,,,,5.5,5,2,39,2,5.175,0,0,4.312
+./mxl/9/14/QmRChN12tY2yeGtMsns9hCLa8tLVufrP2XkHUGryLe9R4Z.mxl,Fur Elise,,6,provisional,,,,6.59,4.667,5,4,67,5,11.45,1,0,4.703
+./mxl/9/2/QmR3L6f6kNr97MjvbaxJ4WaJkZG1vhFwndaqRRYcyXn3AD.mxl,We've a Story to Tell to the Nations,,3,provisional,,,,2.04,5,4,3,34,2,5.785,0,1,4.007
+./mxl/9/20/QmRF7ckbdQocrFDobpTZmbR9uoTS3TGfApKtREwoEmXTj3.mxl,"Piano Sonata No.14 in C# minor, Op.27/2 (Moonlight)",,7,provisional,,,,5.61,5,5,4,59,4,7.96,1,4,5.268
+./mxl/9/21/QmRgmsaAdyW7SYQvF9jiZc2HNznZTr6g4Ac6JhmUz58oBF.mxl,Sleeping Beauty Waltz,,4,provisional,,,,3.64,1.667,4,4,45,4,10.095,0,2,4.678
+./mxl/9/22/QmRGA2Zf9fYKQ1fUVXT569xs5cyv2332BLzXNzv3TcaZYU.mxl,School of Velocity Op 299 No 7,,5,provisional,,,,5.12,5.5,4,5,58,4,2.895,0,0,5.014
+./mxl/9/23/QmRhanmxw74v1rhQsaPV9WJ9CDqPggxuMWDpvYas6psP9R.mxl,There Is Never a Day so Dreary,,4,provisional,,,,2.17,5.334,4,2,35,1,1.11,0,5,3.882
+./mxl/9/24/QmRHPU2WEXSMJ9UBetGB7kGrsLE8wVLHCEt2FcU4kQdHzD.mxl,Alphabet Song,,1,provisional,,,,,1.875,3,2,26,1,0,0,0,3.612
+./mxl/9/29/QmRKkXZqwhxdV1RnYJESXTrXear6mogB8KUjbqYsHXUGRk.mxl,Let Sighing Cease and Woe,,2,provisional,,,,,4,3,2,31,2,1.925,0,1,3.949
+./mxl/9/3/QmR4DGgX4TFNz1nvCrV64jNBkx4KsGsQdERsCmBvyS1sdU.mxl,Praeludium II- BWV 871,,7,provisional,,,,4.68,6.375,5,4,48,3,15.805,0,3,4.839
+./mxl/9/3/QmR4GexyLphNY9napeGF6Zdt8h28TidQpaR5Snk9aGKzLQ.mxl,"Partita No.3 in A minor, BWV 827",,6,provisional,,,,5.77,5.667,5,4,53,3,13.37,1,0,5.031
+./mxl/9/3/QmR4UtTxvC5roBwJ71MDEwJNpGKeKJSwfEEixvoimYXrrb.mxl,Twinkle Twinkle Little Star,,B,provisional,,,,1.1,1.875,3,1,26,1,0,0,0,3.648
+./mxl/9/3/QmR4mWofkWxTzMj2TicWiiRkb5YbxFNSDKkiVum58RjRr8.mxl,O How I Love Jesus,,2,provisional,,,,,5.334,3,2,31,1,0,0,1,3.55
+./mxl/9/31/QmRmXQhpQ2qesBm9oFVP58yuByZcZRVfvPYAbHRAYbLvsZ.mxl,Star Wars,,2,provisional,,,,,1.75,4,1,39,1,7.035,1,1,3.921
+./mxl/9/32/QmRM5X12AVGD38BzeaGrh5385ttBHqssiWLYbQLGYfX41w.mxl,"Sonata in E Minor, Hob. XVI:34: 3rd movement",,5,provisional,,,,8.52,4.333,4,2,57,3,9.34,0,1,4.918
+./mxl/9/37/QmRP9W9te4eDqVnrabcdgvNuQAkT1A8w2RrAdjJjGuARwd.mxl,Prelude in A major Op 28 No 7,,5,provisional,,,,,3.666,4,5,52,3,4.13,0,3,4.23
+./mxl/9/4/QmR5yU6HTvrzYvtu4Tjh3LpgyaBUkKgMgL4AcxXnNiFwH6.mxl,Yankee Doodle,,4,provisional,,,,3.69,8,4,2,29,8,0,0,3,3.552
+./mxl/9/41/QmRRAFR5Z9UdYUVUydBLEjNJHNfVzydetDgwjjZmyPBAxU.mxl,Diabelli Variations Op. 120 Variations 11-22,,8,provisional,,,,5.63,4.5,7,5,72,5,16.565,1,0,5.61
+./mxl/9/43/QmRSDnogXaXcRyxCWeFDSY8UF2NvK3sGoNuZAV6PJn3bEr.mxl,"Sarabande from Suite in D minor, HWV 437",,3,provisional,,,,1.22,1.75,2,3,39,2,12.08,0,1,4.398
+./mxl/9/47/QmRUGzJM3T5wJPnUGu9A9ALcKK2xuHGtTjyKKkPz88EULw.mxl,"Someone You Loved, arr. Iles",,5,provisional,,,,3.47,4.5,3,4,48,3,0,0,5,4.156
+./mxl/9/48/QmRvmhyPdf5899d1JUTCtiwftPg24img1qQBvZdmpznMVN.mxl,"Keyboard Sonata in D minor, K.64",,5,provisional,,,,3.83,5.5,4,5,46,2,7.49,0,1,4.672
+./mxl/9/54/QmRyeq57AXDEZT1Zgvko3MK99W6BvFc5aoXRtfHad4kBQ4.mxl,The First Noel,,2,provisional,,,,,4,3,2,29,2,0,0,2,3.897
+./mxl/9/55/QmRYNgiCepwHaRb3AAeCVh5MmNJipV1CdNmc3J5p1CCXwQ.mxl,If Only...,,1,provisional,,,,1.59,2,4,3,24,2,0,0,3,3.212
+./mxl/9/55/QmRYSwe8S4a7ZXhf7evZW8z3ryN1ohiyHsZwbVuQ3khVu3.mxl,Allegretto in C minor D915,,5,provisional,,,,2.57,4,3,4,46,3,8.88,0,3,4.851
+./mxl/9/56/QmRzbbEvQmaHqVqzAawLUFk7tB8YRy2LNN6FQhU6kjptPy.mxl,"The Art of Preluding, Op.300",,7,provisional,,,,6.25,4.75,4,6,67,4,7.04,1,3,5.275
+./mxl/9/57/QmRZNLarNKuRcrDhbSAfm9jqx65jH2vucgdG4nVspJSqvF.mxl,Don’t Cry For Me Argentina,,2,provisional,,,,2.14,3,3,4,36,2,0.48,1,0,3.909
+./mxl/9/7/QmR85jrhUo2v9QcpHMzENA6z7z3RKb2JkC3Ks2aHe1NCZt.mxl,Prelude in A major Op 28 No 7,,3,provisional,,,,,2.333,4,3,40,1,7.535,0,1,4.053
+./mxl/9/8/QmR9hoR7UE36kRcZpm6Shzi2Qpdypk7dsHXxGcxqP9ynbZ.mxl,Puck No 3 from Lyric Pieces Op 71 in Eb minor,,7,provisional,,,,6.22,3,3,3,55,3,19.695,0,6,5.271
+./mxl/9/8/QmR9qkc7iS6jhYcJBamXYEgeaqxPjbsdsTWm5Hh6emgBxe.mxl,"Minuet in G Minor, BWV Anh. 115",,4,provisional,,,,,2.167,4,3,39,1,7.06,0,2,4.456
+./mxl/9/8/QmR9uamCGLTop6GLTVCsVF9Cp3CNkC4G3HbTVrbWn5YB1S.mxl,Grand Valse Brillante in Eb major Op 18,,7,provisional,,,,5.18,4,4,4,72,5,7.53,1,3,5.078
+build/pieces/shelf/aus-meines-herzens-grunde-bwv-269.musicxml,Aus meines Herzens Grunde BWV 269,,2,provisional,,,,,3.667,3,2,32,2,0.465,0,1,4.066
+build/pieces/shelf/einsame-blumen-op-82-no-3.musicxml,"Einsame Blumen (No. 3 from Waldscenen, Op. 82)",,5,provisional,,,,,3.5,3,4,52,3,10.2,0,2,4.669
+build/pieces/shelf/first-loss-op-68-no-16.musicxml,The First Loss (no. 16),,4,provisional,,,,2.86,3.5,3,4,39,2,13.85,0,1,4.168
+build/pieces/shelf/humming-song-op-68-no-3.musicxml,Humming Song - op 68 no 3 C major,,2,provisional,,,,3.18,3,3,2,31,2,2.29,0,0,3.739
+build/pieces/shelf/hunting-song-op-68-no-7.musicxml,Album for the Young. Op. 68. No 7,,3,provisional,,,,3.69,4,3,2,37,2,3.785,0,1,4.244
+build/pieces/shelf/invention-in-a-minor-bwv-784.musicxml,2-Part Invention No 13 in A minor BWV 784,,5,provisional,,,,,5.75,4,1,46,3,10.395,0,0,4.853
+build/pieces/shelf/invention-in-b-minor-bwv-786.musicxml,"Invention No. 15 in B Minor, BWV 786",,5,provisional,,,,,5.375,4,1,47,2,9.17,0,2,4.966
+build/pieces/shelf/invention-in-c-major-bwv-772.musicxml,2-Part Invention No 1 in C major BWV 772,,5,provisional,,,,,4.875,5,3,48,3,6.89,0,0,4.674
+build/pieces/shelf/invention-in-c-minor-bwv-773.musicxml,"Invention No. 2 in C Minor, BWV 773",,6,provisional,,,,,7,5,1,48,3,9.01,0,3,4.682
+build/pieces/shelf/invention-in-d-major-bwv-774.musicxml,"Invention No. 3 in D Major, BWV 774",,4,provisional,,,,,5.667,4,1,45,3,4.51,0,2,4.557
+build/pieces/shelf/invention-in-eb-major-bwv-776.musicxml,Invention No 5 in Eb major BWV 776,,6,provisional,,,,,6.5,5,1,45,2,7.21,1,3,4.874
+build/pieces/shelf/little-romance-op-68-no-19.musicxml,A Little Romance - op 68 no 19 A minor,,3,provisional,,,,2.31,5.75,3,4,36,2,0,0,0,4.088
+build/pieces/shelf/little-song-in-canon-form-op-68-no-27.musicxml,A Canon - op 68 no 27 A minor,,5,provisional,,,,2.01,5.75,4,4,48,3,11.61,0,0,4.464
+build/pieces/shelf/little-study-op-68-no-14.musicxml,Little Study (no. 14),,3,provisional,,,,6.51,3,3,1,36,3,7.835,1,1,4.087
+build/pieces/shelf/may-sweet-may-op-68-no-13.musicxml,May Dearest May - op 68 no 13 E major,,6,provisional,,,,4.17,7.833,4,3,36,3,7.915,0,4,4.3
+build/pieces/shelf/prelude-in-c-major-bwv-846.musicxml,Prelude and Fugue No 1 in C major BWV 846,,4,provisional,,,,,4.5,4,3,45,3,2.845,0,,4.428
+build/pieces/shelf/prelude-op-28-no-4-in-e-minor.musicxml,Prelude in E minor Op 28 No 4 and No 6,,6,provisional,,,,,6.5,4,7,56,4,9.63,1,1,4.336
+build/pieces/shelf/roaming-in-the-morning-op-68-no-17.musicxml,The Morning Stroll - op 68 no 17 A major,,6,provisional,,,,2.97,7.5,5,4,43,3,5.17,1,3,4.303
+build/pieces/shelf/rustic-song-op-68-no-20.musicxml,Rustic Song from Album for the Young Op 68 No 20,,4,provisional,,,,2.45,5,3,4,36,3,4.695,0,3,4.149
+build/pieces/shelf/sicilienne-op-68-no-11.musicxml,Album for the Young Op 68 No 11 - Siciliano,,4,provisional,,,,3.4,3.667,4,3,32,2,10.32,0,0,4.336
+build/pieces/shelf/soldier-s-march-op-68-no-2.musicxml,"Soldier’s March, op. 68, no. 2",,3,provisional,,,,2.44,3.25,4,3,31,2,2.525,0,1,4.016
+build/pieces/shelf/sonatina-in-c-major-i-spiritoso-op-36-no-1.musicxml,"6 Piano Sonatinas, Op.36",,3,provisional,,,,,1.875,3,2,50,2,4.34,0,0,4.601
+build/pieces/shelf/sonatina-in-g-major-i-presto-op-36-no-5.musicxml,"Sonatina in G Major, op. 36, no. 5: 1st movement",,4,provisional,,,,,3.667,3,2,53,3,6,1,1,4.721
+build/pieces/shelf/spring-song-op-68-no-15.musicxml,Spring Song - op 68 no 15 E major,,5,provisional,,,,1.77,4.666,4,3,41,3,10.11,0,4,4.372
+build/pieces/shelf/strange-man-op-68-no-29.musicxml,Album for the Young Op 68 No 29,,7,provisional,,,,2.96,6,4,5,55,3,15.18,0,1,5.049
+build/pieces/shelf/the-happy-farmer-op-68-no-10.musicxml,Frohlicher Landmann (The Merry Peasant) Op 68 No 10,,3,provisional,,,,3.71,4.5,3,3,31,2,0.845,0,1,3.828
+build/pieces/shelf/the-horseman-op-68-no-23.musicxml,"Reiterstück (The Horseman) (no. 23 from Album for the Young, op. 68)",,5,provisional,,,,4.07,4,4,3,55,5,11.535,0,1,4.428
+build/pieces/shelf/the-little-orphan-op-68-no-6.musicxml,The Poor Orphan - op 68 no 6 A minor,,4,provisional,,,,1.58,6.5,5,3,27,3,7.84,0,0,3.829
+build/pieces/shelf/the-reapers-song-op-68-no-18.musicxml,Album for the Young Op 68 No 18,,3,provisional,,,,4.94,3.666,3,2,36,3,2,0,0,4.155
+build/pieces/shelf/three-stars-op-68-no-30.musicxml,"*** (No. 30 from Album für die Jugend, Op. 68)",,5,provisional,,,,2.12,3.75,4,3,43,2,17.525,1,1,4.636
+build/pieces/shelf/wilder-reiter-op-68-no-8.musicxml,Album for the Young. Op. 68. No 8,,3,provisional,,,,,4,3,3,29,2,3.86,0,,3.825
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_846/xml_score.musicxml,Prelude and Fugue No 1 in C major BWV 846,,5,provisional,,,,,7.5,5,3,44,3,7.97,0,0,4.705
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_848/xml_score.musicxml,Fugue No. 7 in Eb Major from Das Wohltemperierte Klavier Book I BWV 848,,7,provisional,,,,,7,4,4,47,2,8.06,0,7,4.816
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_854/xml_score.musicxml,"Prelude and Fugue in E, BWV 854 (from The Well-Tempered Clavier book 1)",,6,provisional,,,,,6.75,4,2,46,2,6.155,0,4,4.646
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_856/xml_score.musicxml,Prelude and Fugue no.11 in F major BWV856 from 48 Preludes and Fugues Book 1,,5,provisional,,,,,6.667,5,2,48,3,6.61,0,1,4.73
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_857/xml_score.musicxml,Prelude and Fugue no.12 in F minor BWV857 from 48 Preludes and Fugues Book 1,,7,provisional,,,,,6.25,4,3,45,3,18.905,0,4,5.009
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_858/xml_score.musicxml,"Prelude and Fugue in F sharp Major, BWV 858",,7,provisional,,,,,7,5,2,46,3,4.72,0,6,4.681
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_860/xml_score.musicxml,Prelude and Fugue no.14 in G major BWV860 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,7.333,5,3,48,2,8.885,0,1,4.968
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_862/xml_score.musicxml,Prelude and Fugue no.17 in Ab major BWV862 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,6.75,4,3,48,3,6.425,0,4,4.86
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_863/xml_score.musicxml,"Prelude and Fugue in G sharp Minor, BWV 863",,7,provisional,,,,,5.25,4,3,46,3,16.915,0,5,4.952
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_864/xml_score.musicxml,Prelude and Fugue no.19 in A major BWV864 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,5.111,5,2,46,3,7.655,0,3,4.838
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_865/xml_score.musicxml,Prelude and Fugue no.20 in A minor BWV865 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,7.75,5,4,46,3,11.76,0,0,4.909
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_866/xml_score.musicxml,"Prelude and Fugue in B flat Major, BWV 866",,5,provisional,,,,,6.833,4,2,45,2,6.095,0,2,4.787
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_867/xml_score.musicxml,Prelude and Fugue no.22 in Bb minor BWV867 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,2.75,3,3,46,3,12.145,0,5,4.916
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_868/xml_score.musicxml,"Prelude and Fugue in B Major, BWV 868",,6,provisional,,,,,6.875,4,2,46,3,7.05,0,5,4.793
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_870/xml_score.musicxml,Prelude and Fugue no.1 in C major BWV870 from 48 Preludes and Fugues Book 2,,5,provisional,,,,,7,4,4,48,3,4.93,0,0,4.714
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_873/xml_score.musicxml,Prelude  Fugue No 4 in C minor WTC Book 2 BWV 873,,7,provisional,,,,,6.667,4,2,46,3,15.985,0,4,4.857
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_874/xml_score.musicxml,Prelude and Fugue no.5 in D major BWV874 from 48 Preludes and Fugues Book 2,,5,provisional,,,,,5,4,3,43,3,7.89,0,2,4.689
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_875/xml_score.musicxml,Fugue No 6 in D minor from WTC Book 2 BWV 875,,6,provisional,,,,,7.5,4,2,44,2,17.005,1,1,4.922
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_880/xml_score.musicxml,Prelude and Fugue no.11 in F major BWV880 from 48 Preludes and Fugues Book 2,,6,provisional,,,,,7.334,5,4,48,2,12.565,0,1,4.919
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_883/xml_score.musicxml,Fugue No 14 in F minor from WTC Book 2 BWV 883,,6,provisional,,,,,5,5,2,44,2,12.445,0,3,4.788
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_884/xml_score.musicxml,"Prelude and Fugue in G Major, BWV 884",,6,provisional,,,,,8,5,4,47,3,5.97,0,1,4.777
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_888/xml_score.musicxml,"Prelude and Fugue in A Major, BWV 888",,6,provisional,,,,,7.25,4,2,50,3,11.55,0,3,4.824
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_889/xml_score.musicxml,"Prelude and Fugue in A Minor, BWV 889",,6,provisional,,,,,6.25,5,3,51,4,12.03,0,0,5.094
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_892/xml_score.musicxml,Prelude and Fugue no.23 in B major BWV 892 from 48 Preludes and Fugues Book 2,,6,provisional,,,,,3.75,4,2,44,3,10.86,0,5,4.897
+content/scores/imported/asap-dataset/Bach/Fugue/bwv_893/xml_score.musicxml,"Prelude and Fugue in B Minor, BWV 893",,6,provisional,,,,,7.333,5,2,48,3,12.67,0,2,4.892
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_846/xml_score.musicxml,Prelude in C major BWV 846 (prelude only),,4,provisional,,,,,4.5,4,3,45,3,2.045,0,0,4.406
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_848/xml_score.musicxml,Prelude No. 7 in Eb Major from Das Wohltemperierte Klavier Book I BWV 848,,6,provisional,,,,,4.667,4,3,40,3,7.925,0,7,4.643
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_857/xml_score.musicxml,Prelude and Fugue no.12 in F minor BWV857 from 48 Preludes and Fugues Book 1,,7,provisional,,,,,6.875,5,3,48,3,16.02,0,4,4.873
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_858/xml_score.musicxml,"Prelude and Fugue in F sharp Major, BWV 858",,6,provisional,,,,,4.333,5,1,47,3,7.565,0,6,4.885
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_860/xml_score.musicxml,Prelude and Fugue no.14 in G major BWV860 from 48 Preludes and Fugues Book 1,,5,provisional,,,,,5.5,4,3,46,3,5.38,0,1,4.897
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_863/xml_score.musicxml,"Prelude and Fugue in G sharp Minor, BWV 863",,7,provisional,,,,,7,4,2,47,2,12.35,0,5,4.949
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_864/xml_score.musicxml,Prelude and Fugue no.19 in A major BWV864 from 48 Preludes and Fugues Book 1,,6,provisional,,,,,6.75,4,2,45,2,8.62,0,3,4.765
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_865/xml_score.musicxml,Prelude and Fugue no.20 in A minor BWV865 from 48 Preludes and Fugues Book 1,,5,provisional,,,,,5.333,4,4,47,3,9.32,0,0,4.926
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_866/xml_score.musicxml,"Prelude and Fugue in B flat Major, BWV 866",,6,provisional,,,,,8,5,4,48,2,8.47,0,2,4.685
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_867/xml_score.musicxml,Prelude and Fugue no.22 in Bb minor BWV867 from 48 Preludes and Fugues Book 1,,7,provisional,,,,,8.125,4,5,45,3,9.385,0,5,4.717
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_868/xml_score.musicxml,"Prelude and Fugue in B Major, BWV 868",,6,provisional,,,,,6.25,4,3,42,2,6.09,0,5,4.631
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_873/xml_score.musicxml,Prelude  Fugue No 4 in C minor WTC Book 2 BWV 873,,7,provisional,,,,,4.444,5,4,46,3,13.15,0,4,4.907
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_874/xml_score.musicxml,Prelude and Fugue no.5 in D major BWV874 from 48 Preludes and Fugues Book 2,,5,provisional,,,,6.09,4.833,4,3,46,3,6.05,1,2,4.857
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_880/xml_score.musicxml,Prelude and Fugue no.11 in F major BWV880 from 48 Preludes and Fugues Book 2,,4,provisional,,,,,3.333,3,3,46,3,10.75,0,1,4.84
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_884/xml_score.musicxml,"Prelude and Fugue in G Major, BWV 884",,5,provisional,,,,,6.334,4,2,48,2,6.735,0,1,4.747
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_888/xml_score.musicxml,"Prelude and Fugue in A Major, BWV 888",,5,provisional,,,,,4,4,2,45,3,7.055,0,3,4.764
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_889/xml_score.musicxml,"Prelude and Fugue in A Minor, BWV 889",,7,provisional,,,,,6.875,5,2,46,3,31.725,0,0,5.126
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_892/xml_score.musicxml,Prelude and Fugue no.23 in B major BWV 892 from 48 Preludes and Fugues Book 2,,7,provisional,,,,,5.75,5,3,48,2,9.92,0,5,4.882
+content/scores/imported/asap-dataset/Bach/Prelude/bwv_893/xml_score.musicxml,"Prelude and Fugue in B Minor, BWV 893",,5,provisional,,,,5.82,3.375,4,4,43,3,13.99,0,2,4.783
+content/scores/imported/asap-dataset/Brahms/Six_Pieces_op_118/2/xml_score.musicxml,Intermezzo in A major No 2 from Clavierstucke Op 118,,7,provisional,,,,2.31,5,4,4,57,4,12.86,1,3,5.07
+content/scores/imported/asap-dataset/Chopin/Berceuse_op_57/xml_score.musicxml,Berceuse in Db major Op 57,,8,provisional,,,,4.61,6.333,6,4,69,5,9.14,1,5,4.881
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/1/xml_score.musicxml,Etude in C major Op 10 No 1,,7,provisional,,,,11.5,4.25,4,2,77,5,15.76,0,0,5.669
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/10/xml_score.musicxml,Etude in Ab major Op 10 No 10,,8,provisional,,,,5.15,5,3,4,69,5,13.03,0,4,5.459
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/12/xml_score.musicxml,Etude in C minor Op 10 No 12 (Revolutionary),,8,provisional,,,,10.51,5.75,5,6,68,5,18.77,1,3,5.425
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/2/xml_score.musicxml,Etude in A minor Op 10 No 2,,8,provisional,,,,9.38,8,4,4,68,4,31.535,0,0,5.319
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/3/xml_score.musicxml,Etude in E major Op 10 No 3 Tristesse,,8,provisional,,,,2.25,12,4,4,67,5,16.175,1,4,5.216
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/4/xml_score.musicxml,Etude in C minor Op 10 No 4,,8,provisional,,,,11.24,7.25,4,5,75,5,22.435,0,4,5.488
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/5/xml_score.musicxml,Etude in Gb major Op 10 No 5,,8,provisional,,,,11.11,10,5,4,69,5,4.48,1,6,4.815
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/7/xml_score.musicxml,Etude in C major Op 10 No 7,,8,provisional,,,,9.03,10.333,5,4,71,4,17.705,0,0,5.128
+content/scores/imported/asap-dataset/Chopin/Etudes_op_10/8/xml_score.musicxml,Etude in F major Op 10 No 8,,8,provisional,,,,11.45,6.5,4,5,76,5,10.3,1,1,5.47
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/1/xml_score.musicxml,Etude in Ab major No 1 from Etudes Op 25CT 26,,8,provisional,,,,10.54,12,4,3,60,4,6.405,1,4,4.905
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/10/xml_score.musicxml,Etude in B minor Op 25 No 10,,8,provisional,,,,5.48,6.333,4,5,70,4,28.185,1,2,5.7
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/11/xml_score.musicxml,Etude in A minor Op 25 No 11,,8,provisional,,,,13.3,8.5,4,5,77,5,24.11,1,0,5.847
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/2/xml_score.musicxml,Etude in F minor No 2 from Etudes Op 25CT 27,,7,provisional,,,,,4.5,3,3,50,4,21.345,1,4,4.766
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/4/xml_score.musicxml,Etude in A minor Op 25 No 4,,6,provisional,,,,5.12,6,3,4,52,3,17.995,0,0,5.132
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/5/xml_score.musicxml,Etude in E minor Op 25 No 5,,7,provisional,,,,6.41,5.333,4,4,73,5,15.145,1,1,5.432
+content/scores/imported/asap-dataset/Chopin/Etudes_op_25/8/xml_score.musicxml,Etude in Db major Op 25 No 8,,8,provisional,,,,6.6,11.5,3,4,67,5,14.23,1,5,5.209
+content/scores/imported/asap-dataset/Chopin/Scherzos/39/xml_score.musicxml,Scherzo in C minor Op 39,,8,provisional,,,,5.98,2.666,3,6,79,6,15.43,1,4,5.73
+content/scores/imported/asap-dataset/Rachmaninoff/Preludes_op_23/4/xml_score.musicxml,Prelude in D major No 4 from 10 preludes Op 23,,7,provisional,,,,2.96,6,4,5,68,4,9.485,1,2,5.052
+content/scores/imported/asap-dataset/Rachmaninoff/Preludes_op_23/6/xml_score.musicxml,Prelude in Eb major No 6 from 10 preludes Op 23,,8,provisional,,,,4.63,7.5,4,5,69,4,17.13,1,3,5.293
+content/scores/imported/asap-dataset/Schubert/Impromptu_op.90_D.899/1/xml_score.musicxml,Impromptu in C minor Op 90 D899 No 1,,7,provisional,,,,2.79,4.25,4,4,63,4,10.27,1,3,5.235
+content/scores/imported/asap-dataset/Schubert/Impromptu_op.90_D.899/2/xml_score.musicxml,Impromptu in Gb major Op 90 No 3 D899,,8,provisional,,,,,4,3,6,64,5,20.67,1,3,5.377
+content/scores/imported/asap-dataset/Schubert/Impromptu_op.90_D.899/3/xml_score.musicxml,Impromptu in Gb major Op 90 No 3 D899,,6,provisional,,,,5.5,3.75,5,3,50,4,6.85,1,6,4.663
+content/scores/imported/asap-dataset/Schubert/Impromptu_op.90_D.899/4/xml_score.musicxml,Impromptu in Gb major Op 90 No 3 D899,,7,provisional,,,,,4.666,4,4,62,5,8.565,1,4,5.242
+content/scores/imported/asap-dataset/Schubert/Impromptu_op.90_D.899/4_no_repeat/xml_score.musicxml,Impromptu in Gb major Op 90 No 3 D899,,7,provisional,,,,,4.666,4,4,62,5,8.665,1,4,5.243
+content/scores/imported/asap-dataset/Schubert/Impromptu_op142/1/xml_score.musicxml,Impromptu - op 142 no 1 F minor D935,,8,provisional,,,,6.28,6,5,4,75,8,8.415,1,4,5.303
+content/scores/imported/asap-dataset/Schubert/Moment_musical_no_3/xml_score.musicxml,Moments musicaux Nos 4 and 5 (Cm and Fm) D780 Op94,,6,provisional,,,,4.38,6.5,5,4,45,3,6.81,0,4,4.555
+content/scores/imported/asap-dataset/Scriabin/Etudes_op_8/11/xml_score.musicxml,Etude - op 8 no 11 Bb minor,,8,provisional,,,,3.42,9.667,5,4,57,4,11.44,1,5,4.814
+content/scores/imported/musetrainer/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl,Ave Maria - solo piano version - op 52 no 4 Bb major D839,,7,provisional,,,,3.67,8.5,5,4,46,4,5.89,1,2,4.585
+content/scores/imported/musetrainer/scores/Chopin_-_Nocturne_Op._9_No._1.mxl,Nocturne in Bb minor Op 9 No 1,,8,provisional,,,,4.12,3.333,4,5,67,7,19.815,1,5,5.214
+content/scores/imported/musetrainer/scores/Clair_de_Lune__Debussy.mxl,Clair de lune (no. 3),,7,provisional,,,,2.8,4.666,4,5,70,5,4.6,1,5,5.032
+content/scores/imported/musetrainer/scores/Maple_Leaf_Rag_Scott_Joplin.mxl,Palm Leaf Rag,,8,provisional,,,,5.73,9.5,4,4,60,5,9.395,0,4,5.017
+content/scores/imported/musetrainer/scores/Prlude_Opus_28_No._4_in_E_Minor__Chopin.mxl,Prelude in E minor Op 28 No 4 and No 6,,6,provisional,,,,1.22,6.5,4,6,56,4,9.88,1,1,4.34
+content/scores/imported/musetrainer/scores/Schubert_Serenade_-_Standchen_-_By_Lizst.mxl,Serenade (Standchen),,7,provisional,,,,2.44,7.322,5,6,64,4,11.43,1,1,4.808
