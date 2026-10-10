@@ -23,7 +23,7 @@ RUNGS = {
     4: ("A.6", "Using the Sustain Pedal Properly"),
     5: ("B.5", "Knowing How to Build Minor Chords; Relating Chords to the Major Scale by Number"),
     6: ("2.3", "Knowing How to Form Triad Inversions"),
-    7: ("A.3; B.8", "Reading Rest Values in Music (A.3); Playing a Melody Lyrically (B.8 phrasing)"),
+    7: ("A.3; B.8", "Reading Rest Values in Music (A.3); Playing a Melody Lyrically (B.8 phrasing); Amazing Grace is printed as a melody only, one staff with lyrics (p. 27)"),
     8: ("A.5; B.3", "Reading Sharps and Flats (A.5); Interpreting Keys and Key Signatures (B.3)"),
     9: ("B.4", "Building a Minor Scale (B.4 alternatives: natural minor)"),
     10: ("B.6; B.8; 2.3", "Root-5th-Root Accompaniment Pattern (B.6); Sustain Pedal when Stacking Chords (B.8); Connecting Chords by the Closest Inversion (2.3)"),
@@ -33,8 +33,8 @@ RUNGS = {
     16: ("2.6", "Understanding Dominant 7th Chords (2.6 alternative: seventh chords met)"),
     17: ("2.4; 2.6", "Dotted Eighth-Sixteenth Syncopated Rhythm (2.4); Knowing the Blues Progression (2.6)"),
     18: ("B.6; 2.6", "Applying the Boogie-Woogie Bass Figure (B.6 meet); Understanding Grace Notes (2.6)"),
-    21: ("1.5; B.6", "Playing the Left-Hand and Right-Hand Ostinato Progressions (1.5 prepare; B.6 meet)"),
-    25: ("1.5", "Understanding Stride Piano; Ragtime (1.5: ragtime bass, meet)"),
+    21: ("1.5; B.6", "Playing the Left-Hand and Right-Hand Ostinato Progressions (1.5 prepare; B.6 meet); the book prints only a 2-bar excerpt of Spinning Song (p. 82)"),
+    25: ("1.5", "Understanding Stride Piano; Ragtime (1.5: ragtime bass, meet); The Entertainer is the book's simplified first section, 18 bars, both hands (p. 95)"),
     26: ("1.4; 2.4", "Swing Phrasing (1.4 and 2.4: swing, meet)"),
 }
 
