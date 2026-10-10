@@ -111,3 +111,5 @@ With that filter, the best MusicXML candidate per piece:
 After this rerun (copies excluded from "facts fit"): 3,110 candidate rows, 1,090 facts fit, 1,669 flagged, 351 not checked. MusicXML pieces whose canonical upload fits the facts: **513 (294 high)**. By level (high/medium): A 0/0, B 0/4, 1 11/9, 2 13/17, 3 19/11, 4 23/17, 5 37/15, 6 32/23, 7 39/32, 8 44/16.
 
 After the one-staff flag (606c9f40; files with one treble staff and no left hand, found by ChatGPT's review): MusicXML pieces whose canonical upload fits the facts: **481 (288 high)**. By level (high/medium): A 0/0, B 0/3, 1 11/8, 2 13/14, 3 19/10, 4 23/15, 5 37/13, 6 31/18, 7 39/29, 8 44/12.
+
+After placing other boards' pieces by PSyllabus level 0-8 (b4ff4781): MusicXML candidate files that fit the facts, by lowest level: B 4, 1 23, 2 19, 3 28, 4 30, 5 48, 6 46, 7 58, 8 74; 68 stay off the spine (PSyllabus 9-10 or no level). Pieces confirmed at both ends are in `docs/pieces/chosen.csv`.
