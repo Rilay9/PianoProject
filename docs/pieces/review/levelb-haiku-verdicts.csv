@@ -1,0 +1,25 @@
+item,title,composer,file,rungs,verdict,reason
+item01,Amazing Grace,John Newtonarr. E Muirhead,./mxl/8/33/QmQnTd8DBifKHHb1am9f2p9ggWLTDeJeuFyafvmFdKY2ew.mxl,B.1 B.8 1.6,USE,right for B; tune matches (C | F A F A G)
+item02,Scarborough Fair,,./mxl/11/27/QmTJENYHPL17Yj2pnVcVmdeMC43hVHWP9Vb5sC47i579Ya.mxl,B.2 B.3 B.6 B.7 1.7,SKIP (by me),"agent said USE, but every bar opens with chords tagged as grace notes: notation artifact"
+item03,Greensleeves,Traditional,./mxl/3/34/QmdNPGyM9Q7jPVVBy7gg5z5VLAZ2Lz3Q4SZWaa5SC52a44.mxl,B.2 B.3 B.6 B.7,SKIP,duplicated grace chords in both hands
+item04,Ode to Joy,Composer,./mxl/15/9/QmXa4xixopTG1f7Q96UL1KU7skUQtk25XnNjXS61QbAZy5.mxl,B.2 B.3 B.7,SKIP,"grace-tagged chords, odd durations"
+item05,The Entertainer,Scott Joplin,./mxl/1/27/QmbJXNcUfabd1RNA4zq9VbxhLEUkgdJxTAzjZMPugdho5X.mxl,B.1 B.2 B.3 B.7 1.1,SKIP,too hard; not the Entertainer opening
+item06,B. Bartok For Children Vol. 1 Nr.18 Soldier's Song Sz42,Béla BartókRevised and Arrangedby the Composer January 1945,./mxl/7/25/QmPiSAX1neKgD45csdKc6FnDFxfB5bRssWfWzsSu8WhFLg.mxl,B.1 B.2 B.3 B.8 1.1 1.6,SKIP,"too hard: two-voice left hand, ledger-line chords"
+item07,As the Deer Easy,Martin Nystrom,./mxl/11/30/QmTLiHokSLn9rLuZEwfEFxUvL2KJ6gb89vdVo7GXH42jRW.mxl,B.1 B.2 B.3 B.6 B.7,SKIP,duplicated grace chords; wide leap
+item08,Up_On_The_Housetop,Benjamin Hanby,./mxl/2/12/QmcBCmS8Vae4REM7xyw7vJENvEEyrokt6ag7yd715nVpoV.mxl,B.1 B.3 B.6 B.7,SKIP,grace chords on the wrong staff
+item09,First Comp with NCT,cirv2012,./mxl/11/25/QmTim2m1gJy6p5wCpeR1skSQ9vgQ4Bc6rVxDKcocdh4Uyn.mxl,B.1 B.3 B.7,SKIP,too hard: two lines per hand
+item10,aus der Sammlung Op.82.,Cornelius Gurlitt,./mxl/6/21/QmNgyL9ZcLdpvKhcPFMh6N57ipjbVwjutxpxGWpfegvVmT.mxl,B.8 1.6,USE,"right for B; Gurlitt Op. 82 piece, broken-triad left hand"
+item11,Pescador d'homes,Rvd. Cesáreo Gabaráin,./mxl/17/27/QmZJ2bF5Wmc24TTz7hzwNZRE2MEhi6aNwKtLGSk9eUdqGs.mxl,B.1 B.2 B.3 B.6 B.7 1.4,SKIP (by me),"agent said USE with doubts: grace notes in the last bar, a chord to check in bar 4"
+item12,Wij moeten Gode zingen Gez 301 melodie bas en akkoorden,Willem Vogel,./mxl/2/9/QmcaJ7vA3cquQmw5wRGLKsGD33vajcf4dRs3wJkuZvCHU3.mxl,B.1 B.2 B.6 B.7,SKIP (by me),"agent said USE, but grace-tagged chords throughout"
+item13,Happy Birthday to You,Misc Traditional,./mxl/6/17/QmNecetm6r2YzsBRcQ1mCGFLxhvpNusxJF4cJbzHBzRtCq.mxl,B.3,SKIP,"melody only, no left hand"
+item14,Yankee Doodle,Misc tunes,./mxl/11/9/QmTa7YTepiTQEhLAhtQAVJjTCEVxC2rQVQ9Sd33k8NZK1p.mxl,B.2 B.3,USE,right for B; tune matches
+item15,Lost My Pieces - Toradora,Yukari Hashimoto,./mxl/10/9/QmSaprxEcWuypQHHyzRB4C8ybfjvF9mWNYScuNEYDE76jv.mxl,B.1 B.2 B.3 1.1,SKIP,"too hard: wide leap, B major passage"
+item16,Minuet BWV 115,Petzold,./mxl/13/51/QmVWM6wbvpu5KUmBMSMconXZsAM3AAay5LdxCNFzKpQt7g.mxl,B.1 1.1 1.7,SKIP,ending not on the tonic as transcribed
+item17,Lightly Row,UnKnown,./mxl/15/41/QmXR2bxfj7zhSi9mUHEa2SA63ktfM4kixXs2XjUHtixqwh.mxl,B.3 1.5,USE,right for B; opening G E E F D D C D E F is Lightly Row (checked by me)
+item18,Minuet in G minor - Bach (Piano),Transcripción: Dario Roberto Hernández,./mxl/13/19/QmVf6RECC5ZyPeEffyXEZtr1eBi6Ljj99NYNfYJC7iBVsv.mxl,B.1 1.7,SKIP,"hands cross on the final chord, to check"
+item19,17. ROUND DANCE B. Bartok,Béla Bartók,./mxl/11/42/QmTsVxUk3GDBu8QjtjKHoNLgPv4jWTdSaM92u74yhMxryX.mxl,B.1 B.3 B.6,SKIP,"too hard: two voices per hand, chromatics"
+item20,Minuet,James Hook,./mxl/5/41/QmfRYEUhXHSj9a8yk5s4b5ErUsrQ3QkNNxgcJhfU65VjfE.mxl,B.3 1.7,USE,right for B; Hook Minuet in C
+item21,Mary Had A Little Lamb TWO HANDS,Misc Traditional,./mxl/7/20/QmPF6A3wPLm5irBgVWgQCshAoZRDUN1f4rNfYZ4VLaDKmt.mxl,B.1 B.3,USE,"right for B, simple end; tune matches"
+item22,Row Row Row Your Boat,Prof Bell / Traditional,./mxl/14/23/QmWhyQKnEU8xgcB4Tpaa12xZ5AiFmL4xeyoCtwt876ciiX.mxl,B.3 B.6 1.4,USE,right for B; tune matches
+item23,The Blue Danube - very easy sheet music,Johann Strauss,./mxl/9/11/QmRbwXvKw69TzWxrH35PLCpnvb3RSATKMgcoixPQeNtkkE.mxl,B.2 B.3,SKIP,labelled Blue Danube but not that tune
+item24,Hallelujah (easy),PC Chin,./mxl/13/25/QmViUNieMPGGYJuPCjQj5AnP8a6uUUveHbEbkbXusEaeBm.mxl,B.2 B.3 1.4,USE,"right for B; C major, simple left hand"
