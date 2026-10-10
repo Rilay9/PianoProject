@@ -4,7 +4,7 @@ placement only; no score files are taken (the owner, 2026-10-10). robots.txt all
 
 8notes levels are its own (Beginner, Easy, Intermediate, Advanced) and describe 8notes' arrangement, not the piece.
 
-Output: docs/sources/lists/8notes-piano.csv. Usage: python tools/pieces/eightnotes.py [levels, default 1 2]
+Output: docs/sources/lists/8notes-piano.csv (Beginner and Easy) or 8notes-piano-<levels>.csv. Usage: python tools/pieces/eightnotes.py [levels, default 1 2]
 """
 import csv, html, os, re, subprocess, sys, time
 
@@ -61,7 +61,8 @@ def main():
         r["url"] = f"{BASE}/scores/{r['id']}.asp"
         if i % 50 == 0:
             print(i, "pages read", flush=True)
-    p = os.path.join(ROOT, "docs", "sources", "lists", "8notes-piano.csv")
+    name = "8notes-piano.csv" if levels == ["1", "2"] else "8notes-piano-" + "-".join(LEVELS[d].lower() for d in levels) + ".csv"
+    p = os.path.join(ROOT, "docs", "sources", "lists", name)
     with open(p, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["id", "artist", "title", "list_level", "level", "style", "tags", "composed", "info", "url"])
         w.writeheader()
