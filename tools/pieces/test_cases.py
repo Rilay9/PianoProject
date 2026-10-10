@@ -32,7 +32,9 @@ CAT = [  # (wanted title, file title, expected cat_compare)
     ("Minuet in G major", "Minuet in G minor", "conflict"),
 ]
 PIANO = [(["Piano"], ""), (["Voice", "Piano"], "Voice"), (["Piano RH", "Piano LH"], ""), (["Harpsichord"], ""),
-         (["Violin", "Violin"], "Violin"), (["Organ"], "Organ"), (["", ""], "")]
+         (["Violin", "Violin"], "Violin"), (["Organ"], "Organ"), (["", ""], ""),
+         (["Voix Voix", "Piano Piano"], "Voix Voix"), (["Clarinette en Si b", "Piano"], "Clarinette en Si b"),
+         (["Klavier", "Klavier"], ""), (["Pianoforte"], ""), (["Altsaxophon", "Klavier"], "")]  # last: not caught, accepted
 TITLES = [("Theme for Cello + Piano", True), ("Sailor's Hornpipe", False), ("Voices of Spring", False),
           ("Prelude for Organ", True), ("Heart and Soul", False)]
 LEVELS = [  # (sources, expected app levels)

@@ -34,9 +34,14 @@ KEYBOARD = re.compile(r"piano|klavier|pianoforte|keyboard|harpsichord|cembalo|cl
 NONPIANO = re.compile(r"\b(voice|vocals?|vocalist|vox|soprano|mezzo|alto|tenor|baritone|choir|chorus|singer|violin|viola|violoncello|cello|contrabass|flute|piccolo|oboe|clarinet|bassoon|horn|trumpet|cornet|trombone|tuba|sax\w*|guitar|ukulele|banjo|mandolin|drums?|drumset|percussion|timpani|harp|organ|accordion|recorder|strings|bass guitar|electric bass|fretless)\b", re.I)
 
 
+# French and German part names (a "Voix" part and a "Clarinette" part passed; picks review, 2026-10-10). Part names
+# only: "Chant" is also a piano title word ("Chant sans paroles").
+FOREIGN_PARTS = re.compile(r"\b(voix|chant|stimme|singstimme|gesang|chor|choeur|violon|violine|geige|violoncelle|alt|bratsche|fl[uû]te|fl[oö]te|clarinette|klarinette|hautbois|oboe|basson|fagott|cor|trompette|trompete|posaune|guitare|gitarre|harpe|harfe|orgue|orgel|akkordeon|accord[eé]on)\b", re.I)
+
+
 def not_piano(names):
     """The first part name that names a non-keyboard instrument (and no keyboard), or "" when none does."""
-    return next((n for n in names if NONPIANO.search(n) and not KEYBOARD.search(n)), "")
+    return next((n for n in names if (NONPIANO.search(n) or FOREIGN_PARTS.search(n)) and not KEYBOARD.search(n)), "")
 
 
 SHARPS_TO_KEYS = {n: (maj, mnr) for n, maj, mnr in [
