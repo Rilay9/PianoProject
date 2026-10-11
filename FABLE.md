@@ -1,60 +1,62 @@
-# FABLE.md: what this project is and how work runs (branch `claude/piano-loop`, started 2026-10-11)
+# PianoProject — purpose and working direction
 
-**Read this first, every session.** The owner's newest word wins. When it changes the plan, edit this file the same day and save the owner's words verbatim under `docs/inputs/`. Only the owner's actual words are attributed to the owner.
+**Authority.** The owner's newest explicit decision overrides this file, older plans and branch history. This file records enduring intent and safeguards. It is not a feature specification or a script for the next conversation. The owner's actual words live in `docs/inputs/`; never attribute Claude's paraphrase to the owner.
 
-This branch started empty on 2026-10-11 (the owner: "New one empty with files ported as needed"). Files come over from the older branches only when a job needs them, and the reason is recorded in the commit.
+## 1. Purpose
 
-## 1. The objective
+An exceptional, enjoyable, dependable piano-learning app, from beginner towards advanced playing in the styles the owner chooses. The owner is the first learner; what they learn, enjoy, struggle with and demonstrate shapes what comes next. The path taken can mature into something other people can use.
 
-The owner's words of 2026-10-11 are saved whole in `docs/inputs/2026-10-11.md`. In short:
+**Current priority: make the application skeleton and its real learner journeys excellent.** Curriculum, lessons and repertoire grow in thoughtfully chosen increments as the owner learns, not as a bulk catalogue. Each step must still be coherent and grounded in established pedagogy, graded syllabuses, actual scores and evidence from playing. Research on the older branches is useful input, not binding.
 
-1. **For the owner:** learn piano week by week. The owner says what to work on; Claude makes it, checks it and pushes it; the owner plays it in the app; the app records how it went and what the owner thought of each item; Claude reads that, advises, and makes the next thing.
-2. **For people who follow:** the path the owner actually took, with the items the owner kept, becomes a curriculum that can be passed on. It may be messy at first and cleaned up later, but every item in it is correct.
+The owner gives goals, preferences, experience and the big tradeoffs. Claude is responsible for the engineering and the educational preparation, including objective correctness. ChatGPT reviews independently when useful. The owner is not a notation inspector, test runner or XML verifier.
 
-The owner's goals are dynamic. There is no fixed curriculum or rung order: "We'll build the rungs as we go" (the owner, 2026-10-11). Each step the owner actually takes becomes a rung, recorded with its kept items.
+## 2. Stable qualities, evolving choices
 
-## 2. The app: a finished engine, fed with content
+**Stable:** musical truth; useful and engaging learning; readable, accessible presentation on a phone in portrait and landscape and on a tablet; responsive interaction; honest feedback and measurement; durable progress; safe data and releases; a low-friction practice experience.
 
-- **The engine** is built once and made excellent: score display, playback, MIDI input and on-screen keyboard, practice modes (hands separately, slow, loop bars, wait for the right note), the accompaniment lab, Simon and the old app's other features, stats per attempt, the PDMX import, offline use as a PWA installed from Pages. Most of it exists on the old branch and is ported with tweaks; the owner's ChatGPT helps with the tweaks.
-- **Feedback and export are features of every part of the app** (the owner, 2026-10-11): on every song, excerpt, generated exercise, drill and anything else shown, the owner can mark it good or bad with a note; one export file carries the marks and the play stats.
-- **Content is data the engine reads and acts on:** exercises, drills, excerpts, pieces, lesson text, video links, animations, feature presets (an accompaniment-lab setup, a Simon sequence). The engine never hard-codes teaching content.
-- **The content contract** (the format the engine reads, the export format, and a validator) is the hinge between the two and is written before content work starts.
+**Not frozen:** modes (their number, names, controls and mechanics), component architecture, renderer, content schemas, generator designs, lesson format, repertoire sources, rung structure, cadence, and the order and number of activities. Simon, duet, the Accompaniment Lab, Wait, tempo modes, karaoke and drills are capabilities and design references, not a mandatory inventory: improve, combine, split, replace or drop one where the learning purpose and evidence justify it. Keep what works; avoid change for novelty.
 
-## 3. The weekly loop
+Examples, here and in conversation, show intent, not quotas or templates. Flexibility never excuses wrong content, incoherence or an inconsistent experience. "Everything is data" is not dogma either: some pedagogical behaviour belongs in code, and schemas grow as real content needs them.
 
-1. The owner names the week's focus: a skill, a style, a piece, or "next".
-2. Claude makes it: generated exercises written as MusicXML and checked by code before use; pieces and excerpts found through the facts index; short explanations.
-3. Claude validates it against the content contract and pushes it.
-4. The owner plays it, marks each item, and exports.
-5. Claude reads the export (a script summarises it), advises, records which items are kept or dropped and why, and adds the step to the path.
+## 3. Port selectively
 
-## 4. Rules
+The old app on `claude/piano-teaching-app-bo19td` holds most of the features; `claude/piano-rebuild` holds research and content tools. Inspect the actual implementation at its current commit before judging or copying. Prefer working components and proven behaviour; compare alternatives, including established libraries, where a real weakness or integration need warrants it. Port by coherent learner-facing flows, not necessarily file by file, and verify behaviour after adaptation: a successful copy or build is not the finish.
 
-- **Never teach anything wrong.** Generated material passes the code check; scores are real files; explanations are accurate general instruction; interpretation of a particular piece (character, "the theme returns") goes in only when the owner accepts it.
-- **Correct, not tidy.** Order and organisation can be messy and are cleaned up later; correctness cannot wait.
-- **Reference, not authority.** `curriculum.md`, `rungs.md`, the piece lists and the score tools on `claude/piano-rebuild`, and published method books and syllabuses, are sources Claude draws on when making content. None of them decides what comes next; the owner does.
-- **Where things live.** Public repo: app code, generated content, the facts index, the path record. The owner's phone only: the PDMX scores (imported into the app, never pushed) and the stats. No score file is ever pushed.
-- **Shareable from the start.** Every kept item records its source and licence; the owner's personal-use freedom does not cover passing pieces on.
-- **The installed app is not broken by work in progress.** Until the new app is ready it deploys to a separate path (for example `/PianoProject/next/`); the owner switches when ready.
-- **Cheap to run.** Scripts do the heavy work so a weekly session fits a small plan. Agents only where they are the cheapest capable way; never Fable agents.
+Areas to consider, not a redesign checklist: score readability and read-ahead, navigation, accessibility, input latency, playback timing, generator verification, practice tools, import and library, progress, feedback, offline storage and recovery. Work on demonstrated gaps and on whatever the next usable experience needs.
 
-## 5. How work runs
+The learner's whole journey is the test: find → understand → play → get useful feedback → retry → keep progress → revisit. Compiling, one good screenshot or passing its own tests does not make a feature excellent.
 
-- The owner decides; nothing starts without the owner's say-so. The owner's ChatGPT reviews and helps tweak the app.
-- Claude commits named paths only and pushes on the owner's go; agents never commit or push.
-- One job at a time, named below with its finish condition.
+## 4. Content as we learn
 
-## 6. Current job and next jobs
+For each learning step, choose the structure and activities that serve it: explanation, controlled exercise, creative work, listening, generated music, a real excerpt, a full piece, collaboration, or something else. No prescribed sequence, song count, mode mix, conversation ritual or weekly template. Claude suggests the next direction from prerequisites, graded methods and what the owner has played; the owner is not asked to supply pedagogy.
 
-1. **Content contract** (now): the content format, the export format and a validator, with the Alberti exercise (`alberti-handwritten.musicxml`, made 2026-10-11) as the first item. Finish: the validator accepts it and rejects broken examples.
-2. **Port the engine** from the old app feature by feature onto this branch, reading content only through the contract; feedback and export on every item; the PDMX import; deploy to the separate path.
-3. **Loop tools:** exercise generators, the MusicXML check, the export summariser, the excerpt lookup.
-4. **Week 1.**
+Generated exercises are first-class and need independently checked structural, musical and playability claims. Real scores (PDMX or other MusicXML) need verified facts at exact measures, suitable excerpts and clear provenance. A title, grade, tag, detector result, plausible AI reading or completed exercise does not by itself prove teaching suitability or mastery; mark uncertainty UNKNOWN rather than invent certainty. The unverified 135-score review claims are not teaching facts.
+
+**The owner supplies experience, not certification.** Claude establishes notes, rhythms, texture and prerequisites from evidence, and never asks the owner whether a musical fact is correct.
+
+## 5. Feedback, progress, safe evolution
+
+Make feedback easy wherever it is useful: difficulty, enjoyment, confusion and a note, with enough context to act on (item and version, passage, activity, settings, result, time), exportable to Claude and tied to the actual attempt. Check existing data and UI before adding a store or workflow. Feedback informs adaptation; it is not proof of mastery. Keep the distinctions between encountering, practising, performing, an observed result, self-report and demonstrated ability. Preserve progress across content revisions and re-imports, with simple migration and recovery.
+
+Keep source identity, provenance and licence accurate for a public repo and a shareable curriculum. The owner's method-book PDFs and personal device data are never pushed; scores may be, when their licence allows. Keep the stable installed app separate from work in progress; choose and verify the actual route when designing deployment.
+
+## 6. How work proceeds now
+
+**Current focus:** inspect, selectively port and refine the existing application into a dependable, flexible learning skeleton, exercising it with representative content, without bulk curriculum generation. The next task and its finish condition come from current evidence and the owner's approved scope, not from an order in this file.
+
+Within an approved scope Claude investigates, implements, tests, fixes and integrates routine details without asking each time. The owner decides scope changes, product and educational tradeoffs, exposure of personal material and changes to the stable deployment. Commit named paths only; agents never commit or push.
+
+Before new work: current objective → evidence of deficiency → what exists → learner consequence → smallest useful intervention. No duplicate infrastructure, mass inventories, invented frameworks or governance cycles. Test in proportion to risk, on real devices when rendering or interaction is involved. Say what was checked, what is unknown and what counts as finished.
+
+**Cost.** Spend tokens where they buy quality: real device checks, independent verification of generated music, review at genuine design risk. Save them elsewhere: scripts over agents, a cheaper model for a mechanical job, no repeated passes or agent fan-out, never Fable agents. Never trade correctness for cheapness.
+
+When the owner redirects, update this section and the directly affected lines only.
 
 ## 7. Branches
 
-| Branch | What it holds |
-| --- | --- |
-| `claude/piano-loop` | This project. Governs. |
-| `claude/piano-rebuild` (last a2f29e26) | Reference: curriculum.md, rungs.md, the chosen pieces, the score characteristic rows (E01-E47, D01, D02) and tools. |
-| `claude/piano-teaching-app-bo19td` (c8b33af6) | The old app, whole: the engine features to port. |
+- `claude/piano-loop`: active. Its HEAD is what exists.
+- `claude/piano-teaching-app-bo19td`: the previous app and its specifications. Inspect; don't assume it sound or flawed.
+- `claude/piano-rebuild`: curriculum and score research and tools. Reference evidence, not a programme.
+- `docs/inputs/`: the owner's preserved words; the latest instruction wins.
+
+**Success is what a learner can understand, practise, play, enjoy and demonstrate, with an app that improves as they learn.**

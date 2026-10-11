@@ -1,114 +1,66 @@
-# Working in this repository
+# Working in PianoProject
 
-**Start every session with `FABLE.md`**: the one operating contract. It holds the objective, the weekly loop, the rules, the current job and how work runs. Where any other document disagrees, FABLE.md wins. New instructions are edits to FABLE.md, never new governing documents.
+Read `FABLE.md` first: the current focus (its section 6) and the non-negotiable qualities. It is a guide to intent, not a script that turns every owner example into a rule. The owner's newest explicit instruction wins; `docs/inputs/` holds their actual words, and the branch HEAD holds implementation truth. Older documents are references unless currently applicable.
 
-**Preflight, before every action:** name the current job (FABLE section 6), the unit of work and the finish condition. If you cannot, do not act. After finishing, stop: never pick another task by momentum, and nothing new starts without the owner's say-so.
+## Interpret intent, not wording
 
-This branch started empty (2026-10-11); files are ported from the older branches only when a job needs them (FABLE section 7).
+Turn a request into: the experience or outcome wanted, what is genuinely constrained, what is merely illustrative, and what evidence will show success. A sample conversation, mode list, file format, cadence or activity is not binding unless the owner decided it should be. The opposite extreme is also wrong: "no fixed template" does not forbid reusable structures. Use professional judgment on routine details; ask only about real product tradeoffs.
 
-## Reuse before reinvention
+The owner is learning piano. Never ask them to validate score facts, generators, rhythm, algorithms or technical correctness. Ask about goals, taste, comfort and important choices. Claude establishes correctness; ChatGPT reviews independently when useful. Deliver the result, not process.
 
-The owner decides what to learn next; there is no fixed curriculum (FABLE section 1). When making content or code, look first for what exists:
-1. for app features: the old app on `claude/piano-teaching-app-bo19td`, ported with tweaks;
-2. for content: published method books, syllabuses and teaching material, and the reference files on `claude/piano-rebuild` (sources to draw on, not an order to follow);
-3. scores: PDMX and other public-domain or openly licensed corpora;
-4. an established library: music21, Verovio, Tonal, partitura;
-5. an annotated dataset or an open-source implementation of the same feature.
+## Reuse and selective porting
 
-Custom work only where none of these serves, with the reason recorded. Easy-to-write is never a justification. No new frameworks, inventories, taxonomies or literature reviews.
+Before changing a feature, inspect its current implementation and its role for the learner: what works, what is missing, what is deficient. Compare established libraries or other approaches where they could materially help. No reflexive rewrites, no reflexive preservation. Port working learner flows, not an obligatory file-by-file order.
 
-## Never teach anything wrong
+Modes and feature designs are revisable: name, controls, measurement and use may change, merge or retire when that improves the experience. Simon, Lab, duet, reading and tempo modes are precedents, not contracts. Changes to evidence semantics, saved sessions or user-visible expectations need deliberate migration decisions. Don't add a mode because a lesson might hypothetically want one. Use existing content types, storage, importers, renderers, tests and utilities where they fit; extend schema or architecture for an actual consumer, not a hypothetical complete curriculum. New branch work must not break what the owner currently plays.
 
-No wrong note name, invented concept or false "this teaches X"; correctness outranks everything else.
+## Musical and product truth
 
-## Two technical rules
+Never teach a false note, invented pattern, wrong rhythm, unjustified ability or false mastery claim. Keep separate: published pedagogy; verified score facts at exact measures; generator or detector assertions and their limits; observed performance; learner feedback; teaching judgment.
 
-1. **Never present a number measured on this machine (a timing, a size) as general.** Say where it was measured, or express the relationship instead.
-2. **Our own code that judges music needs evidence:** its judgments agree with musically defensible ones on real scores, including examples built to fool it. Passing tests alone do not show that.
+Don't infer hand from staff, moving bass from repeated notes, scale from broken chord, dynamics from plausibility, or teaching fitness from title, grade or metadata. Read the actual notation where a music claim matters. Test with positive, negative and near-miss cases; verify generated music independently; look up established rules and libraries before inventing thresholds. A claim that cannot be established is marked UNKNOWN, narrowed, or replaced by more verifiable material. A generator never certifies itself.
 
-## Before reporting any piece of work
+Curriculum is not bulk data production: build selected material as the learner needs it, with coherent prerequisites, practical teaching, feedback and transfer. A correct score is not necessarily a good lesson.
 
-Eight questions. A correction is owed only
-where the answer would change what the owner or the next agent does; wording alone never
-earns a turn.
+## Finish real learner-facing work
 
-1. **Product.** Did I look at the result the way a learner meets it, and what would a
-   piano teacher say about it? If I did not look or cannot judge, that leads the report.
-2. **Mechanism.** What caused the fault, which test told that cause from the alternatives,
-   and did the change act on the mechanism?
-3. **Evidence.** Which claims are observed and which inferred; for every "all", "none" or
-   "both", the scope actually examined and what is unchecked; for an absence ("not on this
-   machine", "no such file"), the place the record says it lives, looked at, and the item
-   tested directly (`test -e`, the exact path), never read off a listing; output cut by
-   `head` or a limit is a sample, never grounds for "none" or "all"; what has not been heard.
-4. **Consumers and record.** Who else reads what changed; the consumers and records
-   actually affected by it updated in the same change, with the reason.
-5. **Addressee.** For every request, question or claim: who acts on it, and can they? The
-   owner decides and relays and never listens; the reviewer may inspect artifacts and run available checks but must not claim checks it did not run or hearing it did not perform; builders and the orchestrator must not claim to have heard music without actual audio evidence. A capability no actor has is stated
-   as *no one in this process can decide this* and the item stays open, never moved to a
-   later actor or phase. A paragraph its addressee does nothing with is cut. An owner
-   correction is applied and confirmed by the change, in one line, without apology.
-6. **Closure.** Is anything I call done, landed, wired or covered actually there? For a claim
-   of implemented behaviour: the file and line that implements it, the test or check that pins it,
-   checked on the current HEAD, never read off a report. For a curriculum or research claim (a
-   level, a sequence, a piece's grade, a teaching point): the published source it comes from (which
-   book or syllabus, which level). A claim with neither is said to be absent, and the item stays open.
-7. **Sense in context.** Before reporting, inspect the actual current work state: every running task, committed/queued task, and task started this turn. Distinguish parked possibilities from approved work. For everything I started, triggered, dispatched or proposed this
-   turn: state the owner's current goal in one line, in the owner's words, not mine. Then
-   ask: is it inside the job FABLE names as current? Is it what the owner asked for, or my
-   extension of it: a framework, an inventory, a survey, a broader scope? Does it build on
-   something not yet checked, or read something still changing? Is it paperwork standing in
-   for progress? Is a rule I am following really the owner's, or one I wrote? Would the owner,
-   seeing it, call it pointless, out of order or out of scope? If so, stop or undo it and say
-   so in one line (the owner, 2026-10-07 and 2026-10-09, after work was built on unchecked
-   foundations and after a whole classifier was built that the plan never asked for).
-8. **Convergence.** Does this help the app converge towards a polished, finished state, or does it
-   leave things open and head down the route to a vibe-coding death loop: another pass, another
-   finding, another rule, with no end condition (the owner, 2026-10-08, after check passes on the
-   abilities list kept finding more because each checker read new sources)? If it does not converge,
-   name the end condition or stop.
+Judge a change against the whole journey: find → understand → start → play → accurate, helpful feedback → retry → save → revisit. For visual work inspect the rendered states on phone portrait, landscape and tablet. For timing, input, playback, persistence and progress, test realistic transitions, interruptions and recovery. For feedback and export, check that the exported record carries what the next lesson needs. A green test is not pedagogical, musical or UX quality.
+
+Verify in proportion: focused checks for small local changes, integration and device checks for risky shared ones; distinguish flakes from regressions. Never claim to have run, listened, measured, reviewed, merged, deployed or pushed anything without evidence and a confirmed side effect.
 
 ## Before sending any brief
 
-The brief-check hook prints this section and the eight questions above before any agent
-brief or brief change goes out; the brief carries a line starting "Brief check:" saying what
-the pass changed. Each question below is a mistake already made here (the owner, 2026-10-08 and 2026-10-09).
+For substantial delegated work, check:
+1. **Objective:** Is the learner-facing outcome and approved scope clear? Does the brief mistake an example for a requirement?
+2. **Reuse first:** Has it identified the relevant code, prior decision, library or music source before proposing new work?
+3. **Boundaries:** Is the task coherent, finite and useful, without a speculative audit or framework?
+4. **Source truth:** Does it demand precise evidence for musical, software and learning claims, with UNKNOWN permitted?
+5. **Independence:** Are input versions and ownership of concurrently edited files clear when they matter? Is an independent check worth its cost for the risk?
+6. **Completion:** Does it specify an observable outcome and appropriate verification, not merely documentation or rows?
+7. **Cost:** Is delegation and testing proportionate? No needless agent fan-out or repeated checks; a cheaper model for mechanical work.
 
-1. **Reuse first.** Does the brief make the agent start from what exists (the old app's code,
-   published teaching material, existing libraries and datasets) before producing anything of
-   its own, and say what it used?
-2. **This job only.** Does it do the job FABLE names as current, in the owner's words, and
-   nothing from a later job?
-3. **Bounded and ending.** Are the sources it may read named, its output sized to the goal,
-   and its end stated? No open-ended search, no catalogue dumps, no fixed number of passes.
-4. **Pilot before fan-out.** Is one small run tried and looked at before the same brief goes
-   to several agents at once?
-5. **Sourced, not asserted.** Does every teaching or repertoire claim it asks for name its
-   source? Is each claim labelled measured (by what) or
-   reading, is anything said about a score checked on the score itself, and are corrections
-   re-checked in the same job?
-6. **Inputs fixed.** Is its base commit named, and is nothing running that changes what it
-   reads?
-7. **Common sense for a learner.** Would a piano learner need what it produces? Does a rule,
-   framework or list it adds come from the owner or the task, not from me?
-8. **Cost.** Is this the cheapest capable way (the model's strength, how many agents, whether
-   they run at once), given the usage the owner has left?
+`brief-check.js` requires this heading and a `Brief check:` line in the brief. The line is a reminder, not proof; the brief auditor hook is the independent look. No audit theatre beyond that.
 
-## Verification, proportional to the job
+## Before reporting any piece of work
 
-Choose verification by what could actually break: content against the content contract's validator and the code checks, app changes against the app's own tests and a run on the device, a teaching claim against its source. Record what was and was not checked without padding the report.
+For substantive reports, check:
+1. **Outcome:** Did the learner-facing purpose improve? What actually exists on the active branch?
+2. **Cause:** Was the actual mechanism addressed rather than one symptom? If uncertain, say so.
+3. **Evidence:** What was personally inspected or executed, versus read from logs, inferred or not checked? State the real scope; never call a sample exhaustive.
+4. **Compatibility:** What consumers, settings, saved data, modes or deployment paths are affected? Do they still work?
+5. **Addressee:** Am I asking the owner to verify facts Claude should establish? Am I inventing a decision for them?
+6. **Closure:** What concrete change, check and observable outcome establish completion? Are writes, pushes and exports confirmed?
+7. **Relevance:** Does this serve the owner's latest approved goal? Did I add redundant systems or expand scope early?
+8. **Convergence:** Is the product closer to a dependable experience, or have I spawned another audit cycle?
 
-## Mechanical hazards
+The Stop hook runs these after every report and takes one line back: "Checklist: nothing found", or what a question caught and the fix. Nothing more. Correct the report or the work only where a question finds something consequential. Keep observation, inference, judgment and UNKNOWN distinct.
 
-- **Before re-serialising any JSON file, compare a round-trip against the raw bytes.** Python and `JSON.stringify` write numbers, key order, indentation and escapes differently; if the round-trip is not byte-identical, splice text. `.claude/hooks/diff-growth.js` warns when one step removes 150 or more lines from a tracked file.
-- Agents do not commit, push, stash, reset or checkout; commit named paths only, never `git add -A`.
+## Operating boundaries
 
-## Orientation
+- Inside approved work Claude handles implementation details; the owner decides major scope and product choices. Commit named paths only; subagents never commit or push; the owner's push and release boundaries hold.
+- The current focus and the next task come from FABLE section 6 and current evidence, never from a fixed order.
+- Don't copy old specifications into this branch as governance. Bring over current, useful contracts when a feature needs them; record and test genuine design changes.
+- Preserve the stable deployed experience, provenance and licensing, and private data; check migration and rollback where risk warrants.
+- Never claim success from row counts, hashes, parser output, source labels or tests beyond what they assert.
 
-| What | Where |
-| --- | --- |
-| The objective, the loop, the rules and the current job | `FABLE.md` |
-| The owner's words that set the direction | `docs/inputs/` |
-| Reference: curriculum, rungs, chosen pieces, score characteristic rows | branch `claude/piano-rebuild` |
-| The old app, whole | branch `claude/piano-teaching-app-bo19td` |
-| The process hooks (checklists, brief audit, self-test) | `.claude/hooks/` |
+Finish with an evidence-based result and the decisions the owner must make, not a manifesto.
