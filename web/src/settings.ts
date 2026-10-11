@@ -12,6 +12,8 @@ export type MarkerFollows = 'split' | 'ahead' | 'behind';
 export type Hands = 'both' | 'right' | 'left' | 'off';
 /** The metronome's click: the old app's three sounds. */
 export type Click = 'wood' | 'beep' | 'high';
+/** What the metronome clicks on: the time signature's beat, every quarter note, or every eighth. */
+export type ClickOn = 'beats' | 'quarters' | 'eighths';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
 export type Under = 'keyboard' | 'notes' | 'both' | 'nothing';
 export type BarNumbers = 'off' | 'lines' | 'every';
@@ -39,6 +41,7 @@ export interface ScoreSettings {
   hands: Hands;
   metronome: boolean;
   click: Click;
+  clickOn: ClickOn;
   /** 0 to 1. */
   pianoVolume: number;
   clickVolume: number;
@@ -61,6 +64,7 @@ export const DEFAULTS: ScoreSettings = {
   hands: 'both',
   metronome: false,
   click: 'wood',
+  clickOn: 'beats',
   pianoVolume: 0.8,
   clickVolume: 0.6,
 };

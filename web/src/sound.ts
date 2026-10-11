@@ -122,7 +122,8 @@ export class Sound {
 
   // The three click sounds are the old app's: a woodblock (a burst of noise through a narrow band-pass, which
   // carries over a piano better than a bare tone), a square-wave beep, and a high sine. The first beat of a
-  // bar is higher and louder.
+  // bar is higher and a little louder; the others were raised nearer to it after the owner lost them under
+  // the piano (2026-10-11).
   private clickAt(when: number, accent: boolean): void {
     const ctx = this.ctx!, gain = ctx.createGain();
     gain.connect(this.clickGain!);
@@ -136,7 +137,7 @@ export class Sound {
       noise.buffer = this.noiseBuffer();
       noise.connect(filter);
       filter.connect(gain);
-      gain.gain.setValueAtTime(accent ? 1 : 0.6, when);
+      gain.gain.setValueAtTime(accent ? 1 : 0.85, when);
       gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.045);
       source = noise;
     } else {
@@ -144,12 +145,12 @@ export class Sound {
       if (this.click === 'beep') {
         osc.type = 'square';
         osc.frequency.value = accent ? 1500 : 1000;
-        gain.gain.setValueAtTime(accent ? 0.5 : 0.3, when);
+        gain.gain.setValueAtTime(accent ? 0.5 : 0.42, when);
       } else {
         osc.type = 'sine';
         osc.frequency.value = 5000;
         gain.gain.setValueAtTime(0.0001, when);
-        gain.gain.exponentialRampToValueAtTime(accent ? 0.6 : 0.35, when + 0.002);
+        gain.gain.exponentialRampToValueAtTime(accent ? 0.6 : 0.5, when + 0.002);
       }
       gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.04);
       osc.connect(gain);

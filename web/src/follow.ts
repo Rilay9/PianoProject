@@ -661,17 +661,19 @@ export class FollowView {
 
   /**
    * Metronome beats in play order: each bar's beats from its time signature (one click per bottom-number
-   * note), the first of each full bar accented; a pickup bar gets only the beats of the grid that fall in it.
+   * note) or every quarter or eighth note as chosen, the first of each full bar accented; a pickup bar gets
+   * only the clicks of the grid that fall in it.
    */
-  beats(): Beat[] {
+  beats(on: 'beats' | 'quarters' | 'eighths' = 'beats'): Beat[] {
     const out: Beat[] = [];
     let lastStart = NaN;
     for (const s of this.steps) {
       const start = s.ts - s.rel; // where this bar begins in the song (whole notes)
       if (Math.abs(start - lastStart) < 1e-9) continue;
       lastStart = start;
-      const m = this.measures[s.m];
-      if (!m) continue;
+      const bar = this.measures[s.m];
+      if (!bar) continue;
+      const m = on === 'beats' ? bar : { ...bar, beatLen: on === 'quarters' ? 1 / 4 : 1 / 8 };
       if (m.pickup) {
         // The beats of the bar's grid that fall inside the pickup, counted back from where bar 1 begins.
         for (let p = m.dur - m.beatLen; p >= -1e-9; p -= m.beatLen) out.push({ t: this.timeAt(start + p), accent: false });

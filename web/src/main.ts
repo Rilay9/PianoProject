@@ -4,7 +4,7 @@ import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
   currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn,
 } from './settings';
 
 interface Piece {
@@ -184,7 +184,7 @@ function startSound(t: number): void {
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
   if (s.hands === 'off' && !s.metronome) { sound.stop(); view.songClock = null; return; }
-  sound.play(s.hands === 'off' ? [] : view.noteEvents(s.hands), s.metronome ? view.beats() : [], t, s.speed);
+  sound.play(s.hands === 'off' ? [] : view.noteEvents(s.hands), s.metronome ? view.beats(s.clickOn) : [], t, s.speed);
   view.songClock = () => sound.songTime();
 }
 view.onStop = () => { sound.stop(); fillBars(); showBars(); };
@@ -247,6 +247,7 @@ function fillTempo(): void {
   $<HTMLInputElement>('t-click-vol').value = String(Math.round(s.clickVolume * 100));
   $<HTMLInputElement>('t-metronome').checked = s.metronome;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.checked = r.value === s.click;
+  for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.checked = r.value === s.clickOn;
 }
 function setSpeed(speed: number): void {
   if (!(speed > 0)) return;
@@ -258,17 +259,18 @@ function setSpeed(speed: number): void {
 }
 // Sound choices in the panel: saved per song; volumes and the click sound apply at once, the metronome
 // switch at the next play (or straight away if playing).
-function soundChange<K extends 'metronome' | 'click' | 'pianoVolume' | 'clickVolume'>(key: K, value: ScoreSettings[K]): void {
+function soundChange<K extends 'metronome' | 'click' | 'clickOn' | 'pianoVolume' | 'clickVolume'>(key: K, value: ScoreSettings[K]): void {
   savePieceSetting(currentPiece().id, key, value);
   const s = settingsFor(currentPiece().id);
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
-  if (key === 'metronome' && view.playing && sound.playing) startSound(sound.songTime());
+  if ((key === 'metronome' || key === 'clickOn') && view.playing && sound.playing) startSound(sound.songTime());
 }
 $<HTMLInputElement>('t-piano-vol').addEventListener('input', (e) => soundChange('pianoVolume', Number((e.target as HTMLInputElement).value) / 100));
 $<HTMLInputElement>('t-click-vol').addEventListener('input', (e) => soundChange('clickVolume', Number((e.target as HTMLInputElement).value) / 100));
 $<HTMLInputElement>('t-metronome').addEventListener('change', (e) => soundChange('metronome', (e.target as HTMLInputElement).checked));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.addEventListener('change', () => soundChange('click', r.value as Click));
+for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.addEventListener('change', () => soundChange('clickOn', r.value as ClickOn));
 // −5 / +5 beats per minute, and tap tempo: the speed that matches the last few taps (old app's controls).
 const bpmNow = () => view.baseBpm * settingsFor(currentPiece().id).speed;
 $('t-down').addEventListener('click', () => setSpeed(Math.max(5, Math.round(bpmNow()) - 5) / view.baseBpm));
@@ -411,4 +413,4 @@ navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => v
 void start();
 
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: () => view.beats(), notes: () => view.noteEvents('both').length, sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };
