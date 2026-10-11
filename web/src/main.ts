@@ -111,7 +111,7 @@ function stepSize(delta: number): void {
 // or one of their controls has focus.
 
 const bars = [$('top-bar'), $('bottom-bar')];
-const IDLE_MS = 3000;
+const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
 const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.

@@ -60,7 +60,9 @@ export class ScoreView {
     this.host.replaceChildren();
     try {
       const osmd = new OpenSheetMusicDisplay(this.host, osmdOptions(settings, this.layout));
-      await osmd.load(xml);
+      // With lyrics off, OSMD still reserves their room between the staves (the Bach chorale's gap went
+      // from 4.7 to 10.4 staff spaces), so the lyrics are taken out of the file before it is drawn.
+      await osmd.load(settings.lyrics ? xml : xml.replace(/<lyric(\s[^>]*)?>[\s\S]*?<\/lyric>/g, ''));
       osmd.zoom = settings.size;
       osmd.render();
       this.osmd = osmd;

@@ -1,11 +1,40 @@
+/* Colours. The music always sits on white paper; the bars are a solid grey band that reads as separate
+   from it, with near-black (light) or near-white (dark) text: about 13:1 and 15:1 contrast. Buttons sit
+   one step off the band so they look pressable without boxes everywhere. */
 :root {
   --bg: #ffffff;
-  --fg: #1a1a1a;
-  --muted: #666666;
-  --line: #dddddd;
+  --fg: #111827;
+  --muted: #4b5563;
+  --line: #d1d5db;
   --accent: #2563eb;
+  --bar-bg: #d9dce1;
+  --bar-fg: #111827;
+  --bar-muted: #374151;
+  --bar-line: #b8bcc4;
+  --btn-bg: #f3f4f6;
+  --btn-line: #9ca3af;
+  --panel-bg: #ffffff;
+  --current-bg: #e8efff;
   color-scheme: light;
   font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121316;
+    --fg: #f3f4f6;
+    --muted: #b6bbc4;
+    --line: #3a3d43;
+    --accent: #7aa2ff;
+    --bar-bg: #1f2125;
+    --bar-fg: #f3f4f6;
+    --bar-muted: #c3c7ce;
+    --bar-line: #3a3d43;
+    --btn-bg: #2d3036;
+    --btn-line: #4b5058;
+    --panel-bg: #1f2125;
+    --current-bg: #1e2a44;
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -23,17 +52,19 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
   align-items: center;
   gap: 8px;
   padding: 6px max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left));
-  background: rgba(255, 255, 255, 0.97);
-  transition: opacity 0.3s;
+  background: var(--bar-bg);
+  color: var(--bar-fg);
+  transition: opacity 1s; /* a slow fade, as the owner asked */
 }
-.bar.top { top: 0; border-bottom: 1px solid var(--line); padding-top: max(6px, env(safe-area-inset-top)); }
-.bar.bottom { bottom: 0; border-top: 1px solid var(--line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+.bar.top { top: 0; border-bottom: 1px solid var(--bar-line); padding-top: max(6px, env(safe-area-inset-top)); }
+.bar.bottom { bottom: 0; border-top: 1px solid var(--bar-line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
 .bar.faded { opacity: 0; pointer-events: none; }
 
-.btn, .bar select { font: inherit; padding: 6px 12px; border: 1px solid #cccccc; background: #f4f4f4; border-radius: 8px; color: inherit; }
+.btn, .bar select { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
+#q-default { border-color: var(--accent); color: var(--accent); }
 .btn:disabled { opacity: 0.4; }
 .title { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.title small { font-weight: 400; color: var(--muted); }
+.title small { font-weight: 400; color: var(--bar-muted); }
 /* On a phone held upright the composer gives way to the title. */
 @media (max-width: 480px) { .title small { display: none; } }
 .bar output { min-width: 3.2em; text-align: center; }
@@ -45,7 +76,8 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .score { background: #ffffff; }
 .score.strip { overflow-x: auto; overflow-y: hidden; }
 
-dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
+dialog a { color: var(--accent); }
 dialog h2 { margin: 0 0 4px; font-size: 18px; }
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 12px 0; border: 0; padding: 0; }
 .row legend { padding: 0; margin-bottom: 4px; font-weight: 600; width: 100%; }
@@ -53,10 +85,10 @@ label.row { font-weight: 600; }
 label.row input[type="range"] { flex: 1; min-width: 160px; }
 .note { color: var(--muted); font-size: 14px; margin: 4px 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.actions button { font: inherit; padding: 6px 12px; }
+.actions button { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
 .actions button[value="close"] { margin-left: auto; }
 
 .song-list { list-style: none; margin: 8px 0 0; padding: 0; }
-.song-list button { display: block; width: 100%; text-align: left; font: inherit; padding: 10px 12px; margin: 4px 0; border: 1px solid var(--line); border-radius: 8px; background: #ffffff; }
-.song-list button.current { border-color: var(--accent); background: #eef3ff; }
+.song-list button { display: block; width: 100%; text-align: left; font: inherit; padding: 10px 12px; margin: 4px 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-bg); color: inherit; }
+.song-list button.current { border-color: var(--accent); background: var(--current-bg); }
 .song-list small { display: block; color: var(--muted); }
