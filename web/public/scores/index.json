@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bach-bwv514",
+    "title": "Chorale 'Schaff's mit mir, Gott' BWV 514",
+    "composer": "J. S. Bach",
+    "file": "bach-bwv514.musicxml",
+    "source": {
+      "dataset": "PDMX",
+      "mxl": "./mxl/12/10/QmUAQv7PsWCJFAFSk1Ksz1UzaPFJe46s2PBqqNzZCyBhz2.mxl",
+      "uploadTitle": "Johann Sebastian Bach - Schaff's mit mir Gott"
+    },
+    "license": "publicdomain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "status": "engine test score; notes not verified against a printed edition"
+  },
+  {
+    "id": "chopin-op28-4",
+    "title": "Prelude in E minor Op. 28 No. 4",
+    "composer": "F. Chopin",
+    "file": "chopin-op28-4.musicxml",
+    "source": {
+      "dataset": "PDMX",
+      "mxl": "./mxl/0/33/QmanzCS7875c3wuXfewZKx3qARMdn6GvcwJfQ15QGmxQ6n.mxl",
+      "uploadTitle": "Frédéric Chopin: Prelude in E minor Op.28 No.4"
+    },
+    "license": "cc-zero",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "status": "engine test score; notes not verified against a printed edition"
+  },
+  {
+    "id": "mozart-k2",
+    "title": "Minuet in F K. 2",
+    "composer": "W. A. Mozart",
+    "file": "mozart-k2.musicxml",
+    "source": {
+      "dataset": "PDMX",
+      "mxl": "./mxl/14/37/QmWPFpLyAkm7gcKYZHuEZ8NgeASsVGdyzGVrisSGKAmpvX.mxl",
+      "uploadTitle": "W. A. Mozart Minuet in F Major K2."
+    },
+    "license": "cc-zero",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "status": "engine test score; notes not verified against a printed edition"
+  }
+]
