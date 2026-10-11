@@ -14,9 +14,11 @@ permissions:
   pages: write
   id-token: write
 
+# Own concurrency group: the old branch's workflow used "pages", and its runs stuck in that queue
+# left this branch's runs pending without starting.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-web
+  cancel-in-progress: true
 
 jobs:
   build:
