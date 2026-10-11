@@ -15,12 +15,16 @@
       <option value="notes">Coloured notes</option>
       <option value="both">Both</option>
     </select>
+    <select id="p-heights" aria-label="Window heights">
+      <option value="equal">Equal heights</option>
+      <option value="exact">Exact heights</option>
+    </select>
   </header>
   <div class="proto-bar second">
     <button id="p-play" type="button">▶</button>
     <button id="p-back" type="button" aria-label="Step back">◀</button>
     <button id="p-fwd" type="button" aria-label="Step forward">▶|</button>
-    <label>♩ <input id="p-tempo" type="range" min="30" max="200" step="5"> <output id="p-tempo-out"></output></label>
+    <label>Speed <input id="p-speed" type="range" min="25" max="200" step="5" value="100"> <output id="p-speed-out">100%</output></label>
     <button id="p-smaller" type="button">A−</button>
     <button id="p-larger" type="button">A+</button>
   </div>
