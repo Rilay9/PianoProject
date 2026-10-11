@@ -122,4 +122,8 @@ async function start(): Promise<void> {
   await draw();
 }
 
+// The old app installed a service worker at this same address. This app has none yet,
+// so any registration found here is the old app's: remove it so it stops serving old files.
+navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => void r.unregister())).catch(() => {});
+
 void start();
