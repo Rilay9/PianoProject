@@ -330,4 +330,4 @@ navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => v
 void start();
 
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline() };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i) };

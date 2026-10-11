@@ -23,8 +23,12 @@ const TAP_REACH = 24; // screen px, about a fingertip: how far from a note a tap
 export const isStrip = (l: Layout) => l === 'smooth' || l === 'glide';
 
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
-interface Pos { left: number; right: number; top: number; height: number; ids: string[] }
-interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos }
+/** One staff's (one hand's) notes starting at a step: where they are, their SVG ids, and how long they last. */
+interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number }
+/** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
+interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
+/** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
+interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos; held: number[] }
 /** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
 interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number; staffTop: number; staffBottom: number }
 interface Slot { el: HTMLDivElement; piece: HTMLDivElement; o: number; h: number }
@@ -153,12 +157,21 @@ export class FollowView {
       this.steps = raw.map((r, i) => {
         const chunk = chunkOf[r.m] ?? 0;
         if (chunk !== prev) { this.occ.push(chunk); q++; prev = chunk; }
-        const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))! };
+        const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[] };
         const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + r.len;
         t += Math.max(30, ((nextTs - r.ts) * 4 * 60000) / r.bpm);
         return step;
       });
       this.endT = t; // when the last note ends
+      // Which note each staff is sounding at each step: its latest note that has not yet ended.
+      const last: number[] = [];
+      this.steps.forEach((step, i) => {
+        for (const st of step.pos.staves) last[st.staff] = i;
+        last.forEach((j, staff) => {
+          const st = this.steps[j].pos.staves.find((x) => x.staff === staff)!;
+          if (this.steps[j].ts + st.len > step.ts + 1e-9) step.held[staff] = j;
+        });
+      });
       this.build(s.slots);
       this.current = keepTs === undefined ? 0 : this.nearestStep(keepTs);
       this.update();
@@ -182,28 +195,42 @@ export class FollowView {
     const staves = o.GraphicSheet.MeasureList[m] ?? [];
     let left = Infinity, right = -Infinity;
     const ids: string[] = [];
+    const perStaff: StaffPos[] = [];
     let sys = staves.find(Boolean)?.ParentMusicSystem;
-    for (const gm of staves) {
-      if (!gm) continue;
+    staves.forEach((gm, staff) => {
+      if (!gm) return;
+      // This staff's own box: its five lines, stretched to take in notes above or below them.
+      const lineY = gm.ParentStaffLine.PositionAndShape.AbsolutePosition.y;
+      const st: StaffPos = { staff, left: Infinity, right: -Infinity, top: this.px(lineY), height: 0, ids: [], len: 0 };
+      let bottom = this.px(lineY + o.EngravingRules.StaffHeight);
       for (const se of gm.staffEntries) {
         if (Math.abs(se.relInMeasureTimestamp.RealValue - rel) > 1e-6) continue;
         sys = gm.ParentMusicSystem;
         for (const gve of se.graphicalVoiceEntries) for (const n of gve.notes) {
           const b = n.PositionAndShape;
-          left = Math.min(left, this.px(b.AbsolutePosition.x + b.BorderLeft));
-          right = Math.max(right, this.px(b.AbsolutePosition.x + b.BorderRight));
+          st.left = Math.min(st.left, this.px(b.AbsolutePosition.x + b.BorderLeft));
+          st.right = Math.max(st.right, this.px(b.AbsolutePosition.x + b.BorderRight));
+          st.top = Math.min(st.top, this.px(b.AbsolutePosition.y + b.BorderTop));
+          bottom = Math.max(bottom, this.px(b.AbsolutePosition.y + b.BorderBottom));
+          st.len = Math.max(st.len, n.sourceNote.Length.RealValue);
           const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
-          if (id) ids.push(id);
+          if (id) { ids.push(id); st.ids.push(id); }
         }
       }
-    }
+      if (!isFinite(st.left)) return; // nothing starts in this staff here
+      st.top -= 4;
+      st.height = bottom + 4 - st.top;
+      left = Math.min(left, st.left);
+      right = Math.max(right, st.right);
+      perStaff.push(st);
+    });
     if (!isFinite(left)) { // nothing found at that beat: the start of the bar
       const b = staves.find(Boolean)?.PositionAndShape;
       left = b ? this.px(b.AbsolutePosition.x) : 0;
       right = left + 10;
     }
     const box = sys ? this.systemBox(sys) : { top: 0, height: 0 };
-    return { left, right, top: box.top, height: box.height, ids };
+    return { left, right, top: box.top, height: box.height, ids, staves: perStaff };
   }
 
   /** The play order: every step's bar, beat, timestamp and tempo, from OSMD's cursor (which follows repeats). */
@@ -405,36 +432,41 @@ export class FollowView {
 
   setMarker(marker: Marker): void { this.marker = marker; this.update(); }
 
+  /** One marker per staff (hand), on the note that staff is sounding now, for as long as it lasts (owner, 2026-10-11). */
   private drawMarker(s: Step): void {
     this.host.querySelectorAll('.mark').forEach((m) => m.remove());
     for (const el of this.colored) { el.style.removeProperty('fill'); el.style.removeProperty('stroke'); }
     this.colored = [];
-    const p = s.pos;
-    // The drawing the step is in: its slot's copy, or the one-line drawing.
-    const slot = this.slots.find((x) => x.o === s.occ);
-    const holder = slot ? slot.piece : (this.scroller?.firstElementChild as HTMLElement | null);
-    if (!holder) return;
-    const top = slot ? this.chunks[s.chunk].top : 0;
-    if (this.marker !== 'notes') {
-      const m = document.createElement('div');
-      m.className = 'mark';
-      m.style.left = `${p.left - 4}px`;
-      m.style.width = `${p.right - p.left + 8}px`;
-      m.style.top = `${p.top - top}px`;
-      m.style.height = `${p.height}px`;
-      holder.append(m);
-    }
-    if (this.marker !== 'bar') {
-      const root: ParentNode = slot ? slot.piece : this.source;
-      for (const id of p.ids) {
-        const g = root.querySelector(`[id="${CSS.escape(id)}"]`);
-        if (g) for (const path of g.querySelectorAll('path')) {
-          (path as SVGElement).style.fill = 'var(--mark-edge)';
-          (path as SVGElement).style.stroke = 'var(--mark-edge)';
-          this.colored.push(path as SVGElement);
+    s.held.forEach((j, staff) => {
+      if (j === undefined) return;
+      const from = this.steps[j];
+      const st = from.pos.staves.find((x) => x.staff === staff)!;
+      // The drawing the note is in: the slot showing its occurrence, or the one-line drawing.
+      const slot = this.slots.find((x) => x.o === from.occ);
+      const holder = slot ? slot.piece : (this.scroller?.firstElementChild as HTMLElement | null);
+      if (!holder || (this.slots.length && !slot)) return;
+      const top = slot ? this.chunks[from.chunk].top : 0;
+      if (this.marker !== 'notes') {
+        const m = document.createElement('div');
+        m.className = 'mark';
+        m.style.left = `${st.left - 4}px`;
+        m.style.width = `${st.right - st.left + 8}px`;
+        m.style.top = `${st.top - top}px`;
+        m.style.height = `${st.height}px`;
+        holder.append(m);
+      }
+      if (this.marker !== 'bar') {
+        const root: ParentNode = slot ? slot.piece : this.source;
+        for (const id of st.ids) {
+          const g = root.querySelector(`[id="${CSS.escape(id)}"]`);
+          if (g) for (const path of g.querySelectorAll('path')) {
+            (path as SVGElement).style.fill = 'var(--mark-edge)';
+            (path as SVGElement).style.stroke = 'var(--mark-edge)';
+            this.colored.push(path as SVGElement);
+          }
         }
       }
-    }
+    });
   }
 
   // ---- moving around while paused ---------------------------------------------------------------------
