@@ -15,23 +15,34 @@ const QUALITY: Record<string, string> = { M: 'major', m: 'minor', P: 'perfect', 
 const ordinal = (n: number) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`;
 
 /**
- * What the sounding notes make, using Tonal's chord dictionary: for three or more different notes every chord
- * name that fits (owner: show them all), kept only when the chord's own spelling is the written notes (so
- * C E G is C major, never "Em#5/C", which would need a B#); for two different notes the interval between them.
+ * The chord types named (owner, 2026-10-11: familiar ones only; Tonal's rare types have symbols like "F#4" for a
+ * chord in fourths, which reads as a note). Tonal's own symbols for them.
+ */
+const COMMON = new Set(['M', 'm', 'dim', 'aug', '6', 'm6', '7', 'maj7', 'm7', 'm7b5', 'dim7', 'mMaj7', 'sus4', 'sus2',
+  '7sus4', 'add9', 'madd9', '9', 'maj9', 'm9', '11', 'm11', '13', 'maj13', 'm13']);
+
+/**
+ * What the sounding notes make, using Tonal's chord dictionary: for three or more different notes every familiar
+ * chord name that fits (owner: show them all), kept only when the chord's own spelling is the written notes (so
+ * C E G is C major, never "Em#5/C", which would need a B#); for two different notes the interval between them,
+ * within an octave (owner: C3 to E5 is a major 3rd).
  */
 export function chordName(pitches: Pitch[]): string {
   const sorted = [...pitches].sort((a, b) => a.midi - b.midi);
   const classes = [...new Set(sorted.map((p) => pitchClass(p.spelled)))]; // lowest first: the bass
   if (classes.length >= 3) {
     const written = [...classes].sort().join(' ');
-    const fits = Chord.detect(classes).filter((name) => [...new Set(Chord.get(name).notes)].sort().join(' ') === written);
-    // A plain major chord reads as its letter (C, not Tonal's CM), as learners see it written.
-    return fits.map((name) => name.replace(/^([A-G](?:#|b)*)M(\/|$)/, '$1$2')).join(' / ');
+    const fits = Chord.detect(classes).filter((name) => {
+      const c = Chord.get(name);
+      return c.aliases.some((a) => COMMON.has(a)) && [...new Set(c.notes)].sort().join(' ') === written;
+    });
+    // A major chord reads as its letter (C, Cadd9; not Tonal's CM, CMadd9), as learners see it written.
+    return fits.map((name) => name.replace(/^([A-G](?:#|b)*)M(add9|\/|$)/, '$1$2')).join(' / ');
   }
   if (classes.length === 2) {
     const low = sorted[0], high = sorted.find((p) => pitchClass(p.spelled) !== pitchClass(low.spelled))!;
     const i = Interval.get(Interval.distance(low.spelled, high.spelled));
-    return i.empty ? '' : `${QUALITY[i.q] ?? i.q} ${ordinal(i.num)}`;
+    return i.empty ? '' : `${QUALITY[i.q] ?? i.q} ${ordinal(i.simple)}`;
   }
   return '';
 }
