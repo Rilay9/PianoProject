@@ -25,6 +25,7 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const UNIT = 10; // OSMD draws 10 px per staff space at zoom 1
 const GLIDE_AT = 0.7; // still-then-glide: reaching 70% across starts the glide...
 const GLIDE_TO = 0.2; // ...which brings the marker back to 20% across
+const GLIDE_MS = 300; // how long the glide takes (owner: faster than the first 600 ms)
 
 interface Piece { id: string; title: string; file: string }
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
@@ -353,7 +354,7 @@ function glideTo(target: number, ms: number): void {
 function followStrip(p: Pos): void {
   const w = stage.clientWidth, sl = scroller!.scrollLeft;
   if (mode === 'smooth') { if (!playing) glideTo(p.left - w / 3, 300); }
-  else if (p.right > sl + w * GLIDE_AT || p.left < sl) glideTo(p.left - w * GLIDE_TO, 600);
+  else if (p.right > sl + w * GLIDE_AT || p.left < sl) glideTo(p.left - w * GLIDE_TO, GLIDE_MS);
 }
 
 // ---- showing a step ---------------------------------------------------------------------------------
