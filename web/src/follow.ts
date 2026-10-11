@@ -25,7 +25,8 @@ export const isStrip = (l: Layout) => l === 'smooth' || l === 'glide';
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
 interface Pos { left: number; right: number; top: number; height: number; ids: string[] }
 interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos }
-interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number }
+/** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
+interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number; staffTop: number; staffBottom: number }
 interface Slot { el: HTMLDivElement; piece: HTMLDivElement; o: number; h: number }
 type O = OpenSheetMusicDisplay;
 
@@ -118,13 +119,17 @@ export class FollowView {
             o.render();
           }
           const svg = this.source.querySelector('svg')!.cloneNode(true) as SVGSVGElement;
-          const boxes = o.GraphicSheet.MusicPages[0].MusicSystems.map((sys) => this.systemBox(sys));
+          const systems = o.GraphicSheet.MusicPages[0].MusicSystems;
+          const boxes = systems.map((sys) => this.systemBox(sys));
+          const firstStaff = systems[0].StaffLines[0], lastStaff = systems[systems.length - 1].StaffLines.at(-1)!;
+          const staffTop = this.px(firstStaff.PositionAndShape.AbsolutePosition.y);
+          const staffBottom = this.px(lastStaff.PositionAndShape.AbsolutePosition.y + rules.StaffHeight);
           const top = Math.min(...boxes.map((x) => x.top));
           const h = Math.max(...boxes.map((x) => x.top + x.height)) - top;
           // A one-line drawing is as wide as its music (plus the side margin), not the whole drawing area.
           const right = Math.max(...(o.GraphicSheet.MeasureList[b] ?? []).filter(Boolean)
             .map((gm) => this.px(gm.PositionAndShape.AbsolutePosition.x + gm.PositionAndShape.BorderRight + margin)));
-          this.chunks.push({ svg, w: Math.max(this.host.clientWidth, right), top, h });
+          this.chunks.push({ svg, w: Math.max(this.host.clientWidth, right), top, h, staffTop, staffBottom });
           for (let m = a; m <= b; m++) chunkOf[m] = i;
           for (const r of raw) if (r.m >= a && r.m <= b && !where.has(key(r.m, r.rel))) where.set(key(r.m, r.rel), this.locate(o, r.m, r.rel));
         });
@@ -268,6 +273,7 @@ export class FollowView {
       const use = document.createElementNS(SVGNS, 'use');
       use.setAttribute('href', '#score-src');
       svg.append(use);
+      // <use> shows OSMD's whole <svg> at its own (already sized) width and height, so this view is in screen px.
       svg.setAttribute('viewBox', `0 0 ${this.stripW} ${this.stripH}`);
       svg.setAttribute('width', String(this.stripW));
       svg.setAttribute('height', String(this.stripH));
@@ -321,7 +327,10 @@ export class FollowView {
     const width = this.host.clientWidth;
     const scale = Math.min(1, slot.h / ch.h, width / ch.w);
     const svg = ch.svg.cloneNode(true) as SVGSVGElement;
-    svg.setAttribute('viewBox', `0 ${ch.top} ${ch.w} ${ch.h}`);
+    // A copy of OSMD's <svg> keeps its inner units, which are unzoomed (OSMD applies the notation size as the
+    // SVG's scale): cut the view in screen px / size.
+    const z = this.zoom;
+    svg.setAttribute('viewBox', `0 ${ch.top / z} ${ch.w / z} ${ch.h / z}`);
     svg.setAttribute('width', String(ch.w));
     svg.setAttribute('height', String(ch.h));
     svg.style.width = `${ch.w}px`;
@@ -330,7 +339,11 @@ export class FollowView {
     slot.piece.style.width = `${ch.w}px`;
     slot.piece.style.height = `${ch.h}px`;
     slot.piece.style.left = `${(width - ch.w * scale) / 2}px`;
-    slot.piece.style.top = `${(slot.h - ch.h * scale) / 2}px`;
+    // Centred on the staves, not on everything drawn, so the staves sit at the same height in every slot
+    // whatever marks are above or below them; moved only as far as needed to keep all of it in the slot.
+    const centre = slot.h / 2 - ((ch.staffTop + ch.staffBottom) / 2 - ch.top) * scale;
+    const room = Math.max(0, slot.h - ch.h * scale); // spare height around the whole drawing
+    slot.piece.style.top = `${Math.min(room, Math.max(0, centre))}px`;
     slot.piece.style.transform = scale < 1 ? `scale(${scale})` : '';
   }
 
