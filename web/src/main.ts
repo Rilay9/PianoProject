@@ -1,8 +1,9 @@
 import './style.css';
 import { FollowView, isStrip } from './follow';
+import { UnderStrip } from './strip';
 import {
   currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type ScoreSettings, type Spacing,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under,
 } from './settings';
 
 interface Piece {
@@ -26,6 +27,8 @@ const base = import.meta.env.BASE_URL;
 
 const score = $('score');
 const view = new FollowView(score, (text) => showMessage(`Could not draw this song: ${text}`));
+const strip = new UnderStrip($('under'), $('keyboard'), $('note-line'));
+view.onStep = (notes) => strip.show(notes);
 let pieces: Piece[] = [];
 let currentId = '';
 const xmlCache = new Map<string, string>();
@@ -59,7 +62,10 @@ async function draw(keep = false): Promise<void> {
   try {
     const xml = await xmlFor(piece);
     if (request !== drawRequest) return;
-    await view.show(xml, settingsFor(piece.id), keep ? view.position : undefined);
+    const s = settingsFor(piece.id);
+    // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
+    document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
+    await view.show(xml, s, keep ? view.position : undefined, () => strip.setSong(view.songPitches));
   } catch (cause) {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
@@ -274,7 +280,7 @@ function fillPanel(): void {
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="slots"]')) input.checked = input.value === String(s.slots);
   $<HTMLInputElement>('s-size').value = String(s.size);
   $<HTMLOutputElement>('s-size-out').value = `${Math.round(s.size * 100)}%`;
-  for (const name of ['spacing', 'layout', 'barNumbers', 'marker'] as const) {
+  for (const name of ['spacing', 'layout', 'barNumbers', 'marker', 'markerFollows', 'under'] as const) {
     for (const input of settingsDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) {
       input.checked = input.value === s[name];
     }
@@ -298,7 +304,14 @@ settingsDialog.addEventListener('change', (e) => {
   if (input.name === 'spacing') change('spacing', input.value as Spacing);
   else if (input.name === 'layout') change('layout', input.value as Layout);
   else if (input.name === 'slots') change('slots', Number(input.value));
-  else if (input.name === 'marker') { savePieceSetting(currentPiece().id, 'marker', input.value as Marker); view.setMarker(input.value as Marker); fillPanel(); fillBars(); }
+  else if (input.name === 'marker' || input.name === 'markerFollows') {
+    savePieceSetting(currentPiece().id, input.name, input.value as Marker & MarkerFollows);
+    const s = settingsFor(currentPiece().id);
+    view.setMarker(s.marker, s.markerFollows);
+    fillPanel();
+    fillBars();
+  }
+  else if (input.name === 'under') change('under', input.value as Under);
   else if (input.name === 'barNumbers') change('barNumbers', input.value as BarNumbers);
   else if (input.name === 'lines') change('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
   else if (input.id === 's-tempoMarks') change('tempoMarks', input.checked);

@@ -41,6 +41,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; } /* hidden wins over a display set below */
 html, body { margin: 0; background: var(--bg); color: var(--fg); }
 /* Room for the bars at the very top and bottom of the page, so the song's start and end are never under them. */
 body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
@@ -77,7 +78,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; }
 
 /* The music fills the screen, on white whatever the theme so it reads like paper. The bars float over it. */
-.score { position: fixed; inset: 0; overflow: hidden; background: #ffffff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.score { position: fixed; inset: 0 0 var(--under-h, 0px); overflow: hidden; background: #ffffff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .score.strip { touch-action: pan-x; }
 /* Where OSMD draws, off screen; the slots show copies, the one-line layouts show it through <use>. */
 .osmd-source { position: absolute; left: -10000px; top: 0; }
@@ -92,6 +93,24 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
 .glide-zone { position: absolute; top: 0; bottom: 0; right: 0; background: rgba(17, 24, 39, 0.06); border-left: 1px dashed rgba(17, 24, 39, 0.25); pointer-events: none; }
 .btn.play { min-width: 3em; }
+
+/* Under the music. Keys look like the old app's strip: 108 px tall, black keys 62% of that, C keys labelled.
+   Right hand (top staff) blue, left hand (bottom staff) green; the next notes in paler shades. */
+.under { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; background: var(--bar-bg); padding: 4px max(6px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)); }
+.note-line { display: flex; min-height: 1.6em; font: 600 17px/1.6 system-ui, sans-serif; color: var(--bar-fg); }
+.note-line .left, .note-line .right { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
+.note-line .left { color: #15803d; text-align: right; border-right: 1px solid var(--bar-line); }
+.note-line .right { color: #1d4ed8; }
+.keyboard { height: 108px; }
+.keyboard .keys { position: relative; display: flex; height: 100%; }
+.keyboard .key.white { flex: 1; background: #fbfbfc; border: 1px solid #c7cad1; border-top: none; border-radius: 0 0 4px 4px; display: flex; align-items: flex-end; justify-content: center; font-size: 9px; color: #6b7280; padding-bottom: 3px; }
+.keyboard .key.black { position: absolute; top: 0; width: var(--black-w); height: 62%; background: #23262c; border: 1px solid #000; border-radius: 0 0 3px 3px; z-index: 2; }
+.keyboard .key.now-r { background: #2563eb; }
+.keyboard .key.now-l { background: #16a34a; }
+.keyboard .key.white.next-r { background: #bfd3fb; }
+.keyboard .key.white.next-l { background: #bbe5c8; }
+.keyboard .key.black.next-r { background: #5b7fc7; }
+.keyboard .key.black.next-l { background: #4d9a68; }
 
 dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
 dialog a { color: var(--accent); }

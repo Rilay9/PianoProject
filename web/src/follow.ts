@@ -11,7 +11,7 @@
 
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { osmdOptions, prepareXml, SIDE_MARGIN_SHARE } from './scoreView';
-import type { Layout, Marker, ScoreSettings } from './settings';
+import type { Layout, Marker, MarkerFollows, ScoreSettings } from './settings';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const UNIT = 10; // OSMD draws 10 px per staff space at zoom 1
@@ -24,7 +24,22 @@ export const isStrip = (l: Layout) => l === 'smooth' || l === 'glide';
 
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
 /** One staff's (one hand's) notes starting at a step: where they are, their SVG ids, and how long they last. */
-interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number }
+interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number; notes: Pitch[] }
+/** A sounding pitch: MIDI number and written name (letters + octave, middle C = C4). */
+export interface Pitch { midi: number; name: string }
+/** For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next. */
+export interface StepNotes { now: Pitch[][]; next: Pitch[][] }
+
+const LETTERS: Record<number, string> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
+const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 1: '♯', 2: '𝄪' };
+
+/** OSMD pitches count octaves from middle C = octave 1, letters as 0-11 semitones, accidentals in semitones. */
+function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octave: number }): Pitch {
+  return {
+    midi: (p.Octave + 4) * 12 + p.FundamentalNote + p.AccidentalHalfTones,
+    name: `${LETTERS[p.FundamentalNote] ?? '?'}${ACCIDENTALS[p.AccidentalHalfTones] ?? ''}${p.Octave + 3}`,
+  };
+}
 /** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
 interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
 /** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
@@ -38,6 +53,7 @@ export class FollowView {
   private readonly source: HTMLDivElement; // off-screen: where OSMD draws
   private layout: Layout = 'turn';
   private marker: Marker = 'bar';
+  private markerFollows: MarkerFollows = 'split';
   private zoom = 1;
   private chunks: Chunk[] = [];
   private steps: Step[] = [];
@@ -60,6 +76,13 @@ export class FollowView {
   private glideUntil = 0; // performance.now() when the running glide finishes
   playing = false;
   onStop: () => void = () => {};
+  /** Called whenever the marker moves: the notes for the strip under the music. */
+  onStep: (notes: StepNotes) => void = () => {};
+
+  /** Every pitch in the song (for the keyboard's range). */
+  get songPitches(): number[] {
+    return [...new Set(this.steps.flatMap((s) => s.pos.staves.flatMap((st) => st.notes.map((n) => n.midi))))];
+  }
 
   constructor(private readonly host: HTMLElement, private readonly onError: (message: string) => void) {
     this.source = document.createElement('div');
@@ -75,11 +98,13 @@ export class FollowView {
 
   // ---- opening a song --------------------------------------------------------------------------------
 
-  async show(xml: string, s: ScoreSettings, keepTs?: number): Promise<void> {
+  /** Lays a song out. ready() runs once the steps are known, before the first marker is drawn. */
+  async show(xml: string, s: ScoreSettings, keepTs?: number, ready: () => void = () => {}): Promise<void> {
     const generation = ++this.generation; // a newer call wins over an older one
     this.pause();
     this.layout = s.layout;
     this.marker = s.marker;
+    this.markerFollows = s.markerFollows;
     this.speed = s.speed;
     this.zoom = s.size;
     const strip = isStrip(s.layout);
@@ -173,6 +198,7 @@ export class FollowView {
         });
       });
       this.build(s.slots);
+      ready();
       this.current = keepTs === undefined ? 0 : this.nearestStep(keepTs);
       this.update();
     } catch (cause) {
@@ -201,7 +227,7 @@ export class FollowView {
       if (!gm) return;
       // This staff's own box: its five lines, stretched to take in notes above or below them.
       const lineY = gm.ParentStaffLine.PositionAndShape.AbsolutePosition.y;
-      const st: StaffPos = { staff, left: Infinity, right: -Infinity, top: this.px(lineY), height: 0, ids: [], len: 0 };
+      const st: StaffPos = { staff, left: Infinity, right: -Infinity, top: this.px(lineY), height: 0, ids: [], len: 0, notes: [] };
       let bottom = this.px(lineY + o.EngravingRules.StaffHeight);
       for (const se of gm.staffEntries) {
         if (Math.abs(se.relInMeasureTimestamp.RealValue - rel) > 1e-6) continue;
@@ -213,6 +239,8 @@ export class FollowView {
           st.top = Math.min(st.top, this.px(b.AbsolutePosition.y + b.BorderTop));
           bottom = Math.max(bottom, this.px(b.AbsolutePosition.y + b.BorderBottom));
           st.len = Math.max(st.len, n.sourceNote.Length.RealValue);
+          const pitch = n.sourceNote.Pitch; // none for a rest
+          if (pitch && !n.sourceNote.isRest()) st.notes.push(pitchOf(pitch));
           const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
           if (id) { ids.push(id); st.ids.push(id); }
         }
@@ -428,45 +456,72 @@ export class FollowView {
     if (this.slots.length) this.placeSlots(s.occ);
     else this.followStrip(s.pos);
     this.drawMarker(s);
+    const staffNotes = (pick: (staff: number) => Pitch[]) => [0, 1, 2, 3].map(pick).slice(0, Math.max(s.held.length, 2));
+    const nextStep = this.steps[this.current + 1];
+    this.onStep({
+      now: staffNotes((staff) => {
+        const j = s.held[staff];
+        return j === undefined ? [] : this.steps[j].pos.staves.find((x) => x.staff === staff)!.notes;
+      }),
+      next: staffNotes((staff) => nextStep?.pos.staves.find((x) => x.staff === staff)?.notes ?? []),
+    });
   }
 
-  setMarker(marker: Marker): void { this.marker = marker; this.update(); }
+  setMarker(marker: Marker, follows: MarkerFollows): void { this.marker = marker; this.markerFollows = follows; this.update(); }
 
-  /** One marker per staff (hand), on the note that staff is sounding now, for as long as it lasts (owner, 2026-10-11). */
+  /**
+   * The marker, as chosen (owner, 2026-10-11): split = one per staff (hand), on the note that staff is sounding
+   * now for as long as it lasts; ahead = one across the staves at the newest notes; behind = one across the
+   * staves at the oldest note still sounding.
+   */
   private drawMarker(s: Step): void {
     this.host.querySelectorAll('.mark').forEach((m) => m.remove());
     for (const el of this.colored) { el.style.removeProperty('fill'); el.style.removeProperty('stroke'); }
     this.colored = [];
-    s.held.forEach((j, staff) => {
-      if (j === undefined) return;
-      const from = this.steps[j];
-      const st = from.pos.staves.find((x) => x.staff === staff)!;
-      // The drawing the note is in: the slot showing its occurrence, or the one-line drawing.
+    const held = s.held.flatMap((j, staff) => (j === undefined ? [] : [{ from: this.steps[j], st: this.steps[j].pos.staves.find((x) => x.staff === staff)! }]));
+    let bars: { from: Step; left: number; right: number; top: number; height: number }[];
+    let lit: { from: Step; ids: string[] }[];
+    if (this.markerFollows === 'split') {
+      bars = held.map(({ from, st }) => ({ from, left: st.left, right: st.right, top: st.top, height: st.height }));
+      lit = held.map(({ from, st }) => ({ from, ids: st.ids }));
+    } else if (this.markerFollows === 'ahead' || !held.length) {
+      bars = [{ from: s, left: s.pos.left, right: s.pos.right, top: s.pos.top, height: s.pos.height }];
+      lit = [{ from: s, ids: s.pos.ids }];
+    } else {
+      const oldest = held.reduce((a, b) => (b.from.t < a.from.t ? b : a));
+      bars = [{ from: oldest.from, left: oldest.st.left, right: oldest.st.right, top: oldest.from.pos.top, height: oldest.from.pos.height }];
+      lit = held.map(({ from, st }) => ({ from, ids: st.ids }));
+    }
+    // Each goes in the drawing its note is in: the slot showing its occurrence, or the one-line drawing.
+    const place = (from: Step) => {
       const slot = this.slots.find((x) => x.o === from.occ);
+      if (this.slots.length && !slot) return null;
       const holder = slot ? slot.piece : (this.scroller?.firstElementChild as HTMLElement | null);
-      if (!holder || (this.slots.length && !slot)) return;
-      const top = slot ? this.chunks[from.chunk].top : 0;
-      if (this.marker !== 'notes') {
-        const m = document.createElement('div');
-        m.className = 'mark';
-        m.style.left = `${st.left - 4}px`;
-        m.style.width = `${st.right - st.left + 8}px`;
-        m.style.top = `${st.top - top}px`;
-        m.style.height = `${st.height}px`;
-        holder.append(m);
-      }
-      if (this.marker !== 'bar') {
-        const root: ParentNode = slot ? slot.piece : this.source;
-        for (const id of st.ids) {
-          const g = root.querySelector(`[id="${CSS.escape(id)}"]`);
-          if (g) for (const path of g.querySelectorAll('path')) {
-            (path as SVGElement).style.fill = 'var(--mark-edge)';
-            (path as SVGElement).style.stroke = 'var(--mark-edge)';
-            this.colored.push(path as SVGElement);
-          }
+      return holder && { holder, root: (slot ? slot.piece : this.source) as ParentNode, top: slot ? this.chunks[from.chunk].top : 0 };
+    };
+    if (this.marker !== 'notes') for (const b of bars) {
+      const at = place(b.from);
+      if (!at) continue;
+      const m = document.createElement('div');
+      m.className = 'mark';
+      m.style.left = `${b.left - 4}px`;
+      m.style.width = `${b.right - b.left + 8}px`;
+      m.style.top = `${b.top - at.top}px`;
+      m.style.height = `${b.height}px`;
+      at.holder.append(m);
+    }
+    if (this.marker !== 'bar') for (const l of lit) {
+      const at = place(l.from);
+      if (!at) continue;
+      for (const id of l.ids) {
+        const g = at.root.querySelector(`[id="${CSS.escape(id)}"]`);
+        if (g) for (const path of g.querySelectorAll('path')) {
+          (path as SVGElement).style.fill = 'var(--mark-edge)';
+          (path as SVGElement).style.stroke = 'var(--mark-edge)';
+          this.colored.push(path as SVGElement);
         }
       }
-    });
+    }
   }
 
   // ---- moving around while paused ---------------------------------------------------------------------

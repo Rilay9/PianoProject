@@ -30,6 +30,11 @@
 
   <p id="message" class="message" hidden></p>
   <main id="score" class="score"></main>
+  <!-- Under the music: keyboard, note names, both or nothing; the bottom bar covers it while showing. -->
+  <div id="under" class="under" hidden>
+    <div id="note-line" class="note-line" hidden></div>
+    <div id="keyboard" class="keyboard" hidden></div>
+  </div>
 
   <dialog id="songs" aria-labelledby="songs-title">
     <form method="dialog">
@@ -87,6 +92,19 @@
         <label><input type="radio" name="marker" value="bar"> Bar</label>
         <label><input type="radio" name="marker" value="notes"> Coloured notes</label>
         <label><input type="radio" name="marker" value="both"> Both</label>
+      </fieldset>
+
+      <fieldset class="row"><legend>Marker follows</legend>
+        <label><input type="radio" name="markerFollows" value="split"> Each hand</label>
+        <label><input type="radio" name="markerFollows" value="ahead"> Hand furthest ahead</label>
+        <label><input type="radio" name="markerFollows" value="behind"> Hand furthest behind</label>
+      </fieldset>
+
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="under" value="notes"> Note names</label>
+        <label><input type="radio" name="under" value="both"> Both</label>
+        <label><input type="radio" name="under" value="nothing"> Nothing</label>
       </fieldset>
 
       <fieldset class="row" id="lines-choices"><legend>Bars per slot</legend>

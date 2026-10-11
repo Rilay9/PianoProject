@@ -6,6 +6,10 @@ export type Spacing = 'open' | 'compact' | 'tight';
 /** How the music follows the marker: slots that turn or roll, or one line that scrolls. */
 export type Layout = 'turn' | 'rolling' | 'smooth' | 'glide';
 export type Marker = 'bar' | 'notes' | 'both';
+/** One marker per hand, or one marker that stays with the hand furthest ahead or furthest behind. */
+export type MarkerFollows = 'split' | 'ahead' | 'behind';
+/** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
+export type Under = 'keyboard' | 'notes' | 'both' | 'nothing';
 export type BarNumbers = 'off' | 'lines' | 'every';
 /** Line breaks: the renderer's own, the file's, or a fixed number of bars per line. */
 export type Lines = 'auto' | 'file' | 1 | 2 | 3 | 4 | 6;
@@ -24,8 +28,10 @@ export interface ScoreSettings {
   /** Slots on the screen in the Turn and Rolling layouts (Turn swaps halves, so an even number). */
   slots: number;
   marker: Marker;
+  markerFollows: MarkerFollows;
   /** Playing speed as a share of the song's own tempo. */
   speed: number;
+  under: Under;
 }
 
 export const DEFAULTS: ScoreSettings = {
@@ -39,7 +45,9 @@ export const DEFAULTS: ScoreSettings = {
   lyrics: false,
   slots: 2,
   marker: 'bar',
+  markerFollows: 'split',
   speed: 1,
+  under: 'keyboard',
 };
 
 export const DEVICES: Device[] = ['phone-upright', 'phone-sideways', 'tablet'];
@@ -59,6 +67,13 @@ export const LAYOUTS: Record<Device, Layout[]> = {
   'phone-sideways': ['smooth', 'glide'],
   tablet: ['turn'],
 };
+/** Built-in defaults that differ by screen (owner, 2026-10-11: nothing under the music on a phone held sideways). */
+const DEVICE_DEFAULTS: Record<Device, Partial<ScoreSettings>> = {
+  'phone-upright': {},
+  'phone-sideways': { under: 'nothing' },
+  tablet: {},
+};
+
 export const LAYOUT_NAMES: Record<Layout, string> = { turn: 'Turn', rolling: 'Rolling', smooth: 'One line, smooth', glide: 'One line, still then glide' };
 export const slotChoices = (layout: Layout): number[] => (layout === 'turn' ? [2, 4, 6] : [2, 3, 4, 5, 6]);
 
@@ -112,7 +127,7 @@ function write(stored: Stored): void {
 
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
-  const s = { ...DEFAULTS, ...d.defaults, ...d.pieces[pieceId] };
+  const s = { ...DEFAULTS, ...DEVICE_DEFAULTS[device], ...d.defaults, ...d.pieces[pieceId] };
   // A layout this screen does not offer (including the earlier Auto / Page / One line) means its default.
   if (!LAYOUTS[device].includes(s.layout)) s.layout = LAYOUTS[device][0];
   if (!slotChoices(s.layout).includes(s.slots)) s.slots = DEFAULTS.slots;
