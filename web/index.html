@@ -7,12 +7,43 @@
   <title>Piano</title>
 </head>
 <body>
-  <header class="bar">
-    <select id="piece" aria-label="Score"></select>
-    <button id="open-settings" type="button" aria-haspopup="dialog">Display</button>
+  <!-- Controls layer: a top bar and a bottom bar over the music, shown when a song opens and on a tap. -->
+  <header class="bar top" id="top-bar">
+    <button id="open-songs" type="button" class="btn" aria-label="Songs">‹</button>
+    <div class="title"><span id="song-title"></span> <small id="song-composer"></small></div>
+    <button id="open-info" type="button" class="btn" aria-label="About this song">ⓘ</button>
+    <button id="open-settings" type="button" class="btn" aria-haspopup="dialog">Display</button>
   </header>
+  <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Display for this song">
+    <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
+    <output id="q-size" aria-live="polite"></output>
+    <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
+    <select id="q-spacing" aria-label="Spacing">
+      <option value="tight">Tight</option>
+      <option value="compact">Compact</option>
+      <option value="open">Open</option>
+    </select>
+    <button id="q-default" type="button" class="btn" hidden>Make default</button>
+  </div>
+
   <p id="message" class="message" hidden></p>
   <main id="score" class="score"></main>
+
+  <dialog id="songs" aria-labelledby="songs-title">
+    <form method="dialog">
+      <h2 id="songs-title">Songs</h2>
+      <ul id="song-list" class="song-list"></ul>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="info" aria-labelledby="info-title">
+    <form method="dialog">
+      <h2 id="info-title"></h2>
+      <p id="info-body" class="note"></p>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
 
   <dialog id="settings" aria-labelledby="settings-title">
     <form method="dialog">
@@ -49,11 +80,10 @@
       </fieldset>
 
       <div class="actions">
-        <button id="make-default" type="button">Use for all pieces</button>
-        <button id="reset-piece" type="button">Reset this piece</button>
+        <button id="make-default" type="button">Make default</button>
+        <button id="reset-piece" type="button">Reset this song</button>
         <button value="close">Done</button>
       </div>
-      <p id="about" class="note"></p>
     </form>
   </dialog>
   <script type="module" src="/src/main.ts"></script>

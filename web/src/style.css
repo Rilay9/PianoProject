@@ -10,19 +10,34 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--fg); }
+/* Room for the bars at the very top and bottom of the page, so the song's start and end are never under them. */
+body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 
+/* The bars float over the music and fade out of the way. */
 .bar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  left: 0;
+  right: 0;
   z-index: 2;
   display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 6px max(8px, env(safe-area-inset-right)) 6px max(8px, env(safe-area-inset-left));
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  padding: 6px max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left));
+  background: rgba(255, 255, 255, 0.97);
+  transition: opacity 0.3s;
 }
-.bar select { flex: 1; min-width: 0; font: inherit; padding: 6px; }
-.bar button, .actions button { font: inherit; padding: 6px 12px; }
+.bar.top { top: 0; border-bottom: 1px solid var(--line); padding-top: max(6px, env(safe-area-inset-top)); }
+.bar.bottom { bottom: 0; border-top: 1px solid var(--line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+.bar.faded { opacity: 0; pointer-events: none; }
+
+.btn, .bar select { font: inherit; padding: 6px 12px; border: 1px solid #cccccc; background: #f4f4f4; border-radius: 8px; color: inherit; }
+.btn:disabled { opacity: 0.4; }
+.title { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.title small { font-weight: 400; color: var(--muted); }
+/* On a phone held upright the composer gives way to the title. */
+@media (max-width: 480px) { .title small { display: none; } }
+.bar output { min-width: 3.2em; text-align: center; }
+#q-default { margin-left: auto; }
 
 .message { margin: 8px; color: #b91c1c; }
 
@@ -38,4 +53,10 @@ label.row { font-weight: 600; }
 label.row input[type="range"] { flex: 1; min-width: 160px; }
 .note { color: var(--muted); font-size: 14px; margin: 4px 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.actions button { font: inherit; padding: 6px 12px; }
 .actions button[value="close"] { margin-left: auto; }
+
+.song-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.song-list button { display: block; width: 100%; text-align: left; font: inherit; padding: 10px 12px; margin: 4px 0; border: 1px solid var(--line); border-radius: 8px; background: #ffffff; }
+.song-list button.current { border-color: var(--accent); background: #eef3ff; }
+.song-list small { display: block; color: var(--muted); }
