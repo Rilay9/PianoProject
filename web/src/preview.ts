@@ -177,12 +177,23 @@ async function load(keepTs?: number): Promise<void> {
       rules.MinMeasureToDrawNumber = a;
       rules.MaxMeasureToDrawNumber = b;
       rules.StretchLastSystemLine = i < ranges.length - 1; // a full-width line, as on the page; the song's last line as drawn
+      rules.RenderSingleHorizontalStaffline = false;
       o.render();
+      if (bars !== 'auto' && o.GraphicSheet.MusicPages[0].MusicSystems.length > 1) {
+        // The chosen bars never wrap (owner, 2026-10-11): drawn as one line, and fill() shrinks it to fit across.
+        rules.RenderSingleHorizontalStaffline = true;
+        rules.StretchLastSystemLine = false; // otherwise the one line is stretched to OSMD's maximum width
+        o.render();
+      }
       const svg = source.querySelector('svg')!.cloneNode(true) as SVGSVGElement;
-      const boxes = o.GraphicSheet.MusicPages[0].MusicSystems.map(systemBox);
+      const systems = o.GraphicSheet.MusicPages[0].MusicSystems;
+      const boxes = systems.map(systemBox);
       const top = Math.min(...boxes.map((x) => x.top));
       const h = Math.max(...boxes.map((x) => x.top + x.height)) - top;
-      chunks.push({ svg, w: stage.clientWidth, top, h });
+      // A one-line drawing is as wide as its music (plus the side margin), not the whole drawing area.
+      const right = Math.max(...(o.GraphicSheet.MeasureList[b] ?? []).filter(Boolean)
+        .map((gm) => px(gm.PositionAndShape.AbsolutePosition.x + gm.PositionAndShape.BorderRight + margin)));
+      chunks.push({ svg, w: Math.max(stage.clientWidth, right), top, h });
       for (let m = a; m <= b; m++) chunkOf[m] = i;
       for (const r of raw) if (r.m >= a && r.m <= b && !where.has(key(r.m, r.rel))) where.set(key(r.m, r.rel), locate(o, r.m, r.rel));
     });
@@ -472,7 +483,7 @@ window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer
 (window as unknown as { __proto: unknown }).__proto = {
   state: () => !osmd || !steps.length ? { steps: 0 } : {
     mode, slotCount, bars, step: current, steps: steps.length, occ: steps[current].occ, occs: occ.slice(), chunk: steps[current].chunk,
-    chunks: chunks.map((c) => ({ top: Math.round(c.top), h: Math.round(c.h) })),
+    chunks: chunks.map((c) => ({ top: Math.round(c.top), h: Math.round(c.h), w: Math.round(c.w) })),
     slots: slots.map((x) => ({ o: x.o, chunk: x.o >= 0 ? occ[x.o] : -1, h: x.h, transform: x.piece.style.transform, top: x.piece.style.top })),
     marks: [...stage.querySelectorAll('.mark')].length,
     scrollLeft: scroller?.scrollLeft ?? 0, stageH: stage.clientHeight, stageW: stage.clientWidth,

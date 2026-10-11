@@ -3,7 +3,7 @@
 @media (prefers-color-scheme: dark) { :root { --bar-bg: #1f2125; --bar-fg: #f3f4f6; --btn-bg: #2d3036; --btn-line: #4b5058; color-scheme: dark; } }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: #fff; }
-body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+body { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
 .proto-bar { flex: none; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 5px 8px; background: var(--bar-bg); color: var(--bar-fg); }
 .proto-bar.second { border-bottom: 1px solid var(--btn-line); }
 .proto-bar select, .proto-bar button { font: inherit; padding: 5px 9px; border: 1px solid var(--btn-line); background: var(--btn-bg); color: inherit; border-radius: 8px; }
