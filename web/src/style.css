@@ -93,6 +93,12 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
 .glide-zone { position: absolute; top: 0; bottom: 0; right: 0; background: rgba(17, 24, 39, 0.06); border-left: 1px dashed rgba(17, 24, 39, 0.25); pointer-events: none; }
 .btn.play { min-width: 3em; }
+/* L | R | Both | Off: one control, the chosen part filled. */
+.seg { display: inline-flex; border: 1px solid var(--btn-line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; padding: 6px 10px; border: 0; background: var(--btn-bg); color: inherit; }
+.seg button + button { border-left: 1px solid var(--btn-line); }
+.seg button[aria-pressed="true"] { background: var(--current-bg); color: var(--accent); font-weight: 600; }
+dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
 
 /* Under the music. Keys look like the old app's strip: 108 px tall, black keys 62% of that, C keys labelled.
    Right hand (top staff) blue, left hand (bottom staff) green; the next notes in paler shades. */

@@ -12,6 +12,7 @@
 import { ChordSymbolContainer, OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { osmdOptions, prepareXml, SIDE_MARGIN_SHARE } from './scoreView';
 import type { Layout, Marker, MarkerFollows, ScoreSettings } from './settings';
+import type { Beat, NoteEvent } from './sound';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const UNIT = 10; // OSMD draws 10 px per staff space at zoom 1
@@ -25,8 +26,12 @@ export const isStrip = (l: Layout) => l === 'smooth' || l === 'glide';
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
 /** One staff's (one hand's) notes starting at a step: where they are, their SVG ids, and how long they last. */
 interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number; notes: Pitch[]; chords: string[] }
-/** A sounding pitch: MIDI number, written name (letters + octave, middle C = C4) and its plain spelling (F#4). */
-export interface Pitch { midi: number; name: string; spelled: string }
+/**
+ * A sounding pitch: MIDI number, written name (letters + octave, middle C = C4), its plain spelling (F#4), and
+ * how long it sounds in whole notes (tied notes added up; 0 for the later notes of a tie and for grace notes,
+ * which the piano does not strike).
+ */
+export interface Pitch { midi: number; name: string; spelled: string; len: number }
 /**
  * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
  * and the chord symbol the file gives for this moment, if any.
@@ -38,8 +43,9 @@ const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 
 const PLAIN_ACCIDENTALS: Record<number, string> = { [-2]: 'bb', [-1]: 'b', 0: '', 1: '#', 2: '##' };
 
 /** OSMD pitches count octaves from middle C = octave 1, letters as 0-11 semitones, accidentals in semitones. */
-function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octave: number }): Pitch {
+function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octave: number }, len: number): Pitch {
   return {
+    len,
     midi: (p.Octave + 4) * 12 + p.FundamentalNote + p.AccidentalHalfTones,
     name: `${LETTERS[p.FundamentalNote] ?? '?'}${ACCIDENTALS[p.AccidentalHalfTones] ?? ''}${p.Octave + 3}`,
     spelled: `${LETTERS[p.FundamentalNote] ?? '?'}${PLAIN_ACCIDENTALS[p.AccidentalHalfTones] ?? ''}${p.Octave + 3}`,
@@ -78,6 +84,9 @@ export class FollowView {
   private frame = 0;
   private speed = 1;
   private endT = 0; // ms at speed 1 when the song's last note ends
+  private measures: { beats: number; beatLen: number; dur: number; pickup: boolean }[] = [];
+  /** While sound plays, the marker follows its clock (song ms at speed 1) instead of its own. */
+  songClock: (() => number) | null = null;
   private glideUntil = 0; // performance.now() when the running glide finishes
   playing = false;
   onStop: () => void = () => {};
@@ -126,6 +135,12 @@ export class FollowView {
       o.EngravingRules.PageRightMargin = margin;
       o.render();
       const raw = this.playOrder(o);
+      this.measures = o.Sheet.SourceMeasures.map((sm) => ({
+        beats: sm.ActiveTimeSignature?.Numerator ?? 4,
+        beatLen: 1 / (sm.ActiveTimeSignature?.Denominator ?? 4),
+        dur: sm.Duration.RealValue,
+        pickup: sm.ImplicitMeasure,
+      }));
       const where = new Map<string, Pos>(); // the same bar and beat comes round again in repeats
       const key = (m: number, rel: number) => `${m}:${rel}`;
       const chunkOf: number[] = [];
@@ -253,7 +268,11 @@ export class FollowView {
           bottom = Math.max(bottom, this.px(b.AbsolutePosition.y + b.BorderBottom));
           st.len = Math.max(st.len, n.sourceNote.Length.RealValue);
           const pitch = n.sourceNote.Pitch; // none for a rest
-          if (pitch && !n.sourceNote.isRest()) st.notes.push(pitchOf(pitch));
+          if (pitch && !n.sourceNote.isRest()) {
+            const note = n.sourceNote, tie = note.NoteTie;
+            const len = note.IsGraceNote || (tie && tie.StartNote !== note) ? 0 : (tie ? tie.Duration : note.Length).RealValue;
+            st.notes.push(pitchOf(pitch, len));
+          }
           const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
           if (id) { ids.push(id); st.ids.push(id); }
         }
@@ -612,7 +631,7 @@ export class FollowView {
 
   private tick(now: number): void {
     if (!this.playing) return;
-    const elapsed = (now - this.startPerf) * this.speed;
+    const elapsed = this.songClock ? this.songClock() : (now - this.startPerf) * this.speed;
     let moved = false;
     while (this.current + 1 < this.steps.length && this.steps[this.current + 1].t <= elapsed) { this.current++; moved = true; }
     if (moved) this.update();
@@ -625,6 +644,51 @@ export class FollowView {
     }
     if (this.current >= this.steps.length - 1 && elapsed >= this.endT) { this.pause(); return; }
     this.frame = requestAnimationFrame((t) => this.tick(t));
+  }
+
+  /** Where the marker is, in song ms at speed 1. */
+  get currentT(): number { return this.steps[this.current]?.t ?? 0; }
+
+  /** The notes to play from here on, for the chosen hands (right = top staff, left = the others). */
+  noteEvents(hands: 'both' | 'right' | 'left'): NoteEvent[] {
+    const out: NoteEvent[] = [];
+    for (const s of this.steps) for (const st of s.pos.staves) {
+      if (hands === 'right' ? st.staff !== 0 : hands === 'left' ? st.staff === 0 : false) continue;
+      for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: (n.len * 4 * 60000) / s.bpm });
+    }
+    return out;
+  }
+
+  /**
+   * Metronome beats in play order: each bar's beats from its time signature (one click per bottom-number
+   * note), the first of each full bar accented; a pickup bar gets only the beats of the grid that fall in it.
+   */
+  beats(): Beat[] {
+    const out: Beat[] = [];
+    let lastStart = NaN;
+    for (const s of this.steps) {
+      const start = s.ts - s.rel; // where this bar begins in the song (whole notes)
+      if (Math.abs(start - lastStart) < 1e-9) continue;
+      lastStart = start;
+      const m = this.measures[s.m];
+      if (!m) continue;
+      if (m.pickup) {
+        // The beats of the bar's grid that fall inside the pickup, counted back from where bar 1 begins.
+        for (let p = m.dur - m.beatLen; p >= -1e-9; p -= m.beatLen) out.push({ t: this.timeAt(start + p), accent: false });
+        out.sort((a, b) => a.t - b.t);
+      } else {
+        for (let k = 0; k * m.beatLen < m.dur - 1e-9; k++) out.push({ t: this.timeAt(start + k * m.beatLen), accent: k === 0 });
+      }
+    }
+    return out;
+  }
+
+  /** Song ms at speed 1 for a timestamp (whole notes), from the steps around it and the tempo in force. */
+  private timeAt(ts: number): number {
+    let i = 0;
+    while (i + 1 < this.steps.length && this.steps[i + 1].ts <= ts + 1e-9) i++;
+    const s = this.steps[i];
+    return s.t + ((ts - s.ts) * 4 * 60000) / s.bpm;
   }
 
   /** For checks: every note the app read from its drawing, per bar (in file order), written as F#4. */

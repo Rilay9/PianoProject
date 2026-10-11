@@ -17,6 +17,12 @@
   <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Playing and display for this song">
     <button id="play" type="button" class="btn play" aria-label="Play">▶</button>
     <button id="open-tempo" type="button" class="btn" aria-haspopup="dialog" aria-label="Tempo">♩ <span id="q-bpm"></span></button>
+    <div class="seg" id="q-hands" role="group" aria-label="Hands the piano plays">
+      <button type="button" data-hands="left" aria-label="Left hand only">L</button>
+      <button type="button" data-hands="right" aria-label="Right hand only">R</button>
+      <button type="button" data-hands="both">Both</button>
+      <button type="button" data-hands="off" aria-label="No piano sound">Off</button>
+    </div>
     <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
     <output id="q-size" aria-live="polite"></output>
     <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
@@ -54,13 +60,26 @@
 
   <dialog id="tempo" aria-labelledby="tempo-title">
     <form method="dialog">
-      <h2 id="tempo-title">Tempo</h2>
+      <h2 id="tempo-title">Tempo and sound</h2>
       <label class="row">Speed
         <input id="t-speed" type="range" min="25" max="200" step="5">
         <output id="t-speed-out"></output>
       </label>
       <label class="row">Beats per minute <input id="t-bpm" type="number" min="1" step="1" inputmode="numeric"></label>
+      <div class="row">
+        <button id="t-down" type="button">−5</button>
+        <button id="t-up" type="button">+5</button>
+        <button id="t-tap" type="button">Tap tempo</button>
+      </div>
       <p id="t-note" class="note"></p>
+      <label class="row">Piano volume <input id="t-piano-vol" type="range" min="0" max="100" step="5"></label>
+      <fieldset class="row"><legend>Metronome</legend>
+        <label><input id="t-metronome" type="checkbox"> On</label>
+        <label><input type="radio" name="click" value="wood"> Wood</label>
+        <label><input type="radio" name="click" value="beep"> Beep</label>
+        <label><input type="radio" name="click" value="high"> High</label>
+      </fieldset>
+      <label class="row">Metronome volume <input id="t-click-vol" type="range" min="0" max="100" step="5"></label>
       <div class="actions">
         <button id="t-reset" type="button">Song's own tempo</button>
         <button value="close">Done</button>

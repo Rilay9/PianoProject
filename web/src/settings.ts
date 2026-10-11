@@ -8,6 +8,10 @@ export type Layout = 'turn' | 'rolling' | 'smooth' | 'glide';
 export type Marker = 'bar' | 'notes' | 'both';
 /** One marker per hand, or one marker that stays with the hand furthest ahead or furthest behind. */
 export type MarkerFollows = 'split' | 'ahead' | 'behind';
+/** Which hands the piano plays (owner, 2026-10-11): both, one, or none (silent following). */
+export type Hands = 'both' | 'right' | 'left' | 'off';
+/** The metronome's click: the old app's three sounds. */
+export type Click = 'wood' | 'beep' | 'high';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
 export type Under = 'keyboard' | 'notes' | 'both' | 'nothing';
 export type BarNumbers = 'off' | 'lines' | 'every';
@@ -32,6 +36,12 @@ export interface ScoreSettings {
   /** Playing speed as a share of the song's own tempo. */
   speed: number;
   under: Under;
+  hands: Hands;
+  metronome: boolean;
+  click: Click;
+  /** 0 to 1. */
+  pianoVolume: number;
+  clickVolume: number;
 }
 
 export const DEFAULTS: ScoreSettings = {
@@ -48,6 +58,11 @@ export const DEFAULTS: ScoreSettings = {
   markerFollows: 'split',
   speed: 1,
   under: 'keyboard',
+  hands: 'both',
+  metronome: false,
+  click: 'wood',
+  pianoVolume: 0.8,
+  clickVolume: 0.6,
 };
 
 export const DEVICES: Device[] = ['phone-upright', 'phone-sideways', 'tablet'];
