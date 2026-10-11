@@ -9,6 +9,10 @@ import type { Layout, ScoreSettings } from './settings';
  * 360-430 CSS px tall: too short for two grand-staff systems at a readable size, so it
  * gets the one-line strip. A tablet held sideways is 700 px or more and gets the page.
  */
+/** Space left at each side of the music, as a share of the screen's width (owner's choice, 2026-10-11):
+ *  about 10 px on a phone upright, 20 px on a tablet or a phone sideways, whatever the size or spacing. */
+const SIDE_MARGIN_SHARE = 0.025;
+
 export function resolveLayout(layout: Layout, width: number, height: number): 'page' | 'strip' {
   if (layout !== 'auto') return layout;
   return width > height && height < 500 ? 'strip' : 'page';
@@ -64,13 +68,25 @@ export class ScoreView {
       // from 4.7 to 10.4 staff spaces), so the lyrics are taken out of the file before it is drawn.
       await osmd.load(settings.lyrics ? xml : xml.replace(/<lyric(\s[^>]*)?>[\s\S]*?<\/lyric>/g, ''));
       osmd.zoom = settings.size;
-      osmd.render();
+      // OSMD's page margins are in staff units, so they grow with the notation size, and the compact and
+      // default presets keep wide ones (80 px a side at 160% on a phone). Tie them to the screen's width
+      // instead: the spacing setting changes how notes are spaced, not how much screen is unused.
       this.osmd = osmd;
+      this.setMargins();
+      osmd.render();
       this.lastWidth = this.host.clientWidth;
     } catch (cause) {
       this.osmd = null;
       this.onError(cause instanceof Error ? cause.message : String(cause));
     }
+  }
+
+  /** OSMD margins are in staff units (10 px per unit at size 1), so convert the screen share to units. */
+  private setMargins(): void {
+    if (!this.osmd || !this.settings) return;
+    const units = (this.host.clientWidth * SIDE_MARGIN_SHARE) / (10 * this.settings.size);
+    this.osmd.EngravingRules.PageLeftMargin = units;
+    this.osmd.EngravingRules.PageRightMargin = units;
   }
 
   private async onResize(): Promise<void> {
@@ -79,6 +95,7 @@ export class ScoreView {
     if (layout !== this.layout) {
       await this.show(this.xml, this.settings);
     } else if (layout === 'page' && this.host.clientWidth !== this.lastWidth) {
+      this.setMargins();
       this.osmd.render();
       this.lastWidth = this.host.clientWidth;
     }

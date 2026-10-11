@@ -57,7 +57,8 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
   transition: opacity 1s; /* a slow fade, as the owner asked */
 }
 .bar.top { top: 0; border-bottom: 1px solid var(--bar-line); padding-top: max(6px, env(safe-area-inset-top)); }
-.bar.bottom { bottom: 0; border-top: 1px solid var(--bar-line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+/* Wraps rather than run a control off the screen: on a narrow phone Make default takes a second row while it shows. */
+.bar.bottom { flex-wrap: wrap; bottom: 0; border-top: 1px solid var(--bar-line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
 .bar.faded { opacity: 0; pointer-events: none; }
 
 .btn, .bar select { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
