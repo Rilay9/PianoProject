@@ -14,7 +14,9 @@
     <button id="open-info" type="button" class="btn" aria-label="About this song">ⓘ</button>
     <button id="open-settings" type="button" class="btn" aria-haspopup="dialog">Display</button>
   </header>
-  <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Display for this song">
+  <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Playing and display for this song">
+    <button id="play" type="button" class="btn play" aria-label="Play">▶</button>
+    <button id="open-tempo" type="button" class="btn" aria-haspopup="dialog" aria-label="Tempo">♩ <span id="q-bpm"></span></button>
     <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
     <output id="q-size" aria-live="polite"></output>
     <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
@@ -45,6 +47,22 @@
     </form>
   </dialog>
 
+  <dialog id="tempo" aria-labelledby="tempo-title">
+    <form method="dialog">
+      <h2 id="tempo-title">Tempo</h2>
+      <label class="row">Speed
+        <input id="t-speed" type="range" min="25" max="200" step="5">
+        <output id="t-speed-out"></output>
+      </label>
+      <label class="row">Beats per minute <input id="t-bpm" type="number" min="1" step="1" inputmode="numeric"></label>
+      <p id="t-note" class="note"></p>
+      <div class="actions">
+        <button id="t-reset" type="button">Song's own tempo</button>
+        <button value="close">Done</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="settings" aria-labelledby="settings-title">
     <form method="dialog">
       <h2 id="settings-title">Display</h2>
@@ -61,14 +79,18 @@
         <label><input type="radio" name="spacing" value="tight"> Tight</label>
       </fieldset>
 
-      <fieldset class="row"><legend>Layout</legend>
-        <label><input type="radio" name="layout" value="auto"> Auto</label>
-        <label><input type="radio" name="layout" value="page"> Page</label>
-        <label><input type="radio" name="layout" value="strip"> One line</label>
+      <fieldset class="row" id="layout-choices"><legend>Layout</legend></fieldset>
+
+      <fieldset class="row" id="slot-choices"><legend>Slots</legend></fieldset>
+
+      <fieldset class="row"><legend>Marker</legend>
+        <label><input type="radio" name="marker" value="bar"> Bar</label>
+        <label><input type="radio" name="marker" value="notes"> Coloured notes</label>
+        <label><input type="radio" name="marker" value="both"> Both</label>
       </fieldset>
 
-      <fieldset class="row"><legend>Lines</legend>
-        <label><input type="radio" name="lines" value="auto"> Auto</label>
+      <fieldset class="row" id="lines-choices"><legend>Bars per slot</legend>
+        <label><input type="radio" name="lines" value="auto"> As many as fit</label>
         <label><input type="radio" name="lines" value="file"> As in the file</label>
         <label><input type="radio" name="lines" value="1"> 1 bar</label>
         <label><input type="radio" name="lines" value="2"> 2</label>

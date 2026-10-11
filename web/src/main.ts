@@ -1,8 +1,8 @@
 import './style.css';
-import { ScoreView } from './scoreView';
+import { FollowView, isStrip } from './follow';
 import {
-  currentDevice, DEVICE_NAMES, hasPieceOverride, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  type BarNumbers, type Layout, type Lines, type ScoreSettings, type Spacing,
+  currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type ScoreSettings, type Spacing,
 } from './settings';
 
 interface Piece {
@@ -21,9 +21,11 @@ const message = $<HTMLParagraphElement>('message');
 const settingsDialog = $<HTMLDialogElement>('settings');
 const songsDialog = $<HTMLDialogElement>('songs');
 const infoDialog = $<HTMLDialogElement>('info');
+const tempoDialog = $<HTMLDialogElement>('tempo');
 const base = import.meta.env.BASE_URL;
 
-const view = new ScoreView($('score'), (text) => showMessage(`Could not draw this song: ${text}`));
+const score = $('score');
+const view = new FollowView(score, (text) => showMessage(`Could not draw this song: ${text}`));
 let pieces: Piece[] = [];
 let currentId = '';
 const xmlCache = new Map<string, string>();
@@ -47,15 +49,17 @@ async function xmlFor(piece: Piece): Promise<string> {
   return xml;
 }
 
-async function draw(): Promise<void> {
+/** Lays the song out again; keep = stay where the marker is (a setting changed), otherwise start at the top. */
+async function draw(keep = false): Promise<void> {
   const piece = currentPiece();
   showMessage('');
   fillBars();
   try {
-    await view.show(await xmlFor(piece), settingsFor(piece.id));
+    await view.show(await xmlFor(piece), settingsFor(piece.id), keep ? view.position : undefined);
   } catch (cause) {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
+  fillBars(); // the tempo shown comes from the song
 }
 
 async function openSong(id: string): Promise<void> {
@@ -67,7 +71,7 @@ async function openSong(id: string): Promise<void> {
   await draw();
 }
 
-// Bars: the song's name on top; size, spacing and Make default at the bottom.
+// Bars: the song's name on top; play, tempo, size, spacing and Make default at the bottom.
 
 const SIZE_MIN = 0.6; // same range as the Display panel's slider
 const SIZE_MAX = 1.8;
@@ -77,6 +81,9 @@ function fillBars(): void {
   const s = settingsFor(piece.id);
   $('song-title').textContent = piece.title;
   $('song-composer').textContent = piece.composer;
+  $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
+  $('play').textContent = view.playing ? '⏸' : '▶';
+  $('play').setAttribute('aria-label', view.playing ? 'Pause' : 'Play');
   $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
   $<HTMLSelectElement>('q-spacing').value = s.spacing;
   $<HTMLButtonElement>('q-smaller').disabled = s.size <= SIZE_MIN + 1e-9;
@@ -87,7 +94,7 @@ function fillBars(): void {
 function change<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]): void {
   savePieceSetting(currentPiece().id, key, value);
   fillPanel();
-  void draw();
+  void draw(true);
 }
 
 function makeCurrentDefault(): void {
@@ -113,7 +120,7 @@ function stepSize(delta: number): void {
 const bars = [$('top-bar'), $('bottom-bar')];
 const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
-const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open;
+const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.
 const barHasFocus = () => document.activeElement instanceof HTMLSelectElement && bars.some((b) => b.contains(document.activeElement));
 
@@ -133,25 +140,70 @@ for (const b of bars) {
   b.addEventListener('focusin', showBars);
   b.addEventListener('change', showBars);
 }
-for (const d of [settingsDialog, songsDialog, infoDialog]) d.addEventListener('close', showBars);
-$('score').addEventListener('click', () => (bars[0].classList.contains('faded') ? showBars() : hideBars()));
-// The page keeps the bars' heights free at its top and bottom, so the start and end of a song are never covered.
-const reserve = () => {
-  document.body.style.setProperty('--top-bar', `${bars[0].offsetHeight}px`);
-  document.body.style.setProperty('--bottom-bar', `${bars[1].offsetHeight}px`);
-};
-for (const b of bars) new ResizeObserver(reserve).observe(b);
+for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog]) d.addEventListener('close', showBars);
+
+// Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
+function play(): void {
+  hideBars();
+  view.play();
+  fillBars();
+}
+view.onStop = () => { fillBars(); showBars(); };
+$('play').addEventListener('click', () => (view.playing ? view.pause() : play()));
+
+// Taps and swipes on the music. Playing: a tap pauses. Paused: a tap on a note plays from there, a tap
+// elsewhere shows or hides the bars, and a swipe up or down pages through the slots (the one-line layouts
+// scroll sideways by themselves).
+const SWIPE = 40; // px of travel that makes a swipe rather than a tap
+let down: { x: number; y: number } | null = null;
+score.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; });
+score.addEventListener('pointercancel', () => { down = null; });
+score.addEventListener('pointerup', (e) => {
+  if (!down) return;
+  const dx = e.clientX - down.x, dy = e.clientY - down.y;
+  down = null;
+  if (view.playing) { view.pause(); return; }
+  if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
+  if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
+  const step = view.hit(e.clientX, e.clientY);
+  if (step >= 0) { view.goTo(step); play(); }
+  else if (bars[0].classList.contains('faded')) showBars();
+  else hideBars();
+});
+
+// Tempo: a slider for the speed, or the beats per minute typed exactly (owner, 2026-10-11).
+function fillTempo(): void {
+  const s = settingsFor(currentPiece().id);
+  $<HTMLInputElement>('t-speed').value = String(Math.round(s.speed * 100));
+  $<HTMLOutputElement>('t-speed-out').value = `${Math.round(s.speed * 100)}%`;
+  $<HTMLInputElement>('t-bpm').value = String(Math.round(view.baseBpm * s.speed));
+  $('t-note').textContent = `The song's own tempo: ♩ = ${Math.round(view.baseBpm)}.`;
+}
+function setSpeed(speed: number): void {
+  if (!(speed > 0)) return;
+  savePieceSetting(currentPiece().id, 'speed', speed);
+  view.setSpeed(speed);
+  fillTempo();
+  fillBars();
+}
+$('open-tempo').addEventListener('click', () => { fillTempo(); tempoDialog.showModal(); });
+$<HTMLInputElement>('t-speed').addEventListener('input', (e) => setSpeed(Number((e.target as HTMLInputElement).value) / 100));
+$<HTMLInputElement>('t-bpm').addEventListener('change', (e) => setSpeed(Number((e.target as HTMLInputElement).value) / view.baseBpm));
+$('t-reset').addEventListener('click', () => setSpeed(1));
 
 // Resizing and rotating: a change of device type (phone turned sideways) brings that device's settings;
-// otherwise the music re-flows to the new width.
+// otherwise the slots are laid out again for the new size. Either way the marker stays where it was.
 let lastDevice = currentDevice();
+let lastSize = '';
 let resizeTimer = 0;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = window.setTimeout(() => {
-    const device = currentDevice();
-    if (device !== lastDevice) { lastDevice = device; void draw(); }
-    else void view.resized();
+    const size = `${score.clientWidth}x${score.clientHeight}`;
+    if (currentDevice() === lastDevice && size === lastSize) return;
+    lastDevice = currentDevice();
+    lastSize = size;
+    void draw(true);
   }, 150);
 });
 
@@ -184,12 +236,24 @@ function fillInfo(): void {
   );
 }
 
+function radio(name: string, value: string, text: string): HTMLLabelElement {
+  const label = document.createElement('label');
+  label.append(Object.assign(document.createElement('input'), { type: 'radio', name, value }), ` ${text}`);
+  return label;
+}
+
 function fillPanel(): void {
   const piece = currentPiece();
   const s = settingsFor(piece.id);
+  const device = currentDevice();
+  const legendOf = (id: string) => $(id).querySelector('legend')!;
+  $('layout-choices').replaceChildren(legendOf('layout-choices'), ...LAYOUTS[device].map((l) => radio('layout', l, LAYOUT_NAMES[l])));
+  $('slot-choices').replaceChildren(legendOf('slot-choices'), ...slotChoices(s.layout).map((n) => radio('slots', String(n), String(n))));
+  $('slot-choices').hidden = $('lines-choices').hidden = isStrip(s.layout);
+  for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="slots"]')) input.checked = input.value === String(s.slots);
   $<HTMLInputElement>('s-size').value = String(s.size);
   $<HTMLOutputElement>('s-size-out').value = `${Math.round(s.size * 100)}%`;
-  for (const name of ['spacing', 'layout', 'barNumbers'] as const) {
+  for (const name of ['spacing', 'layout', 'barNumbers', 'marker'] as const) {
     for (const input of settingsDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) {
       input.checked = input.value === s[name];
     }
@@ -198,7 +262,7 @@ function fillPanel(): void {
   $<HTMLInputElement>('s-fingering').checked = s.fingering;
   $<HTMLInputElement>('s-lyrics').checked = s.lyrics;
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="lines"]')) input.checked = input.value === String(s.lines);
-  const where = DEVICE_NAMES[currentDevice()];
+  const where = DEVICE_NAMES[device];
   $<HTMLParagraphElement>('override-note').textContent = hasPieceOverride(piece.id)
     ? `${piece.title} has its own settings on a ${where}.`
     : `Using the default settings for a ${where}.`;
@@ -212,6 +276,8 @@ settingsDialog.addEventListener('change', (e) => {
   const input = e.target as HTMLInputElement;
   if (input.name === 'spacing') change('spacing', input.value as Spacing);
   else if (input.name === 'layout') change('layout', input.value as Layout);
+  else if (input.name === 'slots') change('slots', Number(input.value));
+  else if (input.name === 'marker') { savePieceSetting(currentPiece().id, 'marker', input.value as Marker); view.setMarker(input.value as Marker); fillPanel(); fillBars(); }
   else if (input.name === 'barNumbers') change('barNumbers', input.value as BarNumbers);
   else if (input.name === 'lines') change('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
   else if (input.id === 's-tempoMarks') change('tempoMarks', input.checked);
@@ -241,3 +307,6 @@ async function start(): Promise<void> {
 navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => void r.unregister())).catch(() => {});
 
 void start();
+
+// For checks: what the follow view has on screen.
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state() };

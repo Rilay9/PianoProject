@@ -3,7 +3,9 @@
 // Stored in localStorage under this app's own key, so nothing collides with the old app's data.
 
 export type Spacing = 'open' | 'compact' | 'tight';
-export type Layout = 'auto' | 'page' | 'strip';
+/** How the music follows the marker: slots that turn or roll, or one line that scrolls. */
+export type Layout = 'turn' | 'rolling' | 'smooth' | 'glide';
+export type Marker = 'bar' | 'notes' | 'both';
 export type BarNumbers = 'off' | 'lines' | 'every';
 /** Line breaks: the renderer's own, the file's, or a fixed number of bars per line. */
 export type Lines = 'auto' | 'file' | 1 | 2 | 3 | 4 | 6;
@@ -19,17 +21,25 @@ export interface ScoreSettings {
   tempoMarks: boolean;
   fingering: boolean;
   lyrics: boolean;
+  /** Slots on the screen in the Turn and Rolling layouts (Turn swaps halves, so an even number). */
+  slots: number;
+  marker: Marker;
+  /** Playing speed as a share of the song's own tempo. */
+  speed: number;
 }
 
 export const DEFAULTS: ScoreSettings = {
   size: 1,
   spacing: 'tight', // OSMD's compacttight: the layout the renderer trial compared
-  layout: 'auto',
+  layout: 'turn', // the first of each screen's LAYOUTS is its default (see settingsFor)
   lines: 'auto',
   barNumbers: 'lines',
   tempoMarks: true,
   fingering: true,
   lyrics: false,
+  slots: 2,
+  marker: 'bar',
+  speed: 1,
 };
 
 export const DEVICES: Device[] = ['phone-upright', 'phone-sideways', 'tablet'];
@@ -42,6 +52,15 @@ export function currentDevice(width = window.innerWidth, height = window.innerHe
   if (Math.min(width, height) >= 600) return 'tablet';
   return width > height ? 'phone-sideways' : 'phone-upright';
 }
+
+/** The layouts each screen offers, its default first (owner, 2026-10-11: as prototyped; defaults Turn / Smooth / Turn). */
+export const LAYOUTS: Record<Device, Layout[]> = {
+  'phone-upright': ['turn', 'rolling'],
+  'phone-sideways': ['smooth', 'glide'],
+  tablet: ['turn'],
+};
+export const LAYOUT_NAMES: Record<Layout, string> = { turn: 'Turn', rolling: 'Rolling', smooth: 'One line, smooth', glide: 'One line, still then glide' };
+export const slotChoices = (layout: Layout): number[] => (layout === 'turn' ? [2, 4, 6] : [2, 3, 4, 5, 6]);
 
 export const DEVICE_NAMES: Record<Device, string> = {
   'phone-upright': 'phone held upright',
@@ -93,7 +112,11 @@ function write(stored: Stored): void {
 
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
-  return { ...DEFAULTS, ...d.defaults, ...d.pieces[pieceId] };
+  const s = { ...DEFAULTS, ...d.defaults, ...d.pieces[pieceId] };
+  // A layout this screen does not offer (including the earlier Auto / Page / One line) means its default.
+  if (!LAYOUTS[device].includes(s.layout)) s.layout = LAYOUTS[device][0];
+  if (!slotChoices(s.layout).includes(s.slots)) s.slots = DEFAULTS.slots;
+  return s;
 }
 
 export function hasPieceOverride(pieceId: string, device = currentDevice()): boolean {

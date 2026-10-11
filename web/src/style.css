@@ -15,6 +15,9 @@
   --btn-line: #9ca3af;
   --panel-bg: #ffffff;
   --current-bg: #e8efff;
+  /* The marker sits on the white music in both themes. */
+  --mark: rgba(37, 99, 235, 0.22);
+  --mark-edge: #2563eb;
   color-scheme: light;
   font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -71,11 +74,24 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .bar output { min-width: 3.2em; text-align: center; }
 #q-default { margin-left: auto; }
 
-.message { margin: 8px; color: #b91c1c; }
+.message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; }
 
-/* The score: notation on white whatever the theme, so it reads like paper. */
-.score { background: #ffffff; }
-.score.strip { overflow-x: auto; overflow-y: hidden; }
+/* The music fills the screen, on white whatever the theme so it reads like paper. The bars float over it. */
+.score { position: fixed; inset: 0; overflow: hidden; background: #ffffff; touch-action: none; }
+.score.strip { touch-action: pan-x; }
+/* Where OSMD draws, off screen; the slots show copies, the one-line layouts show it through <use>. */
+.osmd-source { position: absolute; left: -10000px; top: 0; }
+.slot { position: absolute; left: 0; right: 0; overflow: hidden; }
+.slot + .slot { border-top: 1px solid #eef0f3; }
+.slot > .piece { position: absolute; transform-origin: 0 0; }
+.slot > .piece > svg { display: block; }
+.scroller { position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden; }
+.scroller > .inner { position: relative; }
+.scroller > .inner > svg { position: absolute; left: 0; top: 0; display: block; }
+.mark { position: absolute; background: var(--mark); border-left: 2px solid var(--mark-edge); border-radius: 3px; pointer-events: none; }
+/* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
+.glide-zone { position: absolute; top: 0; bottom: 0; right: 0; background: rgba(17, 24, 39, 0.06); border-left: 1px dashed rgba(17, 24, 39, 0.25); pointer-events: none; }
+.btn.play { min-width: 3em; }
 
 dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
 dialog a { color: var(--accent); }
