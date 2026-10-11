@@ -526,6 +526,9 @@ export class FollowView {
     this.frame = requestAnimationFrame((t) => this.tick(t));
   }
 
+  /** For checks: each step's timestamp (whole notes), start (ms at speed 1) and tempo. */
+  timeline() { return this.steps.map((s) => [s.ts, Math.round(s.t), s.bpm]); }
+
   /** For checks: what is on screen. */
   state() {
     return {

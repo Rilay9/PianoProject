@@ -77,7 +77,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; }
 
 /* The music fills the screen, on white whatever the theme so it reads like paper. The bars float over it. */
-.score { position: fixed; inset: 0; overflow: hidden; background: #ffffff; touch-action: none; }
+.score { position: fixed; inset: 0; overflow: hidden; background: #ffffff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .score.strip { touch-action: pan-x; }
 /* Where OSMD draws, off screen; the slots show copies, the one-line layouts show it through <use>. */
 .osmd-source { position: absolute; left: -10000px; top: 0; }

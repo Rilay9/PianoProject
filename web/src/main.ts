@@ -155,23 +155,40 @@ function play(): void {
 view.onStop = () => { fillBars(); showBars(); };
 $('play').addEventListener('click', () => (view.playing ? view.pause() : play()));
 
-// Taps and swipes on the music. Playing: a tap pauses. Paused: a tap on a note plays from there, a tap
-// elsewhere shows or hides the bars, and a swipe up or down pages through the slots (the one-line layouts
-// scroll sideways by themselves).
+// Taps and swipes on the music. Playing: a tap pauses. Paused: a long press on a note moves the marker there
+// and stays paused (owner, 2026-10-11); a tap shows or hides the bars; a swipe up or down pages through the
+// slots (the one-line layouts scroll sideways by themselves).
 const SWIPE = 40; // px of travel that makes a swipe rather than a tap
+const LONG_PRESS_MS = 500; // about the phone's own long-press time (Android: 400-500 ms)
 let down: { x: number; y: number } | null = null;
-score.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; });
-score.addEventListener('pointercancel', () => { down = null; });
+let pressTimer = 0;
+let pressed = false; // the long press happened: the finger lifting does nothing more
+score.addEventListener('pointerdown', (e) => {
+  down = { x: e.clientX, y: e.clientY };
+  pressed = false;
+  clearTimeout(pressTimer);
+  if (view.playing) return;
+  pressTimer = window.setTimeout(() => {
+    if (!down) return;
+    const step = view.hit(down.x, down.y);
+    if (step >= 0) { pressed = true; view.goTo(step); }
+  }, LONG_PRESS_MS);
+});
+score.addEventListener('pointermove', (e) => {
+  if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > SWIPE / 4) clearTimeout(pressTimer); // moving: not a press
+});
+score.addEventListener('pointercancel', () => { down = null; clearTimeout(pressTimer); });
+score.addEventListener('contextmenu', (e) => e.preventDefault()); // a long press must not open the browser's menu
 score.addEventListener('pointerup', (e) => {
+  clearTimeout(pressTimer);
   if (!down) return;
   const dx = e.clientX - down.x, dy = e.clientY - down.y;
   down = null;
+  if (pressed) return;
   if (view.playing) { view.pause(); return; }
   if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
   if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
-  const step = view.hit(e.clientX, e.clientY);
-  if (step >= 0) { view.goTo(step); play(); }
-  else if (bars[0].classList.contains('faded')) showBars();
+  if (bars[0].classList.contains('faded')) showBars();
   else hideBars();
 });
 
@@ -313,4 +330,4 @@ navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => v
 void start();
 
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state() };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline() };
