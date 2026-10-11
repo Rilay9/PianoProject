@@ -3,7 +3,7 @@
 // When a song opens, the whole play order is worked out first (OSMD's cursor, which follows repeats): for every
 // step, when it sounds (with the score's tempo changes) and which bar and beat it is. Then:
 // - Slot modes (Turn, Rolling): the music is cut into chunks (Bars: auto = as many of the page's lines as fit in a
-//   slot; 2/3/4 = that many bars, like the app's Lines setting), and each chunk is drawn on its own by OSMD
+//   slot; 1/2/3/4 = that many bars, like the app's Lines setting), and each chunk is drawn on its own by OSMD
 //   (only its bars), once. Slots split the screen evenly and show their chunk centred.
 // - One-line modes (sideways): the song is drawn once as a single line and scrolled.
 // Playback reads the step list from one clock; nothing is redrawn while the marker moves.
@@ -45,7 +45,7 @@ let zoom = 1;
 let mode: Mode = 'turn';
 let marker = 'bar';
 let slotCount = 2;
-let bars: 'auto' | 2 | 3 | 4 = 'auto';
+let bars: 'auto' | 1 | 2 | 3 | 4 = 'auto';
 let speed = 1;
 
 let chunks: Chunk[] = [];
@@ -473,7 +473,7 @@ $('p-smaller').addEventListener('click', () => { zoom = Math.max(0.6, Math.round
 $('p-larger').addEventListener('click', () => { zoom = Math.min(1.8, Math.round((zoom + 0.1) * 10) / 10); void load(keep()); });
 $<HTMLSelectElement>('p-marker').addEventListener('change', (e) => { marker = (e.target as HTMLSelectElement).value; show(); });
 slotSelect.addEventListener('change', () => { slotCount = Number(slotSelect.value); void load(keep()); });
-barsSelect.addEventListener('change', () => { bars = barsSelect.value === 'auto' ? 'auto' : (Number(barsSelect.value) as 2 | 3 | 4); void load(keep()); });
+barsSelect.addEventListener('change', () => { bars = barsSelect.value === 'auto' ? 'auto' : (Number(barsSelect.value) as 1 | 2 | 3 | 4); void load(keep()); });
 modeSelect.addEventListener('change', () => { mode = modeSelect.value as Mode; fillModes(); void load(keep()); });
 $<HTMLSelectElement>('p-song').addEventListener('change', () => void load());
 let resizeTimer = 0;

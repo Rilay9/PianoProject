@@ -28,7 +28,7 @@ const SIDE_MARGIN_SHARE = 0.025;
  *   4.7 to 10.4 staff spaces), so they are taken out.
  * - A fixed number of bars per line: the file's own breaks are taken out and a new line is started at
  *   bars 1 + n, 1 + 2n, ... (a pickup bar is not counted), which OSMD follows with newSystemFromXML.
- *   Where n bars do not fit the width at the chosen size, OSMD still breaks the line earlier.
+ *   Where n bars do not fit the width at the chosen size, ScoreView.fitLines draws the song smaller.
  */
 export function prepareXml(xml: string, s: ScoreSettings): string {
   let out = s.lyrics ? xml : xml.replace(/<lyric(\s[^>]*)?>[\s\S]*?<\/lyric>/g, '');
@@ -81,6 +81,7 @@ export class ScoreView {
     // For checks and debugging: the number of bars on each line as drawn.
     (window as unknown as { __pianoDebug: unknown }).__pianoDebug = {
       barsPerLine: () => this.osmd?.GraphicSheet.MusicPages.flatMap((p) => p.MusicSystems.map((sys) => sys.GraphicalMeasures.length)) ?? [],
+      zoom: () => this.osmd?.zoom,
     };
   }
 
@@ -104,6 +105,7 @@ export class ScoreView {
       // instead: the spacing setting changes how notes are spaced, not how much screen is unused.
       this.setMargins();
       osmd.render();
+      this.fitLines();
       this.lastWidth = this.host.clientWidth;
     } catch (cause) {
       if (generation !== this.generation) return;
@@ -119,16 +121,60 @@ export class ScoreView {
     if (layout !== this.layout) {
       await this.show(this.xml, this.settings);
     } else if (layout === 'page' && this.host.clientWidth !== this.lastWidth) {
+      this.osmd.zoom = this.settings.size;
       this.setMargins();
       this.osmd.render();
+      this.fitLines();
       this.lastWidth = this.host.clientWidth;
+    }
+  }
+
+  /**
+   * A fixed number of bars per line never wraps (owner, 2026-10-11): when some line's bars do not fit across
+   * at the chosen size, the whole song is drawn smaller, all lines alike, until they do. The size needed is
+   * worked out from the song drawn as one long line (natural widths), then checked on the page.
+   */
+  private fitLines(): void {
+    const osmd = this.osmd, s = this.settings;
+    if (!osmd || !s || this.layout !== 'page' || typeof s.lines !== 'number') return;
+    const measures = osmd.Sheet.SourceMeasures;
+    const starts = measures.map((m, i) => i === 0 || m.printNewSystemXml);
+    const lineCount = () => osmd.GraphicSheet.MusicPages.reduce((n, p) => n + p.MusicSystems.length, 0);
+    const want = starts.filter(Boolean).length;
+    if (lineCount() <= want) return;
+    const rules = osmd.EngravingRules;
+    // One long line, ignoring the breaks: otherwise each forced line is stretched to OSMD's maximum width.
+    rules.RenderSingleHorizontalStaffline = true;
+    rules.NewSystemAtXMLNewSystemAttribute = false;
+    osmd.render();
+    const list = osmd.GraphicSheet.MeasureList;
+    const box = (i: number) => list[i]?.find(Boolean)?.PositionAndShape;
+    const lineStart = list[0]?.find(Boolean)?.beginInstructionsWidth ?? 0; // clef, key and time at a line's start
+    let widest = 0;
+    for (let a = 0; a < measures.length; ) {
+      let b = a;
+      while (b + 1 < measures.length && !starts[b + 1]) b++;
+      const first = box(a), last = box(b);
+      if (first && last) widest = Math.max(widest, last.AbsolutePosition.x + last.BorderRight - first.AbsolutePosition.x + (a ? lineStart : 0));
+      a = b + 1;
+    }
+    rules.RenderSingleHorizontalStaffline = false;
+    rules.NewSystemAtXMLNewSystemAttribute = true;
+    const room = this.host.clientWidth * (1 - 2 * SIDE_MARGIN_SHARE);
+    let zoom = Math.min(s.size, widest > 0 ? room / (10 * widest) : s.size);
+    for (let tries = 0; tries < 10; tries++) {
+      osmd.zoom = zoom;
+      this.setMargins();
+      osmd.render();
+      if (lineCount() <= want) return;
+      zoom *= 0.95; // the estimate was a little short (line-start widths differ): a bit smaller
     }
   }
 
   /** OSMD margins are in staff units (10 px per unit at size 1), so convert the screen share to units. */
   private setMargins(): void {
     if (!this.osmd || !this.settings) return;
-    const units = (this.host.clientWidth * SIDE_MARGIN_SHARE) / (10 * this.settings.size);
+    const units = (this.host.clientWidth * SIDE_MARGIN_SHARE) / (10 * this.osmd.zoom);
     this.osmd.EngravingRules.PageLeftMargin = units;
     this.osmd.EngravingRules.PageRightMargin = units;
   }

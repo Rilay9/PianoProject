@@ -6,7 +6,7 @@ export type Spacing = 'open' | 'compact' | 'tight';
 export type Layout = 'auto' | 'page' | 'strip';
 export type BarNumbers = 'off' | 'lines' | 'every';
 /** Line breaks: the renderer's own, the file's, or a fixed number of bars per line. */
-export type Lines = 'auto' | 'file' | 2 | 3 | 4 | 6;
+export type Lines = 'auto' | 'file' | 1 | 2 | 3 | 4 | 6;
 export type Device = 'phone-upright' | 'phone-sideways' | 'tablet';
 
 export interface ScoreSettings {
