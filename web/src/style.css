@@ -99,7 +99,9 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .under { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; background: var(--bar-bg); padding: 4px max(6px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)); }
 .note-line { display: flex; min-height: 1.6em; font: 600 17px/1.6 system-ui, sans-serif; color: var(--bar-fg); }
 .note-line .left, .note-line .right { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
-.note-line .left { color: #15803d; text-align: right; border-right: 1px solid var(--bar-line); }
+.note-line .left { color: #15803d; text-align: right; }
+.note-line .chord { flex: none; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 8px; border-left: 1px solid var(--bar-line); border-right: 1px solid var(--bar-line); }
+.note-line .chord:empty { padding: 0 0 0 0; border-left: none; }
 .note-line .right { color: #1d4ed8; }
 .keyboard { height: 108px; }
 .keyboard .keys { position: relative; display: flex; height: 100%; }

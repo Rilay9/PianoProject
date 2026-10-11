@@ -9,7 +9,7 @@
 // - One-line layouts (Smooth, Glide): the song is drawn once as a single line and scrolled sideways.
 // Playback reads the step list from one clock; nothing is redrawn while the marker moves.
 
-import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
+import { ChordSymbolContainer, OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { osmdOptions, prepareXml, SIDE_MARGIN_SHARE } from './scoreView';
 import type { Layout, Marker, MarkerFollows, ScoreSettings } from './settings';
 
@@ -24,26 +24,31 @@ export const isStrip = (l: Layout) => l === 'smooth' || l === 'glide';
 
 /** Where a step's notes are, in the pixels of the drawing they belong to. */
 /** One staff's (one hand's) notes starting at a step: where they are, their SVG ids, and how long they last. */
-interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number; notes: Pitch[] }
-/** A sounding pitch: MIDI number and written name (letters + octave, middle C = C4). */
-export interface Pitch { midi: number; name: string }
-/** For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next. */
-export interface StepNotes { now: Pitch[][]; next: Pitch[][] }
+interface StaffPos { staff: number; left: number; right: number; top: number; height: number; ids: string[]; len: number; notes: Pitch[]; chords: string[] }
+/** A sounding pitch: MIDI number, written name (letters + octave, middle C = C4) and its plain spelling (F#4). */
+export interface Pitch { midi: number; name: string; spelled: string }
+/**
+ * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
+ * and the chord symbol the file gives for this moment, if any.
+ */
+export interface StepNotes { now: Pitch[][]; next: Pitch[][]; fileChord: string }
 
 const LETTERS: Record<number, string> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
 const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 1: '♯', 2: '𝄪' };
+const PLAIN_ACCIDENTALS: Record<number, string> = { [-2]: 'bb', [-1]: 'b', 0: '', 1: '#', 2: '##' };
 
 /** OSMD pitches count octaves from middle C = octave 1, letters as 0-11 semitones, accidentals in semitones. */
 function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octave: number }): Pitch {
   return {
     midi: (p.Octave + 4) * 12 + p.FundamentalNote + p.AccidentalHalfTones,
     name: `${LETTERS[p.FundamentalNote] ?? '?'}${ACCIDENTALS[p.AccidentalHalfTones] ?? ''}${p.Octave + 3}`,
+    spelled: `${LETTERS[p.FundamentalNote] ?? '?'}${PLAIN_ACCIDENTALS[p.AccidentalHalfTones] ?? ''}${p.Octave + 3}`,
   };
 }
 /** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
 interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
 /** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
-interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos; held: number[] }
+interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
 /** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
 interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number; staffTop: number; staffBottom: number }
 interface Slot { el: HTMLDivElement; piece: HTMLDivElement; o: number; h: number }
@@ -182,7 +187,7 @@ export class FollowView {
       this.steps = raw.map((r, i) => {
         const chunk = chunkOf[r.m] ?? 0;
         if (chunk !== prev) { this.occ.push(chunk); q++; prev = chunk; }
-        const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[] };
+        const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[], fileChord: '' };
         const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + r.len;
         t += Math.max(30, ((nextTs - r.ts) * 4 * 60000) / r.bpm);
         return step;
@@ -190,7 +195,12 @@ export class FollowView {
       this.endT = t; // when the last note ends
       // Which note each staff is sounding at each step: its latest note that has not yet ended.
       const last: number[] = [];
+      let chord = '';
       this.steps.forEach((step, i) => {
+        // A chord symbol holds until the next one.
+        const symbols = step.pos.staves.flatMap((st) => st.chords);
+        if (symbols.length) chord = symbols.join(' ');
+        step.fileChord = chord;
         for (const st of step.pos.staves) last[st.staff] = i;
         last.forEach((j, staff) => {
           const st = this.steps[j].pos.staves.find((x) => x.staff === staff)!;
@@ -227,11 +237,14 @@ export class FollowView {
       if (!gm) return;
       // This staff's own box: its five lines, stretched to take in notes above or below them.
       const lineY = gm.ParentStaffLine.PositionAndShape.AbsolutePosition.y;
-      const st: StaffPos = { staff, left: Infinity, right: -Infinity, top: this.px(lineY), height: 0, ids: [], len: 0, notes: [] };
+      const st: StaffPos = { staff, left: Infinity, right: -Infinity, top: this.px(lineY), height: 0, ids: [], len: 0, notes: [], chords: [] };
       let bottom = this.px(lineY + o.EngravingRules.StaffHeight);
       for (const se of gm.staffEntries) {
         if (Math.abs(se.relInMeasureTimestamp.RealValue - rel) > 1e-6) continue;
         sys = gm.ParentMusicSystem;
+        for (const c of se.sourceStaffEntry?.ChordContainers ?? []) {
+          st.chords.push(ChordSymbolContainer.calculateChordText(c, 0, undefined as never));
+        }
         for (const gve of se.graphicalVoiceEntries) for (const n of gve.notes) {
           const b = n.PositionAndShape;
           st.left = Math.min(st.left, this.px(b.AbsolutePosition.x + b.BorderLeft));
@@ -464,6 +477,7 @@ export class FollowView {
         return j === undefined ? [] : this.steps[j].pos.staves.find((x) => x.staff === staff)!.notes;
       }),
       next: staffNotes((staff) => nextStep?.pos.staves.find((x) => x.staff === staff)?.notes ?? []),
+      fileChord: s.fileChord,
     });
   }
 

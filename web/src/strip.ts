@@ -2,12 +2,39 @@
 // - Keyboard: the keys the song uses, rounded out to whole octaves and at least two (as the old app did, so a
 //   piece in one octave gets keys a finger can find); keys sounding now lit strongly and the next notes paler,
 //   the right hand (top staff) blue and the left hand (bottom staff) green.
-// - Note names: one line, the left hand's notes on the left half and the right hand's on the right half.
-//   (Chord names from the file's chord symbols come when a song has them; none of the current ones do.)
+// - Note names: one line, the left hand's notes on the left, the right hand's on the right, and between them the
+//   chord (owner, 2026-10-11): the file's chord symbol when it has one, otherwise what the sounding notes make.
 // Like the old app's strip, the keys are built once per song and only their classes change as the marker moves.
 
+import { Chord, Interval } from 'tonal';
 import type { Pitch, StepNotes } from './follow';
 import type { Under } from './settings';
+
+const pitchClass = (spelled: string) => spelled.replace(/-?\d+$/, '');
+const QUALITY: Record<string, string> = { M: 'major', m: 'minor', P: 'perfect', A: 'augmented', d: 'diminished', AA: 'doubly augmented', dd: 'doubly diminished' };
+const ordinal = (n: number) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`;
+
+/**
+ * What the sounding notes make, using Tonal's chord dictionary: for three or more different notes every chord
+ * name that fits (owner: show them all), kept only when the chord's own spelling is the written notes (so
+ * C E G is C major, never "Em#5/C", which would need a B#); for two different notes the interval between them.
+ */
+export function chordName(pitches: Pitch[]): string {
+  const sorted = [...pitches].sort((a, b) => a.midi - b.midi);
+  const classes = [...new Set(sorted.map((p) => pitchClass(p.spelled)))]; // lowest first: the bass
+  if (classes.length >= 3) {
+    const written = [...classes].sort().join(' ');
+    const fits = Chord.detect(classes).filter((name) => [...new Set(Chord.get(name).notes)].sort().join(' ') === written);
+    // A plain major chord reads as its letter (C, not Tonal's CM), as learners see it written.
+    return fits.map((name) => name.replace(/^([A-G](?:#|b)*)M(\/|$)/, '$1$2')).join(' / ');
+  }
+  if (classes.length === 2) {
+    const low = sorted[0], high = sorted.find((p) => pitchClass(p.spelled) !== pitchClass(low.spelled))!;
+    const i = Interval.get(Interval.distance(low.spelled, high.spelled));
+    return i.empty ? '' : `${QUALITY[i.q] ?? i.q} ${ordinal(i.num)}`;
+  }
+  return '';
+}
 
 const LOWEST = 21; // A0
 const HIGHEST = 108; // C8
@@ -84,8 +111,10 @@ export class UnderStrip {
     notes.next.forEach((ps, staff) => light(ps, staff === 0 ? 'next-r' : 'next-l'));
     const names = (ps: Pitch[]) => [...ps].sort((a, b) => a.midi - b.midi).map((p) => p.name).join(' ');
     const left = notes.now.slice(1).flat();
+    const chord = notes.fileChord || chordName(notes.now.flat());
     this.line.replaceChildren(
       Object.assign(document.createElement('span'), { className: 'left', textContent: names(left) }),
+      Object.assign(document.createElement('span'), { className: 'chord', textContent: chord }),
       Object.assign(document.createElement('span'), { className: 'right', textContent: names(notes.now[0] ?? []) }),
     );
   }

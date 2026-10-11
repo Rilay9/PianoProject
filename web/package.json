@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "opensheetmusicdisplay": "2.2.0"
+    "opensheetmusicdisplay": "2.2.0",
+    "tonal": "6.4.3"
   },
   "devDependencies": {
     "typescript": "6.0.3",
