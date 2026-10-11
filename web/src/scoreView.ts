@@ -1,8 +1,12 @@
 // A thin wrapper over OpenSheetMusicDisplay: settings in, a rendered score out.
-// Everything here maps to OSMD's public options; nothing re-implements layout.
+// Everything here maps to OSMD's public options; nothing re-implements layout (one exception below).
 
-import { OpenSheetMusicDisplay, type IOSMDOptions } from 'opensheetmusicdisplay';
+import { OpenSheetMusicDisplay, VexFlowMusicSystem, type IOSMDOptions } from 'opensheetmusicdisplay';
 import type { Layout, ScoreSettings } from './settings';
+
+// No brace at the left of the piano staves (owner, 2026-10-11). OSMD has no option for it and ignores the
+// file's part-symbol "none", so the method that adds an instrument's brace does nothing; its width goes too.
+(VexFlowMusicSystem.prototype as unknown as { createInstrumentBracket: () => void }).createInstrumentBracket = () => {};
 
 /**
  * Which layout "auto" means for the current screen. A phone held sideways is about
