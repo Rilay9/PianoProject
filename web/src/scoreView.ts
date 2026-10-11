@@ -41,7 +41,7 @@ export function prepareXml(xml: string, s: ScoreSettings): string {
   return out;
 }
 
-function osmdOptions(s: ScoreSettings, layout: 'page' | 'strip'): IOSMDOptions {
+export function osmdOptions(s: ScoreSettings, layout: 'page' | 'strip'): IOSMDOptions {
   return {
     backend: 'svg',
     autoResize: false, // resizing is handled by the page, so a change of layout or device can rebuild
