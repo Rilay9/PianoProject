@@ -1,8 +1,8 @@
 import './style.css';
 import { ScoreView } from './scoreView';
 import {
-  hasPieceOverride, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  type BarNumbers, type Layout, type ScoreSettings, type Spacing,
+  currentDevice, DEVICE_NAMES, hasPieceOverride, makeDefaults, resetPiece, savePieceSetting, settingsFor,
+  type BarNumbers, type Layout, type Lines, type ScoreSettings, type Spacing,
 } from './settings';
 
 interface Piece {
@@ -142,6 +142,19 @@ const reserve = () => {
 };
 for (const b of bars) new ResizeObserver(reserve).observe(b);
 
+// Resizing and rotating: a change of device type (phone turned sideways) brings that device's settings;
+// otherwise the music re-flows to the new width.
+let lastDevice = currentDevice();
+let resizeTimer = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = window.setTimeout(() => {
+    const device = currentDevice();
+    if (device !== lastDevice) { lastDevice = device; void draw(); }
+    else void view.resized();
+  }, 150);
+});
+
 // Panels: songs, info, display.
 
 function fillSongs(): void {
@@ -184,9 +197,11 @@ function fillPanel(): void {
   $<HTMLInputElement>('s-tempoMarks').checked = s.tempoMarks;
   $<HTMLInputElement>('s-fingering').checked = s.fingering;
   $<HTMLInputElement>('s-lyrics').checked = s.lyrics;
+  for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="lines"]')) input.checked = input.value === String(s.lines);
+  const where = DEVICE_NAMES[currentDevice()];
   $<HTMLParagraphElement>('override-note').textContent = hasPieceOverride(piece.id)
-    ? `${piece.title} has its own settings.`
-    : 'Using the default settings.';
+    ? `${piece.title} has its own settings on a ${where}.`
+    : `Using the default settings for a ${where}.`;
 }
 
 $<HTMLInputElement>('s-size').addEventListener('input', (e) => {
@@ -198,6 +213,7 @@ settingsDialog.addEventListener('change', (e) => {
   if (input.name === 'spacing') change('spacing', input.value as Spacing);
   else if (input.name === 'layout') change('layout', input.value as Layout);
   else if (input.name === 'barNumbers') change('barNumbers', input.value as BarNumbers);
+  else if (input.name === 'lines') change('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
   else if (input.id === 's-tempoMarks') change('tempoMarks', input.checked);
   else if (input.id === 's-fingering') change('fingering', input.checked);
   else if (input.id === 's-lyrics') change('lyrics', input.checked);
