@@ -27,7 +27,7 @@ ROWS = [("E01", "e01_layout", "layout", 0), ("E02", "e02_bars", "bars", 1), ("E0
         ("E39", "e39_movement", "movement", 0), ("E40", "e40_runs", "runs", 0), ("E41", "e41_voices", "voices", 0),
         ("E42", "e42_rates", "rates", 0), ("E43", "e43_shared_attacks", "shared_attacks", 0),
         ("E44", "e44_turn_taking", "turn_taking", 0), ("E45", "e45_hold_and_move", "hold_and_move", 0),
-        ("E46", "e46_density", "density", 1), ("D01", "d01_rate", "rate", 1)]
+        ("E46", "e46_density", "density", 1), ("D01", "d01_rate", "rate", 1), ("E47", "e47_hand_marks", "hand_marks", 1)]
 
 
 def candidate_files():
