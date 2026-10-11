@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Following: prototypes</title>
+</head>
+<body>
+  <!-- Prototype page for stage 2 ("following"), not part of the app. -->
+  <header class="proto-bar">
+    <select id="p-song" aria-label="Song"></select>
+    <select id="p-mode" aria-label="Behaviour"></select>
+    <select id="p-marker" aria-label="Marker">
+      <option value="bar">Bar</option>
+      <option value="notes">Coloured notes</option>
+      <option value="both">Both</option>
+    </select>
+  </header>
+  <div class="proto-bar second">
+    <button id="p-play" type="button">▶</button>
+    <button id="p-back" type="button" aria-label="Step back">◀</button>
+    <button id="p-fwd" type="button" aria-label="Step forward">▶|</button>
+    <label>♩ <input id="p-tempo" type="range" min="30" max="200" step="5"> <output id="p-tempo-out"></output></label>
+    <button id="p-smaller" type="button">A−</button>
+    <button id="p-larger" type="button">A+</button>
+  </div>
+  <main id="stage" class="stage"></main>
+  <div id="source" class="source" aria-hidden="true"></div>
+  <script type="module" src="/src/preview.ts"></script>
+</body>
+</html>
