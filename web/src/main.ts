@@ -50,12 +50,16 @@ async function xmlFor(piece: Piece): Promise<string> {
 }
 
 /** Lays the song out again; keep = stay where the marker is (a setting changed), otherwise start at the top. */
+let drawRequest = 0;
 async function draw(keep = false): Promise<void> {
+  const request = ++drawRequest; // a newer draw (another song picked while this one downloads) wins
   const piece = currentPiece();
   showMessage('');
   fillBars();
   try {
-    await view.show(await xmlFor(piece), settingsFor(piece.id), keep ? view.position : undefined);
+    const xml = await xmlFor(piece);
+    if (request !== drawRequest) return;
+    await view.show(xml, settingsFor(piece.id), keep ? view.position : undefined);
   } catch (cause) {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }

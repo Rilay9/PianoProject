@@ -52,6 +52,8 @@ export class FollowView {
   private startPerf = 0; // performance.now() at which step 0 would have sounded, at the current speed
   private frame = 0;
   private speed = 1;
+  private endT = 0; // ms at speed 1 when the song's last note ends
+  private glideUntil = 0; // performance.now() when the running glide finishes
   playing = false;
   onStop: () => void = () => {};
 
@@ -129,7 +131,17 @@ export class FollowView {
           // A one-line drawing is as wide as its music (plus the side margin), not the whole drawing area.
           const right = Math.max(...(o.GraphicSheet.MeasureList[b] ?? []).filter(Boolean)
             .map((gm) => this.px(gm.PositionAndShape.AbsolutePosition.x + gm.PositionAndShape.BorderRight + margin)));
-          this.chunks.push({ svg, w: Math.max(this.host.clientWidth, right), top, h, staffTop, staffBottom });
+          const w = Math.max(this.host.clientWidth, right);
+          // Made ready for a slot now, so playing never builds a drawing. A copy of OSMD's <svg> keeps its inner
+          // units, which are unzoomed (OSMD applies the notation size as the SVG's scale): the view is cut in
+          // screen px / size.
+          const z = this.zoom;
+          svg.setAttribute('viewBox', `0 ${top / z} ${w / z} ${h / z}`);
+          svg.setAttribute('width', String(w));
+          svg.setAttribute('height', String(h));
+          svg.style.width = `${w}px`;
+          svg.style.height = `${h}px`;
+          this.chunks.push({ svg, w, top, h, staffTop, staffBottom });
           for (let m = a; m <= b; m++) chunkOf[m] = i;
           for (const r of raw) if (r.m >= a && r.m <= b && !where.has(key(r.m, r.rel))) where.set(key(r.m, r.rel), this.locate(o, r.m, r.rel));
         });
@@ -142,10 +154,11 @@ export class FollowView {
         const chunk = chunkOf[r.m] ?? 0;
         if (chunk !== prev) { this.occ.push(chunk); q++; prev = chunk; }
         const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))! };
-        const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + 0.25;
+        const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + r.len;
         t += Math.max(30, ((nextTs - r.ts) * 4 * 60000) / r.bpm);
         return step;
       });
+      this.endT = t; // when the last note ends
       this.build(s.slots);
       this.current = keepTs === undefined ? 0 : this.nearestStep(keepTs);
       this.update();
@@ -199,10 +212,12 @@ export class FollowView {
     cursor.show();
     cursor.hide(); // only its iterator is used; the marker is drawn here
     cursor.reset();
-    const raw: { ts: number; bpm: number; m: number; rel: number }[] = [];
+    const raw: { ts: number; bpm: number; m: number; rel: number; len: number }[] = [];
     for (let guard = 0; !cursor.Iterator.EndReached && guard < 20000; guard++) {
       const it = cursor.Iterator;
-      raw.push({ ts: it.CurrentEnrolledTimestamp.RealValue, bpm: it.CurrentBpm || 80, m: it.CurrentMeasureIndex, rel: it.CurrentRelativeInMeasureTimestamp.RealValue });
+      // len: the longest note starting here (whole notes), which is how long the song's last step lasts.
+      const len = Math.max(0, ...cursor.NotesUnderCursor().map((n) => n.Length.RealValue));
+      raw.push({ ts: it.CurrentEnrolledTimestamp.RealValue, bpm: it.CurrentBpm || 80, m: it.CurrentMeasureIndex, rel: it.CurrentRelativeInMeasureTimestamp.RealValue, len });
       cursor.next();
     }
     cursor.reset();
@@ -326,15 +341,8 @@ export class FollowView {
     const ch = this.chunks[c];
     const width = this.host.clientWidth;
     const scale = Math.min(1, slot.h / ch.h, width / ch.w);
-    const svg = ch.svg.cloneNode(true) as SVGSVGElement;
-    // A copy of OSMD's <svg> keeps its inner units, which are unzoomed (OSMD applies the notation size as the
-    // SVG's scale): cut the view in screen px / size.
-    const z = this.zoom;
-    svg.setAttribute('viewBox', `0 ${ch.top / z} ${ch.w / z} ${ch.h / z}`);
-    svg.setAttribute('width', String(ch.w));
-    svg.setAttribute('height', String(ch.h));
-    svg.style.width = `${ch.w}px`;
-    svg.style.height = `${ch.h}px`;
+    // The drawing made ready when the song opened; a copy only if another slot shows it (the same music twice).
+    const svg = ch.svg.isConnected ? (ch.svg.cloneNode(true) as SVGSVGElement) : ch.svg;
     slot.piece.replaceChildren(svg);
     slot.piece.style.width = `${ch.w}px`;
     slot.piece.style.height = `${ch.h}px`;
@@ -381,7 +389,8 @@ export class FollowView {
   private followStrip(p: Pos): void {
     const w = this.host.clientWidth, sl = this.scroller!.scrollLeft;
     if (this.layout === 'smooth') { if (!this.playing) this.glideTo(p.left - w / 3, 300); }
-    else if (p.right > sl + w * GLIDE_AT || p.left < sl) this.glideTo(p.left - w * GLIDE_TO, GLIDE_MS);
+    else if (performance.now() < this.glideUntil && p.left >= sl && p.right <= sl + w) return; // let a running glide finish
+    else if (p.right > sl + w * GLIDE_AT || p.left < sl) { this.glideTo(p.left - w * GLIDE_TO, GLIDE_MS); this.glideUntil = performance.now() + GLIDE_MS; }
   }
 
   // ---- showing a step ---------------------------------------------------------------------------------
@@ -513,7 +522,7 @@ export class FollowView {
       if (n && n.pos.left > s.pos.left) x = s.pos.left + (n.pos.left - s.pos.left) * Math.min(1, (elapsed - s.t) / (n.t - s.t));
       this.scroller.scrollLeft = Math.max(0, x - this.host.clientWidth / 3);
     }
-    if (this.current >= this.steps.length - 1 && elapsed > this.steps[this.current].t + 600) { this.pause(); return; }
+    if (this.current >= this.steps.length - 1 && elapsed >= this.endT) { this.pause(); return; }
     this.frame = requestAnimationFrame((t) => this.tick(t));
   }
 
@@ -521,6 +530,7 @@ export class FollowView {
   state() {
     return {
       layout: this.layout, playing: this.playing, step: this.current, steps: this.steps.length, browsing: this.browsing,
+      lastT: Math.round(this.steps.at(-1)?.t ?? 0), endT: Math.round(this.endT), lastBpm: this.steps.at(-1)?.bpm,
       occ: this.steps[this.current]?.occ ?? -1, occs: this.occ.length, chunks: this.chunks.map((c) => ({ h: Math.round(c.h), w: Math.round(c.w) })),
       slots: this.slots.map((x) => ({ o: x.o, chunk: x.o >= 0 ? this.occ[x.o] : -1, h: x.h, transform: x.piece.style.transform })),
       marks: this.host.querySelectorAll('.mark').length, scrollLeft: this.scroller?.scrollLeft ?? 0,
