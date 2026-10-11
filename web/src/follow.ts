@@ -48,7 +48,7 @@ function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octa
 /** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
 interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
 /** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
-interface Step { t: number; ts: number; bpm: number; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
+interface Step { t: number; ts: number; bpm: number; m: number; rel: number; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
 /** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
 interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number; staffTop: number; staffBottom: number }
 interface Slot { el: HTMLDivElement; piece: HTMLDivElement; o: number; h: number }
@@ -187,7 +187,7 @@ export class FollowView {
       this.steps = raw.map((r, i) => {
         const chunk = chunkOf[r.m] ?? 0;
         if (chunk !== prev) { this.occ.push(chunk); q++; prev = chunk; }
-        const step = { t, ts: r.ts, bpm: r.bpm, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[], fileChord: '' };
+        const step = { t, ts: r.ts, bpm: r.bpm, m: r.m, rel: r.rel, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[], fileChord: '' };
         const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + r.len;
         t += Math.max(30, ((nextTs - r.ts) * 4 * 60000) / r.bpm);
         return step;
@@ -625,6 +625,17 @@ export class FollowView {
     }
     if (this.current >= this.steps.length - 1 && elapsed >= this.endT) { this.pause(); return; }
     this.frame = requestAnimationFrame((t) => this.tick(t));
+  }
+
+  /** For checks: every note the app read from its drawing, per bar (in file order), written as F#4. */
+  drawnNotes(): string[][] {
+    const seen = new Set<string>(), bars: string[][] = [];
+    for (const s of this.steps) {
+      if (seen.has(`${s.m}:${s.rel}`)) continue; // a repeat plays the same bar again
+      seen.add(`${s.m}:${s.rel}`);
+      (bars[s.m] ??= []).push(...s.pos.staves.flatMap((st) => st.notes.map((n) => n.spelled)));
+    }
+    return bars.map((b) => (b ?? []).sort());
   }
 
   /** For checks: each step's timestamp (whole notes), start (ms at speed 1) and tempo. */
