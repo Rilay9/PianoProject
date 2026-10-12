@@ -132,6 +132,11 @@ export class UnderStrip {
     this.keyboard.style.setProperty('--black-w', `${60 / whiteCount}%`);
   }
 
+  /** Marks these keys with a class (exercises: lit, wrong, wanted), clearing it from all others. */
+  markKeys(cls: string, midis: number[]): void {
+    for (const [midi, key] of this.keys) key.classList.toggle(cls, midis.includes(midi));
+  }
+
   /** Shows the keys being pressed on the MIDI keyboard. */
   setPressed(down: Set<number>): void {
     for (const [midi, key] of this.keys) key.classList.toggle('pressed', down.has(midi));

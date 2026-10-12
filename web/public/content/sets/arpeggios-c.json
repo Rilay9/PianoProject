@@ -1,0 +1,10 @@
+{
+  "title": "Test: arpeggios in C",
+  "order": "pool",
+  "items": {
+    "1": { "chord": "C", "arpeggio": true },
+    "2": { "chord": "F", "arpeggio": true },
+    "3": { "chord": "G", "octave": 3, "arpeggio": true },
+    "4": { "chord": "Am", "octave": 3, "arpeggio": true }
+  }
+}

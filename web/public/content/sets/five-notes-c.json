@@ -1,0 +1,11 @@
+{
+  "title": "Test: five notes C–G",
+  "order": "pool",
+  "items": {
+    "1": { "notes": "C4" },
+    "2": { "notes": "D4" },
+    "3": { "notes": "E4" },
+    "4": { "notes": "F4" },
+    "5": { "notes": "G4" }
+  }
+}

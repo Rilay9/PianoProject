@@ -1,0 +1,13 @@
+{
+  "title": "Test: chords in C",
+  "order": "pool",
+  "items": {
+    "1": { "chord": "C" },
+    "2": { "chord": "Dm" },
+    "3": { "chord": "Em" },
+    "4": { "chord": "F" },
+    "5": { "chord": "G" },
+    "6": { "chord": "Am", "octave": 3 },
+    "7": { "chord": "G7", "octave": 3 }
+  }
+}

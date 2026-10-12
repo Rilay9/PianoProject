@@ -30,6 +30,12 @@ export async function setUpOffline(base: string, progress: (done: number, total:
   const pieces = (await (await fetch(`${base}scores/index.json`)).json()) as { file: string }[];
   urls.add(new URL(`${base}scores/index.json`, origin).href);
   for (const p of pieces) urls.add(new URL(`${base}scores/${p.file}`, origin).href);
+  // The exercise sets (content files).
+  try {
+    const sets = (await (await fetch(`${base}content/sets/index.json`)).json()) as string[];
+    urls.add(new URL(`${base}content/sets/index.json`, origin).href);
+    for (const f of sets) urls.add(new URL(`${base}content/sets/${f}`, origin).href);
+  } catch { /* no sets yet */ }
   // Every piano sample, named the way smplr fetches them (# and spaces escaped).
   const names = (await (await fetch(`${base}${SAMPLES}/files.json`)).json()) as string[];
   const format = sampleFormat();

@@ -1,0 +1,14 @@
+{
+  "title": "Test: intervals from middle C",
+  "order": "pool",
+  "items": {
+    "1": { "interval": "m2", "root": "C4" },
+    "2": { "interval": "M2", "root": "C4" },
+    "3": { "interval": "m3", "root": "C4" },
+    "4": { "interval": "M3", "root": "C4" },
+    "5": { "interval": "P4", "root": "C4" },
+    "6": { "interval": "P5", "root": "C4" },
+    "7": { "interval": "M6", "root": "C4" },
+    "8": { "interval": "P8", "root": "C4" }
+  }
+}

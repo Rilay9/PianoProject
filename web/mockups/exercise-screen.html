@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exercise screen mockups</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --line: #b8bcc4;
+    --accent: #2563eb; --right: #2563eb; --ok: #16a34a; --bad: #dc2626; --btn: #f3f4f6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .intro { max-width: 900px; color: var(--muted); margin: 0 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  figure { margin: 0; width: 300px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  figcaption b { color: var(--fg); }
+  .phone { width: 300px; height: 600px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; }
+  .top { background: var(--bar); padding: 10px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+  .top .t { flex: 1; font-weight: 600; font-size: 14px; }
+  .top .x { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 2px 8px; font-size: 13px; }
+  .score { padding: 6px 12px; display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); border-bottom: 1px solid #eceef1; }
+  .score b { color: var(--fg); }
+  .prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 8px 12px; text-align: center; }
+  .name { font-size: 34px; font-weight: 700; }
+  .name.small { font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .chain { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .chip { min-width: 26px; height: 26px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; font-size: 12px; background: #e5e7eb; color: var(--muted); }
+  .chip.done { background: #dcfce7; color: #166534; }
+  .chip.now { background: var(--accent); color: #fff; }
+  .chip.miss { background: #fee2e2; color: #991b1b; }
+  .status { font-weight: 600; }
+  .status.ok { color: var(--ok); } .status.bad { color: var(--bad); }
+  .tools { display: flex; gap: 6px; padding: 6px 10px; justify-content: center; flex-wrap: wrap; }
+  .tools span { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 9px; font-size: 12px; }
+  .kb { position: relative; height: 120px; display: flex; padding: 0 4px 6px; }
+  .w { flex: 1; border: 1px solid #c7cad1; border-top: none; border-radius: 0 0 4px 4px; background: #fbfbfc; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 8px; color: #9ca3af; padding-bottom: 2px; }
+  .b { position: absolute; top: 0; width: 5.2%; height: 62%; background: #23262c; border-radius: 0 0 3px 3px; z-index: 2; }
+  .lit { background: var(--right) !important; }
+  .press { background: #fb923c !important; }
+  .wrong { background: var(--bad) !important; }
+  .want { box-shadow: inset 0 0 0 3px var(--ok); }
+  .sheet { background: #fff; border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 12px; box-shadow: 0 -6px 20px rgba(0,0,0,.08); }
+  .sheet h3 { margin: 0 0 8px; font-size: 15px; }
+  .opt { font-size: 12px; color: var(--muted); margin: 8px 0 4px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg span { border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; font-size: 12px; background: var(--btn); }
+  .seg span.on { background: #dbe7ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  svg.staff { width: 220px; height: 110px; }
+  .note { max-width: 900px; margin-top: 18px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>One exercise screen for Simon and the drills (mockups)</h1>
+<p class="intro">One layout for every exercise: what it is and the progress on top; the item in the middle, on the staff at every level except name only and by ear (the level decides how much help comes with it); your keyboard at the bottom, where you answer on the MIDI keyboard or the screen's keys. Simon is the same screen with a growing chain. These are pictures only, nothing is built.</p>
+
+<div class="row">
+
+  <!-- 1. Simon, easy: it plays the chain with the keys lit -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Simon · Chords in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Chain <b>4</b></span><span>Best <b>7</b></span><span>♥♥♥</span></div>
+      <div class="prompt">
+        <svg class="staff" viewBox="0 0 220 110" aria-label="four chords on a treble staff">
+          <g stroke="#111827" stroke-width="1"><line x1="6" y1="30" x2="214" y2="30"/><line x1="6" y1="40" x2="214" y2="40"/><line x1="6" y1="50" x2="214" y2="50"/><line x1="6" y1="60" x2="214" y2="60"/><line x1="6" y1="70" x2="214" y2="70"/></g>
+          <text x="8" y="68" font-size="46" font-family="serif">𝄞</text>
+          <g fill="#111827"><ellipse cx="70" cy="80" rx="6" ry="4.5"/><line x1="61" y1="80" x2="79" y2="80" stroke="#111827"/><ellipse cx="70" cy="70" rx="6" ry="4.5"/><ellipse cx="70" cy="60" rx="6" ry="4.5"/></g>
+          <g fill="#111827"><ellipse cx="110" cy="75" rx="6" ry="4.5"/><ellipse cx="110" cy="65" rx="6" ry="4.5"/><ellipse cx="110" cy="55" rx="6" ry="4.5"/></g>
+          <g fill="#2563eb"><ellipse cx="150" cy="65" rx="6" ry="4.5"/><ellipse cx="150" cy="55" rx="6" ry="4.5"/><ellipse cx="150" cy="45" rx="6" ry="4.5"/></g>
+          <g fill="#9ca3af"><ellipse cx="190" cy="60" rx="6" ry="4.5"/><ellipse cx="190" cy="50" rx="6" ry="4.5"/><ellipse cx="190" cy="40" rx="6" ry="4.5"/></g>
+        </svg>
+        <div class="status">Listen…</div>
+        <div class="sub">3 of 4</div>
+      </div>
+      <div class="tools"><span>Hear again</span><span>Slower</span></div>
+      <div class="kb" id="kb1"></div>
+    </div>
+    <figcaption><b>1. Simon, easiest (notation + sound + keys).</b> The chain is on the staff; the app plays it, each item blue and its keys lit as it sounds (F major now). On your turn the next keys stay lit.</figcaption>
+  </figure>
+
+  <!-- 2. Your turn, a miss -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Simon · Chords in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Chain <b>4</b></span><span>Best <b>7</b></span><span>♥♥♡</span></div>
+      <div class="prompt">
+        <svg class="staff" viewBox="0 0 220 110" aria-label="four chords on a treble staff">
+          <g stroke="#111827" stroke-width="1"><line x1="6" y1="30" x2="214" y2="30"/><line x1="6" y1="40" x2="214" y2="40"/><line x1="6" y1="50" x2="214" y2="50"/><line x1="6" y1="60" x2="214" y2="60"/><line x1="6" y1="70" x2="214" y2="70"/></g>
+          <text x="8" y="68" font-size="46" font-family="serif">𝄞</text>
+          <g fill="#111827"><ellipse cx="70" cy="80" rx="6" ry="4.5"/><line x1="61" y1="80" x2="79" y2="80" stroke="#111827"/><ellipse cx="70" cy="70" rx="6" ry="4.5"/><ellipse cx="70" cy="60" rx="6" ry="4.5"/></g>
+          <g fill="#111827"><ellipse cx="110" cy="75" rx="6" ry="4.5"/><ellipse cx="110" cy="65" rx="6" ry="4.5"/><ellipse cx="110" cy="55" rx="6" ry="4.5"/></g>
+          <g fill="#dc2626"><ellipse cx="150" cy="65" rx="6" ry="4.5"/><ellipse cx="150" cy="55" rx="6" ry="4.5"/><ellipse cx="150" cy="45" rx="6" ry="4.5"/></g>
+          <g fill="#9ca3af"><ellipse cx="190" cy="60" rx="6" ry="4.5"/><ellipse cx="190" cy="50" rx="6" ry="4.5"/><ellipse cx="190" cy="40" rx="6" ry="4.5"/></g>
+        </svg>
+        <div class="status bad">Not quite: F major is F A C</div>
+        <div class="sub">You played F A B. The chain again…</div>
+      </div>
+      <div class="tools"><span>Hear again</span><span>Slower</span></div>
+      <div class="kb" id="kb2"></div>
+    </div>
+    <figcaption><b>2. Your turn, a miss.</b> The wrong key red, the wanted keys outlined green, the right answer named; a try used (♥♥♡), then the chain replays. What a miss costs is an option (3 tries / game over / endless).</figcaption>
+  </figure>
+
+  <!-- 3. Simon, name only -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Simon · Chords in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Chain <b>5</b></span><span>Best <b>5</b></span><span>♥♥♥</span></div>
+      <div class="prompt">
+        <div class="name">G7</div>
+        <div class="sub">then 2 more…</div>
+        <div class="chain"><span class="chip done">C</span><span class="chip done">Am</span><span class="chip now">G7</span><span class="chip">·</span><span class="chip">·</span></div>
+      </div>
+      <div class="tools"><span>Show me</span></div>
+      <div class="kb" id="kb3"></div>
+    </div>
+    <figcaption><b>3. Rung 4, name only.</b> No music, no sound, no lit keys: the names flash one by one, then you play the chain from memory. Any octave and any inversion count for a name.</figcaption>
+  </figure>
+
+  <!-- 4. Simon, notation -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Simon · Minuet bars 1–4</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Notes <b>6</b> of 12</span><span>Best <b>9</b></span><span>♥♥♥</span></div>
+      <div class="prompt">
+        <svg class="staff" viewBox="0 0 220 110" aria-label="six notes on a treble staff">
+          <g stroke="#111827" stroke-width="1"><line x1="6" y1="30" x2="214" y2="30"/><line x1="6" y1="40" x2="214" y2="40"/><line x1="6" y1="50" x2="214" y2="50"/><line x1="6" y1="60" x2="214" y2="60"/><line x1="6" y1="70" x2="214" y2="70"/></g>
+          <text x="8" y="68" font-size="46" font-family="serif">𝄞</text>
+          <g fill="#111827">
+            <ellipse cx="62" cy="25" rx="6" ry="4.5"/><ellipse cx="88" cy="20" rx="6" ry="4.5"/><ellipse cx="114" cy="40" rx="6" ry="4.5"/>
+            <ellipse cx="140" cy="45" rx="6" ry="4.5"/><ellipse cx="166" cy="35" rx="6" ry="4.5"/><ellipse cx="192" cy="25" rx="6" ry="4.5" fill="#2563eb"/>
+          </g>
+        </svg>
+        <div class="status">Your turn: play these 6</div>
+        <div class="sub">A passage grows in its own order: one more note each round</div>
+      </div>
+      <div class="tools"><span>Hear it</span></div>
+      <div class="kb" id="kb4"></div>
+    </div>
+    <figcaption><b>4. Simon on a passage (rung 3, notation only).</b> Bars from a piece become a chain that grows note by note in order: you learn the phrase bit by bit. At rung 5 (ear) the staff is gone and you only hear it.</figcaption>
+  </figure>
+
+  <!-- 5. A drill on the same screen -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Drill · Note flash</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>8</b> of 20</span><span><b>7</b> right</span><span>0:41</span></div>
+      <div class="prompt">
+        <svg class="staff" viewBox="0 0 220 110" aria-label="one note on a bass staff">
+          <g stroke="#111827" stroke-width="1"><line x1="6" y1="30" x2="214" y2="30"/><line x1="6" y1="40" x2="214" y2="40"/><line x1="6" y1="50" x2="214" y2="50"/><line x1="6" y1="60" x2="214" y2="60"/><line x1="6" y1="70" x2="214" y2="70"/></g>
+          <text x="10" y="56" font-size="34" font-family="serif">𝄢</text>
+          <ellipse cx="120" cy="45" rx="7" ry="5" fill="#111827"/>
+        </svg>
+        <div class="status ok">✓ D3</div>
+        <div class="sub">next card…</div>
+      </div>
+      <div class="tools"><span>Show me</span><span>Hear it</span><span>Skip</span></div>
+      <div class="kb" id="kb5"></div>
+    </div>
+    <figcaption><b>5. A drill, same screen.</b> One item at a time instead of a chain: here a note on the staff, you play it. Show me / Hear it give help (and say so in the result). Every drill kind is a different set of items and a level.</figcaption>
+  </figure>
+
+  <!-- 6. The level sheet -->
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Simon · Chords in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Chain <b>0</b></span><span>Best <b>7</b></span><span></span></div>
+      <div class="prompt" style="opacity:.35"><div class="name small">Ready</div></div>
+      <div class="sheet">
+        <h3>Level</h3>
+        <div class="opt">Help (most to least)</div>
+        <div class="seg"><span class="on">1 Notation + sound + keys</span><span>2 Notation + sound</span><span>3 Notation</span><span>4 Name only</span><span>5 By ear</span></div>
+        <div class="opt">What must match</div>
+        <div class="seg"><span class="on">Same keys</span><span>Any octave</span><span>Any octave and inversion</span></div>
+        <div class="opt">After a miss</div>
+        <div class="seg"><span class="on">3 tries</span><span>Game over</span><span>Keep going</span></div>
+        <div class="opt">Speed</div>
+        <div class="seg"><span class="on">Speeds up</span><span>Steady</span></div>
+      </div>
+    </div>
+    <figcaption><b>6. The level sheet.</b> One ladder of help: the music is on screen at every rung but the last two (owner); by ear is the hardest. Then what must match, what a miss costs, and speed. A lesson could fix a level later.</figcaption>
+  </figure>
+
+</div>
+
+<p class="note">The content behind each: a set of items (single notes, intervals, chords, arpeggios, or bars from a piece), each with its keys, how they are played (together or in order) and a name. A pool (like "chords in C") adds a random item each round; a passage (like bars 1–4) grows in its own order. The same sets feed the drills, one item per card.</p>
+
+<script>
+  // Two octaves from C3 on the mockup keyboards; light, press, wrong and wanted keys per picture.
+  const WHITE = [0, 2, 4, 5, 7, 9, 11];
+  function keyboard(id, { lit = [], press = [], wrong = [], want = [] } = {}) {
+    const el = document.getElementById(id), from = 48, to = 72;
+    const whites = []; for (let m = from; m <= to; m++) if (WHITE.includes(m % 12)) whites.push(m);
+    const cls = (m) => [lit.includes(m) && 'lit', press.includes(m) && 'press', wrong.includes(m) && 'wrong', want.includes(m) && 'want'].filter(Boolean).join(' ');
+    whites.forEach((m) => { const k = document.createElement('div'); k.className = `w ${cls(m)}`; if (m % 12 === 0) k.textContent = `C${m / 12 - 1}`; el.append(k); });
+    for (let m = from; m <= to; m++) if (!WHITE.includes(m % 12)) {
+      const before = whites.filter((w) => w < m).length;
+      const k = document.createElement('div'); k.className = `b ${cls(m)}`;
+      k.style.left = `calc(${(before / whites.length) * 100}% - 2.6% + 4px)`; el.append(k);
+    }
+  }
+  keyboard('kb1', { lit: [53, 57, 60] });
+  keyboard('kb2', { press: [53, 57], wrong: [59], want: [60] });
+  keyboard('kb3', {});
+  keyboard('kb4', { press: [64] });
+  keyboard('kb5', { press: [50] });
+</script>
+</body>
+</html>

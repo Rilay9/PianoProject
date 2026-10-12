@@ -1,0 +1,10 @@
+{
+  "title": "Test: cadence chords (MusicXML blocks)",
+  "order": "passage",
+  "items": {
+    "1": { "name": "I (C major)", "short": "I", "musicxml": "<note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration></note>" },
+    "2": { "name": "IV (F major, 2nd inversion)", "short": "IV", "musicxml": "<note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration></note>" },
+    "3": { "name": "V (G major, 1st inversion)", "short": "V", "musicxml": "<note><pitch><step>B</step><octave>3</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration></note>" },
+    "4": { "name": "I (C major)", "short": "I", "musicxml": "<note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration></note>" }
+  }
+}

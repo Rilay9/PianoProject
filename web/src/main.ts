@@ -4,6 +4,10 @@ import { addFingerings, fingeringsFor, sameNote, setFingering } from './marks';
 import { setUpOffline } from './offline';
 import { MidiInput, type KeyEvent } from './midi';
 import { FreePlay } from './freeplay';
+import { loadSets, type ItemSet } from './exercise/items';
+import { ExerciseKeys } from './exercise/keys';
+import { ExerciseNotation } from './exercise/notation';
+import { Simon, type Rung, type SimonLevel } from './exercise/simon';
 import { keepAwake } from './wake';
 import { Practice, yours } from './practice';
 import { Sound } from './sound';
@@ -121,7 +125,7 @@ function fillBars(): void {
   $('song-composer').textContent = piece.composer;
   $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
   const running = view.playing || practice.active;
-  keepAwake(running || freePlay.open); // the screen stays on while you play (owner, 2026-10-11)
+  keepAwake(running || freePlay.open || !$('exercise').hidden); // the screen stays on while you play (owner, 2026-10-11)
   // Blind: the music hides while you play (Display → Show → Music while playing off) and comes back on stopping.
   score.classList.toggle('blind', running && !s.musicWhilePlaying);
   $('play').textContent = running ? '⏸' : '▶';
@@ -250,7 +254,7 @@ let resumable = false; // paused by itself: the next start carries on the same r
 let mashedAt = -Infinity;
 const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
 async function startFromKey(e: KeyEvent): Promise<void> {
-  if (view.playing || practice.active || starting || marking || picking || panelOpen() || freePlay.open) return;
+  if (view.playing || practice.active || starting || marking || picking || panelOpen() || freePlay.open || !$('exercise').hidden) return;
   if (e.time - mashedAt < SETTLE_MS) return;
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'watch' || (s.mode === 'ladder' && !view.looped)) return;
@@ -382,6 +386,7 @@ $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
 midi.onKey = (e) => {
   strip.setPressed(midi.down);
   if (freePlay.open) { freePlay.key(e, midi.down); return; }
+  if (!$('exercise').hidden) { exerciseKeys.midiKey(e.midi, e.on, midi.down); return; }
   practice.key(e);
   if (e.on) void startFromKey(e);
 };
@@ -495,6 +500,45 @@ $('open-freeplay').addEventListener('click', () => {
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   freePlay.show(midi.down);
   fillBars();
+});
+
+// Simon (owner, 2026-10-11) on the shared exercise screen; its sets are content files (content/sets), read when
+// it first opens. For now it is in ⋯, like Free play.
+const exerciseKeys = new ExerciseKeys($('ex-keyboard'), sound);
+const simon = new Simon({
+  set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
+  status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'),
+}, exerciseKeys, new ExerciseNotation($('ex-notation')), sound);
+let sets: ItemSet[] | null = null;
+const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
+$('open-simon').addEventListener('click', async () => {
+  moreDialog.close();
+  if (view.playing || practice.active) stopAll();
+  void midi.start().catch(() => {});
+  if (!sets) {
+    const loaded = await loadSets(base, async (id) => xmlFor(pieces.find((p) => p.id === id) ?? currentPiece()));
+    if (loaded.problems.length) showMessage(`Some sets could not be read: ${loaded.problems.join('; ')}`);
+    sets = loaded.sets;
+  }
+  if (!sets.length) return;
+  $('exercise').hidden = false;
+  simon.open(sets);
+  fillBars();
+});
+$('ex-done').addEventListener('click', () => { simon.close(); $('exercise').hidden = true; fillBars(); showBars(); });
+$('ex-level').addEventListener('click', () => {
+  const level = simon.levelNow;
+  for (const [name, value] of [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed]]) {
+    for (const r of levelDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  }
+  levelDialog.showModal();
+});
+levelDialog.addEventListener('change', (e) => {
+  const r = e.target as HTMLInputElement;
+  if (r.name === 'ex-rung') simon.setLevel({ rung: Number(r.value) as Rung });
+  else if (r.name === 'ex-match') simon.setLevel({ match: r.value as SimonLevel['match'] });
+  else if (r.name === 'ex-miss') simon.setLevel({ miss: r.value as SimonLevel['miss'] });
+  else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });
 });
 
 // The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to

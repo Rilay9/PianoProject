@@ -65,6 +65,51 @@
     <div class="keyboard fp-keyboard"></div>
   </section>
 
+  <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
+       the keyboard at the bottom. -->
+  <section id="exercise" class="exercise" aria-label="Exercise" hidden>
+    <div class="fp-head"><span class="ex-kind">Simon</span><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button><button id="ex-done" type="button" class="btn">Done</button></div>
+    <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
+    <div class="ex-prompt">
+      <div id="ex-notation" class="ex-notation off"></div>
+      <div id="ex-name" class="ex-name"></div>
+      <div id="ex-chain" class="ex-chain"></div>
+      <p id="ex-status" class="ex-status"></p>
+      <p id="ex-sub" class="ex-sub"></p>
+      <button id="ex-start" type="button" class="btn ex-start">Start</button>
+    </div>
+    <div class="ex-tools"><button id="ex-hear" type="button" class="btn" hidden>Hear again</button></div>
+    <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
+  </section>
+
+  <dialog id="ex-level-dialog" aria-labelledby="ex-level-title">
+    <form method="dialog">
+      <h2 id="ex-level-title">Level</h2>
+      <fieldset class="row"><legend>Help (most to least)</legend>
+        <label><input type="radio" name="ex-rung" value="1"> 1 Music + sound + keys lit</label>
+        <label><input type="radio" name="ex-rung" value="2"> 2 Music + sound</label>
+        <label><input type="radio" name="ex-rung" value="3"> 3 Music only</label>
+        <label><input type="radio" name="ex-rung" value="4"> 4 Name only</label>
+        <label><input type="radio" name="ex-rung" value="5"> 5 By ear</label>
+      </fieldset>
+      <fieldset class="row"><legend>What must match</legend>
+        <label><input type="radio" name="ex-match" value="same"> The same keys</label>
+        <label><input type="radio" name="ex-match" value="octave"> Any octave</label>
+        <label><input type="radio" name="ex-match" value="inversion"> Any octave and inversion</label>
+      </fieldset>
+      <fieldset class="row"><legend>After a miss</legend>
+        <label><input type="radio" name="ex-miss" value="tries"> 3 tries</label>
+        <label><input type="radio" name="ex-miss" value="over"> Game over</label>
+        <label><input type="radio" name="ex-miss" value="endless"> Keep going</label>
+      </fieldset>
+      <fieldset class="row"><legend>Speed</legend>
+        <label><input type="radio" name="ex-speed" value="up"> Speeds up</label>
+        <label><input type="radio" name="ex-speed" value="steady"> Steady</label>
+      </fieldset>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
+
   <dialog id="songs" aria-labelledby="songs-title">
     <form method="dialog">
       <h2 id="songs-title">Songs</h2>
@@ -86,6 +131,7 @@
       <h2 id="more-title">More</h2>
       <div class="menu">
         <button id="open-freeplay" type="button">Free play</button>
+        <button id="open-simon" type="button">Simon</button>
         <button id="open-metronome" type="button">Metronome…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
