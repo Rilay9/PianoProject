@@ -37,6 +37,7 @@ const infoDialog = $<HTMLDialogElement>('info');
 const tempoDialog = $<HTMLDialogElement>('tempo');
 const summaryDialog = $<HTMLDialogElement>('summary');
 const moreDialog = $<HTMLDialogElement>('more');
+const memoDialog = $<HTMLDialogElement>('memo-dialog');
 const base = import.meta.env.BASE_URL;
 
 const score = $('score');
@@ -138,13 +139,14 @@ function fillBars(): void {
   const running = view.playing || practice.active || memorise.active;
   const memo = s.mode === 'memorise';
   $('q-loop').hidden = memo;
-  $('q-memo').hidden = !memo;
+  $('open-memo-options').hidden = !memo; // Memorise's own options sit in ⋯, only in Memorise (owner, 2026-10-12)
   document.body.classList.toggle('memorising', memo);
   $('memo-bar').hidden = !memo;
   document.body.style.setProperty('--memo-h', memo ? `${$('memo-bar').offsetHeight}px` : '0px'); // the music stops above it
   keepAwake(running || freePlay.open || !$('exercise').hidden); // the screen stays on while you play (owner, 2026-10-11)
   // Blind: the music hides while you play (Display → Show → Music while playing off) and comes back on stopping.
-  score.classList.toggle('blind', running && !s.musicWhilePlaying);
+  // Not in Memorise: its covers do that bar by bar, and it has to show the bars it lets you hear.
+  score.classList.toggle('blind', running && !memo && !s.musicWhilePlaying);
   $('play').textContent = running ? '⏸' : '▶';
   $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
   $<HTMLSelectElement>('q-mode').value = s.mode;
@@ -187,17 +189,23 @@ function makeCurrentDefault(): void {
 const bars = [$('top-bar'), $('bottom-bar')];
 const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
-const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open || moreDialog.open;
+const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open || moreDialog.open || memoDialog.open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.
 const barHasFocus = () => document.activeElement instanceof HTMLSelectElement && bars.some((b) => b.contains(document.activeElement));
+
+// Memorise's bar sits on the keyboard strip, which the bottom bar covers while it shows; with no strip (or a
+// short one) it rises above the bottom bar meanwhile, so neither hides the other.
+const barsUp = (on: boolean) => document.body.style.setProperty('--bars-h', on ? `${$('bottom-bar').offsetHeight}px` : '0px');
 
 function hideBars(): void {
   clearTimeout(fadeTimer);
   for (const b of bars) b.classList.add('faded');
+  barsUp(false);
 }
 
 function showBars(): void {
   for (const b of bars) b.classList.remove('faded');
+  barsUp(true);
   clearTimeout(fadeTimer);
   fadeTimer = window.setTimeout(() => (panelOpen() || barHasFocus() ? showBars() : hideBars()), IDLE_MS);
 }
@@ -207,7 +215,7 @@ for (const b of bars) {
   b.addEventListener('focusin', showBars);
   b.addEventListener('change', showBars);
 }
-for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDialog, moreDialog]) d.addEventListener('close', () => { if (!marking) showBars(); });
+for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDialog, moreDialog, memoDialog]) d.addEventListener('close', () => { if (!marking) showBars(); });
 
 // Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
 // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
@@ -416,7 +424,6 @@ view.onStop = () => {
 };
 
 // Memorise's strip and its settings (only in Memorise: each mode shows its own settings, owner 2026-10-12).
-const memoDialog = $<HTMLDialogElement>('memo-dialog');
 function fillMemo(): void {
   $('memo-label').textContent = memorise.active ? memorise.label : 'Memorise: press ▶ to start (it carries on where you were)';
   const from = $<HTMLSelectElement>('memo-from');
@@ -440,7 +447,8 @@ $<HTMLSelectElement>('memo-from').addEventListener('change', (e) => {
 $('memo-prev').addEventListener('click', () => memorise.nextChunk(-1));
 $('memo-next').addEventListener('click', () => memorise.nextChunk(1));
 $('memo-stay').addEventListener('click', () => memorise.stay());
-$('q-memo').addEventListener('click', () => {
+$('open-memo-options').addEventListener('click', () => {
+  moreDialog.close();
   const o = memorise.optionsNow;
   const values: Record<string, string> = { 'm-chunk': String(o.chunk), 'm-adds': o.adds, 'm-learnedAfter': String(o.learnedAfter), 'm-timing': o.timing ? 'yes' : 'no', 'm-carryFrom': o.carryFrom, 'm-before': o.before, 'm-next': o.next };
   for (const [name, value] of Object.entries(values)) for (const r of memoDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
@@ -823,9 +831,16 @@ function fillPanel(): void {
   $<HTMLInputElement>('s-lyrics').checked = s.lyrics;
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="lines"]')) input.checked = input.value === String(s.lines);
   const where = DEVICE_NAMES[device];
-  $<HTMLParagraphElement>('override-note').textContent = hasPieceOverride(piece.id)
-    ? `${piece.title} has its own settings on a ${where}.`
-    : `Using the default settings for a ${where}.`;
+  // Memorise keeps its own look (settings.ts); say so, since changes here then leave the other modes alone.
+  const memo = s.mode === 'memorise';
+  $('s-musicWhilePlaying-row').hidden = memo; // Memorise covers the bars itself
+  $<HTMLParagraphElement>('override-note').textContent = memo
+    ? `Memorise look for ${piece.title}: changes here apply in Memorise only. ${hasPieceOverride(piece.id) ? `This song has its own Memorise look on a ${where}.` : `Using the Memorise default for a ${where}.`}`
+    : hasPieceOverride(piece.id)
+      ? `${piece.title} has its own settings on a ${where}.`
+      : `Using the default settings for a ${where}.`;
+  $('make-default').textContent = memo ? 'Make Memorise default' : 'Make default';
+  $('reset-piece').textContent = memo ? 'Reset Memorise look' : 'Reset this song';
 }
 
 $<HTMLInputElement>('s-size').addEventListener('input', (e) => {

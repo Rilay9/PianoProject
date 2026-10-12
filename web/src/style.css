@@ -155,7 +155,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Memorise: a hidden bar, covered in the paper's colour with its number; the barlines either side still show. */
 .hide-zone { position: absolute; background: var(--paper); border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(107, 114, 128, 0.25); color: #9ca3af; display: flex; align-items: center; justify-content: center; font-size: 13px; pointer-events: none; z-index: 1; }
 /* Memorise's strip sits just above what is under the music; the music stops above it. */
-.memo-bar { bottom: var(--under-h, 0px); z-index: 2; flex-wrap: wrap; border-top: 1px solid var(--bar-line); gap: 6px; }
+.memo-bar { bottom: max(var(--under-h, 0px), var(--bars-h, 0px)); transition: bottom 0.3s; z-index: 2; flex-wrap: wrap; border-top: 1px solid var(--bar-line); gap: 6px; }
 .memo-label { flex: 1 1 100%; font-size: 13px; color: var(--bar-muted); }
 .memo-bar .btn, .memo-bar select { padding: 4px 8px; }
 .memo-bar select { font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
