@@ -103,6 +103,8 @@ export class FollowView {
   private untilStep = -1;
   /** Called whenever the marker moves: the notes for the strip under the music. */
   onStep: (notes: StepNotes) => void = () => {};
+  /** Something about the song the learner should know (it still plays). */
+  onNotice: (text: string) => void = () => {};
 
   /** Every pitch in the song (for the keyboard's range). */
   get songPitches(): number[] {
@@ -340,7 +342,10 @@ export class FollowView {
     cursor.hide(); // only its iterator is used; the marker is drawn here
     cursor.reset();
     const raw: { ts: number; bpm: number; m: number; rel: number; len: number }[] = [];
-    for (let guard = 0; !cursor.Iterator.EndReached && guard < 20000; guard++) {
+    // A safety net, so a file whose repeats never end cannot hang the app; far beyond any real piece.
+    const most = 20000;
+    for (let guard = 0; !cursor.Iterator.EndReached; guard++) {
+      if (guard >= most) { this.onNotice(`This score goes on past ${most} steps, so it stops there. Its repeats may be written wrongly.`); break; }
       const it = cursor.Iterator;
       // len: the longest note starting here (whole notes), which is how long the song's last step lasts.
       const len = Math.max(0, ...cursor.NotesUnderCursor().map((n) => n.Length.RealValue));
@@ -371,6 +376,8 @@ export class FollowView {
     } else {
       // A new chunk at each line break in the drawn copy: the file's own, or prepareXml's (bars 1 + n, 1 + 2n, ...).
       measures.forEach((sm, i) => { if (i > 0 && sm.printNewSystemXml) starts.push(i); });
+      // A file with no line breaks of its own says nothing about lines: fit as many as the slot holds.
+      if (starts.length === 1 && measures.length > 1) return this.chunkRanges(o, { ...s, lines: 'auto' }, slotH);
     }
     return starts.map((st, i) => [st, (starts[i + 1] ?? measures.length) - 1]);
   }
@@ -638,13 +645,13 @@ export class FollowView {
   }
 
   /** Marks: the note nearest a tap at screen point (x, y) within reach: its bar, beat and key, or null. */
-  hitNote(x: number, y: number): { m: number; rel: number; midi: number; label: string } | null {
-    let best: { m: number; rel: number; midi: number; label: string } | null = null, bestD = Infinity;
+  hitNote(x: number, y: number): { m: number; rel: number; midi: number; staff: number; label: string } | null {
+    let best: { m: number; rel: number; midi: number; staff: number; label: string } | null = null, bestD = Infinity;
     const consider = (s: Step, px: number, py: number, scale: number) => {
       for (const st of s.pos.staves) for (const n of st.notes) {
         if (n.x === undefined || n.y === undefined) continue;
         const d = Math.hypot(n.x - px, n.y - py) * scale;
-        if (d <= TAP_REACH && d < bestD) { bestD = d; best = { m: s.m, rel: s.rel, midi: n.midi, label: `${n.name}, bar ${this.measures[s.m]?.num ?? s.m}` }; }
+        if (d <= TAP_REACH && d < bestD) { bestD = d; best = { m: s.m, rel: s.rel, midi: n.midi, staff: st.staff, label: `${n.name}, bar ${this.measures[s.m]?.num ?? s.m}` }; }
       }
     };
     if (this.slots.length) {
@@ -741,10 +748,13 @@ export class FollowView {
   /** The notes to play from here on, for the chosen hands (right = top staff, left = the others). */
   noteEvents(hands: 'both' | 'right' | 'left'): NoteEvent[] {
     const out: NoteEvent[] = [];
-    for (const s of this.steps) for (const st of s.pos.staves) {
-      if (hands === 'right' ? st.staff !== 0 : hands === 'left' ? st.staff === 0 : false) continue;
-      for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: (n.len * 4 * 60000) / s.bpm, vel: s.vels[st.staff] ?? s.vels[0] });
-    }
+    this.steps.forEach((s, i) => {
+      for (const st of s.pos.staves) {
+        if (hands === 'right' ? st.staff !== 0 : hands === 'left' ? st.staff === 0 : false) continue;
+        // A note lasts until its written end on the song's timeline, so a tempo change while it sounds counts.
+        for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: this.timeAt(s.ts + n.len, i) - s.t, vel: s.vels[st.staff] ?? s.vels[0] });
+      }
+    });
     return out;
   }
 
@@ -775,8 +785,8 @@ export class FollowView {
   }
 
   /** Song ms at speed 1 for a timestamp (whole notes), from the steps around it and the tempo in force. */
-  private timeAt(ts: number): number {
-    let i = 0;
+  private timeAt(ts: number, from = 0): number {
+    let i = Math.max(0, Math.min(from, this.steps.length - 1));
     while (i + 1 < this.steps.length && this.steps[i + 1].ts <= ts + 1e-9) i++;
     const s = this.steps[i];
     return s.t + ((ts - s.ts) * 4 * 60000) / s.bpm;

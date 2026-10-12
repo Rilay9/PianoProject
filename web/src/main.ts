@@ -1,6 +1,6 @@
 import './style.css';
 import { FollowView, isStrip } from './follow';
-import { addFingerings, fingeringsFor, setFingering } from './marks';
+import { addFingerings, fingeringsFor, sameNote, setFingering } from './marks';
 import { MidiInput } from './midi';
 import { Practice } from './practice';
 import { Sound } from './sound';
@@ -33,6 +33,7 @@ const base = import.meta.env.BASE_URL;
 
 const score = $('score');
 const view = new FollowView(score, (text) => showMessage(`Could not draw this song: ${text}`));
+view.onNotice = (text) => showMessage(text);
 const strip = new UnderStrip($('under'), $('keyboard'), $('note-line'));
 const sound = new Sound();
 const midi = new MidiInput();
@@ -184,7 +185,8 @@ async function play(): Promise<void> {
     // The piano part goes to the keyboard when chosen and one is connected that can play; otherwise the phone.
     sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
-    if (pianoHands(s) || s.metronome) await sound.prepare(!sound.keyboard);
+    // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
+    if (pianoHands(s) || s.metronome) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
   } catch (cause) {
     showMessage(cause instanceof Error ? cause.message : String(cause));
     starting = false;
@@ -291,7 +293,7 @@ score.addEventListener('pointerup', (e) => {
 
 // ⋯ menu: fingering, export, backup (owner, 2026-10-11).
 let marking = false;
-let picked: { m: number; rel: number; midi: number; label: string } | null = null;
+let picked: { m: number; rel: number; midi: number; staff: number; label: string } | null = null;
 function setMarking(on: boolean): void {
   marking = on;
   picked = null;
@@ -301,7 +303,7 @@ function setMarking(on: boolean): void {
 }
 function pickNote(x: number, y: number): void {
   picked = view.hitNote(x, y);
-  const current = picked && fingeringsFor(currentPiece().id).find((f) => f.m === picked!.m && Math.abs(f.rel - picked!.rel) < 1e-6 && f.midi === picked!.midi);
+  const current = picked && fingeringsFor(currentPiece().id).find((f) => sameNote(f, picked!));
   $('marks-note').textContent = picked ? `${picked.label}${current ? ` (now ${current.finger})` : ''}` : 'No note there: tap closer to a note';
 }
 for (const b of document.querySelectorAll<HTMLButtonElement>('#finger-pick button')) {

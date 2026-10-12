@@ -32,6 +32,7 @@ export class Sound {
   private click: Click = 'wood';
   private voices: { stop: (time?: number) => void; end: number }[] = [];
   private clicks: AudioScheduledSourceNode[] = [];
+  private keyOffs: { midi: number; time: number }[] = []; // keyboard note ends still to send (audio time)
   playing = false;
   /** When set, piano notes go to the MIDI keyboard instead of the phone (the metronome stays on the phone). */
   keyboard: MidiInput | null = null;
@@ -102,10 +103,14 @@ export class Sound {
     const now = this.ctx?.currentTime ?? 0;
     for (const v of this.voices) if (v.end > now) v.stop(now);
     if (this.keyboard && wasPlaying) this.keyboard.silence();
+    this.keyOffs = [];
     this.voices = [];
     for (const c of this.clicks) { try { c.stop(); } catch { /* already ended */ } }
     this.clicks = [];
   }
+
+  /** The MIDI clock is performance.now() ms; the audio clock is ctx seconds: the same moment in both. */
+  private midiTime(time: number): number { return performance.now() + (time - this.ctx!.currentTime) * 1000; }
 
   private at(t: number): number { return this.anchorCtx + (t - this.anchorT) / 1000 / this.speed; }
 
@@ -116,12 +121,17 @@ export class Sound {
       const time = Math.max(ctx.currentTime, this.at(n.t));
       const duration = n.dur / 1000 / this.speed;
       if (this.keyboard) {
-        // The MIDI clock is performance.now(); the audio clock is ctx time: the same moment in both.
-        this.keyboard.play(n.midi, n.vel, performance.now() + (time - ctx.currentTime) * 1000, duration * 1000);
+        this.keyboard.noteOn(n.midi, n.vel, this.midiTime(time));
+        this.keyOffs.push({ midi: n.midi, time: time + duration });
         continue;
       }
       const stop = this.piano!.start({ note: n.midi, velocity: n.vel, time, duration });
       this.voices.push({ stop, end: time + duration + 1 });
+    }
+    if (this.keyboard && this.keyOffs.length) {
+      const due = this.keyOffs.filter((k) => k.time < horizon);
+      this.keyOffs = this.keyOffs.filter((k) => k.time >= horizon);
+      for (const k of due) this.keyboard.noteOff(k.midi, this.midiTime(Math.max(ctx.currentTime, k.time)));
     }
     while (this.nextBeat < this.beats.length && this.at(this.beats[this.nextBeat].t) < horizon) {
       const b = this.beats[this.nextBeat++];

@@ -7,7 +7,6 @@ export interface KeyEvent { midi: number; on: boolean; velocity: number; time: n
 export class MidiInput {
   private access: MIDIAccess | null = null;
   readonly down = new Set<number>();
-  private sent = new Map<number, number>(); // key -> performance.now() it is due to sound on the keyboard
   private silenceTimer = 0;
   onKey: (e: KeyEvent) => void = () => {};
   onDevices: (names: string[]) => void = () => {};
@@ -41,33 +40,39 @@ export class MidiInput {
     return any;
   }
 
-  /** Plays a note on the keyboard at performance.now() time `at` (ms) for `ms` milliseconds. */
-  play(midi: number, velocity: number, at: number, ms: number): void {
+  /**
+   * Starts a note on the keyboard at performance.now() time `at` (ms). The note's end is sent by the
+   * caller nearer the time (noteOff), so a stop never leaves note-offs queued that could cut the next play.
+   */
+  noteOn(midi: number, velocity: number, at: number): void {
     clearTimeout(this.silenceTimer); // playing again: the delayed All Notes Off of a stop must not cut in
-    this.access?.outputs.forEach((o) => {
-      o.send([0x90, midi, velocity], at);
-      o.send([0x80, midi, 0], at + ms);
-    });
-    this.sent.set(midi, at);
+    this.access?.outputs.forEach((o) => o.send([0x90, midi, velocity], at));
   }
 
-  /** Silences everything the app sent (All Notes Off), also once the notes already queued have started. */
+  noteOff(midi: number, at: number): void {
+    this.access?.outputs.forEach((o) => o.send([0x80, midi, 0], at));
+  }
+
+  /**
+   * Silences everything the app sent: drops what is still queued (where the browser can), then All Notes
+   * Off now and again once the notes already handed over (up to the sound's lookahead) would have started.
+   */
   silence(): void {
     const off = () => this.access?.outputs.forEach((o) => o.send([0xb0, 123, 0]));
+    // MIDIOutput.clear() is in the Web MIDI spec but not every browser has it; the note
+    // ends are no longer queued ahead, so what remains queued is at most the sound's 150 ms lookahead.
+    this.access?.outputs.forEach((o) => { try { (o as MIDIOutput & { clear?: () => void }).clear?.(); } catch { /* not supported */ } });
     off();
     clearTimeout(this.silenceTimer);
     this.silenceTimer = window.setTimeout(off, 250);
-    this.sent.clear();
   }
 
   private message(m: MIDIMessageEvent): void {
     const data = m.data;
     if (!data || data.length < 3) return;
     const kind = data[0] & 0xf0, midi = data[1], velocity = data[2];
-    // Some keyboards pass on what they are sent: a key the app itself just played is not you playing.
-    // (100 ms is a guess at how soon such an echo comes back.)
-    const sentAt = this.sent.get(midi);
-    if (sentAt !== undefined && Math.abs(m.timeStamp - sentAt) < 100) return;
+    // Notes the app sends the keyboard are not filtered out here: keyboards normally do not send back what
+    // they are sent, and a filter by key and time also dropped your own notes in unison with the app's.
     // Note on with velocity 0 is the usual way keyboards send a note off.
     if (kind === 0x90 && velocity > 0) { this.down.add(midi); this.onKey({ midi, on: true, velocity, time: m.timeStamp }); }
     else if (kind === 0x80 || kind === 0x90) { this.down.delete(midi); this.onKey({ midi, on: false, velocity, time: m.timeStamp }); }

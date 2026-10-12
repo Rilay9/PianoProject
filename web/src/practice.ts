@@ -11,6 +11,7 @@ import type { FollowView } from './follow';
 import type { KeyEvent, MidiInput } from './midi';
 import type { Beat, NoteEvent, Sound } from './sound';
 import type { ScoreSettings } from './settings';
+import { judge, type ExpectedStep, type PlayedKey } from './matching';
 
 export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const;
 
@@ -23,7 +24,7 @@ const pianos = (s: ScoreSettings): Hand | null => (s.hands === 'left' ? 'right' 
 export class Practice {
   private expected = new Set<number>();
   private fresh = new Set<number>(); // pressed since the marker reached this step
-  private played: { midi: number; t: number }[] = [];
+  private played: PlayedKey[] = [];
   private fromIndex = 0;
   private running: 'wait' | 'along' | null = null;
   onSummary: (s: Summary) => void = () => {};
@@ -65,7 +66,8 @@ export class Practice {
   key(e: KeyEvent): void {
     if (!this.running) return;
     if (this.running === 'along') {
-      if (e.on) this.played.push({ midi: e.midi, t: this.view.songNow() - (performance.now() - e.time) * this.settings().speed });
+      const speed = this.settings().speed;
+      if (e.on) this.played.push({ midi: e.midi, t: this.view.songNow() - (performance.now() - e.time) * speed, speed });
       return;
     }
     if (e.on) this.fresh.add(e.midi);
@@ -106,35 +108,14 @@ export class Practice {
     this.view.play(j);
   }
 
-  /** Play along: each expected note matched with the nearest played key of the same pitch near it. */
+  /** Play along: your keys matched with the written notes of your hands (the rule is in matching.ts). */
   private score(): Summary {
     const s = this.settings(), hand = yours(s), tolerance = ON_TIME_MS[s.onTime];
-    const last = this.view.index;
-    const steps: { t: number; keys: number[] }[] = [];
-    for (let i = this.fromIndex; i <= last; i++) {
+    const steps: ExpectedStep[] = [];
+    for (let i = this.fromIndex; i <= this.view.index; i++) {
       const keys = this.view.struckAt(i, hand);
       if (keys.length) steps.push({ t: this.view.stepT(i), keys });
     }
-    const used = new Set<number>();
-    let onTime = 0, early = 0, late = 0, missed = 0, total = 0;
-    steps.forEach((step, k) => {
-      // A key counts for this note if played after the previous note of yours was due and before the next.
-      const lo = k > 0 ? steps[k - 1].t : -Infinity, hi = k + 1 < steps.length ? steps[k + 1].t : Infinity;
-      for (const key of step.keys) {
-        total++;
-        let best = -1;
-        this.played.forEach((p, idx) => {
-          if (used.has(idx) || p.midi !== key || p.t <= lo || p.t >= hi) return;
-          if (best < 0 || Math.abs(p.t - step.t) < Math.abs(this.played[best].t - step.t)) best = idx;
-        });
-        if (best < 0) { missed++; continue; }
-        used.add(best);
-        const offMs = (this.played[best].t - step.t) / s.speed; // as you heard it, at the speed played
-        if (Math.abs(offMs) <= tolerance) onTime++;
-        else if (offMs < 0) early++;
-        else late++;
-      }
-    });
-    return { total, onTime, early, late, missed, wrong: this.played.length - used.size, tolerance };
+    return { ...judge(steps, this.played, tolerance), tolerance };
   }
 }
