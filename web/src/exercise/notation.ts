@@ -74,18 +74,26 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
   return `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="3.1"><part-list><score-part id="P1"><part-name print-object="no">x</part-name></score-part></part-list><part id="P1">${measures}</part></score-partwise>`;
 }
 
-/** Draws exercise notation into a box; each show() replaces what was there. */
+/**
+ * Draws exercise notation into a box; each show() replaces what was there. The music keeps one size (the chosen
+ * one) and builds from the left: a chain longer than the room wraps onto more lines, and when the lines are taller
+ * than the room the box scrolls, keeping the item being given in view (owner, 2026-10-12: fixed size, wrap and
+ * scroll, never shrinking on and on).
+ */
 export class ExerciseNotation {
   private readonly osmd: OpenSheetMusicDisplay;
   private readonly small: HTMLDivElement; // items drawn from the MusicXML written here
   private request = 0;
   private zoom = 1;
+  private loaded = false;
+  private width = 0; // the room's width at the last drawing: a new width lays the lines out again
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
     box.append(this.small);
-    // Shrunk to fit again whenever the room changes (turning the phone, the window resized).
-    new ResizeObserver(() => this.fit()).observe(box);
+    new ResizeObserver(() => {
+      if (this.loaded && this.box.clientWidth > 0 && this.box.clientWidth !== this.width) this.draw();
+    }).observe(box);
     this.osmd = new OpenSheetMusicDisplay(this.small, {
       autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
       drawPartNames: false, drawMeasureNumbers: false, drawingParameters: 'compacttight', autoBeam: true,
@@ -98,46 +106,34 @@ export class ExerciseNotation {
     this.box.classList.remove('off');
     await this.osmd.load(itemsXml(items, lit, passage, meter, fifths));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
-    this.osmd.zoom = 1.1;
-    this.osmd.render();
-    // OSMD redraws into the same svg: the last drawing's crop would stay on it.
-    const svg = this.small.querySelector('svg');
-    if (svg) { svg.removeAttribute('viewBox'); delete svg.dataset.w; delete svg.dataset.h; }
-    this.fit();
+    this.loaded = true;
+    this.draw();
+    if (!lit.length) this.box.scrollTop = 0;
   }
 
   /** How big the music is drawn, 1 = its own size (exercise/display.ts); drawn again at once. */
   setZoom(zoom: number): void {
     this.zoom = zoom;
-    this.fit();
+    if (this.loaded) this.draw();
   }
 
-  /**
-   * The drawing at the chosen size, building from the left, or smaller when it no longer fits the room: long
-   * chains and big chunks shrink rather than run off the screen, in any orientation (its viewBox keeps its own
-   * coordinates).
-   */
-  private fit(): void {
-    const svg = this.small.querySelector('svg');
-    if (!svg) return;
-    if (!svg.dataset.w) {
-      // OSMD draws on a page as wide as the room with the music at its left: keep just the music (plus a margin),
-      // so the size and the fit go by the music itself.
-      const r = svg.getBBox();
-      if (!(r.width > 0 && r.height > 0)) return;
-      const pad = 4;
-      svg.setAttribute('viewBox', `${r.x - pad} ${r.y - pad} ${r.width + 2 * pad} ${r.height + 2 * pad}`);
-      svg.dataset.w = String(r.width + 2 * pad);
-      svg.dataset.h = String(r.height + 2 * pad);
-    }
-    const w = Number(svg.dataset.w), h = Number(svg.dataset.h);
-    const scale = Math.min(this.zoom, this.box.clientWidth / w, this.box.clientHeight / h);
-    svg.setAttribute('width', String(w * scale));
-    svg.setAttribute('height', String(h * scale));
+  /** Lays the music out at the chosen size across the room's width, then brings the lit item into view. */
+  private draw(): void {
+    this.width = this.box.clientWidth;
+    this.osmd.zoom = 1.1 * this.zoom; // 1.1: the size it has always been drawn at
+    this.osmd.render();
+    const lit = [...this.small.querySelectorAll<SVGElement>('[fill="#2563eb"]')];
+    if (!lit.length) return;
+    const box = this.box.getBoundingClientRect();
+    const top = Math.min(...lit.map((e) => e.getBoundingClientRect().top)), bottom = Math.max(...lit.map((e) => e.getBoundingClientRect().bottom));
+    const margin = 40; // the staff around the lit notes
+    if (top - margin < box.top) this.box.scrollTop -= box.top - (top - margin);
+    else if (bottom + margin > box.bottom) this.box.scrollTop += bottom + margin - box.bottom;
   }
 
   clear(): void {
     this.request++;
+    this.loaded = false;
     this.small.replaceChildren();
     this.box.classList.add('off');
   }

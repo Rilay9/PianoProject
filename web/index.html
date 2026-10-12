@@ -70,11 +70,29 @@
 
   <!-- Free play: just the keys, named; nothing judged. -->
   <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
-    <div class="fp-head"><span class="title">Free play</span><button id="fp-done" type="button" class="btn">Done</button></div>
+    <div class="fp-head"><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button><button id="fp-done" type="button" class="btn">Done</button></div>
     <p id="fp-chord" class="fp-chord"></p>
     <p id="fp-notes" class="fp-notes"></p>
+    <!-- What you played lately: chords, notes and intervals, newest on top; each can be turned off. -->
+    <div class="fp-recent">
+      <div class="fp-col" data-col="chords"><h3>Chords</h3><ol id="fp-chords"></ol></div>
+      <div class="fp-col" data-col="notes"><h3>Notes</h3><ol id="fp-lines"></ol></div>
+      <div class="fp-col" data-col="intervals"><h3>Intervals</h3><ol id="fp-intervals"></ol></div>
+    </div>
     <div class="keyboard fp-keyboard"></div>
   </section>
+
+  <dialog id="fp-show-dialog" aria-labelledby="fp-show-title">
+    <form method="dialog">
+      <h2 id="fp-show-title">Show</h2>
+      <fieldset class="row"><legend>What you played lately</legend>
+        <label><input type="checkbox" name="fp-col" value="chords"> Chords</label>
+        <label><input type="checkbox" name="fp-col" value="notes"> Notes</label>
+        <label><input type="checkbox" name="fp-col" value="intervals"> Intervals</label>
+      </fieldset>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
 
   <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
        the keyboard at the bottom. -->

@@ -121,8 +121,19 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .score svg { filter: var(--music-filter); }
 .freeplay { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
 .fp-head { display: flex; align-items: center; gap: 8px; padding: max(8px, env(safe-area-inset-top)) 16px 8px; background: var(--bar-bg); color: var(--bar-fg); border-bottom: 1px solid var(--bar-line); }
-.fp-chord { margin: auto 16px 6px; text-align: center; font-size: 2.4rem; font-weight: 700; min-height: 1.3em; }
-.fp-notes { margin: 0 16px 16px; text-align: center; color: var(--muted); min-height: 1.4em; }
+.fp-chord { margin: 12px 16px 4px; text-align: center; font-size: 2.4rem; font-weight: 700; min-height: 1.3em; }
+.fp-notes { margin: 0 16px 8px; text-align: center; color: var(--muted); min-height: 1.4em; }
+/* Recent chords | notes | intervals: the columns that are on share the width, each centred. */
+.fp-recent { flex: 1; min-height: 0; display: flex; gap: 8px; padding: 0 8px 8px; overflow: hidden; }
+.fp-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
+.fp-col[hidden] { display: none; }
+.fp-col h3 { margin: 4px 0 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.fp-col ol { list-style: none; margin: 0; padding: 0; width: 100%; overflow: hidden; }
+.fp-col li { padding: 3px 0; line-height: 1.25; overflow-wrap: anywhere; }
+.fp-col li b { display: block; font-size: 1.05rem; }
+.fp-col li small { display: block; color: var(--muted); font-size: 12px; }
+/* A phone on its side: the chord being held smaller, so the recent columns get the room. */
+@media (max-height: 500px) { .fp-chord { font-size: 1.6rem; margin: 6px 16px 2px; } .fp-notes { margin-bottom: 4px; } }
 .fp-keyboard { height: 42vh; touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
 .exercise { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
 .exercise .fp-head select { flex: 1; min-width: 0; font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
@@ -132,8 +143,9 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: hidden; }
 /* Hidden with a class, not when empty: the renderer measures the box's width when it draws, so it must be laid out.
    The music takes the room left in the middle and is shrunk to fit it (notation.ts), whatever the screen. */
-.ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.ex-notation > div { width: 100%; display: flex; justify-content: flex-start; }
+/* One size; long chains wrap and the box scrolls. Short music sits in the middle of the room's height (auto margins), tall music starts at the top. */
+.ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; overflow-x: hidden; overflow-y: auto; }
+.ex-notation > div { width: 100%; margin: auto 0; }
 .ex-notation.off { display: none; }
 .ex-notation svg { display: block; filter: var(--music-filter); }
 .ex-keyboard.off { display: none; }
