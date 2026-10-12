@@ -31,7 +31,7 @@ interface StaffPos { staff: number; left: number; right: number; top: number; he
  * how long it sounds in whole notes (tied notes added up; 0 for the later notes of a tie and for grace notes,
  * which the piano does not strike).
  */
-export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number }
+export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number; /** its notehead in the drawing */ id?: string }
 /**
  * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
  * and the chord symbol the file gives for this moment, if any.
@@ -60,7 +60,7 @@ function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octa
   };
 }
 /** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
-interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
+interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[]; barLeft?: number; barRight?: number; barTop?: number; barBottom?: number }
 /** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
 interface Step { t: number; ts: number; bpm: number; m: number; rel: number; vels: number[]; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
 /** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
@@ -179,7 +179,8 @@ export class FollowView {
           // With a pickup bar, OSMD's render() takes the range from the bar-number rules instead (pickup = bar 0).
           rules.MinMeasureToDrawNumber = a;
           rules.MaxMeasureToDrawNumber = b;
-          rules.StretchLastSystemLine = i < ranges.length - 1; // a full-width line, as on the page; the song's last line as drawn
+          // A full-width line, as on the page; the song's last line as drawn; in Memorise none (owner: the bar at its own width).
+          rules.StretchLastSystemLine = s.mode !== 'memorise' && i < ranges.length - 1;
           rules.RenderSingleHorizontalStaffline = false;
           o.render();
           if (s.lines !== 'auto' && o.GraphicSheet.MusicPages[0].MusicSystems.length > 1) {
@@ -314,12 +315,12 @@ export class FollowView {
           bottom = Math.max(bottom, this.px(b.AbsolutePosition.y + b.BorderBottom));
           st.len = Math.max(st.len, n.sourceNote.Length.RealValue);
           const pitch = n.sourceNote.Pitch; // none for a rest
+          const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
           if (pitch && !n.sourceNote.isRest()) {
             const note = n.sourceNote, tie = note.NoteTie;
             const len = note.IsGraceNote || (tie && tie.StartNote !== note) ? 0 : (tie ? tie.Duration : note.Length).RealValue;
-            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y) });
+            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y), id });
           }
-          const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
           if (id) { ids.push(id); st.ids.push(id); }
         }
       }
@@ -336,7 +337,13 @@ export class FollowView {
       right = left + 10;
     }
     const box = sys ? this.systemBox(sys) : { top: 0, height: 0 };
-    return { left, right, top: box.top, height: box.height, ids, staves: perStaff };
+    // The bar's own extent, barline to barline (for covering a whole bar in Memorise).
+    const gm0 = staves.find(Boolean)?.PositionAndShape;
+    const barLeft = gm0 ? this.px(gm0.AbsolutePosition.x + gm0.BorderLeft) : left;
+    const barRight = gm0 ? this.px(gm0.AbsolutePosition.x + gm0.BorderRight) : right;
+    // Its whole height: the line of music with everything above and below it (ledger lines, slurs, marks).
+    const top = Math.min(box.top, ...perStaff.map((st) => st.top)), bottom = Math.max(box.top + box.height, ...perStaff.map((st) => st.top + st.height));
+    return { left, right, top: box.top, height: box.height, ids, staves: perStaff, barLeft, barRight, barTop: top, barBottom: bottom };
   }
 
   /** The play order: every step's bar, beat, timestamp and tempo, from OSMD's cursor (which follows repeats). */
@@ -540,6 +547,8 @@ export class FollowView {
     else this.followStrip(s.pos);
     this.drawMarker(s);
     this.drawLoop();
+    this.drawHidden();
+    this.applyMarks();
     const staffNotes = (pick: (staff: number) => Pitch[]) => [0, 1, 2, 3].map(pick).slice(0, Math.max(s.held.length, 2));
     const nextStep = this.steps[this.current + 1];
     this.onStep({
@@ -633,8 +642,12 @@ export class FollowView {
    * speed 1, and a bar of count-in clicks before it (from `from`, in the first bar's metre and tempo).
    */
   loopSpan(): { a: number; b: number; t0: number; t1: number; from: number; countIn: Beat[] } | null {
-    if (!this.loop) return null;
-    const { a, b } = this.loop, A = this.steps[a], B = this.steps[b];
+    return this.loop ? this.spanOf(this.loop.a, this.loop.b) : null;
+  }
+
+  /** The same for any steps a..b (whole bars): their times and a bar of count-in clicks before them. */
+  spanOf(a: number, b: number): { a: number; b: number; t0: number; t1: number; from: number; countIn: Beat[] } {
+    const A = this.steps[a], B = this.steps[b];
     const t0 = this.timeAt(A.ts - A.rel, a);
     const t1 = this.timeAt(B.ts - B.rel + (this.measures[B.m]?.dur ?? 1), b);
     const bar = this.measures[A.m] ?? { beats: 4, beatLen: 1 / 4 };
@@ -642,6 +655,74 @@ export class FollowView {
     const from = t0 - bar.beats * beatMs;
     const countIn = [...Array(bar.beats).keys()].map((k) => ({ t: from + k * beatMs, accent: k === 0 }));
     return { a, b, t0, t1, from, countIn };
+  }
+
+  // ---- Memorise: bars hidden, notes marked -----------------------------------------------------------
+
+  private hidden: { a: number; b: number }[] = [];
+  private marks: { step: number; midi: number; color: string }[] = [];
+  private marked: SVGElement[] = [];
+
+  /** How many bars the piece has (file order). */
+  get barCount(): number { return this.measures.length; }
+  /** The first step in bar m (its first time through), or -1. */
+  firstStepOfBar(m: number): number { return this.steps.findIndex((s) => s.m === m); }
+  /** The bar (file order) of step i. */
+  barOf(i: number): number { return this.steps[i]?.m ?? 0; }
+
+  /** Covers these steps' bars completely, barline to barline and top to bottom, so nothing of them shows. */
+  setHidden(ranges: { a: number; b: number }[]): void { this.hidden = ranges; this.update(); }
+
+  private drawHidden(): void {
+    this.host.querySelectorAll('.hide-zone').forEach((z) => z.remove());
+    for (const { a, b } of this.hidden) {
+      // One cover per line of music the bars are on (a bar's steps share its line).
+      const bands = new Map<string, { from: Step; left: number; right: number; top: number; bottom: number; bars: Set<number> }>();
+      for (let i = a; i <= b; i++) {
+        const s = this.steps[i], p = s.pos, key = `${s.occ}:${Math.round(p.top)}`;
+        const band = bands.get(key) ?? { from: s, left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity, bars: new Set<number>() };
+        band.left = Math.min(band.left, p.barLeft ?? p.left);
+        band.right = Math.max(band.right, p.barRight ?? p.right);
+        band.top = Math.min(band.top, p.barTop ?? p.top);
+        band.bottom = Math.max(band.bottom, p.barBottom ?? p.top + p.height);
+        band.bars.add(this.measures[s.m]?.num ?? s.m);
+        bands.set(key, band);
+      }
+      for (const band of bands.values()) {
+        const at = this.place(band.from);
+        if (!at) continue;
+        const z = document.createElement('div');
+        z.className = 'hide-zone';
+        z.style.left = `${band.left + 1}px`; // just inside the barlines, which stay as landmarks
+        z.style.width = `${band.right - band.left - 2}px`;
+        z.style.top = `${band.top - 8 - at.top}px`;
+        z.style.height = `${band.bottom - band.top + 16}px`;
+        z.textContent = [...band.bars].join(' ');
+        at.holder.append(z);
+      }
+    }
+  }
+
+  /** Colours these notes (Memorise: a slip's notes), until cleared with an empty list. */
+  markNotes(marks: { step: number; midi: number; color: string }[]): void { this.marks = marks; this.update(); }
+
+  private applyMarks(): void {
+    for (const el of this.marked) { el.style.removeProperty('fill'); el.style.removeProperty('stroke'); }
+    this.marked = [];
+    for (const m of this.marks) {
+      const s = this.steps[m.step];
+      const at = s && this.place(s);
+      if (!at) continue;
+      for (const st of s.pos.staves) for (const n of st.notes) {
+        if (n.midi !== m.midi || !n.id) continue;
+        const g = at.root.querySelector(`[id="${CSS.escape(n.id)}"]`);
+        if (g) for (const path of g.querySelectorAll('path')) {
+          (path as SVGElement).style.fill = m.color;
+          (path as SVGElement).style.stroke = m.color;
+          this.marked.push(path as SVGElement);
+        }
+      }
+    }
   }
 
   private drawLoop(): void {

@@ -10,6 +10,7 @@ import { ExerciseNotation } from './exercise/notation';
 import { Simon, type PieceChoice, type Rung, type SimonLevel } from './exercise/simon';
 import { keepAwake } from './wake';
 import { Practice, yours } from './practice';
+import { Memorise, type MemoriseOptions } from './memorise';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
@@ -45,7 +46,17 @@ const strip = new UnderStrip($('under'), $('keyboard'), $('note-line'));
 const sound = new Sound();
 const midi = new MidiInput();
 const practice = new Practice(view, sound, midi, () => settingsFor(currentPiece().id));
-view.onStep = (notes) => strip.show(notes);
+// Memorise (owner, 2026-10-12): the score screen tuned for learning a piece by heart (memorise.ts).
+const memorise = new Memorise({
+  view, sound, practice,
+  settings: () => settingsFor(currentPiece().id),
+  pieceId: () => currentPiece().id,
+  pianoHands: (s) => pianoHands(s),
+  say: (text, kind = 'info') => showMessage(text, kind !== 'bad'),
+  changed: () => { fillBars(); fillMemo(); },
+});
+// Under the music: the notes now and next; dark while Memorise has bars covered (it would give them away).
+view.onStep = (notes) => strip.show(memorise.covering ? { now: [], next: [], fileChord: '' } : notes);
 let pieces: Piece[] = [];
 let currentId = '';
 const xmlCache = new Map<string, string>();
@@ -124,7 +135,13 @@ function fillBars(): void {
   $('song-title').textContent = piece.title;
   $('song-composer').textContent = piece.composer;
   $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
-  const running = view.playing || practice.active;
+  const running = view.playing || practice.active || memorise.active;
+  const memo = s.mode === 'memorise';
+  $('q-loop').hidden = memo;
+  $('q-memo').hidden = !memo;
+  document.body.classList.toggle('memorising', memo);
+  $('memo-bar').hidden = !memo;
+  document.body.style.setProperty('--memo-h', memo ? `${$('memo-bar').offsetHeight}px` : '0px'); // the music stops above it
   keepAwake(running || freePlay.open || !$('exercise').hidden); // the screen stays on while you play (owner, 2026-10-11)
   // Blind: the music hides while you play (Display → Show → Music while playing off) and comes back on stopping.
   score.classList.toggle('blind', running && !s.musicWhilePlaying);
@@ -211,6 +228,7 @@ async function play(fromKey?: number): Promise<void> {
   if (marking) setMarking(false);
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'ladder' && !view.looped) { startPicking('Ladder: tap the first bar to practise'); return; }
+  if (s.mode === 'memorise' && memorise.active && memorise.phase !== 'ready') { memorise.stop(); return; }
   starting = true;
   $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
   try {
@@ -219,7 +237,8 @@ async function play(fromKey?: number): Promise<void> {
     sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
     // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
-    if (pianoHands(s) || s.metronome || view.looped) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
+    const memo = s.mode === 'memorise'; // it plays the bars to you with both hands
+    if (pianoHands(s) || s.metronome || view.looped || memo) await sound.prepare((!!pianoHands(s) || memo) && !sound.keyboard);
   } catch (cause) {
     showMessage(cause instanceof Error ? cause.message : String(cause));
     starting = false;
@@ -230,6 +249,13 @@ async function play(fromKey?: number): Promise<void> {
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
   hideBars();
+  if (s.mode === 'memorise') {
+    // ▶ while it waits for you: your pass with a bar of count-in; otherwise start (or carry on) memorising.
+    if (memorise.phase === 'ready') memorise.begin(true, fromKey);
+    else memorise.start();
+    fillBars();
+    return;
+  }
   pass = 0;
   const loop = view.looped, continuing = resumable;
   resumable = false;
@@ -258,6 +284,15 @@ async function startFromKey(e: KeyEvent): Promise<void> {
   if (e.time - mashedAt < SETTLE_MS) return;
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'watch' || (s.mode === 'ladder' && !view.looped)) return;
+  if (s.mode === 'memorise') {
+    // Waiting for your turn: your first note starts the pass (any key if your part starts on a rest).
+    if (memorise.phase !== 'ready') return;
+    const first = view.struckAt(view.index, yours(s));
+    if (first.length && !first.includes(e.midi)) return;
+    memorise.begin(false, e.midi);
+    fillBars();
+    return;
+  }
   if (s.mode === 'wait') {
     await play();
     if (midi.down.has(e.midi)) practice.key(e); // that key counts for the first notes
@@ -345,6 +380,7 @@ function startLoopPass(fromMarker = false, continuing = false): void {
   if (judged(s.mode)) practice.startAlong(continuing);
 }
 view.onLoopEnd = () => {
+  if (memorise.active) { memorise.passEnded(); return; }
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'wait') { practice.loopBack(); return; }
   if (judged(s.mode)) {
@@ -369,16 +405,64 @@ view.onLoopEnd = () => {
 /** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
 function stopAll(): void {
   if (view.playing) view.pause();
-  else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
+  else { sound.stop(); if (memorise.active) memorise.stop(); else practice.stop(!view.looped); fillBars(); showBars(); }
 }
-view.onStop = () => { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); };
+view.onStop = () => {
+  sound.stop();
+  // In Memorise a stop is either its own (going on to the next step) or you leaving it.
+  if (memorise.active) { practice.stop(false); if (!memorise.halting) memorise.stop(); } else practice.stop(!view.looped);
+  fillBars();
+  showBars();
+};
+
+// Memorise's strip and its settings (only in Memorise: each mode shows its own settings, owner 2026-10-12).
+const memoDialog = $<HTMLDialogElement>('memo-dialog');
+function fillMemo(): void {
+  $('memo-label').textContent = memorise.active ? memorise.label : 'Memorise: press ▶ to start (it carries on where you were)';
+  const from = $<HTMLSelectElement>('memo-from');
+  const bars = memorise.active ? memorise.scopeBars() : [];
+  from.replaceChildren(Object.assign(document.createElement('option'), { value: '', textContent: 'From…' }),
+    ...bars.map(([m, n]) => Object.assign(document.createElement('option'), { value: String(m), textContent: `From ${n}` })));
+  from.disabled = !bars.length;
+  for (const id of ['memo-hear', 'memo-peek', 'memo-prev', 'memo-next']) $<HTMLButtonElement>(id).disabled = !memorise.active;
+  $('memo-stay').hidden = !(memorise.active && memorise.phase === 'between');
+  const memoH = $('memo-bar').hidden ? 0 : $('memo-bar').offsetHeight;
+  document.body.style.setProperty('--memo-h', `${memoH}px`);
+}
+$('memo-hear').addEventListener('click', () => memorise.hearAgain());
+const peek = (on: boolean) => () => memorise.peek(on);
+$('memo-peek').addEventListener('pointerdown', peek(true));
+for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) $('memo-peek').addEventListener(ev, peek(false));
+$<HTMLSelectElement>('memo-from').addEventListener('change', (e) => {
+  const v = (e.target as HTMLSelectElement).value;
+  if (v !== '') memorise.restartFrom(Number(v));
+});
+$('memo-prev').addEventListener('click', () => memorise.nextChunk(-1));
+$('memo-next').addEventListener('click', () => memorise.nextChunk(1));
+$('memo-stay').addEventListener('click', () => memorise.stay());
+$('q-memo').addEventListener('click', () => {
+  const o = memorise.optionsNow;
+  const values: Record<string, string> = { 'm-chunk': String(o.chunk), 'm-adds': o.adds, 'm-learnedAfter': String(o.learnedAfter), 'm-timing': o.timing ? 'yes' : 'no', 'm-carryFrom': o.carryFrom, 'm-before': o.before, 'm-next': o.next };
+  for (const [name, value] of Object.entries(values)) for (const r of memoDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  memoDialog.showModal();
+});
+memoDialog.addEventListener('change', (e) => {
+  const r = e.target as HTMLInputElement, key = r.name.slice(2) as keyof MemoriseOptions;
+  const value = key === 'chunk' || key === 'learnedAfter' ? Number(r.value) : key === 'timing' ? r.value === 'yes' : r.value;
+  memorise.setOptions({ [key]: value } as Partial<MemoriseOptions>);
+  fillMemo();
+});
 $('play').addEventListener('click', () => (view.playing || practice.active ? stopAll() : void play()));
 
 // Mode: Watch / Wait for me / Play along, saved per song (owner, 2026-10-11).
 $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
-  if (view.playing || practice.active) stopAll();
+  if (view.playing || practice.active || memorise.active) stopAll();
+  const was = settingsFor(currentPiece().id).mode;
   savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
   fillBars();
+  fillMemo();
+  // Memorise keeps its own look (settings.ts), so going in or out of it draws the music again.
+  if ((was === 'memorise') !== (settingsFor(currentPiece().id).mode === 'memorise')) void draw(true);
   if (settingsFor(currentPiece().id).mode === 'ladder' && !view.looped) startPicking('Ladder: tap the first bar to practise');
 });
 
@@ -627,6 +711,9 @@ function fillTempo(): void {
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.checked = r.value === s.onTime;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="pianoOut"]')) r.checked = r.value === s.pianoOut;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="ladderStep"]')) r.checked = Math.abs(Number(r.value) - s.ladderStep) < 1e-9;
+  // Each mode shows only its own settings (owner, 2026-10-12).
+  $('t-ladder').hidden = s.mode !== 'ladder';
+  $('t-ontime').hidden = !(judged(s.mode) || (s.mode === 'memorise' && memorise.optionsNow.timing));
 }
 function setSpeed(speed: number): void {
   if (!(speed > 0)) return;

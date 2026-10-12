@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memorise mockups</title>
+<style>
+  :root { --bg: #eef0f3; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --line: #b8bcc4; --accent: #2563eb; --ok: #16a34a; --bad: #dc2626; --btn: #f3f4f6; --hide: #e5e7eb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .intro { max-width: 960px; color: var(--muted); margin: 0 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  figure { margin: 0; width: 300px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  figcaption b { color: var(--fg); }
+  .phone { width: 300px; height: 600px; background: #fff; border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .top { background: var(--bar); padding: 8px 10px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .top .t { flex: 1; font-weight: 600; }
+  .btn { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 8px; font-size: 12px; white-space: nowrap; }
+  .btn.on { background: #dbe7ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .chunkbar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 1px solid #eceef1; font-size: 12px; }
+  .chunkbar .dots { display: flex; gap: 3px; flex: 1; }
+  .chunkbar .d { width: 14px; height: 8px; border-radius: 4px; background: #e5e7eb; }
+  .chunkbar .d.done { background: #86efac; } .chunkbar .d.now { background: var(--accent); }
+  .music { flex: 1; padding: 8px 6px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+  .system { position: relative; }
+  .msg { text-align: center; font-weight: 600; font-size: 14px; min-height: 20px; }
+  .msg.ok { color: var(--ok); } .msg.bad { color: var(--bad); }
+  .sub { text-align: center; color: var(--muted); font-size: 12px; min-height: 16px; }
+  .controls { display: flex; justify-content: center; gap: 5px; padding: 6px; flex-wrap: wrap; border-top: 1px solid #eceef1; }
+  .kb { height: 80px; display: flex; padding: 0 3px 4px; position: relative; }
+  .w { flex: 1; border: 1px solid #c7cad1; border-top: none; border-radius: 0 0 3px 3px; background: #fbfbfc; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 10px 12px 14px; box-shadow: 0 -6px 20px rgba(0,0,0,.1); font-size: 12px; }
+  .sheet h3 { margin: 0 0 6px; font-size: 14px; }
+  .opt { color: var(--muted); margin: 7px 0 3px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg span { border: 1px solid var(--line); border-radius: 8px; padding: 2px 7px; background: var(--btn); }
+  .seg span.on { background: #dbe7ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .note { max-width: 960px; margin-top: 18px; color: var(--muted); font-size: 13px; }
+  .note li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<h1>Memorise mode on the score screen (mockups)</h1>
+<p class="intro">The score screen tuned for learning a piece by heart: the piece in chunks of bars; the app plays, hides, checks, replays from where it went wrong, loops and moves on by itself, so you just play and take in the corrections. Pictures only; nothing is built.</p>
+
+<div class="row">
+
+<figure>
+  <div class="phone">
+    <div class="top"><span class="t">Minuet in F</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+    <div class="chunkbar"><span>Chunk <b>1</b> of 6 · bars 1–4</span><span class="dots"><span class="d now"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></span></div>
+    <div class="music"><div class="system" id="s1"></div><div class="msg">Listen: bar 1</div><div class="sub">then it hides and you play it</div></div>
+    <div class="controls"><span class="btn">⏸</span><span class="btn on">Memorise</span><span class="btn">♩ 84</span><span class="btn">R | L | Both</span></div>
+    <div class="kb" id="k1"></div>
+  </div>
+  <figcaption><b>1. Hear it.</b> The app plays the new bar (or the chunk so far) on the score with the marker. The chunk strip shows where you are in the piece.</figcaption>
+</figure>
+
+<figure>
+  <div class="phone">
+    <div class="top"><span class="t">Minuet in F</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+    <div class="chunkbar"><span>Chunk <b>1</b> of 6 · bars 1–4</span><span class="dots"><span class="d now"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></span></div>
+    <div class="music"><div class="system" id="s2"></div><div class="msg">Your turn: bars 1–2 from memory</div><div class="sub">Pass 1 of 2 clean</div></div>
+    <div class="controls"><span class="btn">Hear bar</span><span class="btn">Peek</span><span class="btn">Restart ▾</span><span class="btn">Next chunk</span></div>
+    <div class="kb" id="k2"></div>
+  </div>
+  <figcaption><b>2. From memory.</b> The bars you are learning are hidden (grey with their numbers); the bar after them still shows, so you know where it goes next. One tap: hear a bar again, peek (shows them while held), restart from a bar, skip on.</figcaption>
+</figure>
+
+<figure>
+  <div class="phone">
+    <div class="top"><span class="t">Minuet in F</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+    <div class="chunkbar"><span>Chunk <b>1</b> of 6 · bars 1–4</span><span class="dots"><span class="d now"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></span></div>
+    <div class="music"><div class="system" id="s3"></div><div class="msg bad">Bar 2: it was D5, you played E5</div><div class="sub">Hear it… then again from bar 2</div></div>
+    <div class="controls"><span class="btn">Hear bar</span><span class="btn">Peek</span><span class="btn">Restart ▾</span><span class="btn">Next chunk</span></div>
+    <div class="kb" id="k3"></div>
+  </div>
+  <figcaption><b>3. A slip.</b> At once: the bar comes back with the wrong note red and the right one green, it plays that bit, hides it again and you carry on from that bar (or as set), no stopping or rewinding.</figcaption>
+</figure>
+
+<figure>
+  <div class="phone">
+    <div class="top"><span class="t">Minuet in F</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+    <div class="chunkbar"><span>Chunk <b>2</b> of 6 · bars 5–8</span><span class="dots"><span class="d done"></span><span class="d now"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></span></div>
+    <div class="music"><div class="system" id="s4"></div><div class="msg ok">✓ Chunk 1 learned (bars 1–4)</div><div class="sub">On to bars 5–8 in 3… (tap to stay)</div></div>
+    <div class="controls"><span class="btn">Stay on this chunk</span><span class="btn">Whole piece so far</span></div>
+    <div class="kb" id="k4"></div>
+  </div>
+  <figcaption><b>4. On to the next chunk.</b> After the clean passes it moves on by itself (you can stay). Now and then it could ask for everything so far in one go, to join the chunks up.</figcaption>
+</figure>
+
+<figure>
+  <div class="phone">
+    <div class="top"><span class="t">Minuet in F</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+    <div class="chunkbar"><span>Chunk <b>1</b> of 6</span></div>
+    <div class="music" style="opacity:.3"><div class="system" id="s5"></div></div>
+    <div class="sheet">
+      <h3>Memorise</h3>
+      <div class="opt">Chunk size</div><div class="seg"><span>2 bars</span><span class="on">4 bars</span><span>8 bars</span><span>The file's phrases</span></div>
+      <div class="opt">Adds</div><div class="seg"><span class="on">A bar at a time</span><span>The whole chunk</span></div>
+      <div class="opt">Learned after</div><div class="seg"><span>1 clean pass</span><span class="on">2</span><span>3</span></div>
+      <div class="opt">After a slip, carry on from</div><div class="seg"><span class="on">That bar</span><span>That note</span><span>The chunk's start</span></div>
+      <div class="opt">Before your turn, play</div><div class="seg"><span class="on">The new bar</span><span>The chunk so far</span><span>Nothing</span></div>
+      <div class="opt">Next chunk</div><div class="seg"><span class="on">By itself</span><span>When I tap</span></div>
+      <div class="opt">Hands</div><div class="seg"><span>Right</span><span>Left</span><span class="on">Both</span></div>
+    </div>
+  </div>
+  <figcaption><b>5. Memorise's own settings</b> (only shown in Memorise, per the owner: each mode shows only its own settings). Display (layout, size, marker) stays the score's.</figcaption>
+</figure>
+
+</div>
+
+<div class="note">
+  <p><b>Mode-specific settings, everywhere on the score screen:</b> the Tempo panel shows Ladder steps only in Ladder, "On time" only in the modes that judge timing; ⋯ / a mode sheet holds each mode's own options (Memorise as in 5). Display stays shared by all modes.</p>
+  <p><b>Questions these pictures raise</b> (the highlighted choices are my suggestions):</p>
+  <ul>
+    <li>Chunk size: a fixed number of bars, or the file's own phrases where it marks them (rehearsal marks / line breaks)?</li>
+    <li>Feedback: stop at the first wrong note (like Wait for me), or keep time and show the slips at the end of the pass (like Play along)? The pictures show stopping at once.</li>
+    <li>Timing: should a pass need to be in time to count as clean, or just the right notes in order?</li>
+    <li>Joining up: after each chunk (or every few), ask for everything so far once?</li>
+  </ul>
+</div>
+
+<script>
+  // Simple bars on a grand staff: shown (notes), hidden (grey box with the bar number), or slip (red/green).
+  function system(id, bars) {
+    const W = 288, H = 120, x0 = 26, bw = (W - x0 - 4) / bars.length;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+    for (const top of [14, 70]) for (let i = 0; i < 5; i++) s += `<line x1="4" x2="${W - 4}" y1="${top + i * 7}" y2="${top + i * 7}" stroke="#111827" stroke-width=".7"/>`;
+    s += `<text x="6" y="40" font-size="30" font-family="serif">𝄞</text><text x="7" y="91" font-size="22" font-family="serif">𝄢</text>`;
+    bars.forEach((b, i) => {
+      const x = x0 + i * bw;
+      s += `<line x1="${x + bw}" x2="${x + bw}" y1="14" y2="98" stroke="#111827" stroke-width=".8"/>`;
+      s += `<text x="${x + 2}" y="10" font-size="8" fill="#6b7280">${b.n}</text>`;
+      if (b.state === 'hidden') { s += `<rect x="${x + 3}" y="12" width="${bw - 6}" height="88" rx="5" fill="#e5e7eb"/><text x="${x + bw / 2}" y="60" font-size="12" text-anchor="middle" fill="#6b7280">${b.n}</text>`; return; }
+      if (b.lit) s += `<rect x="${x + 2}" y="12" width="${bw - 4}" height="88" rx="5" fill="rgba(37,99,235,.15)"/>`;
+      const ys = [17, 21, 31, 31], ls = [77, 84];
+      ys.forEach((y, k) => { const c = b.state === 'slip' && k === 1 ? '#dc2626' : '#111827'; s += `<ellipse cx="${x + 10 + k * (bw - 16) / 4}" cy="${y}" rx="3.6" ry="2.7" fill="${c}"/>`; });
+      if (b.state === 'slip') s += `<ellipse cx="${x + 10 + (bw - 16) / 4}" cy="24.5" rx="3.6" ry="2.7" fill="none" stroke="#16a34a" stroke-width="1.6"/>`;
+      ls.forEach((y, k) => { s += `<ellipse cx="${x + 10 + k * (bw - 16) / 2}" cy="${y}" rx="3.6" ry="2.7" fill="#111827"/>`; });
+    });
+    document.getElementById(id).innerHTML = s + '</svg>';
+  }
+  system('s1', [{ n: 1, lit: true }, { n: 2 }, { n: 3 }, { n: 4 }]);
+  system('s2', [{ n: 1, state: 'hidden' }, { n: 2, state: 'hidden' }, { n: 3 }, { n: 4 }]);
+  system('s3', [{ n: 1, state: 'hidden' }, { n: 2, state: 'slip' }, { n: 3 }, { n: 4 }]);
+  system('s4', [{ n: 5, lit: true }, { n: 6 }, { n: 7 }, { n: 8 }]);
+  system('s5', [{ n: 1 }, { n: 2 }, { n: 3 }, { n: 4 }]);
+  for (const id of ['k1', 'k2', 'k3', 'k4']) { const k = document.getElementById(id); for (let i = 0; i < 21; i++) k.insertAdjacentHTML('beforeend', '<div class="w"></div>'); }
+</script>
+</body>
+</html>

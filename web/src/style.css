@@ -101,7 +101,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .bar output { min-width: 3.2em; text-align: center; }
 #q-default { margin-left: auto; }
 
-.message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; }
+.message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; background: rgba(255, 255, 255, 0.92); border-radius: 6px; padding: 4px 8px; }
 /* Not a problem, just news (a loop pass, what to tap next): dark text on a light strip over the music. */
 .message.info { color: #111827; background: rgba(255, 255, 255, 0.9); border-radius: 6px; padding: 4px 8px; }
 
@@ -153,6 +153,14 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-keyboard { height: 34vh; touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
 .keyboard .key.wrong { background: #dc2626 !important; }
 .keyboard .key.want { box-shadow: inset 0 0 0 3px #16a34a; }
+/* Memorise: a hidden bar, covered in the paper's colour with its number; the barlines either side still show. */
+.hide-zone { position: absolute; background: var(--paper); border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(107, 114, 128, 0.25); color: #9ca3af; display: flex; align-items: center; justify-content: center; font-size: 13px; pointer-events: none; z-index: 1; }
+/* Memorise's strip sits just above what is under the music; the music stops above it. */
+.memo-bar { bottom: var(--under-h, 0px); z-index: 2; flex-wrap: wrap; border-top: 1px solid var(--bar-line); gap: 6px; }
+.memo-label { flex: 1 1 100%; font-size: 13px; color: var(--bar-muted); }
+.memo-bar .btn, .memo-bar select { padding: 4px 8px; }
+.memo-bar select { font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
+body.memorising .score { bottom: calc(var(--under-h, 0px) + var(--memo-h, 0px)); }
 .loop-zone { position: absolute; background: var(--loop); border-radius: 4px; pointer-events: none; }
 .mark { position: absolute; background: var(--mark); border-left: 2px solid var(--mark-edge); border-radius: 3px; pointer-events: none; }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */

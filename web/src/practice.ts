@@ -32,6 +32,9 @@ export interface Summary {
   total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number; rhythm: boolean;
   /** The worst stretches first (at most three). */
   weak: WeakSpot[];
+  /** Each note not played on time (its step in the score) and each wrong key (the step being played then). */
+  slips: { step: number; midi: number; kind: 'missed' | 'early' | 'late' }[];
+  extra: { step: number; midi: number }[];
 }
 
 type Hand = 'both' | 'right' | 'left';
@@ -74,6 +77,9 @@ export class Practice {
     this.running = 'wait';
     this.arrive();
   }
+
+  /** Pausing by itself is off while Memorise runs a pass (it has its own way of going on). */
+  autoPause = true;
 
   /** Starts Play along: the caller has started the sound and the marker. continuing: after a pause, same run. */
   startAlong(continuing = false): void {
@@ -131,7 +137,7 @@ export class Practice {
 
   /** Silence: none of your keys for a while though your notes kept coming. */
   private checkSilence(): void {
-    if (this.running !== 'along' || !this.view.playing || performance.now() - this.lastPress < SILENCE_MS) return;
+    if (!this.autoPause || this.running !== 'along' || !this.view.playing || performance.now() - this.lastPress < SILENCE_MS) return;
     const hand = yours(this.settings()), now = this.view.songNow();
     const due: number[] = [];
     for (let i = this.fromIndex; i <= this.view.index; i++) {
@@ -159,7 +165,7 @@ export class Practice {
       this.lastPress = e.time;
       this.lastPressSong = t;
       // Mashing: many keys the score does not have, all at once (in Rhythm any key is fine, so it never counts).
-      if (s.mode !== 'rhythm' && !this.nearNote(e.midi, t)) {
+      if (this.autoPause && s.mode !== 'rhythm' && !this.nearNote(e.midi, t)) {
         this.odd = [...this.odd.filter((x) => e.time - x < MASH_MS), e.time];
         if (this.odd.length >= MASH_KEYS) { this.odd = []; this.onAutoPause('mash', this.view.index); }
       }
@@ -233,7 +239,18 @@ export class Practice {
     }
     const rhythm = s.mode === 'rhythm';
     const r = (rhythm ? judgeRhythm : judge)(steps, this.played, tolerance);
-    return { ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt) };
+    return {
+      ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt),
+      slips: r.offNotes.map((o) => ({ step: index[o.k], midi: o.midi, kind: o.kind })),
+      extra: r.wrongKeys.map((w) => ({ step: this.stepAt(w.t), midi: w.midi })),
+    };
+  }
+
+  /** The step being played at song time t (within this run). */
+  private stepAt(t: number): number {
+    let i = this.fromIndex;
+    while (i + 1 <= this.view.index && this.view.stepT(i + 1) <= t) i++;
+    return i;
   }
 
   /**

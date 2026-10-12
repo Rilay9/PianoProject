@@ -19,9 +19,10 @@ export type PianoOut = 'phone' | 'keyboard';
 /**
  * Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary),
  * Ladder (Play along round a loop of bars, the tempo up a step after each clean pass and down after a messy one),
- * Rhythm (Play along judged on timing alone: one tap on any key for each of your notes or chords).
+ * Rhythm (Play along judged on timing alone: one tap on any key for each of your notes or chords),
+ * Memorise (learn the piece by heart in chunks of bars: memorise.ts).
  */
-export type Mode = 'watch' | 'wait' | 'along' | 'ladder' | 'rhythm';
+export type Mode = 'watch' | 'wait' | 'along' | 'ladder' | 'rhythm' | 'memorise';
 /** How close to when a note is due counts as on time in Play along. */
 export type OnTime = 'relaxed' | 'normal' | 'strict';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
@@ -134,7 +135,18 @@ const OLD_KEY = 'piano-web.settings.v1';
 interface DeviceStore {
   defaults: Partial<ScoreSettings>;
   pieces: Record<string, Partial<ScoreSettings>>;
+  /** Memorise keeps its own display settings (owner, 2026-10-12: no need to read ahead there). */
+  memorise?: { defaults: Partial<ScoreSettings>; pieces: Record<string, Partial<ScoreSettings>> };
 }
+
+/** The settings that are about how the music looks: Memorise has its own set of these. */
+export const DISPLAY_KEYS = ['size', 'spacing', 'layout', 'lines', 'barNumbers', 'tempoMarks', 'fingering', 'lyrics', 'slots', 'marker', 'markerFollows', 'under', 'musicWhilePlaying'] as const;
+const isDisplay = (key: string) => (DISPLAY_KEYS as readonly string[]).includes(key);
+/**
+ * Memorise's built-in look (owner, 2026-10-12): the bar large, at its own width rather than stretched across the
+ * screen (follow.ts draws no line stretched in Memorise), since the music does not have to show what comes next.
+ */
+const MEMORISE_DEFAULTS: Partial<ScoreSettings> = { lines: 1, size: 1.6 };
 type Stored = Record<Device, DeviceStore>;
 
 const empty = (): Stored => ({
@@ -190,6 +202,11 @@ function write(stored: Stored): void {
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
   const s = { ...DEFAULTS, ...DEVICE_DEFAULTS[device], ...d.defaults, ...d.pieces[pieceId] };
+  if (s.mode === 'memorise') {
+    // Memorise's own look, from its own store (its built-in look, then its defaults, then this song's).
+    const own = { ...MEMORISE_DEFAULTS, ...d.memorise?.defaults, ...d.memorise?.pieces[pieceId] };
+    for (const key of DISPLAY_KEYS) if (key in own) (s as Record<string, unknown>)[key] = (own as Record<string, unknown>)[key];
+  }
   // The app-wide ones come from their own store only (a per-song value saved before they moved is ignored).
   const app = readApp();
   for (const key of APP_WIDE) (s as Record<string, unknown>)[key] = app[key] ?? DEFAULTS[key];
@@ -200,28 +217,42 @@ export function settingsFor(pieceId: string, device = currentDevice()): ScoreSet
 }
 
 export function hasPieceOverride(pieceId: string, device = currentDevice()): boolean {
-  return Object.keys(read()[device].pieces[pieceId] ?? {}).length > 0;
+  const d = read()[device];
+  if (settingsFor(pieceId, device).mode === 'memorise') return Object.keys(d.memorise?.pieces[pieceId] ?? {}).length > 0;
+  return Object.keys(d.pieces[pieceId] ?? {}).length > 0;
 }
 
 /** Saves a change for this song on this kind of screen only (an app-wide setting: for the whole app). */
 export function savePieceSetting<K extends keyof ScoreSettings>(pieceId: string, key: K, value: ScoreSettings[K], device = currentDevice()): void {
   if (isAppWide(key)) { writeApp({ ...readApp(), [key]: value }); return; }
   const stored = read();
-  stored[device].pieces[pieceId] = { ...stored[device].pieces[pieceId], [key]: value };
+  if (isDisplay(key) && settingsFor(pieceId, device).mode === 'memorise') {
+    const m = (stored[device].memorise ??= { defaults: {}, pieces: {} });
+    m.pieces[pieceId] = { ...m.pieces[pieceId], [key]: value };
+  } else stored[device].pieces[pieceId] = { ...stored[device].pieces[pieceId], [key]: value };
   write(stored);
 }
 
 /** Makes this song's current settings the defaults on this kind of screen. */
 export function makeDefaults(pieceId: string, device = currentDevice()): void {
+  const memorise = settingsFor(pieceId, device).mode === 'memorise';
   const stored = read();
   const d = stored[device];
-  d.defaults = { ...d.defaults, ...d.pieces[pieceId] };
-  delete d.pieces[pieceId];
+  if (memorise) {
+    const m = (d.memorise ??= { defaults: {}, pieces: {} });
+    m.defaults = { ...m.defaults, ...m.pieces[pieceId] };
+    delete m.pieces[pieceId];
+  } else {
+    d.defaults = { ...d.defaults, ...d.pieces[pieceId] };
+    delete d.pieces[pieceId];
+  }
   write(stored);
 }
 
 export function resetPiece(pieceId: string, device = currentDevice()): void {
+  const memorise = settingsFor(pieceId, device).mode === 'memorise';
   const stored = read();
-  delete stored[device].pieces[pieceId];
+  if (memorise) delete stored[device].memorise?.pieces[pieceId];
+  else delete stored[device].pieces[pieceId];
   write(stored);
 }

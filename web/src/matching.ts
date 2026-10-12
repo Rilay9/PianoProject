@@ -10,6 +10,8 @@ export interface Judged {
   total: number; onTime: number; early: number; late: number; missed: number; wrong: number;
   /** Which step each note not played on time belongs to (one entry per such note), and when the wrong presses came. */
   offSteps: number[]; wrongAt: number[];
+  /** Each note not played on time: its step, key and what happened; each wrong press: when and which key. */
+  offNotes: { k: number; midi: number; kind: 'missed' | 'early' | 'late' }[]; wrongKeys: { t: number; midi: number }[];
 }
 
 /**
@@ -34,6 +36,7 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
   const noteUsed = new Set<number>(), pressUsed = new Set<number>();
   let onTime = 0, early = 0, late = 0;
   const offSteps: number[] = [];
+  const offNotes: Judged['offNotes'] = [];
   for (const { note, press } of pairs) {
     if (noteUsed.has(note) || pressUsed.has(press)) continue;
     noteUsed.add(note);
@@ -43,10 +46,12 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
     if (offMs < 0) early++;
     else late++;
     offSteps.push(notes[note].k);
+    offNotes.push({ k: notes[note].k, midi: notes[note].midi, kind: offMs < 0 ? 'early' : 'late' });
   }
-  notes.forEach((n, i) => { if (!noteUsed.has(i)) offSteps.push(n.k); });
-  const wrongAt = played.filter((_, j) => !pressUsed.has(j)).map((p) => p.t);
-  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, wrong: wrongAt.length, offSteps, wrongAt };
+  notes.forEach((n, i) => { if (!noteUsed.has(i)) { offSteps.push(n.k); offNotes.push({ k: n.k, midi: n.midi, kind: 'missed' }); } });
+  const wrongKeys = played.filter((_, j) => !pressUsed.has(j)).map((p) => ({ t: p.t, midi: p.midi }));
+  const wrongAt = wrongKeys.map((w) => w.t);
+  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, wrong: wrongAt.length, offSteps, wrongAt, offNotes, wrongKeys };
 }
 
 /** Keys pressed this close together are one tap (a chord's keys land within a few ms of each other). */
