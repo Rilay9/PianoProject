@@ -25,6 +25,7 @@ const SILENCE_NOTES = 2;
 const MASH_KEYS = 6;
 const MASH_MS = 250;
 const NEAR_MS = 300; // how close to a written note a key must come to be one the score has (real ms)
+const HINT_MS = SILENCE_MS; // Memorise: no key this long while it waits for a note, and the next note is shown (the same "gone quiet" as above)
 
 /** A stretch of bars that went wrong: its steps (as a loop range) and how many notes or presses were off. */
 export interface WeakSpot { a: number; b: number; count: number }
@@ -60,6 +61,49 @@ export class Practice {
   loop: () => { a: number; b: number; t1: number } | null = () => null;
   /** Wait for me reached the end of the song by itself. */
   onDone: () => void = () => {};
+
+  // Memorise's waiting pass (owner, 2026-10-12: when timing doesn't count it waits for you, and the pass always
+  // finishes): Wait for me over set steps that ends there instead of looping, noting the keys that were not
+  // asked for and the notes you were helped to (a hint after HINT_MS with no key, or a peek).
+  private pass: { a: number; b: number; t1: number } | null = null;
+  private passWrong: { step: number; midi: number }[] = [];
+  private passHelped: { step: number; midi: number }[] = [];
+  private hintTimer = 0;
+  /** The pass reached its end (the piano has finished the last bar). */
+  onPassEnd: () => void = () => {};
+  /** No key for a while: these are the keys wanted next (shown, and counted as helped). */
+  onHint: (keys: number[]) => void = () => {};
+
+  /** Starts a waiting pass over steps a..b (whole bars; t1: where the last bar ends) from step `from`. */
+  startPass(range: { a: number; b: number; t1: number }, from: number): void {
+    this.pass = range;
+    this.passWrong = [];
+    this.passHelped = [];
+    this.view.goTo(from);
+    this.running = 'wait';
+    this.arrive();
+  }
+
+  /** How the waiting pass went: the wanted notes you were helped to, and the keys not asked for. */
+  passSlips(): { slips: { step: number; midi: number; kind: 'missed' }[]; extra: { step: number; midi: number }[] } {
+    return { slips: this.passHelped.map((h) => ({ ...h, kind: 'missed' as const })), extra: [...this.passWrong] };
+  }
+
+  /** A peek during the waiting pass: the notes wanted now count as helped. */
+  helped(): void {
+    if (!this.pass || this.running !== 'wait') return;
+    for (const midi of this.expected) if (!this.passHelped.some((h) => h.step === this.view.index && h.midi === midi)) this.passHelped.push({ step: this.view.index, midi });
+  }
+
+  private armHint(): void {
+    clearTimeout(this.hintTimer);
+    if (!this.pass || this.running !== 'wait' || !this.expected.size) return;
+    this.hintTimer = window.setTimeout(() => {
+      if (!this.pass || this.running !== 'wait') return;
+      this.helped();
+      this.onHint([...this.expected]);
+    }, HINT_MS);
+  }
 
   constructor(
     private readonly view: FollowView,
@@ -105,6 +149,8 @@ export class Practice {
   /** Stopped (a tap or the end of the song): Play along shows how it went (unless told not to). */
   stop(summary = true): void {
     clearInterval(this.watch);
+    clearTimeout(this.hintTimer);
+    this.pass = null;
     const along = this.running === 'along';
     if (along && summary) this.onSummary(this.merged(this.score()));
     if (along) this.segments = []; // a real stop ends the run (a pause by itself keeps it: see suspend)
@@ -173,6 +219,11 @@ export class Practice {
     }
     if (e.on) this.fresh.add(e.midi);
     else this.fresh.delete(e.midi);
+    if (this.pass && e.on) {
+      // A key not wanted here (a chord's other keys are fine) is noted; any key puts the hint off again.
+      if (!this.expected.has(e.midi)) this.passWrong.push({ step: this.view.index, midi: e.midi });
+      this.armHint();
+    }
     if (this.expected.size && [...this.expected].every((m) => this.fresh.has(m) && this.midi.down.has(m))) this.advance();
   }
 
@@ -181,7 +232,8 @@ export class Practice {
     if (this.running !== 'wait') return;
     this.fresh.clear();
     this.expected = new Set(this.view.struckAt(this.view.index, yours(this.settings())));
-    if (!this.expected.size) this.advance();
+    if (!this.expected.size) { this.advance(); return; }
+    this.armHint();
   }
 
   /**
@@ -190,8 +242,9 @@ export class Practice {
    * the piano plays on to the end of the loop's last bar and the marker goes back to its start.
    */
   private advance(): void {
+    clearTimeout(this.hintTimer);
     const s = this.settings(), i = this.view.index, n = this.view.stepCount;
-    const loop = this.loop(), looping = !!loop && i >= loop.a && i <= loop.b;
+    const loop = this.pass ?? this.loop(), looping = !!loop && i >= loop.a && i <= loop.b;
     const end = looping ? loop!.b + 1 : n; // the first step past what is being played
     let j = i + 1;
     while (j < end && !this.view.struckAt(j, yours(s)).length) j++;
@@ -219,6 +272,7 @@ export class Practice {
 
   /** Wait for me in a loop: back to its start, waiting for your first notes there. */
   loopBack(): void {
+    if (this.pass && this.running === 'wait') { this.running = null; this.expected.clear(); this.onPassEnd(); return; } // a pass ends, it does not go round
     const loop = this.loop();
     if (this.running !== 'wait' || !loop) return;
     this.view.goTo(loop.a);

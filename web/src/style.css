@@ -21,6 +21,8 @@
   --paper: #ffffff;
   --music-filter: none;
   --loop: rgba(234, 179, 8, 0.2);
+  --cover: #e5e7eb; /* Memorise: a covered bar */
+  --cover-fg: #6b7280;
   color-scheme: light;
   font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -45,6 +47,8 @@
     color-scheme: dark;
     --paper: #16181c;
     --music-filter: invert(0.92) hue-rotate(180deg);
+    --cover: #2d3036;
+    --cover-fg: #9aa0a8;
   }
 }
 :root[data-theme="dark"] {
@@ -64,6 +68,8 @@
   color-scheme: dark;
   --paper: #16181c;
   --music-filter: invert(0.92) hue-rotate(180deg);
+  --cover: #2d3036;
+  --cover-fg: #9aa0a8;
 }
 
 * { box-sizing: border-box; }
@@ -167,13 +173,47 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .keyboard .key.wrong { background: #dc2626 !important; }
 .keyboard .key.want { box-shadow: inset 0 0 0 3px #16a34a; }
 /* Memorise: a hidden bar, covered in the paper's colour with its number; the barlines either side still show. */
-.hide-zone { position: absolute; background: var(--paper); border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(107, 114, 128, 0.25); color: #9ca3af; display: flex; align-items: center; justify-content: center; font-size: 13px; pointer-events: none; z-index: 1; }
-/* Memorise's strip sits just above what is under the music; the music stops above it. */
-.memo-bar { bottom: max(var(--under-h, 0px), var(--bars-h, 0px)); transition: bottom 0.3s; z-index: 2; flex-wrap: wrap; border-top: 1px solid var(--bar-line); gap: 6px; }
-.memo-label { flex: 1 1 100%; font-size: 13px; color: var(--bar-muted); }
-.memo-bar .btn, .memo-bar select { padding: 4px 8px; }
-.memo-bar select { font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
-body.memorising .score { bottom: calc(var(--under-h, 0px) + var(--memo-h, 0px)); }
+/* Memorise: a covered bar is a soft grey block with its number; the bars outside the chunk are faded. */
+.hide-zone { position: absolute; background: var(--cover); border-radius: 6px; color: var(--cover-fg); display: flex; align-items: center; justify-content: center; font-size: 15px; pointer-events: none; z-index: 1; }
+.fade-zone { position: absolute; background: var(--paper); opacity: 0.72; pointer-events: none; z-index: 1; }
+
+/* The Memorise screen: its header on top, its panel above the keys; the music between them. */
+body.memorising .score { top: var(--memo-head-h, 0px); bottom: calc(var(--under-h, 0px) + var(--memo-h, 0px)); }
+body.memorising .loop-zone, body.memorising .message { display: none; }
+.memo-head { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; align-items: center; gap: 8px; padding: max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left)); background: var(--bar-bg); color: var(--bar-fg); border-bottom: 1px solid var(--bar-line); }
+.memo-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+.memo-head-info:empty { display: none; }
+.memo-panel { position: fixed; left: 0; right: 0; bottom: var(--under-h, 0px); z-index: 3; display: flex; flex-direction: column; gap: 6px; padding: 8px max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left)); background: var(--bar-bg); color: var(--bar-fg); border-top: 1px solid var(--bar-line); }
+.memo-prog { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--bar-muted); }
+.btn.mini { padding: 0 8px; line-height: 1.4; }
+.btn.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+.memo-dots { display: inline-flex; gap: 4px; margin-left: 4px; }
+.memo-dots .dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--bar-muted); }
+.memo-dots .dot.done { background: #16a34a; border-color: #16a34a; }
+.memo-dots .dot.now { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25); }
+.memo-say { margin: 0; font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.memo-say.ok { color: #16a34a; }
+.memo-say.bad { color: #dc2626; }
+.memo-sub { margin: 0; font-size: 13px; color: var(--bar-muted); min-height: 1.4em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* always a line: the panel keeps one height */
+.memo-choices { display: flex; flex-direction: column; gap: 6px; }
+.memo-choices label { font-size: 13px; color: var(--bar-muted); }
+.memo-ctl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.memo-sp { flex: 1; }
+.memo-pick { display: inline-flex; align-items: center; gap: 6px; }
+#memo-from { min-width: 3.6em; text-align: center; font-size: 14px; }
+/* A phone on its side: what Memorise says sits in the header; the panel is one row. */
+body.memo-sideways .memo-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+body.memo-sideways .memo-head .memo-title { flex: 0 1 auto; max-width: 30%; }
+body.memo-sideways .memo-head-info { flex: 1; min-width: 0; }
+body.memo-sideways .memo-say { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+body.memo-sideways .memo-sub { display: none; }
+/* Sideways the music has the whole height; the header and buttons sit over it and fade while it plays or you play. */
+body.memorising.memo-sideways .score { top: 0; bottom: var(--under-h, 0px); }
+.memo-head, .memo-panel { transition: opacity 0.6s; }
+.memo-head.faded, .memo-panel.faded { opacity: 0; pointer-events: none; }
+body.memo-sideways .memo-panel { flex-direction: row; align-items: center; padding-top: 5px; padding-bottom: max(5px, env(safe-area-inset-bottom)); }
+body.memo-sideways .memo-ctl { flex: 1; flex-wrap: nowrap; }
+body.memo-sideways .memo-choices { flex-direction: row; flex-wrap: wrap; align-items: center; }
 .loop-zone { position: absolute; background: var(--loop); border-radius: 4px; pointer-events: none; }
 .mark { position: absolute; background: var(--mark); border-left: 2px solid var(--mark-edge); border-radius: 3px; pointer-events: none; }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */

@@ -26,7 +26,6 @@
       <option value="along">Play along</option>
       <option value="ladder">Ladder</option>
       <option value="rhythm">Rhythm</option>
-      <option value="memorise">Memorise</option>
     </select>
     <button id="q-loop" type="button" class="btn" aria-pressed="false">Loop</button>
     <button id="open-tempo" type="button" class="btn" aria-haspopup="dialog" aria-label="Tempo">♩ <span id="q-bpm"></span></button>
@@ -52,15 +51,44 @@
     </span>
     <button id="marks-done" type="button" class="btn">Done</button>
   </div>
-  <!-- Memorise: what chunk, and one tap to hear a bar, peek, restart from a bar, or change chunk. -->
-  <div id="memo-bar" class="bar memo-bar" hidden>
-    <span id="memo-label" class="memo-label"></span>
-    <button id="memo-hear" type="button" class="btn">Hear</button>
-    <button id="memo-peek" type="button" class="btn">Peek</button>
-    <select id="memo-from" aria-label="Start again from bar"></select>
-    <button id="memo-prev" type="button" class="btn" aria-label="Previous chunk">◀</button>
-    <button id="memo-next" type="button" class="btn" aria-label="Next chunk">▶▶</button>
-    <button id="memo-stay" type="button" class="btn" hidden>Stay</button>
+  <!-- The Memorise screen (memorise.ts): its own header and panel over the score's drawing of the music.
+       Sideways, what it says moves into the header and the panel is one row of buttons. -->
+  <div id="memo-head" class="memo-head" hidden>
+    <span class="memo-title">Memorise · <b id="memo-piece"></b></span>
+    <span id="memo-head-info" class="memo-head-info"></span>
+    <button id="memo-settings" type="button" class="btn" aria-haspopup="dialog">Settings</button>
+    <button id="memo-done" type="button" class="btn">Done</button>
+  </div>
+  <div id="memo-panel" class="memo-panel" hidden>
+    <div id="memo-info" class="memo-info">
+      <div class="memo-prog">
+        <button id="memo-chunk-prev" type="button" class="btn mini" aria-label="Previous chunk">‹</button>
+        <span id="memo-label"></span>
+        <button id="memo-chunk-next" type="button" class="btn mini" aria-label="Next chunk">›</button>
+        <span id="memo-dots" class="memo-dots" aria-hidden="true"></span>
+        <span id="memo-clean" class="memo-clean"></span>
+      </div>
+      <p id="memo-say" class="memo-say" aria-live="polite"></p>
+      <p id="memo-sub" class="memo-sub"></p>
+    </div>
+    <div id="memo-choices" class="memo-choices" hidden>
+      <button id="memo-join-previous" type="button" class="btn main"></button>
+      <button id="memo-join-all" type="button" class="btn"></button>
+      <button id="memo-join-next" type="button" class="btn"></button>
+      <label><input id="memo-always" type="checkbox"> Always do this</label>
+    </div>
+    <button id="memo-next-chunk" type="button" class="btn main" hidden>Next chunk</button>
+    <div id="memo-ctl" class="memo-ctl">
+      <button id="memo-go" type="button" class="btn main">▶ Start</button>
+      <button id="memo-hear" type="button" class="btn">Hear</button>
+      <button id="memo-peek" type="button" class="btn">Peek</button>
+      <span class="memo-sp"></span>
+      <span id="memo-pick" class="memo-pick">
+        <button id="memo-from-prev" type="button" class="btn" aria-label="Start a bar earlier">◀</button>
+        <span id="memo-from"></span>
+        <button id="memo-from-next" type="button" class="btn" aria-label="Start a bar later">▶</button>
+      </span>
+    </div>
   </div>
   <!-- Under the music: keyboard, note names, both or nothing; the bottom bar covers it while showing. -->
   <div id="under" class="under" hidden>
@@ -161,6 +189,17 @@
   <dialog id="memo-dialog" aria-labelledby="memo-title">
     <form method="dialog">
       <h2 id="memo-title">Memorise settings</h2>
+      <fieldset class="row"><legend>Hands you play</legend>
+        <label><input type="radio" name="m-hands" value="left"> Left</label>
+        <label><input type="radio" name="m-hands" value="right"> Right</label>
+        <label><input type="radio" name="m-hands" value="both"> Both</label>
+      </fieldset>
+      <div class="row"><span>Tempo</span><button id="m-slower" type="button" class="btn">−5</button><output id="m-bpm"></output><button id="m-faster" type="button" class="btn">+5</button></div>
+      <div class="row"><span>Size</span><button id="m-smaller" type="button" class="btn">A−</button><output id="m-size"></output><button id="m-larger" type="button" class="btn">A+</button></div>
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="m-under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="m-under" value="nothing"> Nothing</label>
+      </fieldset>
       <fieldset class="row"><legend>Chunk size</legend>
         <label><input type="radio" name="m-chunk" value="2"> 2 bars</label>
         <label><input type="radio" name="m-chunk" value="4"> 4 bars</label>
@@ -176,7 +215,7 @@
         <label><input type="radio" name="m-learnedAfter" value="3"> 3</label>
       </fieldset>
       <fieldset class="row"><legend>A clean pass needs</legend>
-        <label><input type="radio" name="m-timing" value="no"> The right notes in order</label>
+        <label><input type="radio" name="m-timing" value="no"> The right notes (it waits for you)</label>
         <label><input type="radio" name="m-timing" value="yes"> The right notes, in time</label>
       </fieldset>
       <fieldset class="row"><legend>After a slip, start again from</legend>
@@ -188,11 +227,17 @@
         <label><input type="radio" name="m-before" value="all"> Everything you are learning</label>
         <label><input type="radio" name="m-before" value="nothing"> Nothing</label>
       </fieldset>
+      <fieldset class="row"><legend>A learned chunk</legend>
+        <label><input type="radio" name="m-join" value="ask"> Ask</label>
+        <label><input type="radio" name="m-join" value="previous"> Join it with the chunk before</label>
+        <label><input type="radio" name="m-join" value="all"> Everything so far</label>
+        <label><input type="radio" name="m-join" value="none"> Straight on</label>
+      </fieldset>
       <fieldset class="row"><legend>Next chunk</legend>
         <label><input type="radio" name="m-next" value="auto"> By itself</label>
         <label><input type="radio" name="m-next" value="tap"> When I tap</label>
       </fieldset>
-      <p class="note">Which hands you play is the bottom bar's L | R | Both. The look (size, layout) is Display's, kept separately for Memorise.</p>
+      <p class="note">Your place is kept for each piece and each choice of hands. Size, keyboard and tempo here are Memorise's own.</p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -217,7 +262,7 @@
     <form method="dialog">
       <h2 id="more-title">More</h2>
       <div class="menu">
-        <button id="open-memo-options" type="button" hidden>Memorise settings…</button>
+        <button id="open-memorise" type="button">Memorise this piece</button>
         <button id="open-freeplay" type="button">Free play</button>
         <button id="open-simon" type="button">Simon</button>
         <button id="open-metronome" type="button">Metronome…</button>
@@ -354,7 +399,7 @@
         <label><input id="s-tempoMarks" type="checkbox"> Tempo marks</label>
         <label><input id="s-fingering" type="checkbox"> Fingering</label>
         <label><input id="s-lyrics" type="checkbox"> Lyrics</label>
-        <label id="s-musicWhilePlaying-row"><input id="s-musicWhilePlaying" type="checkbox"> Music while playing</label>
+        <label><input id="s-musicWhilePlaying" type="checkbox"> Music while playing</label>
       </fieldset>
 
       <div class="actions">

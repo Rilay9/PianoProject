@@ -562,6 +562,9 @@ export class FollowView {
   }
 
   setMarker(marker: Marker, follows: MarkerFollows): void { this.marker = marker; this.markerFollows = follows; this.update(); }
+  /** Memorise shows the marker only while it plays the bars to you (it works by bar, not by note). */
+  private markerShown = true;
+  showMarker(on: boolean): void { if (on !== this.markerShown) { this.markerShown = on; this.update(); } }
 
   /**
    * The marker, as chosen (owner, 2026-10-11): split = one per staff (hand), on the note that staff is sounding
@@ -572,6 +575,7 @@ export class FollowView {
     this.host.querySelectorAll('.mark').forEach((m) => m.remove());
     for (const el of this.colored) { el.style.removeProperty('fill'); el.style.removeProperty('stroke'); }
     this.colored = [];
+    if (!this.markerShown) return;
     const held = s.held.flatMap((j, staff) => (j === undefined ? [] : [{ from: this.steps[j], st: this.steps[j].pos.staves.find((x) => x.staff === staff)! }]));
     let bars: { from: Step; left: number; right: number; top: number; height: number }[];
     let lit: { from: Step; ids: string[] }[];
@@ -672,10 +676,34 @@ export class FollowView {
 
   /** Covers these steps' bars completely, barline to barline and top to bottom, so nothing of them shows. */
   setHidden(ranges: { a: number; b: number }[]): void { this.hidden = ranges; this.update(); }
+  /**
+   * Fades every bar outside bars a..b (file order; Memorise: the chunk), so the eye stays on it; null: none.
+   * By bar, not by step, so a repeat coming back round never fades the bars kept.
+   */
+  setFaded(keep: { a: number; b: number } | null): void { this.keep = keep; this.update(); }
+  private keep: { a: number; b: number } | null = null;
 
   private drawHidden(): void {
-    this.host.querySelectorAll('.hide-zone').forEach((z) => z.remove());
-    for (const { a, b } of this.hidden) {
+    this.host.querySelectorAll('.hide-zone, .fade-zone').forEach((z) => z.remove());
+    if (this.keep) {
+      const { a, b } = this.keep, done = new Set<string>();
+      this.steps.forEach((s) => {
+        if (s.m >= a && s.m <= b) return;
+        const key = `${s.occ}:${s.m}`;
+        if (done.has(key)) return;
+        done.add(key);
+        const at = this.place(s);
+        if (!at) return;
+        const p = s.pos, z = document.createElement('div');
+        z.className = 'fade-zone';
+        z.style.left = `${(p.barLeft ?? p.left) + 1}px`;
+        z.style.width = `${(p.barRight ?? p.right) - (p.barLeft ?? p.left) - 2}px`;
+        z.style.top = `${(p.barTop ?? p.top) - 8 - at.top}px`;
+        z.style.height = `${(p.barBottom ?? p.top + p.height) - (p.barTop ?? p.top) + 16}px`;
+        at.holder.append(z);
+      });
+    }
+    for (const { a, b, cls } of this.hidden.map((r) => ({ ...r, cls: 'hide-zone' }))) {
       // One cover per line of music the bars are on (a bar's steps share its line).
       const bands = new Map<string, { from: Step; left: number; right: number; top: number; bottom: number; bars: Set<number> }>();
       for (let i = a; i <= b; i++) {
@@ -692,12 +720,12 @@ export class FollowView {
         const at = this.place(band.from);
         if (!at) continue;
         const z = document.createElement('div');
-        z.className = 'hide-zone';
+        z.className = cls;
         z.style.left = `${band.left + 1}px`; // just inside the barlines, which stay as landmarks
         z.style.width = `${band.right - band.left - 2}px`;
         z.style.top = `${band.top - 8 - at.top}px`;
         z.style.height = `${band.bottom - band.top + 16}px`;
-        z.textContent = [...band.bars].join(' ');
+        if (cls === 'hide-zone') z.textContent = [...band.bars].join(' ');
         at.holder.append(z);
       }
     }
@@ -762,6 +790,8 @@ export class FollowView {
     this.update();
   }
 
+  /** How tall the drawn music is at its size (the one line, or the tallest chunk), for fitting it to the room. */
+  get drawnHeight(): number { return this.scroller ? this.stripH : Math.max(0, ...this.chunks.map((c) => c.h)); }
   /** The step whose notes are under a tap at screen point (x, y), or -1. */
   hit(x: number, y: number): number {
     let best = -1, bestDist = Infinity;
@@ -786,6 +816,30 @@ export class FollowView {
       this.steps.forEach((_, i) => consider(i, x - r.left, y - r.top, 1));
     }
     return best;
+  }
+
+  /** The bar (file order) under a tap at screen point (x, y), anywhere between its barlines and staves, or -1. */
+  hitBar(x: number, y: number): number {
+    const inside = (i: number, px: number, py: number) => {
+      const p = this.steps[i].pos;
+      return px >= (p.barLeft ?? p.left) && px <= (p.barRight ?? p.right) && py >= (p.barTop ?? p.top) - 8 && py <= (p.barBottom ?? p.top + p.height) + 8;
+    };
+    let found = -1;
+    if (this.slots.length) {
+      for (const slot of this.slots) {
+        const r = slot.el.getBoundingClientRect();
+        if (slot.o < 0 || y < r.top || y > r.bottom) continue;
+        const ch = this.chunks[this.occ[slot.o]];
+        const pr = slot.piece.getBoundingClientRect();
+        const scale = pr.width / ch.w;
+        const px = (x - pr.left) / scale, py = (y - pr.top) / scale + ch.top;
+        this.steps.forEach((s, i) => { if (found < 0 && s.occ === slot.o && inside(i, px, py)) found = s.m; });
+      }
+    } else if (this.scroller) {
+      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
+      this.steps.forEach((s, i) => { if (found < 0 && inside(i, x - r.left, y - r.top)) found = s.m; });
+    }
+    return found;
   }
 
   /** Marks: the note nearest a tap at screen point (x, y) within reach: its bar, beat and key, or null. */

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drills mockups</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --line: #b8bcc4;
+    --accent: #2563eb; --right: #2563eb; --ok: #16a34a; --bad: #dc2626; --btn: #f3f4f6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .intro { max-width: 900px; color: var(--muted); margin: 0 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  figure { margin: 0; width: 300px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  figcaption b { color: var(--fg); }
+  .phone { width: 300px; height: 600px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; }
+  .top { background: var(--bar); padding: 10px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+  .top .t { flex: 1; font-weight: 600; font-size: 14px; }
+  .top .x { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 2px 8px; font-size: 13px; }
+  .score { padding: 6px 12px; display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); border-bottom: 1px solid #eceef1; }
+  .score b { color: var(--fg); }
+  .prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 8px 12px; text-align: center; }
+  .name { font-size: 34px; font-weight: 700; }
+  .name.small { font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .chain { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .chip { min-width: 26px; height: 26px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; font-size: 12px; background: #e5e7eb; color: var(--muted); }
+  .chip.done { background: #dcfce7; color: #166534; }
+  .chip.now { background: var(--accent); color: #fff; }
+  .chip.miss { background: #fee2e2; color: #991b1b; }
+  .status { font-weight: 600; }
+  .status.ok { color: var(--ok); } .status.bad { color: var(--bad); }
+  .tools { display: flex; gap: 6px; padding: 6px 10px; justify-content: center; flex-wrap: wrap; }
+  .tools span { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 9px; font-size: 12px; }
+  .kb { position: relative; height: 120px; display: flex; padding: 0 4px 6px; }
+  .w { flex: 1; border: 1px solid #c7cad1; border-top: none; border-radius: 0 0 4px 4px; background: #fbfbfc; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 8px; color: #9ca3af; padding-bottom: 2px; }
+  .b { position: absolute; top: 0; width: 5.2%; height: 62%; background: #23262c; border-radius: 0 0 3px 3px; z-index: 2; }
+  .lit { background: var(--right) !important; }
+  .press { background: #fb923c !important; }
+  .wrong { background: var(--bad) !important; }
+  .want { box-shadow: inset 0 0 0 3px var(--ok); }
+  .sheet { background: #fff; border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 12px; box-shadow: 0 -6px 20px rgba(0,0,0,.08); }
+  .sheet h3 { margin: 0 0 8px; font-size: 15px; }
+  .opt { font-size: 12px; color: var(--muted); margin: 8px 0 4px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg span { border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; font-size: 12px; background: var(--btn); }
+  .seg span.on { background: #dbe7ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  svg.staff { width: 220px; height: 110px; }
+  .note { max-width: 900px; margin-top: 18px; color: var(--muted); font-size: 13px; }
+</style>
+<style>
+  .staffbox { width: 100%; display: flex; justify-content: center; }
+  svg.card { width: 260px; height: 120px; }
+  .beats { display: flex; gap: 8px; justify-content: center; }
+  .beats i { width: 12px; height: 12px; border-radius: 6px; background: #e5e7eb; display: inline-block; }
+  .beats i.on { background: var(--accent); }
+  .btns { display: flex; gap: 8px; justify-content: center; }
+  .btns span { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 5px 14px; font-size: 13px; }
+  .btns span.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .list { width: 100%; text-align: left; font-size: 13px; }
+  .list div { display: flex; justify-content: space-between; padding: 5px 4px; border-bottom: 1px solid #eceef1; }
+  .amber { color: #b45309; } .green { color: #15803d; }
+  .legend { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Drills: flashcards on the exercise screen (mockups)</h1>
+<p class="intro">Drills share Simon's screen, but each card is a whole short thing to play (a few bars to sight-read, a name, something to play back by ear) instead of one link in a growing chain, and nothing is from memory. Timing counts as well as notes, with an optional metronome and count-in. Pictures only; nothing is built, and the music and numbers on them are placeholders.</p>
+<div class="row">
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Sight-reading in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>3</b> of 10</span><span><b>2</b> clean</span><span>Music only</span></div>
+      <div class="prompt"><div class="staffbox"><svg class="card" viewBox="0 0 260 120" aria-label="two bars on a treble staff"><g stroke="#111827" stroke-width="1"><line x1="4" y1="30" x2="256" y2="30"/><line x1="4" y1="40" x2="256" y2="40"/><line x1="4" y1="50" x2="256" y2="50"/><line x1="4" y1="60" x2="256" y2="60"/><line x1="4" y1="70" x2="256" y2="70"/><line x1="166" y1="30" x2="166" y2="70"/><line x1="254" y1="30" x2="254" y2="70" stroke-width="2"/></g><text x="6" y="68" font-size="46" font-family="serif">&#x1D11E;</text><text x="36" y="49" font-size="20" font-weight="700" font-family="serif">4</text><text x="36" y="69" font-size="20" font-weight="700" font-family="serif">4</text><line x1="52" y1="80" x2="72" y2="80" stroke="#111827"/><ellipse cx="62" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="67.5" y1="80" x2="67.5" y2="50" stroke="#111827" stroke-width="1.2"/><ellipse cx="90" cy="75" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="95.5" y1="75" x2="95.5" y2="45" stroke="#111827" stroke-width="1.2"/><ellipse cx="118" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="123.5" y1="70" x2="123.5" y2="40" stroke="#111827" stroke-width="1.2"/><ellipse cx="146" cy="65" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="151.5" y1="65" x2="151.5" y2="35" stroke="#111827" stroke-width="1.2"/><ellipse cx="182" cy="60" rx="6" ry="4.5" fill="none" stroke="#111827" stroke-width="1.5"/><line x1="187.5" y1="60" x2="187.5" y2="30" stroke="#111827" stroke-width="1.2"/><ellipse cx="214" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="219.5" y1="70" x2="219.5" y2="40" stroke="#111827" stroke-width="1.2"/><line x1="228" y1="80" x2="248" y2="80" stroke="#111827"/><ellipse cx="238" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="243.5" y1="80" x2="243.5" y2="50" stroke="#111827" stroke-width="1.2"/></svg></div><div class="beats"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div><div class="status">Count-in&hellip; 3</div><div class="sub">One bar of clicks, then play it in time</div></div>
+      <div class="tools"><span>A&minus;</span><span>70%</span><span>A+</span><span>Hear it</span><span>&#9833; 80</span></div>
+      <div class="kb" id="kb1"></div>
+    </div><figcaption><b>1. A card arrives.</b> The whole card is on screen at once: here two bars to sight-read (help rung 3, music only). One bar of count-in clicks, then you play it in time. The music fills the room as in Simon (A&minus;/A+).</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Sight-reading in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>3</b> of 10</span><span><b>2</b> clean</span><span>Music only</span></div>
+      <div class="prompt"><div class="staffbox"><svg class="card" viewBox="0 0 260 120" aria-label="two bars on a treble staff"><g stroke="#111827" stroke-width="1"><line x1="4" y1="30" x2="256" y2="30"/><line x1="4" y1="40" x2="256" y2="40"/><line x1="4" y1="50" x2="256" y2="50"/><line x1="4" y1="60" x2="256" y2="60"/><line x1="4" y1="70" x2="256" y2="70"/><line x1="166" y1="30" x2="166" y2="70"/><line x1="254" y1="30" x2="254" y2="70" stroke-width="2"/></g><text x="6" y="68" font-size="46" font-family="serif">&#x1D11E;</text><text x="36" y="49" font-size="20" font-weight="700" font-family="serif">4</text><text x="36" y="69" font-size="20" font-weight="700" font-family="serif">4</text><rect x="173" y="22" width="18" height="66" fill="#2563eb" opacity=".15" rx="3"/><line x1="52" y1="80" x2="72" y2="80" stroke="#111827"/><ellipse cx="62" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="67.5" y1="80" x2="67.5" y2="50" stroke="#111827" stroke-width="1.2"/><ellipse cx="90" cy="75" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="95.5" y1="75" x2="95.5" y2="45" stroke="#111827" stroke-width="1.2"/><ellipse cx="118" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="123.5" y1="70" x2="123.5" y2="40" stroke="#111827" stroke-width="1.2"/><ellipse cx="146" cy="65" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="151.5" y1="65" x2="151.5" y2="35" stroke="#111827" stroke-width="1.2"/><ellipse cx="182" cy="60" rx="6" ry="4.5" fill="none" stroke="#111827" stroke-width="1.5"/><line x1="187.5" y1="60" x2="187.5" y2="30" stroke="#111827" stroke-width="1.2"/><ellipse cx="214" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="219.5" y1="70" x2="219.5" y2="40" stroke="#111827" stroke-width="1.2"/><line x1="228" y1="80" x2="248" y2="80" stroke="#111827"/><ellipse cx="238" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="243.5" y1="80" x2="243.5" y2="50" stroke="#111827" stroke-width="1.2"/></svg></div><div class="beats"><i class="on"></i><i></i><i></i><i></i></div><div class="status">Playing&hellip;</div><div class="sub">Metronome on (optional)</div></div>
+      <div class="tools"><span>A&minus;</span><span>70%</span><span>A+</span><span>Hear it</span><span>&#9833; 80</span></div>
+      <div class="kb" id="kb2"></div>
+    </div><figcaption><b>2. Playing.</b> A marker moves through the card at the tempo, as on the score; the clicks carry on if the metronome is on. Nothing is judged while you play: the result comes at the end of the card.</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Sight-reading in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>3</b> of 10</span><span><b>2</b> clean</span><span>Music only</span></div>
+      <div class="prompt"><div class="staffbox"><svg class="card" viewBox="0 0 260 120" aria-label="two bars on a treble staff"><g stroke="#111827" stroke-width="1"><line x1="4" y1="30" x2="256" y2="30"/><line x1="4" y1="40" x2="256" y2="40"/><line x1="4" y1="50" x2="256" y2="50"/><line x1="4" y1="60" x2="256" y2="60"/><line x1="4" y1="70" x2="256" y2="70"/><line x1="166" y1="30" x2="166" y2="70"/><line x1="254" y1="30" x2="254" y2="70" stroke-width="2"/></g><text x="6" y="68" font-size="46" font-family="serif">&#x1D11E;</text><text x="36" y="49" font-size="20" font-weight="700" font-family="serif">4</text><text x="36" y="69" font-size="20" font-weight="700" font-family="serif">4</text><line x1="52" y1="80" x2="72" y2="80" stroke="#111827"/><ellipse cx="62" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="67.5" y1="80" x2="67.5" y2="50" stroke="#111827" stroke-width="1.2"/><ellipse cx="90" cy="75" rx="6" ry="4.5" fill="#d97706" stroke="#d97706" stroke-width="1.5"/><line x1="95.5" y1="75" x2="95.5" y2="45" stroke="#d97706" stroke-width="1.2"/><ellipse cx="118" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="123.5" y1="70" x2="123.5" y2="40" stroke="#111827" stroke-width="1.2"/><ellipse cx="146" cy="65" rx="6" ry="4.5" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/><line x1="151.5" y1="65" x2="151.5" y2="35" stroke="#16a34a" stroke-width="1.2"/><ellipse cx="182" cy="60" rx="6" ry="4.5" fill="none" stroke="#111827" stroke-width="1.5"/><line x1="187.5" y1="60" x2="187.5" y2="30" stroke="#111827" stroke-width="1.2"/><ellipse cx="214" cy="70" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="219.5" y1="70" x2="219.5" y2="40" stroke="#111827" stroke-width="1.2"/><line x1="228" y1="80" x2="248" y2="80" stroke="#111827"/><ellipse cx="238" cy="80" rx="6" ry="4.5" fill="#111827" stroke="#111827" stroke-width="1.5"/><line x1="243.5" y1="80" x2="243.5" y2="50" stroke="#111827" stroke-width="1.2"/></svg></div><div class="status bad">5 of 7 on time</div><div class="sub"><span class="amber">D late</span> &middot; <span class="green">F missed</span></div><div class="btns"><span>Again</span><span class="main">Next &#9656;</span></div><div class="legend">Next comes by itself in 3 s (option)</div></div>
+      <div class="tools"><span>A&minus;</span><span>70%</span><span>A+</span><span>Hear it</span><span>&#9833; 80</span></div>
+      <div class="kb" id="kb3"></div>
+    </div><figcaption><b>3. The card's result.</b> Marked on the card the way Memorise does it: missed notes green (what you should have played), early or late amber, wrong keys red on the keyboard. Again repeats the card; Next (or by itself) moves on.</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Scales</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>5</b> of 10</span><span><b>4</b> clean</span><span>Name only</span></div>
+      <div class="prompt"><div class="name small">D major scale</div><div class="sub">Right hand &middot; one octave up and down</div><div class="beats"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="status">Your turn</div><div class="sub">Quavers at &#9833; 80, with the clicks</div></div>
+      <div class="tools"><span>Show me</span><span>Hear it</span><span>&#9833; 80</span></div>
+      <div class="kb" id="kb4"></div>
+    </div><figcaption><b>4. A name card (rung 4).</b> No music, only what to play. Cards come from the same numbered set files as Simon. A card with no written rhythm (a name, a chord) is judged either on the notes only or in steady beats with the clicks (a question below).</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Melodies by ear</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>2</b> of 10</span><span><b>1</b> clean</span><span>By ear</span></div>
+      <div class="prompt"><div class="name small">&#128266;</div><div class="status">Listen&hellip;</div><div class="sub">Then play it back. Your first note sets the start; the rhythm is judged from there.</div></div>
+      <div class="tools"><span>Hear again</span><span>&#9833; 80</span></div>
+      <div class="kb" id="kb5"></div>
+    </div><figcaption><b>5. By ear (rung 5).</b> The card is played to you, then you play it back. Its timing is judged from your first note at the card's tempo, so no count-in is needed.</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Sight-reading in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Set done</span><span><b>7</b> of 10 clean</span><span>4:12</span></div>
+      <div class="prompt"><div class="list"><div><span>1</span><span>&#10003; clean</span></div><div><span>2</span><span>&#10003; clean</span></div><div><span>3</span><span class="amber">5 of 7 &middot; 1 late, 1 missed</span></div><div><span>4</span><span>&#10003; clean</span></div><div><span>5</span><span class="amber">6 of 8 &middot; 2 early</span></div><div><span>6&ndash;10</span><span>&#10003; 4 clean, 1 with help</span></div></div><div class="btns"><span>The 3 misses again</span><span class="main">New set</span></div></div>
+      <div class="tools"></div>
+      <div class="kb" id="kb6"></div>
+    </div><figcaption><b>6. The set's result.</b> Each card with how it went (help used is said); one tap to redo just the cards that were not clean, or a fresh set. Kept per set, like Simon's best.</figcaption></figure>
+<figure><div class="phone">
+      <div class="top"><span class="t">Drill &middot; Sight-reading in C</span><span class="x">Level</span><span class="x">Done</span></div>
+      <div class="score"><span>Card <b>0</b> of 10</span><span></span><span></span></div>
+      <div class="prompt" style="opacity:.35"><div class="name small">Ready</div></div>
+      <div class="sheet">
+        <h3>Drill settings</h3>
+        <div class="opt">Help (most to least)</div>
+        <div class="seg"><span>1 Music + sound + keys</span><span>2 Music + sound</span><span class="on">3 Music</span><span>4 Name only</span><span>5 By ear</span></div>
+        <div class="opt">Start each card</div>
+        <div class="seg"><span class="on">After a bar of clicks</span><span>On your first note</span></div>
+        <div class="opt">Metronome while playing</div>
+        <div class="seg"><span class="on">On</span><span>Off</span></div>
+        <div class="opt">On time</div>
+        <div class="seg"><span>Relaxed</span><span class="on">Normal</span><span>Strict</span><span>Notes only</span></div>
+        <div class="opt">Next card</div>
+        <div class="seg"><span class="on">By itself</span><span>When I tap</span></div>
+        <div class="opt">Cards per set</div>
+        <div class="seg"><span class="on">10</span><span>20</span><span>Endless</span></div>
+      </div>
+    </div><figcaption><b>7. Drill settings (behind Level).</b> Only what drills use: the help ladder, how a card starts, the metronome, how strict timing is, how cards follow, and the set length (the values are placeholders). Tempo, click sound and volume sit behind &#9833; 80, the same Tempo panel as the score. Size and the keyboard work as in Simon.</figcaption></figure>
+</div>
+<p class="note">Content: card sets in the same numbered set files as Simon (web/public/content/sets), each card one item that keeps its rhythm from MusicXML; fresh generated cards (new sight-reading bars each time) plug in later as another source of items.</p>
+<script>
+  // Two octaves from C3 on the mockup keyboards; light, press, wrong and wanted keys per picture.
+  const WHITE = [0, 2, 4, 5, 7, 9, 11];
+  function keyboard(id, { lit = [], press = [], wrong = [], want = [] } = {}) {
+    const el = document.getElementById(id), from = 48, to = 72;
+    const whites = []; for (let m = from; m <= to; m++) if (WHITE.includes(m % 12)) whites.push(m);
+    const cls = (m) => [lit.includes(m) && 'lit', press.includes(m) && 'press', wrong.includes(m) && 'wrong', want.includes(m) && 'want'].filter(Boolean).join(' ');
+    whites.forEach((m) => { const k = document.createElement('div'); k.className = `w ${cls(m)}`; if (m % 12 === 0) k.textContent = `C${m / 12 - 1}`; el.append(k); });
+    for (let m = from; m <= to; m++) if (!WHITE.includes(m % 12)) {
+      const before = whites.filter((w) => w < m).length;
+      const k = document.createElement('div'); k.className = `b ${cls(m)}`;
+      k.style.left = `calc(${(before / whites.length) * 100}% - 2.6% + 4px)`; el.append(k);
+    }
+  }
+  keyboard('kb1', {});
+  keyboard('kb2', { press: [67] });
+  keyboard('kb3', { want: [65] });
+  keyboard('kb4', { press: [62] });
+  keyboard('kb5', {});
+  keyboard('kb6', {});
+</script>
+</body>
+</html>

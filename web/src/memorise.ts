@@ -1,20 +1,24 @@
-// Memorise (owner, 2026-10-12): learning a piece by heart on the score, in chunks of bars, with the app doing the
-// hiding, checking, replaying, looping and moving on so you just play and take in the corrections.
-//  1. Hear it: the app plays the new bar (or the chunk so far), shown on the score.
-//  2. Your turn: the bars you are learning are covered; you start when ready (your first note starts it at the
-//     tempo; ▶ gives a bar of count-in) and play on in time to the end of what you are learning.
-//  3. At the end of the pass: clean (the right notes in order, and in time if chosen) counts towards "learned";
-//     slips are shown on the uncovered bars (notes you missed green, early or late amber), the bar of the first
-//     slip is played, and the next pass starts there (or at the start, as chosen).
-//  4. Learned: the next bar is added (or the whole chunk at once); a learned chunk is followed by one pass of
-//     everything so far, then the next chunk, by itself or when you tap.
-// Its own settings (chunk size and the rest) live here; its look is Display's, kept apart for Memorise (settings.ts).
+// Memorise (owner, 2026-10-12): its own screen for learning a piece by heart, in chunks of bars, with the app
+// doing the hiding, checking, replaying and moving on so you just play and take in the corrections. It borrows
+// the score's drawing of the music (laid out to fit what you are memorising: main.ts) and nothing else of the
+// score screen.
+//  1. Hear it: the app plays the new bar (or what you are learning) with the marker.
+//  2. Your turn: those bars are covered; your first note starts the pass. When timing does not count it waits
+//     for each note (no clock); with timing on it runs at the tempo. It always finishes: a wrong key is noted
+//     and you carry on; stuck, hold Peek, or after a few seconds the next note lights on the keys (either counts
+//     as a slip).
+//  3. Clean passes count towards "learned"; after slips the bars uncover with what went wrong marked, and stay
+//     so until you play again (from the bar of the first slip, or the start, as chosen).
+//  4. Learned: the next bar is added (or the whole chunk at once); a learned chunk asks how to join it up (with
+//     the chunk before, everything so far, or straight on), then the next chunk, by itself or when you tap.
+// Your place (chunk, bars learned, clean passes) is kept per piece and per hand choice.
 
 import type { FollowView } from './follow';
 import type { Practice } from './practice';
-import type { ScoreSettings } from './settings';
+import type { Device, ScoreSettings } from './settings';
 import type { Sound } from './sound';
 
+export type MemoHands = 'both' | 'right' | 'left';
 export interface MemoriseOptions {
   /** Bars per chunk. */
   chunk: number;
@@ -28,152 +32,302 @@ export interface MemoriseOptions {
   before: 'new' | 'all' | 'nothing';
   /** On to the next chunk by itself, or when you tap. */
   next: 'auto' | 'tap';
-  /** Whether a clean pass must also be in time (owner: optional). */
+  /** Whether a clean pass must also be in time (owner: optional); without, the pass waits for you. */
   timing: boolean;
+  /** A learned chunk: ask, or always join it with the chunk before, with everything so far, or go straight on. */
+  join: 'ask' | 'previous' | 'all' | 'none';
 }
-export const MEMORISE_DEFAULTS: MemoriseOptions = { chunk: 4, adds: 'bar', learnedAfter: 2, carryFrom: 'bar', before: 'new', next: 'auto', timing: false };
+export const MEMORISE_DEFAULTS: MemoriseOptions = { chunk: 4, adds: 'bar', learnedAfter: 2, carryFrom: 'bar', before: 'new', next: 'auto', timing: false, join: 'ask' };
+
+/** How the music looks in Memorise, per kind of screen: its size as a share of the biggest, and the keys under it. */
+export interface MemoLook { size: number; under: 'keyboard' | 'nothing' }
+const LOOK_DEFAULTS: Record<Device, MemoLook> = {
+  'phone-upright': { size: 1, under: 'keyboard' },
+  'phone-sideways': { size: 1, under: 'nothing' }, // you play on your piano; the music gets the height (owner)
+  tablet: { size: 1, under: 'keyboard' },
+};
+
+interface Place { chunk: number; learned: number; passes: number }
+interface Stored {
+  options: MemoriseOptions;
+  /** Keyed "piece|hands"; an older store kept just the chunk, by piece. */
+  progress: Record<string, Place | number>;
+  look: Partial<Record<Device, Partial<MemoLook>>>;
+  /** Per piece: the tempo (share of the song's own) and the hands, kept apart from the score's. */
+  pieces: Record<string, { speed?: number; hands?: MemoHands }>;
+}
 const KEY = 'piano-web.memorise.v1';
-interface Stored { options: MemoriseOptions; progress: Record<string, number> } // progress: the chunk each piece is on
 
-const REVIEW_MS = 2200; // slips on show before the bar is played
 const PAUSE_MS = 900; // after a clean pass, before the next
-const NEXT_MS = 3000; // "on to the next chunk in 3…"
+const NEXT_MS = 3000; // "on to the next chunk in a moment"
 
-type Phase = 'off' | 'hear' | 'ready' | 'turn' | 'review' | 'between';
+export type Phase = 'off' | 'hear' | 'ready' | 'turn' | 'review' | 'ask' | 'between' | 'done';
+export interface MemoMessage { text: string; sub: string; kind: '' | 'ok' | 'bad' }
 
 export interface MemoriseDeps {
   view: FollowView;
   sound: Sound;
   practice: Practice;
+  /** What Memorise plays and judges with: the score's settings with Memorise's own hands and tempo. */
   settings: () => ScoreSettings;
   pieceId: () => string;
   /** The hands the piano plays while you play yours (null: none). */
   pianoHands: (s: ScoreSettings) => 'both' | 'right' | 'left' | null;
-  /** A line for the learner: news, good or a slip. */
-  say: (text: string, kind?: 'info' | 'ok' | 'bad') => void;
-  /** Something changed that the controls show (phase, chunk). */
+  /** The first key of a waiting pass, passed on to it (it arrived before the pass began). */
+  replayKey: (midi: number) => void;
+  /** Something changed that the screen shows. */
   changed: () => void;
 }
 
 export class Memorise {
   phase: Phase = 'off';
-  private options: MemoriseOptions;
-  private progress: Record<string, number>;
-  private chunk = 0; // which chunk
-  private learned = 0; // bars of the chunk taken in so far (adds a bar at a time)
-  private passes = 0; // clean passes in a row
-  private joining = false; // the pass of everything so far after a chunk
-  private from = 0; // the bar this pass starts at
+  message: MemoMessage = { text: '', sub: '', kind: '' };
+  private stored: Stored;
+  private place: Place = { chunk: 0, learned: 1, passes: 0 };
+  private joining: 'previous' | 'all' | null = null;
+  private from = 0; // the bar your turn starts at
+  private afterHear = 0; // where your turn starts once the bars have been played
+  private carry = 0; // where the pass after a slip starts
+  private slipBar = 0;
+  private peeked = false;
+  /** The keys not asked for in the last pass (shown red on the keys while the slip is shown). */
+  wrongKeys: number[] = [];
   private timer = 0;
+  /** True while Memorise itself stops the music (so the view's stop is not taken as anything else). */
+  halting = false;
+  /**
+   * After a slip is shown, or the piece is done, keys still down (the very note that ended the pass) must not
+   * carry on at once: only a fresh press after letting go of every key does (main.ts calls released()).
+   */
+  waitRelease = false;
+  released(): void { this.waitRelease = false; }
 
   constructor(private readonly d: MemoriseDeps) {
-    const stored = this.read();
-    this.options = { ...MEMORISE_DEFAULTS, ...stored.options };
-    this.progress = stored.progress ?? {};
+    this.stored = this.read();
   }
+
+  // ---- what the screen shows ------------------------------------------------------------------------
 
   get active(): boolean { return this.phase !== 'off'; }
-  /** Bars are covered now (your turn): nothing may show them, the keys under the music included. */
+  /** Bars are covered (your turn): nothing may show them, the keys under the music included. */
   get covering(): boolean { return this.phase === 'ready' || this.phase === 'turn'; }
-  get optionsNow(): MemoriseOptions { return { ...this.options }; }
-  setOptions(o: Partial<MemoriseOptions>): void {
-    this.options = { ...this.options, ...o };
-    this.save();
-    if (this.active) { this.learned = this.options.adds === 'chunk' ? this.chunkBars().length : Math.min(this.learned, this.chunkBars().length); this.hear(); }
-  }
+  get optionsNow(): MemoriseOptions { return { ...this.stored.options }; }
+  get choosing(): boolean { return this.phase === 'ask'; }
+  /** Waiting for a tap to go on to the next chunk. */
+  get waitingForNext(): boolean { return this.phase === 'between' && this.tapNext; }
+  private tapNext = false;
 
-  /** The chunk now, as a label: "Chunk 2 of 6 · bars 5–8". */
+  private num(m: number): number { return this.d.view.barNumber(this.d.view.firstStepOfBar(m)); }
+  private bars(a: number, b: number): string { return a === b ? `bar ${this.num(a)}` : `bars ${this.num(a)}–${this.num(b)}`; }
+
   get label(): string {
-    const [a, b] = this.chunkRange(), num = (m: number) => this.d.view.barNumber(this.d.view.firstStepOfBar(m));
-    return `Chunk ${this.chunk + 1} of ${this.chunkCount()} · bars ${num(a)}–${num(b)}${this.joining ? ' · everything so far' : ''}`;
+    const [a, b] = this.chunkRange();
+    return `Chunk ${this.place.chunk + 1} of ${this.chunkCount()} · ${this.bars(a, b)}`;
+  }
+  /** One per bar of the chunk: learned, the one being learned, or still to come. */
+  get dots(): ('done' | 'now' | '')[] {
+    const n = this.chunkBars().length;
+    if (this.joining || this.phase === 'done') return Array(n).fill('done');
+    if (this.stored.options.adds === 'chunk') return Array(n).fill('now');
+    return Array.from({ length: n }, (_, i) => (i < this.place.learned - 1 ? 'done' : i === this.place.learned - 1 ? 'now' : ''));
+  }
+  get cleanText(): string {
+    const n = this.stored.options.learnedAfter;
+    return this.active && !this.joining && n > 1 && ['ready', 'turn', 'between', 'review'].includes(this.phase) ? `clean ${this.place.passes} of ${n}` : '';
+  }
+  /** The bar your turn starts at, as printed (for ◀ Bar n ▶). */
+  get fromNumber(): number { return this.num(this.from); }
+  get canPickBar(): boolean { return this.phase === 'ready' || this.phase === 'review' || this.phase === 'turn'; }
+  /** The choices after a learned chunk. */
+  get joinChoices(): { previous: string; all: string; next: string } {
+    const [, b] = this.chunkRange(), [pa] = this.chunkRange(this.place.chunk - 1);
+    const last = this.place.chunk >= this.chunkCount() - 1;
+    const [na, nb] = this.chunkRange(this.place.chunk + 1);
+    return { previous: `Join with ${this.bars(pa, pa + this.stored.options.chunk - 1)}`, all: `Everything so far (${this.bars(0, b)})`, next: last ? 'Finish here (that was the last chunk)' : `Next chunk (${this.bars(na, nb)})` };
   }
 
-  private chunkCount(): number { return Math.max(1, Math.ceil(this.d.view.barCount / this.options.chunk)); }
-  private chunkRange(c = this.chunk): [number, number] {
-    const a = c * this.options.chunk;
-    return [a, Math.min(a + this.options.chunk - 1, this.d.view.barCount - 1)];
+  // ---- its own settings --------------------------------------------------------------------------------
+
+  look(device: Device): MemoLook { return { ...LOOK_DEFAULTS[device], ...this.stored.look[device] }; }
+  setLook(device: Device, change: Partial<MemoLook>): void { this.stored.look[device] = { ...this.stored.look[device], ...change }; this.save(); }
+  speed(piece: string): number { return this.stored.pieces[piece]?.speed ?? 1; }
+  hands(piece: string): MemoHands { return this.stored.pieces[piece]?.hands ?? 'both'; }
+  setPiece(piece: string, change: { speed?: number; hands?: MemoHands }): void {
+    const handsChanged = change.hands !== undefined && change.hands !== this.hands(piece);
+    this.stored.pieces[piece] = { ...this.stored.pieces[piece], ...change };
+    this.save();
+    if (handsChanged) { this.stop(); } // each hand choice has its own place: show that one
+  }
+
+  setOptions(o: Partial<MemoriseOptions>): void {
+    const chunkChanged = o.chunk !== undefined && o.chunk !== this.stored.options.chunk;
+    this.stored.options = { ...this.stored.options, ...o };
+    if (chunkChanged) {
+      // Other chunk sizes mean other bars: the piece's chunks start afresh rather than quietly meaning new bars.
+      for (const k of Object.keys(this.stored.progress)) if (k === this.d.pieceId() || k.startsWith(`${this.d.pieceId()}|`)) delete this.stored.progress[k];
+      this.loadPlace();
+      this.save();
+      if (this.active) { this.halt(); this.joining = null; this.focus(); this.hearDefault(); } else this.preview();
+      return;
+    }
+    if (o.adds !== undefined) this.place.learned = o.adds === 'chunk' ? this.chunkBars().length : Math.min(this.place.learned, this.chunkBars().length);
+    this.savePlace();
+    this.d.changed();
+  }
+
+  // ---- chunks and scope --------------------------------------------------------------------------------
+
+  private chunkCount(): number { return Math.max(1, Math.ceil(this.d.view.barCount / this.stored.options.chunk)); }
+  private chunkRange(c = this.place.chunk): [number, number] {
+    const a = Math.max(0, c) * this.stored.options.chunk;
+    return [a, Math.min(a + this.stored.options.chunk - 1, this.d.view.barCount - 1)];
   }
   private chunkBars(): number[] { const [a, b] = this.chunkRange(); return Array.from({ length: b - a + 1 }, (_, i) => a + i); }
-  /** The bars being learned now: the chunk's bars taken in so far, or everything up to the chunk's end when joining. */
+  /** The bars being learned now. */
   private scope(): [number, number] {
     const [a, b] = this.chunkRange();
-    return this.joining ? [0, b] : [a, Math.min(b, a + Math.max(1, this.learned) - 1)];
+    if (this.joining === 'all') return [0, b];
+    if (this.joining === 'previous') return [this.chunkRange(this.place.chunk - 1)[0], b];
+    return [a, Math.min(b, a + Math.max(1, this.place.learned) - 1)];
   }
   /** Steps of bars a..b (their first time through). */
   private steps(a: number, b: number): { a: number; b: number } {
     const v = this.d.view;
     return v.loopRange(v.firstStepOfBar(a), v.firstStepOfBar(b));
   }
-
-  /** Starts (or carries on) memorising this piece at the chunk it was on. */
-  start(): void {
-    this.chunk = Math.min(this.progress[this.d.pieceId()] ?? 0, this.chunkCount() - 1);
-    this.beginChunk();
+  /** The chunk (or the bars being joined) normal, everything else faded. */
+  private focus(): void {
+    const [a, b] = this.joining ? this.scope() : this.chunkRange();
+    this.d.view.setFaded({ a, b });
   }
 
-  stop(): void {
+  private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`; }
+  private loadPlace(): void {
+    const saved = this.stored.progress[this.key()] ?? (this.hands(this.d.pieceId()) === 'both' ? this.stored.progress[this.d.pieceId()] : undefined);
+    const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved ?? { chunk: 0, learned: 1, passes: 0 };
+    this.place = { ...p, chunk: Math.min(p.chunk, this.chunkCount() - 1) };
+    this.place.learned = this.stored.options.adds === 'chunk' ? this.chunkBars().length : Math.max(1, Math.min(this.place.learned, this.chunkBars().length));
+  }
+  private savePlace(): void { this.stored.progress[this.key()] = { ...this.place }; this.save(); }
+
+  // ---- the flow ----------------------------------------------------------------------------------------
+
+  private say(text: string, sub = '', kind: MemoMessage['kind'] = ''): void { this.message = { text, sub, kind }; this.d.changed(); }
+
+  /** Before you start (and after stopping): the chunk you are on shown, no marker, nothing covered. */
+  preview(): void {
     clearTimeout(this.timer);
-    this.d.view.setHidden([]);
-    this.d.view.markNotes([]);
-    if (this.d.view.playing) this.d.view.pause();
-    this.d.sound.stop();
-    this.d.practice.stop(false);
-    this.d.practice.autoPause = true;
     this.phase = 'off';
-    this.d.changed();
+    this.joining = null;
+    this.loadPlace();
+    const v = this.d.view;
+    v.setHidden([]);
+    v.markNotes([]);
+    v.showMarker(false);
+    this.focus();
+    const [a, b] = this.chunkRange(), o = this.stored.options;
+    v.goTo(this.steps(a, a).a);
+    const sub = this.place.learned > 1 && o.adds === 'bar'
+      ? `Carrying on: ${this.bars(a, a + this.place.learned - 2)} learned`
+      : o.before === 'nothing' ? 'They hide and you play them from memory' : o.before === 'all' || o.adds === 'chunk' ? 'It plays them, then hides them for you' : `It plays ${this.bars(a, a)}, then hides it for you`;
+    this.say(`${this.bars(a, b)[0].toUpperCase()}${this.bars(a, b).slice(1)} · press ▶ or play to start`, sub);
   }
 
-  private beginChunk(): void {
-    clearTimeout(this.timer);
-    this.joining = false;
-    this.passes = 0;
-    this.learned = this.options.adds === 'chunk' ? this.chunkBars().length : 1;
-    this.progress[this.d.pieceId()] = this.chunk;
-    this.save();
-    this.hear();
+  /** ▶ (or your first key): start, or carry on where you were. */
+  start(): void {
+    if (this.active && this.phase !== 'done') return;
+    if (this.phase === 'done') {
+      this.place = { chunk: 0, learned: 1, passes: 0 };
+      if (this.stored.options.adds === 'chunk') this.place.learned = this.chunkBars().length; // the first chunk's bars
+      this.savePlace();
+    }
+    this.d.practice.autoPause = false;
+    this.focus();
+    this.hearDefault();
   }
 
-  /** 1. The app plays the new bar (or what is being learned), uncovered. */
-  hear(onlyBar?: number): void {
+  /** ■: back to before you started (your place is kept). */
+  stop(): void {
+    this.halt();
+    this.d.practice.autoPause = true;
+    this.preview();
+  }
+
+  /** Done: leaving the Memorise screen. */
+  leave(): void {
+    this.halt();
+    this.d.practice.autoPause = true;
     clearTimeout(this.timer);
-    const [a, b] = this.scope();
-    this.d.view.markNotes([]);
-    this.d.view.setHidden([]);
-    if (this.options.before === 'nothing' && onlyBar === undefined) { this.ready(a); return; }
-    const newest = onlyBar ?? (this.options.before === 'new' && !this.joining ? b : null);
-    const [h0, h1] = newest !== null ? [newest, newest] : [a, b];
+    this.phase = 'off';
+    const v = this.d.view;
+    v.setHidden([]); v.setFaded(null); v.markNotes([]); v.showMarker(true);
+  }
+
+  /** Before your turn, as chosen: the newest bar, everything being learned, or nothing. */
+  private hearDefault(): void {
+    const [a, b] = this.scope(), o = this.stored.options;
+    if (o.before === 'nothing') { this.ready(a); return; }
+    if (o.before === 'new' && !this.joining && o.adds === 'bar') this.hear(b, b, a);
+    else this.hear(a, b, a);
+  }
+
+  /** Plays bars a..b uncovered with the marker; then your turn from bar `then`. */
+  private hear(a: number, b: number, then: number): void {
+    clearTimeout(this.timer);
     this.phase = 'hear';
-    const num = (m: number) => this.d.view.barNumber(this.d.view.firstStepOfBar(m));
-    this.d.say(`Listen: ${h0 === h1 ? `bar ${num(h0)}` : `bars ${num(h0)}–${num(h1)}`}`, 'info');
-    this.run(h0, h1, false, false);
-    this.d.changed();
+    this.afterHear = then;
+    const v = this.d.view;
+    v.markNotes([]);
+    v.setHidden([]);
+    v.showMarker(true);
+    this.say(`Listen: ${this.bars(a, b)}`);
+    this.run(a, b, false, false);
   }
 
-  /** 2. Your turn: the bars covered; your first note (or ▶) starts the pass from bar `from`. */
+  /** Your turn: the bars covered; your first note (or ▶ with timing on: after a count-in) starts the pass at `from`. */
   private ready(from: number): void {
+    clearTimeout(this.timer);
     const [a, b] = this.scope();
     this.from = Math.max(a, Math.min(from, b));
-    const range = this.steps(a, b);
     this.phase = 'ready'; // first, so the keys under the music go dark as the bars are covered
-    this.d.view.setHidden([range]);
-    this.d.view.goTo(this.steps(this.from, this.from).a);
-    const num = (m: number) => this.d.view.barNumber(this.d.view.firstStepOfBar(m));
-    const what = a === b ? `bar ${num(a)}` : `bars ${num(a)}–${num(b)}`;
-    this.d.say(`Your turn: ${what} from memory${this.from > a ? ` (from bar ${num(this.from)})` : ''}. Start when ready.`, 'info');
-    this.d.changed();
+    this.peeked = false;
+    const v = this.d.view;
+    v.markNotes([]);
+    v.showMarker(false);
+    v.setHidden([this.steps(a, b)]);
+    v.goTo(this.steps(this.from, this.from).a);
+    this.say(`Your turn: ${this.bars(a, b)} from memory${this.from > a ? `, from bar ${this.num(this.from)}` : ''}`,
+      'Play when ready, or tap a bar to start there');
   }
 
-  /** The learner's first note (or ▶: with a count-in) starts the pass. */
-  begin(withCountIn: boolean, firstKey?: number): void {
+  /** The pass begins: from your first note (firstKey), or ▶. */
+  begin(firstKey?: number): void {
     if (this.phase !== 'ready') return;
     const [, b] = this.scope();
     this.phase = 'turn';
-    this.run(this.from, b, true, withCountIn);
-    if (firstKey !== undefined) this.d.practice.startedBy(firstKey);
-    this.d.changed();
+    if (this.stored.options.timing) {
+      this.run(this.from, b, true, firstKey === undefined);
+      if (firstKey !== undefined) this.d.practice.startedBy(firstKey);
+    } else {
+      const s = this.d.settings(), v = this.d.view;
+      const range = this.steps(this.from, b), span = v.spanOf(range.a, range.b);
+      this.d.sound.setVolumes(s.pianoVolume, s.clickVolume);
+      this.d.sound.setClick(s.click);
+      v.songClock = null;
+      this.d.practice.startPass({ a: range.a, b: range.b, t1: span.t1 }, range.a);
+      if (firstKey !== undefined) this.d.replayKey(firstKey);
+    }
+    this.say('From memory…', this.stored.options.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck');
   }
 
-  /** Plays bars a..b: listening (all hands from the piano) or your pass (the piano plays the other hand). */
+  /** A key while the slip is shown: your turn again from where it carries on, that key its first note. */
+  resumeWith(midi: number): void {
+    if (this.phase !== 'review') return;
+    this.ready(this.carry);
+    this.begin(midi);
+  }
+
+  /** Plays bars a..b: listening (all hands from the piano) or a timed pass (the piano plays the other hand). */
   private run(a: number, b: number, yours: boolean, countIn: boolean): void {
     const v = this.d.view, s = this.d.settings();
     const { a: sa, b: sb } = this.steps(a, b);
@@ -186,131 +340,182 @@ export class Memorise {
     this.d.sound.play(piano ? v.notesBetween(piano, span.t0, span.t1) : [], [...(countIn ? span.countIn : []), ...clicks], countIn ? span.from : span.t0, s.speed);
     v.songClock = () => this.d.sound.songTime();
     v.play(-1, span.t1);
-    if (yours) { this.d.practice.autoPause = false; this.d.practice.startAlong(); }
+    if (yours) this.d.practice.startAlong();
   }
 
-  /** The view reached the end of what was played. */
+  /** The end of what was played (the view at the end of the bars, or the waiting pass done). */
   passEnded(): void {
-    if (this.phase === 'hear') { this.ready(this.takeCarryStart() ?? this.scope()[0]); return; }
+    if (this.phase === 'hear') { this.ready(this.afterHear); return; }
     if (this.phase !== 'turn') return;
-    const r = this.d.practice.passResult();
-    this.d.practice.stop(false);
-    const slips = r.slips.filter((x) => x.kind === 'missed' || this.options.timing);
-    const extra = r.extra;
-    if (!slips.length && !extra.length) { this.clean(); return; }
-    this.review(slips, extra);
+    const p = this.d.practice;
+    const r = this.stored.options.timing ? p.passResult() : p.passSlips();
+    p.stop(false);
+    this.d.view.songClock = null;
+    const slips = r.slips.filter((x) => x.kind === 'missed' || this.stored.options.timing);
+    if (!slips.length && !r.extra.length && !this.peeked) { this.clean(); return; }
+    this.review(slips, r.extra);
   }
 
   private clean(): void {
-    this.passes++;
-    this.phase = 'between';
+    this.place.passes++;
+    this.savePlace();
     this.d.view.setHidden([]);
-    if (this.passes < this.options.learnedAfter) {
-      this.d.say(`✓ Clean (${this.passes} of ${this.options.learnedAfter})`, 'ok');
+    if (this.place.passes < this.stored.options.learnedAfter) {
+      this.phase = 'between';
+      this.tapNext = false;
+      this.say(`✓ Clean (${this.place.passes} of ${this.stored.options.learnedAfter})`, 'Again, from memory', 'ok');
       this.timer = window.setTimeout(() => this.ready(this.scope()[0]), PAUSE_MS);
-      this.d.changed();
       return;
     }
     this.advance();
   }
 
-  /** 3. Slips: shown on the uncovered music, the first slip's bar played, then again from there. */
+  /** Slips shown on the uncovered bars (missed green, early or late amber), until you play again. */
   private review(slips: { step: number; midi: number; kind: string }[], extra: { step: number; midi: number }[]): void {
-    this.passes = 0;
+    this.place.passes = 0;
+    this.savePlace();
     this.phase = 'review';
+    this.waitRelease = true;
+    this.wrongKeys = [...new Set(extra.map((x) => x.midi))];
     const v = this.d.view;
-    this.d.practice.stop(false);
     v.setHidden([]);
-    const firstStep = Math.min(...slips.map((x) => x.step), ...extra.map((x) => x.step));
-    const bar = v.barOf(firstStep), num = v.barNumber(firstStep);
-    v.goTo(firstStep); // the slip on screen (the pass may have turned past it)
+    v.showMarker(false);
+    const steps = [...slips.map((x) => x.step), ...extra.map((x) => x.step)];
+    const firstStep = steps.length ? Math.min(...steps) : this.steps(this.from, this.from).a;
+    this.slipBar = v.barOf(firstStep);
+    v.goTo(firstStep); // the slip on screen
     v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
+    this.carry = this.stored.options.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
     const missed = slips.filter((x) => x.kind === 'missed').length, timing = slips.length - missed;
-    const parts = [missed && `${missed} missed (green)`, timing && `${timing} early or late (amber)`, extra.length && `${extra.length} extra ${extra.length === 1 ? 'key' : 'keys'}`].filter(Boolean);
-    this.d.say(`Bar ${num}: ${parts.join(', ')}`, 'bad');
-    this.d.changed();
-    this.timer = window.setTimeout(() => {
-      v.markNotes([]);
-      // Play the bar of the slip; the turn after it starts there (or at the start, as chosen).
-      this.carryStart = this.options.carryFrom === 'bar' ? bar : this.scope()[0];
-      this.hear(bar);
-    }, REVIEW_MS);
+    const parts = [missed && `${missed} missed (green)`, timing && `${timing} early or late (amber)`, extra.length && `${extra.length} wrong ${extra.length === 1 ? 'key' : 'keys'}`].filter(Boolean);
+    const what = parts.length ? `Bar ${this.num(this.slipBar)}: ${parts.join(', ')}` : 'You peeked: not a clean pass';
+    this.say(what, `Play to go again from bar ${this.num(this.carry)} · Hear plays it`, 'bad');
   }
-  private carryStart: number | null = null;
 
-  /** 4. Learned: add a bar, join up, or move on. */
+  /** Learned: add a bar, join up, or move on. */
   private advance(): void {
     const [, b] = this.chunkRange();
-    const scopeEnd = this.scope()[1];
-    if (!this.joining && this.options.adds === 'bar' && scopeEnd < b) {
-      this.learned++;
-      this.passes = 0;
-      this.d.say(`✓ Learned. Adding bar ${this.d.view.barNumber(this.d.view.firstStepOfBar(scopeEnd + 1))}`, 'ok');
-      this.timer = window.setTimeout(() => this.hear(), PAUSE_MS);
-      this.d.changed();
+    const scopeEnd = this.scope()[1], o = this.stored.options;
+    if (!this.joining && o.adds === 'bar' && scopeEnd < b) {
+      this.place.learned++;
+      this.place.passes = 0;
+      this.savePlace();
+      this.phase = 'between';
+      this.tapNext = false;
+      this.say(`✓ Learned. Adding bar ${this.num(scopeEnd + 1)}`, '', 'ok');
+      this.timer = window.setTimeout(() => this.hearDefault(), PAUSE_MS);
       return;
     }
-    if (!this.joining && this.chunk > 0) {
-      this.joining = true;
-      this.passes = this.options.learnedAfter - 1; // one clean pass of everything so far is enough
-      this.d.say('✓ Chunk learned. Now everything so far, once', 'ok');
-      this.timer = window.setTimeout(() => this.ready(0), PAUSE_MS * 2);
-      this.d.changed();
+    if (this.joining) { this.chunkDone(); return; }
+    if (this.place.chunk > 0 && o.join === 'ask') {
+      this.phase = 'ask';
+      this.say('✓ Chunk learned. Now?', '', 'ok');
       return;
     }
+    if (this.place.chunk > 0 && (o.join === 'previous' || o.join === 'all')) { this.startJoin(o.join); return; }
     this.chunkDone();
   }
 
+  /** The choice after a learned chunk; always: remember it (Memorise settings can change it back). */
+  choose(choice: 'previous' | 'all' | 'next', always: boolean): void {
+    if (this.phase !== 'ask') return;
+    if (always) { this.stored.options.join = choice === 'next' ? 'none' : choice; this.save(); }
+    if (choice === 'next') this.chunkDone();
+    else this.startJoin(choice);
+  }
+
+  private startJoin(kind: 'previous' | 'all'): void {
+    this.joining = kind;
+    this.place.passes = this.stored.options.learnedAfter - 1; // one clean pass of the joined bars is enough
+    this.focus();
+    const [a, b] = this.scope();
+    this.phase = 'between';
+    this.tapNext = false;
+    this.say(`Now ${this.bars(a, b)} together, once`, '', 'ok');
+    this.timer = window.setTimeout(() => this.ready(a), PAUSE_MS * 2);
+  }
+
   private chunkDone(): void {
-    this.joining = false;
-    if (this.chunk >= this.chunkCount() - 1) {
-      this.d.say('✓ The whole piece, from memory!', 'ok');
-      this.progress[this.d.pieceId()] = 0;
+    this.joining = null;
+    this.focus();
+    if (this.place.chunk >= this.chunkCount() - 1) {
+      this.phase = 'done';
+      this.waitRelease = true;
+      // Next time it starts from the beginning (the screen still shows the last chunk). It says only what is
+      // known: chunks may have been skipped with ›, so it never claims the whole piece is memorised.
+      this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0 };
       this.save();
-      this.phase = 'between';
-      this.d.changed();
+      this.say('✓ That was the last chunk', 'Press ▶ to start again from bar 1', 'ok');
       return;
     }
+    const [a, b] = this.chunkRange(this.place.chunk + 1);
     this.phase = 'between';
-    const [a, b] = this.chunkRange(this.chunk + 1), num = (m: number) => this.d.view.barNumber(this.d.view.firstStepOfBar(m));
-    if (this.options.next === 'tap') { this.d.say(`✓ Chunk learned. Next: bars ${num(a)}–${num(b)}`, 'ok'); this.d.changed(); return; }
-    this.d.say(`✓ Chunk learned. On to bars ${num(a)}–${num(b)} in a moment…`, 'ok');
+    if (this.stored.options.next === 'tap') {
+      this.tapNext = true;
+      this.say(`✓ Chunk learned. Next: ${this.bars(a, b)}`, 'Tap Next chunk when ready', 'ok');
+      return;
+    }
+    this.tapNext = false;
+    this.say(`✓ Chunk learned. On to ${this.bars(a, b)} in a moment…`, '', 'ok');
     this.timer = window.setTimeout(() => this.nextChunk(1), NEXT_MS);
-    this.d.changed();
   }
 
-  /** Stay on this chunk (cancels moving on). */
-  stay(): void { clearTimeout(this.timer); this.joining = false; this.passes = 0; this.hear(); }
-
+  /** ‹ › (or the next chunk coming): that chunk from its start. */
   nextChunk(step: 1 | -1): void {
+    const was = this.active && this.phase !== 'done';
     this.halt();
-    this.chunk = Math.max(0, Math.min(this.chunkCount() - 1, this.chunk + step));
-    this.beginChunk();
+    this.joining = null;
+    this.place = { chunk: Math.max(0, Math.min(this.chunkCount() - 1, this.place.chunk + step)), learned: 1, passes: 0 };
+    if (this.stored.options.adds === 'chunk') this.place.learned = this.chunkBars().length;
+    this.savePlace();
+    if (!was) { this.preview(); return; }
+    this.focus();
+    this.hearDefault();
   }
 
-  /** Hear the newest bar again, then your turn from the start. */
-  hearAgain(): void { this.halt(); this.hear(this.scope()[1]); }
+  /** Hear (tap): the bar you are on, or the slip's; then your turn from there. Before you start, it starts. */
+  hearBar(): void {
+    if (!this.active || this.phase === 'done') { this.start(); return; }
+    if (this.phase === 'ask') return;
+    const v = this.d.view, [a, b] = this.scope();
+    const bar = this.phase === 'review' ? this.slipBar : this.phase === 'turn' ? v.barOf(v.index) : this.phase === 'ready' ? this.from : a;
+    this.halt();
+    this.hear(bar, bar, bar >= a && bar <= b ? bar : a);
+  }
 
-  /** Your turn again from bar m (a bar being learned). */
-  restartFrom(m: number): void { this.halt(); this.ready(m); }
-
-  /** The bars being learned, for choosing where to restart: [file index, printed number]. */
-  scopeBars(): [number, string][] {
+  /** Hear (held): everything being learned, then your turn from the start of it. */
+  hearAll(): void {
+    if (!this.active || this.phase === 'done' || this.phase === 'ask') { if (!this.active) this.start(); return; }
     const [a, b] = this.scope();
-    return Array.from({ length: b - a + 1 }, (_, i) => [a + i, String(this.d.view.barNumber(this.d.view.firstStepOfBar(a + i)))]);
+    this.halt();
+    this.hear(a, b, a);
   }
 
-  /** Peek: uncover while held. */
+  /** Your turn from bar m (a tapped covered bar, or ◀ Bar ▶): only bars being learned. */
+  setFrom(m: number): void {
+    if (!this.canPickBar) return;
+    const [a, b] = this.scope();
+    if (m < a || m > b) return;
+    if (this.phase === 'turn') this.halt();
+    this.ready(m);
+  }
+  stepFrom(dir: 1 | -1): void {
+    const [a, b] = this.scope();
+    const base = this.phase === 'review' ? this.carry : this.from;
+    this.setFrom(Math.max(a, Math.min(b, base + dir)));
+  }
+
+  /** Peek: uncover while held; it makes this pass not clean (in a waiting pass the notes wanted then count as helped). */
   peek(on: boolean): void {
-    if (this.phase !== 'ready' && this.phase !== 'turn') return;
+    if (!this.covering) return;
     const [a, b] = this.scope();
     this.d.view.setHidden(on ? [] : [this.steps(a, b)]);
+    if (!on) return;
+    this.peeked = true;
+    if (this.phase === 'turn' && !this.stored.options.timing) this.d.practice.helped();
   }
 
-  /** True while Memorise itself stops the music (so the stop is not taken as the learner leaving). */
-  halting = false;
-
-  /** Stops what is playing (without leaving Memorise). */
+  /** Stops what is playing (without leaving the flow). */
   private halt(): void {
     clearTimeout(this.timer);
     this.halting = true;
@@ -318,15 +523,17 @@ export class Memorise {
     this.halting = false;
     this.d.sound.stop();
     this.d.practice.stop(false);
+    this.d.view.songClock = null;
   }
-
-  /** Where the turn after a played slip starts (set by review). */
-  takeCarryStart(): number | null { const c = this.carryStart; this.carryStart = null; return c; }
 
   private read(): Stored {
-    try { return { options: MEMORISE_DEFAULTS, progress: {}, ...JSON.parse(localStorage.getItem(KEY) ?? '{}') } as Stored; } catch { return { options: MEMORISE_DEFAULTS, progress: {} }; }
+    const empty: Stored = { options: MEMORISE_DEFAULTS, progress: {}, look: {}, pieces: {} };
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Stored>;
+      return { ...empty, ...s, options: { ...MEMORISE_DEFAULTS, ...s.options }, look: s.look ?? {}, pieces: s.pieces ?? {}, progress: s.progress ?? {} };
+    } catch { return empty; }
   }
   private save(): void {
-    try { localStorage.setItem(KEY, JSON.stringify({ options: this.options, progress: this.progress })); } catch { /* this visit only */ }
+    try { localStorage.setItem(KEY, JSON.stringify(this.stored)); } catch { /* this visit only */ }
   }
 }
