@@ -52,6 +52,7 @@ For substantive reports, check:
 6. **Closure:** What concrete change, check and observable outcome establish completion? Are writes, pushes and exports confirmed?
 7. **Relevance:** Does this serve the owner's latest approved goal? Did I add redundant systems or expand scope early?
 8. **Convergence:** Is the product closer to a dependable experience, or have I spawned another audit cycle?
+9. **Intent:** Did I read the owner's words for what they meant in context, or harden a passing remark into a literal rule they never asked for?
 
 The Stop hook runs these after every report and takes one line back: "Checklist: nothing found", or what a question caught and the fix. Nothing more. Correct the report or the work only where a question finds something consequential. Keep observation, inference, judgment and UNKNOWN distinct.
 
