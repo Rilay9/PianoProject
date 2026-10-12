@@ -97,7 +97,7 @@ async function openSong(id: string): Promise<void> {
   await draw();
 }
 
-// Bars: the song's name on top; play, tempo, size, spacing and Make default at the bottom.
+// Bars: the song's name on top; the playing controls at the bottom (the song's look is in the ⋯ menu).
 
 const SIZE_MIN = 0.6; // same range as the Display panel's slider
 const SIZE_MAX = 1.8;
