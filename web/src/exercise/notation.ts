@@ -25,23 +25,27 @@ function pitchXml(p: string): string {
   return `<pitch><step>${m[1]}</step>${alter ? `<alter>${alter}</alter>` : ''}<octave>${m[3]}</octave></pitch>`;
 }
 
-/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes. */
-function groupXml(group: string[], beats: number, staff: number, color: string | null): string {
+/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour. */
+function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null): string {
   const duration = Math.max(1, Math.round(beats * DIVISIONS));
   const { type, dot } = value(beats);
   const tail = `<duration>${duration}</duration><voice>${staff}</voice><type>${type}</type>${dot ? '<dot/>' : ''}`;
   if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
-  return group.map((p, i) => `<note${color ? ` color="${color}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
-    `${color ? `<notehead color="${color}">normal</notehead>` : ''}<staff>${staff}</staff></note>`).join('');
+  return group.map((p, i) => {
+    const c = colorOf(p) ?? color;
+    return `<note${c ? ` color="${c}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
+      `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff></note>`;
+  }).join('');
 }
 
 /**
  * MusicXML for these items, items `lit` drawn blue. passage: one run of music (bars as it had them); meter and
  * fifths: its time signature and key, drawn (otherwise each bar is as long as what is in it, no signature shown).
  */
-export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0): string {
+export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): string {
+  let gi = 0; // each group's number across all the items, for marks ("group:midi" -> colour)
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
-    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i,
+    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i, gi: gi++,
   })));
   const all = groups.flatMap((x) => x.g.map(midiOf));
   const low = Math.min(...all, 72), high = Math.max(...all, 48);
@@ -65,7 +69,7 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
         (grand ? '<staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
           : treble ? '<clef><sign>G</sign><line>2</line></clef>' : '<clef><sign>F</sign><line>4</line></clef>') + '</attributes>'
       : time ? `<attributes>${time}</attributes>` : '';
-    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color)).join('');
+    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color, (p) => marks[`${x.gi}:${midiOf(p)}`] ?? null)).join('');
     const body = grand
       ? staff(1, (m) => m >= SPLIT) + `<backup><duration>${length}</duration></backup>` + staff(2, (m) => m < SPLIT)
       : staff(1, () => true);
@@ -100,11 +104,11 @@ export class ExerciseNotation {
     });
   }
 
-  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0): Promise<void> {
+  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): Promise<void> {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
-    await this.osmd.load(itemsXml(items, lit, passage, meter, fifths));
+    await this.osmd.load(itemsXml(items, lit, passage, meter, fifths, marks));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.loaded = true;
     this.draw();

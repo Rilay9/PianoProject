@@ -9,6 +9,7 @@ import { ExerciseKeys } from './exercise/keys';
 import { ExerciseNotation } from './exercise/notation';
 import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, type ExerciseDisplay } from './exercise/display';
 import { Simon, type Rung, type SimonLevel } from './exercise/simon';
+import { Drill, type DrillLevel } from './exercise/drill';
 import { keepAwake } from './wake';
 import { Practice, yours } from './practice';
 import { Memorise, type MemoHands, type MemoLook, type MemoriseOptions } from './memorise';
@@ -749,12 +750,20 @@ const simon = new Simon({
   set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
   status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'),
 }, exerciseKeys, exerciseNotation, sound);
+// Drills (owner, 2026-10-12): flashcards on the same screen, from the same sets.
+const drill = new Drill({
+  set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
+  status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
+  after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
+}, exerciseKeys, exerciseNotation, sound);
+let exerciseKind: 'simon' | 'drill' = 'simon';
 // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
 function fillExerciseDisplay(): void {
   const d = exerciseDisplay();
   exerciseNotation.setZoom(d.zoom);
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
-  $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && simon.levelNow.rung !== 1);
+  const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
+  $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung !== 1);
   $<HTMLOutputElement>('ex-size').value = `${Math.round(d.zoom * 100)}%`;
   $<HTMLButtonElement>('ex-smaller').disabled = d.zoom <= EX_SIZE_MIN + 1e-9;
   $<HTMLButtonElement>('ex-larger').disabled = d.zoom >= EX_SIZE_MAX - 1e-9;
@@ -770,7 +779,7 @@ $('ex-larger').addEventListener('click', () => stepExerciseSize(0.1));
 window.addEventListener('resize', () => { if (!$('exercise').hidden) fillExerciseDisplay(); });
 let sets: ItemSet[] | null = null;
 const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
-$('open-simon').addEventListener('click', async () => {
+async function openExercise(kind: 'simon' | 'drill'): Promise<void> {
   moreDialog.close();
   if (view.playing || practice.active) stopAll();
   void midi.start().catch(() => {});
@@ -780,13 +789,39 @@ $('open-simon').addEventListener('click', async () => {
     sets = loaded.sets;
   }
   if (!sets.length) return;
+  exerciseKind = kind;
+  $('ex-kind').textContent = kind === 'drill' ? 'Drill' : 'Simon';
+  $('ex-after').hidden = true;
   $('exercise').hidden = false;
   fillExerciseDisplay();
-  simon.open(sets);
+  if (kind === 'drill') drill.open(sets); else simon.open(sets);
   fillBars();
+}
+$('open-simon').addEventListener('click', () => void openExercise('simon'));
+$('open-drills').addEventListener('click', () => void openExercise('drill'));
+$('ex-done').addEventListener('click', () => { simon.close(); drill.close(); $('exercise').hidden = true; fillBars(); showBars(); });
+const drillDialog = $<HTMLDialogElement>('drill-dialog');
+function fillDrillDialog(): void {
+  const l = drill.levelNow;
+  const values: Record<string, string> = { 'd-rung': String(l.rung), 'd-start': l.start, 'd-metronome': l.metronome ? 'on' : 'off', 'd-onTime': l.onTime, 'd-cards': String(l.cards), 'd-under': exerciseDisplay().under };
+  for (const [name, value] of Object.entries(values)) for (const r of drillDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  $<HTMLOutputElement>('d-bpm').value = `♩ ${drill.tempo}`;
+}
+drillDialog.addEventListener('change', (e) => {
+  const r = e.target as HTMLInputElement;
+  if (r.name === 'd-rung') drill.setLevel({ rung: Number(r.value) as Rung });
+  else if (r.name === 'd-start') drill.setLevel({ start: r.value as DrillLevel['start'] });
+  else if (r.name === 'd-metronome') drill.setLevel({ metronome: r.value === 'on' });
+  else if (r.name === 'd-onTime') drill.setLevel({ onTime: r.value as DrillLevel['onTime'] });
+  else if (r.name === 'd-cards') drill.setLevel({ cards: Number(r.value) });
+  else if (r.name === 'd-under') saveExerciseDisplay({ under: r.value as ExerciseDisplay['under'] });
+  fillExerciseDisplay();
+  fillDrillDialog();
 });
-$('ex-done').addEventListener('click', () => { simon.close(); $('exercise').hidden = true; fillBars(); showBars(); });
+$('d-slower').addEventListener('click', () => { drill.setTempo(drill.tempo - 5); fillDrillDialog(); });
+$('d-faster').addEventListener('click', () => { drill.setTempo(drill.tempo + 5); fillDrillDialog(); });
 $('ex-level').addEventListener('click', () => {
+  if (exerciseKind === 'drill') { fillDrillDialog(); drillDialog.showModal(); return; }
   const level = simon.levelNow;
   const pairs: [string, string][] = [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed], ['ex-onMiss', level.onMiss], ['ex-onNew', level.onNew]];
   pairs.push(['ex-under', exerciseDisplay().under]);
@@ -1064,4 +1099,4 @@ setUpOffline(base, (done, total) => {
 }).catch((cause) => showMessage(cause instanceof Error ? cause.message : String(cause)));
 
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }), simon: () => simon.expected() };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }), simon: () => simon.expected(), drill: () => drill.debug() };

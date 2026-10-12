@@ -1,0 +1,19 @@
+{
+  "title": "Test: two-bar melodies in C",
+  "order": "pool",
+  "tempo": 80,
+  "items": {
+    "1": {
+      "name": "Melody 1",
+      "musicxml": "melody-1.musicxml"
+    },
+    "2": {
+      "name": "Melody 2",
+      "musicxml": "melody-2.musicxml"
+    },
+    "3": {
+      "name": "Melody 3",
+      "musicxml": "melody-3.musicxml"
+    }
+  }
+}

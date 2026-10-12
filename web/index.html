@@ -125,15 +125,25 @@
   <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
        the keyboard at the bottom. -->
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
-    <div class="fp-head"><span class="ex-kind">Simon</span><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button><button id="ex-done" type="button" class="btn">Done</button></div>
+    <div class="fp-head"><span id="ex-kind" class="ex-kind">Simon</span><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button><button id="ex-done" type="button" class="btn">Done</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
     <div class="ex-prompt">
       <div id="ex-notation" class="ex-notation off"></div>
       <div id="ex-name" class="ex-name"></div>
       <div id="ex-chain" class="ex-chain"></div>
-      <p id="ex-status" class="ex-status"></p>
-      <p id="ex-sub" class="ex-sub"></p>
-      <button id="ex-start" type="button" class="btn ex-start">Start</button>
+      <!-- What it says and the buttons: over the bottom of the music, frosted, when music is shown (it keeps its room). -->
+      <div class="ex-overlay">
+        <p id="ex-status" class="ex-status"></p>
+        <p id="ex-sub" class="ex-sub"></p>
+        <button id="ex-start" type="button" class="btn ex-start">Start</button>
+        <!-- Drills: after a card with slips, and at the end of a set. -->
+        <div id="ex-after" class="ex-after" hidden>
+          <button id="ex-again" type="button" class="btn">Again</button>
+          <button id="ex-next" type="button" class="btn main">Next</button>
+          <button id="ex-misses" type="button" class="btn"></button>
+          <button id="ex-fresh" type="button" class="btn main">New set</button>
+        </div>
+      </div>
     </div>
     <div class="ex-tools">
       <button id="ex-smaller" type="button" class="btn" aria-label="Smaller music">A−</button>
@@ -143,6 +153,46 @@
     </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
   </section>
+
+  <dialog id="drill-dialog" aria-labelledby="drill-title">
+    <form method="dialog">
+      <h2 id="drill-title">Drill settings</h2>
+      <fieldset class="row"><legend>Help (most to least)</legend>
+        <label><input type="radio" name="d-rung" value="1"> 1 Music + sound + keys lit</label>
+        <label><input type="radio" name="d-rung" value="2"> 2 Music + sound</label>
+        <label><input type="radio" name="d-rung" value="3"> 3 Music only</label>
+        <label><input type="radio" name="d-rung" value="4"> 4 Name only (any octave)</label>
+        <label><input type="radio" name="d-rung" value="5"> 5 By ear</label>
+      </fieldset>
+      <fieldset class="row"><legend>Start each card</legend>
+        <label><input type="radio" name="d-start" value="clicks"> After a bar of clicks</label>
+        <label><input type="radio" name="d-start" value="first"> On your first note</label>
+      </fieldset>
+      <fieldset class="row"><legend>Metronome while you play</legend>
+        <label><input type="radio" name="d-metronome" value="on"> On</label>
+        <label><input type="radio" name="d-metronome" value="off"> Off</label>
+      </fieldset>
+      <fieldset class="row"><legend>On time</legend>
+        <label><input type="radio" name="d-onTime" value="relaxed"> Relaxed ±200 ms</label>
+        <label><input type="radio" name="d-onTime" value="normal"> Normal ±100 ms</label>
+        <label><input type="radio" name="d-onTime" value="strict"> Strict ±50 ms</label>
+        <label><input type="radio" name="d-onTime" value="notes"> Notes only</label>
+      </fieldset>
+      <fieldset class="row"><legend>Cards per set</legend>
+        <label><input type="radio" name="d-cards" value="10"> 10</label>
+        <label><input type="radio" name="d-cards" value="20"> 20</label>
+        <label><input type="radio" name="d-cards" value="0"> Until I stop</label>
+      </fieldset>
+      <div class="row"><span>Tempo</span><button id="d-slower" type="button" class="btn">−5</button><output id="d-bpm"></output><button id="d-faster" type="button" class="btn">+5</button></div>
+      <h3>Display</h3>
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="d-under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="d-under" value="nothing"> Nothing</label>
+      </fieldset>
+      <p class="note">A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app's.</p>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
 
   <dialog id="ex-level-dialog" aria-labelledby="ex-level-title">
     <form method="dialog">
@@ -265,6 +315,7 @@
         <button id="open-memorise" type="button">Memorise this piece</button>
         <button id="open-freeplay" type="button">Free play</button>
         <button id="open-simon" type="button">Simon</button>
+        <button id="open-drills" type="button">Drills</button>
         <button id="open-metronome" type="button">Metronome…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>

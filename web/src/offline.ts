@@ -34,7 +34,13 @@ export async function setUpOffline(base: string, progress: (done: number, total:
   try {
     const sets = (await (await fetch(`${base}content/sets/index.json`)).json()) as string[];
     urls.add(new URL(`${base}content/sets/index.json`, origin).href);
-    for (const f of sets) urls.add(new URL(`${base}content/sets/${f}`, origin).href);
+    for (const f of sets) {
+      const url = new URL(`${base}content/sets/${f}`, origin).href;
+      urls.add(url);
+      // A set's MusicXML items given as files sit next to it.
+      const set = (await (await fetch(url)).json()) as { items?: Record<string, { musicxml?: string }> };
+      for (const it of Object.values(set.items ?? {})) if (it.musicxml && /\.(musicxml|xml)$/i.test(it.musicxml.trim())) urls.add(new URL(it.musicxml.trim(), url).href);
+    }
   } catch { /* no sets yet */ }
   // Every piano sample, named the way smplr fetches them (# and spaces escaped).
   const names = (await (await fetch(`${base}${SAMPLES}/files.json`)).json()) as string[];

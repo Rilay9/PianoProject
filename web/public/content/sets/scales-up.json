@@ -1,0 +1,23 @@
+{
+  "title": "Test: major scales, up (steady quavers)",
+  "order": "pool",
+  "tempo": 80,
+  "rhythm": 0.5,
+  "items": {
+    "1": {
+      "notes": "C4, D4, E4, F4, G4, A4, B4, C5",
+      "name": "C major scale, up",
+      "short": "C"
+    },
+    "2": {
+      "notes": "G4, A4, B4, C5, D5, E5, F#5, G5",
+      "name": "G major scale, up",
+      "short": "G"
+    },
+    "3": {
+      "notes": "F4, G4, A4, Bb4, C5, D5, E5, F5",
+      "name": "F major scale, up",
+      "short": "F"
+    }
+  }
+}

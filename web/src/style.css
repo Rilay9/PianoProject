@@ -146,7 +146,12 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-kind { font-weight: 700; }
 .ex-score { display: flex; justify-content: space-between; padding: 6px 16px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .ex-score b { color: var(--fg); }
-.ex-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: hidden; }
+.ex-prompt { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: hidden; }
+.ex-overlay { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+/* With music on screen the overlay floats over its bottom, frosted, so the music keeps the whole height and still
+   shows through faintly where they meet (owner, 2026-10-12: transparency rather than taking room). */
+.ex-notation:not(.off) ~ .ex-overlay { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 12px; background: color-mix(in srgb, var(--bg) 62%, transparent); -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); }
+.ex-overlay > :is(.ex-status, .ex-sub):empty { display: none; }
 /* Hidden with a class, not when empty: the renderer measures the box's width when it draws, so it must be laid out.
    The music takes the room left in the middle and is shrunk to fit it (notation.ts), whatever the screen. */
 /* One size; long chains wrap and the box scrolls. Short music sits in the middle of the room's height (auto margins), tall music starts at the top. */
@@ -168,8 +173,15 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-status.bad { color: #dc2626; }
 .ex-sub { margin: 0; color: var(--muted); }
 .ex-start { font-size: 1.2rem; padding: 10px 28px; }
+.ex-after { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ex-result { text-align: left; width: 100%; max-width: 32rem; padding: 4px 6px; border-bottom: 1px solid var(--line); color: #b45309; font-size: 14px; }
+.ex-result.ok { color: var(--fg); }
+.ex-chain:has(.ex-result) { flex-direction: column; flex-wrap: nowrap; align-items: center; overflow-y: auto; min-height: 0; flex: 1 1 auto; }
 .ex-tools { display: flex; justify-content: center; gap: 8px; min-height: 40px; padding: 4px; }
-.ex-keyboard { height: 34vh; touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
+.ex-keyboard { touch-action: none; padding-bottom: env(safe-area-inset-bottom); } /* as tall as every keyboard strip (.keyboard: 108px) */
+/* A phone on its side (owner): a smaller keyboard, and the music at the top of its room so the floating panel
+   mostly covers the space under it rather than the music. */
+@media (orientation: landscape) and (max-height: 599px) { .keyboard.ex-keyboard { height: 20vh; } .ex-notation > div { margin: 0 0 auto; } }
 .keyboard .key.wrong { background: #dc2626 !important; }
 .keyboard .key.want { box-shadow: inset 0 0 0 3px #16a34a; }
 /* Memorise: a hidden bar, covered in the paper's colour with its number; the barlines either side still show. */

@@ -15,6 +15,9 @@
 //   ... plus "name": "G dominant 7th", "short": "G7"
 // MusicXML items and passages cut from a score keep their rhythm (note lengths and rests); the others are even.
 // A set may give "tempo" (quarter notes a minute); a passage from a score takes the score's own, else 80.
+// For the drills a set may also say how its items with no written rhythm are judged (owner, 2026-10-12):
+// "rhythm": "notes" (the right notes in order, no timing; the default) or a length in quarter notes, e.g. 0.5 for
+// steady quavers. Items with written rhythm (MusicXML, bars from a piece) are always judged in time.
 
 import { Chord, Interval, Note } from 'tonal';
 
@@ -32,12 +35,17 @@ export interface Item {
   beats?: number[];
   /** The bar each group stands in, in the music it came from (missing: the item is its own bar). */
   bars?: number[];
+  /** A MusicXML item's own time signature and key (sharps +, flats −), drawn as it has them. */
+  meter?: { beats: number; beatType: number };
+  fifths?: number;
 }
 
 export interface ItemSet {
   id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number;
   /** A passage from a score: its time signature and key (sharps +, flats −), drawn as the score has them. */
   meter?: { beats: number; beatType: number }; fifths?: number;
+  /** Drills: how items with no written rhythm are judged: notes only, or steady beats of this many quarter notes. */
+  rhythm?: 'notes' | number;
 }
 
 const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.75 s a note)
@@ -46,7 +54,7 @@ interface ItemSource {
   notes?: string; chord?: string; octave?: number; arpeggio?: boolean;
   interval?: string; root?: string; together?: boolean; musicxml?: string; name?: string; short?: string;
 }
-interface SetFile { title: string; order?: 'pool' | 'passage'; tempo?: number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number } }
+interface SetFile { title: string; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number } }
 
 export const midiOf = (spelled: string): number => Note.midi(spelled) ?? 60;
 /** A spelled pitch as a learner reads it: C#4 as C♯4, Bb3 as B♭3. */
@@ -138,6 +146,7 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
 /** One item from its source. fetchText: for a MusicXML item given as a file. */
 async function buildItem(n: number, src: ItemSource, base: string, fetchText: (url: string) => Promise<string>): Promise<Item> {
   let groups: string[][] = [], name = '', short = '', beats: number[] | undefined;
+  let bars: number[] | undefined, meter: Item['meter'], fifths: number | undefined;
   if (src.notes) {
     groups = src.notes.includes(',') ? src.notes.split(',').map((g) => g.trim().split(/\s+/)) : [src.notes.trim().split(/\s+/)];
     name = namesOf(groups);
@@ -158,11 +167,13 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
     const parsed = groupsFromXml(xml);
     groups = parsed.groups;
     beats = parsed.beats;
+    // A whole MusicXML file keeps its bars, time signature and key (a fragment is one bar of its own).
+    if (/<score-partwise|<score-timewise/.test(xml)) { bars = parsed.bars; meter = parsed.meter; fifths = parsed.fifths; }
     name = namesOf(groups);
     short = String(n);
   }
   if (!groups.some((g) => g.length) || !groups.every((g) => g.every((p) => Note.midi(p) !== null))) throw new Error(`item ${n}: no notes could be read from it`);
-  return { n, name: src.name ?? name, short: src.short ?? short, groups, beats };
+  return { n, name: src.name ?? name, short: src.short ?? short, groups, beats, bars, meter, fifths };
 }
 
 /**
@@ -180,11 +191,11 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
       if (!g.length && items.length) { const it = items.at(-1)!; it.groups.push([]); it.beats!.push(at.beats); it.bars!.push(at.bar); return; }
       if (g.length) items.push({ n: items.length + 1, name: g.map(shown).join(' '), short: letters(g[0]), groups: [g], beats: [at.beats], bars: [at.bar] });
     });
-    return { id, title: file.title, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths };
+    return { id, title: file.title, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths, rhythm: file.rhythm };
   }
   const entries = Object.entries(file.items ?? {}).map(([k, v]) => [Number(k), v] as const).sort((x, y) => x[0] - y[0]);
   const items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
-  return { id, title: file.title, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO };
+  return { id, title: file.title, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm };
 }
 
 /** Every set listed in content/sets/index.json; a set that cannot be read is left out and reported. */

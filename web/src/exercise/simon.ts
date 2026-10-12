@@ -66,10 +66,10 @@ export class Simon {
     const stored = this.read();
     this.level = { ...DEFAULT_LEVEL, ...stored.level };
     this.best = stored.best ?? {};
-    keys.onKey = (midi, on) => this.key(midi, on);
-    ui.start.addEventListener('click', () => void this.begin());
-    ui.hear.addEventListener('click', () => void this.hearAgain());
-    ui.set.addEventListener('change', () => this.chooseSet(ui.set.value));
+    // The exercise screen is shared with the drills: these act only while Simon is the one open.
+    ui.start.addEventListener('click', () => { if (this.on) void this.begin(); });
+    ui.hear.addEventListener('click', () => { if (this.on) void this.hearAgain(); });
+    ui.set.addEventListener('change', () => { if (this.on) this.chooseSet(ui.set.value); });
   }
 
   get levelNow(): SimonLevel { return { ...this.level }; }
@@ -77,13 +77,16 @@ export class Simon {
   expected(): number[][] { return this.state === 'turn' ? this.flat.slice(this.pos).map((g) => g.keys) : []; }
 
   /** Opens with these sets (the last one chosen, if still there). */
+  private on = false;
   open(sets: ItemSet[]): void {
+    this.on = true;
+    this.keys.onKey = (midi, down) => this.key(midi, down);
     this.sets = sets;
     this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
     this.chooseSet(sets.some((s) => s.id === this.read().set) ? this.read().set! : sets[0].id);
   }
 
-  close(): void { this.stopAll(); this.keys.release(); }
+  close(): void { this.stopAll(); this.on = false; this.keys.release(); }
 
   setLevel(level: Partial<SimonLevel>): void {
     this.level = { ...this.level, ...level };
