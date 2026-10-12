@@ -83,7 +83,10 @@ export class Practice {
     if (!this.expected.size) this.advance();
   }
 
-  /** Your notes are played: the piano plays its part up to your next notes, then the marker waits again. */
+  /**
+   * Your notes are played: the piano plays its part up to your next notes, then the marker waits again. Its
+   * notes still sounding from before ring on to their written end.
+   */
   private advance(): void {
     const s = this.settings(), i = this.view.index, n = this.view.stepCount;
     let j = i + 1;
@@ -95,14 +98,14 @@ export class Practice {
     // The piano's notes struck with yours sound now; if it has none after them before your next notes, the
     // marker moves straight on (no waiting at the tempo for nothing).
     if (!notes.some((e) => e.t > from)) {
-      if (notes.length) this.sound.play(notes, [], from, s.speed);
+      if (notes.length) this.sound.play(notes, [], from, s.speed, true);
       if (j >= n) { this.view.goTo(n - 1); this.stop(); this.onDone(); return; } // the end of the song
       this.view.goTo(j);
       this.arrive();
       return;
     }
     const clicks: Beat[] = s.metronome ? this.view.beats(s.clickOn).filter((b) => b.t >= from && b.t < to) : [];
-    this.sound.play(notes, clicks, from, s.speed);
+    this.sound.play(notes, clicks, from, s.speed, true);
     this.view.songClock = () => this.sound.songTime();
     if (j >= n) { this.view.play(); return; } // the piano finishes the song
     this.view.play(j);

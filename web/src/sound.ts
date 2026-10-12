@@ -70,9 +70,13 @@ export class Sound {
     return this.anchorT + (this.ctx.currentTime - this.anchorCtx) * 1000 * this.speed;
   }
 
-  /** Plays the given notes and beats from song time fromT (ms at speed 1). */
-  play(notes: NoteEvent[], beats: Beat[], fromT: number, speed: number): void {
-    this.stop();
+  /**
+   * Plays the given notes and beats from song time fromT (ms at speed 1). With keepSounding, notes already
+   * sounding ring on to their written end (Wait for me: the piano's held notes are not cut by your next ones).
+   */
+  play(notes: NoteEvent[], beats: Beat[], fromT: number, speed: number, keepSounding = false): void {
+    if (keepSounding) clearInterval(this.timer);
+    else this.stop();
     if (!this.ctx) return;
     this.notes = notes;
     this.beats = beats;
