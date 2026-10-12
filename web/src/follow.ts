@@ -31,7 +31,7 @@ interface StaffPos { staff: number; left: number; right: number; top: number; he
  * how long it sounds in whole notes (tied notes added up; 0 for the later notes of a tie and for grace notes,
  * which the piano does not strike).
  */
-export interface Pitch { midi: number; name: string; spelled: string; len: number }
+export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number }
 /**
  * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
  * and the chord symbol the file gives for this moment, if any.
@@ -92,7 +92,7 @@ export class FollowView {
   private frame = 0;
   private speed = 1;
   private endT = 0; // ms at speed 1 when the song's last note ends
-  private measures: { beats: number; beatLen: number; dur: number; pickup: boolean }[] = [];
+  private measures: { beats: number; beatLen: number; dur: number; pickup: boolean; num: number }[] = [];
   /** While sound plays, the marker follows its clock (song ms at speed 1) instead of its own. */
   songClock: (() => number) | null = null;
   private glideUntil = 0; // performance.now() when the running glide finishes
@@ -151,6 +151,7 @@ export class FollowView {
         beatLen: 1 / (sm.ActiveTimeSignature?.Denominator ?? 4),
         dur: sm.Duration.RealValue,
         pickup: sm.ImplicitMeasure,
+        num: sm.MeasureNumber,
       }));
       const where = new Map<string, Pos>(); // the same bar and beat comes round again in repeats
       const key = (m: number, rel: number) => `${m}:${rel}`;
@@ -310,7 +311,7 @@ export class FollowView {
           if (pitch && !n.sourceNote.isRest()) {
             const note = n.sourceNote, tie = note.NoteTie;
             const len = note.IsGraceNote || (tie && tie.StartNote !== note) ? 0 : (tie ? tie.Duration : note.Length).RealValue;
-            st.notes.push(pitchOf(pitch, len));
+            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y) });
           }
           const id = (n as unknown as { getSVGGElement?: () => SVGGElement | null }).getSVGGElement?.()?.id;
           if (id) { ids.push(id); st.ids.push(id); }
@@ -632,6 +633,32 @@ export class FollowView {
     } else if (this.scroller) {
       const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
       this.steps.forEach((_, i) => consider(i, x - r.left, y - r.top, 1));
+    }
+    return best;
+  }
+
+  /** Marks: the note nearest a tap at screen point (x, y) within reach: its bar, beat and key, or null. */
+  hitNote(x: number, y: number): { m: number; rel: number; midi: number; label: string } | null {
+    let best: { m: number; rel: number; midi: number; label: string } | null = null, bestD = Infinity;
+    const consider = (s: Step, px: number, py: number, scale: number) => {
+      for (const st of s.pos.staves) for (const n of st.notes) {
+        if (n.x === undefined || n.y === undefined) continue;
+        const d = Math.hypot(n.x - px, n.y - py) * scale;
+        if (d <= TAP_REACH && d < bestD) { bestD = d; best = { m: s.m, rel: s.rel, midi: n.midi, label: `${n.name}, bar ${this.measures[s.m]?.num ?? s.m}` }; }
+      }
+    };
+    if (this.slots.length) {
+      for (const slot of this.slots) {
+        const r = slot.el.getBoundingClientRect();
+        if (slot.o < 0 || y < r.top || y > r.bottom) continue;
+        const ch = this.chunks[this.occ[slot.o]];
+        const pr = slot.piece.getBoundingClientRect();
+        const scale = pr.width / ch.w;
+        for (const s of this.steps) if (s.occ === slot.o) consider(s, (x - pr.left) / scale, (y - pr.top) / scale + ch.top, scale);
+      }
+    } else if (this.scroller) {
+      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
+      for (const s of this.steps) consider(s, x - r.left, y - r.top, 1);
     }
     return best;
   }

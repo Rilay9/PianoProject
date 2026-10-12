@@ -93,6 +93,10 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
 .glide-zone { position: absolute; top: 0; bottom: 0; right: 0; background: rgba(17, 24, 39, 0.06); border-left: 1px dashed rgba(17, 24, 39, 0.25); pointer-events: none; }
 .btn.play { min-width: 3em; }
+.marks-bar { bottom: 0; z-index: 3; flex-wrap: wrap; border-top: 1px solid var(--bar-line); padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+.marks-note { flex: 1; min-width: 8em; font-weight: 600; }
+.menu { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.menu button { font: inherit; text-align: left; padding: 10px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
 /* L | R | Both | Off: one control, the chosen part filled. */
 .seg { display: inline-flex; border: 1px solid var(--btn-line); border-radius: 8px; overflow: hidden; }
 .seg button { font: inherit; padding: 6px 10px; border: 0; background: var(--btn-bg); color: inherit; }

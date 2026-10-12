@@ -1,5 +1,6 @@
 import './style.css';
 import { FollowView, isStrip } from './follow';
+import { addFingerings, fingeringsFor, setFingering } from './marks';
 import { MidiInput } from './midi';
 import { Practice } from './practice';
 import { Sound } from './sound';
@@ -27,6 +28,7 @@ const songsDialog = $<HTMLDialogElement>('songs');
 const infoDialog = $<HTMLDialogElement>('info');
 const tempoDialog = $<HTMLDialogElement>('tempo');
 const summaryDialog = $<HTMLDialogElement>('summary');
+const moreDialog = $<HTMLDialogElement>('more');
 const base = import.meta.env.BASE_URL;
 
 const score = $('score');
@@ -72,7 +74,7 @@ async function draw(keep = false): Promise<void> {
     const s = settingsFor(piece.id);
     // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
     document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
-    await view.show(xml, s, keep ? view.position : undefined, () => strip.setSong(view.songPitches));
+    await view.show(addFingerings(xml, fingeringsFor(piece.id)), s, keep ? view.position : undefined, () => strip.setSong(view.songPitches));
   } catch (cause) {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
@@ -141,7 +143,7 @@ function stepSize(delta: number): void {
 const bars = [$('top-bar'), $('bottom-bar')];
 const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
-const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open;
+const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open || moreDialog.open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.
 const barHasFocus = () => document.activeElement instanceof HTMLSelectElement && bars.some((b) => b.contains(document.activeElement));
 
@@ -161,7 +163,7 @@ for (const b of bars) {
   b.addEventListener('focusin', showBars);
   b.addEventListener('change', showBars);
 }
-for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDialog]) d.addEventListener('close', showBars);
+for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDialog, moreDialog]) d.addEventListener('close', () => { if (!marking) showBars(); });
 
 // Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
 // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
@@ -173,6 +175,7 @@ function pianoHands(s: ScoreSettings): 'both' | 'right' | 'left' | null {
 }
 async function play(): Promise<void> {
   if (starting) return;
+  if (marking) setMarking(false);
   const s = settingsFor(currentPiece().id);
   starting = true;
   $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
@@ -260,7 +263,7 @@ score.addEventListener('pointerdown', (e) => {
   down = { x: e.clientX, y: e.clientY };
   pressed = false;
   clearTimeout(pressTimer);
-  if (view.playing || practice.active) return;
+  if (view.playing || practice.active || marking) return;
   pressTimer = window.setTimeout(() => {
     if (!down) return;
     const step = view.hit(down.x, down.y);
@@ -278,11 +281,85 @@ score.addEventListener('pointerup', (e) => {
   const dx = e.clientX - down.x, dy = e.clientY - down.y;
   down = null;
   if (pressed) return;
+  if (marking) { pickNote(e.clientX, e.clientY); return; }
   if (view.playing || practice.active) { stopAll(); return; }
   if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
   if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
   if (bars[0].classList.contains('faded')) showBars();
   else hideBars();
+});
+
+// ⋯ menu: fingering, export, backup (owner, 2026-10-11).
+let marking = false;
+let picked: { m: number; rel: number; midi: number; label: string } | null = null;
+function setMarking(on: boolean): void {
+  marking = on;
+  picked = null;
+  $('marks-bar').hidden = !on;
+  $('marks-note').textContent = 'Tap a note, then a finger';
+  if (on) { if (view.playing || practice.active) stopAll(); hideBars(); } else showBars();
+}
+function pickNote(x: number, y: number): void {
+  picked = view.hitNote(x, y);
+  const current = picked && fingeringsFor(currentPiece().id).find((f) => f.m === picked!.m && Math.abs(f.rel - picked!.rel) < 1e-6 && f.midi === picked!.midi);
+  $('marks-note').textContent = picked ? `${picked.label}${current ? ` (now ${current.finger})` : ''}` : 'No note there: tap closer to a note';
+}
+for (const b of document.querySelectorAll<HTMLButtonElement>('#finger-pick button')) {
+  b.addEventListener('click', () => {
+    if (!picked) return;
+    setFingering(currentPiece().id, picked, Number(b.dataset.finger));
+    $('marks-note').textContent = `${picked.label}: ${b.dataset.finger === '0' ? 'removed' : `finger ${b.dataset.finger}`}`;
+    picked = null;
+    void draw(true); // the score is drawn again with it
+  });
+}
+$('marks-done').addEventListener('click', () => setMarking(false));
+$('open-more').addEventListener('click', () => moreDialog.showModal());
+$('edit-marks').addEventListener('click', () => {
+  moreDialog.close();
+  // Fingering only shows when Display shows fingering: turn it on for this song if it is off.
+  if (!settingsFor(currentPiece().id).fingering) change('fingering', true);
+  setMarking(true);
+});
+
+/** Gives the phone a file to save. */
+function download(name: string, type: string, text: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+$('export-score').addEventListener('click', async () => {
+  const piece = currentPiece();
+  // The file as it came, with only your fingering added (not the app's display changes).
+  download(`${piece.id}-fingering.musicxml`, 'application/vnd.recordare.musicxml+xml', addFingerings(await xmlFor(piece), fingeringsFor(piece.id)));
+});
+const BACKUP_PREFIX = 'piano-web.';
+$('backup').addEventListener('click', () => {
+  const data: Record<string, string> = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)!;
+    if (key.startsWith(BACKUP_PREFIX)) data[key] = localStorage.getItem(key)!;
+  }
+  const day = new Date().toISOString().slice(0, 10);
+  download(`piano-backup-${day}.json`, 'application/json', JSON.stringify({ app: 'piano-web', version: 1, saved: new Date().toISOString(), data }, null, 2));
+});
+$('restore').addEventListener('click', () => $<HTMLInputElement>('restore-file').click());
+$<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+  try {
+    const backup = JSON.parse(await file.text()) as { app?: string; data?: Record<string, string> };
+    if (backup.app !== 'piano-web' || !backup.data) throw new Error('This is not a backup from this app.');
+    if (!confirm('Replace the settings and marks on this device with the backup?')) return;
+    for (const [key, value] of Object.entries(backup.data)) if (key.startsWith(BACKUP_PREFIX)) localStorage.setItem(key, value);
+    location.reload();
+  } catch (cause) {
+    moreDialog.close();
+    showMessage(`Could not restore: ${cause instanceof Error ? cause.message : String(cause)}`);
+  }
 });
 
 // Tempo: a slider for the speed, or the beats per minute typed exactly (owner, 2026-10-11).

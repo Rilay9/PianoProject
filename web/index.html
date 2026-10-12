@@ -13,6 +13,7 @@
     <div class="title"><span id="song-title"></span> <small id="song-composer"></small></div>
     <button id="open-info" type="button" class="btn" aria-label="About this song">ⓘ</button>
     <button id="open-settings" type="button" class="btn" aria-haspopup="dialog">Display</button>
+    <button id="open-more" type="button" class="btn" aria-haspopup="dialog" aria-label="More">⋯</button>
   </header>
   <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Playing and display for this song">
     <button id="play" type="button" class="btn play" aria-label="Play">▶</button>
@@ -41,6 +42,14 @@
 
   <p id="message" class="message" hidden></p>
   <main id="score" class="score"></main>
+  <!-- Fingering mode: tap a note, pick a finger. -->
+  <div id="marks-bar" class="bar marks-bar" hidden>
+    <span id="marks-note" class="marks-note">Tap a note</span>
+    <span class="seg" id="finger-pick" role="group" aria-label="Finger">
+      <button type="button" data-finger="1">1</button><button type="button" data-finger="2">2</button><button type="button" data-finger="3">3</button><button type="button" data-finger="4">4</button><button type="button" data-finger="5">5</button><button type="button" data-finger="0" aria-label="Remove">✕</button>
+    </span>
+    <button id="marks-done" type="button" class="btn">Done</button>
+  </div>
   <!-- Under the music: keyboard, note names, both or nothing; the bottom bar covers it while showing. -->
   <div id="under" class="under" hidden>
     <div id="note-line" class="note-line" hidden></div>
@@ -59,6 +68,21 @@
     <form method="dialog">
       <h2 id="info-title"></h2>
       <p id="info-body" class="note"></p>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="more" aria-labelledby="more-title">
+    <form method="dialog">
+      <h2 id="more-title">More</h2>
+      <div class="menu">
+        <button id="edit-marks" type="button">Edit fingering</button>
+        <button id="export-score" type="button">Export score with my fingering</button>
+        <button id="backup" type="button">Back up settings and marks</button>
+        <button id="restore" type="button">Restore from a backup…</button>
+        <input id="restore-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <p class="note">Fingering is written into the score: it shows when Display → Show → Fingering is on, and the exported file opens in MuseScore with it.</p>
       <div class="actions"><button value="close">Close</button></div>
     </form>
   </dialog>
