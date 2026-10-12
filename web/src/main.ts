@@ -759,6 +759,10 @@ const drill = new Drill({
 let exerciseKind: 'simon' | 'drill' = 'simon';
 // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
 function fillExerciseDisplay(): void {
+  // Sideways the size and Hear tools join the one bar of what it says and its buttons; otherwise their own row.
+  const tools = $('ex-tools'), sideways = currentDevice() === 'phone-sideways';
+  if (sideways && tools.parentElement !== $('ex-overlay')) $('ex-overlay').append(tools);
+  if (!sideways && tools.parentElement !== $('exercise')) $('exercise').insertBefore(tools, $('ex-keyboard'));
   const d = exerciseDisplay();
   exerciseNotation.setZoom(d.zoom);
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.

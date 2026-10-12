@@ -14,6 +14,8 @@ Before changing a feature, inspect its current implementation and its role for t
 
 Modes and feature designs are revisable: name, controls, measurement and use may change, merge or retire when that improves the experience. Simon, Lab, duet, reading and tempo modes are precedents, not contracts. Changes to evidence semantics, saved sessions or user-visible expectations need deliberate migration decisions. Don't add a mode because a lesson might hypothetically want one. Use existing content types, storage, importers, renderers, tests and utilities where they fit; extend schema or architecture for an actual consumer, not a hypothetical complete curriculum. New branch work must not break what the owner currently plays.
 
+`docs/app-features.md` describes every mode and tool: what it is for, how it works, what it judges and the content it takes. Read it when planning lessons or preparing content, and update it in the same commit as any change to a mode, its settings or a content format.
+
 ## Musical and product truth
 
 Never teach a false note, invented pattern, wrong rhythm, unjustified ability or false mastery claim. Keep separate: published pedagogy; verified score facts at exact measures; generator or detector assertions and their limits; observed performance; learner feedback; teaching judgment.

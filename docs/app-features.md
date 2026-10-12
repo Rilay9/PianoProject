@@ -178,7 +178,9 @@ placeholders for checking the app, not lesson content.
 ## 7. Throughout
 
 - Every screen is laid out for a phone upright, a phone sideways and a tablet; settings that are about the look are
-  kept per kind of screen.
+  kept per kind of screen. On the exercise screen (Simon, Drills) a phone sideways gets one bar above the keys for
+  what it says, its buttons and the size/Hear tools, and a keyboard a fifth of the height; elsewhere what it says
+  floats frosted over the bottom of the music.
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.
