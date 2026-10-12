@@ -31,6 +31,10 @@
       <button type="button" data-hands="both">Both</button>
       <button type="button" data-hands="off" aria-label="No piano sound">Off</button>
     </div>
+    <!-- Size stays here, so the music can be seen changing (spacing and Make default are in Display). -->
+    <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
+    <output id="q-size" aria-live="polite"></output>
+    <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
   </div>
 
   <p id="message" class="message" hidden></p>
@@ -68,20 +72,6 @@
   <dialog id="more" aria-labelledby="more-title">
     <form method="dialog">
       <h2 id="more-title">More</h2>
-      <!-- This song's look, moved here from the bottom bar to keep it to the playing controls (owner, 2026-10-11). -->
-      <div class="row">Size
-        <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
-        <output id="q-size" aria-live="polite"></output>
-        <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
-      </div>
-      <div class="row">Spacing
-        <select id="q-spacing" aria-label="Spacing">
-          <option value="tight">Tight</option>
-          <option value="compact">Compact</option>
-          <option value="open">Open</option>
-        </select>
-      </div>
-      <div class="row"><button id="q-default" type="button" class="btn" hidden>Make this song's look the default</button></div>
       <div class="menu">
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>

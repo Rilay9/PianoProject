@@ -97,10 +97,12 @@ async function openSong(id: string): Promise<void> {
   await draw();
 }
 
-// Bars: the song's name on top; the playing controls at the bottom (the song's look is in the ⋯ menu).
+// Bars: the song's name on top; the playing controls and the notation size at the bottom (the rest of the
+// song's look is in Display; size is here too so the music can be seen changing).
 
 const SIZE_MIN = 0.6; // same range as the Display panel's slider
 const SIZE_MAX = 1.8;
+
 
 function fillBars(): void {
   const piece = currentPiece();
@@ -112,17 +114,15 @@ function fillBars(): void {
   $('play').textContent = running ? '⏸' : '▶';
   $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
   $<HTMLSelectElement>('q-mode').value = s.mode;
+  $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
+  $<HTMLButtonElement>('q-smaller').disabled = s.size <= SIZE_MIN + 1e-9;
+  $<HTMLButtonElement>('q-larger').disabled = s.size >= SIZE_MAX - 1e-9;
   const loop = view.looped;
   const [la, lb] = loop ? [view.barNumber(loop.a), view.barNumber(loop.b)] : [0, 0];
   $('q-loop').textContent = picking ? 'Cancel' : loop ? `Loop ${la === lb ? la : `${la}–${lb}`}` : 'Loop';
   $('q-loop').setAttribute('aria-pressed', String(!!loop));
   $('q-hands').setAttribute('aria-label', s.mode === 'watch' ? 'Hands the piano plays' : 'Hands you play');
   for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) b.setAttribute('aria-pressed', String(b.dataset.hands === s.hands));
-  $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
-  $<HTMLSelectElement>('q-spacing').value = s.spacing;
-  $<HTMLButtonElement>('q-smaller').disabled = s.size <= SIZE_MIN + 1e-9;
-  $<HTMLButtonElement>('q-larger').disabled = s.size >= SIZE_MAX - 1e-9;
-  $<HTMLButtonElement>('q-default').hidden = !hasPieceOverride(piece.id);
 }
 
 function change<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]): void {
@@ -131,21 +131,20 @@ function change<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]):
   void draw(true);
 }
 
+$('q-smaller').addEventListener('click', () => stepSize(-0.1));
+$('q-larger').addEventListener('click', () => stepSize(0.1));
+function stepSize(delta: number): void {
+  const size = settingsFor(currentPiece().id).size;
+  change('size', Math.round(Math.min(SIZE_MAX, Math.max(SIZE_MIN, size + delta)) * 100) / 100);
+}
+
 function makeCurrentDefault(): void {
   makeDefaults(currentPiece().id);
   fillPanel();
   fillBars();
 }
 
-$('q-smaller').addEventListener('click', () => stepSize(-0.1));
-$('q-larger').addEventListener('click', () => stepSize(0.1));
-$<HTMLSelectElement>('q-spacing').addEventListener('change', (e) => change('spacing', (e.target as HTMLSelectElement).value as Spacing));
-$('q-default').addEventListener('click', makeCurrentDefault);
 
-function stepSize(delta: number): void {
-  const size = settingsFor(currentPiece().id).size;
-  change('size', Math.round(Math.min(SIZE_MAX, Math.max(SIZE_MIN, size + delta)) * 100) / 100);
-}
 
 // Showing and hiding: both bars show when a song opens and on a tap on the music; a tap hides them
 // again, and they also fade on their own after a few seconds idle. They stay while a panel is open
