@@ -129,13 +129,14 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-kind { font-weight: 700; }
 .ex-score { display: flex; justify-content: space-between; padding: 6px 16px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .ex-score b { color: var(--fg); }
-.ex-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: auto; }
-/* Hidden with a class, not when empty: the renderer measures the box's width when it draws, so it must be laid out. */
-.ex-notation { width: 100%; }
+.ex-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: hidden; }
+/* Hidden with a class, not when empty: the renderer measures the box's width when it draws, so it must be laid out.
+   The music takes the room left in the middle and is shrunk to fit it (notation.ts), whatever the screen. */
+.ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ex-notation > div { width: 100%; display: flex; justify-content: center; }
 .ex-notation.off { display: none; }
 .ex-notation svg { filter: var(--music-filter); }
-.ex-page { position: relative; }
-.ex-bar { position: absolute; background: rgba(37, 99, 235, 0.15); border-radius: 4px; pointer-events: none; }
+.ex-bar { fill: rgba(37, 99, 235, 0.15); }
 .ex-name { font-size: 2.2rem; font-weight: 700; }
 .ex-name.small { font-size: 1.3rem; }
 .ex-name:empty, .ex-chain:empty, .ex-status:empty, .ex-sub:empty { display: none; }

@@ -88,6 +88,8 @@ export class ExerciseNotation {
     this.page = document.createElement('div');
     this.page.className = 'ex-page';
     box.append(this.small, this.page);
+    // Shrunk to fit again whenever the room changes (turning the phone, the window resized).
+    new ResizeObserver(() => this.fit()).observe(box);
     this.osmd = new OpenSheetMusicDisplay(this.small, {
       autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
       drawPartNames: false, drawMeasureNumbers: false, drawingParameters: 'compacttight', autoBeam: true,
@@ -104,6 +106,25 @@ export class ExerciseNotation {
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.osmd.zoom = 1.1;
     this.osmd.render();
+    this.fit();
+  }
+
+  /**
+   * The drawing at its own size, or smaller to fit the room it has (never larger): long chains and big chunks
+   * of a piece shrink rather than run off the screen, in any orientation. The drawing's own coordinates are
+   * kept (its viewBox), so shading drawn into it stays in place.
+   */
+  private fit(): void {
+    const svg = (this.page.hidden ? this.small : this.page).querySelector('svg');
+    if (!svg) return;
+    const w = Number(svg.dataset.w ?? svg.getAttribute('width')), h = Number(svg.dataset.h ?? svg.getAttribute('height'));
+    if (!(w > 0 && h > 0)) return;
+    svg.dataset.w = String(w);
+    svg.dataset.h = String(h);
+    if (!svg.getAttribute('viewBox')) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    const scale = Math.min(1, this.box.clientWidth / w, this.box.clientHeight / h);
+    svg.setAttribute('width', String(w * scale));
+    svg.setAttribute('height', String(h * scale));
   }
 
   /**
@@ -128,27 +149,30 @@ export class ExerciseNotation {
     rules.MinMeasureToDrawIndex = rules.MinMeasureToDrawNumber = from;
     rules.MaxMeasureToDrawIndex = rules.MaxMeasureToDrawNumber = to;
     o.render();
-    // Shade the lit bars: each bar's box across its staves, in the drawing's pixels.
-    this.page.querySelectorAll('.ex-bar').forEach((x) => x.remove());
-    const unit = 10 * o.zoom;
-    for (const m of lit) {
+    // Shade the lit bars: each bar's box across its staves, drawn into the music behind the notes, in the
+    // drawing's own units (OSMD's are tenths of these, before its zoom), so it stays put when the drawing shrinks.
+    const svg = this.page.querySelector('svg');
+    const unit = 10;
+    for (const m of svg ? lit : []) {
       const staves = (o.GraphicSheet.MeasureList[m] ?? []).filter(Boolean);
       if (!staves.length) continue;
       const first = staves[0].PositionAndShape, last = staves.at(-1)!.PositionAndShape;
-      const shade = document.createElement('div');
-      shade.className = 'ex-bar';
-      shade.style.left = `${first.AbsolutePosition.x * unit}px`;
-      shade.style.width = `${(first.BorderRight - first.BorderLeft) * unit}px`;
-      shade.style.top = `${(first.AbsolutePosition.y - 1) * unit}px`;
-      shade.style.height = `${(last.AbsolutePosition.y + rules.StaffHeight + 2 - first.AbsolutePosition.y) * unit}px`;
-      this.page.append(shade);
+      const shade = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      shade.setAttribute('class', 'ex-bar');
+      shade.setAttribute('x', String((first.AbsolutePosition.x + first.BorderLeft) * unit));
+      shade.setAttribute('width', String((first.BorderRight - first.BorderLeft) * unit));
+      shade.setAttribute('y', String((first.AbsolutePosition.y - 1) * unit));
+      shade.setAttribute('height', String((last.AbsolutePosition.y + rules.StaffHeight + 2 - first.AbsolutePosition.y) * unit));
+      shade.setAttribute('rx', '4');
+      svg!.insertBefore(shade, svg!.firstChild);
     }
+    this.fit();
   }
 
   clear(): void {
     this.request++;
     this.small.replaceChildren();
-    this.page.querySelectorAll('svg, .ex-bar').forEach((x) => x.remove());
+    this.page.querySelectorAll('svg').forEach((x) => x.remove());
     this.box.classList.add('off');
   }
 }
