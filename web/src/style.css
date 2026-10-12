@@ -195,6 +195,10 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
   .ex-overlay .ex-start { font-size: 1rem; padding: 6px 18px; }
   .ex-overlay .ex-after { flex-wrap: nowrap; }
   .ex-overlay .ex-tools { margin-left: auto; min-height: 0; padding: 0; flex: 0 0 auto; }
+  /* The bar stays at the bottom even with no music on screen (Ready, a name, by ear); the name sits in the room above. */
+  .ex-prompt { justify-content: flex-start; }
+  .ex-prompt > .ex-overlay { margin-top: auto; }
+  .ex-name:not(:empty) { margin-top: auto; }
 }
 .keyboard .key.wrong { background: #dc2626 !important; }
 .keyboard .key.want { box-shadow: inset 0 0 0 3px #16a34a; }
