@@ -1,6 +1,6 @@
 // Play along's matching rule (src/matching.ts) on hand-made cases, including the ones a review found the
 // first rule got wrong. Run: npm run check:scoring (Node 22.18+ runs the TypeScript file directly).
-import { judge } from '../src/matching.ts';
+import { judge, judgeRhythm } from '../src/matching.ts';
 
 const cases = [
   {
@@ -39,11 +39,25 @@ const cases = [
     played: [{ midi: 60, t: 50, speed: 0.5 }, { midi: 62, t: 1040, speed: 1 }],
     tol: 80, want: { total: 2, onTime: 1, early: 0, late: 1, missed: 0, wrong: 0 },
   },
+  {
+    name: 'rhythm: any key counts, a chord pressed as a chord is one tap',
+    rhythm: true,
+    steps: [{ t: 0, keys: [60, 64, 67] }, { t: 500, keys: [62] }],
+    played: [{ midi: 48, t: 5, speed: 1 }, { midi: 52, t: 15, speed: 1 }, { midi: 71, t: 510, speed: 1 }],
+    tol: 100, want: { total: 2, onTime: 2, early: 0, late: 0, missed: 0, wrong: 0 },
+  },
+  {
+    name: 'rhythm: an extra tap and a missed beat',
+    rhythm: true,
+    steps: [{ t: 0, keys: [60] }, { t: 500, keys: [62] }, { t: 1000, keys: [64] }],
+    played: [{ midi: 60, t: 0, speed: 1 }, { midi: 60, t: 250, speed: 1 }, { midi: 60, t: 520, speed: 1 }],
+    tol: 100, want: { total: 3, onTime: 2, early: 0, late: 0, missed: 1, wrong: 1 },
+  },
 ];
 
 let failed = 0;
 for (const c of cases) {
-  const got = judge(c.steps, c.played, c.tol);
+  const got = (c.rhythm ? judgeRhythm : judge)(c.steps, c.played, c.tol);
   const ok = Object.entries(c.want).every(([k, v]) => got[k] === v);
   if (!ok) failed++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${c.name}${ok ? '' : `\n     want ${JSON.stringify(c.want)}\n     got  ${JSON.stringify(got)}`}`);

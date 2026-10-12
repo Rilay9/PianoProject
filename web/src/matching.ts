@@ -40,3 +40,20 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
   }
   return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, wrong: played.length - pressUsed.size };
 }
+
+/** Keys pressed this close together are one tap (a chord's keys land within a few ms of each other). */
+const CHORD_MS = 30;
+
+/**
+ * Rhythm only: one tap on any key for each moment you have notes (a chord is one tap), judged on timing
+ * alone by the same rule as judge(). Taps with no written moment near them are counted as wrong (extra taps).
+ */
+export function judgeRhythm(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: number): Judged {
+  const taps: PlayedKey[] = [];
+  for (const p of [...played].sort((a, b) => a.t - b.t)) {
+    const last = taps.at(-1);
+    if (last && (p.t - last.t) / p.speed < CHORD_MS) continue;
+    taps.push({ ...p, midi: 0 });
+  }
+  return judge(steps.map((s) => ({ t: s.t, keys: [0] })), taps, toleranceMs);
+}

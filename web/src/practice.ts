@@ -11,11 +11,11 @@ import type { FollowView } from './follow';
 import type { KeyEvent, MidiInput } from './midi';
 import type { Beat, NoteEvent, Sound } from './sound';
 import type { ScoreSettings } from './settings';
-import { judge, type ExpectedStep, type PlayedKey } from './matching';
+import { judge, judgeRhythm, type ExpectedStep, type PlayedKey } from './matching';
 
 export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const;
 
-export interface Summary { total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number }
+export interface Summary { total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number; rhythm: boolean }
 
 type Hand = 'both' | 'right' | 'left';
 const yours = (s: ScoreSettings): Hand => (s.hands === 'left' || s.hands === 'right' ? s.hands : 'both');
@@ -137,6 +137,7 @@ export class Practice {
       const keys = this.view.struckAt(i, hand);
       if (keys.length) steps.push({ t: this.view.stepT(i), keys });
     }
-    return { ...judge(steps, this.played, tolerance), tolerance };
+    const rhythm = s.mode === 'rhythm';
+    return { ...(rhythm ? judgeRhythm : judge)(steps, this.played, tolerance), tolerance, rhythm };
   }
 }

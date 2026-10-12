@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#d9dce1">
   <title>Piano</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
   <!-- Controls layer: a top bar and a bottom bar over the music, shown when a song opens and on a tap. -->
@@ -22,6 +25,7 @@
       <option value="wait">Wait for me</option>
       <option value="along">Play along</option>
       <option value="ladder">Ladder</option>
+      <option value="rhythm">Rhythm</option>
     </select>
     <button id="q-loop" type="button" class="btn" aria-pressed="false">Loop</button>
     <button id="open-tempo" type="button" class="btn" aria-haspopup="dialog" aria-label="Tempo">♩ <span id="q-bpm"></span></button>
@@ -146,6 +150,12 @@
       <h2 id="settings-title">Display</h2>
       <p id="override-note" class="note"></p>
 
+      <fieldset class="row"><legend>Theme (whole app)</legend>
+        <label><input type="radio" name="theme" value="system"> As the phone</label>
+        <label><input type="radio" name="theme" value="light"> Light</label>
+        <label><input type="radio" name="theme" value="dark"> Dark</label>
+      </fieldset>
+
       <label class="row">Notation size
         <input id="s-size" type="range" min="0.6" max="1.8" step="0.05">
         <output id="s-size-out"></output>
@@ -200,6 +210,7 @@
         <label><input id="s-tempoMarks" type="checkbox"> Tempo marks</label>
         <label><input id="s-fingering" type="checkbox"> Fingering</label>
         <label><input id="s-lyrics" type="checkbox"> Lyrics</label>
+        <label><input id="s-musicWhilePlaying" type="checkbox"> Music while playing</label>
       </fieldset>
 
       <div class="actions">

@@ -1,13 +1,14 @@
 import './style.css';
 import { FollowView, isStrip } from './follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from './marks';
+import { setUpOffline } from './offline';
 import { MidiInput } from './midi';
 import { Practice } from './practice';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
   currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Theme, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
 } from './settings';
 
 interface Piece {
@@ -42,6 +43,13 @@ view.onStep = (notes) => strip.show(notes);
 let pieces: Piece[] = [];
 let currentId = '';
 const xmlCache = new Map<string, string>();
+
+/** Light, dark, or as the phone is (app-wide): the stylesheet reads data-theme on the page. */
+function applyTheme(): void {
+  const theme = settingsFor('').theme; // app-wide: the same for every song
+  if (theme === 'system') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = theme;
+}
 
 /** A line over the music: a problem (red) or, with info, just news. */
 function showMessage(text: string, info = false): void {
@@ -111,6 +119,8 @@ function fillBars(): void {
   $('song-composer').textContent = piece.composer;
   $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
   const running = view.playing || practice.active;
+  // Blind: the music hides while you play (Display → Show → Music while playing off) and comes back on stopping.
+  score.classList.toggle('blind', running && !s.musicWhilePlaying);
   $('play').textContent = running ? '⏸' : '▶';
   $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
   $<HTMLSelectElement>('q-mode').value = s.mode;
@@ -179,6 +189,8 @@ for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDi
 // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
 let starting = false;
 /** The hands the piano plays: in Watch the bar's choice; in Wait and Play along the ones you are not playing. */
+/** The modes that judge your playing against the score as it goes by. */
+const judged = (mode: Mode) => mode === 'along' || mode === 'ladder' || mode === 'rhythm';
 function pianoHands(s: ScoreSettings): 'both' | 'right' | 'left' | null {
   if (s.mode === 'watch') return s.hands === 'off' ? null : s.hands;
   return s.hands === 'left' ? 'right' : s.hands === 'right' ? 'left' : null;
@@ -218,7 +230,7 @@ async function play(): Promise<void> {
   } else {
     startSound(view.currentT);
     view.play();
-    if (s.mode === 'along') practice.startAlong();
+    if (judged(s.mode)) practice.startAlong();
   }
   fillBars();
 }
@@ -287,16 +299,16 @@ function startLoopPass(): void {
   sound.play(piano ? view.notesBetween(piano, span.t0, span.t1) : [], [...span.countIn, ...clicks], span.from, s.speed);
   view.songClock = () => sound.songTime();
   view.play(-1, span.t1);
-  if (s.mode === 'along' || s.mode === 'ladder') practice.startAlong();
+  if (judged(s.mode)) practice.startAlong();
 }
 view.onLoopEnd = () => {
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'wait') { practice.loopBack(); return; }
-  if (s.mode === 'along' || s.mode === 'ladder') {
+  if (judged(s.mode)) {
     const r = practice.passResult();
     pass++;
     const clean = r.total > 0 && r.onTime === r.total && r.wrong === 0;
-    let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.wrong ? `, ${r.wrong} wrong` : ''}`;
+    let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.wrong ? `, ${r.wrong} ${r.rhythm ? 'extra' : 'wrong'}` : ''}`;
     if (s.mode === 'ladder') {
       const next = clean ? (s.speed < 1 ? Math.min(1, s.speed + s.ladderStep) : s.speed) : Math.max(SPEED_MIN, s.speed - s.ladderStep);
       const rounded = Math.round(next * 100) / 100;
@@ -333,9 +345,11 @@ practice.onDone = () => { fillBars(); showBars(); };
 practice.onSummary = (r) => {
   if (!r.total) return;
   const pct = (n: number) => `${Math.round((n / r.total) * 100)}%`;
-  $('summary-body').textContent =
-    `${r.total} notes: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
-    `${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
+  $('summary-body').textContent = r.rhythm
+    ? `${r.total} beats to tap: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
+      `${r.missed} missed. ${r.wrong} extra tap${r.wrong === 1 ? '' : 's'}.`
+    : `${r.total} notes: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
+      `${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
   summaryDialog.showModal();
 };
 
@@ -588,12 +602,13 @@ function fillPanel(): void {
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="slots"]')) input.checked = input.value === String(s.slots);
   $<HTMLInputElement>('s-size').value = String(s.size);
   $<HTMLOutputElement>('s-size-out').value = `${Math.round(s.size * 100)}%`;
-  for (const name of ['spacing', 'layout', 'barNumbers', 'marker', 'markerFollows', 'under'] as const) {
+  for (const name of ['spacing', 'layout', 'barNumbers', 'marker', 'markerFollows', 'under', 'theme'] as const) {
     for (const input of settingsDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) {
       input.checked = input.value === s[name];
     }
   }
   $<HTMLInputElement>('s-tempoMarks').checked = s.tempoMarks;
+  $<HTMLInputElement>('s-musicWhilePlaying').checked = s.musicWhilePlaying;
   $<HTMLInputElement>('s-fingering').checked = s.fingering;
   $<HTMLInputElement>('s-lyrics').checked = s.lyrics;
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="lines"]')) input.checked = input.value === String(s.lines);
@@ -620,11 +635,13 @@ settingsDialog.addEventListener('change', (e) => {
     fillBars();
   }
   else if (input.name === 'under') change('under', input.value as Under);
+  else if (input.name === 'theme') { savePieceSetting(currentPiece().id, 'theme', input.value as Theme); applyTheme(); }
   else if (input.name === 'barNumbers') change('barNumbers', input.value as BarNumbers);
   else if (input.name === 'lines') change('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
   else if (input.id === 's-tempoMarks') change('tempoMarks', input.checked);
   else if (input.id === 's-fingering') change('fingering', input.checked);
   else if (input.id === 's-lyrics') change('lyrics', input.checked);
+  else if (input.id === 's-musicWhilePlaying') { savePieceSetting(currentPiece().id, 'musicWhilePlaying', input.checked); fillPanel(); fillBars(); }
 });
 $('make-default').addEventListener('click', makeCurrentDefault);
 $('reset-piece').addEventListener('click', () => { resetPiece(currentPiece().id); fillPanel(); void draw(); });
@@ -644,11 +661,18 @@ async function start(): Promise<void> {
   await openSong(wanted && pieces.some((p) => p.id === wanted) ? wanted : pieces[0].id);
 }
 
-// The old app installed a service worker at this same address. This app has none yet,
-// so any registration found here is the old app's: remove it so it stops serving old files.
-navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => void r.unregister())).catch(() => {});
-
+applyTheme();
 void start();
 
+// Offline: the service worker (it replaces the old app's at this address) and, on the first visit, every
+// file saved; the progress shows as news unless something else is being said.
+let offlineNews = '';
+setUpOffline(base, (done, total) => {
+  if (!message.hidden && message.textContent !== offlineNews) return;
+  offlineNews = done < total ? `Saving the app for offline use: ${done} / ${total}` : 'Saved for offline use';
+  showMessage(offlineNews, true);
+  if (done === total) setTimeout(() => { if (message.textContent === offlineNews) showMessage(''); }, 4000);
+}).catch((cause) => showMessage(cause instanceof Error ? cause.message : String(cause)));
+
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number) => view.struckAt(i, 'both'), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };

@@ -18,9 +18,10 @@ export type ClickOn = 'beats' | 'quarters' | 'eighths';
 export type PianoOut = 'phone' | 'keyboard';
 /**
  * Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary),
- * Ladder (Play along round a loop of bars, the tempo up a step after each clean pass and down after a messy one).
+ * Ladder (Play along round a loop of bars, the tempo up a step after each clean pass and down after a messy one),
+ * Rhythm (Play along judged on timing alone: one tap on any key for each of your notes or chords).
  */
-export type Mode = 'watch' | 'wait' | 'along' | 'ladder';
+export type Mode = 'watch' | 'wait' | 'along' | 'ladder' | 'rhythm';
 /** How close to when a note is due counts as on time in Play along. */
 export type OnTime = 'relaxed' | 'normal' | 'strict';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
@@ -29,6 +30,8 @@ export type BarNumbers = 'off' | 'lines' | 'every';
 /** Line breaks: the renderer's own, the file's, or a fixed number of bars per line. */
 export type Lines = 'auto' | 'file' | 1 | 2 | 3 | 4 | 6;
 export type Device = 'phone-upright' | 'phone-sideways' | 'tablet';
+/** Light or dark colours, or as the phone is set. */
+export type Theme = 'system' | 'light' | 'dark';
 
 export interface ScoreSettings {
   /** Notation size. 1 = 10 CSS px between staff lines, about the size of a printed piano staff on a phone. */
@@ -40,6 +43,8 @@ export interface ScoreSettings {
   tempoMarks: boolean;
   fingering: boolean;
   lyrics: boolean;
+  /** Blind when off: the music hides while you play and comes back when you stop. */
+  musicWhilePlaying: boolean;
   /** Slots on the screen in the Turn and Rolling layouts (Turn swaps halves, so an even number). */
   slots: number;
   marker: Marker;
@@ -56,6 +61,7 @@ export interface ScoreSettings {
   onTime: OnTime;
   /** Ladder: how far the speed moves after a pass, as a share of the song's own tempo. */
   ladderStep: number;
+  theme: Theme;
   /** 0 to 1. */
   pianoVolume: number;
   clickVolume: number;
@@ -70,6 +76,7 @@ export const DEFAULTS: ScoreSettings = {
   tempoMarks: true,
   fingering: true,
   lyrics: false,
+  musicWhilePlaying: true,
   slots: 2,
   marker: 'bar',
   markerFollows: 'split',
@@ -83,6 +90,7 @@ export const DEFAULTS: ScoreSettings = {
   pianoOut: 'phone',
   onTime: 'normal',
   ladderStep: 0.05,
+  theme: 'system',
   pianoVolume: 0.8,
   clickVolume: 0.6,
 };
@@ -159,7 +167,7 @@ function read(): Stored {
  * piano plays, the two volumes and the click sound. Kept under their own key.
  */
 const APP_KEY = 'piano-web.app.v1';
-export const APP_WIDE = ['pianoOut', 'pianoVolume', 'clickVolume', 'click'] as const;
+export const APP_WIDE = ['pianoOut', 'pianoVolume', 'clickVolume', 'click', 'theme'] as const;
 type AppWide = Pick<ScoreSettings, (typeof APP_WIDE)[number]>;
 const isAppWide = (key: string): key is (typeof APP_WIDE)[number] => (APP_WIDE as readonly string[]).includes(key);
 

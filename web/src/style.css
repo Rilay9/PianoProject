@@ -1,6 +1,6 @@
-/* Colours. The music always sits on white paper; the bars are a solid grey band that reads as separate
-   from it, with near-black (light) or near-white (dark) text: about 13:1 and 15:1 contrast. Buttons sit
-   one step off the band so they look pressable without boxes everywhere. */
+/* Colours. The music sits on paper (white, or near-black in the dark theme); the bars are a solid grey
+   band that reads as separate from it, with near-black (light) or near-white (dark) text: about 13:1 and
+   15:1 contrast. Buttons sit one step off the band so they look pressable without boxes everywhere. */
 :root {
   --bg: #ffffff;
   --fg: #111827;
@@ -15,16 +15,20 @@
   --btn-line: #9ca3af;
   --panel-bg: #ffffff;
   --current-bg: #e8efff;
-  /* The marker sits on the white music in both themes. */
+  /* The marker and the loop's bars are see-through, so they read on either paper. */
   --mark: rgba(37, 99, 235, 0.22);
   --mark-edge: #2563eb;
-  /* The loop's bars, also on the white music in both themes. */
+  --paper: #ffffff;
+  --music-filter: none;
   --loop: rgba(234, 179, 8, 0.2);
   color-scheme: light;
   font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
+/* Dark: when the phone is dark and Light was not chosen, or when Dark was chosen (Display → Theme). The
+   music is drawn light on dark too (owner, 2026-10-11): the drawing is inverted, hue turned back so the
+   marker's coloured notes keep their colour. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #121316;
     --fg: #f3f4f6;
     --muted: #b6bbc4;
@@ -39,7 +43,27 @@
     --panel-bg: #1f2125;
     --current-bg: #1e2a44;
     color-scheme: dark;
+    --paper: #16181c;
+    --music-filter: invert(0.92) hue-rotate(180deg);
   }
+}
+:root[data-theme="dark"] {
+  --bg: #121316;
+  --fg: #f3f4f6;
+  --muted: #b6bbc4;
+  --line: #3a3d43;
+  --accent: #7aa2ff;
+  --bar-bg: #1f2125;
+  --bar-fg: #f3f4f6;
+  --bar-muted: #c3c7ce;
+  --bar-line: #3a3d43;
+  --btn-bg: #2d3036;
+  --btn-line: #4b5058;
+  --panel-bg: #1f2125;
+  --current-bg: #1e2a44;
+  color-scheme: dark;
+  --paper: #16181c;
+  --music-filter: invert(0.92) hue-rotate(180deg);
 }
 
 * { box-sizing: border-box; }
@@ -81,8 +105,8 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Not a problem, just news (a loop pass, what to tap next): dark text on a light strip over the music. */
 .message.info { color: #111827; background: rgba(255, 255, 255, 0.9); border-radius: 6px; padding: 4px 8px; }
 
-/* The music fills the screen, on white whatever the theme so it reads like paper. The bars float over it. */
-.score { position: fixed; inset: 0 0 var(--under-h, 0px); overflow: hidden; background: #ffffff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+/* The music fills the screen, on its paper. The bars float over it. */
+.score { position: fixed; inset: 0 0 var(--under-h, 0px); overflow: hidden; background: var(--paper); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .score.strip { touch-action: pan-x; }
 /* Where OSMD draws, off screen; the slots show copies, the one-line layouts show it through <use>. */
 .osmd-source { position: absolute; left: -10000px; top: 0; }
@@ -93,6 +117,8 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .scroller { position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden; }
 .scroller > .inner { position: relative; }
 .scroller > .inner > svg { position: absolute; left: 0; top: 0; display: block; }
+.score.blind > * { visibility: hidden; }
+.score svg { filter: var(--music-filter); }
 .loop-zone { position: absolute; background: var(--loop); border-radius: 4px; pointer-events: none; }
 .mark { position: absolute; background: var(--mark); border-left: 2px solid var(--mark-edge); border-radius: 3px; pointer-events: none; }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
