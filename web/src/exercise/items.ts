@@ -34,7 +34,11 @@ export interface Item {
   bars?: number[];
 }
 
-export interface ItemSet { id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number }
+export interface ItemSet {
+  id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number;
+  /** A passage from a score: its time signature and key (sharps +, flats −), drawn as the score has them. */
+  meter?: { beats: number; beatType: number }; fifths?: number;
+}
 
 const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.75 s a note)
 
@@ -71,7 +75,7 @@ function chordName(symbol: string): string {
 const QUALITY: Record<string, string> = { M: 'major', m: 'minor', P: 'perfect', d: 'diminished', A: 'augmented' };
 const ORDINAL = ['', 'unison', '2nd', '3rd', '4th', '5th', '6th', '7th', 'octave'];
 
-export interface Parsed { groups: string[][]; beats: number[]; bars: number[]; tempo?: number }
+export interface Parsed { groups: string[][]; beats: number[]; bars: number[]; tempo?: number; meter?: { beats: number; beatType: number }; fifths?: number }
 
 /**
  * MusicXML notes (a fragment or a whole file), one voice of one staff: each moment's notes one group (a chord
@@ -92,6 +96,13 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
     if (out.tempo === undefined) {
       const sound = measure.querySelector('sound[tempo]');
       if (sound) out.tempo = Number(sound.getAttribute('tempo')) || undefined;
+    }
+    // The time signature and key in force where the wanted bars begin.
+    if (!bars || m <= first) {
+      const beatsEl = measure.querySelector(':scope > attributes > time > beats'), typeEl = measure.querySelector(':scope > attributes > time > beat-type');
+      if (beatsEl && typeEl) out.meter = { beats: Number(beatsEl.textContent), beatType: Number(typeEl.textContent) };
+      const fifthsEl = measure.querySelector(':scope > attributes > key > fifths');
+      if (fifthsEl) out.fifths = Number(fifthsEl.textContent);
     }
     if (bars && (m < first || m > bars[1] - 1)) return;
     for (const el of measure.querySelectorAll(':scope > note')) {
@@ -169,7 +180,7 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
       if (!g.length && items.length) { const it = items.at(-1)!; it.groups.push([]); it.beats!.push(at.beats); it.bars!.push(at.bar); return; }
       if (g.length) items.push({ n: items.length + 1, name: g.map(shown).join(' '), short: letters(g[0]), groups: [g], beats: [at.beats], bars: [at.bar] });
     });
-    return { id, title: file.title, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO };
+    return { id, title: file.title, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths };
   }
   const entries = Object.entries(file.items ?? {}).map(([k, v]) => [Number(k), v] as const).sort((x, y) => x[0] - y[0]);
   const items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));

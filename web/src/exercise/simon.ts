@@ -1,7 +1,8 @@
 // Simon (owner, 2026-10-11): the app gives a chain of items and you play it back; each round the chain grows by
 // one (a random item from a pool, or the next bit of a passage) until you slip. Built on the shared exercise
 // screen, so the same help ladder applies (owner): 1 notation + sound + keys lit, 2 notation + sound,
-// 3 notation, 4 name only, 5 by ear. The music is on screen at every rung but the last two.
+// 3 notation, 4 name only, 5 by ear. The music is on screen at every rung but the last two. Simon is the
+// memory version of the drills (owner): on your turn, what was shown stays until your first key, then it goes.
 
 import type { Sound, NoteEvent } from '../sound';
 import { midiOf, shown, type Item, type ItemSet } from './items';
@@ -47,6 +48,7 @@ export class Simon {
   private pos = 0;
   private got = new Set<number>(); // what of the current group is played (keys, or note names in the freer matches)
   private tries = TRIES;
+  private hidden = false; // on your turn: the music (or names) gone after your first key
   private token = 0; // bumps to cancel a showing in progress
   private timers: number[] = [];
 
@@ -61,6 +63,8 @@ export class Simon {
   }
 
   get levelNow(): SimonLevel { return { ...this.level }; }
+  /** For checks: the keys of each group still to play this turn. */
+  expected(): number[][] { return this.state === 'turn' ? this.flat.slice(this.pos).map((g) => g.keys) : []; }
 
   /** Opens with these sets (the last one chosen, if still there). */
   open(sets: ItemSet[]): void {
@@ -142,7 +146,7 @@ export class Simon {
     this.ui.name.textContent = '';
     this.ui.chain.replaceChildren();
     this.ui.hear.hidden = true;
-    if (withNotation) await this.notation.show(this.chain, [], passage); else this.notation.clear();
+    if (withNotation) await this.drawChain([]); else this.notation.clear();
     if (token !== this.token) return;
     if (rung === 3) { this.yourTurn(); return; } // reading: the chain is there to read; no playing it first
     this.ui.status.textContent = rung === 4 ? 'Remember…' : 'Listen…';
@@ -167,7 +171,7 @@ export class Simon {
       this.later(step.at, () => {
         if (token !== this.token) return;
         if (rung === 1) this.keys.light(step.keys);
-        if (withNotation) void this.notation.show(this.chain, [step.item], passage);
+        if (withNotation) void this.drawChain([step.item]);
         if (rung === 4) { this.ui.name.textContent = this.chain[step.item].name; this.ui.sub.textContent = `${step.item + 1} of ${this.chain.length}`; }
         if (rung !== 4) this.ui.sub.textContent = `${step.item + 1} of ${this.chain.length}`;
       });
@@ -180,21 +184,22 @@ export class Simon {
     this.pos = 0;
     this.got.clear();
     this.keys.clearMarks();
+    this.hidden = false;
     const rung = this.level.rung;
-    if (rung <= 3) void this.notation.show(this.chain, [], this.set.order === 'passage'); else this.notation.clear();
+    if (rung <= 3) void this.drawChain([]); else this.notation.clear();
     this.ui.name.textContent = '';
-    this.ui.status.textContent = `Your turn: ${this.flat.length === 1 ? 'play it' : `play these ${this.chain.length}`}`;
+    this.ui.status.textContent = rung <= 3
+      ? `Your turn: ${this.flat.length === 1 ? 'play it' : `play these ${this.chain.length}`} (it hides when you start)`
+      : `Your turn: ${this.flat.length === 1 ? 'play it' : `play these ${this.chain.length}`}`;
     this.ui.status.className = 'ex-status';
     this.ui.hear.textContent = rung === 3 || rung === 4 ? 'Show me' : 'Hear again';
     this.ui.hear.hidden = false;
     this.progress();
   }
 
-  /** Where you are in the chain: lit keys for the next notes at rung 1, dots otherwise when the music is hidden. */
+  /** Where you are in the chain: dots (once the music is gone; from memory, so nothing lights the next keys). */
   private progress(): void {
-    const rung = this.level.rung;
-    if (rung === 1) this.keys.light(this.flat[this.pos]?.keys ?? []);
-    if (rung >= 4) {
+    if (this.hidden || this.level.rung >= 4) {
       const done = this.flat[this.pos]?.item ?? this.chain.length;
       this.ui.chain.replaceChildren(...this.chain.map((it, i) =>
         Object.assign(document.createElement('span'), { className: `chip${i < done ? ' done' : i === done ? ' now' : ''}`, textContent: i < done ? it.short : '·' })));
@@ -207,6 +212,12 @@ export class Simon {
     if (!on) return;
     if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { void this.begin(); return; }
     if (this.state !== 'turn') return;
+    if (!this.hidden) { // your first key: from here it is from memory
+      this.hidden = true;
+      this.notation.clear();
+      this.ui.status.textContent = 'From memory…';
+      this.progress();
+    }
     const group = this.flat[this.pos];
     const free = this.level.match !== 'same';
     const want = free ? group.keys.map((k) => k % 12) : group.keys;
@@ -250,6 +261,7 @@ export class Simon {
   private missed(midi: number): void {
     const group = this.flat[this.pos], item = this.chain[group.item];
     this.state = 'miss';
+    if (this.level.rung <= 3) void this.drawChain([group.item]); // the music back, the missed item lit
     this.keys.light([]);
     this.keys.wrong([midi]);
     this.keys.want(group.keys);
@@ -275,6 +287,11 @@ export class Simon {
   private async hearAgain(): Promise<void> {
     if (this.state !== 'turn') return;
     await this.showChain(true);
+  }
+
+  /** The chain on the staff, these items lit; a passage as its score has it (bars, time signature, key). */
+  private drawChain(lit: number[]): Promise<void> {
+    return this.notation.show(this.chain, lit, this.set.order === 'passage', this.set.meter, this.set.fifths ?? 0);
   }
 
   private scoreLine(): void {

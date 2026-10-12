@@ -35,8 +35,11 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
     `${color ? `<notehead color="${color}">normal</notehead>` : ''}<staff>${staff}</staff></note>`).join('');
 }
 
-/** MusicXML for these items, items `lit` drawn blue. passage: one run of music (bars as it had them). */
-export function itemsXml(items: Item[], lit: number[] = [], passage = false): string {
+/**
+ * MusicXML for these items, items `lit` drawn blue. passage: one run of music (bars as it had them); meter and
+ * fifths: its time signature and key, drawn (otherwise each bar is as long as what is in it, no signature shown).
+ */
+export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0): string {
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
     g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i,
   })));
@@ -52,12 +55,16 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false): st
   const measures = bars.map((bar, n) => {
     // The bar is as long as what is in it (a cut-out bar may be part of one); its time signature is not shown.
     const length = Math.max(1, bar.reduce((t, x) => t + Math.max(1, Math.round(x.beats * DIVISIONS)), 0));
-    const time = `<time print-object="no"><beats>${length}</beats><beat-type>32</beat-type></time>`;
+    const real = passage && meter;
+    const time = real
+      ? (n === 0 ? `<time><beats>${meter.beats}</beats><beat-type>${meter.beatType}</beat-type></time>` : '')
+      : `<time print-object="no"><beats>${length}</beats><beat-type>32</beat-type></time>`;
+    const key = real ? `<key><fifths>${fifths}</fifths></key>` : '<key print-object="no"><fifths>0</fifths></key>';
     const attrs = n === 0
-      ? `<attributes><divisions>${DIVISIONS}</divisions><key print-object="no"><fifths>0</fifths></key>${time}` +
+      ? `<attributes><divisions>${DIVISIONS}</divisions>${key}${time}` +
         (grand ? '<staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
           : treble ? '<clef><sign>G</sign><line>2</line></clef>' : '<clef><sign>F</sign><line>4</line></clef>') + '</attributes>'
-      : `<attributes>${time}</attributes>`;
+      : time ? `<attributes>${time}</attributes>` : '';
     const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color)).join('');
     const body = grand
       ? staff(1, (m) => m >= SPLIT) + `<backup><duration>${length}</duration></backup>` + staff(2, (m) => m < SPLIT)
@@ -75,15 +82,15 @@ export class ExerciseNotation {
   constructor(private readonly box: HTMLElement) {
     this.osmd = new OpenSheetMusicDisplay(box, {
       autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
-      drawPartNames: false, drawMeasureNumbers: false, drawingParameters: 'compacttight',
+      drawPartNames: false, drawMeasureNumbers: false, drawingParameters: 'compacttight', autoBeam: true,
     });
   }
 
-  async show(items: Item[], lit: number[] = [], passage = false): Promise<void> {
+  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0): Promise<void> {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
-    await this.osmd.load(itemsXml(items, lit, passage));
+    await this.osmd.load(itemsXml(items, lit, passage, meter, fifths));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.osmd.zoom = 1.1;
     this.osmd.render();
