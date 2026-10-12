@@ -6,15 +6,14 @@ import { SplendidGrandPiano } from 'smplr';
 import type { MidiInput } from './midi';
 import type { Click } from './settings';
 
-/** A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1). */
-export interface NoteEvent { t: number; midi: number; dur: number }
+/** A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1), how hard (1-127). */
+export interface NoteEvent { t: number; midi: number; dur: number; vel: number }
 /** A metronome beat: when (ms at speed 1), and whether it starts a bar. */
 export interface Beat { t: number; accent: boolean }
 
 const LOOKAHEAD_S = 0.15; // how far ahead notes and clicks are handed to the audio clock
 const TICK_MS = 25; // how often the scheduler looks
 const START_LEAD_S = 0.05; // a moment to get the first notes scheduled before they are due
-const VELOCITY = 80; // the scores carry no reliable loudness yet: a middle layer of the piano
 
 export class Sound {
   private ctx: AudioContext | null = null;
@@ -118,10 +117,10 @@ export class Sound {
       const duration = n.dur / 1000 / this.speed;
       if (this.keyboard) {
         // The MIDI clock is performance.now(); the audio clock is ctx time: the same moment in both.
-        this.keyboard.play(n.midi, VELOCITY, performance.now() + (time - ctx.currentTime) * 1000, duration * 1000);
+        this.keyboard.play(n.midi, n.vel, performance.now() + (time - ctx.currentTime) * 1000, duration * 1000);
         continue;
       }
-      const stop = this.piano!.start({ note: n.midi, velocity: VELOCITY, time, duration });
+      const stop = this.piano!.start({ note: n.midi, velocity: n.vel, time, duration });
       this.voices.push({ stop, end: time + duration + 1 });
     }
     while (this.nextBeat < this.beats.length && this.at(this.beats[this.nextBeat].t) < horizon) {

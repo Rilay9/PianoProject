@@ -148,6 +148,23 @@ function read(): Stored {
   return empty();
 }
 
+/**
+ * Settings that are one choice for the whole app rather than per song or screen (owner, 2026-10-11): where the
+ * piano plays, the two volumes and the click sound. Kept under their own key.
+ */
+const APP_KEY = 'piano-web.app.v1';
+export const APP_WIDE = ['pianoOut', 'pianoVolume', 'clickVolume', 'click'] as const;
+type AppWide = Pick<ScoreSettings, (typeof APP_WIDE)[number]>;
+const isAppWide = (key: string): key is (typeof APP_WIDE)[number] => (APP_WIDE as readonly string[]).includes(key);
+
+function readApp(): Partial<AppWide> {
+  try { return JSON.parse(localStorage.getItem(APP_KEY) ?? '{}') as Partial<AppWide>; } catch { return {}; }
+}
+
+function writeApp(app: Partial<AppWide>): void {
+  try { localStorage.setItem(APP_KEY, JSON.stringify(app)); } catch { /* storage unavailable: this visit only */ }
+}
+
 function write(stored: Stored): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(stored));
@@ -159,6 +176,9 @@ function write(stored: Stored): void {
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
   const s = { ...DEFAULTS, ...DEVICE_DEFAULTS[device], ...d.defaults, ...d.pieces[pieceId] };
+  // The app-wide ones come from their own store only (a per-song value saved before they moved is ignored).
+  const app = readApp();
+  for (const key of APP_WIDE) (s as Record<string, unknown>)[key] = app[key] ?? DEFAULTS[key];
   // A layout this screen does not offer (including the earlier Auto / Page / One line) means its default.
   if (!LAYOUTS[device].includes(s.layout)) s.layout = LAYOUTS[device][0];
   if (!slotChoices(s.layout).includes(s.slots)) s.slots = DEFAULTS.slots;
@@ -169,8 +189,9 @@ export function hasPieceOverride(pieceId: string, device = currentDevice()): boo
   return Object.keys(read()[device].pieces[pieceId] ?? {}).length > 0;
 }
 
-/** Saves a change for this song on this kind of screen only. */
+/** Saves a change for this song on this kind of screen only (an app-wide setting: for the whole app). */
 export function savePieceSetting<K extends keyof ScoreSettings>(pieceId: string, key: K, value: ScoreSettings[K], device = currentDevice()): void {
+  if (isAppWide(key)) { writeApp({ ...readApp(), [key]: value }); return; }
   const stored = read();
   stored[device].pieces[pieceId] = { ...stored[device].pieces[pieceId], [key]: value };
   write(stored);

@@ -38,6 +38,14 @@ export interface Pitch { midi: number; name: string; spelled: string; len: numbe
  */
 export interface StepNotes { now: Pitch[][]; next: Pitch[][]; fileChord: string }
 
+/**
+ * How loud each written dynamic plays (MIDI velocity): MuseScore's playback defaults, the usual reference in
+ * notation software. Marks not listed (sfz, fp, ...) use OSMD's own value.
+ */
+// Keyed by OSMD's DynamicEnum (not exported): ppp = 3, pp = 4, p = 5, mp = 6, mf = 7, f = 8, ff = 9, fff = 10.
+const DYNAMIC_VELOCITY: Record<number, number> = { 3: 16, 4: 33, 5: 49, 6: 64, 7: 80, 8: 96, 9: 112, 10: 126 };
+const DEFAULT_VELOCITY = 80; // mf, before the first dynamic
+
 const LETTERS: Record<number, string> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
 const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 1: '♯', 2: '𝄪' };
 const PLAIN_ACCIDENTALS: Record<number, string> = { [-2]: 'bb', [-1]: 'b', 0: '', 1: '#', 2: '##' };
@@ -54,7 +62,7 @@ function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octa
 /** Where a step's notes are, in the pixels of the drawing they belong to: all staves together, and each staff. */
 interface Pos { left: number; right: number; top: number; height: number; ids: string[]; staves: StaffPos[] }
 /** held[staff] = the step whose note that staff is sounding at this step (it may have started earlier). */
-interface Step { t: number; ts: number; bpm: number; m: number; rel: number; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
+interface Step { t: number; ts: number; bpm: number; m: number; rel: number; vels: number[]; chunk: number; occ: number; pos: Pos; held: number[]; fileChord: string }
 /** A slot's drawing; all in screen px. staffTop/staffBottom: from the first staff's top line to the last staff's bottom line. */
 interface Chunk { svg: SVGSVGElement; w: number; top: number; h: number; staffTop: number; staffBottom: number }
 interface Slot { el: HTMLDivElement; piece: HTMLDivElement; o: number; h: number }
@@ -199,13 +207,41 @@ export class FollowView {
         });
         this.source.replaceChildren(); // each slot has its own copy now
       }
+      // Loudness from the written dynamics: the last dynamic before a note, or along a crescendo / diminuendo a
+      // ramp to the next written dynamic after it ends. Each hand follows the dynamics written on its own
+      // staff; until a staff has one of its own, it follows the other's (so dynamics written once apply to both).
+      type Mark = { ts: number; staff: number; vel: number };
+      type Ramp = { from: number; to: number; staff: number };
+      const marks: Mark[] = [], ramps: Ramp[] = [];
+      for (const sm of o.Sheet.SourceMeasures) sm.StaffLinkedExpressions.forEach((exprs, staff) => {
+        for (const me of exprs) {
+          const ts = me.AbsoluteTimestamp.RealValue;
+          const inst = me.InstantaneousDynamic;
+          if (inst) marks.push({ ts, staff, vel: DYNAMIC_VELOCITY[inst.DynEnum] ?? Math.round(inst.MidiVolume) });
+          const ramp = me.StartingContinuousDynamic;
+          if (ramp?.EndMultiExpression) ramps.push({ from: ts, to: ramp.EndMultiExpression.AbsoluteTimestamp.RealValue, staff });
+        }
+      });
+      marks.sort((a, b) => a.ts - b.ts);
+      const velocityAt = (ts: number, staff: number): number => {
+        const own = marks.filter((d) => d.staff === staff);
+        const useOwn = own.some((d) => d.ts <= ts + 1e-9);
+        const pool = useOwn ? own : marks;
+        const before = [...pool].reverse().find((d) => d.ts <= ts + 1e-9);
+        const v0 = before?.vel ?? DEFAULT_VELOCITY;
+        const ramp = ramps.find((r) => (useOwn ? r.staff === staff : true) && ts > r.from + 1e-9 && ts < r.to - 1e-9 && (!before || before.ts <= r.from + 1e-9));
+        if (!ramp) return v0;
+        const target = pool.find((d) => d.ts >= ramp.to - 1e-9);
+        if (!target) return v0;
+        return Math.round(v0 + ((target.vel - v0) * (ts - ramp.from)) / (target.ts - ramp.from));
+      };
       // When each step sounds at speed 1: from the next step's timestamp (whole notes) and the tempo in force.
       let t = 0, q = -1, prev = -1;
       this.occ = [];
       this.steps = raw.map((r, i) => {
         const chunk = chunkOf[r.m] ?? 0;
         if (chunk !== prev) { this.occ.push(chunk); q++; prev = chunk; }
-        const step = { t, ts: r.ts, bpm: r.bpm, m: r.m, rel: r.rel, chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[], fileChord: '' };
+        const step = { t, ts: r.ts, bpm: r.bpm, m: r.m, rel: r.rel, vels: [0, 1, 2, 3].map((staff) => velocityAt(o.Sheet.SourceMeasures[r.m].AbsoluteTimestamp.RealValue + r.rel, staff)), chunk, occ: q, pos: where.get(key(r.m, r.rel))!, held: [] as number[], fileChord: '' };
         const nextTs = i + 1 < raw.length ? raw[i + 1].ts : r.ts + r.len;
         t += Math.max(30, ((nextTs - r.ts) * 4 * 60000) / r.bpm);
         return step;
@@ -680,7 +716,7 @@ export class FollowView {
     const out: NoteEvent[] = [];
     for (const s of this.steps) for (const st of s.pos.staves) {
       if (hands === 'right' ? st.staff !== 0 : hands === 'left' ? st.staff === 0 : false) continue;
-      for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: (n.len * 4 * 60000) / s.bpm });
+      for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: (n.len * 4 * 60000) / s.bpm, vel: s.vels[st.staff] ?? s.vels[0] });
     }
     return out;
   }
@@ -731,7 +767,7 @@ export class FollowView {
   }
 
   /** For checks: each step's timestamp (whole notes), start (ms at speed 1) and tempo. */
-  timeline() { return this.steps.map((s) => [s.ts, Math.round(s.t), s.bpm]); }
+  timeline() { return this.steps.map((s) => [s.ts, Math.round(s.t), s.bpm, s.vels[0], s.m, s.vels[1]]); }
 
   /** For checks: what is on screen. */
   state() {
