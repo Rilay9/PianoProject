@@ -91,12 +91,23 @@ export class ExerciseNotation {
   private zoom = 1;
   private loaded = false;
   private width = 0; // the room's width at the last drawing: a new width lays the lines out again
+  /**
+   * build (Simon): one size, from the left, wrapping as the chain grows. card (Drills, owner 2026-10-12): a card
+   * never grows, so it is drawn on one line, centred and as big as the room allows (never past the score's
+   * biggest size), times `share` (A−/A+).
+   */
+  private mode: 'build' | 'card' = 'build';
+  private share = 1;
+  /** Card mode: height at the bottom of the room covered by what floats over it (the frosted panel). */
+  reserve: () => number = () => 0;
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
     box.append(this.small);
     new ResizeObserver(() => {
-      if (this.loaded && this.box.clientWidth > 0 && this.box.clientWidth !== this.width) this.draw();
+      if (!this.loaded || this.box.clientWidth <= 0) return;
+      if (this.mode === 'card') this.fitCard();
+      else if (this.box.clientWidth !== this.width) this.draw();
     }).observe(box);
     this.osmd = new OpenSheetMusicDisplay(this.small, {
       autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
@@ -121,8 +132,19 @@ export class ExerciseNotation {
     if (this.loaded) this.draw();
   }
 
+  setMode(mode: 'build' | 'card'): void {
+    this.mode = mode;
+    this.box.classList.toggle('card', mode === 'card');
+    if (mode === 'build') { this.box.style.paddingBottom = ''; this.small.style.width = ''; }
+  }
+  /** Card mode: the share of the biggest size the card is drawn at (1 = as big as the room allows). */
+  setShare(share: number): void { this.share = share; if (this.loaded && this.mode === 'card') this.fitCard(); }
+  /** Something floating over the bottom changed height: fit the card again. */
+  refit(): void { if (this.loaded && this.mode === 'card') this.fitCard(); }
+
   /** Lays the music out at the chosen size across the room's width, then brings the lit item into view. */
   private draw(): void {
+    if (this.mode === 'card') { this.drawCard(); return; }
     this.width = this.box.clientWidth;
     this.osmd.zoom = 1.1 * this.zoom; // 1.1: the size it has always been drawn at
     this.osmd.render();
@@ -133,6 +155,37 @@ export class ExerciseNotation {
     const margin = 40; // the staff around the lit notes
     if (top - margin < box.top) this.box.scrollTop -= box.top - (top - margin);
     else if (bottom + margin > box.bottom) this.box.scrollTop += bottom + margin - box.bottom;
+  }
+
+  /** A card: drawn once on one line (a wide page), cropped to the music, then scaled to the room. */
+  private drawCard(): void {
+    this.small.style.width = '4000px'; // wide enough that a card's bars stay on one line
+    this.osmd.zoom = 1.1;
+    this.osmd.render();
+    const svg = this.small.querySelector('svg');
+    this.small.style.width = '';
+    if (!svg) return;
+    const r = svg.getBBox();
+    if (!(r.width > 0 && r.height > 0)) return;
+    const pad = 4;
+    svg.setAttribute('viewBox', `${r.x - pad} ${r.y - pad} ${r.width + 2 * pad} ${r.height + 2 * pad}`);
+    svg.dataset.w = String(r.width + 2 * pad);
+    svg.dataset.h = String(r.height + 2 * pad);
+    this.fitCard();
+  }
+
+  private fitCard(): void {
+    const svg = this.small.querySelector('svg');
+    if (!svg?.dataset.w) return;
+    const w = Number(svg.dataset.w), h = Number(svg.dataset.h);
+    const reserve = this.reserve();
+    this.box.style.paddingBottom = `${reserve}px`; // centred in the room above what floats over the bottom
+    const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - reserve - 8 };
+    // Drawn at OSMD zoom 1.1 = 11 px a staff space; the score's biggest size is 1.8 (18 px): never bigger.
+    const most = 1.8 / 1.1;
+    const scale = Math.max(0.1, Math.min(room.w / w, room.h / h, most) * this.share);
+    svg.setAttribute('width', String(w * scale));
+    svg.setAttribute('height', String(h * scale));
   }
 
   clear(): void {

@@ -127,7 +127,9 @@ your first note (by ear: always your first note); the metronome can keep clickin
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. Help (*Hear it*, *Show me*, or the 3 s hint on a notes-only card) is noted and
 the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards or until you stop; then each
-card's result, *the misses again* (just those) or a new set. Best kept per set; tempo per set.
+card's result, *the misses again* (just those) or a new set. Best kept per set; tempo per set. A card never grows,
+so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
+A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
 
 **Content:** item sets (§6), one item per card; for sight-reading give MusicXML items with real rhythm; for
 name or scale cards give `notes`/`chord` items with a `name`, and `rhythm` in the set if timing should count.

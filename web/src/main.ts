@@ -7,7 +7,7 @@ import { FreePlay } from './freeplay';
 import { loadSets, type ItemSet } from './exercise/items';
 import { ExerciseKeys } from './exercise/keys';
 import { ExerciseNotation } from './exercise/notation';
-import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, type ExerciseDisplay } from './exercise/display';
+import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, CARD_MIN as EX_CARD_MIN, type ExerciseDisplay } from './exercise/display';
 import { Simon, type Rung, type SimonLevel } from './exercise/simon';
 import { Drill, type DrillLevel } from './exercise/drill';
 import { keepAwake } from './wake';
@@ -768,17 +768,28 @@ function fillExerciseDisplay(): void {
   if (sideways && line.parentElement !== head) head.insertBefore(line, $('ex-level'));
   if (!sideways && line.parentElement === head) head.after(line);
   const d = exerciseDisplay();
-  exerciseNotation.setZoom(d.zoom);
+  const card = exerciseKind === 'drill';
+  exerciseNotation.setMode(card ? 'card' : 'build');
+  if (card) exerciseNotation.setShare(d.card); else exerciseNotation.setZoom(d.zoom);
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
   const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
   $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung !== 1);
-  $<HTMLOutputElement>('ex-size').value = `${Math.round(d.zoom * 100)}%`;
-  $<HTMLButtonElement>('ex-smaller').disabled = d.zoom <= EX_SIZE_MIN + 1e-9;
-  $<HTMLButtonElement>('ex-larger').disabled = d.zoom >= EX_SIZE_MAX - 1e-9;
+  // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at.
+  const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, 1] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
+  $<HTMLOutputElement>('ex-size').value = `${Math.round(now * 100)}%`;
+  $<HTMLButtonElement>('ex-smaller').disabled = now <= lo + 1e-9;
+  $<HTMLButtonElement>('ex-larger').disabled = now >= hi - 1e-9;
 }
+// Drill cards fit above the frosted panel that floats over the bottom of the music (upright and tablets).
+exerciseNotation.reserve = () => {
+  const o = $('ex-overlay');
+  return getComputedStyle(o).position === 'absolute' ? o.offsetHeight : 0;
+};
+new ResizeObserver(() => exerciseNotation.refit()).observe($('ex-overlay'));
 const stepExerciseSize = (delta: number) => {
-  const zoom = Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, exerciseDisplay().zoom + delta)) * 100) / 100;
-  saveExerciseDisplay({ zoom });
+  const d = exerciseDisplay();
+  if (exerciseKind === 'drill') saveExerciseDisplay({ card: Math.round(Math.min(1, Math.max(EX_CARD_MIN, d.card + delta)) * 100) / 100 });
+  else saveExerciseDisplay({ zoom: Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, d.zoom + delta)) * 100) / 100 });
   fillExerciseDisplay();
 };
 $('ex-smaller').addEventListener('click', () => stepExerciseSize(-0.1));

@@ -160,6 +160,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* One size; long chains wrap and the box scrolls. Short music sits in the middle of the room's height (auto margins), tall music starts at the top. */
 .ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; overflow-x: hidden; overflow-y: auto; }
 .ex-notation > div { width: 100%; margin: auto 0; }
+.ex-notation.card > div { display: flex; justify-content: center; } /* Drills: a card centred */
 .ex-notation.off { display: none; }
 .ex-notation svg { display: block; filter: var(--music-filter); }
 .ex-keyboard.off { display: none; }
