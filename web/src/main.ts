@@ -350,6 +350,21 @@ practice.onSummary = (r) => {
       `${r.missed} missed. ${r.wrong} extra tap${r.wrong === 1 ? '' : 's'}.`
     : `${r.total} notes: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
       `${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
+  // The weakest stretches, each a button that loops it (the summary's "loop the weak bars").
+  $('summary-weak').replaceChildren(...r.weak.map((w) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    const label = barsLabel(view.barNumber(w.a), view.barNumber(w.b));
+    b.textContent = `Loop ${label} (${w.count} off)`;
+    b.addEventListener('click', () => {
+      summaryDialog.close();
+      view.setLoop({ a: w.a, b: w.b });
+      view.goTo(w.a);
+      showMessage(`Looping ${label}: press ▶`, true);
+      fillBars();
+    });
+    return b;
+  }));
   summaryDialog.showModal();
 };
 

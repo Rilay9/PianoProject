@@ -25,7 +25,7 @@ export async function setUpOffline(base: string, progress: (done: number, total:
   // The page's own files as loaded (scripts, styles, icons) and the manifest.
   for (const e of performance.getEntriesByType('resource')) if (e.name.startsWith(origin + base)) urls.add(e.name.split('#')[0]);
   urls.add(new URL(`${base}manifest.webmanifest`, origin).href);
-  for (const icon of ['icon-192.png', 'icon-512.png']) urls.add(new URL(base + icon, origin).href);
+  for (const icon of ['icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) urls.add(new URL(base + icon, origin).href);
   // The song list and every score in it.
   const pieces = (await (await fetch(`${base}scores/index.json`)).json()) as { file: string }[];
   urls.add(new URL(`${base}scores/index.json`, origin).href);

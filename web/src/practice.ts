@@ -15,7 +15,13 @@ import { judge, judgeRhythm, type ExpectedStep, type PlayedKey } from './matchin
 
 export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const;
 
-export interface Summary { total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number; rhythm: boolean }
+/** A stretch of bars that went wrong: its steps (as a loop range) and how many notes or presses were off. */
+export interface WeakSpot { a: number; b: number; count: number }
+export interface Summary {
+  total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number; rhythm: boolean;
+  /** The worst stretches first (at most three). */
+  weak: WeakSpot[];
+}
 
 type Hand = 'both' | 'right' | 'left';
 const yours = (s: ScoreSettings): Hand => (s.hands === 'left' || s.hands === 'right' ? s.hands : 'both');
@@ -133,11 +139,40 @@ export class Practice {
   private score(): Summary {
     const s = this.settings(), hand = yours(s), tolerance = ON_TIME_MS[s.onTime];
     const steps: ExpectedStep[] = [];
+    const index: number[] = []; // the view's step for each of these
     for (let i = this.fromIndex; i <= this.view.index; i++) {
       const keys = this.view.struckAt(i, hand);
-      if (keys.length) steps.push({ t: this.view.stepT(i), keys });
+      if (keys.length) { steps.push({ t: this.view.stepT(i), keys }); index.push(i); }
     }
     const rhythm = s.mode === 'rhythm';
-    return { ...(rhythm ? judgeRhythm : judge)(steps, this.played, tolerance), tolerance, rhythm };
+    const r = (rhythm ? judgeRhythm : judge)(steps, this.played, tolerance);
+    return { ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt) };
+  }
+
+  /**
+   * Where it went wrong, bar by bar: each note not on time counts for its bar, each wrong press for the bar
+   * being played then. Neighbouring bars that both went wrong make one stretch; the worst three stretches.
+   */
+  private weakSpots(offSteps: number[], wrongAt: number[]): WeakSpot[] {
+    const bars = new Map<number, WeakSpot>(); // keyed by the bar's first step
+    const add = (step: number) => {
+      const range = this.view.loopRange(step, step);
+      const bar = bars.get(range.a) ?? { ...range, count: 0 };
+      bar.count++;
+      bars.set(range.a, bar);
+    };
+    offSteps.forEach(add);
+    for (const t of wrongAt) {
+      let i = this.fromIndex;
+      while (i + 1 <= this.view.index && this.view.stepT(i + 1) <= t) i++;
+      add(i);
+    }
+    const spots: WeakSpot[] = [];
+    for (const bar of [...bars.values()].sort((x, y) => x.a - y.a)) {
+      const last = spots.at(-1);
+      if (last && last.b + 1 === bar.a) { last.b = bar.b; last.count += bar.count; }
+      else spots.push({ ...bar });
+    }
+    return spots.sort((x, y) => y.count - x.count).slice(0, 3);
   }
 }

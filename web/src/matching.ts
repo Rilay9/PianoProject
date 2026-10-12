@@ -6,7 +6,11 @@ export interface ExpectedStep { t: number; keys: number[] }
 /** A key you pressed: which, when (song ms at speed 1), and the speed playing then. */
 export interface PlayedKey { midi: number; t: number; speed: number }
 
-export interface Judged { total: number; onTime: number; early: number; late: number; missed: number; wrong: number }
+export interface Judged {
+  total: number; onTime: number; early: number; late: number; missed: number; wrong: number;
+  /** Which step each note not played on time belongs to (one entry per such note), and when the wrong presses came. */
+  offSteps: number[]; wrongAt: number[];
+}
 
 /**
  * A press can count for a written note of the same key if it came within the on-time tolerance of it, or
@@ -29,16 +33,20 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
   pairs.sort((a, b) => a.dist - b.dist);
   const noteUsed = new Set<number>(), pressUsed = new Set<number>();
   let onTime = 0, early = 0, late = 0;
+  const offSteps: number[] = [];
   for (const { note, press } of pairs) {
     if (noteUsed.has(note) || pressUsed.has(press)) continue;
     noteUsed.add(note);
     pressUsed.add(press);
     const p = played[press], offMs = (p.t - notes[note].t) / p.speed;
-    if (Math.abs(offMs) <= toleranceMs) onTime++;
-    else if (offMs < 0) early++;
+    if (Math.abs(offMs) <= toleranceMs) { onTime++; continue; }
+    if (offMs < 0) early++;
     else late++;
+    offSteps.push(notes[note].k);
   }
-  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, wrong: played.length - pressUsed.size };
+  notes.forEach((n, i) => { if (!noteUsed.has(i)) offSteps.push(n.k); });
+  const wrongAt = played.filter((_, j) => !pressUsed.has(j)).map((p) => p.t);
+  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, wrong: wrongAt.length, offSteps, wrongAt };
 }
 
 /** Keys pressed this close together are one tap (a chord's keys land within a few ms of each other). */
