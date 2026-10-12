@@ -22,9 +22,9 @@ const KEY = 'piano-web.simon.v1';
 interface Stored { level: SimonLevel; best: Record<string, number>; set?: string }
 
 const TRIES = 3;
-// How long each group sounds: about 0.75 s to start, a little quicker as the chain grows ("speeds up", like
-// the toy), never under a third of a second; steady keeps 0.7 s.
-const START_MS = 750, FASTEST_MS = 330, STEADY_MS = 700, QUICKER = 0.95;
+// The set's tempo (its items' own rhythm, or even quarter notes); "speeds up" quickens it a little as the chain
+// grows, like the toy, to at most half as fast again; steady keeps it.
+const QUICKER = 0.95, MOST = 1 / 1.5;
 const ITEM_GAP_MS = 150; // a breath between items, so a chord and the next one do not run together
 const PAUSE_MS = 700; // after you finish a chain, before the next one
 const REPLAY_MS = 1800; // after a miss, time to see what was wanted before the chain plays again
@@ -117,13 +117,16 @@ export class Simon {
   private grow(): void {
     const items = this.set.items;
     this.chain.push(this.set.order === 'passage' ? items[this.chain.length] : items[Math.floor(Math.random() * items.length)]);
-    this.flat = this.chain.flatMap((it, i) => it.groups.map((g) => ({ item: i, keys: g.map(midiOf) })));
+    // What you play, in order: every group with notes (rests are only heard and seen).
+    this.flat = this.chain.flatMap((it, i) => it.groups.filter((g) => g.length).map((g) => ({ item: i, keys: g.map(midiOf) })));
     this.scoreLine();
   }
 
-  private groupMs(): number {
-    if (this.level.speed === 'steady') return STEADY_MS;
-    return Math.max(FASTEST_MS, START_MS * QUICKER ** Math.max(0, this.chain.length - 3));
+  /** How long a quarter note lasts now. */
+  private beatMs(): number {
+    const ms = 60000 / this.set.tempo;
+    if (this.level.speed === 'steady') return ms;
+    return ms * Math.max(MOST, QUICKER ** Math.max(0, this.chain.length - 3));
   }
 
   /** Gives the chain as the rung says, then it is your turn. help: play it with sound and keys whatever the rung. */
@@ -145,18 +148,19 @@ export class Simon {
     this.ui.status.textContent = rung === 4 ? 'Remember…' : 'Listen…';
     // Item by item: its groups sound (rungs 1, 2, 5), the item is lit on the staff (1, 2), its keys lit (1),
     // its name shown (4).
-    const ms = this.groupMs();
+    const beat = this.beatMs();
     const events: NoteEvent[] = [];
     let t = 0;
     const steps: { at: number; item: number; keys: number[] }[] = [];
     this.chain.forEach((it, i) => {
-      for (const g of it.groups) {
+      it.groups.forEach((g, k) => {
+        const ms = (it.beats?.[k] ?? 1) * beat;
         const keys = g.map(midiOf);
-        steps.push({ at: t, item: i, keys });
-        for (const k of keys) events.push({ t, midi: k, dur: ms * 0.9, vel: 80 });
+        if (keys.length) steps.push({ at: t, item: i, keys });
+        for (const key of keys) events.push({ t, midi: key, dur: ms * 0.9, vel: 80 });
         t += ms;
-      }
-      t += ITEM_GAP_MS;
+      });
+      if (!passage) t += ITEM_GAP_MS; // a passage runs on in its own rhythm
     });
     if (withSound) this.sound.play(events, [], 0, 1);
     for (const step of steps) {
@@ -249,7 +253,8 @@ export class Simon {
     this.keys.light([]);
     this.keys.wrong([midi]);
     this.keys.want(group.keys);
-    this.ui.status.textContent = `Not quite: ${item.name}${item.groups.length > 1 || group.keys.length > 1 ? ` is ${item.groups.flat().map(shown).join(' ')}` : ''}`;
+    const played = item.groups.filter((g) => g.length);
+    this.ui.status.textContent = `Not quite: ${item.name}${played.length > 1 || group.keys.length > 1 ? ` is ${played.flat().map(shown).join(' ')}` : ''}`;
     this.ui.status.className = 'ex-status bad';
     this.ui.sub.textContent = `You played ${shown(noteName(midi))}.`;
     if (this.level.miss === 'tries') this.tries--;
