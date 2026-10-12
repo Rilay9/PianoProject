@@ -73,6 +73,7 @@
     <form method="dialog">
       <h2 id="more-title">More</h2>
       <div class="menu">
+        <button id="open-metronome" type="button">Metronome…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
         <button id="backup" type="button">Back up settings and marks</button>
@@ -111,7 +112,7 @@
         <label><input type="radio" name="pianoOut" value="keyboard"> MIDI keyboard</label>
       </fieldset>
       <label class="row">Piano volume (phone) <input id="t-piano-vol" type="range" min="0" max="100" step="5"></label>
-      <fieldset class="row"><legend>Metronome</legend>
+      <fieldset class="row" id="t-metronome-set"><legend>Metronome</legend>
         <label><input id="t-metronome" type="checkbox"> On</label>
         <label><input type="radio" name="click" value="wood"> Wood</label>
         <label><input type="radio" name="click" value="beep"> Beep</label>

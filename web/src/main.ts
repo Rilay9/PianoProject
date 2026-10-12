@@ -515,6 +515,13 @@ $('t-tap').addEventListener('click', () => {
   setSpeed(60000 / beatMs / view.baseBpm);
 });
 $('open-tempo').addEventListener('click', () => { fillTempo(); tempoDialog.showModal(); });
+// The ⋯ menu's Metronome… opens the same panel at the metronome (owner: reachable from both, 2026-10-11).
+$('open-metronome').addEventListener('click', () => {
+  moreDialog.close();
+  fillTempo();
+  tempoDialog.showModal();
+  $('t-metronome-set').scrollIntoView({ block: 'start' });
+});
 $<HTMLInputElement>('t-speed').addEventListener('input', (e) => setSpeed(Number((e.target as HTMLInputElement).value) / 100));
 $<HTMLInputElement>('t-bpm').addEventListener('change', (e) => setSpeed(Number((e.target as HTMLInputElement).value) / view.baseBpm));
 $('t-reset').addEventListener('click', () => setSpeed(1));
