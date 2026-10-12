@@ -133,9 +133,9 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 /* Hidden with a class, not when empty: the renderer measures the box's width when it draws, so it must be laid out.
    The music takes the room left in the middle and is shrunk to fit it (notation.ts), whatever the screen. */
 .ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.ex-notation > div { width: 100%; display: flex; justify-content: center; }
+.ex-notation > div { width: 100%; display: flex; justify-content: flex-start; }
 .ex-notation.off { display: none; }
-.ex-notation svg { display: block; margin: 0 auto; filter: var(--music-filter); }
+.ex-notation svg { display: block; filter: var(--music-filter); }
 .ex-keyboard.off { display: none; }
 .ex-tools output { min-width: 3.2em; text-align: center; align-self: center; color: var(--muted); }
 .ex-name { font-size: 2.2rem; font-weight: 700; }

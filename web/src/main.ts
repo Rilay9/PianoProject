@@ -606,16 +606,16 @@ const simon = new Simon({
 // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
 function fillExerciseDisplay(): void {
   const d = exerciseDisplay();
-  exerciseNotation.setSize(d.size);
+  exerciseNotation.setZoom(d.zoom);
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
   $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && simon.levelNow.rung !== 1);
-  $<HTMLOutputElement>('ex-size').value = `${Math.round(d.size * 100)}%`;
-  $<HTMLButtonElement>('ex-smaller').disabled = d.size <= EX_SIZE_MIN + 1e-9;
-  $<HTMLButtonElement>('ex-larger').disabled = d.size >= EX_SIZE_MAX - 1e-9;
+  $<HTMLOutputElement>('ex-size').value = `${Math.round(d.zoom * 100)}%`;
+  $<HTMLButtonElement>('ex-smaller').disabled = d.zoom <= EX_SIZE_MIN + 1e-9;
+  $<HTMLButtonElement>('ex-larger').disabled = d.zoom >= EX_SIZE_MAX - 1e-9;
 }
 const stepExerciseSize = (delta: number) => {
-  const size = Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, exerciseDisplay().size + delta)) * 100) / 100;
-  saveExerciseDisplay({ size });
+  const zoom = Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, exerciseDisplay().zoom + delta)) * 100) / 100;
+  saveExerciseDisplay({ zoom });
   fillExerciseDisplay();
 };
 $('ex-smaller').addEventListener('click', () => stepExerciseSize(-0.1));

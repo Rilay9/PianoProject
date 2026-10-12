@@ -1,19 +1,20 @@
-// The exercise screen's look (Simon now, the drills later): how much of the room the music fills, and whether
-// the keyboard is under it. Saved per kind of screen, like the score's look (owner, 2026-10-12).
+// The exercise screen's look (Simon now, the drills later): how big the music is drawn, and whether the keyboard
+// is under it. Saved per kind of screen, like the score's look (owner, 2026-10-12).
 
 import { currentDevice, type Device } from '../settings';
 
 export interface ExerciseDisplay {
-  /** The share of the biggest size that fits the room (1 = as big as fits). */
-  size: number;
+  /** How big the music is drawn (1 = its own size); it still shrinks when a chain no longer fits. */
+  zoom: number;
   /** Nothing gives the music more room when you play on a MIDI keyboard. */
   under: 'keyboard' | 'nothing';
 }
 
-export const SIZE_MIN = 0.3;
-export const SIZE_MAX = 1;
-// Most of the room, with a margin, so the music is big without touching the edges; A−/A+ change it.
-const DEFAULTS: ExerciseDisplay = { size: 0.7, under: 'keyboard' };
+// The same range as the score's notation size. The owner preferred the music at one size, building from the
+// left, to filling the room (2026-10-12).
+export const SIZE_MIN = 0.6;
+export const SIZE_MAX = 1.8;
+const DEFAULTS: ExerciseDisplay = { zoom: 1, under: 'keyboard' };
 const KEY = 'piano-web.exercise-display.v1';
 
 type Stored = Partial<Record<Device, Partial<ExerciseDisplay>>>;
@@ -23,7 +24,8 @@ function read(): Stored {
 }
 
 export function exerciseDisplay(device = currentDevice()): ExerciseDisplay {
-  return { ...DEFAULTS, ...read()[device] };
+  const own = read()[device] ?? {};
+  return { zoom: own.zoom ?? DEFAULTS.zoom, under: own.under ?? DEFAULTS.under }; // an earlier "size" (share of the room) is ignored
 }
 
 export function saveExerciseDisplay(change: Partial<ExerciseDisplay>, device = currentDevice()): void {

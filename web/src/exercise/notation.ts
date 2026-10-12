@@ -79,7 +79,7 @@ export class ExerciseNotation {
   private readonly osmd: OpenSheetMusicDisplay;
   private readonly small: HTMLDivElement; // items drawn from the MusicXML written here
   private request = 0;
-  private size = 0.7;
+  private zoom = 1;
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
@@ -106,23 +106,23 @@ export class ExerciseNotation {
     this.fit();
   }
 
-  /** The share of the biggest size that fits the room (exercise/display.ts); drawn again at once. */
-  setSize(size: number): void {
-    this.size = size;
+  /** How big the music is drawn, 1 = its own size (exercise/display.ts); drawn again at once. */
+  setZoom(zoom: number): void {
+    this.zoom = zoom;
     this.fit();
   }
 
   /**
-   * The drawing grows or shrinks to the biggest that fits the room, times the size (owner, 2026-10-12: fill the
-   * room, A−/A+ on top): long chains shrink rather than run off the screen, in any orientation (its viewBox
-   * keeps its own coordinates).
+   * The drawing at the chosen size, building from the left, or smaller when it no longer fits the room: long
+   * chains and big chunks shrink rather than run off the screen, in any orientation (its viewBox keeps its own
+   * coordinates).
    */
   private fit(): void {
     const svg = this.small.querySelector('svg');
     if (!svg) return;
     if (!svg.dataset.w) {
-      // OSMD draws on a page as wide as the room with the music at its left: keep just the music (plus a margin)
-      // so it can grow and sit centred.
+      // OSMD draws on a page as wide as the room with the music at its left: keep just the music (plus a margin),
+      // so the size and the fit go by the music itself.
       const r = svg.getBBox();
       if (!(r.width > 0 && r.height > 0)) return;
       const pad = 4;
@@ -131,7 +131,7 @@ export class ExerciseNotation {
       svg.dataset.h = String(r.height + 2 * pad);
     }
     const w = Number(svg.dataset.w), h = Number(svg.dataset.h);
-    const scale = Math.min(this.box.clientWidth / w, this.box.clientHeight / h) * this.size;
+    const scale = Math.min(this.zoom, this.box.clientWidth / w, this.box.clientHeight / h);
     svg.setAttribute('width', String(w * scale));
     svg.setAttribute('height', String(h * scale));
   }

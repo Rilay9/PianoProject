@@ -56,6 +56,9 @@ export class Simon {
   private got = new Set<number>(); // what of the current group is played (keys, or note names in the freer matches)
   private tries = TRIES;
   private hidden = false; // on your turn: what was shown is gone (after your first key)
+  // At game over or the end of a passage, keys still down (the rest of a staggered wrong chord) must not start a
+  // new game at once: only a fresh press after letting go does.
+  private waitRelease = false;
   private token = 0; // bumps to cancel a showing in progress
   private timers: number[] = [];
 
@@ -109,6 +112,7 @@ export class Simon {
     this.state = 'ready';
     this.chain = [];
     this.tries = TRIES;
+    this.waitRelease = false;
     this.keys.clearMarks();
     this.notation.clear();
     this.ui.name.textContent = 'Ready';
@@ -240,8 +244,8 @@ export class Simon {
 
   /** A key from either keyboard. */
   key(midi: number, on: boolean): void {
-    if (!on) return;
-    if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { void this.begin(); return; }
+    if (!on) { if (this.waitRelease && this.keys.down.size === 0) this.waitRelease = false; return; }
+    if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { if (!this.waitRelease) void this.begin(); return; }
     if (this.state !== 'turn') return;
     if (!this.hidden) { // your first key: from here it is from memory
       this.hidden = true;
@@ -267,7 +271,8 @@ export class Simon {
     }
     this.pos++;
     this.got.clear();
-    if (this.pos < this.flat.length) { this.progress(); return; }
+    this.progress(); // the dot for what you just played fills in, the last one too
+    if (this.pos < this.flat.length) return;
     this.chainDone();
   }
 
@@ -281,6 +286,7 @@ export class Simon {
     this.scoreLine();
     if (this.set.order === 'passage' && length >= this.items.length) {
       this.state = 'done';
+      this.waitRelease = this.keys.down.size > 0;
       this.ui.status.textContent = `You played all of it (${length}).`;
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
@@ -315,6 +321,7 @@ export class Simon {
     this.scoreLine();
     if (this.level.miss === 'over' || (this.level.miss === 'tries' && this.tries <= 0)) {
       this.state = 'over';
+      this.waitRelease = true; // the miss's own key is still down
       this.ui.sub.textContent += ` Game over: chain ${this.chain.length - 1}.`;
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
