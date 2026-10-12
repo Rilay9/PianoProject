@@ -7,6 +7,7 @@ import { FreePlay } from './freeplay';
 import { loadSets, type ItemSet } from './exercise/items';
 import { ExerciseKeys } from './exercise/keys';
 import { ExerciseNotation } from './exercise/notation';
+import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, type ExerciseDisplay } from './exercise/display';
 import { Simon, type Rung, type SimonLevel } from './exercise/simon';
 import { keepAwake } from './wake';
 import { Practice, yours } from './practice';
@@ -597,10 +598,30 @@ $('open-freeplay').addEventListener('click', () => {
 // Simon (owner, 2026-10-11) on the shared exercise screen; its sets are content files (content/sets), read when
 // it first opens. For now it is in ⋯, like Free play.
 const exerciseKeys = new ExerciseKeys($('ex-keyboard'), sound);
+const exerciseNotation = new ExerciseNotation($('ex-notation'));
 const simon = new Simon({
   set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
   status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'),
-}, exerciseKeys, new ExerciseNotation($('ex-notation')), sound);
+}, exerciseKeys, exerciseNotation, sound);
+// The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
+function fillExerciseDisplay(): void {
+  const d = exerciseDisplay();
+  exerciseNotation.setSize(d.size);
+  // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
+  $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && simon.levelNow.rung !== 1);
+  $<HTMLOutputElement>('ex-size').value = `${Math.round(d.size * 100)}%`;
+  $<HTMLButtonElement>('ex-smaller').disabled = d.size <= EX_SIZE_MIN + 1e-9;
+  $<HTMLButtonElement>('ex-larger').disabled = d.size >= EX_SIZE_MAX - 1e-9;
+}
+const stepExerciseSize = (delta: number) => {
+  const size = Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, exerciseDisplay().size + delta)) * 100) / 100;
+  saveExerciseDisplay({ size });
+  fillExerciseDisplay();
+};
+$('ex-smaller').addEventListener('click', () => stepExerciseSize(-0.1));
+$('ex-larger').addEventListener('click', () => stepExerciseSize(0.1));
+// Turning the phone can change the kind of screen, and each has its own look.
+window.addEventListener('resize', () => { if (!$('exercise').hidden) fillExerciseDisplay(); });
 let sets: ItemSet[] | null = null;
 const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
 $('open-simon').addEventListener('click', async () => {
@@ -614,6 +635,7 @@ $('open-simon').addEventListener('click', async () => {
   }
   if (!sets.length) return;
   $('exercise').hidden = false;
+  fillExerciseDisplay();
   simon.open(sets);
   fillBars();
 });
@@ -621,6 +643,7 @@ $('ex-done').addEventListener('click', () => { simon.close(); $('exercise').hidd
 $('ex-level').addEventListener('click', () => {
   const level = simon.levelNow;
   const pairs: [string, string][] = [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed], ['ex-onMiss', level.onMiss], ['ex-onNew', level.onNew]];
+  pairs.push(['ex-under', exerciseDisplay().under]);
   for (const [name, value] of pairs) {
     for (const r of levelDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
   }
@@ -634,6 +657,8 @@ levelDialog.addEventListener('change', (e) => {
   else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });
   else if (r.name === 'ex-onMiss') simon.setLevel({ onMiss: r.value as SimonLevel['onMiss'] });
   else if (r.name === 'ex-onNew') simon.setLevel({ onNew: r.value as SimonLevel['onNew'] });
+  else if (r.name === 'ex-under') saveExerciseDisplay({ under: r.value as ExerciseDisplay['under'] });
+  fillExerciseDisplay(); // the help rung and the keyboard choice both decide whether the keyboard shows
 });
 
 // The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to

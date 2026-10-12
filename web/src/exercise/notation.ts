@@ -79,6 +79,7 @@ export class ExerciseNotation {
   private readonly osmd: OpenSheetMusicDisplay;
   private readonly small: HTMLDivElement; // items drawn from the MusicXML written here
   private request = 0;
+  private size = 0.7;
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
@@ -99,22 +100,38 @@ export class ExerciseNotation {
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.osmd.zoom = 1.1;
     this.osmd.render();
+    // OSMD redraws into the same svg: the last drawing's crop would stay on it.
+    const svg = this.small.querySelector('svg');
+    if (svg) { svg.removeAttribute('viewBox'); delete svg.dataset.w; delete svg.dataset.h; }
+    this.fit();
+  }
+
+  /** The share of the biggest size that fits the room (exercise/display.ts); drawn again at once. */
+  setSize(size: number): void {
+    this.size = size;
     this.fit();
   }
 
   /**
-   * The drawing at its own size, or smaller to fit the room it has (never larger): long chains and big chunks
-   * shrink rather than run off the screen, in any orientation (its viewBox keeps its own coordinates).
+   * The drawing grows or shrinks to the biggest that fits the room, times the size (owner, 2026-10-12: fill the
+   * room, A−/A+ on top): long chains shrink rather than run off the screen, in any orientation (its viewBox
+   * keeps its own coordinates).
    */
   private fit(): void {
     const svg = this.small.querySelector('svg');
     if (!svg) return;
-    const w = Number(svg.dataset.w ?? svg.getAttribute('width')), h = Number(svg.dataset.h ?? svg.getAttribute('height'));
-    if (!(w > 0 && h > 0)) return;
-    svg.dataset.w = String(w);
-    svg.dataset.h = String(h);
-    if (!svg.getAttribute('viewBox')) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    const scale = Math.min(1, this.box.clientWidth / w, this.box.clientHeight / h);
+    if (!svg.dataset.w) {
+      // OSMD draws on a page as wide as the room with the music at its left: keep just the music (plus a margin)
+      // so it can grow and sit centred.
+      const r = svg.getBBox();
+      if (!(r.width > 0 && r.height > 0)) return;
+      const pad = 4;
+      svg.setAttribute('viewBox', `${r.x - pad} ${r.y - pad} ${r.width + 2 * pad} ${r.height + 2 * pad}`);
+      svg.dataset.w = String(r.width + 2 * pad);
+      svg.dataset.h = String(r.height + 2 * pad);
+    }
+    const w = Number(svg.dataset.w), h = Number(svg.dataset.h);
+    const scale = Math.min(this.box.clientWidth / w, this.box.clientHeight / h) * this.size;
     svg.setAttribute('width', String(w * scale));
     svg.setAttribute('height', String(h * scale));
   }

@@ -135,7 +135,9 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-notation { width: 100%; flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .ex-notation > div { width: 100%; display: flex; justify-content: center; }
 .ex-notation.off { display: none; }
-.ex-notation svg { filter: var(--music-filter); }
+.ex-notation svg { display: block; margin: 0 auto; filter: var(--music-filter); }
+.ex-keyboard.off { display: none; }
+.ex-tools output { min-width: 3.2em; text-align: center; align-self: center; color: var(--muted); }
 .ex-name { font-size: 2.2rem; font-weight: 700; }
 .ex-name.small { font-size: 1.3rem; }
 .ex-name:empty, .ex-chain:empty, .ex-status:empty, .ex-sub:empty { display: none; }

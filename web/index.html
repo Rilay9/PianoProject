@@ -89,7 +89,12 @@
       <p id="ex-sub" class="ex-sub"></p>
       <button id="ex-start" type="button" class="btn ex-start">Start</button>
     </div>
-    <div class="ex-tools"><button id="ex-hear" type="button" class="btn" hidden>Hear again</button></div>
+    <div class="ex-tools">
+      <button id="ex-smaller" type="button" class="btn" aria-label="Smaller music">A−</button>
+      <output id="ex-size" aria-live="polite"></output>
+      <button id="ex-larger" type="button" class="btn" aria-label="Larger music">A+</button>
+      <button id="ex-hear" type="button" class="btn" hidden>Hear again</button>
+    </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
   </section>
 
@@ -125,6 +130,12 @@
         <label><input type="radio" name="ex-onNew" value="all"> The whole chain</label>
         <label><input type="radio" name="ex-onNew" value="new"> Only the new one</label>
       </fieldset>
+      <h3>Display</h3>
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="ex-under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="ex-under" value="nothing"> Nothing</label>
+      </fieldset>
+      <p class="note">With Nothing, play on your MIDI keyboard. Help 1 still shows the keyboard, since its lit keys are the help.</p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
