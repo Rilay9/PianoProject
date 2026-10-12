@@ -77,10 +77,18 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
 /** Draws exercise notation into a box; each show() replaces what was there. */
 export class ExerciseNotation {
   private readonly osmd: OpenSheetMusicDisplay;
+  private readonly small: HTMLDivElement; // items drawn from the MusicXML written here
+  private readonly page: HTMLDivElement; // a piece's own score, some of its bars
+  private scoreOsmd: OpenSheetMusicDisplay | null = null;
+  private scoreXml = '';
   private request = 0;
 
   constructor(private readonly box: HTMLElement) {
-    this.osmd = new OpenSheetMusicDisplay(box, {
+    this.small = document.createElement('div');
+    this.page = document.createElement('div');
+    this.page.className = 'ex-page';
+    box.append(this.small, this.page);
+    this.osmd = new OpenSheetMusicDisplay(this.small, {
       autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
       drawPartNames: false, drawMeasureNumbers: false, drawingParameters: 'compacttight', autoBeam: true,
     });
@@ -90,11 +98,57 @@ export class ExerciseNotation {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
+    this.page.hidden = true;
+    this.small.hidden = false;
     await this.osmd.load(itemsXml(items, lit, passage, meter, fifths));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.osmd.zoom = 1.1;
     this.osmd.render();
   }
 
-  clear(): void { this.request++; this.box.replaceChildren(); this.box.classList.add('off'); }
+  /**
+   * A piece's own score, bars from..to (file order, from 0), as printed (both staves); bars `lit` shaded. The
+   * score is read once and drawn again for each picture.
+   */
+  async showScore(xml: string, from: number, to: number, lit: number[] = []): Promise<void> {
+    const request = ++this.request;
+    this.box.classList.remove('off');
+    this.small.hidden = true;
+    this.page.hidden = false;
+    this.scoreOsmd ??= new OpenSheetMusicDisplay(this.page, {
+      autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
+      drawPartNames: false, drawingParameters: 'compacttight',
+    });
+    const o = this.scoreOsmd;
+    if (this.scoreXml !== xml) { await o.load(xml); this.scoreXml = xml; }
+    if (request !== this.request) return;
+    o.zoom = 0.9;
+    const rules = o.EngravingRules;
+    // With a pickup bar the renderer takes the range from the bar-number rules, so both are set (see follow.ts).
+    rules.MinMeasureToDrawIndex = rules.MinMeasureToDrawNumber = from;
+    rules.MaxMeasureToDrawIndex = rules.MaxMeasureToDrawNumber = to;
+    o.render();
+    // Shade the lit bars: each bar's box across its staves, in the drawing's pixels.
+    this.page.querySelectorAll('.ex-bar').forEach((x) => x.remove());
+    const unit = 10 * o.zoom;
+    for (const m of lit) {
+      const staves = (o.GraphicSheet.MeasureList[m] ?? []).filter(Boolean);
+      if (!staves.length) continue;
+      const first = staves[0].PositionAndShape, last = staves.at(-1)!.PositionAndShape;
+      const shade = document.createElement('div');
+      shade.className = 'ex-bar';
+      shade.style.left = `${first.AbsolutePosition.x * unit}px`;
+      shade.style.width = `${(first.BorderRight - first.BorderLeft) * unit}px`;
+      shade.style.top = `${(first.AbsolutePosition.y - 1) * unit}px`;
+      shade.style.height = `${(last.AbsolutePosition.y + rules.StaffHeight + 2 - first.AbsolutePosition.y) * unit}px`;
+      this.page.append(shade);
+    }
+  }
+
+  clear(): void {
+    this.request++;
+    this.small.replaceChildren();
+    this.page.querySelectorAll('svg, .ex-bar').forEach((x) => x.remove());
+    this.box.classList.add('off');
+  }
 }

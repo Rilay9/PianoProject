@@ -7,6 +7,8 @@
 //   { "title": "Chords in C", "order": "pool" | "passage",
 //     "items": { "1": <item>, "2": <item>, ... },          numbered; or, for a passage cut from a piece:
 //     "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }
+//   { "title": "Minuet K. 2", "order": "piece", "from": { "score": "mozart-k2" } }   a whole piece to memorise:
+//     the learner picks the bars, the hands, and whether the chain grows by a bar or by a note
 // An item is one of (name and short are optional; they are worked out when missing):
 //   { "notes": "C4 E4 G4" }                 together (a chord);  "C4, E4, G4"  one after another
 //   { "chord": "G7", "octave": 4, "arpeggio": false }
@@ -32,12 +34,25 @@ export interface Item {
   beats?: number[];
   /** The bar each group stands in, in the music it came from (missing: the item is its own bar). */
   bars?: number[];
+  /** A piece's notes as they sound (both hands overlapping), in quarter notes from the item's start. */
+  events?: { t: number; midi: number; dur: number }[];
+  /** How long the item lasts, in quarter notes (with events). */
+  length?: number;
+  /** The piece's bars it covers (file order, from 0), for showing them on the score. */
+  scoreBars?: number[];
 }
+
+/** A note of a piece: when (quarter notes from the start), which key, how long, which staff, which bar. */
+export interface PieceNote { t: number; midi: number; spelled: string; dur: number; staff: number; bar: number }
+/** A whole piece, read once: its notes, where each bar starts, the bars' printed numbers, its tempo and file. */
+export interface Piece { notes: PieceNote[]; barStarts: number[]; barNumbers: string[]; tempo: number; xml: string }
 
 export interface ItemSet {
   id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number;
   /** A passage from a score: its time signature and key (sharps +, flats −), drawn as the score has them. */
   meter?: { beats: number; beatType: number }; fifths?: number;
+  /** A whole piece to memorise (order "piece"); its items are made from the learner's choices (pieceItems). */
+  piece?: Piece;
 }
 
 const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.75 s a note)
@@ -46,7 +61,7 @@ interface ItemSource {
   notes?: string; chord?: string; octave?: number; arpeggio?: boolean;
   interval?: string; root?: string; together?: boolean; musicxml?: string; name?: string; short?: string;
 }
-interface SetFile { title: string; order?: 'pool' | 'passage'; tempo?: number; items?: Record<string, ItemSource>; from?: { score: string; bars: string; staff?: number } }
+interface SetFile { title: string; order?: 'pool' | 'passage' | 'piece'; tempo?: number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number } }
 
 export const midiOf = (spelled: string): number => Note.midi(spelled) ?? 60;
 /** A spelled pitch as a learner reads it: C#4 as C♯4, Bb3 as B♭3. */
@@ -170,8 +185,12 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
  * address (a MusicXML item given as a file is found next to it).
  */
 export async function readSet(id: string, file: SetFile, base: string, scoreXml: (score: string) => Promise<string>, fetchText: (url: string) => Promise<string>): Promise<ItemSet> {
+  if (file.order === 'piece' && file.from) {
+    const piece = readPiece(await scoreXml(file.from.score));
+    return { id, title: file.title, order: 'passage', items: [], tempo: file.tempo ?? piece.tempo, piece };
+  }
   if (file.from) {
-    const [a, b] = file.from.bars.split('-').map(Number);
+    const [a, b] = (file.from.bars ?? '1-4').split('-').map(Number);
     const parsed = groupsFromXml(await scoreXml(file.from.score), file.from.staff ?? 1, [a, b ?? a]);
     // One item per moment with notes; a rest after it stays with it (the chain grows by notes, the rhythm whole).
     const items: Item[] = [];
@@ -184,7 +203,90 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   }
   const entries = Object.entries(file.items ?? {}).map(([k, v]) => [Number(k), v] as const).sort((x, y) => x[0] - y[0]);
   const items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
-  return { id, title: file.title, order: file.order ?? 'pool', items, tempo: file.tempo ?? TEMPO };
+  return { id, title: file.title, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO };
+}
+
+/**
+ * A whole piece (its first part): every note with when it starts and how long it sounds (a tied note's whole
+ * length), its staff and bar; grace notes and rests left out. Where each bar starts, the bars' printed numbers,
+ * and the first tempo written (else 80).
+ */
+export function readPiece(xml: string): Piece {
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  const measures = [...(doc.querySelector('part')?.querySelectorAll(':scope > measure') ?? [])];
+  const notes: PieceNote[] = [], barStarts: number[] = [], barNumbers: string[] = [];
+  let divisions = 1, start = 0, tempo: number | undefined;
+  measures.forEach((measure, m) => {
+    barStarts.push(start);
+    barNumbers.push(measure.getAttribute('number') ?? String(m + 1));
+    let pos = 0, most = 0, chordAt = 0;
+    for (const el of measure.children) {
+      if (el.tagName === 'attributes') divisions = Number(el.querySelector('divisions')?.textContent ?? divisions) || divisions;
+      else if (el.tagName === 'backup') pos -= Number(el.querySelector('duration')?.textContent ?? 0);
+      else if (el.tagName === 'forward') { pos += Number(el.querySelector('duration')?.textContent ?? 0); most = Math.max(most, pos); }
+      else if (el.tagName === 'direction' || el.tagName === 'sound') {
+        const t = (el.tagName === 'sound' ? el : el.querySelector('sound'))?.getAttribute('tempo');
+        if (t && tempo === undefined) tempo = Number(t) || undefined;
+      } else if (el.tagName === 'note') {
+        if (el.querySelector('grace')) continue;
+        const isChord = !!el.querySelector('chord');
+        const at = isChord ? chordAt : pos;
+        const len = Number(el.querySelector('duration')?.textContent ?? 0);
+        if (!isChord) { chordAt = pos; pos += len; most = Math.max(most, pos); }
+        const pitch = el.querySelector('pitch');
+        if (!pitch) continue;
+        const alter = Number(pitch.querySelector('alter')?.textContent ?? 0);
+        const spelled = `${pitch.querySelector('step')!.textContent!.trim()}${alter > 0 ? '#'.repeat(alter) : 'b'.repeat(-alter)}${pitch.querySelector('octave')!.textContent!.trim()}`;
+        const midi = midiOf(spelled), t = start + at / divisions, dur = len / divisions;
+        const staff = Number(el.querySelector('staff')?.textContent ?? 1);
+        if ([...el.querySelectorAll('tie')].some((x) => x.getAttribute('type') === 'stop')) {
+          // A tied-on note: it lengthens the note it continues (the same key ending where this one starts).
+          const prev = [...notes].reverse().find((n) => n.midi === midi && Math.abs(n.t + n.dur - t) < 1e-6);
+          if (prev) { prev.dur += dur; continue; }
+        }
+        notes.push({ t, midi, spelled, dur, staff, bar: m });
+      }
+    }
+    start += most / divisions;
+  });
+  return { notes, barStarts, barNumbers, tempo: tempo ?? TEMPO, xml };
+}
+
+export type Hands = 'right' | 'left' | 'both';
+
+/**
+ * Items to memorise from a piece: bars from..to (file order, from 0), one hand or both (right = the top staff),
+ * growing by a bar or by a note (each moment where a note starts, both hands together). Each item keeps the
+ * notes as they sound, so it plays like the piece.
+ */
+export function pieceItems(piece: Piece, from: number, to: number, hands: Hands, unit: 'bar' | 'note'): Item[] {
+  const picked = piece.notes.filter((n) => n.bar >= from && n.bar <= to && (hands === 'both' || (hands === 'right' ? n.staff === 1 : n.staff !== 1)));
+  const onsets = [...new Set(picked.map((n) => n.t))].sort((a, b) => a - b);
+  const groupAt = (t: number) => picked.filter((n) => Math.abs(n.t - t) < 1e-6).sort((a, b) => a.midi - b.midi);
+  const endOf = (bar: number) => piece.barStarts[bar + 1] ?? Math.max(...picked.map((n) => n.t + n.dur), piece.barStarts[bar]);
+  if (unit === 'bar') {
+    const items: Item[] = [];
+    for (let bar = from; bar <= to; bar++) {
+      const inBar = onsets.filter((t) => groupAt(t)[0].bar === bar);
+      if (!inBar.length) continue;
+      const start = piece.barStarts[bar];
+      items.push({
+        n: items.length + 1, name: `Bar ${piece.barNumbers[bar]}`, short: piece.barNumbers[bar],
+        groups: inBar.map((t) => groupAt(t).map((n) => n.spelled)),
+        events: inBar.flatMap((t) => groupAt(t).map((n) => ({ t: n.t - start, midi: n.midi, dur: n.dur }))),
+        length: endOf(bar) - start, scoreBars: [bar],
+      });
+    }
+    return items;
+  }
+  return onsets.map((t, i) => {
+    const g = groupAt(t);
+    const next = onsets[i + 1] ?? Math.max(...g.map((n) => n.t + n.dur));
+    return {
+      n: i + 1, name: g.map((n) => shown(n.spelled)).join(' '), short: letters(g.at(-1)!.spelled),
+      groups: [g.map((n) => n.spelled)], events: g.map((n) => ({ t: 0, midi: n.midi, dur: n.dur })), length: next - t, scoreBars: [g[0].bar],
+    };
+  });
 }
 
 /** Every set listed in content/sets/index.json; a set that cannot be read is left out and reported. */

@@ -134,7 +134,10 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-notation { width: 100%; }
 .ex-notation.off { display: none; }
 .ex-notation svg { filter: var(--music-filter); }
+.ex-page { position: relative; }
+.ex-bar { position: absolute; background: rgba(37, 99, 235, 0.15); border-radius: 4px; pointer-events: none; }
 .ex-name { font-size: 2.2rem; font-weight: 700; }
+.ex-name.small { font-size: 1.3rem; }
 .ex-name:empty, .ex-chain:empty, .ex-status:empty, .ex-sub:empty { display: none; }
 .ex-chain { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .ex-chain .chip { min-width: 26px; height: 26px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; font-size: 13px; background: var(--btn-bg); color: var(--muted); }

@@ -7,7 +7,7 @@ import { FreePlay } from './freeplay';
 import { loadSets, type ItemSet } from './exercise/items';
 import { ExerciseKeys } from './exercise/keys';
 import { ExerciseNotation } from './exercise/notation';
-import { Simon, type Rung, type SimonLevel } from './exercise/simon';
+import { Simon, type PieceChoice, type Rung, type SimonLevel } from './exercise/simon';
 import { keepAwake } from './wake';
 import { Practice, yours } from './practice';
 import { Sound } from './sound';
@@ -528,8 +528,20 @@ $('open-simon').addEventListener('click', async () => {
 $('ex-done').addEventListener('click', () => { simon.close(); $('exercise').hidden = true; fillBars(); showBars(); });
 $('ex-level').addEventListener('click', () => {
   const level = simon.levelNow;
-  for (const [name, value] of [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed]]) {
+  const piece = simon.pieceNow;
+  const pairs: [string, string][] = [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed], ['ex-onMiss', level.onMiss], ['ex-onNew', level.onNew]];
+  if (piece) pairs.push(['ex-hands', piece.choice.hands], ['ex-unit', piece.choice.unit]);
+  for (const [name, value] of pairs) {
     for (const r of levelDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  }
+  // Memorising a piece: the chunk of bars, the hands, and what the chain grows by.
+  $('ex-piece').hidden = !piece;
+  if (piece) {
+    for (const [id, at] of [['ex-from', piece.choice.from], ['ex-to', piece.choice.to]] as const) {
+      const select = $<HTMLSelectElement>(id);
+      select.replaceChildren(...piece.bars.map((n, i) => Object.assign(document.createElement('option'), { value: String(i), textContent: n })));
+      select.value = String(at);
+    }
   }
   levelDialog.showModal();
 });
@@ -539,6 +551,12 @@ levelDialog.addEventListener('change', (e) => {
   else if (r.name === 'ex-match') simon.setLevel({ match: r.value as SimonLevel['match'] });
   else if (r.name === 'ex-miss') simon.setLevel({ miss: r.value as SimonLevel['miss'] });
   else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });
+  else if (r.name === 'ex-onMiss') simon.setLevel({ onMiss: r.value as SimonLevel['onMiss'] });
+  else if (r.name === 'ex-onNew') simon.setLevel({ onNew: r.value as SimonLevel['onNew'] });
+  else if (r.name === 'ex-hands') simon.setPiece({ hands: r.value as PieceChoice['hands'] });
+  else if (r.name === 'ex-unit') simon.setPiece({ unit: r.value as PieceChoice['unit'] });
+  else if (r.id === 'ex-from') simon.setPiece({ from: Number(r.value) });
+  else if (r.id === 'ex-to') simon.setPiece({ to: Number(r.value) });
 });
 
 // The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to
