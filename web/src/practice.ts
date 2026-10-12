@@ -28,6 +28,8 @@ export class Practice {
   private fromIndex = 0;
   private running: 'wait' | 'along' | null = null;
   onSummary: (s: Summary) => void = () => {};
+  /** The loop being practised, if any: its steps and the song time its last bar ends. */
+  loop: () => { a: number; b: number; t1: number } | null = () => null;
   /** Wait for me reached the end of the song by itself. */
   onDone: () => void = () => {};
 
@@ -55,9 +57,9 @@ export class Practice {
     this.fromIndex = this.view.index;
   }
 
-  /** Stopped (a tap or the end of the song): Play along shows how it went. */
-  stop(): void {
-    if (this.running === 'along') this.onSummary(this.score());
+  /** Stopped (a tap or the end of the song): Play along shows how it went (unless told not to). */
+  stop(summary = true): void {
+    if (this.running === 'along' && summary) this.onSummary(this.score());
     this.running = null;
     this.expected.clear();
     this.fresh.clear();
@@ -85,20 +87,24 @@ export class Practice {
 
   /**
    * Your notes are played: the piano plays its part up to your next notes, then the marker waits again. Its
-   * notes still sounding from before ring on to their written end.
+   * notes still sounding from before ring on to their written end. In a loop, after your last notes in it
+   * the piano plays on to the end of the loop's last bar and the marker goes back to its start.
    */
   private advance(): void {
     const s = this.settings(), i = this.view.index, n = this.view.stepCount;
+    const loop = this.loop(), looping = !!loop && i >= loop.a && i <= loop.b;
+    const end = looping ? loop!.b + 1 : n; // the first step past what is being played
     let j = i + 1;
-    while (j < n && !this.view.struckAt(j, yours(s)).length) j++;
-    const from = this.view.stepT(i), to = this.view.stepT(j);
+    while (j < end && !this.view.struckAt(j, yours(s)).length) j++;
+    const from = this.view.stepT(i), to = j < end ? this.view.stepT(j) : looping ? loop!.t1 : this.view.stepT(j);
     const piano = pianos(s);
-    const notes: NoteEvent[] = piano ? this.view.noteEvents(piano).filter((e) => e.t >= from && e.t < to) : [];
+    const notes: NoteEvent[] = piano ? this.view.notesBetween(piano, from, to) : [];
     this.expected.clear();
     // The piano's notes struck with yours sound now; if it has none after them before your next notes, the
     // marker moves straight on (no waiting at the tempo for nothing).
     if (!notes.some((e) => e.t > from)) {
       if (notes.length) this.sound.play(notes, [], from, s.speed, true);
+      if (j >= end && looping) { this.loopBack(); return; }
       if (j >= n) { this.view.goTo(n - 1); this.stop(); this.onDone(); return; } // the end of the song
       this.view.goTo(j);
       this.arrive();
@@ -107,9 +113,21 @@ export class Practice {
     const clicks: Beat[] = s.metronome ? this.view.beats(s.clickOn).filter((b) => b.t >= from && b.t < to) : [];
     this.sound.play(notes, clicks, from, s.speed, true);
     this.view.songClock = () => this.sound.songTime();
+    if (j >= end && looping) { this.view.play(-1, to); return; } // the view calls back at the loop's end
     if (j >= n) { this.view.play(); return; } // the piano finishes the song
     this.view.play(j);
   }
+
+  /** Wait for me in a loop: back to its start, waiting for your first notes there. */
+  loopBack(): void {
+    const loop = this.loop();
+    if (this.running !== 'wait' || !loop) return;
+    this.view.goTo(loop.a);
+    this.arrive();
+  }
+
+  /** Play along in a loop: how this pass went; the next pass starts with startAlong. */
+  passResult(): Summary { return { ...this.score() }; }
 
   /** Play along: your keys matched with the written notes of your hands (the rule is in matching.ts). */
   private score(): Summary {

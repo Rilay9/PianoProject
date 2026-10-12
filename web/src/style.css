@@ -18,6 +18,8 @@
   /* The marker sits on the white music in both themes. */
   --mark: rgba(37, 99, 235, 0.22);
   --mark-edge: #2563eb;
+  /* The loop's bars, also on the white music in both themes. */
+  --loop: rgba(234, 179, 8, 0.2);
   color-scheme: light;
   font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -76,6 +78,8 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 #q-default { margin-left: auto; }
 
 .message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; }
+/* Not a problem, just news (a loop pass, what to tap next): dark text on a light strip over the music. */
+.message.info { color: #111827; background: rgba(255, 255, 255, 0.9); border-radius: 6px; padding: 4px 8px; }
 
 /* The music fills the screen, on white whatever the theme so it reads like paper. The bars float over it. */
 .score { position: fixed; inset: 0 0 var(--under-h, 0px); overflow: hidden; background: #ffffff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -89,6 +93,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .scroller { position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden; }
 .scroller > .inner { position: relative; }
 .scroller > .inner > svg { position: absolute; left: 0; top: 0; display: block; }
+.loop-zone { position: absolute; background: var(--loop); border-radius: 4px; pointer-events: none; }
 .mark { position: absolute; background: var(--mark); border-left: 2px solid var(--mark-edge); border-radius: 3px; pointer-events: none; }
 /* Still-then-glide: the part of the screen where reaching it starts the glide (owner: shaded). */
 .glide-zone { position: absolute; top: 0; bottom: 0; right: 0; background: rgba(17, 24, 39, 0.06); border-left: 1px dashed rgba(17, 24, 39, 0.25); pointer-events: none; }

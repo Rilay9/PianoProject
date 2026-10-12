@@ -16,8 +16,11 @@ export type Click = 'wood' | 'beep' | 'high';
 export type ClickOn = 'beats' | 'quarters' | 'eighths';
 /** Where the app's piano plays: the phone's speaker, or the MIDI keyboard's own sound. */
 export type PianoOut = 'phone' | 'keyboard';
-/** Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary). */
-export type Mode = 'watch' | 'wait' | 'along';
+/**
+ * Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary),
+ * Ladder (Play along round a loop of bars, the tempo up a step after each clean pass and down after a messy one).
+ */
+export type Mode = 'watch' | 'wait' | 'along' | 'ladder';
 /** How close to when a note is due counts as on time in Play along. */
 export type OnTime = 'relaxed' | 'normal' | 'strict';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
@@ -51,6 +54,8 @@ export interface ScoreSettings {
   mode: Mode;
   pianoOut: PianoOut;
   onTime: OnTime;
+  /** Ladder: how far the speed moves after a pass, as a share of the song's own tempo. */
+  ladderStep: number;
   /** 0 to 1. */
   pianoVolume: number;
   clickVolume: number;
@@ -77,6 +82,7 @@ export const DEFAULTS: ScoreSettings = {
   mode: 'watch',
   pianoOut: 'phone',
   onTime: 'normal',
+  ladderStep: 0.05,
   pianoVolume: 0.8,
   clickVolume: 0.6,
 };

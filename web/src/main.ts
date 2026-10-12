@@ -43,10 +43,14 @@ let pieces: Piece[] = [];
 let currentId = '';
 const xmlCache = new Map<string, string>();
 
-function showMessage(text: string): void {
+/** A line over the music: a problem (red) or, with info, just news. */
+function showMessage(text: string, info = false): void {
   message.textContent = text;
   message.hidden = text === '';
+  message.classList.toggle('info', info);
 }
+/** "bar 3" or "bars 3–6". */
+const barsLabel = (a: number, b: number) => (a === b ? `bar ${a}` : `bars ${a}–${b}`);
 
 function currentPiece(): Piece {
   return pieces.find((p) => p.id === currentId) ?? pieces[0];
@@ -87,6 +91,8 @@ async function openSong(id: string): Promise<void> {
   const url = new URL(location.href);
   url.searchParams.set('piece', id);
   history.replaceState(null, '', url);
+  picking = 0;
+  view.setLoop(null);
   showBars();
   await draw();
 }
@@ -106,6 +112,10 @@ function fillBars(): void {
   $('play').textContent = running ? '⏸' : '▶';
   $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
   $<HTMLSelectElement>('q-mode').value = s.mode;
+  const loop = view.looped;
+  const [la, lb] = loop ? [view.barNumber(loop.a), view.barNumber(loop.b)] : [0, 0];
+  $('q-loop').textContent = picking ? 'Cancel' : loop ? `Loop ${la === lb ? la : `${la}–${lb}`}` : 'Loop';
+  $('q-loop').setAttribute('aria-pressed', String(!!loop));
   $('q-hands').setAttribute('aria-label', s.mode === 'watch' ? 'Hands the piano plays' : 'Hands you play');
   for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) b.setAttribute('aria-pressed', String(b.dataset.hands === s.hands));
   $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
@@ -178,6 +188,7 @@ async function play(): Promise<void> {
   if (starting) return;
   if (marking) setMarking(false);
   const s = settingsFor(currentPiece().id);
+  if (s.mode === 'ladder' && !view.looped) { startPicking('Ladder: tap the first bar to practise'); return; }
   starting = true;
   $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
   try {
@@ -186,7 +197,7 @@ async function play(): Promise<void> {
     sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
     // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
-    if (pianoHands(s) || s.metronome) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
+    if (pianoHands(s) || s.metronome || view.looped) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
   } catch (cause) {
     showMessage(cause instanceof Error ? cause.message : String(cause));
     starting = false;
@@ -197,9 +208,14 @@ async function play(): Promise<void> {
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
   hideBars();
+  pass = 0;
+  const loop = view.looped;
   if (s.mode === 'wait') {
     view.songClock = null;
+    if (loop && (view.index < loop.a || view.index > loop.b)) view.goTo(loop.a);
     practice.startWait();
+  } else if (loop) {
+    startLoopPass();
   } else {
     startSound(view.currentT);
     view.play();
@@ -217,12 +233,91 @@ function startSound(t: number): void {
   sound.play(piano ? view.noteEvents(piano) : [], s.metronome ? view.beats(s.clickOn) : [], t, s.speed);
   view.songClock = () => sound.songTime();
 }
+// Loop and Ladder (owner, 2026-10-11): the Loop button, then a tap on the first and the last bar. Each pass
+// starts with a bar of clicks. Play along and Ladder say after each pass how it went; Ladder then moves the
+// tempo up a step after a clean pass (every note on time, nothing wrong; never past the song's own tempo)
+// and down a step after a messy one. Wait for me goes round the loop with no clicks (it keeps no tempo).
+let picking: 0 | 1 | 2 = 0;
+let pickFrom = -1;
+let pass = 0;
+const SPEED_MIN = 0.25; // the Tempo panel's slider goes down to 25%
+function startPicking(text: string): void {
+  if (view.playing || practice.active) stopAll();
+  picking = 1;
+  showMessage(text, true);
+  hideBars();
+  fillBars();
+}
+function pickBar(x: number, y: number): void {
+  const step = view.hit(x, y);
+  if (step < 0) { showMessage('Tap on the notes of a bar', true); return; }
+  if (picking === 1) {
+    pickFrom = step;
+    picking = 2;
+    view.setLoop(view.loopRange(step, step));
+    showMessage(`From bar ${view.barNumber(step)}: now tap the last bar (or the same one again)`, true);
+    return;
+  }
+  picking = 0;
+  const range = view.loopRange(pickFrom, step);
+  view.setLoop(range);
+  if (view.index < range.a || view.index > range.b) view.goTo(range.a);
+  showMessage(`Looping ${barsLabel(view.barNumber(range.a), view.barNumber(range.b))}: press ▶`, true);
+  fillBars();
+  showBars();
+}
+$('q-loop').addEventListener('click', () => {
+  if (picking) { picking = 0; view.setLoop(null); showMessage(''); fillBars(); return; }
+  if (view.looped) { if (view.playing || practice.active) stopAll(); view.setLoop(null); showMessage(''); fillBars(); return; }
+  startPicking('Loop: tap the first bar');
+});
+practice.loop = () => {
+  const span = view.loopSpan();
+  return span && { a: span.a, b: span.b, t1: span.t1 };
+};
+/** One pass round the loop: a bar of clicks, then its bars, with the piano and metronome as chosen. */
+function startLoopPass(): void {
+  const s = settingsFor(currentPiece().id);
+  const span = view.loopSpan();
+  if (!span) return;
+  const piano = pianoHands(s);
+  view.goTo(span.a);
+  sound.setVolumes(s.pianoVolume, s.clickVolume);
+  sound.setClick(s.click);
+  const clicks = s.metronome ? view.beats(s.clickOn).filter((b) => b.t >= span.t0 - 1 && b.t < span.t1) : [];
+  sound.play(piano ? view.notesBetween(piano, span.t0, span.t1) : [], [...span.countIn, ...clicks], span.from, s.speed);
+  view.songClock = () => sound.songTime();
+  view.play(-1, span.t1);
+  if (s.mode === 'along' || s.mode === 'ladder') practice.startAlong();
+}
+view.onLoopEnd = () => {
+  const s = settingsFor(currentPiece().id);
+  if (s.mode === 'wait') { practice.loopBack(); return; }
+  if (s.mode === 'along' || s.mode === 'ladder') {
+    const r = practice.passResult();
+    pass++;
+    const clean = r.total > 0 && r.onTime === r.total && r.wrong === 0;
+    let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.wrong ? `, ${r.wrong} wrong` : ''}`;
+    if (s.mode === 'ladder') {
+      const next = clean ? (s.speed < 1 ? Math.min(1, s.speed + s.ladderStep) : s.speed) : Math.max(SPEED_MIN, s.speed - s.ladderStep);
+      const rounded = Math.round(next * 100) / 100;
+      if (rounded !== s.speed) setSpeed(rounded);
+      const bpm = Math.round(view.baseBpm * rounded);
+      line += clean
+        ? rounded > s.speed ? ` — clean, up to ${bpm} bpm` : ` — clean, at ${bpm} bpm`
+        : rounded < s.speed ? ` — down to ${bpm} bpm` : ` — staying at ${bpm} bpm`;
+    }
+    showMessage(line, true);
+  }
+  startLoopPass();
+};
+
 /** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
 function stopAll(): void {
   if (view.playing) view.pause();
-  else { sound.stop(); practice.stop(); fillBars(); showBars(); }
+  else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
 }
-view.onStop = () => { sound.stop(); practice.stop(); fillBars(); showBars(); };
+view.onStop = () => { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); };
 $('play').addEventListener('click', () => (view.playing || practice.active ? stopAll() : void play()));
 
 // Mode: Watch / Wait for me / Play along, saved per song (owner, 2026-10-11).
@@ -230,6 +325,7 @@ $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
   if (view.playing || practice.active) stopAll();
   savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
   fillBars();
+  if (settingsFor(currentPiece().id).mode === 'ladder' && !view.looped) startPicking('Ladder: tap the first bar to practise');
 });
 
 // MIDI: pressed keys light on the keyboard strip and go to Wait for me / Play along.
@@ -265,7 +361,7 @@ score.addEventListener('pointerdown', (e) => {
   down = { x: e.clientX, y: e.clientY };
   pressed = false;
   clearTimeout(pressTimer);
-  if (view.playing || practice.active || marking) return;
+  if (view.playing || practice.active || marking || picking) return;
   pressTimer = window.setTimeout(() => {
     if (!down) return;
     const step = view.hit(down.x, down.y);
@@ -284,6 +380,7 @@ score.addEventListener('pointerup', (e) => {
   down = null;
   if (pressed) return;
   if (marking) { pickNote(e.clientX, e.clientY); return; }
+  if (picking && Math.abs(dx) < SWIPE / 4 && Math.abs(dy) < SWIPE / 4) { pickBar(e.clientX, e.clientY); return; }
   if (view.playing || practice.active) { stopAll(); return; }
   if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
   if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
@@ -378,6 +475,7 @@ function fillTempo(): void {
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.checked = r.value === s.clickOn;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.checked = r.value === s.onTime;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="pianoOut"]')) r.checked = r.value === s.pianoOut;
+  for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="ladderStep"]')) r.checked = Math.abs(Number(r.value) - s.ladderStep) < 1e-9;
 }
 function setSpeed(speed: number): void {
   if (!(speed > 0)) return;
@@ -402,6 +500,7 @@ $<HTMLInputElement>('t-metronome').addEventListener('change', (e) => soundChange
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.addEventListener('change', () => soundChange('click', r.value as Click));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.addEventListener('change', () => soundChange('clickOn', r.value as ClickOn));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'onTime', r.value as OnTime));
+for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="ladderStep"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'ladderStep', Number(r.value)));
 // Where the piano plays: applies from the next ▶.
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="pianoOut"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'pianoOut', r.value as PianoOut));
 // −5 / +5 beats per minute, and tap tempo: the speed that matches the last few taps (old app's controls).

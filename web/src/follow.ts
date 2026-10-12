@@ -101,6 +101,10 @@ export class FollowView {
   /** Called when play(untilStep) gets there. */
   onReached: () => void = () => {};
   private untilStep = -1;
+  /** Called when play(_, untilT) reaches that song time (the end of a loop pass). */
+  onLoopEnd: () => void = () => {};
+  private untilT = Infinity;
+  private loop: { a: number; b: number } | null = null;
   /** Called whenever the marker moves: the notes for the strip under the music. */
   onStep: (notes: StepNotes) => void = () => {};
   /** Something about the song the learner should know (it still plays). */
@@ -535,6 +539,7 @@ export class FollowView {
     if (this.slots.length) this.placeSlots(s.occ);
     else this.followStrip(s.pos);
     this.drawMarker(s);
+    this.drawLoop();
     const staffNotes = (pick: (staff: number) => Pitch[]) => [0, 1, 2, 3].map(pick).slice(0, Math.max(s.held.length, 2));
     const nextStep = this.steps[this.current + 1];
     this.onStep({
@@ -572,15 +577,8 @@ export class FollowView {
       bars = [{ from: oldest.from, left: oldest.st.left, right: oldest.st.right, top: oldest.from.pos.top, height: oldest.from.pos.height }];
       lit = held.map(({ from, st }) => ({ from, ids: st.ids }));
     }
-    // Each goes in the drawing its note is in: the slot showing its occurrence, or the one-line drawing.
-    const place = (from: Step) => {
-      const slot = this.slots.find((x) => x.o === from.occ);
-      if (this.slots.length && !slot) return null;
-      const holder = slot ? slot.piece : (this.scroller?.firstElementChild as HTMLElement | null);
-      return holder && { holder, root: (slot ? slot.piece : this.source) as ParentNode, top: slot ? this.chunks[from.chunk].top : 0 };
-    };
     if (this.marker !== 'notes') for (const b of bars) {
-      const at = place(b.from);
+      const at = this.place(b.from);
       if (!at) continue;
       const m = document.createElement('div');
       m.className = 'mark';
@@ -591,7 +589,7 @@ export class FollowView {
       at.holder.append(m);
     }
     if (this.marker !== 'bar') for (const l of lit) {
-      const at = place(l.from);
+      const at = this.place(l.from);
       if (!at) continue;
       for (const id of l.ids) {
         const g = at.root.querySelector(`[id="${CSS.escape(id)}"]`);
@@ -601,6 +599,71 @@ export class FollowView {
           this.colored.push(path as SVGElement);
         }
       }
+    }
+  }
+
+  /** Where a step's marks go: the slot showing its occurrence, or the one-line drawing (null: not on screen). */
+  private place(from: Step) {
+    const slot = this.slots.find((x) => x.o === from.occ);
+    if (this.slots.length && !slot) return null;
+    const holder = slot ? slot.piece : (this.scroller?.firstElementChild as HTMLElement | null);
+    return holder && { holder, root: (slot ? slot.piece : this.source) as ParentNode, top: slot ? this.chunks[from.chunk].top : 0 };
+  }
+
+  // ---- the loop ---------------------------------------------------------------------------------------
+
+  /** The whole bars from the bar of step i to the bar of step j (either order), as a range of steps. */
+  loopRange(i: number, j: number): { a: number; b: number } {
+    if (j < i) [i, j] = [j, i];
+    const sameBar = (x: number, y: number) => this.steps[x].m === this.steps[y].m && this.steps[x].rel < this.steps[y].rel;
+    let a = i, b = j;
+    while (a > 0 && sameBar(a - 1, a)) a--;
+    while (b + 1 < this.steps.length && sameBar(b, b + 1)) b++;
+    return { a, b };
+  }
+
+  /** Repeats these steps (null: no loop); they are shaded on the music. */
+  setLoop(range: { a: number; b: number } | null): void { this.loop = range; this.update(); }
+  get looped(): { a: number; b: number } | null { return this.loop; }
+  /** The bar number printed at step i. */
+  barNumber(i: number): number { const m = this.steps[i]?.m ?? 0; return this.measures[m]?.num ?? m; }
+
+  /**
+   * One pass of the loop: from the start of its first bar (t0) to the end of its last (t1), in song ms at
+   * speed 1, and a bar of count-in clicks before it (from `from`, in the first bar's metre and tempo).
+   */
+  loopSpan(): { a: number; b: number; t0: number; t1: number; from: number; countIn: Beat[] } | null {
+    if (!this.loop) return null;
+    const { a, b } = this.loop, A = this.steps[a], B = this.steps[b];
+    const t0 = this.timeAt(A.ts - A.rel, a);
+    const t1 = this.timeAt(B.ts - B.rel + (this.measures[B.m]?.dur ?? 1), b);
+    const bar = this.measures[A.m] ?? { beats: 4, beatLen: 1 / 4 };
+    const beatMs = (bar.beatLen * 4 * 60000) / A.bpm;
+    const from = t0 - bar.beats * beatMs;
+    const countIn = [...Array(bar.beats).keys()].map((k) => ({ t: from + k * beatMs, accent: k === 0 }));
+    return { a, b, t0, t1, from, countIn };
+  }
+
+  private drawLoop(): void {
+    this.host.querySelectorAll('.loop-zone').forEach((z) => z.remove());
+    if (!this.loop) return;
+    // One shaded band per line of music the loop covers, from its first note to its last.
+    const bands = new Map<string, { from: Step; left: number; right: number; top: number; height: number }>();
+    for (let i = this.loop.a; i <= this.loop.b; i++) {
+      const s = this.steps[i], key = `${s.occ}:${Math.round(s.pos.top)}`, band = bands.get(key);
+      if (!band) bands.set(key, { from: s, left: s.pos.left, right: s.pos.right, top: s.pos.top, height: s.pos.height });
+      else { band.left = Math.min(band.left, s.pos.left); band.right = Math.max(band.right, s.pos.right); }
+    }
+    for (const band of bands.values()) {
+      const at = this.place(band.from);
+      if (!at) continue;
+      const z = document.createElement('div');
+      z.className = 'loop-zone';
+      z.style.left = `${band.left - 8}px`;
+      z.style.width = `${band.right - band.left + 16}px`;
+      z.style.top = `${band.top - at.top}px`;
+      z.style.height = `${band.height}px`;
+      at.holder.append(z);
     }
   }
 
@@ -681,13 +744,15 @@ export class FollowView {
 
   /**
    * Plays from the marker. untilStep: stop moving on reaching that step (Wait for me: run through the piano's
-   * notes up to your next ones) and call onReached instead of onStop.
+   * notes up to your next ones) and call onReached instead of onStop. untilT: stop at that song time (the
+   * end of a loop pass) and call onLoopEnd.
    */
-  play(untilStep = -1): void {
+  play(untilStep = -1, untilT = Infinity): void {
     if (!this.steps.length) return;
     if (this.browsing >= 0) { this.browsing = -1; this.resetSlots(); this.update(); }
     if (untilStep < 0 && this.current >= this.steps.length - 1) { this.current = 0; this.update(); }
     this.untilStep = untilStep;
+    this.untilT = untilT;
     this.playing = true;
     this.startPerf = performance.now() - this.steps[this.current].t / this.speed;
     this.frame = requestAnimationFrame((now) => this.tick(now));
@@ -711,7 +776,7 @@ export class FollowView {
     if (!this.playing) return;
     const elapsed = this.songClock ? this.songClock() : (now - this.startPerf) * this.speed;
     let moved = false;
-    while (this.current + 1 < this.steps.length && this.steps[this.current + 1].t <= elapsed && this.current !== this.untilStep) { this.current++; moved = true; }
+    while (this.current + 1 < this.steps.length && this.steps[this.current + 1].t <= elapsed && this.steps[this.current + 1].t < this.untilT && this.current !== this.untilStep) { this.current++; moved = true; }
     if (moved) this.update();
     if (this.layout === 'smooth' && this.scroller) {
       // A steady glide: the marker's position between this note and the next, kept a third from the left.
@@ -719,6 +784,12 @@ export class FollowView {
       let x = s.pos.left;
       if (n && n.pos.left > s.pos.left) x = s.pos.left + (n.pos.left - s.pos.left) * Math.min(1, (elapsed - s.t) / (n.t - s.t));
       this.scroller.scrollLeft = Math.max(0, x - this.host.clientWidth / 3);
+    }
+    if (elapsed >= this.untilT) {
+      this.playing = false;
+      this.untilT = Infinity;
+      this.onLoopEnd();
+      return;
     }
     if (this.untilStep >= 0 && this.current === this.untilStep) {
       this.playing = false;
@@ -756,6 +827,11 @@ export class FollowView {
       }
     });
     return out;
+  }
+
+  /** The notes from song time t0 to t1 (ms at speed 1), cut off at t1. */
+  notesBetween(hands: 'both' | 'right' | 'left', t0: number, t1: number): NoteEvent[] {
+    return this.noteEvents(hands).filter((n) => n.t >= t0 - 1 && n.t < t1).map((n) => ({ ...n, dur: Math.min(n.dur, t1 - n.t) }));
   }
 
   /**
