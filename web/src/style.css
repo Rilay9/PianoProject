@@ -146,6 +146,9 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-kind { font-weight: 700; }
 .ex-score { display: flex; justify-content: space-between; padding: 6px 16px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .ex-score b { color: var(--fg); }
+/* Sideways the score line sits in the header (main.ts moves it), giving the music a row's height (owner). */
+.fp-head .ex-score { flex: 0 0 auto; border: 0; padding: 0 4px; gap: 12px; font-size: 13px; color: var(--bar-muted); }
+.fp-head .ex-score b { color: var(--bar-fg); }
 .ex-prompt { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; min-height: 0; overflow: hidden; }
 .ex-overlay { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 /* With music on screen the overlay floats over its bottom, frosted, so the music keeps the whole height and still
@@ -293,6 +296,15 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .actions button { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
 .actions button[value="close"] { margin-left: auto; }
+/* A phone on its side: the settings dialogs use the width, their groups in two columns, so most fit without
+   scrolling a narrow column (owner, 2026-10-12). */
+@media (orientation: landscape) and (max-height: 599px) {
+  #settings, #tempo, #drill-dialog, #memo-dialog, #ex-level-dialog { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
+  #settings > form, #tempo > form, #drill-dialog > form, #memo-dialog > form, #ex-level-dialog > form { columns: 2; column-gap: 28px; }
+  #settings > form > *, #tempo > form > *, #drill-dialog > form > *, #memo-dialog > form > *, #ex-level-dialog > form > * { break-inside: avoid; }
+  #settings > form > h2, #tempo > form > h2, #drill-dialog > form > h2, #memo-dialog > form > h2, #ex-level-dialog > form > h2, #settings > form > .actions, #tempo > form > .actions, #drill-dialog > form > .actions, #memo-dialog > form > .actions, #ex-level-dialog > form > .actions { column-span: all; }
+  #settings > form > h3, #tempo > form > h3, #drill-dialog > form > h3, #memo-dialog > form > h3, #ex-level-dialog > form > h3 { break-after: avoid; }
+}
 
 .song-list { list-style: none; margin: 8px 0 0; padding: 0; }
 .song-list button { display: block; width: 100%; text-align: left; font: inherit; padding: 10px 12px; margin: 4px 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-bg); color: inherit; }

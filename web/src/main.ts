@@ -763,6 +763,10 @@ function fillExerciseDisplay(): void {
   const tools = $('ex-tools'), sideways = currentDevice() === 'phone-sideways';
   if (sideways && tools.parentElement !== $('ex-overlay')) $('ex-overlay').append(tools);
   if (!sideways && tools.parentElement !== $('exercise')) $('exercise').insertBefore(tools, $('ex-keyboard'));
+  // And the score line (Card 2 of 10 · 1 clean · Music only) joins the header row.
+  const head = $('exercise').querySelector<HTMLElement>('.fp-head')!, line = $('exercise').querySelector<HTMLElement>('.ex-score')!;
+  if (sideways && line.parentElement !== head) head.insertBefore(line, $('ex-level'));
+  if (!sideways && line.parentElement === head) head.after(line);
   const d = exerciseDisplay();
   exerciseNotation.setZoom(d.zoom);
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
