@@ -78,16 +78,11 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
 export class ExerciseNotation {
   private readonly osmd: OpenSheetMusicDisplay;
   private readonly small: HTMLDivElement; // items drawn from the MusicXML written here
-  private readonly page: HTMLDivElement; // a piece's own score, some of its bars
-  private scoreOsmd: OpenSheetMusicDisplay | null = null;
-  private scoreXml = '';
   private request = 0;
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
-    this.page = document.createElement('div');
-    this.page.className = 'ex-page';
-    box.append(this.small, this.page);
+    box.append(this.small);
     // Shrunk to fit again whenever the room changes (turning the phone, the window resized).
     new ResizeObserver(() => this.fit()).observe(box);
     this.osmd = new OpenSheetMusicDisplay(this.small, {
@@ -100,8 +95,6 @@ export class ExerciseNotation {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
-    this.page.hidden = true;
-    this.small.hidden = false;
     await this.osmd.load(itemsXml(items, lit, passage, meter, fifths));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.osmd.zoom = 1.1;
@@ -111,11 +104,10 @@ export class ExerciseNotation {
 
   /**
    * The drawing at its own size, or smaller to fit the room it has (never larger): long chains and big chunks
-   * of a piece shrink rather than run off the screen, in any orientation. The drawing's own coordinates are
-   * kept (its viewBox), so shading drawn into it stays in place.
+   * shrink rather than run off the screen, in any orientation (its viewBox keeps its own coordinates).
    */
   private fit(): void {
-    const svg = (this.page.hidden ? this.small : this.page).querySelector('svg');
+    const svg = this.small.querySelector('svg');
     if (!svg) return;
     const w = Number(svg.dataset.w ?? svg.getAttribute('width')), h = Number(svg.dataset.h ?? svg.getAttribute('height'));
     if (!(w > 0 && h > 0)) return;
@@ -127,52 +119,9 @@ export class ExerciseNotation {
     svg.setAttribute('height', String(h * scale));
   }
 
-  /**
-   * A piece's own score, bars from..to (file order, from 0), as printed (both staves); bars `lit` shaded. The
-   * score is read once and drawn again for each picture.
-   */
-  async showScore(xml: string, from: number, to: number, lit: number[] = []): Promise<void> {
-    const request = ++this.request;
-    this.box.classList.remove('off');
-    this.small.hidden = true;
-    this.page.hidden = false;
-    this.scoreOsmd ??= new OpenSheetMusicDisplay(this.page, {
-      autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false,
-      drawPartNames: false, drawingParameters: 'compacttight',
-    });
-    const o = this.scoreOsmd;
-    if (this.scoreXml !== xml) { await o.load(xml); this.scoreXml = xml; }
-    if (request !== this.request) return;
-    o.zoom = 0.9;
-    const rules = o.EngravingRules;
-    // With a pickup bar the renderer takes the range from the bar-number rules, so both are set (see follow.ts).
-    rules.MinMeasureToDrawIndex = rules.MinMeasureToDrawNumber = from;
-    rules.MaxMeasureToDrawIndex = rules.MaxMeasureToDrawNumber = to;
-    o.render();
-    // Shade the lit bars: each bar's box across its staves, drawn into the music behind the notes, in the
-    // drawing's own units (OSMD's are tenths of these, before its zoom), so it stays put when the drawing shrinks.
-    const svg = this.page.querySelector('svg');
-    const unit = 10;
-    for (const m of svg ? lit : []) {
-      const staves = (o.GraphicSheet.MeasureList[m] ?? []).filter(Boolean);
-      if (!staves.length) continue;
-      const first = staves[0].PositionAndShape, last = staves.at(-1)!.PositionAndShape;
-      const shade = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      shade.setAttribute('class', 'ex-bar');
-      shade.setAttribute('x', String((first.AbsolutePosition.x + first.BorderLeft) * unit));
-      shade.setAttribute('width', String((first.BorderRight - first.BorderLeft) * unit));
-      shade.setAttribute('y', String((first.AbsolutePosition.y - 1) * unit));
-      shade.setAttribute('height', String((last.AbsolutePosition.y + rules.StaffHeight + 2 - first.AbsolutePosition.y) * unit));
-      shade.setAttribute('rx', '4');
-      svg!.insertBefore(shade, svg!.firstChild);
-    }
-    this.fit();
-  }
-
   clear(): void {
     this.request++;
     this.small.replaceChildren();
-    this.page.querySelectorAll('svg').forEach((x) => x.remove());
     this.box.classList.add('off');
   }
 }

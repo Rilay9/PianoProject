@@ -1,13 +1,13 @@
-// Simon (owner, 2026-10-11/12): the memory version of the drills. The app gives a chain of items and you play it
-// back from memory; each round the chain grows by one (a random item from a pool, the next bit of a passage, or
-// the next bar or note of the chunk of a piece you are memorising) until you slip. On the shared exercise screen,
-// with the same help ladder (owner): 1 music + sound + keys lit, 2 music + sound, 3 music, 4 name only, 5 by ear.
+// Simon (owner, 2026-10-11/12): a memory game for small units (notes, intervals, chords, scales, arpeggios). The
+// app gives a chain of items and you play it back from memory; each round the chain grows by one (a random item
+// from a pool, or the next bit of a short passage) until you slip. Memorising pieces is the score's Memorise mode.
+// On the shared exercise screen, with the same help ladder (owner): 1 music + sound + keys lit, 2 music + sound, 3 music, 4 name only, 5 by ear.
 // What was shown (music, lit keys, names) stays up until your first key, then it goes.
 // Options (owner): on a miss, play back the whole chain or from the miss on (and carry on from there); on a new
 // item, play back the whole chain or only the new one (you still play the whole chain).
 
 import type { Sound, NoteEvent } from '../sound';
-import { midiOf, pieceItems, shown, type Hands, type Item, type ItemSet } from './items';
+import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
 
@@ -24,13 +24,9 @@ export interface SimonLevel {
   /** When the chain grows, play back: the whole chain, or only the new item (you still play all of it). */
   onNew: 'all' | 'new';
 }
-/** Memorising a piece: which bars (file order, from 0), which hands, and whether the chain grows by bar or note. */
-export interface PieceChoice { from: number; to: number; hands: Hands; unit: 'bar' | 'note' }
-
 const DEFAULT_LEVEL: SimonLevel = { rung: 1, match: 'same', miss: 'tries', speed: 'up', onMiss: 'all', onNew: 'all' };
-const DEFAULT_CHUNK_BARS = 4;
 const KEY = 'piano-web.simon.v1';
-interface Stored { level: SimonLevel; best: Record<string, number>; set?: string; pieces?: Record<string, PieceChoice> }
+interface Stored { level: SimonLevel; best: Record<string, number>; set?: string }
 
 const TRIES = 3;
 // The set's tempo (its items' own rhythm, or even quarter notes); "speeds up" quickens it a little as the chain
@@ -50,10 +46,9 @@ type State = 'ready' | 'showing' | 'turn' | 'miss' | 'over' | 'done';
 export class Simon {
   private sets: ItemSet[] = [];
   private set!: ItemSet;
-  private items: Item[] = []; // the set's items (for a piece: made from the learner's choice)
+  private items: Item[] = [];
   private level: SimonLevel;
   private best: Record<string, number>;
-  private pieces: Record<string, PieceChoice>;
   private state: State = 'ready';
   private chain: Item[] = [];
   private flat: { item: number; keys: number[] }[] = [];
@@ -68,7 +63,6 @@ export class Simon {
     const stored = this.read();
     this.level = { ...DEFAULT_LEVEL, ...stored.level };
     this.best = stored.best ?? {};
-    this.pieces = stored.pieces ?? {};
     keys.onKey = (midi, on) => this.key(midi, on);
     ui.start.addEventListener('click', () => void this.begin());
     ui.hear.addEventListener('click', () => void this.hearAgain());
@@ -76,10 +70,6 @@ export class Simon {
   }
 
   get levelNow(): SimonLevel { return { ...this.level }; }
-  /** The piece being memorised (if the set is a piece): its bar numbers and the learner's choice. */
-  get pieceNow(): { bars: string[]; choice: PieceChoice } | null {
-    return this.set?.piece ? { bars: this.set.piece.barNumbers, choice: { ...this.choice() } } : null;
-  }
   /** For checks: the keys of each group still to play this turn. */
   expected(): number[][] { return this.state === 'turn' ? this.flat.slice(this.pos).map((g) => g.keys) : []; }
 
@@ -98,43 +88,21 @@ export class Simon {
     this.reset();
   }
 
-  setPiece(choice: Partial<PieceChoice>): void {
-    if (!this.set.piece) return;
-    const c = { ...this.choice(), ...choice };
-    if (c.to < c.from) [c.from, c.to] = [c.to, c.from];
-    this.pieces[this.set.id] = c;
-    this.save();
-    this.makeItems();
-    this.reset();
-  }
 
-  private choice(): PieceChoice {
-    const last = (this.set.piece?.barNumbers.length ?? 1) - 1;
-    return this.pieces[this.set.id] ?? { from: 0, to: Math.min(last, DEFAULT_CHUNK_BARS - 1), hands: 'both', unit: 'bar' };
-  }
 
-  private makeItems(): void {
-    const p = this.set.piece;
-    if (!p) { this.items = this.set.items; return; }
-    const c = this.choice();
-    this.items = pieceItems(p, c.from, c.to, c.hands, c.unit);
-  }
+  private makeItems(): void { this.items = this.set.items; }
 
   private chooseSet(id: string): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
     this.makeItems();
-    this.keys.setRange(this.set.piece ? this.set.piece.notes.map((n) => n.midi) : this.items.flatMap((it) => it.groups.flat().map(midiOf)));
+    this.keys.setRange(this.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.save();
     this.reset();
   }
 
-  /** The best chain is kept per set (and, for a piece, per chunk, hands and unit). */
-  private bestKey(): string {
-    if (!this.set.piece) return this.set.id;
-    const c = this.choice();
-    return `${this.set.id}:${c.from}-${c.to}:${c.hands}:${c.unit}`;
-  }
+  /** The best chain is kept per set. */
+  private bestKey(): string { return this.set.id; }
 
   private reset(): void {
     this.stopAll();
@@ -148,7 +116,7 @@ export class Simon {
     this.ui.chain.replaceChildren();
     this.ui.status.textContent = '';
     this.ui.status.className = 'ex-status';
-    this.ui.sub.textContent = this.items.length ? 'Press Start, or play any key' : 'Nothing to play in this choice: pick other bars or hands in Level';
+    this.ui.sub.textContent = this.items.length ? 'Press Start, or play any key' : 'This set has nothing to play';
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = !this.items.length;
     this.ui.hear.hidden = true;
@@ -166,7 +134,7 @@ export class Simon {
     await this.showChain(0);
   }
 
-  /** One more item: a random one from a pool, the next one of a passage or piece. */
+  /** One more item: a random one from a pool, the next one of a passage. */
   private grow(): void {
     const items = this.items;
     this.chain.push(this.set.order === 'passage' ? items[this.chain.length] : items[Math.floor(Math.random() * items.length)]);
@@ -182,15 +150,8 @@ export class Simon {
     return ms * Math.max(MOST, QUICKER ** Math.max(0, this.chain.length - 3));
   }
 
-  /** The chain on the staff (a piece: its own score over the chain's bars), these items lit. */
+  /** The chain on the staff, these items lit. */
   private drawChain(lit: number[]): Promise<void> {
-    const p = this.set.piece;
-    if (p) {
-      const bars = this.chain.flatMap((it) => it.scoreBars ?? []);
-      if (!bars.length) { this.notation.clear(); return Promise.resolve(); }
-      const litBars = [...new Set(lit.flatMap((i) => this.chain[i]?.scoreBars ?? []))];
-      return this.notation.showScore(p.xml, Math.min(...bars), Math.max(...bars), litBars);
-    }
     return this.notation.show(this.chain, lit, this.set.order === 'passage', this.set.meter, this.set.fifths ?? 0);
   }
 
@@ -221,14 +182,6 @@ export class Simon {
     let t = 0;
     for (let i = from; i < this.chain.length; i++) {
       const it = this.chain[i];
-      if (it.events) {
-        // A piece: its notes as they sound, both hands; lit at each moment a note starts.
-        for (const e of it.events) events.push({ t: t + e.t * beat, midi: e.midi, dur: e.dur * beat * 0.95, vel: 80 });
-        const onsets = [...new Set(it.events.map((e) => e.t))].sort((a, b) => a - b);
-        for (const o of onsets) steps.push({ at: t + o * beat, item: i, keys: it.events.filter((e) => e.t === o).map((e) => e.midi) });
-        t += (it.length ?? 1) * beat;
-        continue;
-      }
       it.groups.forEach((g, k) => {
         const ms = (it.beats?.[k] ?? 1) * beat;
         const keys = g.map(midiOf);
@@ -403,7 +356,7 @@ export class Simon {
   }
 
   private save(): void {
-    try { localStorage.setItem(KEY, JSON.stringify({ level: this.level, best: this.best, set: this.set?.id, pieces: this.pieces })); } catch { /* this visit only */ }
+    try { localStorage.setItem(KEY, JSON.stringify({ level: this.level, best: this.best, set: this.set?.id })); } catch { /* this visit only */ }
   }
 }
 

@@ -136,7 +136,6 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-notation > div { width: 100%; display: flex; justify-content: center; }
 .ex-notation.off { display: none; }
 .ex-notation svg { filter: var(--music-filter); }
-.ex-bar { fill: rgba(37, 99, 235, 0.15); }
 .ex-name { font-size: 2.2rem; font-weight: 700; }
 .ex-name.small { font-size: 1.3rem; }
 .ex-name:empty, .ex-chain:empty, .ex-status:empty, .ex-sub:empty { display: none; }
