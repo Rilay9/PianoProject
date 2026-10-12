@@ -119,6 +119,8 @@ dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--b
 .keyboard .key.white.next-l { background: #bbe5c8; }
 .keyboard .key.black.next-r { background: #5b7fc7; }
 .keyboard .key.black.next-l { background: #4d9a68; }
+/* Keys you are pressing on the MIDI keyboard: orange, over whatever else the key shows. */
+.keyboard .key.pressed { background: #f59e0b !important; }
 
 dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
 dialog a { color: var(--accent); }

@@ -107,6 +107,11 @@ export class UnderStrip {
     this.keyboard.style.setProperty('--black-w', `${60 / whiteCount}%`);
   }
 
+  /** Shows the keys being pressed on the MIDI keyboard. */
+  setPressed(down: Set<number>): void {
+    for (const [midi, key] of this.keys) key.classList.toggle('pressed', down.has(midi));
+  }
+
   /** Lights the keys and writes the names for where the marker is. */
   show(notes: StepNotes): void {
     for (const k of this.lit) k.classList.remove('now-r', 'now-l', 'next-r', 'next-l');

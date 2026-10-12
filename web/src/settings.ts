@@ -14,6 +14,10 @@ export type Hands = 'both' | 'right' | 'left' | 'off';
 export type Click = 'wood' | 'beep' | 'high';
 /** What the metronome clicks on: the time signature's beat, every quarter note, or every eighth. */
 export type ClickOn = 'beats' | 'quarters' | 'eighths';
+/** Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary). */
+export type Mode = 'watch' | 'wait' | 'along';
+/** How close to when a note is due counts as on time in Play along. */
+export type OnTime = 'relaxed' | 'normal' | 'strict';
 /** What sits under the music: an on-screen keyboard, the notes' names, both, or nothing. */
 export type Under = 'keyboard' | 'notes' | 'both' | 'nothing';
 export type BarNumbers = 'off' | 'lines' | 'every';
@@ -42,6 +46,8 @@ export interface ScoreSettings {
   metronome: boolean;
   click: Click;
   clickOn: ClickOn;
+  mode: Mode;
+  onTime: OnTime;
   /** 0 to 1. */
   pianoVolume: number;
   clickVolume: number;
@@ -65,6 +71,8 @@ export const DEFAULTS: ScoreSettings = {
   metronome: false,
   click: 'wood',
   clickOn: 'beats',
+  mode: 'watch',
+  onTime: 'normal',
   pianoVolume: 0.8,
   clickVolume: 0.6,
 };

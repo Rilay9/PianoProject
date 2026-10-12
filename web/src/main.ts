@@ -1,10 +1,12 @@
 import './style.css';
 import { FollowView, isStrip } from './follow';
+import { MidiInput } from './midi';
+import { Practice } from './practice';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
   currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime,
 } from './settings';
 
 interface Piece {
@@ -24,12 +26,15 @@ const settingsDialog = $<HTMLDialogElement>('settings');
 const songsDialog = $<HTMLDialogElement>('songs');
 const infoDialog = $<HTMLDialogElement>('info');
 const tempoDialog = $<HTMLDialogElement>('tempo');
+const summaryDialog = $<HTMLDialogElement>('summary');
 const base = import.meta.env.BASE_URL;
 
 const score = $('score');
 const view = new FollowView(score, (text) => showMessage(`Could not draw this song: ${text}`));
 const strip = new UnderStrip($('under'), $('keyboard'), $('note-line'));
 const sound = new Sound();
+const midi = new MidiInput();
+const practice = new Practice(view, sound, midi, () => settingsFor(currentPiece().id));
 view.onStep = (notes) => strip.show(notes);
 let pieces: Piece[] = [];
 let currentId = '';
@@ -94,8 +99,11 @@ function fillBars(): void {
   $('song-title').textContent = piece.title;
   $('song-composer').textContent = piece.composer;
   $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
-  $('play').textContent = view.playing ? '⏸' : '▶';
-  $('play').setAttribute('aria-label', view.playing ? 'Pause' : 'Play');
+  const running = view.playing || practice.active;
+  $('play').textContent = running ? '⏸' : '▶';
+  $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
+  $<HTMLSelectElement>('q-mode').value = s.mode;
+  $('q-hands').setAttribute('aria-label', s.mode === 'watch' ? 'Hands the piano plays' : 'Hands you play');
   for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) b.setAttribute('aria-pressed', String(b.dataset.hands === s.hands));
   $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
   $<HTMLSelectElement>('q-spacing').value = s.spacing;
@@ -133,7 +141,7 @@ function stepSize(delta: number): void {
 const bars = [$('top-bar'), $('bottom-bar')];
 const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
-const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open;
+const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.
 const barHasFocus = () => document.activeElement instanceof HTMLSelectElement && bars.some((b) => b.contains(document.activeElement));
 
@@ -153,49 +161,87 @@ for (const b of bars) {
   b.addEventListener('focusin', showBars);
   b.addEventListener('change', showBars);
 }
-for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog]) d.addEventListener('close', showBars);
+for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDialog]) d.addEventListener('close', showBars);
 
 // Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
 // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
 let starting = false;
+/** The hands the piano plays: in Watch the bar's choice; in Wait and Play along the ones you are not playing. */
+function pianoHands(s: ScoreSettings): 'both' | 'right' | 'left' | null {
+  if (s.mode === 'watch') return s.hands === 'off' ? null : s.hands;
+  return s.hands === 'left' ? 'right' : s.hands === 'right' ? 'left' : null;
+}
 async function play(): Promise<void> {
   if (starting) return;
   const s = settingsFor(currentPiece().id);
-  if (s.hands !== 'off' || s.metronome) {
-    starting = true;
-    $('play').textContent = '…'; // the piano loads on the first play
-    try {
-      await sound.prepare();
-    } catch (cause) {
-      showMessage(`Could not start the sound: ${cause instanceof Error ? cause.message : String(cause)}`);
-    }
+  starting = true;
+  $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
+  try {
+    if (s.mode !== 'watch') await midi.start();
+    if (pianoHands(s) || s.metronome) await sound.prepare();
+  } catch (cause) {
+    showMessage(cause instanceof Error ? cause.message : String(cause));
     starting = false;
-    startSound(view.currentT);
-  } else {
-    view.songClock = null;
+    fillBars();
+    if (s.mode !== 'watch') return; // no keyboard: nothing to wait for or score
   }
+  starting = false;
+  sound.setVolumes(s.pianoVolume, s.clickVolume);
+  sound.setClick(s.click);
   hideBars();
-  view.play();
+  if (s.mode === 'wait') {
+    view.songClock = null;
+    practice.startWait();
+  } else {
+    startSound(view.currentT);
+    view.play();
+    if (s.mode === 'along') practice.startAlong();
+  }
   fillBars();
 }
 /** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. */
 function startSound(t: number): void {
   const s = settingsFor(currentPiece().id);
+  const piano = pianoHands(s);
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
-  if (s.hands === 'off' && !s.metronome) { sound.stop(); view.songClock = null; return; }
-  sound.play(s.hands === 'off' ? [] : view.noteEvents(s.hands), s.metronome ? view.beats(s.clickOn) : [], t, s.speed);
+  if (!piano && !s.metronome) { sound.stop(); view.songClock = null; return; }
+  sound.play(piano ? view.noteEvents(piano) : [], s.metronome ? view.beats(s.clickOn) : [], t, s.speed);
   view.songClock = () => sound.songTime();
 }
-view.onStop = () => { sound.stop(); fillBars(); showBars(); };
-$('play').addEventListener('click', () => (view.playing ? view.pause() : void play()));
+/** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
+function stopAll(): void {
+  if (view.playing) view.pause();
+  else { sound.stop(); practice.stop(); fillBars(); showBars(); }
+}
+view.onStop = () => { sound.stop(); practice.stop(); fillBars(); showBars(); };
+$('play').addEventListener('click', () => (view.playing || practice.active ? stopAll() : void play()));
+
+// Mode: Watch / Wait for me / Play along, saved per song (owner, 2026-10-11).
+$<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
+  if (view.playing || practice.active) stopAll();
+  savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
+  fillBars();
+});
+
+// MIDI: pressed keys light on the keyboard strip and go to Wait for me / Play along.
+midi.onKey = (e) => { strip.setPressed(midi.down); practice.key(e); };
+practice.onDone = () => { fillBars(); showBars(); };
+practice.onSummary = (r) => {
+  if (!r.total) return;
+  const pct = (n: number) => `${Math.round((n / r.total) * 100)}%`;
+  $('summary-body').textContent =
+    `${r.total} notes: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
+    `${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
+  summaryDialog.showModal();
+};
 
 // Hands: L | R | Both | Off in the bottom bar, saved per song; a change while playing is heard at once.
 for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) {
   b.addEventListener('click', () => {
     savePieceSetting(currentPiece().id, 'hands', b.dataset.hands as Hands);
     fillBars();
-    if (view.playing && sound.playing) startSound(sound.songTime());
+    if (view.playing && sound.playing && !practice.active) startSound(sound.songTime());
   });
 }
 
@@ -211,7 +257,7 @@ score.addEventListener('pointerdown', (e) => {
   down = { x: e.clientX, y: e.clientY };
   pressed = false;
   clearTimeout(pressTimer);
-  if (view.playing) return;
+  if (view.playing || practice.active) return;
   pressTimer = window.setTimeout(() => {
     if (!down) return;
     const step = view.hit(down.x, down.y);
@@ -229,7 +275,7 @@ score.addEventListener('pointerup', (e) => {
   const dx = e.clientX - down.x, dy = e.clientY - down.y;
   down = null;
   if (pressed) return;
-  if (view.playing) { view.pause(); return; }
+  if (view.playing || practice.active) { stopAll(); return; }
   if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
   if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
   if (bars[0].classList.contains('faded')) showBars();
@@ -248,6 +294,7 @@ function fillTempo(): void {
   $<HTMLInputElement>('t-metronome').checked = s.metronome;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.checked = r.value === s.click;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.checked = r.value === s.clickOn;
+  for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.checked = r.value === s.onTime;
 }
 function setSpeed(speed: number): void {
   if (!(speed > 0)) return;
@@ -271,6 +318,7 @@ $<HTMLInputElement>('t-click-vol').addEventListener('input', (e) => soundChange(
 $<HTMLInputElement>('t-metronome').addEventListener('change', (e) => soundChange('metronome', (e.target as HTMLInputElement).checked));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.addEventListener('change', () => soundChange('click', r.value as Click));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.addEventListener('change', () => soundChange('clickOn', r.value as ClickOn));
+for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'onTime', r.value as OnTime));
 // −5 / +5 beats per minute, and tap tempo: the speed that matches the last few taps (old app's controls).
 const bpmNow = () => view.baseBpm * settingsFor(currentPiece().id).speed;
 $('t-down').addEventListener('click', () => setSpeed(Math.max(5, Math.round(bpmNow()) - 5) / view.baseBpm));
@@ -413,4 +461,4 @@ navigator.serviceWorker?.getRegistrations().then((regs) => regs.forEach((r) => v
 void start();
 
 // For checks: what the follow view has on screen.
-(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };
+(window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number) => view.struckAt(i, 'both'), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }) };

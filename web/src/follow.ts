@@ -90,6 +90,9 @@ export class FollowView {
   private glideUntil = 0; // performance.now() when the running glide finishes
   playing = false;
   onStop: () => void = () => {};
+  /** Called when play(untilStep) gets there. */
+  onReached: () => void = () => {};
+  private untilStep = -1;
   /** Called whenever the marker moves: the notes for the strip under the music. */
   onStep: (notes: StepNotes) => void = () => {};
 
@@ -606,10 +609,15 @@ export class FollowView {
 
   // ---- the clock --------------------------------------------------------------------------------------
 
-  play(): void {
+  /**
+   * Plays from the marker. untilStep: stop moving on reaching that step (Wait for me: run through the piano's
+   * notes up to your next ones) and call onReached instead of onStop.
+   */
+  play(untilStep = -1): void {
     if (!this.steps.length) return;
     if (this.browsing >= 0) { this.browsing = -1; this.resetSlots(); this.update(); }
-    if (this.current >= this.steps.length - 1) { this.current = 0; this.update(); }
+    if (untilStep < 0 && this.current >= this.steps.length - 1) { this.current = 0; this.update(); }
+    this.untilStep = untilStep;
     this.playing = true;
     this.startPerf = performance.now() - this.steps[this.current].t / this.speed;
     this.frame = requestAnimationFrame((now) => this.tick(now));
@@ -633,7 +641,7 @@ export class FollowView {
     if (!this.playing) return;
     const elapsed = this.songClock ? this.songClock() : (now - this.startPerf) * this.speed;
     let moved = false;
-    while (this.current + 1 < this.steps.length && this.steps[this.current + 1].t <= elapsed) { this.current++; moved = true; }
+    while (this.current + 1 < this.steps.length && this.steps[this.current + 1].t <= elapsed && this.current !== this.untilStep) { this.current++; moved = true; }
     if (moved) this.update();
     if (this.layout === 'smooth' && this.scroller) {
       // A steady glide: the marker's position between this note and the next, kept a third from the left.
@@ -642,12 +650,30 @@ export class FollowView {
       if (n && n.pos.left > s.pos.left) x = s.pos.left + (n.pos.left - s.pos.left) * Math.min(1, (elapsed - s.t) / (n.t - s.t));
       this.scroller.scrollLeft = Math.max(0, x - this.host.clientWidth / 3);
     }
+    if (this.untilStep >= 0 && this.current === this.untilStep) {
+      this.playing = false;
+      if (moved) this.update();
+      this.onReached();
+      return;
+    }
     if (this.current >= this.steps.length - 1 && elapsed >= this.endT) { this.pause(); return; }
     this.frame = requestAnimationFrame((t) => this.tick(t));
   }
 
   /** Where the marker is, in song ms at speed 1. */
   get currentT(): number { return this.steps[this.current]?.t ?? 0; }
+  get index(): number { return this.current; }
+  get stepCount(): number { return this.steps.length; }
+  stepT(i: number): number { return this.steps[i]?.t ?? this.endT; }
+  /** The song's time now (ms at speed 1): the sound's clock while it plays, otherwise the marker's own. */
+  songNow(): number { return this.songClock ? this.songClock() : this.playing ? (performance.now() - this.startPerf) * this.speed : this.currentT; }
+
+  /** The keys struck at step i by the given hands (tied-on and grace notes left out). */
+  struckAt(i: number, hands: 'both' | 'right' | 'left'): number[] {
+    return (this.steps[i]?.pos.staves ?? [])
+      .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
+      .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => n.midi));
+  }
 
   /** The notes to play from here on, for the chosen hands (right = top staff, left = the others). */
   noteEvents(hands: 'both' | 'right' | 'left'): NoteEvent[] {
