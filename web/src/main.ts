@@ -2,8 +2,10 @@ import './style.css';
 import { FollowView, isStrip } from './follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from './marks';
 import { setUpOffline } from './offline';
-import { MidiInput } from './midi';
-import { Practice } from './practice';
+import { MidiInput, type KeyEvent } from './midi';
+import { FreePlay } from './freeplay';
+import { keepAwake } from './wake';
+import { Practice, yours } from './practice';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
@@ -119,6 +121,7 @@ function fillBars(): void {
   $('song-composer').textContent = piece.composer;
   $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
   const running = view.playing || practice.active;
+  keepAwake(running || freePlay.open); // the screen stays on while you play (owner, 2026-10-11)
   // Blind: the music hides while you play (Display → Show → Music while playing off) and comes back on stopping.
   score.classList.toggle('blind', running && !s.musicWhilePlaying);
   $('play').textContent = running ? '⏸' : '▶';
@@ -188,14 +191,18 @@ for (const d of [settingsDialog, songsDialog, infoDialog, tempoDialog, summaryDi
 // Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
 // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
 let starting = false;
-/** The hands the piano plays: in Watch the bar's choice; in Wait and Play along the ones you are not playing. */
 /** The modes that judge your playing against the score as it goes by. */
 const judged = (mode: Mode) => mode === 'along' || mode === 'ladder' || mode === 'rhythm';
+/** The hands the piano plays: in Watch the bar's choice; in Wait and Play along the ones you are not playing. */
 function pianoHands(s: ScoreSettings): 'both' | 'right' | 'left' | null {
   if (s.mode === 'watch') return s.hands === 'off' ? null : s.hands;
   return s.hands === 'left' ? 'right' : s.hands === 'right' ? 'left' : null;
 }
-async function play(): Promise<void> {
+/**
+ * Starts playing from the marker. fromKey: begun by playing your first note (no count-in; that key counts as
+ * played on its note). After a pause by itself, the same run carries on.
+ */
+async function play(fromKey?: number): Promise<void> {
   if (starting) return;
   if (marking) setMarking(false);
   const s = settingsFor(currentPiece().id);
@@ -220,20 +227,50 @@ async function play(): Promise<void> {
   sound.setClick(s.click);
   hideBars();
   pass = 0;
-  const loop = view.looped;
+  const loop = view.looped, continuing = resumable;
+  resumable = false;
   if (s.mode === 'wait') {
     view.songClock = null;
     if (loop && (view.index < loop.a || view.index > loop.b)) view.goTo(loop.a);
     practice.startWait();
   } else if (loop) {
-    startLoopPass();
+    startLoopPass(fromKey !== undefined || continuing, continuing);
   } else {
     startSound(view.currentT);
     view.play();
-    if (judged(s.mode)) practice.startAlong();
+    if (judged(s.mode)) practice.startAlong(continuing);
   }
+  if (fromKey !== undefined && judged(s.mode)) practice.startedBy(fromKey);
   fillBars();
 }
+
+// Starting with a key (owner, 2026-10-11): while paused, playing your first note starts the song from the
+// marker (any key, if none of your notes are there, and always in Rhythm); in Wait for me any key starts it.
+let resumable = false; // paused by itself: the next start carries on the same run
+let mashedAt = -Infinity;
+const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
+async function startFromKey(e: KeyEvent): Promise<void> {
+  if (view.playing || practice.active || starting || marking || picking || panelOpen() || freePlay.open) return;
+  if (e.time - mashedAt < SETTLE_MS) return;
+  const s = settingsFor(currentPiece().id);
+  if (s.mode === 'watch' || (s.mode === 'ladder' && !view.looped)) return;
+  if (s.mode === 'wait') {
+    await play();
+    if (midi.down.has(e.midi)) practice.key(e); // that key counts for the first notes
+    return;
+  }
+  const mine = view.struckAt(view.index, yours(s));
+  if (s.mode !== 'rhythm' && mine.length && !mine.includes(e.midi)) return; // not your note: wait for it
+  await play(e.midi);
+}
+practice.onAutoPause = (reason, step) => {
+  if (reason === 'mash') mashedAt = performance.now();
+  practice.suspend();
+  view.pause();
+  view.goTo(step);
+  resumable = true;
+  showMessage(reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.', true);
+};
 /** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. */
 function startSound(t: number): void {
   const s = settingsFor(currentPiece().id);
@@ -287,19 +324,21 @@ practice.loop = () => {
   return span && { a: span.a, b: span.b, t1: span.t1 };
 };
 /** One pass round the loop: a bar of clicks, then its bars, with the piano and metronome as chosen. */
-function startLoopPass(): void {
+function startLoopPass(fromMarker = false, continuing = false): void {
   const s = settingsFor(currentPiece().id);
   const span = view.loopSpan();
   if (!span) return;
   const piano = pianoHands(s);
-  view.goTo(span.a);
+  // Begun from a key (or carrying on after a pause): from the marker, with no count-in.
+  if (!fromMarker || view.index < span.a || view.index > span.b) view.goTo(span.a);
+  const from = fromMarker ? view.currentT : span.t0;
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
-  const clicks = s.metronome ? view.beats(s.clickOn).filter((b) => b.t >= span.t0 - 1 && b.t < span.t1) : [];
-  sound.play(piano ? view.notesBetween(piano, span.t0, span.t1) : [], [...span.countIn, ...clicks], span.from, s.speed);
+  const clicks = s.metronome ? view.beats(s.clickOn).filter((b) => b.t >= from - 1 && b.t < span.t1) : [];
+  sound.play(piano ? view.notesBetween(piano, from, span.t1) : [], [...(fromMarker ? [] : span.countIn), ...clicks], fromMarker ? from : span.from, s.speed);
   view.songClock = () => sound.songTime();
   view.play(-1, span.t1);
-  if (judged(s.mode)) practice.startAlong();
+  if (judged(s.mode)) practice.startAlong(continuing);
 }
 view.onLoopEnd = () => {
   const s = settingsFor(currentPiece().id);
@@ -340,7 +379,12 @@ $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
 });
 
 // MIDI: pressed keys light on the keyboard strip and go to Wait for me / Play along.
-midi.onKey = (e) => { strip.setPressed(midi.down); practice.key(e); };
+midi.onKey = (e) => {
+  strip.setPressed(midi.down);
+  if (freePlay.open) { freePlay.key(e, midi.down); return; }
+  practice.key(e);
+  if (e.on) void startFromKey(e);
+};
 practice.onDone = () => { fillBars(); showBars(); };
 practice.onSummary = (r) => {
   if (!r.total) return;
@@ -442,6 +486,23 @@ for (const b of document.querySelectorAll<HTMLButtonElement>('#finger-pick butto
 }
 $('marks-done').addEventListener('click', () => setMarking(false));
 $('open-more').addEventListener('click', () => moreDialog.showModal());
+// Free play: just the keys (its own place in the app comes later; for now in ⋯).
+const freePlay = new FreePlay($('freeplay'), sound);
+freePlay.onClose = () => { fillBars(); showBars(); };
+$('open-freeplay').addEventListener('click', () => {
+  moreDialog.close();
+  if (view.playing || practice.active) stopAll();
+  void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
+  freePlay.show(midi.down);
+  fillBars();
+});
+
+// The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to
+// start only after a tap), so the first key can start a song.
+document.addEventListener('pointerdown', () => {
+  if (MidiInput.supported) void midi.start().catch(() => {});
+  void sound.prepare(false).catch(() => {});
+}, { once: true, capture: true });
 $('edit-marks').addEventListener('click', () => {
   moreDialog.close();
   // Fingering only shows when Display shows fingering: turn it on for this song if it is off.

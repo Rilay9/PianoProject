@@ -57,6 +57,13 @@ export class Sound {
     await this.piano.ready;
   }
 
+  /** Free play: a note on the phone's piano now, sounding until the returned function is called. */
+  async noteNow(midi: number, velocity = 90): Promise<() => void> {
+    await this.prepare(true);
+    const stop = this.piano!.start({ note: midi, velocity });
+    return () => stop();
+  }
+
   setVolumes(piano: number, click: number): void {
     if (this.pianoGain) this.pianoGain.gain.value = piano;
     if (this.clickGain) this.clickGain.gain.value = click;

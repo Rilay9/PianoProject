@@ -15,6 +15,17 @@ import { judge, judgeRhythm, type ExpectedStep, type PlayedKey } from './matchin
 
 export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const;
 
+// Pausing by itself in the modes that keep going (owner, 2026-10-11), then carrying on from your next key:
+// - silence: none of your keys for 3 seconds while at least two of your notes came due (a long rest in your
+//   part does not count);
+// - mashing: six or more keys the score does not have near then, within a quarter of a second. Fast runs and
+//   big chords are in the score, so they never count; a wrong five-finger chord alone does not either.
+const SILENCE_MS = 3000;
+const SILENCE_NOTES = 2;
+const MASH_KEYS = 6;
+const MASH_MS = 250;
+const NEAR_MS = 300; // how close to a written note a key must come to be one the score has (real ms)
+
 /** A stretch of bars that went wrong: its steps (as a loop range) and how many notes or presses were off. */
 export interface WeakSpot { a: number; b: number; count: number }
 export interface Summary {
@@ -24,7 +35,8 @@ export interface Summary {
 }
 
 type Hand = 'both' | 'right' | 'left';
-const yours = (s: ScoreSettings): Hand => (s.hands === 'left' || s.hands === 'right' ? s.hands : 'both');
+/** The hands you play: the bottom bar's L or R, otherwise both. */
+export const yours = (s: ScoreSettings): Hand => (s.hands === 'left' || s.hands === 'right' ? s.hands : 'both');
 const pianos = (s: ScoreSettings): Hand | null => (s.hands === 'left' ? 'right' : s.hands === 'right' ? 'left' : null);
 
 export class Practice {
@@ -34,6 +46,13 @@ export class Practice {
   private fromIndex = 0;
   private running: 'wait' | 'along' | null = null;
   onSummary: (s: Summary) => void = () => {};
+  /** Paused by itself (silence or mashing); resumeStep: where to carry on from. */
+  onAutoPause: (reason: 'silence' | 'mash', resumeStep: number) => void = () => {};
+  private segments: Summary[] = []; // the run so far, before each pause
+  private lastPress = 0; // performance.now() of your last key
+  private lastPressSong = 0; // and where the song was then
+  private odd: number[] = []; // times of recent keys the score does not have
+  private watch = 0;
   /** The loop being practised, if any: its steps and the song time its last bar ends. */
   loop: () => { a: number; b: number; t1: number } | null = () => null;
   /** Wait for me reached the end of the song by itself. */
@@ -56,26 +75,94 @@ export class Practice {
     this.arrive();
   }
 
-  /** Starts Play along: the caller has started the sound and the marker. */
-  startAlong(): void {
+  /** Starts Play along: the caller has started the sound and the marker. continuing: after a pause, same run. */
+  startAlong(continuing = false): void {
     this.running = 'along';
     this.played = [];
     this.fromIndex = this.view.index;
+    if (!continuing) this.segments = [];
+    this.lastPress = performance.now();
+    this.lastPressSong = this.view.songNow();
+    this.odd = [];
+    clearInterval(this.watch);
+    this.watch = window.setInterval(() => this.checkSilence(), 250);
+  }
+
+  /** The key that started the song (Play along begun from a key): counted as played right on its note. */
+  startedBy(midi: number): void {
+    const t = this.view.currentT;
+    this.played.push({ midi, t, speed: this.settings().speed });
+    this.lastPress = performance.now();
+    this.lastPressSong = t;
   }
 
   /** Stopped (a tap or the end of the song): Play along shows how it went (unless told not to). */
   stop(summary = true): void {
-    if (this.running === 'along' && summary) this.onSummary(this.score());
+    clearInterval(this.watch);
+    const along = this.running === 'along';
+    if (along && summary) this.onSummary(this.merged(this.score()));
+    if (along) this.segments = []; // a real stop ends the run (a pause by itself keeps it: see suspend)
     this.running = null;
     this.expected.clear();
     this.fresh.clear();
   }
 
+  /** Paused by itself: keeps how this part went, for the summary when the run ends. */
+  suspend(): void {
+    clearInterval(this.watch);
+    if (this.running === 'along') this.segments.push(this.score());
+    this.running = null;
+  }
+
+  /** The parts of a run between pauses, added up. */
+  private merged(last: Summary): Summary {
+    const all = [...this.segments, last];
+    const sum = (k: 'total' | 'onTime' | 'early' | 'late' | 'missed' | 'wrong') => all.reduce((n, r) => n + r[k], 0);
+    const spots = new Map<string, WeakSpot>();
+    for (const w of all.flatMap((r) => r.weak)) {
+      const key = `${w.a}-${w.b}`, had = spots.get(key);
+      spots.set(key, had ? { ...had, count: had.count + w.count } : { ...w });
+    }
+    return {
+      ...last, total: sum('total'), onTime: sum('onTime'), early: sum('early'), late: sum('late'), missed: sum('missed'), wrong: sum('wrong'),
+      weak: [...spots.values()].sort((x, y) => y.count - x.count).slice(0, 3),
+    };
+  }
+
+  /** Silence: none of your keys for a while though your notes kept coming. */
+  private checkSilence(): void {
+    if (this.running !== 'along' || !this.view.playing || performance.now() - this.lastPress < SILENCE_MS) return;
+    const hand = yours(this.settings()), now = this.view.songNow();
+    const due: number[] = [];
+    for (let i = this.fromIndex; i <= this.view.index; i++) {
+      const t = this.view.stepT(i);
+      if (t > this.lastPressSong + 1 && t <= now && this.view.struckAt(i, hand).length) due.push(i);
+    }
+    if (due.length >= SILENCE_NOTES) this.onAutoPause('silence', due[0]);
+  }
+
+  /** Is this key one of your written notes near song time t? */
+  private nearNote(midi: number, t: number): boolean {
+    const s = this.settings(), hand = yours(s), reach = NEAR_MS * s.speed;
+    for (let i = Math.max(0, this.view.index - 12); i < Math.min(this.view.stepCount, this.view.index + 12); i++) {
+      if (Math.abs(this.view.stepT(i) - t) <= reach && this.view.struckAt(i, hand).includes(midi)) return true;
+    }
+    return false;
+  }
+
   key(e: KeyEvent): void {
     if (!this.running) return;
     if (this.running === 'along') {
-      const speed = this.settings().speed;
-      if (e.on) this.played.push({ midi: e.midi, t: this.view.songNow() - (performance.now() - e.time) * speed, speed });
+      if (!e.on) return;
+      const s = this.settings(), speed = s.speed, t = this.view.songNow() - (performance.now() - e.time) * speed;
+      this.played.push({ midi: e.midi, t, speed });
+      this.lastPress = e.time;
+      this.lastPressSong = t;
+      // Mashing: many keys the score does not have, all at once (in Rhythm any key is fine, so it never counts).
+      if (s.mode !== 'rhythm' && !this.nearNote(e.midi, t)) {
+        this.odd = [...this.odd.filter((x) => e.time - x < MASH_MS), e.time];
+        if (this.odd.length >= MASH_KEYS) { this.odd = []; this.onAutoPause('mash', this.view.index); }
+      }
       return;
     }
     if (e.on) this.fresh.add(e.midi);

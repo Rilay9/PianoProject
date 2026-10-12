@@ -47,6 +47,30 @@ export function chordName(pitches: Pitch[]): string {
   return '';
 }
 
+const SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const FLATS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+/**
+ * Keys played with no score to spell them (Free play): their names and the chord or interval they make, spelled
+ * all in sharps or all in flats, whichever names a familiar chord or a plain interval (so B♭ D F is B♭, not a
+ * chord on A♯); if both do, the one with fewer sharps and flats.
+ */
+export function keysChord(midis: number[]): { chord: string; names: string } {
+  const keys = [...new Set(midis)].sort((a, b) => a - b);
+  const options = [SHARPS, FLATS].map((table) => {
+    const pitches: Pitch[] = keys.map((m) => {
+      const spelled = `${table[m % 12]}${Math.floor(m / 12) - 1}`;
+      return { midi: m, spelled, name: spelled.replace('#', '♯').replace(/^([A-G])b/, '$1♭'), len: 1 };
+    });
+    const chord = chordName(pitches);
+    const odd = !chord || /augmented|diminished/.test(chord); // an interval spelled awkwardly (C to D♯)
+    return { chord, names: pitches.map((p) => p.name).join(' '), odd, marks: (pitches.map((p) => p.spelled).join('').match(/[#b]/g) ?? []).length };
+  });
+  options.sort((a, b) => Number(a.odd) - Number(b.odd) || a.marks - b.marks);
+  // Sharps and flats written as ♯ and ♭, like the note names (the chord type's own b, as in m7b5, stays).
+  return { chord: options[0].chord.replace(/([A-G])#/g, '$1♯').replace(/([A-G])b/g, '$1♭'), names: options[0].names };
+}
+
 const LOWEST = 21; // A0
 const HIGHEST = 108; // C8
 const MIN_SPAN = 24; // two octaves: enough to see where the hand is
@@ -99,6 +123,7 @@ export class UnderStrip {
         if (m % 12 === 0) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
         w++;
       }
+      key.dataset.midi = String(m);
       whites.append(key);
       this.keys.set(m, key);
     }

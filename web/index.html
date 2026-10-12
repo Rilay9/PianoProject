@@ -57,6 +57,14 @@
     <div id="keyboard" class="keyboard" hidden></div>
   </div>
 
+  <!-- Free play: just the keys, named; nothing judged. -->
+  <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
+    <div class="fp-head"><span class="title">Free play</span><button id="fp-done" type="button" class="btn">Done</button></div>
+    <p id="fp-chord" class="fp-chord"></p>
+    <p id="fp-notes" class="fp-notes"></p>
+    <div class="keyboard fp-keyboard"></div>
+  </section>
+
   <dialog id="songs" aria-labelledby="songs-title">
     <form method="dialog">
       <h2 id="songs-title">Songs</h2>
@@ -77,6 +85,7 @@
     <form method="dialog">
       <h2 id="more-title">More</h2>
       <div class="menu">
+        <button id="open-freeplay" type="button">Free play</button>
         <button id="open-metronome" type="button">Metronome…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
