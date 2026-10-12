@@ -14,6 +14,8 @@ export type Hands = 'both' | 'right' | 'left' | 'off';
 export type Click = 'wood' | 'beep' | 'high';
 /** What the metronome clicks on: the time signature's beat, every quarter note, or every eighth. */
 export type ClickOn = 'beats' | 'quarters' | 'eighths';
+/** Where the app's piano plays: the phone's speaker, or the MIDI keyboard's own sound. */
+export type PianoOut = 'phone' | 'keyboard';
 /** Watch (the app plays), Wait for me (the marker waits for your keys), Play along (at tempo, then a summary). */
 export type Mode = 'watch' | 'wait' | 'along';
 /** How close to when a note is due counts as on time in Play along. */
@@ -47,6 +49,7 @@ export interface ScoreSettings {
   click: Click;
   clickOn: ClickOn;
   mode: Mode;
+  pianoOut: PianoOut;
   onTime: OnTime;
   /** 0 to 1. */
   pianoVolume: number;
@@ -72,6 +75,7 @@ export const DEFAULTS: ScoreSettings = {
   click: 'wood',
   clickOn: 'beats',
   mode: 'watch',
+  pianoOut: 'phone',
   onTime: 'normal',
   pianoVolume: 0.8,
   clickVolume: 0.6,

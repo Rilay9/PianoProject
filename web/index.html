@@ -85,7 +85,11 @@
         <button id="t-tap" type="button">Tap tempo</button>
       </div>
       <p id="t-note" class="note"></p>
-      <label class="row">Piano volume <input id="t-piano-vol" type="range" min="0" max="100" step="5"></label>
+      <fieldset class="row"><legend>Piano plays through</legend>
+        <label><input type="radio" name="pianoOut" value="phone"> Phone</label>
+        <label><input type="radio" name="pianoOut" value="keyboard"> MIDI keyboard</label>
+      </fieldset>
+      <label class="row">Piano volume (phone) <input id="t-piano-vol" type="range" min="0" max="100" step="5"></label>
       <fieldset class="row"><legend>Metronome</legend>
         <label><input id="t-metronome" type="checkbox"> On</label>
         <label><input type="radio" name="click" value="wood"> Wood</label>

@@ -3,6 +3,7 @@
 // same clock (songTime), so what you hear and what you see stay together.
 
 import { SplendidGrandPiano } from 'smplr';
+import type { MidiInput } from './midi';
 import type { Click } from './settings';
 
 /** A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1). */
@@ -33,9 +34,11 @@ export class Sound {
   private voices: { stop: (time?: number) => void; end: number }[] = [];
   private clicks: AudioScheduledSourceNode[] = [];
   playing = false;
+  /** When set, piano notes go to the MIDI keyboard instead of the phone (the metronome stays on the phone). */
+  keyboard: MidiInput | null = null;
 
-  /** Starts the audio (it must follow a tap) and loads the piano once; resolves when it can play. */
-  async prepare(): Promise<void> {
+  /** Starts the audio (it must follow a tap) and, unless the keyboard plays, loads the piano; resolves when ready. */
+  async prepare(needPiano = true): Promise<void> {
     if (!this.ctx) {
       const ctx = new AudioContext();
       this.ctx = ctx;
@@ -43,13 +46,15 @@ export class Sound {
       this.pianoGain.connect(ctx.destination);
       this.clickGain = ctx.createGain();
       this.clickGain.connect(ctx.destination);
-      this.piano = SplendidGrandPiano(ctx, {
-        baseUrl: `${import.meta.env.BASE_URL}content/audio/splendid-grand-piano/samples`,
-        destination: this.pianoGain,
-      });
     }
     await this.ctx.resume();
-    await this.piano!.ready;
+    if (!needPiano) return;
+    // The samples load the first time the phone's piano is needed (not when the keyboard plays the part).
+    this.piano ??= SplendidGrandPiano(this.ctx, {
+      baseUrl: `${import.meta.env.BASE_URL}content/audio/splendid-grand-piano/samples`,
+      destination: this.pianoGain!,
+    });
+    await this.piano.ready;
   }
 
   setVolumes(piano: number, click: number): void {
@@ -93,9 +98,11 @@ export class Sound {
 
   stop(): void {
     clearInterval(this.timer);
+    const wasPlaying = this.playing;
     this.playing = false;
     const now = this.ctx?.currentTime ?? 0;
     for (const v of this.voices) if (v.end > now) v.stop(now);
+    if (this.keyboard && wasPlaying) this.keyboard.silence();
     this.voices = [];
     for (const c of this.clicks) { try { c.stop(); } catch { /* already ended */ } }
     this.clicks = [];
@@ -109,6 +116,11 @@ export class Sound {
       const n = this.notes[this.nextNote++];
       const time = Math.max(ctx.currentTime, this.at(n.t));
       const duration = n.dur / 1000 / this.speed;
+      if (this.keyboard) {
+        // The MIDI clock is performance.now(); the audio clock is ctx time: the same moment in both.
+        this.keyboard.play(n.midi, VELOCITY, performance.now() + (time - ctx.currentTime) * 1000, duration * 1000);
+        continue;
+      }
       const stop = this.piano!.start({ note: n.midi, velocity: VELOCITY, time, duration });
       this.voices.push({ stop, end: time + duration + 1 });
     }

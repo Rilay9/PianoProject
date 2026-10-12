@@ -6,7 +6,7 @@ import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import {
   currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
-  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime,
+  slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
 } from './settings';
 
 interface Piece {
@@ -177,8 +177,11 @@ async function play(): Promise<void> {
   starting = true;
   $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
   try {
-    if (s.mode !== 'watch') await midi.start();
-    if (pianoHands(s) || s.metronome) await sound.prepare();
+    if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
+    // The piano part goes to the keyboard when chosen and one is connected that can play; otherwise the phone.
+    sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
+    if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
+    if (pianoHands(s) || s.metronome) await sound.prepare(!sound.keyboard);
   } catch (cause) {
     showMessage(cause instanceof Error ? cause.message : String(cause));
     starting = false;
@@ -295,6 +298,7 @@ function fillTempo(): void {
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.checked = r.value === s.click;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.checked = r.value === s.clickOn;
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.checked = r.value === s.onTime;
+  for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="pianoOut"]')) r.checked = r.value === s.pianoOut;
 }
 function setSpeed(speed: number): void {
   if (!(speed > 0)) return;
@@ -319,6 +323,8 @@ $<HTMLInputElement>('t-metronome').addEventListener('change', (e) => soundChange
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.addEventListener('change', () => soundChange('click', r.value as Click));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.addEventListener('change', () => soundChange('clickOn', r.value as ClickOn));
 for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'onTime', r.value as OnTime));
+// Where the piano plays: applies from the next ▶.
+for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="pianoOut"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'pianoOut', r.value as PianoOut));
 // −5 / +5 beats per minute, and tap tempo: the speed that matches the last few taps (old app's controls).
 const bpmNow = () => view.baseBpm * settingsFor(currentPiece().id).speed;
 $('t-down').addEventListener('click', () => setSpeed(Math.max(5, Math.round(bpmNow()) - 5) / view.baseBpm));
