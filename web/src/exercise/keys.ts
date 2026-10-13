@@ -1,6 +1,7 @@
 // The exercise screen's keyboard: keys you press on the MIDI keyboard or the screen, lit keys (help), and a
 // wrong key in red with the wanted ones outlined. Shared by Simon and the drills. Screen keys sound on the phone.
 
+import { holds } from '../holds';
 import type { Sound } from '../sound';
 import { UnderStrip } from '../strip';
 
@@ -21,6 +22,7 @@ export class ExerciseKeys {
       const id = e.pointerId;
       this.touches.set(id, { midi, stop: this.sound.noteNow(midi, 90, () => this.touches.get(id)?.midi === midi) });
       this.pressedChanged();
+      holds.key(midi, true, e.timeStamp); // (MIDI keys are recorded in main.ts)
       this.onKey(midi, true, e.timeStamp);
     });
     const lift = (e: PointerEvent) => {
@@ -29,6 +31,7 @@ export class ExerciseKeys {
       this.touches.delete(e.pointerId);
       void t.stop.then((stop) => stop());
       this.pressedChanged();
+      holds.key(t.midi, false, e.timeStamp);
       this.onKey(t.midi, false, e.timeStamp);
     };
     keyboard.addEventListener('pointerup', lift);

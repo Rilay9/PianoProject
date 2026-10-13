@@ -9,6 +9,8 @@ export class MidiInput {
   readonly down = new Set<number>();
   private silenceTimer = 0;
   onKey: (e: KeyEvent) => void = () => {};
+  /** The sustain pedal (controller 64) went down or up; time: performance.now() ms. */
+  onPedal: (down: boolean, time: number) => void = () => {};
   onDevices: (names: string[]) => void = () => {};
 
   static get supported(): boolean { return typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator; }
@@ -76,5 +78,6 @@ export class MidiInput {
     // Note on with velocity 0 is the usual way keyboards send a note off.
     if (kind === 0x90 && velocity > 0) { this.down.add(midi); this.onKey({ midi, on: true, velocity, time: m.timeStamp }); }
     else if (kind === 0x80 || kind === 0x90) { this.down.delete(midi); this.onKey({ midi, on: false, velocity, time: m.timeStamp }); }
+    else if (kind === 0xb0 && midi === 64) this.onPedal(velocity >= 64, m.timeStamp); // controller 64: down from 64 up
   }
 }

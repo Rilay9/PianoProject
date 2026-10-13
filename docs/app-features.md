@@ -53,9 +53,16 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 |---|---|---|---|
 | **Watch** | hearing and seeing the piece | the app plays; the marker follows the sound | nothing |
 | **Wait for me** | learning the notes without time pressure | the marker waits at each of your notes until all its keys are down (freshly pressed); the piano plays the other hand up to your next note; held piano notes ring on | nothing scored; it simply waits |
-| **Play along** | playing at tempo | the piece runs at its tempo with the piano playing the other hand; at the end a summary | each note on time / early / late / missed, keys not in the score; *On time*: relaxed ±200, normal ±100, strict ±50 ms; the weakest bars offered as a one-tap loop |
-| **Ladder** | building speed on a passage | Play along round a loop; a clean pass (every note on time, nothing wrong) raises the speed a step (2 / 5 / 10 %), a messy one lowers it; never above the written tempo | as Play along, per pass |
-| **Rhythm** | the rhythm alone | Play along where any key counts: one tap per note or chord (keys within 30 ms are one tap) | timing of each tap; extra taps |
+| **Play along** | playing at tempo | the piece runs at its tempo with the piano playing the other hand; at the end a summary | each note on time and held / let go early / early / late / missed, keys not in the score; *On time*: relaxed ±200, normal ±100, strict ±50 ms; the weakest bars offered as a one-tap loop |
+| **Ladder** | building speed on a passage | Play along round a loop; a clean pass (every note on time and held, nothing wrong) raises the speed a step (2 / 5 / 10 %), a messy one lowers it; never above the written tempo | as Play along, per pass |
+| **Rhythm** | the rhythm alone | Play along where any key counts: one tap per note or chord (keys within 30 ms are one tap) | timing of each tap, held as long as the moment's longest note; extra taps |
+
+**Held notes** (owner, 2026-10-13; `web/src/holds.ts`): wherever rhythm is judged (Play along, Ladder, Rhythm,
+timed Drills, Memorise "in time", the lab's chords) a note must sound at least ¾ of its written length at the speed
+played, or it is *let go early* (amber, named). The sustain pedal counts as holding (a key let go under the pedal
+sounds until it lifts, or until struck again). Notes marked staccato, staccatissimo or spiccato are meant short and
+never asked to be held. Holding longer is not marked (legato overlaps are normal). A note already early or late is
+marked for that alone.
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
 (and Memorise) the keys under the music can be played by touch, and count; in the timed modes they only show. In the judged
@@ -144,10 +151,10 @@ scale or chord by name, something to play back by ear), given at once — not fr
 **How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
 octave counts; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
 your first note (by ear: always your first note); the metronome can keep clicking. Cards are judged:
-- **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time / early / late /
-  missed, wrong keys; *On time* relaxed / normal / strict);
+- **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time and held / let go
+  early / early / late / missed, wrong keys; *On time* relaxed / normal / strict);
 - **without** (notes, chords, intervals): as the set says — the right notes in order, or steady beats of a given
-  length; *On time: notes only* judges every card on notes alone.
+  length (steady beats are judged on when, not how long); *On time: notes only* judges every card on notes alone.
 
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
@@ -196,8 +203,9 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
   when every note of its chord (any voicing or octave; the Roots step: the root) is down together by the beat
   (±150 ms of real time at any speed; a small roll is fine), amber when a little late (before the next chord), red with
   a missing note, the notes only ever played one at a time (Your own way allows that), or a key not in the chord; said
-  in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). How long a chord is held is not judged
-  yet. Times are the keyboard's own. Help: keys lit, notes named, or the symbol only.
+  in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). Chords on the beat are held until the
+  chord changes, the style's rhythm as long as the band holds each (¾ of it, pedal counts; amber if let go early);
+  Roots and Your own way leave the length to you. Times are the keyboard's own. Help: keys lit, notes named, or the symbol only.
 - **Lead steps (over a chart: improvising):** roots in rhythm → chord notes (lit) → the scale (the chart's, lit pale,
   the chord's notes dark; land on a dark one when the chord changes) → call and answer (the band plays the chord's
   notes up in the first two of every four bars played, counted through the rounds; you answer in the next two) →
@@ -278,7 +286,8 @@ Items are numbered; `name` (full, used for name-only prompts and feedback) and `
 when missing. MusicXML items keep their rhythm and rests (at the start and end too: a melody that starts on beat 2
 starts there); a whole MusicXML file also keeps its bars, time signature and key, and a passage takes the tempo in
 force where it starts. MusicXML is read as **one line of music**: notes are placed where they really fall (chords,
-`<backup>`, `<forward>`), and a tied note just lasts longer. Music with a second voice or staff (unless the passage
+`<backup>`, `<forward>`), a tied note just lasts longer, and staccato (staccatissimo, spiccato) is kept: drawn with
+its dot, and never asked to be held. Music with a second voice or staff (unless the passage
 names a staff), tuplets, or lengths shorter than a 32nd is refused with the reason (shown on the exercise screen),
 not read wrongly. A fragment without `<divisions>` counts durations in quarter notes. Spell pitches as written (F#5, Bb4) — the app draws and names them as given. Sets marked "Test:" are
 placeholders for checking the app, not lesson content.

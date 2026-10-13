@@ -9,6 +9,7 @@
 import './style.css';
 import { $, App, type Screen } from './app';
 import { FreePlay } from './freeplay';
+import { holds } from './holds';
 import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
 import { setUpOffline } from './offline';
@@ -65,10 +66,12 @@ remote.musicRange = () => showing().musicRange();
 remote.peekable = () => showing() === memoriseScreen;
 remote.onCommand = (c) => { if (!app.dialogOpen()) showing().command(c); };
 midi.onKey = (e) => {
+  holds.key(e.midi, e.on, e.time); // how long each note sounds (every key, the score's touch keys too)
   app.strip.setPressed(midi.down);
   if (remote.take(e)) return;
   showing().key(e);
 };
+midi.onPedal = (down, time) => holds.sustain(down, time);
 window.addEventListener('resize', () => { for (const s of app.screens) s.resized(); });
 
 // The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to
@@ -217,6 +220,7 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(),
   beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length,
   struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(),
+  durations: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.durationsAt(i, hands),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
   simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(),
 };

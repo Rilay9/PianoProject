@@ -11,7 +11,8 @@ import type { FollowView } from './follow';
 import type { KeyEvent, MidiInput } from './midi';
 import type { Beat, NoteEvent, Sound } from './sound';
 import type { ScoreSettings } from './settings';
-import { judge, judgeRhythm, type ExpectedStep, type PlayedKey } from './matching';
+import { holds } from './holds';
+import { judge, judgeRhythm, type ExpectedStep, type NoteKind, type PlayedKey } from './matching';
 
 export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const;
 
@@ -30,11 +31,12 @@ const HINT_MS = SILENCE_MS; // Memorise: no key this long while it waits for a n
 /** A stretch of bars that went wrong: its steps (as a loop range) and how many notes or presses were off. */
 export interface WeakSpot { a: number; b: number; count: number }
 export interface Summary {
-  total: number; onTime: number; early: number; late: number; missed: number; wrong: number; tolerance: number; rhythm: boolean;
+  /** short: on time but let go early (holds.ts); every note is one of onTime, early, late, missed, short. */
+  total: number; onTime: number; early: number; late: number; missed: number; short: number; wrong: number; tolerance: number; rhythm: boolean;
   /** The worst stretches first (at most three). */
   weak: WeakSpot[];
   /** Each note not played on time (its step in the score) and each wrong key (the step being played then). */
-  slips: { step: number; midi: number; kind: 'missed' | 'early' | 'late' }[];
+  slips: { step: number; midi: number; kind: NoteKind }[];
   extra: { step: number; midi: number }[];
 }
 
@@ -144,9 +146,9 @@ export class Practice {
   }
 
   /** The key that started the song (Play along begun from a key): counted as played right on its note. */
-  startedBy(midi: number): void {
+  startedBy(midi: number, at?: number): void {
     const t = this.view.currentT;
-    this.played.push({ midi, t, speed: this.settings().speed });
+    this.played.push({ midi, t, speed: this.settings().speed, at });
     this.lastPress = performance.now();
     this.lastPressSong = t;
   }
@@ -190,14 +192,14 @@ export class Practice {
   /** The parts of a run between pauses, added up. */
   private merged(last: Summary): Summary {
     const all = [...this.segments, last];
-    const sum = (k: 'total' | 'onTime' | 'early' | 'late' | 'missed' | 'wrong') => all.reduce((n, r) => n + r[k], 0);
+    const sum = (k: 'total' | 'onTime' | 'early' | 'late' | 'missed' | 'short' | 'wrong') => all.reduce((n, r) => n + r[k], 0);
     const spots = new Map<string, WeakSpot>();
     for (const w of all.flatMap((r) => r.weak)) {
       const key = `${w.a}-${w.b}`, had = spots.get(key);
       spots.set(key, had ? { ...had, count: had.count + w.count } : { ...w });
     }
     return {
-      ...last, total: sum('total'), onTime: sum('onTime'), early: sum('early'), late: sum('late'), missed: sum('missed'), wrong: sum('wrong'),
+      ...last, total: sum('total'), onTime: sum('onTime'), early: sum('early'), late: sum('late'), missed: sum('missed'), short: sum('short'), wrong: sum('wrong'),
       weak: [...spots.values()].sort((x, y) => y.count - x.count).slice(0, 3),
     };
   }
@@ -228,7 +230,7 @@ export class Practice {
     if (this.running === 'along') {
       if (!e.on) return;
       const s = this.settings(), speed = s.speed, t = this.view.songNow() - (performance.now() - e.time) * speed;
-      this.played.push({ midi: e.midi, t, speed });
+      this.played.push({ midi: e.midi, t, speed, at: e.time });
       this.lastPress = e.time;
       this.lastPressSong = t;
       // Mashing: many keys the score does not have, all at once (in Rhythm any key is fine, so it never counts).
@@ -334,10 +336,12 @@ export class Practice {
     const index: number[] = []; // the view's step for each of these
     for (let i = this.fromIndex; i <= this.view.index; i++) {
       const keys = this.view.struckAt(i, hand);
-      if (keys.length) { steps.push({ t: this.view.stepT(i), keys }); index.push(i); }
+      if (keys.length) { steps.push({ t: this.view.stepT(i), keys, durs: this.view.durationsAt(i, hand) }); index.push(i); }
     }
     const rhythm = s.mode === 'rhythm';
-    const r = (rhythm ? judgeRhythm : judge)(steps, this.played, tolerance);
+    // Each note held its length too (owner, 2026-10-13); a press with no time of its own is not judged for it.
+    const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor(p.midi, p.at));
+    const r = (rhythm ? judgeRhythm : judge)(steps, this.played, tolerance, held);
     return {
       ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt),
       slips: r.offNotes.map((o) => ({ step: index[o.k], midi: o.midi, kind: o.kind })),

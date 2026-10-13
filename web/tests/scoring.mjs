@@ -53,11 +53,62 @@ const cases = [
     played: [{ midi: 60, t: 0, speed: 1 }, { midi: 60, t: 250, speed: 1 }, { midi: 60, t: 520, speed: 1 }],
     tol: 100, want: { total: 3, onTime: 2, early: 0, late: 0, missed: 1, wrong: 1 },
   },
+  // Holding (owner, 2026-10-13): a note must sound ¾ of its written length (held: ms each press sounded, real time).
+  {
+    name: 'hold: a half note (1000 ms) held 900 ms is on time and held',
+    steps: [{ t: 0, keys: [60], durs: [1000] }], played: [{ midi: 60, t: 0, speed: 1, held: 900 }],
+    tol: 100, want: { total: 1, onTime: 1, short: 0 },
+  },
+  {
+    name: 'hold: the same let go after 400 ms is let go early',
+    steps: [{ t: 0, keys: [60], durs: [1000] }], played: [{ midi: 60, t: 0, speed: 1, held: 400 }],
+    tol: 100, want: { total: 1, onTime: 0, short: 1 },
+  },
+  {
+    name: 'hold: a staccato note (length 0: not judged) let go at once is fine',
+    steps: [{ t: 0, keys: [60], durs: [0] }], played: [{ midi: 60, t: 0, speed: 1, held: 50 }],
+    tol: 100, want: { total: 1, onTime: 1, short: 0 },
+  },
+  {
+    name: 'hold: at half speed 1000 ms written is 2000 real; held 1200 is let go early',
+    steps: [{ t: 0, keys: [60], durs: [1000] }], played: [{ midi: 60, t: 0, speed: 0.5, held: 1200 }],
+    tol: 100, want: { total: 1, onTime: 0, short: 1 },
+  },
+  {
+    name: 'hold: a late note is marked late only (one thing a note)',
+    steps: [{ t: 0, keys: [60], durs: [1000] }, { t: 1000, keys: [62], durs: [1000] }], played: [{ midi: 60, t: 300, speed: 1, held: 100 }, { midi: 62, t: 1000, speed: 1, held: 990 }],
+    tol: 100, want: { total: 2, onTime: 1, late: 1, short: 0 },
+  },
+  {
+    name: 'hold: still sounding (unknown) is never marked',
+    steps: [{ t: 0, keys: [60], durs: [1000] }], played: [{ midi: 60, t: 0, speed: 1, held: Infinity }],
+    tol: 100, want: { total: 1, onTime: 1, short: 0 },
+  },
+  {
+    name: 'hold, rhythm: a tap for a whole note let go at once is let go early',
+    rhythm: true,
+    steps: [{ t: 0, keys: [60], durs: [2000] }], played: [{ midi: 50, t: 0, speed: 1, held: 150 }],
+    tol: 100, want: { total: 1, onTime: 0, short: 1 },
+  },
 ];
 
 let failed = 0;
+{
+  const { holds } = await import('../src/holds.ts');
+  holds.key(60, true, 1000); holds.key(60, false, 1100);
+  const plain = holds.heldFor(60, 1000);
+  holds.sustain(true, 2000); holds.key(62, true, 2000); holds.key(62, false, 2100); holds.sustain(false, 2900);
+  const pedalled = holds.heldFor(62, 2000);
+  holds.sustain(true, 3000); holds.key(64, true, 3000); holds.key(64, false, 3100); holds.key(64, true, 3500); holds.key(64, false, 3600); holds.sustain(false, 4000);
+  const restruck = holds.heldFor(64, 3000);
+  holds.key(65, true, 5000);
+  const down = holds.heldFor(65, 5000);
+  const ok = plain === 100 && pedalled === 900 && restruck === 500 && down === Infinity;
+  if (!ok) failed++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} holds: key 100 ms, under the pedal until it lifts 900, struck again under the pedal 500, still down: not known (got ${plain}, ${pedalled}, ${restruck}, ${down})`);
+}
 for (const c of cases) {
-  const got = (c.rhythm ? judgeRhythm : judge)(c.steps, c.played, c.tol);
+  const got = (c.rhythm ? judgeRhythm : judge)(c.steps, c.played, c.tol, (p) => p.held ?? Infinity);
   const ok = Object.entries(c.want).every(([k, v]) => got[k] === v);
   if (!ok) failed++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${c.name}${ok ? '' : `\n     want ${JSON.stringify(c.want)}\n     got  ${JSON.stringify(got)}`}`);

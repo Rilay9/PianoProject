@@ -11,6 +11,7 @@
 //   is noted. Then the set's results, with "the misses again".
 
 import type { Sound, Beat, NoteEvent } from '../sound';
+import { holds, HOLD_SHARE } from '../holds';
 import { judge, type PlayedKey } from '../matching';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
@@ -49,7 +50,8 @@ interface Card {
   item: Item;
   /** Drawn as: the item with the rhythm it is judged by, and its bars and metre if it has them. */
   shown: Item; passage: boolean; meter?: { beats: number; beatType: number }; fifths: number;
-  steps: { t: number; dur: number; keys: number[]; gi: number }[];
+  /** hold: how long its notes are to be held (ms; 0: not judged: steady beats, or marked staccato). */
+  steps: { t: number; dur: number; keys: number[]; gi: number; hold: number }[];
   timed: boolean;
   end: number; // ms: when the last note's written length is over
   beatMs: number; barBeats: number; // the metre's beat, for the count-in and the clicks
@@ -99,14 +101,14 @@ export class Drill {
 
   get levelNow(): DrillLevel { return { ...this.stored.level }; }
   /** For checks: where it is and the card's notes (ms from its start). */
-  debug(): { state: State; timed: boolean; started: boolean; steps: { t: number; keys: number[] }[]; now: number } {
-    return { state: this.state, timed: !!this.card?.timed, started: this.started, steps: this.card?.steps.map((x) => ({ t: x.t, keys: x.keys })) ?? [], now: this.sound.songTime() };
+  debug(): { state: State; timed: boolean; started: boolean; steps: { t: number; keys: number[]; hold: number }[]; now: number } {
+    return { state: this.state, timed: !!this.card?.timed, started: this.started, steps: this.card?.steps.map((x) => ({ t: x.t, keys: x.keys, hold: x.hold })) ?? [], now: this.sound.songTime() };
   }
   get tempo(): number { return this.stored.tempo[this.set?.id] ?? this.set?.tempo ?? 80; }
 
   open(sets: ItemSet[]): void {
     this.on = true;
-    this.keys.onKey = (midi, down) => this.key(midi, down);
+    this.keys.onKey = (midi, down, time) => this.key(midi, down, time);
     this.sets = sets;
     this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
     this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
@@ -245,7 +247,8 @@ export class Drill {
     let t = 0;
     item.groups.forEach((g, gi) => {
       const dur = beats[gi] * quarterMs;
-      if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi });
+      // Written rhythm is held its length (owner, 2026-10-13); steady beats are about when, so their length is not judged.
+      if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? dur : 0 });
       t += dur;
     });
     return { item, shown: shownItem, passage, meter: passage ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
@@ -363,17 +366,17 @@ export class Drill {
     return Array.from({ length: n }, (_, k) => ({ t: k * c.beatMs, accent: k % c.barBeats === 0 }));
   }
 
-  /** A timed card ends when its last note's time (and the tolerance) is past. */
+  /** A timed card ends when its last note's time (and the tolerance) is past, and the time it is to be held. */
   private watchEnd(): void {
     clearInterval(this.ticker);
     const c = this.card!, tol = ON_TIME_MS[this.tolKey()];
-    const lastT = c.steps.at(-1)?.t ?? 0;
+    const lastT = c.steps.at(-1)?.t ?? 0, lastHold = HOLD_SHARE * (c.steps.at(-1)?.hold ?? 0);
     this.ticker = window.setInterval(() => {
       if (this.card !== c || this.state !== 'turn') { clearInterval(this.ticker); return; }
       const now = this.sound.songTime();
       if (this.stored.level.rung === 1) this.lightDue(now);
       const all = this.played.length >= c.steps.reduce((n, s) => n + new Set(s.keys).size, 0);
-      if (now > Math.max(c.end, lastT + tol) + tol || (all && now > lastT + tol)) { clearInterval(this.ticker); this.finish(); }
+      if (now > Math.max(c.end, lastT + tol) + tol || (all && now > lastT + Math.max(tol, lastHold))) { clearInterval(this.ticker); this.finish(); }
     }, 40);
   }
 
@@ -415,13 +418,15 @@ export class Drill {
     return midi;
   }
 
-  key(midi: number, down: boolean): void {
+  /** time: when the key went down (performance.now(); the keyboard's own time), so a busy page never makes it late. */
+  key(midi: number, down: boolean, time = performance.now()): void {
     if (!this.on || !down) return;
+    const songT = () => this.sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time));
     if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle') void this.begin(); return; }
     if (!this.card) return;
     const c = this.card;
     // A first note a shade before the downbeat (within the on-time tolerance) still counts.
-    if (this.state === 'countin' && this.sound.songTime() > -ON_TIME_MS[this.tolKey()]) { const t = this.sound.songTime(); this.played.push({ midi: this.asWanted(midi, t), t, speed: 1 }); return; }
+    if (this.state === 'countin' && songT() > -ON_TIME_MS[this.tolKey()]) { const t = songT(); this.played.push({ midi: this.asWanted(midi, t), t, speed: 1, at: time }); return; }
     if (this.state !== 'turn') return;
     if (!c.timed) { this.noteOnly(midi); return; }
     if (!this.started) {
@@ -430,13 +435,13 @@ export class Drill {
       this.ui.help.hidden = true;
       const t0 = c.steps[0]?.t ?? 0;
       this.sound.play([], this.clicks(), t0, 1, false, true);
-      this.played.push({ midi: this.asWanted(midi, t0), t: t0, speed: 1 });
+      this.played.push({ midi: this.asWanted(midi, t0), t: t0, speed: 1, at: time });
       this.status('Play', this.stored.level.metronome ? 'With the clicks' : '');
       this.watchEnd();
       return;
     }
-    const t = this.sound.songTime();
-    this.played.push({ midi: this.asWanted(midi, t), t, speed: 1 });
+    const t = songT();
+    this.played.push({ midi: this.asWanted(midi, t), t, speed: 1, at: time });
   }
 
   /** Notes only: each step's keys (a chord's all down together); a key not wanted is noted and you carry on. */
@@ -472,14 +477,15 @@ export class Drill {
     let text: string, clean: boolean;
     let wrongKeys: number[];
     if (c.timed) {
-      const r = judge(c.steps.map((s) => ({ t: s.t, keys: s.keys })), this.played, ON_TIME_MS[this.tolKey()]);
+      const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor(p.midi, p.at));
+      const r = judge(c.steps.map((s) => ({ t: s.t, keys: s.keys, durs: s.keys.map(() => s.hold) })), this.played, ON_TIME_MS[this.tolKey()], held);
       for (const o of r.offNotes) marks[`${c.steps[o.k].gi}:${o.midi}`] = o.kind === 'missed' ? MISSED : OFF_TIME;
       wrongKeys = r.wrongKeys.map((w) => w.midi);
       clean = r.onTime === r.total && !r.wrong;
       const say = (kind: string) => r.offNotes.filter((o) => o.kind === kind).map((o) => shown(noteName(o.midi, c, o.k)));
-      const parts = [['early', say('early')], ['late', say('late')], ['missed', say('missed')]].filter(([, l]) => l.length).map(([kind, l]) => `${(l as string[]).join(' ')} ${kind}`);
+      const parts = [['early', say('early')], ['late', say('late')], ['let go early', say('short')], ['missed', say('missed')]].filter(([, l]) => l.length).map(([kind, l]) => `${(l as string[]).join(' ')} ${kind}`);
       if (r.wrong) parts.push(`${r.wrong} wrong ${r.wrong === 1 ? 'key' : 'keys'}`);
-      text = clean ? 'clean' : `${r.onTime} of ${r.total} on time · ${parts.join(' · ')}`;
+      text = clean ? 'clean' : `${r.onTime} of ${r.total} on time and held · ${parts.join(' · ')}`;
     } else {
       wrongKeys = this.wrong;
       const total = c.steps.reduce((n, s) => n + s.keys.length, 0);

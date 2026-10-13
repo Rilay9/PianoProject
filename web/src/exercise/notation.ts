@@ -31,13 +31,15 @@ function pitchXml(p: string): string {
   return `<pitch><step>${m[1]}</step>${alter ? `<alter>${alter}</alter>` : ''}<octave>${m[3]}</octave></pitch>`;
 }
 
-/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour. */
-function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null): string {
+/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour; staccato: drawn with its dot. */
+function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null, staccato = false): string {
   const parts = values(beats);
   return parts.map((v, k) => {
     const first = k === 0, last = k === parts.length - 1;
     const ties = group.length ? `${first ? '' : '<tie type="stop"/>'}${last ? '' : '<tie type="start"/>'}` : '';
-    const tied = group.length && parts.length > 1 ? `<notations>${first ? '' : '<tied type="stop"/>'}${last ? '' : '<tied type="start"/>'}</notations>` : '';
+    const marks = (group.length && parts.length > 1 ? `${first ? '' : '<tied type="stop"/>'}${last ? '' : '<tied type="start"/>'}` : '') +
+      (group.length && staccato && first ? '<articulations><staccato/></articulations>' : '');
+    const tied = marks ? `<notations>${marks}</notations>` : '';
     const tail = `<duration>${Math.round(v.beats * DIVISIONS)}</duration>${ties}<voice>${staff}</voice><type>${v.type}</type>${v.dot ? '<dot/>' : ''}`;
     if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
     return group.map((p, i) => {
@@ -55,7 +57,7 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
 export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): string {
   let gi = 0; // each group's number across all the items, for marks ("group:midi" -> colour)
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
-    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i, gi: gi++,
+    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i, gi: gi++, staccato: !!it.detached?.[k],
   })));
   const all = groups.flatMap((x) => x.g.map(midiOf));
   const low = Math.min(...all, 72), high = Math.max(...all, 48);
@@ -79,7 +81,7 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
         (grand ? '<staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
           : treble ? '<clef><sign>G</sign><line>2</line></clef>' : '<clef><sign>F</sign><line>4</line></clef>') + '</attributes>'
       : time ? `<attributes>${time}</attributes>` : '';
-    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color, (p) => marks[`${x.gi}:${midiOf(p)}`] ?? null)).join('');
+    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color, (p) => marks[`${x.gi}:${midiOf(p)}`] ?? null, x.staccato)).join('');
     const body = grand
       ? staff(1, (m) => m >= SPLIT) + `<backup><duration>${length}</duration></backup>` + staff(2, (m) => m < SPLIT)
       : staff(1, () => true);

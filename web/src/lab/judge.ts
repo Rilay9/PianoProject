@@ -9,16 +9,20 @@
 // - Improvising (the lead over a chart) is not marked: it says how it went, plainly (notes from the lit keys, and
 //   whether you landed on a note of the chord when it changed).
 
+import { HOLD_SHARE } from '../holds.ts'; // (with .ts: the checks run this file in Node)
 import type { AccompStep, ChordInfo, Form, Hit } from './music';
 
 /** How close to the beat a chord's last note must come to be on time (ms of real time; a chord is often rolled a little). */
 export const ON_TIME_MS = 150;
 
-/** A key played: t when it went down, off when it came up (still held: none); ms from the start of the round, at the chart's own tempo. */
-export interface Press { midi: number; t: number; off?: number }
+/**
+ * A key played: t when it went down, off when the key came up (still down: none), end when it stopped sounding (the
+ * pedal holds it on; still sounding or unknown: none); ms from the start of the round, at the chart's own tempo.
+ */
+export interface Press { midi: number; t: number; off?: number; end?: number }
 export type Mark = 'ok' | 'late' | 'miss';
-/** apart: every note was played, but never down together. */
-export interface HitResult { hit: Hit; mark: Mark; missing: number[]; wrong: number[]; played: number[]; apart?: boolean }
+/** apart: every note was played, but never down together; short: the chord was let go before it had sounded its length. */
+export interface HitResult { hit: Hit; mark: Mark; missing: number[]; wrong: number[]; played: number[]; apart?: boolean; short?: boolean }
 
 const SHARP = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 const FLAT = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
@@ -46,8 +50,12 @@ export function judgeHit(hit: Hit, presses: Press[], step: AccompStep, tol = ON_
   const wrong = inWindow.filter((p) => !hit.chord.pcs.includes(p.midi % 12)).map((p) => p.midi);
   const missing = need.filter((n) => !got.has(n));
   const apart = !missing.length && doneAt === Infinity;
-  const mark: Mark = wrong.length || missing.length || apart ? 'miss' : step === 'own' || doneAt <= hit.t + tol ? 'ok' : 'late';
-  return { hit, mark, missing, wrong, played: inWindow.map((p) => p.midi), apart };
+  let mark: Mark = wrong.length || missing.length || apart ? 'miss' : step === 'own' || doneAt <= hit.t + tol ? 'ok' : 'late';
+  // Held its length (owner, 2026-10-13): each of its notes still sounding (a key down, or the pedal) at ¾ of it; amber if not.
+  const until = hit.t + HOLD_SHARE * (hit.len ?? 0);
+  const short = mark !== 'miss' && !!hit.len && !need.every((n) => inWindow.some((p) => p.midi % 12 === n && (p.end === undefined || p.end >= until)));
+  if (short) mark = 'late';
+  return { hit, mark, missing, wrong, played: inWindow.map((p) => p.midi), apart, short };
 }
 
 /** Each bar's mark: the worst of its hits. */
@@ -69,6 +77,7 @@ export function sayHit(r: HitResult, step: AccompStep, barOffset = 0): string {
     return r.played.length ? `${bar}: you played ${names(r.played)}; it needs ${parts.join(', ')} as well` : `${bar}: nothing played`;
   }
   if (r.apart) return `${bar}: you played ${names(r.played)} one at a time; hold them down together`;
+  if (r.short) return `${bar}: let go too soon; hold the chord ${step === 'beat1' ? 'until the chord changes' : 'as long as the band does'}`;
   if (r.mark === 'late') return `${bar}: right, a little after the beat`;
   return '';
 }

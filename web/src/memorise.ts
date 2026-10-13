@@ -440,9 +440,9 @@ export class Memorise {
     v.goTo(firstStep); // the slip on screen
     v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
     this.carry = this.stored.options.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
-    const missed = slips.filter((x) => x.kind === 'missed').length, timing = slips.length - missed;
+    const missed = slips.filter((x) => x.kind === 'missed').length, short = slips.filter((x) => x.kind === 'short').length, timing = slips.length - missed - short;
     const wrong = this.wrongKeys.map(keyName).join(' ');
-    const parts = [missed && `${missed} missed (green)`, timing && `${timing} off time (amber)`, extra.length && `wrong ${extra.length === 1 ? 'key' : 'keys'} ${wrong}`].filter(Boolean);
+    const parts = [missed && `${missed} missed (green)`, timing && `${timing} off time (amber)`, short && `${short} let go early (amber)`, extra.length && `wrong ${extra.length === 1 ? 'key' : 'keys'} ${wrong}`].filter(Boolean);
     const what = parts.length ? `Bar ${this.num(this.slipBar)}: ${parts.join(', ')}` : 'You peeked: not a clean pass';
     this.say(what, `Play from bar ${this.num(this.carry)} to go again · Hear plays it`, 'bad');
   }

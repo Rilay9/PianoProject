@@ -31,7 +31,7 @@ interface StaffPos { staff: number; left: number; right: number; top: number; he
  * how long it sounds in whole notes (tied notes added up; 0 for the later notes of a tie and for grace notes,
  * which the piano does not strike).
  */
-export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number; /** its notehead in the drawing */ id?: string }
+export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number; /** its notehead in the drawing */ id?: string; /** marked staccato, staccatissimo or spiccato: meant shorter than written */ detached?: boolean }
 /**
  * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
  * and the chord symbol the file gives for this moment, if any.
@@ -49,6 +49,9 @@ const DEFAULT_VELOCITY = 80; // mf, before the first dynamic
 const LETTERS: Record<number, string> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
 const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 1: '♯', 2: '𝄪' };
 const PLAIN_ACCIDENTALS: Record<number, string> = { [-2]: 'bb', [-1]: 'b', 0: '', 1: '#', 2: '##' };
+
+/** Articulations that mean a note is played shorter than written (OSMD's ArticulationEnum: staccato, staccatissimo, spiccato). */
+const DETACHED = [6, 7, 8];
 
 /** OSMD pitches count octaves from middle C = octave 1, letters as 0-11 semitones, accidentals in semitones. */
 function pitchOf(p: { FundamentalNote: number; AccidentalHalfTones: number; Octave: number }, len: number): Pitch {
@@ -323,7 +326,8 @@ export class FollowView {
           if (pitch && !n.sourceNote.isRest()) {
             const note = n.sourceNote, tie = note.NoteTie;
             const len = note.IsGraceNote || (tie && tie.StartNote !== note) ? 0 : (tie ? tie.Duration : note.Length).RealValue;
-            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y), id });
+            const detached = (note.ParentVoiceEntry?.Articulations ?? []).some((a) => DETACHED.includes(a.articulationEnum));
+            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y), id, ...(detached ? { detached } : {}) });
           }
           if (id) { ids.push(id); st.ids.push(id); }
         }
@@ -985,6 +989,18 @@ export class FollowView {
     return (this.steps[i]?.pos.staves ?? [])
       .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
       .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => n.midi));
+  }
+
+  /**
+   * How long each key struck at step i is written to sound (ms at speed 1, in struckAt's order; tempo changes
+   * while it sounds count). 0 for a note meant short (staccato and the like): its length is not judged.
+   */
+  durationsAt(i: number, hands: 'both' | 'right' | 'left'): number[] {
+    const s = this.steps[i];
+    if (!s) return [];
+    return s.pos.staves
+      .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
+      .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => (n.detached ? 0 : this.timeAt(s.ts + n.len, i) - s.t)));
   }
 
   /** The written names (C♯4) of the keys struck at step i by the given hands, low to high. */

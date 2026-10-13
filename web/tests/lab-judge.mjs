@@ -5,6 +5,7 @@ import { chordInfo, formOf, readChart } from '../src/lab/music.ts';
 
 const C7 = chordInfo('C7'); // C E G B♭
 const hit = { t: 0, until: 2000, chord: C7, bar: 0, span: 0 };
+const held = { ...hit, len: 2000 }; // chords on the beat: held until the chord changes (¾ of it: to 1500)
 const keys = [60, 64, 67, 70];
 const press = (midi, t, off) => ({ midi, t, off });
 const together = (t, off = t + 800) => keys.map((k) => press(k, t, off));
@@ -25,14 +26,22 @@ const cases = [
   { name: 'half speed: 120 ms of chart time (240 real) after the beat is late', step: 'beat1', presses: together(120), tol: ON_TIME_MS * 0.5, want: 'late' },
   { name: 'half speed: 60 ms of chart time (120 real) is on time', step: 'beat1', presses: together(60), tol: ON_TIME_MS * 0.5, want: 'ok' },
   { name: 'speed 1.5: 200 ms of chart time (133 real) is on time', step: 'beat1', presses: together(200), tol: ON_TIME_MS * 1.5, want: 'ok' },
+  // Holding: each note still sounding at ¾ of the chord's length (end: when it stopped sounding, pedal included).
+  { name: 'held to 1600 of 2000: right', hit: held, step: 'beat1', presses: keys.map((k) => ({ midi: k, t: 0, off: 1600, end: 1600 })), want: 'ok' },
+  { name: 'let go at 800: amber, said', hit: held, step: 'beat1', presses: keys.map((k) => ({ midi: k, t: 0, off: 800, end: 800 })), want: 'late', short: true },
+  { name: 'keys up at 800 but the pedal holds them to 1900: right', hit: held, step: 'beat1', presses: keys.map((k) => ({ midi: k, t: 0, off: 800, end: 1900 })), want: 'ok' },
+  { name: 'one note let go early is enough to be short', hit: held, step: 'beat1', presses: keys.map((k, i) => ({ midi: k, t: 0, off: i ? 1800 : 500, end: i ? 1800 : 500 })), want: 'late', short: true },
+  { name: 'still sounding (end unknown): not short', hit: held, step: 'beat1', presses: keys.map((k) => ({ midi: k, t: 0 })), want: 'ok' },
+  { name: 'roots: the length is yours', step: 'roots', presses: [{ midi: 48, t: 0, off: 100, end: 100 }], want: 'ok' },
 ];
 
 let failed = 0;
 for (const c of cases) {
-  const r = judgeHit(hit, c.presses, c.step, c.tol);
+  const r = judgeHit(c.hit ?? hit, c.presses, c.step, c.tol);
   const bad = [];
   if (r.mark !== c.want) bad.push(`mark ${r.mark}, wanted ${c.want}`);
   if (c.apart !== undefined && !!r.apart !== c.apart) bad.push(`apart ${r.apart}`);
+  if (c.short !== undefined && !!r.short !== c.short) bad.push(`short ${r.short}`);
   if (c.missing && JSON.stringify(r.missing) !== JSON.stringify(c.missing)) bad.push(`missing ${r.missing}`);
   if (c.wrong && JSON.stringify(r.wrong) !== JSON.stringify(c.wrong)) bad.push(`wrong ${r.wrong}`);
   console.log(`${bad.length ? 'FAIL' : 'ok  '} ${c.name}${bad.length ? `: ${bad.join('; ')}` : ''}`);

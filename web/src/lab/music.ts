@@ -198,8 +198,11 @@ export const LEAD_STEPS: { id: LeadStep; name: string; detail: string; doing: st
   { id: 'free', name: 'Free', detail: 'nothing lit; just play', doing: 'Play over the band, your way' },
 ];
 
-/** A moment you are to play (accompaniment): its time in the round (ms at speed 1), until when, its chord and bar. */
-export interface Hit { t: number; until: number; chord: ChordInfo; bar: number; span: number }
+/**
+ * A moment you are to play (accompaniment): its time in the round (ms at speed 1), until when, its chord and bar, and
+ * how long the chord is to be held (ms at speed 1; none: its length is not judged, as for Roots and Your own way).
+ */
+export interface Hit { t: number; until: number; chord: ChordInfo; bar: number; span: number; len?: number }
 
 /** The hits a step asks for in one round. */
 export function hits(form: Form, style: Style, step: AccompStep): Hit[] {
@@ -209,15 +212,17 @@ export function hits(form: Form, style: Style, step: AccompStep): Hit[] {
     if (step === 'style') {
       const barStart = Math.floor(sp.at / form.barBeats + 1e-9) * form.barBeats;
       const ins = style.chords.filter(([beat]) => barStart + beat - 1 >= sp.at - 1e-6 && barStart + beat - 1 < sp.at + sp.beats - 1e-6);
-      ins.forEach(([beat], k) => {
+      // Each chord where the style plays it, held as long as the style holds it (never past the next one).
+      ins.forEach(([beat, len], k) => {
         const t = beatT(form, style, barStart + beat - 1);
         const nextT = k + 1 < ins.length ? beatT(form, style, barStart + ins[k + 1][0] - 1) : end;
-        out.push({ t, until: nextT, chord: sp.chord, bar: sp.bar, span: i });
+        out.push({ t, until: nextT, chord: sp.chord, bar: sp.bar, span: i, len: Math.min(len * form.beatMs, nextT - t) });
       });
-      if (!ins.length) out.push({ t: sp.at * form.beatMs, until: end, chord: sp.chord, bar: sp.bar, span: i });
+      if (!ins.length) out.push({ t: sp.at * form.beatMs, until: end, chord: sp.chord, bar: sp.bar, span: i, len: end - sp.at * form.beatMs });
       return;
     }
-    out.push({ t: sp.at * form.beatMs, until: end, chord: sp.chord, bar: sp.bar, span: i });
+    // Chords on the beat: held until the chord changes. Roots and your own way: the length is yours.
+    out.push({ t: sp.at * form.beatMs, until: end, chord: sp.chord, bar: sp.bar, span: i, ...(step === 'beat1' ? { len: end - sp.at * form.beatMs } : {}) });
   });
   return out;
 }

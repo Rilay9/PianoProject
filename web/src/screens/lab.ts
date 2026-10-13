@@ -5,6 +5,7 @@
 // This first version takes chord charts; songs with their own melody (lead sheets, several parts) come next.
 
 import { $, base, type App, type Screen, type KeyRange } from '../app';
+import { holds } from '../holds';
 import { ExerciseKeys } from '../exercise/keys';
 import { barMarks, improvised, judgeHit, ON_TIME_MS, sayHit, type HitResult, type Improv, type Mark, type Press } from '../lab/judge';
 import {
@@ -46,7 +47,8 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   // session: each start, stop or change of what is chosen makes a new one, so a start still getting the band ready
   // when something else happens never goes on to play.
   let running = false, starting = false, session = 0, demo = false, ticker = 0, roundNow = -1, judged = new Set<string>();
-  let presses: (Press & { round: number })[] = [], held = new Map<number, Press & { round: number }>();
+  // A press: its round, and when it went down (performance.now()) to ask how long it sounded (holds.ts).
+  let presses: (Press & { round: number; at: number })[] = [], held = new Map<number, Press & { round: number; at: number }>();
   let unavailable: string[] = []; // band parts whose sounds could not be loaded this run
   let gridKey = ''; // what the box of chords last showed (drawn again only when that changes)
   // The last round's result, with what it was a result of (ctx) and, when ■ came in the middle of it, the bar it stopped in.
@@ -327,7 +329,12 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       const id = `${h.t}`;
       if (judged.has(id) || pos < h.until) continue;
       judged.add(id);
-      const r = judgeHit(h, presses.filter((p) => p.round === round), accompStep(), tol());
+      // How long each sounded, in the chart's time (still sounding: not known yet, so not held against it).
+      const mine = presses.filter((p) => p.round === round).map((p) => {
+        const ms = holds.heldFor(p.midi, p.at);
+        return ms === Infinity ? p : { ...p, end: p.t + ms * speed() };
+      });
+      const r = judgeHit(h, mine, accompStep(), tol());
       results.push(r);
       if (r.mark !== 'ok') feedback(sayHit(r, accompStep(), loopBars?.[0] ?? 0));
     }
@@ -546,7 +553,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     let { round } = where(songT);
     // A shade before the next round (or the count-in's end) is the next round's first chord, played a little early.
     if (round < 0 || songT - round * roundMs() > roundMs() - tol()) round++;
-    const p = { midi: m, t: songT - round * roundMs(), round };
+    const p = { midi: m, t: songT - round * roundMs(), round, at: time };
     presses.push(p);
     held.set(m, p);
   };

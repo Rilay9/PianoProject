@@ -262,7 +262,7 @@ export function createScoreScreen(app: App): ScoreScreen {
    * Starts playing from the marker. fromKey: begun by playing your first note (no count-in; that key counts as
    * played on its note). After a pause by itself, the same run carries on.
    */
-  async function play(fromKey?: number): Promise<void> {
+  async function play(fromKey?: number, fromAt?: number): Promise<void> {
     if (starting) return;
     if (marking) setMarking(false);
     const s = settingsFor(currentPiece().id);
@@ -303,7 +303,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       view.play();
       if (judged(s.mode)) practice.startAlong(continuing);
     }
-    if (startKeyCounts && judged(s.mode)) practice.startedBy(fromKey!);
+    if (startKeyCounts && judged(s.mode)) practice.startedBy(fromKey!, fromAt);
     fillBars();
   }
 
@@ -327,7 +327,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     }
     const mine = view.struckAt(view.index, yours(s));
     if (s.mode !== 'rhythm' && mine.length && !mine.includes(e.midi)) return; // not your note: wait for it
-    await play(e.midi);
+    await play(e.midi, e.time);
   }
   practice.onAutoPause = (reason, step) => {
     if (reason === 'mash') mashedAt = performance.now();
@@ -421,7 +421,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       const r = practice.passResult();
       pass++;
       const clean = r.total > 0 && r.onTime === r.total && r.wrong === 0;
-      let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.wrong ? `, ${r.wrong} ${r.rhythm ? 'extra' : 'wrong'}` : ''}`;
+      let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.short ? `, ${r.short} let go early` : ''}${r.wrong ? `, ${r.wrong} ${r.rhythm ? 'extra' : 'wrong'}` : ''}`;
       if (s.mode === 'ladder') {
         const next = clean ? (s.speed < 1 ? Math.min(1, s.speed + s.ladderStep) : s.speed) : Math.max(SPEED_MIN, s.speed - s.ladderStep);
         const rounded = Math.round(next * 100) / 100;
@@ -496,10 +496,10 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (!r.total) return;
     const pct = (n: number) => `${Math.round((n / r.total) * 100)}%`;
     $('summary-body').textContent = r.rhythm
-      ? `${r.total} beats to tap: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
-        `${r.missed} missed. ${r.wrong} extra tap${r.wrong === 1 ? '' : 's'}.`
-      : `${r.total} notes: ${r.onTime} on time (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.early} early, ${r.late} late, ` +
-        `${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
+      ? `${r.total} beats to tap: ${r.onTime} on time and held (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.short} let go early, ${r.early} early, ` +
+        `${r.late} late, ${r.missed} missed. ${r.wrong} extra tap${r.wrong === 1 ? '' : 's'}.`
+      : `${r.total} notes: ${r.onTime} on time and held (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.short} let go early, ${r.early} early, ` +
+        `${r.late} late, ${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
     // The weakest stretches, each a button that loops it (the summary's "loop the weak bars").
     $('summary-weak').replaceChildren(...r.weak.map((w) => {
       const b = document.createElement('button');
