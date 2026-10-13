@@ -120,7 +120,8 @@ offers the test again. A test or practising never moves your chunk place; ■ en
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
 faded; sideways one line fitted to the height, the header and buttons fading over it while it plays or you play
-(while faded, a tap only brings them back). Sideways, a slip and the join question fit the line between the header
+(while faded, a tap only brings them back; they stay up when there is no keyboard to play on, saying so). What it
+says takes up to two lines, with the line under it (what next, the mark) shown sideways too. Sideways, a slip and the join question fit the line between the header
 and the buttons, the bars being learned from the left edge. Upright, the join question floats frosted over the music.
 Turning the phone or changing the size mid-pass carries on: a pass waiting for your notes goes on at the note it
 waited for; listening, or a timed pass, starts that again.
@@ -229,6 +230,10 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
   chords), the click, drop-outs (the drums or the whole band
   quiet in bars 5–6 of every 8 of the form, from the second round; their notes are left out of what the band plays,
   so they stop exactly at the bar). A part whose sound cannot be loaded is named on the band line; the rest play.
+- **Layout:** upright, what to do on top and the box of chords below; sideways, the choices (playing: what to do, the
+  beat, the chord now and next) down the left at full height, the box of chords with Start and the tempo on the right,
+  and the keys across the bottom only while the band plays (stopped, they make room; owner, 2026-10-13); a tablet, the
+  box of chords large beside the chord now. The bar you are in has a line filling as the bar goes.
 - **The band:** drums (the LM-2 kit), bass and chords on the style's instruments (FluidR3 General MIDI sounds: basses
   and guitars kept in the app for offline; any other General MIDI instrument fetched online), always on the phone.
 
@@ -327,7 +332,7 @@ placeholders for checking the app, not lesson content.
   start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again), held in Memorise = Peek (held elsewhere: the
   same as a tap); highest = start /
   next / carry on (Drills: Start, Next, Skip, New set).
-- Free play on a phone shows two octaves at a time (‹ › an octave; a MIDI key outside them moves them).
+- Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them). A diminished 7th is named from its bass (Cdim7).
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.

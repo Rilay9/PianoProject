@@ -138,7 +138,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     // for the whole height) shows whole; they come back when it needs you, or on a tap (owner, 2026-10-12).
     const phaseChanged = memorise.phase !== memoFadePhase;
     if (phaseChanged) { memoFadePhase = memorise.phase; memoShown = false; }
-    const fade = sideways && (memorise.phase === 'hear' || memorise.phase === 'turn') && !memoShown;
+    const fade = sideways && (memorise.phase === 'hear' || memorise.phase === 'turn') && !memoShown && !memoProblem; // (no keyboard to play on: it stays up, saying so)
     for (const id of ['memo-head', 'memo-panel']) $(id).classList.toggle('faded', fade);
     document.body.style.setProperty('--memo-h', `${$('memo-panel').offsetHeight}px`);
     document.body.style.setProperty('--memo-head-h', `${$('memo-head').offsetHeight}px`);

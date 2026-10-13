@@ -67,8 +67,11 @@ export function keysChord(midis: number[]): { chord: string; names: string } {
     return { chord, names: pitches.map((p) => p.name).join(' '), odd, marks: (pitches.map((p) => p.spelled).join('').match(/[#b]/g) ?? []).length };
   });
   options.sort((a, b) => Number(a.odd) - Number(b.odd) || a.marks - b.marks);
+  // A diminished 7th is the same chord in every inversion (its notes a minor 3rd apart all round), so it is named
+  // from its bass, as players read it: C D♯ F♯ A is Cdim7, not D♯dim7/C.
+  const chord = options[0].chord.replace(/^[A-G][#b]?dim7\/([A-G][#b]?)$/, '$1dim7');
   // Sharps and flats written as ♯ and ♭, like the note names (the chord type's own b, as in m7b5, stays).
-  return { chord: options[0].chord.replace(/([A-G])#/g, '$1♯').replace(/([A-G])b/g, '$1♭'), names: options[0].names };
+  return { chord: chord.replace(/([A-G])#/g, '$1♯').replace(/([A-G])b/g, '$1♭'), names: options[0].names };
 }
 
 const LOWEST = 21; // A0

@@ -746,7 +746,7 @@ export class Memorise {
     this.offer('report');
     const n = bars.length;
     this.say(`Test: ${n} ${n === 1 ? 'bar' : 'bars'} to practise (${bars.map((m) => this.num(m)).join(', ')})`,
-      'Marked on the music: missed green, off time or let go early amber, wrong keys red on the keys', 'bad');
+      'Marked: missed green, off time or let go early amber, wrong keys red', 'bad');
   }
 
   /** The bars a test found, one at a time (clean passes as for learning), then the test again. */

@@ -292,6 +292,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   function startButtons(): void {
     $<HTMLButtonElement>('lab-start').disabled = starting;
     $<HTMLButtonElement>('lab-show').disabled = starting;
+    $('lab').classList.toggle('stopped', !running); // (sideways the keys make room for the opening while stopped: style.css)
   }
 
   /** Where the clock is (or was at song time t): the round (0, 1, ...) and the time in it (ms at the chart's tempo; before 0: the count-in). */
@@ -324,7 +325,9 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab-where').textContent = pos < 0 ? `count-in · ${f.barBeats - inBar}` : `bar ${bar + 1 + (loopBars?.[0] ?? 0)} of ${chart!.bars.length}${round > 0 ? ` · round ${round + 1}` : ''}${!yourTurn ? ' · listen' : ''}`;
     $('lab-now').textContent = pos < 0 ? span.chord.symbol : span.chord.symbol;
     $('lab-next').innerHTML = '';
-    $('lab-next').append('next ', Object.assign(document.createElement('b'), { textContent: next.chord.symbol }), document.createElement('br'), toNext <= 2 ? `in ${Math.max(1, toNext)} beat${Math.max(1, toNext) === 1 ? '' : 's'}` : `then ${after.chord.symbol}`);
+    // The chord now and the next two (docs §5b); close to the change, how many beats to it as well.
+    const soon = toNext <= 2 ? `in ${Math.max(1, toNext)} beat${Math.max(1, toNext) === 1 ? '' : 's'} · ` : '';
+    $('lab-next').append('next ', Object.assign(document.createElement('b'), { textContent: next.chord.symbol }), document.createElement('br'), `${soon}then ${after.chord.symbol}`);
     // What to do now.
     const st = steps()[stepIndex()];
     const answering = role() === 'lead' && leadStep() === 'answer';
@@ -339,6 +342,9 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab-band-line').textContent = bandLine(out ? ` · ${dropouts() === 'drums' ? 'drums' : 'band'} out: keep going` : '');
     if (yourTurn && round >= 0) judgeHits(round, pos);
     fillGrid(role() === 'accomp' ? barMarks(results) : undefined, pos < 0 ? -1 : bar + (loopBars?.[0] ?? 0));
+    // The bar you are in: its line fills as the bar goes (the mockup's).
+    const nowBar = $('lab-grid').querySelector<HTMLElement>('.lab-bar.now');
+    if (nowBar) nowBar.style.setProperty('--p', String(pos < 0 ? 0 : (pos / (f.barBeats * f.beatMs)) % 1));
     if (role() === 'lead' && yourTurn && round >= 0) {
       const im = improvised(f, presses.filter((p) => p.round === round), guideOf, tol(), pos);
       if (im.notes) feedback(`This round: ${im.changes ? `on the chord at ${im.landed} of ${im.changes} changes · ` : ''}${Math.round((im.fromGuide / im.notes) * 100)}% ${guideWords()}`);

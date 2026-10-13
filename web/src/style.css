@@ -270,6 +270,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .lab-bar small { display: block; font-size: 10px; color: var(--muted); }
 .lab-bar b { font: 700 1.15rem 'Times New Roman', serif; }
 .lab-bar.now { outline: 2px solid #f59e0b; background: #fff7e6; color: #111827; }
+.lab-bar.now::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--p, 0) * 100%); background: #f59e0b; }
 .lab-bar.ok { background: #dcfce7; color: #14532d; } .lab-bar.late { background: #fef3c7; color: #78350f; } .lab-bar.miss { background: #fee2e2; color: #7f1d1d; }
 .lab-bar.now small, .lab-bar.ok small, .lab-bar.late small, .lab-bar.miss small { color: inherit; opacity: 0.75; }
 .lab-bar.out { opacity: 0.35; }
@@ -289,12 +290,30 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .lab-keyboard { touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
 .keyboard .key.white.next-r { background: #bfd3fb; }
 @media (orientation: landscape) and (max-height: 599px) {
-  .lab-body { flex-direction: row; align-items: flex-start; }
-  .lab-side { flex: 0 0 38%; }
-  .lab-main { flex: 1; }
+  /* Sideways: the choices (or, playing, what to do) down the left with the whole height; the box of chords on the
+     right with Start and the tempo under it; the keys across the bottom while the band plays. */
+  .lab { display: grid; grid-template-columns: 38% 1fr; grid-template-rows: auto 1fr auto auto auto; }
+  .lab > .fp-head { grid-column: 1 / -1; }
+  .lab-body { display: contents; }
+  .lab-side { grid-column: 1; grid-row: 2 / 5; min-height: 0; overflow-y: auto; padding: 10px 6px 10px 12px;
+    /* A shadow at the edge where there is more to scroll to (gone at the ends). */
+    background: linear-gradient(var(--bg) 30%, transparent) top / 100% 40px no-repeat local,
+      linear-gradient(transparent, var(--bg) 70%) bottom / 100% 40px no-repeat local,
+      linear-gradient(rgba(0, 0, 0, 0.16), transparent) top / 100% 12px no-repeat scroll,
+      linear-gradient(transparent, rgba(0, 0, 0, 0.16)) bottom / 100% 12px no-repeat scroll; }
+  .lab-h { display: none; } /* (the two choices and the numbered steps speak for themselves; the room goes to them) */
+  .lab-main { grid-column: 2; grid-row: 2; min-height: 0; overflow-y: auto; padding: 10px 12px 0 6px; }
+  .lab-actions { grid-column: 2; grid-row: 3; }
+  .lab-bottom { grid-column: 2; grid-row: 4; }
+  .lab-keyboard { grid-column: 1 / -1; grid-row: 5; }
   .lab-grid { --cols: 6 !important; }
   .keyboard.lab-keyboard { height: 20vh; }
   .lab-now { font-size: 2.4rem; }
+  /* Stopped, the keys are not used (they light and count only while the band plays): their room goes to the opening's
+     choices, which otherwise fell below the fold on a phone (reviewer, 2026-10-13). The step's detail stays in the
+     sentence under the steps. */
+  .lab.stopped .lab-keyboard { display: none; }
+  .lab-step small { display: none; }
 }
 @media (min-width: 600px) and (min-height: 600px) {
   /* A tablet: the room filled, the box of chords large and the chord now very large, centred in the height. */
@@ -335,7 +354,7 @@ body.memorising .loop-zone, body.memorising .message { display: none; }
 .memo-say { margin: 0; font-weight: 600; font-size: 16px; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } /* two lines when it needs them */
 .memo-say.ok { color: #16a34a; }
 .memo-say.bad { color: #dc2626; }
-.memo-sub { margin: 0; font-size: 13px; color: var(--bar-muted); min-height: 1.4em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* always a line: the panel keeps one height */
+.memo-sub { margin: 0; font-size: 13px; color: var(--bar-muted); min-height: 1.4em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } /* at least a line (the panel keeps its height), two when needed rather than cut (owner, 2026-10-12) */
 /* The join question floats frosted over the bottom of the music, so the panel and the music keep their size (owner, 2026-10-12). */
 .memo-choices { position: fixed; left: 0; right: 0; bottom: calc(var(--under-h, 0px) + var(--memo-h, 0px)); z-index: 3; display: flex; flex-direction: column; gap: 6px; padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left)); background: color-mix(in srgb, var(--bar-bg) 78%, transparent); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); border-top: 1px solid var(--bar-line); }
 .memo-choices label { font-size: 13px; color: var(--bar-muted); }
@@ -344,11 +363,15 @@ body.memorising .loop-zone, body.memorising .message { display: none; }
 .memo-pick { display: inline-flex; align-items: center; gap: 6px; }
 #memo-from { min-width: 3.6em; text-align: center; font-size: 14px; }
 /* A phone on its side: what Memorise says sits in the header; the panel is one row. */
-body.memo-sideways .memo-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+body.memo-sideways .memo-info { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "prog say" "prog sub"; align-items: center; column-gap: 10px; min-width: 0; }
+body.memo-sideways .memo-prog { grid-area: prog; }
+body.memo-sideways .memo-say { grid-area: say; }
 body.memo-sideways .memo-head .memo-title { flex: 0 1 auto; max-width: 30%; }
 body.memo-sideways .memo-head-info { flex: 1; min-width: 0; }
 body.memo-sideways .memo-say { font-size: 14px; min-width: 0; }
-body.memo-sideways .memo-sub { display: none; }
+/* What it says next (a slip's "play from bar 3", no MIDI keyboard, the memorized mark) shows sideways too, smaller, under it. */
+body.memo-sideways .memo-sub { grid-area: sub; font-size: 12px; min-height: 0; }
+body.memo-sideways .memo-sub:empty { display: none; }
 /* Sideways the music has the whole height; the header and buttons sit over it and fade while it plays or you play. */
 body.memorising.memo-sideways .score { top: 0; bottom: var(--under-h, 0px); }
 .memo-head, .memo-panel { transition: opacity 0.6s; }

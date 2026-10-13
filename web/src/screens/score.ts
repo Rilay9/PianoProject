@@ -168,6 +168,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
 
   async function openSong(id: string): Promise<void> {
+    startRequest++; // a start still getting ready is dropped
     if (presetPiece() !== id) clearPreset(); // another song: an activity's preset is over
     forgetRun();
     sideFit = 1;
@@ -285,12 +286,17 @@ export function createScoreScreen(app: App): ScoreScreen {
    * Starts playing from the marker. fromKey: begun by playing your first note (no count-in; that key counts as
    * played on its note). After a pause by itself, the same run carries on.
    */
+  // A start waits for MIDI permission and the piano's samples; another song, mode or hands, a stop, or another screen
+  // in the meantime drops it (ChatGPT's review, 2026-10-13), rather than starting what is no longer chosen.
+  let startRequest = 0;
+  const startShape = () => { const s = settingsFor(currentPiece().id); return `${currentPiece().id}|${s.mode}|${s.hands}|${!!borrower}`; };
   async function play(fromKey?: number, fromAt?: number): Promise<void> {
     if (starting) return;
     if (marking) setMarking(false);
     const s = settingsFor(currentPiece().id);
     if (s.mode === 'ladder' && !view.looped) { startPicking('Ladder: tap the first bar to practise'); return; }
     starting = true;
+    const request = ++startRequest, shape = startShape();
     if (app.messageIsNews) showMessage(''); // "Paused… play to carry on" and the like are done with
     // Begun from a key: it counts as your first note only where you have notes at the marker (in Rhythm: a beat to tap there).
     const startKeyCounts = fromKey !== undefined && view.struckAt(view.index, yours(s)).length > 0;
@@ -309,6 +315,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (s.mode !== 'watch') return; // no keyboard: nothing to wait for or score
     }
     starting = false;
+    if (request !== startRequest || startShape() !== shape) { fillBars(); return; } // something else was chosen meanwhile
     sound.setVolumes(s.pianoVolume, s.clickVolume);
     sound.setClick(s.click);
     hideBars();
@@ -461,6 +468,7 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   /** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
   function stopAll(): void {
+    startRequest++; // a start still getting ready is dropped
     if (borrower) { borrower.stop(); return; }
     if (view.playing) view.pause();
     else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
