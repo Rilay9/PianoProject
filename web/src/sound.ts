@@ -2,12 +2,30 @@
 // clock a little ahead of time so a busy page or a late timer never makes them stumble. The marker reads the
 // same clock (songTime), so what you hear and what you see stay together.
 
-import { SplendidGrandPiano } from 'smplr';
+import { DrumMachine, Soundfont, SplendidGrandPiano } from 'smplr';
 import type { MidiInput } from './midi';
 import type { Click } from './settings';
 
-/** A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1), how hard (1-127). */
-export interface NoteEvent { t: number; midi: number; dur: number; vel: number }
+/**
+ * A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1), how hard (1-127), and on
+ * what: the piano (the default), 'drums' (midi is then a General MIDI drum number), or a General MIDI instrument by
+ * its FluidR3 name ('acoustic_bass', 'acoustic_guitar_steel', ...).
+ */
+export interface NoteEvent { t: number; midi: number; dur: number; vel: number; part?: string }
+
+/**
+ * The band's instruments kept in the app for offline (web/public/content/audio/band, from the FluidR3 General MIDI
+ * set, CC BY 3.0, via midi-js-soundfonts); any other General MIDI instrument is fetched from that set online.
+ */
+export const BUNDLED_PARTS = ['acoustic_bass', 'electric_bass_finger', 'acoustic_guitar_nylon', 'acoustic_guitar_steel', 'electric_guitar_clean'];
+/** General MIDI drum numbers to the LM-2 kit's samples (a LinnDrum; public domain; web/public/content/audio/band/lm-2). */
+const GM_DRUMS: Record<number, string> = {
+  35: 'kick-alt', 36: 'kick', 37: 'stick-m', 38: 'snare-m', 39: 'clap', 40: 'snare-h', 41: 'tom-ll', 42: 'hhclosed', 43: 'tom-l',
+  44: 'hhclosed-short', 45: 'tom-m', 46: 'hhopen', 47: 'tom-m', 48: 'tom-h', 49: 'crash', 50: 'tom-hh', 51: 'ride', 52: 'crash',
+  53: 'ride', 54: 'tambourine', 55: 'crash', 56: 'cowbell', 57: 'crash', 59: 'ride', 62: 'conga-h', 63: 'conga-m', 64: 'conga-l',
+  69: 'cabasa', 70: 'cabasa',
+};
+type Player = { start(e: { note: string | number; velocity?: number; time?: number; duration?: number }): (time?: number) => void; load: Promise<unknown> };
 /** A metronome beat: when (ms at speed 1), and whether it starts a bar. */
 export interface Beat { t: number; accent: boolean }
 
@@ -33,6 +51,9 @@ export class Sound {
   private voices: { stop: (time?: number) => void; end: number }[] = [];
   private clicks: AudioScheduledSourceNode[] = [];
   private keyOffs: { midi: number; time: number }[] = []; // keyboard note ends still to send (audio time)
+  private parts = new Map<string, Player>(); // the band's instruments, loaded when first wanted
+  private partGains = new Map<string, GainNode>();
+  private muted = new Set<string>(); // parts silenced for now (drop-outs)
   playing = false;
   /** When set, piano notes go to the MIDI keyboard instead of the phone (the metronome stays on the phone). */
   keyboard: MidiInput | null = null;
@@ -56,6 +77,36 @@ export class Sound {
     });
     await this.piano.ready;
   }
+
+  /**
+   * Gets a band instrument ready ('drums', or a General MIDI name; 'piano' is the piano): the kept ones load from the
+   * app, others from the FluidR3 set online. Rejects if it cannot be loaded (offline, for one not kept).
+   */
+  async preparePart(part: string): Promise<void> {
+    await this.prepare(part === 'piano');
+    if (part === 'piano') return;
+    let player = this.parts.get(part);
+    if (!player) {
+      const ctx = this.ctx!, gain = ctx.createGain();
+      gain.connect(ctx.destination);
+      this.partGains.set(part, gain);
+      const base = `${import.meta.env.BASE_URL}content/audio/band`;
+      if (part === 'drums') player = DrumMachine(ctx, { url: `${base}/lm-2/dm.json`, destination: gain }) as unknown as Player;
+      else {
+        const format = canPlayOgg() ? 'ogg' : 'mp3';
+        const url = BUNDLED_PARTS.includes(part) ? `${base}/fluidr3/${part}-${format}.js` : `https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/${part}-${format}.js`;
+        player = Soundfont(ctx, { instrumentUrl: url, destination: gain }) as unknown as Player;
+      }
+      this.parts.set(part, player);
+      player.load.catch(() => this.parts.delete(part)); // a failed load is tried again next time
+    }
+    await player.load;
+  }
+
+  /** A band part's volume (0 to 1; the piano's is setVolumes'). */
+  setPartVolume(part: string, volume: number): void { const g = this.partGains.get(part); if (g) g.gain.value = volume; }
+  /** Silence parts for a while (drop-outs): their notes are skipped until unmuted. */
+  mute(parts: string[]): void { this.muted = new Set(parts); }
 
   /** Free play: a note on the phone's piano now, sounding until the returned function is called. */
   async noteNow(midi: number, velocity = 90, stillDown: () => boolean = () => true): Promise<() => void> {
@@ -134,6 +185,16 @@ export class Sound {
       const n = this.notes[this.nextNote++];
       const time = Math.max(ctx.currentTime, this.at(n.t));
       const duration = n.dur / 1000 / this.speed;
+      if (n.part && n.part !== 'piano') { // a band instrument: always on the phone
+        if (this.muted.has(n.part)) continue;
+        const player = this.parts.get(n.part);
+        const note = n.part === 'drums' ? GM_DRUMS[n.midi] : n.midi;
+        if (!player || note === undefined) continue;
+        const stop = player.start({ note, velocity: n.vel, time, duration });
+        this.voices.push({ stop, end: time + duration + 1 });
+        continue;
+      }
+      if (this.muted.has('piano')) continue;
       if (this.keyboard) {
         this.keyboard.noteOn(n.midi, n.vel, this.midiTime(time));
         this.keyOffs.push({ midi: n.midi, time: time + duration });
@@ -206,4 +267,11 @@ export class Sound {
     this.noise = buffer;
     return buffer;
   }
+}
+
+/** Whether this browser plays Ogg (the band's sounds come as Ogg, or MP3 where it cannot: Safari). */
+function canPlayOgg(): boolean {
+  const ua = navigator.userAgent;
+  const safari = ua.includes('Safari') && !ua.includes('Chrome') && !ua.includes('Chromium');
+  return !safari && ['probably', 'maybe'].includes(document.createElement('audio').canPlayType('audio/ogg'));
 }

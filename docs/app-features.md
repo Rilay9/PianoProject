@@ -178,6 +178,59 @@ score, is planned.
 
 ---
 
+## 5b. Accompaniment lab (⋯ → Accompaniment lab)
+
+**For:** playing with a band: the lead over a backing, or the backing (the chords) for the band. Simple, rewarding
+things early on, with clear steps. `web/src/screens/lab.ts`, `web/src/lab/music.ts` (charts, styles, the band's notes,
+the steps), `web/src/lab/judge.ts`.
+
+**How it works:** one question first, *Lead* or *Accompaniment*; then a step (the next one picked for you; ✓ marks a
+step played clean twice); one sentence says what your part is and what the band plays; the box of chords shows the
+form. *▶ Start* (or the keyboard's highest key) gives a bar of count-in, then the band plays round after round until
+■. While playing: one instruction, the beat (1 2 3 4), the chord now and the next two, the box of chords with the bar
+you are in, and the keys to use, lit and named. *Show me first* plays one round with your part played for you.
+- **Accompaniment steps:** Roots (the root on each chord's first beat) → Chords on the beat (the whole chord, held) →
+  the style's rhythm (the chord where the style plays it) → Your own way (any voicing, any rhythm). A bar is green
+  when every note of its chord (any voicing or octave; the Roots step: the root) is down by the beat (±150 ms), amber
+  when a little late (before the next chord), red with a missing note or a key not in the chord; said in music words
+  ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). Help: keys lit, notes named, or the symbol only.
+- **Lead steps (over a chart: improvising):** roots in rhythm → chord notes (lit) → the scale (the chart's, lit pale,
+  the chord's notes dark; land on a dark one when the chord changes) → call and answer (the band plays the chord's
+  notes up in the first two bars of every four; you answer in the next two) → free. Not marked: it says how it went
+  ("landed on the chord 7 of 8 changes · 92% of notes from the lit keys").
+- **After:** how it went, the next step once a step has two clean rounds, loop the bars that went wrong, try the other
+  part. Tap bars in the box (stopped) to loop them. A clean round below the chart's own tempo moves it up 5% (as
+  Ladder). ⚙: which band parts play (drums, bass, chords), the click, the style, drop-outs (the drums or the whole band
+  quiet in bars 5–6 of every 8, from the second round).
+- **The band:** drums (the LM-2 kit), bass and chords on the style's instruments (FluidR3 General MIDI sounds: basses
+  and guitars kept in the app for offline; any other General MIDI instrument fetched online), always on the phone.
+
+**Content** (`web/public/content/lab/`, listed in `index.json` as `{ "charts": [...], "styles": [...] }`):
+
+```json
+// a chord chart (charts/*.json)
+{ "title": "12-bar blues in C", "meter": "4/4", "tempo": 84, "style": "shuffle",
+  "bars": ["C7", "C7", "C7", "C7", "F7", "F7", "C7", "C7", "G7", "F7", "C7", "G7"],   // "F7 G7": two chords share a bar
+  "improvise": { "scale": "C blues" } }                     // a Tonal scale name: what lights for improvising
+
+// a style (styles/*.json): how a genre's band plays any chord, per bar of its metre
+{ "name": "Shuffle", "meter": "4/4", "grid": 3,             // steps a beat in the drum patterns: 2 eighths, 3 triplets (swung)
+  "drums": { "hihat": "x.x x.x x.x x.x",                    // one character a step: x hit, X loud, o soft, . none
+             "snare": "... x.. ... x..", "kick": "x.. ... x.. ..." },   // kick snare rim clap hihat hihat-open ride crash tom-low tom-high tambourine cowbell
+  "bass": [[1, "root"], [2, "fifth"], [3, "sixth"], [4, "fifth"]],      // beat (1-based; 2.5 = the "and"), degree:
+                                                            //   root third fifth sixth seventh octave approach (a half step below the next root)
+  "chords": [[2, 0.5], [4, 0.5]],                           // beat and length in beats of each chord hit (the style step plays these)
+  "instruments": { "bass": "acoustic_bass", "chords": "piano" } }        // General MIDI names (FluidR3), or piano
+```
+
+A chart's chord symbols, scale and a style's patterns are checked when the lab opens; one that cannot be read is left
+out with the reason. Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
+are placeholders. **Not built yet** (next): songs with their own melody (a lead sheet: "play the melody" judged as Play
+along, and the accompaniment under a real tune) and several-part MusicXML files (each part on its instrument, you take
+one); examples to copy written into a chart.
+
+---
+
 ## 6. Exercise content: item sets (Simon and Drills)
 
 Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/exercise/items.ts`.
@@ -246,7 +299,7 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`.
+  `piano-web.remote.v1`, `piano-web.lab.v1`.
 
 ## 8. How the app is put together (for adding a screen or a mode)
 
@@ -270,5 +323,5 @@ placeholders for checking the app, not lesson content.
 ## 9. Not built yet
 
 Library / history / projects (how lessons and pieces are reached and progress is seen: the owner will explain);
-accompaniment lab / sight-reading tools (mockups first); a standalone metronome; importing your own music; generated
+the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; importing your own music; generated
 drill cards; a setup tour and guide (last).

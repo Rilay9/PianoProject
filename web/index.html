@@ -157,6 +157,69 @@
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
   </section>
 
+  <!-- The accompaniment lab (screens/lab.ts): Lead or Accompaniment, a step, then the beat, the chord now and next,
+       the box of chords and the keys to use. -->
+  <section id="lab" class="lab" aria-label="Accompaniment lab" hidden>
+    <div class="fp-head"><span class="title">Lab</span><span class="lab-sp"></span><button id="lab-band" type="button" class="btn" aria-haspopup="dialog" aria-label="The band">⚙</button><button id="lab-stop" type="button" class="btn" hidden aria-label="Stop">■</button><button id="lab-done" type="button" class="btn">Done</button></div>
+    <div class="lab-body">
+      <div class="lab-side">
+        <div id="lab-open" class="lab-open">
+          <div class="lab-item"><div><div id="lab-title" class="lab-title"></div><div id="lab-meta" class="lab-meta"></div></div><button id="lab-change" type="button" class="btn" aria-haspopup="dialog">Change</button></div>
+          <p class="lab-h">What do you want to play?</p>
+          <div class="lab-roles"><button id="lab-role-lead" type="button" class="lab-role">Lead<small>improvise on top</small></button><button id="lab-role-accomp" type="button" class="lab-role">Accompaniment<small>the chords under it</small></button></div>
+          <p class="lab-h">Start with a step</p>
+          <div id="lab-steps" class="lab-steps"></div>
+          <div id="lab-say" class="lab-say"></div>
+        </div>
+        <div id="lab-play" class="lab-play" hidden>
+          <div id="lab-do" class="lab-do"></div>
+          <div class="lab-beats"><span id="lab-beat-dots" class="lab-dots"></span><span id="lab-where"></span></div>
+          <div class="lab-nownext"><span id="lab-now" class="lab-now"></span><span id="lab-next" class="lab-next"></span></div>
+          <div id="lab-names" class="lab-names"></div>
+        </div>
+      </div>
+      <div class="lab-main">
+        <div id="lab-grid" class="lab-grid"></div>
+        <div id="lab-band-line" class="lab-band-line"></div>
+        <div id="lab-feedback" class="lab-feedback" aria-live="polite"></div>
+        <div id="lab-result" class="lab-result" hidden></div>
+      </div>
+    </div>
+    <div id="lab-actions" class="lab-actions"><button id="lab-show" type="button" class="btn">Show me first</button><button id="lab-start" type="button" class="btn main">▶ Start</button></div>
+    <div class="lab-bottom"><button id="lab-slower" type="button" class="btn" aria-label="Slower">−</button><output id="lab-bpm"></output><button id="lab-faster" type="button" class="btn" aria-label="Faster">+</button>
+      <select id="lab-help" aria-label="Help"><option value="lit">Keys lit</option><option value="names">Notes named</option><option value="symbol">Chord symbol only</option></select></div>
+    <div id="lab-keyboard" class="keyboard lab-keyboard"></div>
+  </section>
+
+  <dialog id="lab-pick-dialog" aria-labelledby="lab-pick-title">
+    <form method="dialog">
+      <h2 id="lab-pick-title">Play over</h2>
+      <ul id="lab-pick-list" class="song-list"></ul>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="lab-band-dialog" aria-labelledby="lab-band-title">
+    <form method="dialog">
+      <h2 id="lab-band-title">The band</h2>
+      <fieldset class="row"><legend>Who plays (besides you)</legend>
+        <label><input id="lab-p-drums" type="checkbox"> Drums</label>
+        <label><input id="lab-p-bass" type="checkbox"> Bass</label>
+        <label id="lab-p-chords-label"><input id="lab-p-chords" type="checkbox"> Chords</label>
+        <label><input id="lab-p-click" type="checkbox"> Click on every beat</label>
+      </fieldset>
+      <fieldset class="row" id="lab-styles"><legend>Style</legend></fieldset>
+      <fieldset class="row"><legend>Drop-outs (bars 5–6 of every 8, from the second round)</legend>
+        <label><input type="radio" name="lab-dropouts" value="off"> Off</label>
+        <label><input type="radio" name="lab-dropouts" value="drums"> The drums go quiet</label>
+        <label><input type="radio" name="lab-dropouts" value="band"> The whole band goes quiet</label>
+      </fieldset>
+      <p class="note">Tap bars in the box of chords (while stopped) to loop them. A clean round below the chart's own tempo moves it up 5%.</p>
+      <p class="note">Sounds: bass and guitar from the FluidR3 General MIDI set (Frank Wen, CC BY 3.0, via midi-js-soundfonts); drums from the LM-2 drum machine samples (public domain).</p>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
+
   <dialog id="drill-dialog" aria-labelledby="drill-title">
     <form method="dialog">
       <h2 id="drill-title">Drill settings</h2>
@@ -328,6 +391,7 @@
         <button id="open-freeplay" type="button">Free play</button>
         <button id="open-simon" type="button">Simon</button>
         <button id="open-drills" type="button">Drills</button>
+        <button id="open-lab" type="button">Accompaniment lab</button>
         <button id="open-metronome" type="button">Metronome…</button>
         <button id="open-remote" type="button">Keyboard controls…</button>
         <button id="edit-marks" type="button">Edit fingering</button>

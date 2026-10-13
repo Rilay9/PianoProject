@@ -1,0 +1,13 @@
+{
+  "name": "Shuffle",
+  "meter": "4/4",
+  "grid": 3,
+  "drums": {
+    "hihat": "x.x x.x x.x x.x",
+    "snare": "... x.. ... x..",
+    "kick":  "x.. ... x.. ..."
+  },
+  "bass": [[1, "root"], [2, "fifth"], [3, "sixth"], [4, "fifth"]],
+  "chords": [[2, 0.5], [4, 0.5]],
+  "instruments": { "bass": "acoustic_bass", "chords": "piano" }
+}

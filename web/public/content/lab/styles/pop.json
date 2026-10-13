@@ -1,0 +1,13 @@
+{
+  "name": "Pop",
+  "meter": "4/4",
+  "grid": 2,
+  "drums": {
+    "hihat": "xx xx xx xx",
+    "snare": ".. x. .. x.",
+    "kick":  "x. .. xx .."
+  },
+  "bass": [[1, "root"], [2.5, "root"], [3, "root"], [4, "fifth"]],
+  "chords": [[1, 1.5], [2.5, 1.5], [4, 1]],
+  "instruments": { "bass": "electric_bass_finger", "chords": "acoustic_guitar_steel" }
+}

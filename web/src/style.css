@@ -229,6 +229,83 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
   .ex-prompt > .ex-overlay { margin-top: auto; }
   .ex-name:not(:empty) { margin-top: auto; }
 }
+/* The accompaniment lab (screens/lab.ts). Upright: what to do on top, the box of chords below; sideways: the two side by
+   side; a tablet: the box of chords large, the chord now and next very large beside it. */
+.lab { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
+.lab-sp { flex: 1; }
+.lab-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; overflow-y: auto; }
+.lab-side, .lab-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.lab-open, .lab-play { display: flex; flex-direction: column; gap: 8px; }
+.lab-item { display: flex; align-items: center; gap: 8px; }
+.lab-item > div { flex: 1; min-width: 0; }
+.lab-title { font-size: 1.25rem; font-weight: 700; }
+.lab-meta { font-size: 13px; color: var(--muted); }
+.lab-h { margin: 2px 0 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+.lab-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lab-role { font: inherit; font-weight: 700; text-align: left; padding: 10px; border: 1.5px solid var(--btn-line); border-radius: 12px; background: var(--btn-bg); color: inherit; }
+.lab-role small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.lab-role.on { border-color: var(--accent); background: var(--current-bg); color: var(--accent); }
+.lab-steps { display: flex; flex-direction: column; gap: 4px; }
+.lab-step { font: inherit; display: flex; align-items: center; gap: 8px; text-align: left; padding: 6px 8px; border: 0; border-radius: 8px; background: transparent; color: inherit; font-size: 14px; }
+.lab-step i { font-style: normal; flex: none; width: 22px; height: 22px; border-radius: 11px; border: 1.5px solid var(--btn-line); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
+.lab-step small { color: var(--muted); }
+.lab-step.on { background: var(--current-bg); }
+.lab-step.on i { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.lab-step.done i { background: #16a34a; border-color: #16a34a; color: #fff; }
+.lab-say { font-size: 14px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+.lab-say b { font-weight: 700; }
+.lab-do { text-align: center; font-weight: 600; padding: 7px 10px; border-radius: 8px; background: #fff7e6; color: #92400e; }
+.lab-beats { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.lab-dots { display: inline-flex; gap: 8px; }
+.lab-dots i { font-style: normal; width: 20px; height: 20px; border-radius: 10px; background: var(--btn-bg); border: 1px solid var(--btn-line); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); }
+.lab-dots i.hit { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+.lab-dots i.past { background: #fde68a; border-color: #fde68a; color: #92400e; }
+.lab-nownext { display: flex; align-items: baseline; justify-content: center; gap: 16px; }
+.lab-now { font: 700 2.8rem 'Times New Roman', serif; }
+.lab-next { color: var(--muted); font-size: 13px; }
+.lab-next b { font: 700 1.2rem 'Times New Roman', serif; color: var(--fg); }
+.lab-names { text-align: center; color: var(--muted); font-size: 14px; min-height: 1.3em; }
+.lab-grid { display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: 5px; }
+.lab-bar { font: inherit; position: relative; overflow: hidden; border: 0; border-radius: 8px; background: var(--btn-bg); color: inherit; padding: 5px 0 7px; text-align: center; }
+.lab-bar small { display: block; font-size: 10px; color: var(--muted); }
+.lab-bar b { font: 700 1.15rem 'Times New Roman', serif; }
+.lab-bar.now { outline: 2px solid #f59e0b; background: #fff7e6; color: #111827; }
+.lab-bar.ok { background: #dcfce7; color: #14532d; } .lab-bar.late { background: #fef3c7; color: #78350f; } .lab-bar.miss { background: #fee2e2; color: #7f1d1d; }
+.lab-bar.out { opacity: 0.35; }
+.lab-bar.pick { outline: 2px dashed var(--accent); }
+.lab-band-line { font-size: 12px; color: var(--muted); }
+.lab-feedback { font-size: 13px; text-align: center; color: var(--muted); min-height: 1.3em; }
+.lab-result { display: flex; flex-direction: column; gap: 6px; }
+.lab-r-head { font-size: 1.05rem; font-weight: 700; }
+.lab-r-line { font-size: 14px; }
+.lab-r-next { font-size: 14px; font-weight: 600; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+.lab-r-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.lab-actions { display: flex; justify-content: center; gap: 10px; padding: 8px; }
+.lab-actions .main { font-size: 1.1rem; padding: 8px 28px; }
+.lab-bottom { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 8px; }
+.lab-bottom output { min-width: 3.6em; text-align: center; color: var(--muted); }
+.lab-bottom select { font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
+.lab-keyboard { touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
+.keyboard .key.white.next-r { background: #bfd3fb; }
+@media (orientation: landscape) and (max-height: 599px) {
+  .lab-body { flex-direction: row; align-items: flex-start; }
+  .lab-side { flex: 0 0 38%; }
+  .lab-main { flex: 1; }
+  .lab-grid { --cols: 6 !important; }
+  .keyboard.lab-keyboard { height: 20vh; }
+  .lab-now { font-size: 2.4rem; }
+}
+@media (min-width: 600px) and (min-height: 600px) {
+  /* A tablet: the room filled, the box of chords large and the chord now very large, centred in the height. */
+  .lab-body { flex-direction: row-reverse; align-items: center; gap: 24px; padding: 20px; }
+  .lab-side { flex: 0 0 34%; }
+  .lab-main { flex: 1; }
+  .lab-now { font-size: 5rem; }
+  .lab-do { font-size: 1.1rem; }
+  .lab-bar { padding: 26px 0; } .lab-bar b { font-size: 2.1rem; } .lab-bar small { font-size: 12px; }
+  .lab-open { font-size: 1.05rem; }
+  .keyboard.lab-keyboard { height: 150px; }
+}
 .keyboard .key.wrong { background: #dc2626 !important; }
 .keyboard .key.want { box-shadow: inset 0 0 0 3px #16a34a; }
 /* Memorise: a hidden bar, covered in the paper's colour with its number; the barlines either side still show. */
@@ -334,8 +411,8 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 /* A phone on its side: the settings dialogs use the width, their groups in two columns, so most fit without
    scrolling a narrow column (owner, 2026-10-12). */
 @media (orientation: landscape) and (max-height: 599px) {
-  #settings, #tempo, #drill-dialog, #memo-dialog, #ex-level-dialog { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
-  #settings > form, #tempo > form, #drill-dialog > form, #memo-dialog > form, #ex-level-dialog > form { columns: 2; column-gap: 28px; }
+  #settings, #tempo, #drill-dialog, #memo-dialog, #ex-level-dialog, #lab-band-dialog { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
+  #settings > form, #tempo > form, #drill-dialog > form, #memo-dialog > form, #ex-level-dialog > form, #lab-band-dialog > form { columns: 2; column-gap: 28px; }
   #settings > form > *, #tempo > form > *, #drill-dialog > form > *, #memo-dialog > form > *, #ex-level-dialog > form > * { break-inside: avoid; }
   #settings > form > h2, #tempo > form > h2, #drill-dialog > form > h2, #memo-dialog > form > h2, #ex-level-dialog > form > h2, #settings > form > .actions, #tempo > form > .actions, #drill-dialog > form > .actions, #memo-dialog > form > .actions, #ex-level-dialog > form > .actions { column-span: all; }
   #settings > form > h3, #tempo > form > h3, #drill-dialog > form > h3, #memo-dialog > form > h3, #ex-level-dialog > form > h3 { break-after: avoid; }

@@ -14,6 +14,7 @@ import { MidiInput } from './midi';
 import { setUpOffline } from './offline';
 import { KeyRemote } from './remote';
 import { createExerciseScreen } from './screens/exercise';
+import { createLabScreen } from './screens/lab';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
 import type { Piece } from './app';
@@ -37,11 +38,14 @@ const freePlayScreen: Screen = {
   resized: () => freePlay.resized(),
   get busy() { return freePlay.open; },
 };
-app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen];
+// The accompaniment lab (owner, 2026-10-13): play along with a band (for now in ⋯).
+const labScreen = createLabScreen(app, () => { scoreScreen.fillBars(); scoreScreen.showBars(); });
+app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen];
 
 /** The screen showing: one opened over the score, or the score itself. */
 function showing(): Screen {
   if (freePlay.open) return freePlayScreen;
+  if (labScreen.isOpen) return labScreen;
   if (exerciseScreen.isOpen) return exerciseScreen;
   if (memoriseScreen.isOpen) return memoriseScreen;
   return scoreScreen;
@@ -94,6 +98,7 @@ $('open-freeplay').addEventListener('click', () => {
 });
 $('open-simon').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('simon'); });
 $('open-drills').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('drill'); });
+$('open-lab').addEventListener('click', () => { leaveScore(); void labScreen.open(); });
 // The ⋯ menu's Metronome… opens the score's Tempo panel at the metronome (owner: reachable from both, 2026-10-11).
 $('open-metronome').addEventListener('click', () => { moreDialog.close(); scoreScreen.openMetronome(); });
 $('edit-marks').addEventListener('click', () => { moreDialog.close(); scoreScreen.editFingering(); });
@@ -204,5 +209,5 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length,
   struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
-  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill,
+  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(),
 };

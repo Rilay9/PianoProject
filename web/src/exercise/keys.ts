@@ -54,7 +54,9 @@ export class ExerciseKeys {
   light(midis: number[]): void { this.strip.markKeys('now-r', midis); }
   wrong(midis: number[]): void { this.strip.markKeys('wrong', midis); }
   want(midis: number[]): void { this.strip.markKeys('want', midis); }
-  clearMarks(): void { this.light([]); this.wrong([]); this.want([]); }
+  /** Any other mark on the keys (the lab: 'next-r', the scale's keys in the paler blue). */
+  mark(cls: string, midis: number[]): void { this.strip.markKeys(cls, midis); }
+  clearMarks(): void { this.light([]); this.wrong([]); this.want([]); this.mark('next-r', []); }
 
   release(): void {
     for (const t of this.touches.values()) void t.stop.then((stop) => stop());

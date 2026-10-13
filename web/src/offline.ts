@@ -1,6 +1,8 @@
 // Offline and install (owner, 2026-10-11): the service worker (public/sw.js) serves what is kept; on the
 // first visit this saves everything the app needs into its store at once: the page and its built files,
-// the song list and scores, and every piano sample in the format this browser plays (as smplr picks it).
+// the song list and scores, and every piano sample in the format this browser plays (as smplr picks it), and the
+// accompaniment lab's content and band sounds.
+import { BUNDLED_PARTS } from './sound';
 
 const CACHE = 'piano-web-v1'; // the same store the service worker serves from
 const DONE_KEY = 'piano-web.offline.v1';
@@ -80,6 +82,17 @@ async function wanted(base: string): Promise<Set<string>> {
       for (const it of Object.values(set.items ?? {})) if (it.musicxml && /\.(musicxml|xml)$/i.test(it.musicxml.trim())) urls.add(new URL(it.musicxml.trim(), url).href);
     }
   } catch { /* no sets yet */ }
+  // The accompaniment lab: its charts and styles, and the band's sounds (the kit and the kept instruments).
+  try {
+    const lab = (await (await fetch(`${base}content/lab/index.json`)).json()) as { charts: string[]; styles: string[] };
+    urls.add(new URL(`${base}content/lab/index.json`, origin).href);
+    for (const f of [...lab.charts, ...lab.styles]) urls.add(new URL(`${base}content/lab/${f}`, origin).href);
+  } catch { /* no lab content yet */ }
+  const band = `${base}content/audio/band`;
+  urls.add(new URL(`${band}/lm-2/dm.json`, origin).href);
+  const kit = (await (await fetch(`${band}/lm-2/dm.json`)).json()) as { samples: string[] };
+  for (const name of kit.samples) urls.add(new URL(`${band}/lm-2/${name}.${sampleFormat()}`, origin).href);
+  for (const part of BUNDLED_PARTS) urls.add(new URL(`${band}/fluidr3/${part}-${sampleFormat() === 'ogg' ? 'ogg' : 'mp3'}.js`, origin).href);
   // Every piano sample, named the way smplr fetches them (# and spaces escaped).
   const names = (await (await fetch(`${base}${SAMPLES}/files.json`)).json()) as string[];
   const format = sampleFormat();

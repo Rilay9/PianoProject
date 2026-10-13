@@ -1,0 +1,4 @@
+{
+  "charts": ["charts/blues-c.json", "charts/pop-c.json"],
+  "styles": ["styles/shuffle.json", "styles/pop.json"]
+}

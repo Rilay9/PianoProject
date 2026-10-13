@@ -1,0 +1,8 @@
+{
+  "title": "Test: 12-bar blues in C",
+  "meter": "4/4",
+  "tempo": 84,
+  "style": "shuffle",
+  "bars": ["C7", "C7", "C7", "C7", "F7", "F7", "C7", "C7", "G7", "F7", "C7", "G7"],
+  "improvise": { "scale": "C blues" }
+}

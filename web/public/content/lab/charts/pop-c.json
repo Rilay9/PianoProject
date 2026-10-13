@@ -1,0 +1,8 @@
+{
+  "title": "Test: I–V–vi–IV in C",
+  "meter": "4/4",
+  "tempo": 92,
+  "style": "pop",
+  "bars": ["C", "G", "Am", "F", "C", "G", "Am", "F"],
+  "improvise": { "scale": "C major pentatonic" }
+}
