@@ -514,6 +514,26 @@ export class Drill {
     this.ui.misses.hidden = this.ui.fresh.hidden = true;
   }
 
+  /** The keyboard as a remote (remote.ts): a mash ends the set (its results so far), the lowest key is Again or Hear it, the highest Start, Next or New set. */
+  command(c: 'mash' | 'low' | 'high'): void {
+    if (!this.on) return;
+    if (c === 'mash') {
+      if (this.state === 'idle' || this.state === 'done') return;
+      this.stopAll();
+      if (this.results.length) this.setDone(); else this.reset();
+      this.ui.sub.textContent = 'Stopped by a mash';
+      return;
+    }
+    if (c === 'low') {
+      if (this.state === 'result' && !this.ui.after.hidden && this.card) { this.retrying = true; void this.playCard(this.card.item); }
+      else if (this.state === 'turn' || this.state === 'demo' || this.state === 'countin') this.help();
+      return;
+    }
+    if (this.state === 'idle' || this.state === 'done') void this.begin();
+    else if (this.state === 'result' && !this.ui.after.hidden) this.nextCard();
+    else if (this.state === 'turn' && !this.card?.timed) this.skip();
+  }
+
   /** Next while a notes-only card waits for you: what is left counts as missed. */
   skip(): boolean {
     if (this.state !== 'turn' || !this.card) return false;

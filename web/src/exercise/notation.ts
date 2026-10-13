@@ -108,6 +108,7 @@ export class ExerciseNotation {
    */
   private mode: 'build' | 'card' = 'build';
   private share = 1;
+  private line = false; // build mode on one line that scrolls sideways (Simon, a phone on its side)
   /** Height at the bottom of the room covered by what floats over it (the frosted panel). */
   reserve: () => number = () => 0;
   /** Music came on screen (true) or went. */
@@ -147,6 +148,14 @@ export class ExerciseNotation {
     if (this.loaded) this.draw();
   }
 
+  /** Build mode on one line, scrolling sideways to keep the lit item in view. */
+  setLine(on: boolean): void {
+    if (on === this.line) return;
+    this.line = on;
+    this.box.classList.toggle('line', on);
+    if (this.loaded && this.mode === 'build') this.draw();
+  }
+
   setMode(mode: 'build' | 'card'): void {
     this.mode = mode;
     this.box.classList.toggle('card', mode === 'card');
@@ -166,10 +175,18 @@ export class ExerciseNotation {
     // item is brought into view above it, not under it.
     const reserve = this.reserve();
     this.box.style.paddingBottom = `${reserve}px`;
+    this.osmd.EngravingRules.RenderSingleHorizontalStaffline = this.line;
+    this.small.style.flex = this.line ? 'none' : '';
     this.osmd.render();
     const lit = [...this.small.querySelectorAll<SVGElement>('[fill="#2563eb"]')];
-    if (!lit.length) return;
+    if (!lit.length) { if (this.line) this.box.scrollLeft = this.box.scrollWidth; return; } // the newest end in view
     const box = this.box.getBoundingClientRect();
+    if (this.line) {
+      const left = Math.min(...lit.map((e) => e.getBoundingClientRect().left)), right = Math.max(...lit.map((e) => e.getBoundingClientRect().right));
+      if (left - 40 < box.left) this.box.scrollLeft -= box.left - (left - 40);
+      else if (right + 40 > box.right) this.box.scrollLeft += right + 40 - box.right;
+      return;
+    }
     const top = Math.min(...lit.map((e) => e.getBoundingClientRect().top)), bottom = Math.max(...lit.map((e) => e.getBoundingClientRect().bottom));
     const margin = 40; // the staff around the lit notes
     if (top - margin < box.top) this.box.scrollTop -= box.top - (top - margin);
@@ -178,6 +195,7 @@ export class ExerciseNotation {
 
   /** A card: drawn once on one line (a wide page), cropped to the music, then scaled to the room. */
   private drawCard(): void {
+    this.osmd.EngravingRules.RenderSingleHorizontalStaffline = false;
     this.small.style.width = '4000px'; // wide enough that a card's bars stay on one line
     this.small.style.flex = 'none'; // (a flex item would shrink back to the room's width and wrap the card)
     this.osmd.zoom = 1.1;

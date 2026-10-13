@@ -95,6 +95,8 @@ export class Memorise {
   private afterHear = 0; // where your turn starts once the bars have been played
   private carry = 0; // where the pass after a slip starts
   private slipBar = 0;
+  private slipStep = 0; // the first slip's step (shown on screen)
+  private heard = { a: 0, b: 0 }; // the bars last played to you
   private peeked = false;
   /** The keys not asked for in the last pass (shown red on the keys while the slip is shown). */
   wrongKeys: number[] = [];
@@ -288,6 +290,7 @@ export class Memorise {
     clearTimeout(this.timer);
     this.phase = 'hear';
     this.afterHear = then;
+    this.heard = { a, b };
     const v = this.d.view;
     v.markNotes([]);
     v.setHidden([]);
@@ -342,6 +345,11 @@ export class Memorise {
     this.ready(this.carry);
     this.begin(midi);
   }
+
+  /** A note of its own in the message line (the keyboard remote: "Stopped by a mash"). */
+  note(text: string): void { this.message = { ...this.message, text, kind: '' }; this.d.changed(); }
+  /** After a slip, go again without a key: your turn from where it carries on (the keyboard remote's highest key). */
+  goAgain(): void { if (this.phase === 'review') this.ready(this.carry); }
 
   /** A key that is not the first note of the pass: nothing starts and nothing counts. */
   notFirst(bar = this.from): void {
@@ -427,6 +435,7 @@ export class Memorise {
     const steps = [...slips.map((x) => x.step), ...extra.map((x) => x.step)];
     const firstStep = steps.length ? Math.min(...steps) : this.steps(this.from, this.from).a;
     this.slipBar = v.barOf(firstStep);
+    this.slipStep = firstStep;
     v.goTo(firstStep); // the slip on screen
     v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
     this.carry = this.stored.options.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
@@ -558,6 +567,24 @@ export class Memorise {
     if (!on) return;
     this.peeked = true;
     if (this.phase === 'turn' && !this.stored.options.timing) this.d.practice.helped();
+  }
+
+  /** Where a slip is shown: the bars being learned from their first, and the first slip's step. */
+  get slipView(): { bar: number; step: number } { return { bar: this.scope()[0], step: this.slipStep }; }
+
+  /**
+   * The music was laid out again (the phone turned, the size changed): carry on where it was (owner, 2026-10-12).
+   * A pass waiting for your notes carries on at the note it was waiting for; what was playing in time (listening,
+   * or a timed pass) starts that again, since its clock was stopped.
+   */
+  relaidOut(): void {
+    if (this.phase === 'hear') { this.halt(); this.hear(this.heard.a, this.heard.b, this.afterHear); return; }
+    if (this.phase === 'turn') {
+      if (this.stored.options.timing) { this.halt(); this.ready(this.from); return; }
+      this.d.practice.carryOn();
+      return;
+    }
+    this.d.changed();
   }
 
   /** Stops what is playing (without leaving the flow). */

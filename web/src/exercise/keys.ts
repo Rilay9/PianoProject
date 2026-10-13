@@ -36,8 +36,10 @@ export class ExerciseKeys {
     keyboard.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
+  /** The keys the set's music uses (an edge key of the keyboard in it is a note, not a command). */
+  span: { lo: number; hi: number } | null = null;
   /** The keys to draw: whole octaves around these notes (at least two). */
-  setRange(midis: number[]): void { this.strip.setSong(midis); }
+  setRange(midis: number[]): void { this.strip.setSong(midis); this.span = midis.length ? { lo: Math.min(...midis), hi: Math.max(...midis) } : null; }
 
   /** A key on the MIDI keyboard. */
   midiKey(midi: number, on: boolean, down: Set<number>): void {

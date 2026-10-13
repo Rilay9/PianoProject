@@ -167,6 +167,9 @@ export class Practice {
     this.fresh.clear();
   }
 
+  /** The key that starts Wait for me, pressed before it began (a quick tap may be up already): it counts for the first notes. */
+  pressedBefore(midi: number): void { this.early.add(midi); }
+
   /** Another song, mode, loop or screen: a run paused by itself is over (its parts are not carried into the next). */
   forgetRun(): void { this.segments = []; }
 
@@ -293,6 +296,23 @@ export class Practice {
     if (j >= end && looping) { this.view.play(-1, to); return; } // the view calls back at the loop's end
     if (j >= n) { this.view.play(); return; } // the piano finishes the song
     this.view.play(j);
+  }
+
+  /**
+   * The music was laid out again mid-pass (the phone turned): the view stopped, so wait again where it was: at the
+   * notes it was waiting for, or (if the piano was leading on) at your next notes.
+   */
+  carryOn(): void {
+    if (this.running !== 'wait') return;
+    this.sound.stop();
+    this.view.songClock = null;
+    if (this.expected.size) { this.arrive(); return; }
+    const hand = yours(this.settings()), loop = this.pass ?? this.loop(), end = loop ? loop.b + 1 : this.view.stepCount;
+    let i = this.view.index + 1;
+    while (i < end && !this.view.struckAt(i, hand).length) i++;
+    if (i < end) { this.view.goTo(i); this.arrive(); return; }
+    if (this.pass) { this.loopBack(); return; }
+    this.view.goTo(this.view.stepCount - 1); this.stop(); this.onDone();
   }
 
   /** Wait for me in a loop: back to its start, waiting for your first notes there. */

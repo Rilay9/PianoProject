@@ -11,6 +11,7 @@ import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX
 import { Simon, type Rung, type SimonLevel } from './exercise/simon';
 import { Drill, type DrillLevel } from './exercise/drill';
 import { keepAwake } from './wake';
+import { KeyRemote, type Command } from './remote';
 import { Practice, yours } from './practice';
 import { Memorise, type MemoHands, type MemoLook, type MemoriseOptions } from './memorise';
 import { Sound } from './sound';
@@ -112,20 +113,30 @@ async function draw(keep = false): Promise<void> {
   try {
     const xml = await xmlFor(piece);
     if (request !== drawRequest) return;
-    if (memoOpen && memorise.active) memorise.stop(); // laid out again (turned, resized): back to before the pass, place kept
-    const s = memoOpen ? memoSettings() : settingsFor(piece.id);
+    const s = memoOpen ? memoSettings() : scoreSettings(piece.id);
+    // Upright and on a tablet the music starts below the top bar, so pausing (the bars back) covers none of it
+    // (owner, 2026-10-12); sideways it has the whole height and the bars float over it.
+    document.body.style.setProperty('--score-top', currentDevice() === 'phone-sideways' ? '0px' : `${bars[0].offsetHeight}px`);
+    document.body.style.setProperty('--bottom-bar-h', `${bars[1].offsetHeight}px`);
+    // Laid out again mid-Memorise (turned, resized, its size or keys changed): it carries on where it was (owner, 2026-10-12).
+    const at = keep || (memoOpen && memorise.active) ? view.position : undefined;
     warnAboutHands(piece, xml);
     // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
     document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
     if (memoOpen) fillMemo(); // the Memorise panel's height too
-    await view.show(addFingerings(xml, fingeringsFor(piece.id)), s, keep ? view.position : undefined, () => strip.setSong(view.songPitches));
+    await view.show(addFingerings(xml, fingeringsFor(piece.id)), s, at, () => strip.setSong(view.songPitches));
     if (request !== drawRequest) return;
-    if (memoOpen && currentDevice() === 'phone-sideways') {
-      // One line as tall as the room allows (never above the biggest size): drawn again once at the size that fits.
-      const fit = Math.min(1, memoFit * (score.clientHeight / Math.max(1, view.drawnHeight)));
-      if (Math.abs(fit - memoFit) > 0.02) { memoFit = fit; await view.show(addFingerings(xml, fingeringsFor(piece.id)), memoSettings(), undefined, () => strip.setSong(view.songPitches)); }
+    if (currentDevice() === 'phone-sideways') {
+      // One line as tall as the room allows (never above the biggest size): drawn again once at the size that fits
+      // (Memorise, and the score's own size, where 100% is that fit: owner, 2026-10-12).
+      const was = memoOpen ? memoFit : sideFit;
+      const fit = Math.min(1, was * (score.clientHeight / Math.max(1, view.drawnHeight)));
+      if (Math.abs(fit - was) > 0.02) {
+        if (memoOpen) memoFit = fit; else sideFit = fit;
+        await view.show(addFingerings(xml, fingeringsFor(piece.id)), memoOpen ? memoSettings() : scoreSettings(piece.id), view.position, () => strip.setSong(view.songPitches));
+      }
     }
-    if (memoOpen) memorise.preview();
+    if (memoOpen) { if (memorise.active) memorise.relaidOut(); else memorise.preview(); }
   } catch (cause) {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
@@ -143,8 +154,19 @@ function warnAboutHands(piece: Piece, xml: string): void {
   if (parts > 1 || staves > 2) showMessage(`${piece.title} has ${parts > 1 ? `${parts} parts` : `${staves} staves`}: the app takes the top staff as the right hand and the rest as the left, which may be wrong here.`, true);
 }
 
+/**
+ * What the score is drawn with: its settings, except that on a phone held sideways the size is a share of the size
+ * at which the one line fills the height (100% = it fills it; owner, 2026-10-12).
+ */
+let sideFit = 1;
+function scoreSettings(pieceId: string): ScoreSettings {
+  const s = settingsFor(pieceId);
+  return currentDevice() === 'phone-sideways' ? { ...s, size: SIZE_MAX * Math.min(1, s.size) * sideFit } : s;
+}
+
 async function openSong(id: string): Promise<void> {
   forgetRun();
+  sideFit = 1;
   currentId = id;
   const url = new URL(location.href);
   url.searchParams.set('piece', id);
@@ -176,9 +198,10 @@ function fillBars(): void {
   $('play').textContent = running ? '⏸' : '▶';
   $('play').setAttribute('aria-label', running ? 'Stop' : 'Play');
   $<HTMLSelectElement>('q-mode').value = s.mode;
-  $<HTMLOutputElement>('q-size').value = `${Math.round(s.size * 100)}%`;
-  $<HTMLButtonElement>('q-smaller').disabled = s.size <= SIZE_MIN + 1e-9;
-  $<HTMLButtonElement>('q-larger').disabled = s.size >= SIZE_MAX - 1e-9;
+  const [lo, hi] = sizeRange(), size = Math.min(hi, s.size);
+  $<HTMLOutputElement>('q-size').value = `${Math.round(size * 100)}%`;
+  $<HTMLButtonElement>('q-smaller').disabled = size <= lo + 1e-9;
+  $<HTMLButtonElement>('q-larger').disabled = size >= hi - 1e-9;
   const loop = view.looped;
   const [la, lb] = loop ? [view.barNumber(loop.a), view.barNumber(loop.b)] : [0, 0];
   $('q-loop').textContent = picking ? 'Cancel' : loop ? `Loop ${la === lb ? la : `${la}–${lb}`}` : 'Loop';
@@ -196,9 +219,11 @@ function change<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]):
 $('q-smaller').addEventListener('click', () => stepSize(-0.1));
 $('q-larger').addEventListener('click', () => stepSize(0.1));
 function stepSize(delta: number): void {
-  const size = settingsFor(currentPiece().id).size;
-  change('size', Math.round(Math.min(SIZE_MAX, Math.max(SIZE_MIN, size + delta)) * 100) / 100);
+  const size = settingsFor(currentPiece().id).size, [lo, hi] = sizeRange();
+  change('size', Math.round(Math.min(hi, Math.max(lo, size + delta)) * 100) / 100);
 }
+/** The size's range: sideways a share of filling the height (half of it to all of it), otherwise 60% to 180%. */
+const sizeRange = (): [number, number] => (currentDevice() === 'phone-sideways' ? [0.5, 1] : [SIZE_MIN, SIZE_MAX]);
 
 function makeCurrentDefault(): void {
   makeDefaults(currentPiece().id);
@@ -215,7 +240,7 @@ function makeCurrentDefault(): void {
 const bars = [$('top-bar'), $('bottom-bar')];
 const IDLE_MS = 5000; // the owner asked for a couple of seconds longer than the first 3
 let fadeTimer = 0;
-const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open || moreDialog.open || memoDialog.open;
+const panelOpen = () => settingsDialog.open || songsDialog.open || infoDialog.open || tempoDialog.open || summaryDialog.open || moreDialog.open || memoDialog.open || $<HTMLDialogElement>('remote-dialog').open;
 // Only a focused drop-down counts as in use: a tapped button keeps focus, and would otherwise hold the bars up for good.
 const barHasFocus = () => document.activeElement instanceof HTMLSelectElement && bars.some((b) => b.contains(document.activeElement));
 
@@ -310,8 +335,8 @@ async function startFromKey(e: KeyEvent): Promise<void> {
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'watch' || (s.mode === 'ladder' && !view.looped)) return;
   if (s.mode === 'wait') {
+    practice.pressedBefore(e.midi); // that key counts for the first notes, held or not
     await play();
-    if (midi.down.has(e.midi)) practice.key(e); // that key counts for the first notes
     return;
   }
   const mine = view.struckAt(view.index, yours(s));
@@ -481,6 +506,7 @@ function leaveMemorise(): void {
   $('memo-head').hidden = true;
   $('memo-panel').hidden = true;
   for (const b of bars) b.hidden = false;
+  view.setBand(0, 0);
   document.body.style.setProperty('--memo-h', '0px');
   document.body.style.setProperty('--memo-head-h', '0px');
   showBars();
@@ -494,8 +520,10 @@ async function memoGo(then: () => void): Promise<void> {
   if (memoPreparing) return;
   memoPreparing = true;
   try {
-    memoProblem = await midi.start().then((names) => (names.length ? '' : 'No MIDI keyboard is connected: Memorise listens to one.'),
-      (cause) => `${cause instanceof Error ? cause.message : String(cause)} Memorise listens to a MIDI keyboard.`);
+    const onScreen = memorise.look(currentDevice()).under === 'keyboard'
+      ? 'Play on the keys below.' : 'Play on a MIDI keyboard, or show the keyboard in Settings.';
+    memoProblem = await midi.start().then((names) => (names.length ? '' : `No MIDI keyboard is connected. ${onScreen}`),
+      () => `This browser has no MIDI. ${onScreen}`);
     const s = memoSettings();
     sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     await sound.prepare(!sound.keyboard).catch(() => {});
@@ -562,11 +590,17 @@ function fillMemo(): void {
   strip.markKeys('wrong', memorise.phase === 'review' ? memorise.wrongKeys : []); // the slip's wrong keys in red
   // Sideways the height is short: the header and buttons fade while it plays or you play, so the music (laid out
   // for the whole height) shows whole; they come back when it needs you, or on a tap (owner, 2026-10-12).
-  if (memorise.phase !== memoFadePhase) { memoFadePhase = memorise.phase; memoShown = false; }
+  const phaseChanged = memorise.phase !== memoFadePhase;
+  if (phaseChanged) { memoFadePhase = memorise.phase; memoShown = false; }
   const fade = sideways && (memorise.phase === 'hear' || memorise.phase === 'turn') && !memoShown;
   for (const id of ['memo-head', 'memo-panel']) $(id).classList.toggle('faded', fade);
   document.body.style.setProperty('--memo-h', `${$('memo-panel').offsetHeight}px`);
   document.body.style.setProperty('--memo-head-h', `${$('memo-head').offsetHeight}px`);
+  // Sideways, a slip and the join question show with the header and buttons up: the line fits between them, the
+  // bars being learned from the left edge (owner, 2026-10-12); otherwise it has the whole height.
+  const framed = sideways && (memorise.phase === 'review' || memorise.phase === 'ask');
+  view.setBand(framed ? $('memo-head').offsetHeight : 0, framed ? $('memo-panel').offsetHeight : 0);
+  if (framed && phaseChanged) view.revealBar(memorise.slipView.bar, memorise.phase === 'review' ? memorise.slipView.step : -1);
 }
 let memoFadePhase = '', memoShown = false; // a tap brings the faded header and buttons back until the next step
 
@@ -657,8 +691,71 @@ $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
 });
 
 // MIDI: pressed keys light on the keyboard strip and go to Wait for me / Play along.
+// The keys under the music play, and count as your playing, where timing isn't tight: Memorise and Wait for me
+// (owner, 2026-10-12); in the timed modes they only show. They sound on the phone and join the MIDI keys held.
+const touchKeys = new Map<number, { midi: number; stop: Promise<() => void> }>();
+const touchPlays = () => memoOpen || settingsFor(currentPiece().id).mode === 'wait';
+$('keyboard').addEventListener('pointerdown', (e) => {
+  const key = (e.target as HTMLElement).closest<HTMLElement>('[data-midi]');
+  if (!key || !touchPlays()) return;
+  e.preventDefault();
+  const m = Number(key.dataset.midi), id = e.pointerId;
+  touchKeys.set(id, { midi: m, stop: sound.noteNow(m, 90, () => touchKeys.get(id)?.midi === m) });
+  midi.down.add(m);
+  midi.onKey({ midi: m, on: true, velocity: 90, time: performance.now() });
+});
+const liftKey = (e: PointerEvent) => {
+  const t = touchKeys.get(e.pointerId);
+  if (!t) return;
+  touchKeys.delete(e.pointerId);
+  void t.stop.then((stop) => stop());
+  if ([...touchKeys.values()].some((x) => x.midi === t.midi)) return;
+  midi.down.delete(t.midi);
+  midi.onKey({ midi: t.midi, on: false, velocity: 0, time: performance.now() });
+};
+for (const ev of ['pointerup', 'pointercancel'] as const) $('keyboard').addEventListener(ev, liftKey);
+$('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());
+
+// The keyboard as a remote (owner, 2026-10-12): a mash, and the keyboard's lowest and highest keys, taken before any
+// mode sees them (remote.ts). What they do on each screen:
+const remote = new KeyRemote();
+remote.musicRange = () => {
+  if (freePlay.open) return { lo: 0, hi: 127 }; // free play: every key is a note
+  if (!$('exercise').hidden) return exerciseKeys.span;
+  const ps = view.songPitches;
+  return ps.length ? { lo: Math.min(...ps), hi: Math.max(...ps) } : null;
+};
+remote.onCommand = (c: Command) => {
+  if (freePlay.open || panelOpen()) return;
+  if (!$('exercise').hidden) {
+    if (c === 'peek-on' || c === 'peek-off') return;
+    if (exerciseKind === 'drill') drill.command(c); else simon.command(c);
+    return;
+  }
+  if (memoOpen) {
+    if (c === 'mash') { if (memorise.active) { memorise.stop(); memorise.note('Stopped by a mash'); } }
+    else if (c === 'low') void memoGo(() => memorise.hearBar());
+    else if (c === 'peek-on' || c === 'peek-off') memorise.peek(c === 'peek-on');
+    else if (memorise.waitingForNext) memorise.nextChunk(1);
+    else if (memorise.phase === 'review') memorise.goAgain();
+    else if (!memorise.active || memorise.phase === 'done') void memoGo(() => memorise.start());
+    return;
+  }
+  const s = settingsFor(currentPiece().id), running = view.playing || practice.active;
+  if (c === 'mash') {
+    if (practice.active && judged(s.mode)) practice.onAutoPause('mash', view.index); // as before: paused, carry on from a key
+    else if (running) { stopAll(); showMessage('Stopped by a mash', true); }
+  } else if (c === 'low') {
+    // Back: to the loop's start, or the start of this bar (already there: the bar before).
+    if (running) stopAll();
+    const loop = view.looped, bar = view.barOf(view.index), first = view.firstStepOfBar(bar);
+    view.goTo(loop ? loop.a : first === view.index && bar > 0 ? view.firstStepOfBar(bar - 1) : first);
+  } else if (c === 'high' && !running) void play();
+};
+
 midi.onKey = (e) => {
   strip.setPressed(midi.down);
+  if (remote.take(e)) return;
   if (memoOpen && e.on) { strip.markKeys('now-r', []); memorise.unhint(); } // a key puts away Memorise's hint
   if (memoOpen && !e.on && midi.down.size === 0) memorise.released();
   if (freePlay.open) { freePlay.key(e, midi.down); return; }
@@ -735,6 +832,8 @@ score.addEventListener('pointerup', (e) => {
   if (pressed) return;
   if (memoOpen) {
     if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layout scrolls
+    // Faded (sideways, while it plays or you play): the first tap only brings the controls back (owner, 2026-10-12).
+    if ($('memo-head').classList.contains('faded')) { memoShown = true; fillMemo(); return; }
     const bar = view.hitBar(e.clientX, e.clientY);
     if (bar >= 0 && memorise.canPickBar) { memorise.setFrom(bar); return; }
     memoShown = !memoShown || $('memo-head').classList.contains('faded'); // sideways: a tap brings them back (or lets them fade)
@@ -785,6 +884,29 @@ for (const b of document.querySelectorAll<HTMLButtonElement>('#finger-pick butto
 }
 $('marks-done').addEventListener('click', () => setMarking(false));
 $('open-more').addEventListener('click', () => moreDialog.showModal());
+// Keyboard controls: learn the lowest and highest key, and turn the edge keys and the mash on or off.
+const remoteDialog = $<HTMLDialogElement>('remote-dialog');
+const keyName = (m: number) => `${['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'][m % 12]}${Math.floor(m / 12) - 1}`;
+function fillRemote(text?: string): void {
+  const r = remote.settings;
+  $<HTMLInputElement>('r-edges').checked = r.edges;
+  $<HTMLInputElement>('r-mash').checked = r.mash;
+  $('r-keys').textContent = text ?? (r.low !== undefined && r.high !== undefined ? `Your keyboard: ${keyName(r.low)} to ${keyName(r.high)}.` : 'Not learned yet.');
+}
+$('open-remote').addEventListener('click', () => { moreDialog.close(); void midi.start().catch(() => {}); fillRemote(); remoteDialog.showModal(); });
+$('r-learn').addEventListener('click', () => {
+  let low: number | null = null;
+  fillRemote('Press the lowest key on your keyboard…');
+  remote.learning = (m) => {
+    if (low === null) { low = m; fillRemote(`Lowest: ${keyName(m)}. Now press the highest key…`); return; }
+    remote.learning = null;
+    remote.set({ low: Math.min(low, m), high: Math.max(low, m) });
+    fillRemote();
+  };
+});
+remoteDialog.addEventListener('close', () => { remote.learning = null; });
+$('r-edges').addEventListener('change', (e) => remote.set({ edges: (e.target as HTMLInputElement).checked }));
+$('r-mash').addEventListener('change', (e) => remote.set({ mash: (e.target as HTMLInputElement).checked }));
 // Free play: just the keys (its own place in the app comes later; for now in ⋯).
 const freePlay = new FreePlay($('freeplay'), sound);
 freePlay.onClose = () => { fillBars(); showBars(); };
@@ -826,6 +948,11 @@ function fillExerciseDisplay(): void {
   const head = $('exercise').querySelector<HTMLElement>('.fp-head')!, line = $('exercise').querySelector<HTMLElement>('.ex-score')!;
   if (sideways && line.parentElement !== head) head.insertBefore(line, $('ex-level'));
   if (!sideways && line.parentElement === head) head.after(line);
+  // Simon sideways: the chain on one line that scrolls sideways, its dots in the bottom bar (owner, 2026-10-12).
+  const chain = $('ex-chain'), simonLine = sideways && exerciseKind === 'simon';
+  if (simonLine && chain.parentElement !== $('ex-overlay')) $('ex-overlay').prepend(chain);
+  if (!simonLine && chain.parentElement === $('ex-overlay')) $('ex-name').after(chain);
+  exerciseNotation.setLine(simonLine);
   const d = exerciseDisplay();
   const card = exerciseKind === 'drill';
   exerciseNotation.setMode(card ? 'card' : 'build');
@@ -861,7 +988,7 @@ const stepExerciseSize = (delta: number) => {
 $('ex-smaller').addEventListener('click', () => stepExerciseSize(-0.1));
 $('ex-larger').addEventListener('click', () => stepExerciseSize(0.1));
 // Turning the phone can change the kind of screen, and each has its own look.
-window.addEventListener('resize', () => { if (!$('exercise').hidden) fillExerciseDisplay(); });
+window.addEventListener('resize', () => { if (!$('exercise').hidden) fillExerciseDisplay(); freePlay.resized(); });
 let sets: ItemSet[] | null = null;
 const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
 let setProblems = '';
@@ -1120,8 +1247,10 @@ function fillPanel(): void {
   $('slot-choices').replaceChildren(legendOf('slot-choices'), ...slotChoices(s.layout).map((n) => radio('slots', String(n), String(n))));
   $('slot-choices').hidden = $('lines-choices').hidden = isStrip(s.layout);
   for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="slots"]')) input.checked = input.value === String(s.slots);
-  $<HTMLInputElement>('s-size').value = String(s.size);
-  $<HTMLOutputElement>('s-size-out').value = `${Math.round(s.size * 100)}%`;
+  const [lo, hi] = sizeRange(), size = Math.min(hi, s.size);
+  Object.assign($<HTMLInputElement>('s-size'), { min: String(lo), max: String(hi) });
+  $<HTMLInputElement>('s-size').value = String(size);
+  $<HTMLOutputElement>('s-size-out').value = `${Math.round(size * 100)}%`;
   for (const name of ['spacing', 'layout', 'barNumbers', 'marker', 'markerFollows', 'under', 'theme'] as const) {
     for (const input of settingsDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) {
       input.checked = input.value === s[name];

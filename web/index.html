@@ -107,6 +107,8 @@
       <div class="fp-col" data-col="notes"><h3>Notes</h3><ol id="fp-lines"></ol></div>
       <div class="fp-col" data-col="intervals"><h3>Intervals</h3><ol id="fp-intervals"></ol></div>
     </div>
+    <!-- A phone: two octaves at a time, moved an octave each way. -->
+    <div id="fp-shift" class="fp-shift" hidden><button id="fp-down" type="button" class="btn" aria-label="An octave lower">‹</button><span id="fp-range"></span><button id="fp-up" type="button" class="btn" aria-label="An octave higher">›</button></div>
     <div class="keyboard fp-keyboard"></div>
   </section>
 
@@ -327,6 +329,7 @@
         <button id="open-simon" type="button">Simon</button>
         <button id="open-drills" type="button">Drills</button>
         <button id="open-metronome" type="button">Metronome…</button>
+        <button id="open-remote" type="button">Keyboard controls…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
         <button id="backup" type="button">Back up settings and marks</button>
@@ -335,6 +338,23 @@
       </div>
       <p class="note">Fingering is written into the score: it shows when Display → Show → Fingering is on, and the exported file opens in MuseScore with it.</p>
       <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="remote-dialog" aria-labelledby="remote-title">
+    <form method="dialog">
+      <h2 id="remote-title">Keyboard controls</h2>
+      <p class="note">Play the app from your keyboard, without reaching for the phone.</p>
+      <fieldset class="row"><legend>A mash (palm or forearm on the keys)</legend>
+        <label><input id="r-mash" type="checkbox"> Stops or pauses what is playing</label>
+      </fieldset>
+      <fieldset class="row"><legend>Your lowest and highest key</legend>
+        <label><input id="r-edges" type="checkbox"> Work as buttons (only when the music doesn't use them)</label>
+        <span id="r-keys" class="note"></span>
+        <button id="r-learn" type="button">Learn them</button>
+      </fieldset>
+      <p class="note">Lowest key: back / again (the score: to the loop's or the bar's start; Memorise: Hear; Drills: Again, or Hear it; Simon: Hear again). Hold it in Memorise: Peek. Highest key: start / next / carry on.</p>
+      <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
 

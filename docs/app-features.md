@@ -24,7 +24,9 @@ Fingering is on; the learner can add their own (⋯ → Edit fingering).
 
 **What the learner sees:** the music laid out to keep what comes next in view: *Turn* (slots that swap as you
 play) or *Rolling* on a phone upright, a scrolling single line (*smooth* or *still then glide*) on a phone sideways,
-*Turn* on a tablet. A marker moves through it (a bar, coloured notes, or both; per hand or across hands). Under the
+*Turn* on a tablet. Upright and on a tablet the music starts below the top bar, so the bars never cover it; sideways
+the line has the whole height, and its size is a share of the size that fills the height (100% = fills it). Messages
+show as a strip just above the bottom bar. A marker moves through it (a bar, coloured notes, or both; per hand or across hands). Under the
 music: a keyboard strip and/or note names. Display settings (size, spacing, layout, slots, bars per line, bar
 numbers, tempo marks, fingering, lyrics, marker, what is under the music, "Music while playing") are kept per
 kind of screen, with a default plus each song's own (`web/src/settings.ts`, `web/src/follow.ts`); Make default and
@@ -51,7 +53,8 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 | **Ladder** | building speed on a passage | Play along round a loop; a clean pass (every note on time, nothing wrong) raises the speed a step (2 / 5 / 10 %), a messy one lowers it; never above the written tempo | as Play along, per pass |
 | **Rhythm** | the rhythm alone | Play along where any key counts: one tap per note or chord (keys within 30 ms are one tap) | timing of each tap; extra taps |
 
-Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In the judged
+Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
+(and Memorise) the keys under the music can be played by touch, and count; in the timed modes they only show. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due) or on mashing (6+ keys not in the
 score within ¼ s), and carries on from your next key, or *See how it went* in the pause message ends the run with
 its summary; the parts add up to one summary. *Music while playing* off
@@ -95,7 +98,11 @@ restarts. A key that starts a pass where your part has a rest just starts it (it
 
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
-faded; sideways one line fitted to the height, the header and buttons fading over it while it plays or you play.
+faded; sideways one line fitted to the height, the header and buttons fading over it while it plays or you play
+(while faded, a tap only brings them back). Sideways, a slip and the join question fit the line between the header
+and the buttons, the bars being learned from the left edge. Upright, the join question floats frosted over the music.
+Turning the phone or changing the size mid-pass carries on: a pass waiting for your notes goes on at the note it
+waited for; listening, or a timed pass, starts that again.
 
 **Fit for lessons:** a piece (any score) once its notes are known; chunk size and "learned after" set the load.
 Known gap: with repeats, only the first time through is walked.
@@ -117,7 +124,8 @@ is drawn whole. Best chain kept per set and level (help rung, matching, what a m
 5 by ear. **Matching:** the same keys, any octave, or any octave and inversion. **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
 the new item (you always play it all). Display: size A−/A+ (fixed size, building from the left; long chains wrap and
-scroll), keyboard or nothing under the music.
+scroll; on a phone sideways one line that scrolls sideways, the dots in the bottom bar), keyboard or nothing under
+the music.
 
 **Content:** item sets (§6). Small units only; passages from pieces belong in Memorise.
 
@@ -207,6 +215,13 @@ placeholders for checking the app, not lesson content.
   floats frosted over the bottom of the music. Sideways the exercise header and score line are one row, and the
   settings dialogs lay their groups out in two columns. Feedback may take two lines rather than being cut. Every
   dialog has a ✕ in its corner and a Done bar that stays in view while it scrolls.
+- **The keyboard as a remote** (⋯ → Keyboard controls; `web/src/remote.ts`): every key passes through one filter
+  first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
+  is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are
+  buttons when the music on screen doesn't use them: lowest = back / again (score: to the loop's or the bar's
+  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again), held in Memorise = Peek; highest = start /
+  next / carry on (Drills: Start, Next, Skip, New set).
+- Free play on a phone shows two octaves at a time (‹ › an octave; a MIDI key outside them moves them).
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.
@@ -214,7 +229,8 @@ placeholders for checking the app, not lesson content.
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
-  `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`.
+  `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
+  `piano-web.remote.v1`.
 
 ## 8. Not built yet
 

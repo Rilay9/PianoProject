@@ -80,6 +80,10 @@ export class FollowView {
   private current = 0;
   private stripW = 0;
   private stripH = 0;
+  // The one line fitted into a band of the room without laying it out again (Memorise sideways, while its header
+  // and buttons show): its scale and the room kept free above and below.
+  private stripScale = 1;
+  private band = { top: 0, bottom: 0 };
   private slots: Slot[] = [];
   private turn = { top: 0, bottom: 1, k: 1 };
   private roll: number[] = [];
@@ -428,7 +432,7 @@ export class FollowView {
       inner.className = 'inner';
       inner.style.width = `${this.stripW}px`;
       inner.style.height = `${this.stripH}px`;
-      inner.style.marginTop = `${Math.max(0, (this.host.clientHeight - this.stripH) / 2)}px`;
+      this.placeStrip(inner);
       const svg = document.createElementNS(SVGNS, 'svg') as SVGSVGElement;
       const use = document.createElementNS(SVGNS, 'use');
       use.setAttribute('href', '#score-src');
@@ -514,6 +518,37 @@ export class FollowView {
     });
   }
 
+  /**
+   * The one line kept clear of `top` and `bottom` px of the room (what floats over it there), made smaller to fit
+   * between them if need be; 0 and 0: the whole height. Nothing is laid out again, so the marker, covers and marks
+   * stay as they are.
+   */
+  setBand(top: number, bottom: number): void {
+    if (top === this.band.top && bottom === this.band.bottom) return;
+    this.band = { top, bottom };
+    const inner = this.scroller?.firstElementChild as HTMLElement | null;
+    if (inner) this.placeStrip(inner);
+  }
+  private placeStrip(inner: HTMLElement): void {
+    const room = this.host.clientHeight - this.band.top - this.band.bottom;
+    const k = this.stripH > 0 ? Math.min(1, Math.max(0.3, room / this.stripH)) : 1;
+    this.stripScale = k;
+    inner.style.transformOrigin = '0 0';
+    inner.style.transform = k < 1 ? `scale(${k})` : '';
+    inner.style.marginTop = `${this.band.top + Math.max(0, (room - this.stripH * k) / 2)}px`;
+  }
+  /** One line: scrolls so bar m starts at the left edge, unless step `keep` would then be off the right (then it shows that). */
+  revealBar(m: number, keep: number): void {
+    if (!this.scroller) return;
+    const first = this.steps[this.firstStepOfBar(m)], k = this.stripScale, w = this.host.clientWidth;
+    if (!first) return;
+    let x = ((first.pos.barLeft ?? first.pos.left) - 8) * k;
+    const s = this.steps[keep];
+    if (s && ((s.pos.barRight ?? s.pos.right) + 8) * k > x + w) x = (s.pos.barLeft ?? s.pos.left) * k - w / 3;
+    cancelAnimationFrame(this.tween);
+    this.scroller.scrollLeft = Math.max(0, x);
+  }
+
   private glideTo(target: number, ms: number): void {
     const sc = this.scroller!;
     target = Math.max(0, Math.min(sc.scrollWidth - sc.clientWidth, target));
@@ -532,10 +567,11 @@ export class FollowView {
   }
 
   private followStrip(p: Pos): void {
-    const w = this.host.clientWidth, sl = this.scroller!.scrollLeft;
-    if (this.layout === 'smooth') { if (!this.playing) this.glideTo(p.left - w / 3, 300); }
-    else if (performance.now() < this.glideUntil && p.left >= sl && p.right <= sl + w) return; // let a running glide finish
-    else if (p.right > sl + w * GLIDE_AT || p.left < sl) { this.glideTo(p.left - w * GLIDE_TO, GLIDE_MS); this.glideUntil = performance.now() + GLIDE_MS; }
+    const w = this.host.clientWidth, sl = this.scroller!.scrollLeft, k = this.stripScale;
+    const left = p.left * k, right = p.right * k;
+    if (this.layout === 'smooth') { if (!this.playing) this.glideTo(left - w / 3, 300); }
+    else if (performance.now() < this.glideUntil && left >= sl && right <= sl + w) return; // let a running glide finish
+    else if (right > sl + w * GLIDE_AT || left < sl) { this.glideTo(left - w * GLIDE_TO, GLIDE_MS); this.glideUntil = performance.now() + GLIDE_MS; }
   }
 
   // ---- showing a step ---------------------------------------------------------------------------------
@@ -812,8 +848,8 @@ export class FollowView {
         this.steps.forEach((s, i) => { if (s.occ === slot.o) consider(i, px, py, scale); });
       }
     } else if (this.scroller) {
-      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
-      this.steps.forEach((_, i) => consider(i, x - r.left, y - r.top, 1));
+      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect(), k = this.stripScale;
+      this.steps.forEach((_, i) => consider(i, (x - r.left) / k, (y - r.top) / k, k));
     }
     return best;
   }
@@ -836,8 +872,8 @@ export class FollowView {
         this.steps.forEach((s, i) => { if (found < 0 && s.occ === slot.o && inside(i, px, py)) found = s.m; });
       }
     } else if (this.scroller) {
-      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
-      this.steps.forEach((s, i) => { if (found < 0 && inside(i, x - r.left, y - r.top)) found = s.m; });
+      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect(), k = this.stripScale;
+      this.steps.forEach((s, i) => { if (found < 0 && inside(i, (x - r.left) / k, (y - r.top) / k)) found = s.m; });
     }
     return found;
   }
@@ -862,8 +898,8 @@ export class FollowView {
         for (const s of this.steps) if (s.occ === slot.o) consider(s, (x - pr.left) / scale, (y - pr.top) / scale + ch.top, scale);
       }
     } else if (this.scroller) {
-      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect();
-      for (const s of this.steps) consider(s, x - r.left, y - r.top, 1);
+      const r = (this.scroller.firstElementChild as HTMLElement).getBoundingClientRect(), k = this.stripScale;
+      for (const s of this.steps) consider(s, (x - r.left) / k, (y - r.top) / k, k);
     }
     return best;
   }
@@ -918,7 +954,7 @@ export class FollowView {
       const s = this.steps[this.current], n = this.steps[this.current + 1];
       let x = s.pos.left;
       if (n && n.pos.left > s.pos.left) x = s.pos.left + (n.pos.left - s.pos.left) * Math.min(1, (elapsed - s.t) / (n.t - s.t));
-      this.scroller.scrollLeft = Math.max(0, x - this.host.clientWidth / 3);
+      this.scroller.scrollLeft = Math.max(0, x * this.stripScale - this.host.clientWidth / 3);
     }
     if (elapsed >= this.untilT) {
       this.playing = false;

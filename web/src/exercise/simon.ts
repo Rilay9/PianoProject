@@ -346,6 +346,14 @@ export class Simon {
     this.later(REPLAY_MS, () => { if (token === this.token) void this.showChain(fromMiss ? group.item : 0, turnFrom); });
   }
 
+  /** The keyboard as a remote (remote.ts): a mash stops the game, the lowest key is Hear again, the highest Start. */
+  command(c: 'mash' | 'low' | 'high'): void {
+    if (!this.on) return;
+    if (c === 'mash') { if (this.state !== 'ready') { this.reset(); this.ui.sub.textContent = 'Stopped by a mash'; } return; }
+    if (c === 'low') { if (this.state === 'turn') void this.hearAgain(); return; }
+    if ((this.state === 'ready' || this.state === 'over' || this.state === 'done') && !this.waitRelease) void this.begin();
+  }
+
   private async hearAgain(): Promise<void> {
     if (this.state !== 'turn') return;
     const from = this.pos > 0 ? this.flat[this.pos].item : 0;

@@ -1,19 +1,24 @@
 // Free play (owner, 2026-10-11): just the keys. What you play, on the MIDI keyboard or on the screen's keys,
 // lights up and is named with the chord or interval it makes; nothing is judged or kept. The screen's keys
 // sound on the phone (a MIDI keyboard makes its own sound). The keys start at three octaves around middle C
-// and widen to take in any key played outside them.
+// and widen to take in any key played outside them. On a phone two octaves at a time (owner, 2026-10-12: keys wide
+// enough to tap), moved an octave with ‹ ›, and moving by themselves to show a MIDI key played outside them.
 // Below that, what you played lately (owner, 2026-10-12), newest on top, each column can be turned off (Show):
 // chords held together (three or more notes that make a named chord), the notes (keys pressed together on one
 // line), and intervals (from each single note to the next, and two notes held together). Cleared on opening.
 
 import type { KeyEvent } from './midi';
 import type { Sound } from './sound';
+import { currentDevice } from './settings';
 import { keysChord, UnderStrip } from './strip';
+
+const PHONE_SPAN = 24; // two octaves (C to C)
 
 export class FreePlay {
   private readonly strip: UnderStrip;
   private lo = 48; // C3
   private hi = 84; // C6
+  private from = 48; // a phone: the lowest key shown (C3), PHONE_SPAN keys on
   private midiDown = new Set<number>();
   private touches = new Map<number, { midi: number; stop: Promise<() => void> }>(); // pointer id -> key
   open = false;
@@ -47,6 +52,8 @@ export class FreePlay {
     keyboard.addEventListener('pointercancel', lift);
     keyboard.addEventListener('contextmenu', (e) => e.preventDefault());
     panel.querySelector('#fp-done')!.addEventListener('click', () => this.close());
+    panel.querySelector('#fp-down')!.addEventListener('click', () => this.shift(-12));
+    panel.querySelector('#fp-up')!.addEventListener('click', () => this.shift(12));
     const dialog = document.getElementById('fp-show-dialog') as HTMLDialogElement;
     panel.querySelector('#fp-show')!.addEventListener('click', () => {
       const on = shownColumns();
@@ -69,7 +76,7 @@ export class FreePlay {
     this.open = true;
     this.midiDown = new Set(down);
     this.panel.hidden = false;
-    this.strip.setSong([this.lo, this.hi]);
+    this.drawKeys();
     this.lines = [];
     this.chords = [];
     this.lastChord = '';
@@ -91,11 +98,31 @@ export class FreePlay {
     if (e.on && (e.midi < this.lo || e.midi > this.hi)) {
       this.lo = Math.min(this.lo, e.midi);
       this.hi = Math.max(this.hi, e.midi);
-      this.strip.setSong([this.lo, this.hi]);
+      if (!this.phone()) this.drawKeys();
+    }
+    if (e.on && this.phone() && (e.midi < this.from || e.midi > this.from + PHONE_SPAN)) {
+      this.from = Math.max(12, Math.min(108 - PHONE_SPAN, e.midi - (e.midi % 12) - (e.midi < this.from ? 0 : 12)));
+      this.drawKeys();
     }
     if (e.on) this.pressed(e.midi);
     this.update();
   }
+
+  private phone(): boolean { return currentDevice() !== 'tablet'; }
+  /** The keys: on a phone two octaves from `from`; otherwise all of lo..hi. */
+  private drawKeys(): void {
+    const phone = this.phone();
+    this.strip.setSong(phone ? [this.from, this.from + PHONE_SPAN - 1] : [this.lo, this.hi]);
+    (this.panel.querySelector('#fp-shift') as HTMLElement).hidden = !phone;
+    const name = (m: number) => `C${Math.floor(m / 12) - 1}`;
+    this.panel.querySelector('#fp-range')!.textContent = `${name(this.from)}–${name(this.from + PHONE_SPAN)}`;
+    (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = this.from <= 24;
+    (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = this.from + PHONE_SPAN >= 108;
+    this.strip.setPressed(this.down());
+  }
+  private shift(by: number): void { this.from = Math.max(12, Math.min(108 - PHONE_SPAN, this.from + by)); this.drawKeys(); }
+  /** The phone turned (a tablet shows them all). */
+  resized(): void { if (this.open) this.drawKeys(); }
 
   /** A key went down: on the line of keys pressed together, or a new line. */
   private pressed(midi: number): void {
