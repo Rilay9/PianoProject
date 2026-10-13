@@ -625,6 +625,8 @@ const peek = (on: boolean) => () => memorise.peek(on);
 $('memo-peek').addEventListener('pointerdown', (e) => { $('memo-peek').setPointerCapture(e.pointerId); memorise.peek(true); });
 for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) $('memo-peek').addEventListener(ev, peek(false));
 $('memo-hear').addEventListener('pointerdown', (e) => $('memo-hear').setPointerCapture(e.pointerId));
+// A held button is a hold, not the start of a long press (which would select text or open the copy menu).
+for (const id of ['memo-peek', 'memo-hear']) $(id).addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
 $('memo-peek').addEventListener('contextmenu', (e) => e.preventDefault());
 $('memo-from-prev').addEventListener('click', () => memorise.stepFrom(-1));
 $('memo-from-next').addEventListener('click', () => memorise.stepFrom(1));
