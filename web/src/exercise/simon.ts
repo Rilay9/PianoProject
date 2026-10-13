@@ -270,11 +270,12 @@ export class Simon {
     this.got.add(mark);
     this.pressed.add(midi);
     if (!want.every((w) => this.got.has(w))) return;
-    // A chord counts with all its notes down together; in the octave match its bass must be its own.
+    // A chord counts with all its notes down together: as many keys of each note as it has (in any octave, C4 and C5
+    // are still two keys); in the octave match its bass must be its own.
     const down = [...this.keys.down];
     if (group.keys.length > 1) {
-      const held = new Set(down.map((k) => (free ? k % 12 : k)));
-      if (!want.every((w) => held.has(w))) return;
+      const held = down.map((k) => (free ? k % 12 : k)), count = (xs: number[], x: number) => xs.filter((y) => y === x).length;
+      if (!want.every((w) => count(held, w) >= count(want, w))) return;
       // The bass among the keys played for this chord (legato: a note still held from the last one does not count).
       const mine = down.filter((k) => this.pressed.has(k));
       if (this.level.match === 'octave' && Math.min(...mine) % 12 !== Math.min(...group.keys) % 12) { this.missed(Math.min(...mine)); return; }

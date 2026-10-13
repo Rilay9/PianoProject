@@ -47,7 +47,9 @@ export function readChart(id: string, f: ChartFile): Chart {
   const bars = f.bars.map((b) => b.trim().split(/\s+/));
   for (const bar of bars) for (const s of bar) chordInfo(s); // every symbol readable, or the chart is refused
   if (f.improvise?.scale && Scale.get(f.improvise.scale).empty) throw new Error(`"${f.improvise.scale}" is not a scale name the lab can read`);
-  return { id, title: f.title, meter: meterOf(f.meter), tempo: f.tempo ?? 90, style: f.style ?? '', bars, scale: f.improvise?.scale ?? null };
+  const tempo = f.tempo ?? 90;
+  if (typeof tempo !== 'number' || !(tempo >= 20 && tempo <= 300)) throw new Error(`tempo ${tempo} should be a number of beats a minute, 20 to 300`);
+  return { id, title: f.title, meter: meterOf(f.meter), tempo, style: f.style ?? '', bars, scale: f.improvise?.scale ?? null };
 }
 
 /** General MIDI drum numbers by the names styles use. */
@@ -55,15 +57,26 @@ const DRUMS: Record<string, number> = { kick: 36, snare: 38, rim: 37, clap: 39, 
 
 export function readStyle(id: string, f: StyleFile): Style {
   const meter = meterOf(f.meter), grid = f.grid ?? 2, steps = meter.beats * grid;
+  if (!Number.isInteger(grid) || grid < 1 || grid > 8) throw new Error(`grid ${grid} should be a whole number of steps a beat, 1 to 8`);
   const drums = Object.entries(f.drums ?? {}).map(([name, pattern]) => {
     const midi = DRUMS[name];
     if (midi === undefined) throw new Error(`drum "${name}" is not one of ${Object.keys(DRUMS).join(', ')}`);
     const cells = pattern.replace(/\s+/g, '');
     if (cells.length !== steps) throw new Error(`the ${name} pattern has ${cells.length} steps; a bar of ${f.meter ?? '4/4'} at ${grid} a beat has ${steps}`);
+    const odd = [...cells].find((ch) => !'xXo.'.includes(ch));
+    if (odd) throw new Error(`the ${name} pattern has "${odd}"; a step is x, X, o or .`);
     return { midi, steps: [...cells].map((ch) => (ch === 'X' ? 115 : ch === 'x' ? 90 : ch === 'o' ? 60 : 0)) };
   });
   const degrees = ['root', 'third', 'fifth', 'sixth', 'seventh', 'octave', 'approach'];
-  for (const [, d] of f.bass ?? []) if (!degrees.includes(d)) throw new Error(`bass degree "${d}" is not one of ${degrees.join(', ')}`);
+  const inBar = (beat: number) => typeof beat === 'number' && beat >= 1 && beat < meter.beats + 1;
+  for (const [beat, d] of f.bass ?? []) {
+    if (!degrees.includes(d)) throw new Error(`bass degree "${d}" is not one of ${degrees.join(', ')}`);
+    if (!inBar(beat)) throw new Error(`bass beat ${beat} is not in a bar of ${meter.beats}`);
+  }
+  for (const [beat, len] of f.chords ?? []) {
+    if (!inBar(beat)) throw new Error(`chord beat ${beat} is not in a bar of ${meter.beats}`);
+    if (typeof len !== 'number' || !(len > 0)) throw new Error(`the chord on beat ${beat} has length ${len}; it should be more than 0 beats`);
+  }
   return { id, name: f.name, meter, grid, drums, bass: f.bass ?? [], chords: f.chords ?? [], bassSound: f.instruments?.bass ?? 'acoustic_bass', chordSound: f.instruments?.chords ?? 'piano' };
 }
 
@@ -144,8 +157,10 @@ export function bandNotes(form: Form, style: Style, parts: Parts, rounds: number
       if (parts.bass) for (const [beat, degree] of style.bass) if (inSpan(beat)) {
         out.push({ t: t0 + beatT(form, style, barStart + beat - 1), midi: bassNote(sp.chord, degree, next), dur: form.beatMs * 0.9, vel: 85, part: style.bassSound });
       }
+      // A chord hit stops where its chord does (with two chords in a bar, the first never rings over the second).
       if (parts.chords && !yourStep) for (const [beat, len] of style.chords) if (inSpan(beat)) {
-        for (const m of voicing(sp.chord)) out.push({ t: t0 + beatT(form, style, barStart + beat - 1), midi: m, dur: len * form.beatMs * 0.95, vel: 70, part: style.chordSound });
+        const at = beatT(form, style, barStart + beat - 1), end = Math.min(at + len * form.beatMs, (sp.at + sp.beats) * form.beatMs);
+        for (const m of voicing(sp.chord)) out.push({ t: t0 + at, midi: m, dur: (end - at) * 0.95, vel: 70, part: style.chordSound });
       }
     });
     if (yourStep) for (const h of hits(form, style, yourStep)) {

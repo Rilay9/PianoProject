@@ -96,7 +96,7 @@ piece, nothing else of the score screen.
 
 Controls: ▶/■, *Hear* (tap: the bar you are on or slipped in; hold: everything being learned), *Peek*, ◀ Bar n ▶ or
 tap a covered bar to start your turn there, ‹ › to change chunk. Progress (chunk, bars learned, clean passes) is
-kept per piece and per hand choice, with the chunk size it was made with (another size starts that piece afresh).
+kept per piece, hand choice and chunk size (another size has its own place; going back to a size finds it again).
 Changing "in time" or "a bar / the whole chunk" mid-turn goes back to the start of the turn and the clean count
 restarts. A key that starts a pass where your part has a rest just starts it (it is not a wrong key). Own settings: hands, tempo, size, keyboard strip, metronome and On time (when "in time"), plus the options above.
 
@@ -125,7 +125,8 @@ game over / keep going). Pools add a random item each round; passages grow in th
 is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs).
 
 **Help levels** (shared with Drills): 1 music + sound + keys lit, 2 music + sound, 3 music only, 4 name only,
-5 by ear. **Matching:** the same keys, any octave, or any octave and inversion. **Speed:** steady, or quickening as
+5 by ear. **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
+it has notes: C4 and C5 are two keys). **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
 the new item (you always play it all). Display: size A−/A+ (fixed size, building from the left; long chains wrap and
 scroll; on a phone sideways one line that scrolls sideways, the dots in the bottom bar), keyboard or nothing under
@@ -185,23 +186,29 @@ things early on, with clear steps. `web/src/screens/lab.ts`, `web/src/lab/music.
 the steps), `web/src/lab/judge.ts`.
 
 **How it works:** one question first, *Lead* or *Accompaniment*; then a step (the next one picked for you; ✓ marks a
-step played clean twice); one sentence says what your part is and what the band plays; the box of chords shows the
-form. *▶ Start* (or the keyboard's highest key) gives a bar of count-in, then the band plays round after round until
-■. While playing: one instruction, the beat (1 2 3 4), the chord now and the next two, the box of chords with the bar
+step played clean twice, over every bar); one sentence says what your part is and what the band plays; the box of
+chords shows the form. *▶ Start* (or the keyboard's highest key) gives a bar of count-in, then the band plays round
+after round until ■ (or 40 rounds). Changing anything while the band gets ready drops that start. While playing: one instruction, the beat (1 2 3 4), the chord now and the next two, the box of chords with the bar
 you are in, and the keys to use, lit and named. *Show me first* plays one round with your part played for you.
 - **Accompaniment steps:** Roots (the root on each chord's first beat) → Chords on the beat (the whole chord, held) →
   the style's rhythm (the chord where the style plays it) → Your own way (any voicing, any rhythm). A bar is green
-  when every note of its chord (any voicing or octave; the Roots step: the root) is down by the beat (±150 ms), amber
-  when a little late (before the next chord), red with a missing note or a key not in the chord; said in music words
-  ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). Help: keys lit, notes named, or the symbol only.
+  when every note of its chord (any voicing or octave; the Roots step: the root) is down together by the beat
+  (±150 ms of real time at any speed; a small roll is fine), amber when a little late (before the next chord), red with
+  a missing note, the notes only ever played one at a time (Your own way allows that), or a key not in the chord; said
+  in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). How long a chord is held is not judged
+  yet. Times are the keyboard's own. Help: keys lit, notes named, or the symbol only.
 - **Lead steps (over a chart: improvising):** roots in rhythm → chord notes (lit) → the scale (the chart's, lit pale,
   the chord's notes dark; land on a dark one when the chord changes) → call and answer (the band plays the chord's
-  notes up in the first two bars of every four; you answer in the next two) → free. Not marked: it says how it went
-  ("landed on the chord 7 of 8 changes · 92% of notes from the lit keys").
+  notes up in the first two of every four bars played, counted through the rounds; you answer in the next two) →
+  free. Not marked: it says how it went ("you played at 7 of 9 chord changes, on a chord note at 5 · 92% of notes from
+  the lit keys"; Free, with nothing lit: "% of notes in the chord or the scale"). A round counts as played (toward the
+  ✓) when you played in at least half its bars. The keys: two octaves from middle C.
 - **After:** how it went, the next step once a step has two clean rounds, loop the bars that went wrong, try the other
-  part. Tap bars in the box (stopped) to loop them. A clean round below the chart's own tempo moves it up 5% (as
-  Ladder). ⚙: which band parts play (drums, bass, chords), the click, the style, drop-outs (the drums or the whole band
-  quiet in bars 5–6 of every 8, from the second round).
+  part. ■ in the middle of a round shows that round as far as it went, and it does not count. Tap bars in the box
+  (stopped) to loop them: a loop is practice (no ✓ from it). A clean round below the chart's own tempo moves it up 5%
+  (as Ladder). A result shows only for the chart, part, step and bars it came from. ⚙: which band parts play (drums, bass, chords), the click, the style, drop-outs (the drums or the whole band
+  quiet in bars 5–6 of every 8 of the form, from the second round; their notes are left out of what the band plays,
+  so they stop exactly at the bar). A part whose sound cannot be loaded is named on the band line; the rest play.
 - **The band:** drums (the LM-2 kit), bass and chords on the style's instruments (FluidR3 General MIDI sounds: basses
   and guitars kept in the app for offline; any other General MIDI instrument fetched online), always on the phone.
 
@@ -223,8 +230,9 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
   "instruments": { "bass": "acoustic_bass", "chords": "piano" } }        // General MIDI names (FluidR3), or piano
 ```
 
-A chart's chord symbols, scale and a style's patterns are checked when the lab opens; one that cannot be read is left
-out with the reason. Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
+A chart's chord symbols, scale and tempo (20–300) and a style's grid (1–8), patterns (x X o . only, one bar long),
+beats (inside the bar) and chord lengths (above 0) are checked when the lab opens; one that cannot be read is left
+out with the reason, and so is a chart with no style in its metre (the ⚙ list shows only styles in the chart's metre). Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
 are placeholders. **Not built yet** (next): songs with their own melody (a lead sheet: "play the melody" judged as Play
 along, and the accompaniment under a real tune) and several-part MusicXML files (each part on its instrument, you take
 one); examples to copy written into a chart.

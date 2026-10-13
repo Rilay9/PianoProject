@@ -8,8 +8,8 @@ export class ExerciseKeys {
   private readonly strip: UnderStrip;
   private touches = new Map<number, { midi: number; stop: Promise<() => void> }>();
   private midiDown = new Set<number>();
-  /** A key went down (true) or up, from either keyboard. */
-  onKey: (midi: number, on: boolean) => void = () => {};
+  /** A key went down (true) or up, from either keyboard; time: when (performance.now() ms; the keyboard's own time). */
+  onKey: (midi: number, on: boolean, time: number) => void = () => {};
 
   constructor(keyboard: HTMLElement, private readonly sound: Sound) {
     this.strip = new UnderStrip(keyboard, keyboard, document.createElement('div'));
@@ -21,7 +21,7 @@ export class ExerciseKeys {
       const id = e.pointerId;
       this.touches.set(id, { midi, stop: this.sound.noteNow(midi, 90, () => this.touches.get(id)?.midi === midi) });
       this.pressedChanged();
-      this.onKey(midi, true);
+      this.onKey(midi, true, e.timeStamp);
     });
     const lift = (e: PointerEvent) => {
       const t = this.touches.get(e.pointerId);
@@ -29,7 +29,7 @@ export class ExerciseKeys {
       this.touches.delete(e.pointerId);
       void t.stop.then((stop) => stop());
       this.pressedChanged();
-      this.onKey(t.midi, false);
+      this.onKey(t.midi, false, e.timeStamp);
     };
     keyboard.addEventListener('pointerup', lift);
     keyboard.addEventListener('pointercancel', lift);
@@ -42,10 +42,10 @@ export class ExerciseKeys {
   setRange(midis: number[]): void { this.strip.setSong(midis); this.span = midis.length ? { lo: Math.min(...midis), hi: Math.max(...midis) } : null; }
 
   /** A key on the MIDI keyboard. */
-  midiKey(midi: number, on: boolean, down: Set<number>): void {
+  midiKey(midi: number, on: boolean, down: Set<number>, time = performance.now()): void {
     this.midiDown = new Set(down);
     this.pressedChanged();
-    this.onKey(midi, on);
+    this.onKey(midi, on, time);
   }
 
   /** Every key held now, on either keyboard. */

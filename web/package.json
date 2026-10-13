@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check:notes": "vite build && node tests/notes-match.mjs",
-    "check:scoring": "node tests/scoring.mjs"
+    "check:scoring": "node tests/scoring.mjs",
+    "check:lab": "node tests/lab-judge.mjs"
   },
   "dependencies": {
     "opensheetmusicdisplay": "2.2.0",

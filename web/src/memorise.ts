@@ -173,8 +173,7 @@ export class Memorise {
     const judging = (o.timing !== undefined && o.timing !== this.stored.options.timing) || (o.adds !== undefined && o.adds !== this.stored.options.adds);
     this.stored.options = { ...this.stored.options, ...o };
     if (chunkChanged) {
-      // Other chunk sizes mean other bars: the piece's chunks start afresh rather than quietly meaning new bars.
-      for (const k of Object.keys(this.stored.progress)) if (k === this.d.pieceId() || k.startsWith(`${this.d.pieceId()}|`)) delete this.stored.progress[k];
+      // Other chunk sizes mean other bars: each size keeps its own place (going back to a size finds it again).
       this.loadPlace();
       this.save();
       if (this.active) { this.halt(); this.joining = null; this.focus(); this.hearDefault(); } else this.preview();
@@ -214,9 +213,11 @@ export class Memorise {
     this.d.view.setFaded({ a, b });
   }
 
-  private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`; }
+  /** Where the place is kept: per piece, hands and chunk size (before 2026-10-13 per piece and hands, which is still read). */
+  private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}|${this.stored.options.chunk}`; }
   private loadPlace(): void {
-    const saved = this.stored.progress[this.key()] ?? (this.hands(this.d.pieceId()) === 'both' ? this.stored.progress[this.d.pieceId()] : undefined);
+    const old = `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`;
+    const saved = this.stored.progress[this.key()] ?? this.stored.progress[old] ?? (this.hands(this.d.pieceId()) === 'both' ? this.stored.progress[this.d.pieceId()] : undefined);
     const fresh: Place = { chunk: 0, learned: 1, passes: 0 };
     const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved && (saved.size === undefined || saved.size === this.stored.options.chunk) ? saved : fresh;
     this.place = { ...p, chunk: Math.min(p.chunk, this.chunkCount() - 1) };
