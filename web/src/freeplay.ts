@@ -197,9 +197,14 @@ export class FreePlay {
 const TOGETHER_MS = 80; // keys pressed this close (all still down) are one line: a hand's chord lands within a few tens of ms, and a quick melody's notes are further apart
 const KEEP = 30; // more than any screen shows; older ones scroll off
 
-/** keysChord names intervals within an octave (C3 to E5 is a major 3rd); notes a whole octave or more apart of one name are "octave". */
+/**
+ * keysChord names the interval within an octave; wider than an octave it is that plus the octaves (C3 to E5: "major
+ * 3rd + 2 octaves", not a plain major 3rd); notes a whole octave or more apart of one name are "octave(s)".
+ */
 function intervalName(low: number, high: number, named: string): string {
-  return named || ((high - low) % 12 === 0 ? (high - low === 12 ? 'octave' : `${(high - low) / 12} octaves`) : '');
+  const span = high - low, octaves = Math.floor(span / 12);
+  if (span % 12 === 0) return span === 12 ? 'octave' : `${octaves} octaves`;
+  return named && octaves ? `${named} + ${octaves} octave${octaves === 1 ? '' : 's'}` : named;
 }
 
 type Column = 'chords' | 'notes' | 'intervals';

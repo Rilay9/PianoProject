@@ -15,7 +15,7 @@ import type { KeyEvent } from '../midi';
 import type { Command } from '../remote';
 import type { NoteEvent } from '../sound';
 
-export type LabScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+export type LabScreen = Screen & { open(stillWanted?: () => boolean): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
 
 type Role = 'accomp' | 'lead';
 interface Stored {
@@ -94,6 +94,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     const styleId = stored.style[chart.id] ?? chart.style, fits = styles.filter((s) => sameMeter(s, chart!));
     style = fits.find((s) => s.id === styleId) ?? fits.find((s) => s.id === chart!.style) ?? fits[0];
     loopBars = null;
+    picking = null;
     rebuildForm();
   }
   function rebuildForm(): void {
@@ -236,7 +237,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     starting = false;
     unavailable = parts.filter((_, i) => loaded[i].status === 'rejected');
     const { notes, beats } = events(withDemo);
-    sound.setVolumes(0.8, 0.6);
+    app.appSound();
     sound.mute([]);
     sound.play(notes, beats, -form.barBeats * form.beatMs, speed());
     running = true; demo = withDemo; presses = []; held = new Map(); roundNow = -1; judged = new Set(); results = []; roundsDone = 0; roundsPlayed = 0; lastRound = null;
@@ -503,7 +504,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       b.innerHTML = '<strong></strong><small></small>';
       b.querySelector('strong')!.textContent = c.title;
       b.querySelector('small')!.textContent = `${c.bars.length} bars · ${c.meter.beats}/${c.meter.beatType} · ♩ ${c.tempo}`;
-      b.addEventListener('click', () => { pickDialog.close(); choose(c.id); lastRound = null; fill(); });
+      b.addEventListener('click', () => { pickDialog.close(); choose(c.id); lastRound = null; feedback(''); fill(); });
       const li = document.createElement('li');
       li.append(b);
       return li;
@@ -519,7 +520,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $<HTMLInputElement>('lab-p-chords').checked = p.chords;
     $<HTMLInputElement>('lab-p-click').checked = p.click;
     $('lab-p-chords-label').hidden = role() === 'accomp';
-    $('lab-styles').replaceChildren(...styles.filter((s) => chart && sameMeter(s, chart)).map((s) => {
+    $('lab-styles').replaceChildren(Object.assign(document.createElement('legend'), { textContent: 'Style' }), ...styles.filter((s) => chart && sameMeter(s, chart)).map((s) => {
       const l = document.createElement('label');
       l.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'lab-style', value: s.id, checked: s.id === style?.id }), ` ${s.name}`);
       return l;
@@ -550,8 +551,9 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     held.set(m, p);
   };
 
-  async function open(): Promise<void> {
+  async function open(stillWanted: () => boolean = () => true): Promise<void> {
     await load();
+    if (!stillWanted()) return;
     if (!charts.length || !styles.length) { app.showMessage(loadProblems || 'The lab has no charts or styles to play.'); return; }
     isOpen = true;
     $('lab').hidden = false;

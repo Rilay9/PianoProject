@@ -59,8 +59,8 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
 (and Memorise) the keys under the music can be played by touch, and count; in the timed modes they only show. In the judged
-modes it pauses by itself on silence (3 s with two or more of your notes due) or on mashing (6+ keys not in the
-score within ¼ s), and carries on from your next key, or *See how it went* in the pause message ends the run with
+modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
+score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses), and carries on from your next key, or *See how it went* in the pause message ends the run with
 its summary; the parts add up to one summary. *Music while playing* off
 (Blind): the music hides while you play.
 
@@ -152,7 +152,7 @@ your first note (by ear: always your first note); the metronome can keep clickin
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
 different cards); a card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
-Help (*Hear it*, *Show me*, or the 3 s hint on a notes-only card, which names the notes when the keys aren't shown) is
+Help (*Hear it*, *Show me*, or the hint after 8 s without a key on a notes-only card, which names the notes when the keys aren't shown) is
 noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
 *Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
 (help rung, On time), from full sets only, shown on the Ready screen and at the end; tempo per set. A name to play
@@ -172,7 +172,8 @@ Fresh generated cards (new music each time) are planned as another source of ite
 **For:** playing anything and seeing what it is. The keys you play light up and are named, with the chord or
 interval they make; below, three columns of what you played lately (newest on top): chords held together (three
 or more notes that make a named chord), notes (keys pressed together on one line), intervals (note to next, with
-direction, and two notes held together). *Show* turns columns off. Nothing is judged or kept. `web/src/freeplay.ts`.
+direction, and two notes held together; wider than an octave it says so: "major 3rd + 2 octaves"). *Show* turns
+columns off. Nothing is judged or kept. `web/src/freeplay.ts`.
 
 **Metronome:** in the score's Tempo panel (⋯ → Metronome… opens it). A metronome usable on its own, without a
 score, is planned.
@@ -291,12 +292,14 @@ placeholders for checking the app, not lesson content.
   what it says, its buttons and the size/Hear tools, and a keyboard a fifth of the height; elsewhere what it says
   floats frosted over the bottom of the music. Sideways the exercise header and score line are one row, and the
   settings dialogs lay their groups out in two columns. Feedback may take two lines rather than being cut. Every
-  dialog has a ✕ in its corner and a Done bar that stays in view while it scrolls.
+  dialog has a ✕ in its corner and a Done bar that stays in view while it scrolls (sideways the Done bar alone). The
+  piano and click volumes and the click sound (Tempo panel) are the app's, for every screen.
 - **The keyboard as a remote** (⋯ → Keyboard controls; `web/src/remote.ts`): every key passes through one filter
   first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
   is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are
   buttons when the music on screen doesn't use them: lowest = back / again (score: to the loop's or the bar's
-  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again), held in Memorise = Peek; highest = start /
+  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again), held in Memorise = Peek (held elsewhere: the
+  same as a tap); highest = start /
   next / carry on (Drills: Start, Next, Skip, New set).
 - Free play on a phone shows two octaves at a time (‹ › an octave; a MIDI key outside them moves them).
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
@@ -307,7 +310,7 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1`.
+  `piano-web.remote.v1`, `piano-web.lab.v1` (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline).
 
 ## 8. How the app is put together (for adding a screen or a mode)
 

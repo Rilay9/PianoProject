@@ -331,14 +331,18 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
   practice.onAutoPause = (reason, step) => {
     if (reason === 'mash') mashedAt = performance.now();
+    pauseRun(step, reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.');
+  };
+  /** Paused by itself (silence, mashing, the phone turned): the run is kept, and the next start carries it on. */
+  function pauseRun(step: number, text: string): void {
     practice.suspend();
     view.pause();
     view.goTo(step);
     resumable = true;
-    // Or stop here and see how it went (owner, 2026-10-12).
-    showMessage(reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.', true,
-      { label: 'See how it went', run: () => { resumable = false; showMessage(''); practice.finishRun(); fillBars(); showBars(); } });
-  };
+    pausedMessage(text);
+  }
+  // Or stop here and see how it went (owner, 2026-10-12).
+  const pausedMessage = (text: string) => showMessage(text, true, { label: 'See how it went', run: () => { resumable = false; showMessage(''); practice.finishRun(); fillBars(); showBars(); } });
   /** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. now: begun by a key just played. */
   function startSound(t: number, now = false): void {
     const s = settingsFor(currentPiece().id);
@@ -611,7 +615,9 @@ export function createScoreScreen(app: App): ScoreScreen {
     $('t-ontime').hidden = !judged(s.mode);
   }
   function setSpeed(speed: number): void {
-    if (!(speed > 0)) return;
+    if (!(speed > 0)) { fillTempo(); return; } // nothing sensible typed: the field shows the tempo again
+    const slider = $<HTMLInputElement>('t-speed');
+    speed = Math.min(Number(slider.max) / 100, Math.max(Number(slider.min) / 100, speed)); // within the slider's range
     savePieceSetting(currentPiece().id, 'speed', speed);
     view.setSpeed(speed);
     sound.setSpeed(speed);
@@ -665,7 +671,12 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (currentDevice() === lastDevice && size === lastSize) return;
       lastDevice = currentDevice();
       lastSize = size;
-      void draw(true);
+      // Playing when the phone turns: it pauses where it was (the run kept: play to carry on) rather than ending it.
+      const turned = 'Paused while the music was laid out again. Play to carry on.';
+      const along = view.playing && !borrower && practice.active && judged(settingsFor(currentPiece().id).mode);
+      if (along) pauseRun(view.index, turned);
+      else if (view.playing && !borrower) view.pause();
+      void draw(true).then(() => { if (along && resumable) pausedMessage(turned); }); // (drawing clears messages)
     }, 150);
   }
 

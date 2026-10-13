@@ -31,7 +31,7 @@ const KEY = 'piano-web.drills.v1';
 interface Stored { level: DrillLevel; tempo: Record<string, number>; best: Record<string, { clean: number; of: number }>; set?: string }
 
 const CLEAN_NEXT_MS = 1200; // a clean card's ✓ on show before the next card
-const HINT_MS = 3000; // notes only: nothing played this long, and the next notes light (as Memorise; the score's "gone quiet")
+const HINT_MS = 8000; // notes only: nothing played this long, and the next notes light (owner, 2026-10-13: longer than 3 s, so a slow reader can still read)
 const DEMO_GAP_MS = 600; // after it plays the card, before your turn
 const MISSED = '#16a34a', OFF_TIME = '#d97706';
 const RUNG_NAMES: Record<Rung, string> = { 1: 'Music, sound, keys', 2: 'Music + sound', 3: 'Music only', 4: 'Name only', 5: 'By ear' };

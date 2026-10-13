@@ -14,7 +14,7 @@ import type { Command } from '../remote';
 import { currentDevice, settingsFor } from '../settings';
 
 export type ExerciseScreen = Screen & {
-  open(kind: 'simon' | 'drill'): Promise<void>;
+  open(kind: 'simon' | 'drill', stillWanted?: () => boolean): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
@@ -95,7 +95,8 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   let sets: ItemSet[] | null = null;
   const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
   let setProblems = '';
-  async function open(kind: 'simon' | 'drill'): Promise<void> {
+  /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
+  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true): Promise<void> {
     await midi.start().catch(() => {});
     // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
     sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
@@ -108,7 +109,9 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
       setProblems = loaded.problems.length ? `Some sets could not be read: ${loaded.problems.join('; ')}` : '';
       sets = loaded.sets;
     }
+    if (!stillWanted()) return;
     if (!sets.length) { app.showMessage(setProblems || 'No exercise sets to play.'); return; }
+    app.appSound();
     exerciseKind = kind;
     $('ex-kind').textContent = kind === 'drill' ? 'Drill' : 'Simon';
     $('ex-after').hidden = true;

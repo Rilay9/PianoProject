@@ -271,6 +271,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .lab-bar b { font: 700 1.15rem 'Times New Roman', serif; }
 .lab-bar.now { outline: 2px solid #f59e0b; background: #fff7e6; color: #111827; }
 .lab-bar.ok { background: #dcfce7; color: #14532d; } .lab-bar.late { background: #fef3c7; color: #78350f; } .lab-bar.miss { background: #fee2e2; color: #7f1d1d; }
+.lab-bar.now small, .lab-bar.ok small, .lab-bar.late small, .lab-bar.miss small { color: inherit; opacity: 0.75; }
 .lab-bar.out { opacity: 0.35; }
 .lab-bar.pick { outline: 2px dashed var(--accent); }
 .lab-band-line { font-size: 12px; color: var(--muted); }
@@ -413,10 +414,11 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 @media (orientation: landscape) and (max-height: 599px) {
   #settings, #tempo, #drill-dialog, #memo-dialog, #ex-level-dialog, #lab-band-dialog { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
   #settings > form, #tempo > form, #drill-dialog > form, #memo-dialog > form, #ex-level-dialog > form, #lab-band-dialog > form { columns: 2; column-gap: 28px; }
-  #settings > form > *, #tempo > form > *, #drill-dialog > form > *, #memo-dialog > form > *, #ex-level-dialog > form > * { break-inside: avoid; }
-  #settings > form > h2, #tempo > form > h2, #drill-dialog > form > h2, #memo-dialog > form > h2, #ex-level-dialog > form > h2, #settings > form > .actions, #tempo > form > .actions, #drill-dialog > form > .actions, #memo-dialog > form > .actions, #ex-level-dialog > form > .actions { column-span: all; }
-  #settings > form > h3, #tempo > form > h3, #drill-dialog > form > h3, #memo-dialog > form > h3, #ex-level-dialog > form > h3 { break-after: avoid; }
-  dialog .dlg-x { position: absolute; top: 8px; right: 8px; float: none; margin: 0; } /* the corner of the dialog, not of its first column */
+  #settings > form > *, #tempo > form > *, #drill-dialog > form > *, #memo-dialog > form > *, #ex-level-dialog > form > *, #lab-band-dialog > form > * { break-inside: avoid; }
+  #settings > form > h2, #tempo > form > h2, #drill-dialog > form > h2, #memo-dialog > form > h2, #ex-level-dialog > form > h2, #lab-band-dialog > form > h2, #settings > form > .actions, #tempo > form > .actions, #drill-dialog > form > .actions, #memo-dialog > form > .actions, #ex-level-dialog > form > .actions, #lab-band-dialog > form > .actions { column-span: all; }
+  #settings > form > h3, #tempo > form > h3, #drill-dialog > form > h3, #memo-dialog > form > h3, #ex-level-dialog > form > h3, #lab-band-dialog > form > h3 { break-after: avoid; }
+  /* The ✕ in the dialog's corner (not its first column), staying there while the settings scroll. */
+  dialog .dlg-x { display: none; } /* sideways the Done bar (always in view) is enough (owner, 2026-10-13) */
 }
 
 .song-list { list-style: none; margin: 8px 0 0; padding: 0; }

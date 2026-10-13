@@ -8,7 +8,7 @@ import type { KeyEvent } from './midi';
 import { MidiInput } from './midi';
 import { Practice } from './practice';
 import type { Command } from './remote';
-import type { ScoreSettings } from './settings';
+import { settingsFor, type ScoreSettings } from './settings';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import { keepAwake } from './wake';
@@ -95,6 +95,13 @@ export class App {
   }
   get messageText(): string { return this.message.hidden ? '' : this.message.textContent ?? ''; }
   get messageIsNews(): boolean { return !this.message.hidden && this.message.classList.contains('info'); }
+
+  /** The app-wide piano and click volumes and click sound (Tempo dialog), for screens other than the score. */
+  appSound(): void {
+    const s = settingsFor('');
+    this.sound.setVolumes(s.pianoVolume, s.clickVolume);
+    this.sound.setClick(s.click);
+  }
 
   /** A dialog is open: keys and taps meant for the screen wait. */
   dialogOpen(): boolean { return !!document.querySelector('dialog[open]'); }

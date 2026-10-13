@@ -34,6 +34,8 @@ export class KeyRemote {
   enabled: () => boolean = () => true;
   /** The keys the music on screen uses (an edge key in it is a note, not a command). */
   musicRange: () => { lo: number; hi: number } | null = () => null;
+  /** Whether the screen has a Peek (Memorise); where it has none, holding the lowest key is the same as tapping it. */
+  peekable: () => boolean = () => false;
 
   constructor() { this.stored = this.read(); }
 
@@ -54,7 +56,7 @@ export class KeyRemote {
       this.lowDown = true;
       this.held = false;
       clearTimeout(this.holdTimer);
-      this.holdTimer = window.setTimeout(() => { if (this.lowDown) { this.held = true; this.onCommand('peek-on'); } }, HOLD_MS);
+      this.holdTimer = window.setTimeout(() => { if (this.lowDown && this.peekable()) { this.held = true; this.onCommand('peek-on'); } }, HOLD_MS);
     } else if (this.lowDown) {
       this.lowDown = false;
       clearTimeout(this.holdTimer);

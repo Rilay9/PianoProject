@@ -62,6 +62,7 @@ function leaveScore(): void {
 const remote = new KeyRemote();
 remote.enabled = () => !freePlay.open;
 remote.musicRange = () => showing().musicRange();
+remote.peekable = () => showing() === memoriseScreen;
 remote.onCommand = (c) => { if (!app.dialogOpen()) showing().command(c); };
 midi.onKey = (e) => {
   app.strip.setPressed(midi.down);
@@ -89,16 +90,21 @@ document.addEventListener('click', (e) => {
 // ---- ⋯ menu ----------------------------------------------------------------------------------------------------
 
 $('open-more').addEventListener('click', () => moreDialog.showModal());
-$('open-memorise').addEventListener('click', () => { moreDialog.close(); void memoriseScreen.open(); });
+// The screen asked for last wins: one still getting ready (loading its content) when another is opened stays shut.
+let opening = 0;
+const wanted = () => { const n = ++opening; return () => n === opening; };
+$('open-memorise').addEventListener('click', () => { moreDialog.close(); wanted(); void memoriseScreen.open(); });
 $('open-freeplay').addEventListener('click', () => {
   leaveScore();
+  wanted();
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
+  app.appSound();
   freePlay.show(midi.down);
   app.stayAwake();
 });
-$('open-simon').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('simon'); });
-$('open-drills').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('drill'); });
-$('open-lab').addEventListener('click', () => { leaveScore(); void labScreen.open(); });
+$('open-simon').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('simon', wanted()); });
+$('open-drills').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('drill', wanted()); });
+$('open-lab').addEventListener('click', () => { leaveScore(); void labScreen.open(wanted()); });
 // The ⋯ menu's Metronome… opens the score's Tempo panel at the metronome (owner: reachable from both, 2026-10-11).
 $('open-metronome').addEventListener('click', () => { moreDialog.close(); scoreScreen.openMetronome(); });
 $('edit-marks').addEventListener('click', () => { moreDialog.close(); scoreScreen.editFingering(); });
@@ -142,26 +148,29 @@ $('export-score').addEventListener('click', async () => {
   download(`${piece.id}-fingering.musicxml`, 'application/vnd.recordare.musicxml+xml', addFingerings(await app.xmlFor(piece), fingeringsFor(piece.id)));
 });
 const BACKUP_PREFIX = 'piano-web.';
+const NOT_BACKED_UP = ['piano-web.offline.v1']; // what this device has saved for offline: true of this device only
+const backedUp = (key: string) => key.startsWith(BACKUP_PREFIX) && !NOT_BACKED_UP.includes(key);
 $('backup').addEventListener('click', () => {
   const data: Record<string, string> = {};
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)!;
-    if (key.startsWith(BACKUP_PREFIX)) data[key] = localStorage.getItem(key)!;
+    if (backedUp(key)) data[key] = localStorage.getItem(key)!;
   }
   const day = new Date().toISOString().slice(0, 10);
   download(`piano-backup-${day}.json`, 'application/json', JSON.stringify({ app: 'piano-web', version: 1, saved: new Date().toISOString(), data }, null, 2));
 });
 $('restore').addEventListener('click', () => $<HTMLInputElement>('restore-file').click());
 $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
-  const file = (e.target as HTMLInputElement).files?.[0];
+  const input = e.target as HTMLInputElement, file = input.files?.[0];
+  input.value = ''; // the same file picked again (after Cancel, say) is a new choice
   if (!file) return;
   try {
     const backup = JSON.parse(await file.text()) as { app?: string; data?: Record<string, string> };
     if (backup.app !== 'piano-web' || !backup.data) throw new Error('This is not a backup from this app.');
     if (!confirm('Replace the settings and marks on this device with the backup?')) return;
-    const mine = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)!).filter((k) => k.startsWith(BACKUP_PREFIX));
+    const mine = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)!).filter(backedUp);
     for (const key of mine) if (!(key in backup.data)) localStorage.removeItem(key);
-    for (const [key, value] of Object.entries(backup.data)) if (key.startsWith(BACKUP_PREFIX)) localStorage.setItem(key, value);
+    for (const [key, value] of Object.entries(backup.data)) if (backedUp(key)) localStorage.setItem(key, value);
     location.reload();
   } catch (cause) {
     moreDialog.close();
