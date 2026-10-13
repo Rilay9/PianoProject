@@ -102,6 +102,19 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     $('memo-say').className = `memo-say ${m.kind}`;
     $('memo-sub').textContent = memoProblem || m.sub;
     $('memo-choices').hidden = !memorise.choosing;
+    // The test (owner, 2026-10-13): its choices, Test once every bar is learned, Stuck during it (no Hear or Peek then).
+    const offers = memorise.offers;
+    $('memo-offers').hidden = !offers.length;
+    $('memo-offers').replaceChildren(...offers.map((o) => {
+      const b = Object.assign(document.createElement('button'), { type: 'button', className: `btn${o.main ? ' main' : ''}`, textContent: o.label });
+      b.addEventListener('click', () => void memoGo(() => memorise.act(o.id)));
+      return b;
+    }));
+    $('memo-test').hidden = !memorise.canTest;
+    $('memo-stuck').hidden = !memorise.canStick;
+    $('memo-hear').hidden = memorise.testingNow || memorise.phase === 'offer';
+    $('memo-peek').hidden = memorise.testingNow || memorise.phase === 'offer';
+    for (const id of ['memo-chunk-prev', 'memo-chunk-next']) $(id).hidden = !memorise.onChunks;
     if (memorise.choosing) {
       const c = memorise.joinChoices;
       $('memo-join-previous').textContent = c.previous;
@@ -115,7 +128,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     $<HTMLButtonElement>('memo-peek').disabled = !memorise.covering;
     $('memo-pick').hidden = !memorise.canPickBar;
     $('memo-from').textContent = `Bar ${memorise.fromNumber}`;
-    $('memo-ctl').hidden = memorise.choosing && sideways; // sideways the choices take the row
+    $('memo-ctl').hidden = (memorise.choosing || offers.length > 0) && sideways; // sideways the choices take the row
     app.stayAwake();
     if (memorise.phase !== 'turn') strip.markKeys('now-r', []); // a hint lasts only while your pass waits
     strip.markKeys('wrong', memorise.phase === 'review' ? memorise.wrongKeys : []); // the slip's wrong keys in red
@@ -129,9 +142,9 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     document.body.style.setProperty('--memo-head-h', `${$('memo-head').offsetHeight}px`);
     // Sideways, a slip and the join question show with the header and buttons up: the line fits between them, the
     // bars being learned from the left edge (owner, 2026-10-12); otherwise it has the whole height.
-    const framed = sideways && (memorise.phase === 'review' || memorise.phase === 'ask');
+    const framed = sideways && (memorise.phase === 'review' || memorise.phase === 'ask' || memorise.phase === 'offer');
     view.setBand(framed ? $('memo-head').offsetHeight : 0, framed ? $('memo-panel').offsetHeight : 0);
-    if (framed && phaseChanged) view.revealBar(memorise.slipView.bar, memorise.phase === 'review' ? memorise.slipView.step : -1);
+    if (framed && phaseChanged) view.revealBar(memorise.slipView.bar, memorise.phase === 'review' || memorise.phase === 'offer' ? memorise.slipView.step : -1);
   }
   let memoFadePhase = '', memoShown = false; // a tap brings the faded header and buttons back until the next step
 
@@ -221,6 +234,8 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
   $('memo-chunk-prev').addEventListener('click', () => memorise.nextChunk(-1));
   $('memo-chunk-next').addEventListener('click', () => memorise.nextChunk(1));
   $('memo-next-chunk').addEventListener('click', () => memorise.nextChunk(1));
+  $('memo-test').addEventListener('click', () => memorise.openTest());
+  $('memo-stuck').addEventListener('click', () => memorise.stuck());
   for (const choice of ['previous', 'all', 'next'] as const) {
     $(`memo-join-${choice}`).addEventListener('click', () => memorise.choose(choice, $<HTMLInputElement>('memo-always').checked));
   }

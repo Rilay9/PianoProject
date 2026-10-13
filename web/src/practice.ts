@@ -81,8 +81,9 @@ export class Practice {
   /** No key for a while: these are the keys wanted next (shown, and counted as helped). */
   onHint: (keys: number[]) => void = () => {};
 
-  /** Starts a waiting pass over steps a..b (whole bars; t1: where the last bar ends) from step `from`. */
-  startPass(range: { a: number; b: number; t1: number }, from: number): void {
+  /** Starts a waiting pass over steps a..b (whole bars; t1: where the last bar ends) from step `from`; hints: the next notes shown after a while with no key (not in the Memorise test). */
+  startPass(range: { a: number; b: number; t1: number }, from: number, hints = true): void {
+    this.passHints = hints;
     this.pass = range;
     this.passWrong = [];
     this.passHelped = [];
@@ -102,9 +103,10 @@ export class Practice {
     for (const midi of this.expected) if (!this.passHelped.some((h) => h.step === this.view.index && h.midi === midi)) this.passHelped.push({ step: this.view.index, midi });
   }
 
+  private passHints = true;
   private armHint(): void {
     clearTimeout(this.hintTimer);
-    if (!this.pass || this.running !== 'wait' || !this.expected.size) return;
+    if (!this.pass || !this.passHints || this.running !== 'wait' || !this.expected.size) return;
     this.hintTimer = window.setTimeout(() => {
       if (!this.pass || this.running !== 'wait') return;
       this.helped();

@@ -107,6 +107,16 @@ kept per piece, hand choice and chunk size (another size has its own place; goin
 Changing "in time" or "a bar / the whole chunk" mid-turn goes back to the start of the turn and the clean count
 restarts. A key that starts a pass where your part has a rest just starts it (it is not a wrong key). Own settings: hands, tempo, size, keyboard strip, metronome and On time (when "in time"), plus the options above.
 
+**The test** (owner, 2026-10-13): each finished chunk marks its bars learned (per piece and hand choice, any chunk
+size; skipped chunks are not). Once every bar is learned, *Test* appears (and is offered after the last chunk):
+*notes* (it waits for each note) or *notes + rhythm* (in time at Memorise's tempo, each note held its length). The
+whole piece from bar 1, from memory: no Peek, Hear, hints or choosing a bar; a wrong key is noted (notes: it waits
+for the right one; rhythm: it keeps going); *Stuck* shows the bar you are on for the rest of the test and counts it.
+Every bar clean marks the piece **Memorized: notes** or **Memorized: notes + rhythm at ♩ n**, with the date (shown in
+Memorise and the song list; notes + rhythm is kept over a later notes-only pass). Otherwise the bars to practise are
+listed and marked on the music: *Practise* takes them one bar at a time (clean passes as "learned after"), then
+offers the test again. A test or practising never moves your chunk place; ■ ends it.
+
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
 faded; sideways one line fitted to the height, the header and buttons fading over it while it plays or you play

@@ -6,6 +6,7 @@
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
+import { markText, memorisedMarks } from '../memorise';
 import type { KeyEvent } from '../midi';
 import { yours } from '../practice';
 import type { Command } from '../remote';
@@ -684,6 +685,7 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   function fillSongs(): void {
     const list = $<HTMLUListElement>('song-list');
+    const marksNow = memorisedMarks();
     list.replaceChildren(...app.pieces.map((p) => {
       const item = document.createElement('li');
       const button = document.createElement('button');
@@ -691,7 +693,10 @@ export function createScoreScreen(app: App): ScoreScreen {
       button.className = p.id === app.currentId ? 'current' : '';
       button.innerHTML = `<strong></strong><small></small>`;
       button.querySelector('strong')!.textContent = p.title;
-      button.querySelector('small')!.textContent = p.composer;
+      // Memorized marks (the Memorise test, owner 2026-10-13), per hand choice.
+      const marks = Object.entries(marksNow).filter(([k]) => k.startsWith(`${p.id}|`))
+        .map(([k, m]) => `${markText(m)}${k.endsWith('|both') ? '' : ` (${k.split('|')[1]} hand)`}`);
+      button.querySelector('small')!.textContent = [p.composer, ...marks].join(' · ');
       button.addEventListener('click', () => { songsDialog.close(); void openSong(p.id); });
       item.append(button);
       return item;
