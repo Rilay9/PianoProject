@@ -58,8 +58,9 @@ export class Sound {
   }
 
   /** Free play: a note on the phone's piano now, sounding until the returned function is called. */
-  async noteNow(midi: number, velocity = 90): Promise<() => void> {
+  async noteNow(midi: number, velocity = 90, stillDown: () => boolean = () => true): Promise<() => void> {
     await this.prepare(true);
+    if (!stillDown()) return () => {}; // let go while the piano was loading: no late blip
     const stop = this.piano!.start({ note: midi, velocity });
     return () => stop();
   }
@@ -80,8 +81,10 @@ export class Sound {
   /**
    * Plays the given notes and beats from song time fromT (ms at speed 1). With keepSounding, notes already
    * sounding ring on to their written end (Wait for me: the piano's held notes are not cut by your next ones).
+   * now: begun by a key you just played, so the song is at fromT this very moment (no start delay, which
+   * would judge every later note of yours early by that much).
    */
-  play(notes: NoteEvent[], beats: Beat[], fromT: number, speed: number, keepSounding = false): void {
+  play(notes: NoteEvent[], beats: Beat[], fromT: number, speed: number, keepSounding = false, now = false): void {
     if (keepSounding) clearInterval(this.timer);
     else this.stop();
     if (!this.ctx) return;
@@ -89,7 +92,7 @@ export class Sound {
     this.beats = beats;
     this.speed = speed;
     this.anchorT = fromT;
-    this.anchorCtx = this.ctx.currentTime + START_LEAD_S;
+    this.anchorCtx = this.ctx.currentTime + (now ? 0 : START_LEAD_S);
     this.nextNote = notes.findIndex((n) => n.t >= fromT - 1);
     if (this.nextNote < 0) this.nextNote = notes.length;
     this.nextBeat = beats.findIndex((b) => b.t >= fromT - 1);

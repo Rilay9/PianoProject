@@ -14,7 +14,7 @@
 // Your place (chunk, bars learned, clean passes) is kept per piece and per hand choice.
 
 import type { FollowView } from './follow';
-import type { Practice } from './practice';
+import { yours, type Practice } from './practice';
 import type { Device, ScoreSettings } from './settings';
 import type { Sound } from './sound';
 
@@ -47,7 +47,8 @@ const LOOK_DEFAULTS: Record<Device, MemoLook> = {
   tablet: { size: 1, under: 'keyboard' },
 };
 
-interface Place { chunk: number; learned: number; passes: number }
+/** size: the chunk size it was kept with (another size means other bars: that place is not used). */
+interface Place { chunk: number; learned: number; passes: number; size?: number }
 interface Stored {
   options: MemoriseOptions;
   /** Keyed "piece|hands"; an older store kept just the chunk, by piece. */
@@ -77,6 +78,8 @@ export interface MemoriseDeps {
   replayKey: (midi: number) => void;
   /** Something changed that the screen shows. */
   changed: () => void;
+  /** Any key held down on the keyboard now. */
+  anyKeyDown: () => boolean;
 }
 
 export class Memorise {
@@ -161,6 +164,8 @@ export class Memorise {
 
   setOptions(o: Partial<MemoriseOptions>): void {
     const chunkChanged = o.chunk !== undefined && o.chunk !== this.stored.options.chunk;
+    // What a pass is judged on changed (in time or not; a bar or the whole chunk): clean passes so far no longer count.
+    const judging = (o.timing !== undefined && o.timing !== this.stored.options.timing) || (o.adds !== undefined && o.adds !== this.stored.options.adds);
     this.stored.options = { ...this.stored.options, ...o };
     if (chunkChanged) {
       // Other chunk sizes mean other bars: the piece's chunks start afresh rather than quietly meaning new bars.
@@ -171,7 +176,10 @@ export class Memorise {
       return;
     }
     if (o.adds !== undefined) this.place.learned = o.adds === 'chunk' ? this.chunkBars().length : Math.min(this.place.learned, this.chunkBars().length);
+    if (judging) this.place.passes = 0;
     this.savePlace();
+    // Mid-turn: back to the start of your turn, so a pass is never judged half one way and half the other.
+    if (judging && ['hear', 'ready', 'turn', 'review'].includes(this.phase)) { this.halt(); this.ready(this.scope()[0]); return; }
     this.d.changed();
   }
 
@@ -204,11 +212,12 @@ export class Memorise {
   private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`; }
   private loadPlace(): void {
     const saved = this.stored.progress[this.key()] ?? (this.hands(this.d.pieceId()) === 'both' ? this.stored.progress[this.d.pieceId()] : undefined);
-    const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved ?? { chunk: 0, learned: 1, passes: 0 };
+    const fresh: Place = { chunk: 0, learned: 1, passes: 0 };
+    const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved && (saved.size === undefined || saved.size === this.stored.options.chunk) ? saved : fresh;
     this.place = { ...p, chunk: Math.min(p.chunk, this.chunkCount() - 1) };
     this.place.learned = this.stored.options.adds === 'chunk' ? this.chunkBars().length : Math.max(1, Math.min(this.place.learned, this.chunkBars().length));
   }
-  private savePlace(): void { this.stored.progress[this.key()] = { ...this.place }; this.save(); }
+  private savePlace(): void { this.stored.progress[this.key()] = { ...this.place, size: this.stored.options.chunk }; this.save(); }
 
   // ---- the flow ----------------------------------------------------------------------------------------
 
@@ -305,9 +314,11 @@ export class Memorise {
     if (this.phase !== 'ready') return;
     const [, b] = this.scope();
     this.phase = 'turn';
+    // The key that starts it counts as your first note only where you have notes (a rest in your part: it just starts it).
+    const v0 = this.d.view, counts = firstKey !== undefined && v0.struckAt(v0.index, yours(this.d.settings())).length > 0;
     if (this.stored.options.timing) {
-      this.run(this.from, b, true, firstKey === undefined);
-      if (firstKey !== undefined) this.d.practice.startedBy(firstKey);
+      this.run(this.from, b, true, firstKey === undefined, firstKey !== undefined);
+      if (counts) this.d.practice.startedBy(firstKey!);
     } else {
       const s = this.d.settings(), v = this.d.view;
       const range = this.steps(this.from, b), span = v.spanOf(range.a, range.b);
@@ -315,7 +326,7 @@ export class Memorise {
       this.d.sound.setClick(s.click);
       v.songClock = null;
       this.d.practice.startPass({ a: range.a, b: range.b, t1: span.t1 }, range.a);
-      if (firstKey !== undefined) this.d.replayKey(firstKey);
+      if (counts) this.d.replayKey(firstKey!);
     }
     this.say('From memory…', this.stored.options.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck');
   }
@@ -328,19 +339,19 @@ export class Memorise {
   }
 
   /** Plays bars a..b: listening (all hands from the piano) or a timed pass (the piano plays the other hand). */
-  private run(a: number, b: number, yours: boolean, countIn: boolean): void {
+  private run(a: number, b: number, mine: boolean, countIn: boolean, fromKey = false): void {
     const v = this.d.view, s = this.d.settings();
     const { a: sa, b: sb } = this.steps(a, b);
     const span = v.spanOf(sa, sb);
     v.goTo(sa);
-    const piano = yours ? this.d.pianoHands(s) : 'both';
+    const piano = mine ? this.d.pianoHands(s) : 'both';
     const clicks = s.metronome ? v.beats(s.clickOn).filter((x) => x.t >= span.t0 - 1 && x.t < span.t1) : [];
     this.d.sound.setVolumes(s.pianoVolume, s.clickVolume);
     this.d.sound.setClick(s.click);
-    this.d.sound.play(piano ? v.notesBetween(piano, span.t0, span.t1) : [], [...(countIn ? span.countIn : []), ...clicks], countIn ? span.from : span.t0, s.speed);
+    this.d.sound.play(piano ? v.notesBetween(piano, span.t0, span.t1) : [], [...(countIn ? span.countIn : []), ...clicks], countIn ? span.from : span.t0, s.speed, false, fromKey);
     v.songClock = () => this.d.sound.songTime();
     v.play(-1, span.t1);
-    if (yours) this.d.practice.startAlong();
+    if (mine) this.d.practice.startAlong();
   }
 
   /** The end of what was played (the view at the end of the bars, or the waiting pass done). */
@@ -375,7 +386,7 @@ export class Memorise {
     this.place.passes = 0;
     this.savePlace();
     this.phase = 'review';
-    this.waitRelease = true;
+    this.waitRelease = this.d.anyKeyDown(); // the note that ended the pass may still be down
     this.wrongKeys = [...new Set(extra.map((x) => x.midi))];
     const v = this.d.view;
     v.setHidden([]);
@@ -440,10 +451,10 @@ export class Memorise {
     this.focus();
     if (this.place.chunk >= this.chunkCount() - 1) {
       this.phase = 'done';
-      this.waitRelease = true;
+      this.waitRelease = this.d.anyKeyDown();
       // Next time it starts from the beginning (the screen still shows the last chunk). It says only what is
       // known: chunks may have been skipped with ›, so it never claims the whole piece is memorised.
-      this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0 };
+      this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0, size: this.stored.options.chunk };
       this.save();
       this.say('✓ That was the last chunk', 'Press ▶ to start again from bar 1', 'ok');
       return;

@@ -14,6 +14,7 @@
 //   { "musicxml": "<note>...</note><note><chord/>...</note>" }   or   { "musicxml": "file.musicxml" }
 //   ... plus "name": "G dominant 7th", "short": "G7"
 // MusicXML items and passages cut from a score keep their rhythm (note lengths and rests); the others are even.
+// MusicXML is read as one line of music (groupsFromXml says what it refuses). "bars" are the printed bar numbers.
 // A set may give "tempo" (quarter notes a minute); a passage from a score takes the score's own, else 80.
 // For the drills a set may also say how its items with no written rhythm are judged (owner, 2026-10-12):
 // "rhythm": "notes" (the right notes in order, no timing; the default) or a length in quarter notes, e.g. 0.5 for
@@ -86,60 +87,94 @@ const ORDINAL = ['', 'unison', '2nd', '3rd', '4th', '5th', '6th', '7th', 'octave
 export interface Parsed { groups: string[][]; beats: number[]; bars: number[]; tempo?: number; meter?: { beats: number; beatType: number }; fifths?: number }
 
 /**
- * MusicXML notes (a fragment or a whole file), one voice of one staff: each moment's notes one group (a chord
- * together), a rest an empty group, with how long each lasts in quarter notes (a tied note's whole length) and
- * the bar it is in; grace notes left out, rests at either end dropped. Also the first tempo written.
+ * MusicXML notes (a fragment or a whole file) as one line of music: each moment's struck notes one group (a chord
+ * together), a rest an empty group, each lasting until the next moment (in quarter notes), with the bar it is in.
+ * Moments come from where each note really falls (durations, chords, backup and forward), so a tied note just
+ * lengthens the moment it was struck in, and a new note against a held one is a moment of its own. Rests are kept,
+ * at the start and end too (a melody that starts on beat 2 starts on beat 2). Grace and cue notes are left out.
+ * Music with more than one line of notes (another voice or staff, unless a staff is given) or with tuplets is
+ * refused with a reason rather than read wrongly. bars: printed bar numbers (the measure's number), first to last.
+ * A fragment with no <divisions> counts durations in quarter notes. Also the tempo in force where it starts.
  */
 export function groupsFromXml(xml: string, staff?: number, bars?: [number, number]): Parsed {
   const isFragment = !/<score-partwise|<score-timewise/.test(xml);
   const doc = new DOMParser().parseFromString(isFragment ? `<measure>${xml}</measure>` : xml, 'application/xml');
+  if (doc.querySelector('parsererror')) throw new Error('the MusicXML could not be read');
   const measures = isFragment ? [doc.documentElement] : [...(doc.querySelector('part')?.querySelectorAll(':scope > measure') ?? [])];
   const out: Parsed = { groups: [], beats: [], bars: [] };
-  let divisions = 1, voice: string | null = null;
-  const first = bars ? bars[0] - 1 : 0;
+  type Ev = { at: number; dur: number; pitch: string | null; tied: boolean; line: string };
+  const evs: Ev[] = [];
+  const starts: { at: number; m: number }[] = []; // where each wanted bar starts (quarter notes)
+  let divisions = 1, tempo: number | undefined, firstTempo: number | undefined, started = false, start = 0;
+  const num = (el: Element, m: number) => { const n = Number(el.getAttribute('number')); return isFragment || !Number.isFinite(n) ? m + 1 : n; };
   measures.forEach((measure, m) => {
     // Divisions carry on from earlier bars, so they are read even before the wanted ones.
     const d = measure.querySelector(':scope > attributes > divisions');
     if (d) divisions = Number(d.textContent) || divisions;
-    if (out.tempo === undefined) {
+    const wanted = !bars || (num(measure, m) >= bars[0] && num(measure, m) <= bars[1]);
+    // The tempo, time signature and key in force where the wanted bars begin.
+    if (!started) {
       const sound = measure.querySelector('sound[tempo]');
-      if (sound) out.tempo = Number(sound.getAttribute('tempo')) || undefined;
-    }
-    // The time signature and key in force where the wanted bars begin.
-    if (!bars || m <= first) {
+      if (sound) tempo = Number(sound.getAttribute('tempo')) || tempo;
       const beatsEl = measure.querySelector(':scope > attributes > time > beats'), typeEl = measure.querySelector(':scope > attributes > time > beat-type');
       if (beatsEl && typeEl) out.meter = { beats: Number(beatsEl.textContent), beatType: Number(typeEl.textContent) };
       const fifthsEl = measure.querySelector(':scope > attributes > key > fifths');
       if (fifthsEl) out.fifths = Number(fifthsEl.textContent);
     }
-    if (bars && (m < first || m > bars[1] - 1)) return;
-    for (const el of measure.querySelectorAll(':scope > note')) {
-      if (staff && Number(el.querySelector('staff')?.textContent ?? 1) !== staff) continue;
-      if (el.querySelector('grace')) continue;
-      const v = el.querySelector('voice')?.textContent ?? '1';
-      voice ??= el.querySelector('pitch') ? v : null;
-      if (voice !== null && v !== voice) continue; // one line of music: the first voice with notes
-      const beats = Number(el.querySelector('duration')?.textContent ?? divisions) / divisions;
-      const pitch = el.querySelector('pitch');
-      if (!pitch) {
-        if (el.querySelector('rest') && !el.querySelector('chord')) { out.groups.push([]); out.beats.push(beats); out.bars.push(m); }
-        continue;
-      }
-      const ties = [...el.querySelectorAll('tie')].map((t) => t.getAttribute('type'));
-      const alter = Number(pitch.querySelector('alter')?.textContent ?? 0);
-      const p = `${pitch.querySelector('step')!.textContent!.trim()}${alter > 0 ? '#'.repeat(alter) : 'b'.repeat(-alter)}${pitch.querySelector('octave')!.textContent!.trim()}`;
-      if (ties.includes('stop')) {
-        // A tied-on note: its length belongs to the note it continues.
-        const k = out.groups.map((g) => g.includes(p)).lastIndexOf(true);
-        if (k >= 0 && !el.querySelector('chord')) { out.beats[k] += beats; continue; }
-        if (k >= 0) continue;
-      }
-      if (el.querySelector('chord') && out.groups.length) out.groups.at(-1)!.push(p);
-      else { out.groups.push([p]); out.beats.push(beats); out.bars.push(m); }
+    if (!wanted) return;
+    if (firstTempo === undefined) firstTempo = Number(measure.querySelector('sound[tempo]')?.getAttribute('tempo')) || undefined;
+    started = true;
+    starts.push({ at: start, m });
+    let cur = 0, len = 0, lastAt = 0;
+    for (const el of measure.children) {
+      const dur = Number(el.querySelector(':scope > duration')?.textContent ?? 0) / divisions;
+      if (el.tagName === 'backup') { cur -= dur; continue; }
+      if (el.tagName === 'forward') { cur += dur; len = Math.max(len, cur); continue; }
+      if (el.tagName !== 'note' || el.querySelector(':scope > grace')) continue;
+      const chord = !!el.querySelector(':scope > chord');
+      const at = chord ? lastAt : cur;
+      if (!chord) { lastAt = cur; cur += dur; len = Math.max(len, cur); }
+      const onStaff = Number(el.querySelector(':scope > staff')?.textContent ?? 1);
+      if ((staff && onStaff !== staff) || el.querySelector(':scope > cue')) continue;
+      if (el.querySelector(':scope > time-modification')) throw new Error(`bar ${num(measure, m)} has a tuplet, which cannot be drawn correctly yet`);
+      const pitch = el.querySelector(':scope > pitch');
+      let p: string | null = null;
+      if (pitch) {
+        const alter = Number(pitch.querySelector('alter')?.textContent ?? 0);
+        p = `${pitch.querySelector('step')!.textContent!.trim()}${alter > 0 ? '#'.repeat(alter) : 'b'.repeat(-alter)}${pitch.querySelector('octave')!.textContent!.trim()}`;
+      } else if (!el.querySelector(':scope > rest')) continue;
+      const tied = [...el.querySelectorAll(':scope > tie')].some((t) => t.getAttribute('type') === 'stop');
+      evs.push({ at: start + at, dur, pitch: p, tied, line: `${onStaff}/${el.querySelector(':scope > voice')?.textContent ?? '1'}` });
     }
+    start += len;
   });
-  while (out.groups.length && !out.groups[0].length) { out.groups.shift(); out.beats.shift(); out.bars.shift(); }
-  while (out.groups.length && !out.groups.at(-1)!.length) { out.groups.pop(); out.beats.pop(); out.bars.pop(); }
+  out.tempo = tempo ?? firstTempo;
+  // One line of music: the voice (and staff) of the first note; another line with notes in it is refused.
+  const line = evs.find((e) => e.pitch)?.line;
+  if (evs.some((e) => e.pitch && e.line !== line)) throw new Error(staff ? `staff ${staff} has more than one voice there; only one line of music can be read so far` : 'it has more than one voice or staff; only one line of music can be read so far (a passage can name a staff)');
+  const mine = evs.filter((e) => e.line === line);
+  const barAt = (at: number) => [...starts].reverse().find((s) => s.at <= at + 1e-6)?.m ?? 0;
+  const ats = [...new Set(mine.map((e) => Math.round(e.at * 1e6) / 1e6))].sort((x, y) => x - y);
+  const groups: { at: number; end: number; keys: string[] }[] = [];
+  for (const at of ats) {
+    const here = mine.filter((e) => Math.abs(e.at - at) < 1e-6);
+    // A tied-on note lengthens the moment it was struck in (if that is in the excerpt); otherwise it is struck here.
+    const struck = here.filter((e) => e.pitch && !(e.tied && groups.some((g) => g.keys.includes(e.pitch!))));
+    for (const e of here.filter((x) => x.pitch && !struck.includes(x))) {
+      const g = [...groups].reverse().find((x) => x.keys.includes(e.pitch!))!;
+      g.end = Math.max(g.end, at + e.dur);
+    }
+    if (struck.length) groups.push({ at, end: at + Math.max(...struck.map((e) => e.dur)), keys: [...new Set(struck.map((e) => e.pitch!))] });
+    else if (!here.some((e) => e.pitch)) groups.push({ at, end: at + Math.max(...here.map((e) => e.dur)), keys: [] });
+  }
+  groups.forEach((g, k) => {
+    const next = groups[k + 1]?.at ?? g.end;
+    const until = Math.min(next, Math.max(g.end, g.at)); // the moment lasts to the next one, or its own end
+    out.groups.push(g.keys); out.beats.push(until - g.at); out.bars.push(barAt(g.at));
+    if (next > until + 1e-6) { out.groups.push([]); out.beats.push(next - until); out.bars.push(barAt(until)); } // silence between (a forward)
+  });
+  // A length the notation cannot write (DIVISIONS: 32nd notes) is refused rather than drawn wrong.
+  if (out.beats.some((b) => Math.abs(b * 8 - Math.round(b * 8)) > 1e-6)) throw new Error('it has a note length shorter than a 32nd or an uneven one, which cannot be drawn yet');
   return out;
 }
 

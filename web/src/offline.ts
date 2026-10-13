@@ -15,15 +15,53 @@ function sampleFormat(): 'ogg' | 'm4a' {
   return !safari && can('audio/ogg') ? 'ogg' : 'm4a';
 }
 
-/** Registers the service worker and, the first time, saves everything; progress is reported as it goes. */
+/**
+ * Registers the service worker and saves everything not yet kept; progress is reported as it goes. What was saved
+ * is remembered by its list of files, so a new version of the app, or scores and sets added later, are saved on the
+ * next visit too (files already kept are not fetched again).
+ */
 export async function setUpOffline(base: string, progress: (done: number, total: number) => void): Promise<void> {
   if (!('serviceWorker' in navigator) || !('caches' in window)) return;
   await navigator.serviceWorker.register(`${base}sw.js`);
-  try { if (localStorage.getItem(DONE_KEY) === '1') return; } catch { /* no storage: save again */ }
+  let saved: string | null = null;
+  try { saved = localStorage.getItem(DONE_KEY); } catch { /* no storage: save again */ }
+  let urls: Set<string>;
+  try { urls = await wanted(base); } catch (cause) {
+    if (saved) return; // offline, or a list could not be read: what was saved stays in use
+    throw cause;
+  }
+  const list = [...urls].sort();
+  const print = fingerprint(list);
+  if (saved === print) return;
+  const cache = await caches.open(CACHE);
+  let done = 0, failed = 0, next = 0;
+  progress(0, list.length);
+  const worker = async () => {
+    while (next < list.length) {
+      const url = list[next++];
+      try { if (!(await cache.match(url))) await cache.add(url); } catch { failed++; }
+      progress(++done, list.length);
+    }
+  };
+  await Promise.all([...Array(AT_ONCE)].map(worker));
+  if (!failed) try { localStorage.setItem(DONE_KEY, print); } catch { /* it will check again next visit */ }
+  if (failed) throw new Error(`${failed} of ${list.length} files could not be saved for offline; it tries again next time.`);
+}
+
+/** A short stand-in for the list of files (a change to any of them makes another). */
+function fingerprint(list: string[]): string {
+  let h = 0;
+  for (const c of list.join('\n')) h = (Math.imul(h, 31) + c.charCodeAt(0)) | 0;
+  return `${list.length}:${(h >>> 0).toString(36)}`;
+}
+
+/** Every file the app needs offline. */
+async function wanted(base: string): Promise<Set<string>> {
   const origin = location.origin;
   const urls = new Set<string>([new URL(base, origin).href]);
   // The page's own files as loaded (scripts, styles, icons) and the manifest.
-  for (const e of performance.getEntriesByType('resource')) if (e.name.startsWith(origin + base)) urls.add(e.name.split('#')[0]);
+  // (only the built files: what else happened to load first varies from visit to visit and would look like a new list)
+  for (const e of performance.getEntriesByType('resource')) if (e.name.startsWith(`${origin}${base}assets/`)) urls.add(e.name.split('#')[0]);
   urls.add(new URL(`${base}manifest.webmanifest`, origin).href);
   for (const icon of ['icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) urls.add(new URL(base + icon, origin).href);
   // The song list and every score in it.
@@ -46,19 +84,5 @@ export async function setUpOffline(base: string, progress: (done: number, total:
   const names = (await (await fetch(`${base}${SAMPLES}/files.json`)).json()) as string[];
   const format = sampleFormat();
   for (const name of names) urls.add(new URL(`${base}${SAMPLES}/${name.replace(/#/g, '%23').replace(/ /g, '%20')}.${format}`, origin).href);
-
-  const cache = await caches.open(CACHE);
-  const list = [...urls];
-  let done = 0, failed = 0, next = 0;
-  progress(0, list.length);
-  const worker = async () => {
-    while (next < list.length) {
-      const url = list[next++];
-      try { if (!(await cache.match(url))) await cache.add(url); } catch { failed++; }
-      progress(++done, list.length);
-    }
-  };
-  await Promise.all([...Array(AT_ONCE)].map(worker));
-  if (!failed) try { localStorage.setItem(DONE_KEY, '1'); } catch { /* it will check again next visit */ }
-  if (failed) throw new Error(`${failed} of ${list.length} files could not be saved for offline; it tries again next time.`);
+  return urls;
 }

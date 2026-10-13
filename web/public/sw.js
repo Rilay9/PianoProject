@@ -11,8 +11,10 @@ const match = (key) => caches.match(key, { ignoreVary: true });
 self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => event.waitUntil((async () => {
-  // Anything else kept at this address is old (including the old app's files): drop it.
-  for (const key of await caches.keys()) if (key !== CACHE) await caches.delete(key);
+  // This app's older stores (and the old app's, kept under this address) go; other sites on this origin
+  // (rilay9.github.io is shared by every project page) keep theirs.
+  const scope = new URL(self.registration.scope).pathname;
+  for (const key of await caches.keys()) if (key !== CACHE && (key.startsWith('piano-web') || key.includes(scope))) await caches.delete(key);
   await self.clients.claim();
 })()));
 

@@ -79,7 +79,9 @@ piece, nothing else of the score screen.
 
 Controls: ▶/■, *Hear* (tap: the bar you are on or slipped in; hold: everything being learned), *Peek*, ◀ Bar n ▶ or
 tap a covered bar to start your turn there, ‹ › to change chunk. Progress (chunk, bars learned, clean passes) is
-kept per piece and per hand choice. Own settings: hands, tempo, size, keyboard strip, plus the options above.
+kept per piece and per hand choice, with the chunk size it was made with (another size starts that piece afresh).
+Changing "in time" or "a bar / the whole chunk" mid-turn goes back to the start of the turn and the clean count
+restarts. A key that starts a pass where your part has a rest just starts it (it is not a wrong key). Own settings: hands, tempo, size, keyboard strip, plus the options above.
 
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
@@ -127,7 +129,8 @@ your first note (by ear: always your first note); the metronome can keep clickin
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. Help (*Hear it*, *Show me*, or the 3 s hint on a notes-only card) is noted and
 the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards or until you stop; then each
-card's result, *the misses again* (just those) or a new set. Best kept per set; tempo per set. A card never grows,
+card's result, *the misses again* (just those) or a new set. Best kept per set (from full sets, not "the misses
+again"); tempo per set. A card never grows,
 so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
 A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
 
@@ -169,10 +172,15 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 
 (The `//` notes are for explanation only: a real set file is plain JSON.)
 
-Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }`.
+Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }`
+(`bars` are the printed bar numbers; an unknown score id is reported, never replaced by another score).
 Items are numbered; `name` (full, used for name-only prompts and feedback) and `short` (a label) are worked out
-when missing. MusicXML items keep their rhythm and rests; a whole MusicXML file also keeps its bars, time signature
-and key. Spell pitches as written (F#5, Bb4) — the app draws and names them as given. Sets marked "Test:" are
+when missing. MusicXML items keep their rhythm and rests (at the start and end too: a melody that starts on beat 2
+starts there); a whole MusicXML file also keeps its bars, time signature and key, and a passage takes the tempo in
+force where it starts. MusicXML is read as **one line of music**: notes are placed where they really fall (chords,
+`<backup>`, `<forward>`), and a tied note just lasts longer. Music with a second voice or staff (unless the passage
+names a staff), tuplets, or lengths shorter than a 32nd is refused with the reason (shown on the exercise screen),
+not read wrongly. A fragment without `<divisions>` counts durations in quarter notes. Spell pitches as written (F#5, Bb4) — the app draws and names them as given. Sets marked "Test:" are
 placeholders for checking the app, not lesson content.
 
 ---

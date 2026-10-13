@@ -10,12 +10,18 @@ import { midiOf, type Item } from './items';
 const SPLIT = 60; // middle C: lower notes go to the bass staff
 const DIVISIONS = 8; // per quarter note: a 32nd note is one
 
-/** The written note for a length in quarter notes: its type and whether it is dotted (the nearest if odd). */
+/** The written notes for a length in quarter notes: one note if it is one, otherwise notes tied together (a half tied to an eighth). */
 const VALUES: [number, string, boolean][] = [[4, 'whole', false], [3, 'half', true], [2, 'half', false], [1.5, 'quarter', true], [1, 'quarter', false],
   [0.75, 'eighth', true], [0.5, 'eighth', false], [0.375, '16th', true], [0.25, '16th', false], [0.125, '32nd', false]];
-function value(beats: number): { type: string; dot: boolean } {
-  const best = VALUES.reduce((a, b) => (Math.abs(b[0] - beats) < Math.abs(a[0] - beats) ? b : a));
-  return { type: best[1], dot: best[2] };
+function values(beats: number): { beats: number; type: string; dot: boolean }[] {
+  const out: { beats: number; type: string; dot: boolean }[] = [];
+  let left = Math.max(0.125, Math.round(beats * DIVISIONS) / DIVISIONS); // items.ts refuses lengths that are not whole 32nds
+  while (left > 1e-6) {
+    const v = VALUES.find((x) => x[0] <= left + 1e-6) ?? VALUES.at(-1)!;
+    out.push({ beats: v[0], type: v[1], dot: v[2] });
+    left -= v[0];
+  }
+  return out;
 }
 
 function pitchXml(p: string): string {
@@ -27,14 +33,18 @@ function pitchXml(p: string): string {
 
 /** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour. */
 function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null): string {
-  const duration = Math.max(1, Math.round(beats * DIVISIONS));
-  const { type, dot } = value(beats);
-  const tail = `<duration>${duration}</duration><voice>${staff}</voice><type>${type}</type>${dot ? '<dot/>' : ''}`;
-  if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
-  return group.map((p, i) => {
-    const c = colorOf(p) ?? color;
-    return `<note${c ? ` color="${c}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
-      `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff></note>`;
+  const parts = values(beats);
+  return parts.map((v, k) => {
+    const first = k === 0, last = k === parts.length - 1;
+    const ties = group.length ? `${first ? '' : '<tie type="stop"/>'}${last ? '' : '<tie type="start"/>'}` : '';
+    const tied = group.length && parts.length > 1 ? `<notations>${first ? '' : '<tied type="stop"/>'}${last ? '' : '<tied type="start"/>'}</notations>` : '';
+    const tail = `<duration>${Math.round(v.beats * DIVISIONS)}</duration>${ties}<voice>${staff}</voice><type>${v.type}</type>${v.dot ? '<dot/>' : ''}`;
+    if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
+    return group.map((p, i) => {
+      const c = colorOf(p) ?? color;
+      return `<note${c ? ` color="${c}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
+        `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff>${tied}</note>`;
+    }).join('');
   }).join('');
 }
 
@@ -58,7 +68,7 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
   else items.forEach((_, i) => bars.push(groups.filter((x) => x.item === i)));
   const measures = bars.map((bar, n) => {
     // The bar is as long as what is in it (a cut-out bar may be part of one); its time signature is not shown.
-    const length = Math.max(1, bar.reduce((t, x) => t + Math.max(1, Math.round(x.beats * DIVISIONS)), 0));
+    const length = Math.max(1, bar.reduce((t, x) => t + values(x.beats).reduce((n, v) => n + Math.round(v.beats * DIVISIONS), 0), 0));
     const real = passage && meter;
     const time = real
       ? (n === 0 ? `<time><beats>${meter.beats}</beats><beat-type>${meter.beatType}</beat-type></time>` : '')
@@ -98,7 +108,7 @@ export class ExerciseNotation {
    */
   private mode: 'build' | 'card' = 'build';
   private share = 1;
-  /** Card mode: height at the bottom of the room covered by what floats over it (the frosted panel). */
+  /** Height at the bottom of the room covered by what floats over it (the frosted panel). */
   reserve: () => number = () => 0;
 
   constructor(private readonly box: HTMLElement) {
@@ -147,6 +157,10 @@ export class ExerciseNotation {
     if (this.mode === 'card') { this.drawCard(); return; }
     this.width = this.box.clientWidth;
     this.osmd.zoom = 1.1 * this.zoom; // 1.1: the size it has always been drawn at
+    // The frosted panel floats over the bottom of the box: room to scroll the last line above it, and the lit
+    // item is brought into view above it, not under it.
+    const reserve = this.reserve();
+    this.box.style.paddingBottom = `${reserve}px`;
     this.osmd.render();
     const lit = [...this.small.querySelectorAll<SVGElement>('[fill="#2563eb"]')];
     if (!lit.length) return;
@@ -154,16 +168,18 @@ export class ExerciseNotation {
     const top = Math.min(...lit.map((e) => e.getBoundingClientRect().top)), bottom = Math.max(...lit.map((e) => e.getBoundingClientRect().bottom));
     const margin = 40; // the staff around the lit notes
     if (top - margin < box.top) this.box.scrollTop -= box.top - (top - margin);
-    else if (bottom + margin > box.bottom) this.box.scrollTop += bottom + margin - box.bottom;
+    else if (bottom + margin > box.bottom - reserve) this.box.scrollTop += bottom + margin - (box.bottom - reserve);
   }
 
   /** A card: drawn once on one line (a wide page), cropped to the music, then scaled to the room. */
   private drawCard(): void {
     this.small.style.width = '4000px'; // wide enough that a card's bars stay on one line
+    this.small.style.flex = 'none'; // (a flex item would shrink back to the room's width and wrap the card)
     this.osmd.zoom = 1.1;
     this.osmd.render();
     const svg = this.small.querySelector('svg');
     this.small.style.width = '';
+    this.small.style.flex = '';
     if (!svg) return;
     const r = svg.getBBox();
     if (!(r.width > 0 && r.height > 0)) return;

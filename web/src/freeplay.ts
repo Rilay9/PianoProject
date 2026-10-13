@@ -31,7 +31,8 @@ export class FreePlay {
       if (!key) return;
       e.preventDefault();
       const midi = Number(key.dataset.midi);
-      this.touches.set(e.pointerId, { midi, stop: this.sound.noteNow(midi) });
+      const id = e.pointerId;
+      this.touches.set(id, { midi, stop: this.sound.noteNow(midi, 90, () => this.touches.get(id)?.midi === midi) });
       this.pressed(midi);
       this.update();
     });

@@ -54,6 +54,7 @@ export class Simon {
   private flat: { item: number; keys: number[] }[] = [];
   private pos = 0;
   private got = new Set<number>(); // what of the current group is played (keys, or note names in the freer matches)
+  private pressed = new Set<number>(); // the keys pressed for the current group (a note still held from the one before is not)
   private tries = TRIES;
   private hidden = false; // on your turn: what was shown is gone (after your first key)
   // At game over or the end of a passage, keys still down (the rest of a staggered wrong chord) must not start a
@@ -133,7 +134,9 @@ export class Simon {
   private async begin(): Promise<void> {
     if (!this.items.length) return;
     this.stopAll();
+    const token = this.token;
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
+    if (!this.on || token !== this.token) return; // closed, or another set or level chosen, while it got ready
     this.chain = [];
     this.tries = TRIES;
     this.ui.start.hidden = true;
@@ -218,6 +221,7 @@ export class Simon {
     this.state = 'turn';
     this.pos = from;
     this.got.clear();
+    this.pressed.clear();
     this.hidden = false;
     this.keys.clearMarks();
     const rung = this.level.rung;
@@ -264,16 +268,20 @@ export class Simon {
     const mark = free ? midi % 12 : midi;
     if (!want.includes(mark)) { this.missed(midi); return; }
     this.got.add(mark);
+    this.pressed.add(midi);
     if (!want.every((w) => this.got.has(w))) return;
     // A chord counts with all its notes down together; in the octave match its bass must be its own.
     const down = [...this.keys.down];
     if (group.keys.length > 1) {
       const held = new Set(down.map((k) => (free ? k % 12 : k)));
       if (!want.every((w) => held.has(w))) return;
-      if (this.level.match === 'octave' && Math.min(...down) % 12 !== Math.min(...group.keys) % 12) { this.missed(Math.min(...down)); return; }
+      // The bass among the keys played for this chord (legato: a note still held from the last one does not count).
+      const mine = down.filter((k) => this.pressed.has(k));
+      if (this.level.match === 'octave' && Math.min(...mine) % 12 !== Math.min(...group.keys) % 12) { this.missed(Math.min(...mine)); return; }
     }
     this.pos++;
     this.got.clear();
+    this.pressed.clear();
     this.progress(); // the dot for what you just played fills in, the last one too
     if (this.pos < this.flat.length) return;
     this.chainDone();

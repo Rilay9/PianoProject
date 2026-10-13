@@ -75,6 +75,9 @@ export class Drill {
   private ticker = 0;
   private hintTimer = 0;
   private last: Item | null = null;
+  private request = 0; // bumps when the set, level or screen changes: a start still getting the sound ready is dropped
+  private redo = false; // "the misses again": not a set of its own, so never a best
+  private passageAt = 0; // a passage: the next item to give (Again replays a card without moving this on)
 
   constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
     this.stored = this.read();
@@ -102,7 +105,7 @@ export class Drill {
     this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; }
+  close(): void { this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; }
 
   setLevel(level: Partial<DrillLevel>): void {
     this.stored.level = { ...this.stored.level, ...level };
@@ -121,6 +124,7 @@ export class Drill {
   }
 
   private reset(): void {
+    this.request++;
     this.stopAll();
     this.state = 'idle';
     this.card = null;
@@ -145,8 +149,12 @@ export class Drill {
 
   private async begin(items?: Item[]): Promise<void> {
     if (!this.set.items.length) return;
+    const request = ++this.request;
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
+    if (!this.on || request !== this.request) return; // closed, or another set or level chosen, while it got ready
     this.results = [];
+    this.redo = !!items;
+    this.passageAt = 0;
     this.queue = items ? [...items] : [];
     this.limit = items ? items.length : this.stored.level.cards || Infinity; // the misses again: just those
     this.ui.start.hidden = true;
@@ -158,7 +166,7 @@ export class Drill {
     if (this.results.length >= this.limit) { this.setDone(); return; }
     let item: Item;
     if (this.queue.length) item = this.queue.shift()!;
-    else if (this.set.order === 'passage') item = this.set.items[this.results.length % this.set.items.length];
+    else if (this.set.order === 'passage') item = this.set.items[this.passageAt++ % this.set.items.length];
     else {
       const pool = this.set.items.length > 1 ? this.set.items.filter((it) => it !== this.last) : this.set.items;
       item = pool[Math.floor(Math.random() * pool.length)];
@@ -176,7 +184,7 @@ export class Drill {
     this.state = 'done';
     const clean = this.results.filter((r) => r.clean).length, of = this.results.length;
     const best = this.stored.best[this.set.id];
-    if (!best || clean / Math.max(1, of) > best.clean / Math.max(1, best.of)) { this.stored.best[this.set.id] = { clean, of }; this.save(); }
+    if (!this.redo && (!best || clean / Math.max(1, of) > best.clean / Math.max(1, best.of))) { this.stored.best[this.set.id] = { clean, of }; this.save(); }
     this.notation.clear();
     this.keys.clearMarks();
     this.ui.name.textContent = '';
@@ -237,8 +245,10 @@ export class Drill {
     this.keys.clearMarks();
     this.ui.after.hidden = true;
     this.ui.chain.replaceChildren();
+    this.state = 'demo'; // the counter counts this card from now; keys wait until it is your turn (turn() or the demo below)
     this.scoreLine();
     await this.drawCard(rung <= 3);
+    if (!this.on || this.card !== card) return; // closed, or another card, while it was drawn
     this.ui.name.className = 'ex-name small';
     this.ui.name.textContent = rung === 4 ? item.name : rung === 5 ? '🔊' : '';
     this.ui.help.hidden = false;
@@ -285,7 +295,8 @@ export class Drill {
 
   /** Your turn: after a bar of clicks, or waiting for your first note (by ear always), or notes only (no clock). */
   private turn(): void {
-    const c = this.card!, lvl = this.stored.level;
+    if (!this.card || !this.on) return;
+    const c = this.card, lvl = this.stored.level;
     if (!c.timed) {
       this.state = 'turn';
       this.scoreLine();
@@ -374,7 +385,10 @@ export class Drill {
   /** Any octave counts at rung 4 (no octave is shown): a key becomes the wanted key of its letter nearest in time. */
   private asWanted(midi: number, near: number): number {
     if (this.stored.level.rung !== 4 || !this.card) return midi;
-    const steps = this.card.timed ? [...this.card.steps].sort((a, b) => Math.abs(a.t - near) - Math.abs(b.t - near)) : this.card.steps.slice(this.pos, this.pos + 1);
+    const c = this.card;
+    const steps = c.timed ? [...c.steps].sort((a, b) => Math.abs(a.t - near) - Math.abs(b.t - near)) : c.steps.slice(this.pos, this.pos + 1);
+    const taken = (s: Card['steps'][number], k: number) => (c.timed ? this.played.some((p) => p.midi === k && Math.abs(p.t - s.t) < c.beatMs / 2) : this.got.has(k));
+    for (const s of steps) for (const k of s.keys) if (k % 12 === midi % 12 && !taken(s, k)) return k;
     for (const s of steps) for (const k of s.keys) if (k % 12 === midi % 12) return k;
     return midi;
   }
@@ -392,8 +406,9 @@ export class Drill {
       // Your first note starts the card's clock: it counts as played on time; the clicks run from it.
       this.started = true;
       this.ui.help.hidden = true;
-      this.sound.play([], this.clicks(), 0, 1);
-      this.played.push({ midi: this.asWanted(midi, 0), t: 0, speed: 1 });
+      const t0 = c.steps[0]?.t ?? 0;
+      this.sound.play([], this.clicks(), t0, 1, false, true);
+      this.played.push({ midi: this.asWanted(midi, t0), t: t0, speed: 1 });
       this.status('Play', this.stored.level.metronome ? 'With the clicks' : '');
       this.watchEnd();
       return;
@@ -412,8 +427,11 @@ export class Drill {
     this.got.add(k);
     if (!step.keys.every((x) => this.got.has(x))) return;
     if (step.keys.length > 1) {
-      const held = [...this.keys.down].map((x) => this.asWanted(x, 0));
-      if (!step.keys.every((x) => held.includes(x))) return;
+      // All down together: the very keys, or (name only) as many held keys of each letter as the chord has.
+      const down = [...this.keys.down];
+      const count = (list: number[], pc: number) => list.filter((x) => x % 12 === pc).length;
+      const together = this.stored.level.rung === 4 ? step.keys.every((x) => count(down, x % 12) >= count(step.keys, x % 12)) : step.keys.every((x) => down.includes(x));
+      if (!together) return;
     }
     this.pos++;
     this.got.clear();

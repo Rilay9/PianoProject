@@ -58,6 +58,7 @@ const memorise = new Memorise({
   pianoHands: (s) => pianoHands(s),
   replayKey: (key) => practice.key({ midi: key, on: true, velocity: 100, time: performance.now() }),
   changed: () => fillMemo(),
+  anyKeyDown: () => midi.down.size > 0,
 });
 // Under the music: the notes now and next. In Memorise only while it plays the bars to you (it works by bar,
 // and lit keys would give covered bars away).
@@ -126,6 +127,7 @@ async function draw(keep = false): Promise<void> {
 }
 
 async function openSong(id: string): Promise<void> {
+  forgetRun();
   currentId = id;
   const url = new URL(location.href);
   url.searchParams.set('piece', id);
@@ -238,6 +240,9 @@ async function play(fromKey?: number): Promise<void> {
   const s = settingsFor(currentPiece().id);
   if (s.mode === 'ladder' && !view.looped) { startPicking('Ladder: tap the first bar to practise'); return; }
   starting = true;
+  if (!message.hidden && message.classList.contains('info')) showMessage(''); // "Paused… play to carry on" and the like are done with
+  // Begun from a key: it counts as your first note only where you have notes at the marker (in Rhythm: a beat to tap there).
+  const startKeyCounts = fromKey !== undefined && view.struckAt(view.index, yours(s)).length > 0;
   $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
   try {
     if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
@@ -264,19 +269,21 @@ async function play(fromKey?: number): Promise<void> {
     if (loop && (view.index < loop.a || view.index > loop.b)) view.goTo(loop.a);
     practice.startWait();
   } else if (loop) {
-    startLoopPass(fromKey !== undefined || continuing, continuing);
+    startLoopPass(fromKey !== undefined || continuing, continuing, fromKey !== undefined);
   } else {
-    startSound(view.currentT);
+    startSound(view.currentT, fromKey !== undefined);
     view.play();
     if (judged(s.mode)) practice.startAlong(continuing);
   }
-  if (fromKey !== undefined && judged(s.mode)) practice.startedBy(fromKey);
+  if (startKeyCounts && judged(s.mode)) practice.startedBy(fromKey!);
   fillBars();
 }
 
 // Starting with a key (owner, 2026-10-11): while paused, playing your first note starts the song from the
 // marker (any key, if none of your notes are there, and always in Rhythm); in Wait for me any key starts it.
 let resumable = false; // paused by itself: the next start carries on the same run
+/** Another song, mode, loop or screen: a run that paused by itself is over. */
+function forgetRun(): void { resumable = false; practice.forgetRun(); }
 let mashedAt = -Infinity;
 const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
 async function startFromKey(e: KeyEvent): Promise<void> {
@@ -302,14 +309,14 @@ practice.onAutoPause = (reason, step) => {
   resumable = true;
   showMessage(reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.', true);
 };
-/** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. */
-function startSound(t: number): void {
+/** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. now: begun by a key just played. */
+function startSound(t: number, now = false): void {
   const s = settingsFor(currentPiece().id);
   const piano = pianoHands(s);
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
   if (!piano && !s.metronome) { sound.stop(); view.songClock = null; return; }
-  sound.play(piano ? view.noteEvents(piano) : [], s.metronome ? view.beats(s.clickOn) : [], t, s.speed);
+  sound.play(piano ? view.noteEvents(piano) : [], s.metronome ? view.beats(s.clickOn) : [], t, s.speed, false, now);
   view.songClock = () => sound.songTime();
 }
 // Loop and Ladder (owner, 2026-10-11): the Loop button, then a tap on the first and the last bar. Each pass
@@ -346,6 +353,7 @@ function pickBar(x: number, y: number): void {
   showBars();
 }
 $('q-loop').addEventListener('click', () => {
+  forgetRun();
   if (picking) { picking = 0; view.setLoop(null); showMessage(''); fillBars(); return; }
   if (view.looped) { if (view.playing || practice.active) stopAll(); view.setLoop(null); showMessage(''); fillBars(); return; }
   startPicking('Loop: tap the first bar');
@@ -355,7 +363,7 @@ practice.loop = () => {
   return span && { a: span.a, b: span.b, t1: span.t1 };
 };
 /** One pass round the loop: a bar of clicks, then its bars, with the piano and metronome as chosen. */
-function startLoopPass(fromMarker = false, continuing = false): void {
+function startLoopPass(fromMarker = false, continuing = false, now = false): void {
   const s = settingsFor(currentPiece().id);
   const span = view.loopSpan();
   if (!span) return;
@@ -366,7 +374,7 @@ function startLoopPass(fromMarker = false, continuing = false): void {
   sound.setVolumes(s.pianoVolume, s.clickVolume);
   sound.setClick(s.click);
   const clicks = s.metronome ? view.beats(s.clickOn).filter((b) => b.t >= from - 1 && b.t < span.t1) : [];
-  sound.play(piano ? view.notesBetween(piano, from, span.t1) : [], [...(fromMarker ? [] : span.countIn), ...clicks], fromMarker ? from : span.from, s.speed);
+  sound.play(piano ? view.notesBetween(piano, from, span.t1) : [], [...(fromMarker ? [] : span.countIn), ...clicks], fromMarker ? from : span.from, s.speed, false, now);
   view.songClock = () => sound.songTime();
   view.play(-1, span.t1);
   if (judged(s.mode)) practice.startAlong(continuing);
@@ -432,6 +440,7 @@ function memoSettings(): ScoreSettings {
 async function enterMemorise(): Promise<void> {
   moreDialog.close();
   stopAll();
+  forgetRun();
   if (marking) setMarking(false);
   picking = 0;
   memoOpen = true;
@@ -460,18 +469,22 @@ function leaveMemorise(): void {
 
 /** The sound ready (and MIDI listening) before Memorise first plays: browsers allow sound only after a tap. */
 let memoPreparing = false;
+let memoProblem = ''; // no MIDI keyboard to listen to: said in Memorise's own message line (the main one is hidden there)
 async function memoGo(then: () => void): Promise<void> {
   if (memoPreparing) return;
   memoPreparing = true;
   try {
-    await midi.start().catch(() => {});
+    memoProblem = await midi.start().then((names) => (names.length ? '' : 'No MIDI keyboard is connected: Memorise listens to one.'),
+      (cause) => `${cause instanceof Error ? cause.message : String(cause)} Memorise listens to a MIDI keyboard.`);
     const s = memoSettings();
     sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     await sound.prepare(!sound.keyboard).catch(() => {});
   } finally {
     memoPreparing = false;
   }
+  if (!memoOpen) return; // left while it got ready
   then();
+  fillMemo();
 }
 
 /** A key on the Memorise screen (nothing playing): starts it, starts your pass, or goes again after a slip. */
@@ -487,6 +500,7 @@ function memoKey(e: KeyEvent): void {
   memorise.begin(e.midi);
 }
 practice.onPassEnd = () => memorise.passEnded();
+midi.onDevices = (names) => { if (names.length && memoProblem) { memoProblem = ''; fillMemo(); } };
 practice.onHint = (keys) => strip.markKeys('now-r', keys);
 
 function fillMemo(): void {
@@ -503,7 +517,7 @@ function fillMemo(): void {
   const m = memorise.message;
   $('memo-say').textContent = m.text;
   $('memo-say').className = `memo-say ${m.kind}`;
-  $('memo-sub').textContent = m.sub;
+  $('memo-sub').textContent = memoProblem || m.sub;
   $('memo-choices').hidden = !memorise.choosing;
   if (memorise.choosing) {
     const c = memorise.joinChoices;
@@ -588,6 +602,7 @@ const memoTempo = (delta: number) => {
   const piece = currentPiece().id, bpm = Math.max(5, Math.round(view.baseBpm * memorise.speed(piece)) + delta);
   memorise.setPiece(piece, { speed: bpm / view.baseBpm });
   view.setSpeed(bpm / view.baseBpm);
+  sound.setSpeed(bpm / view.baseBpm);
   fillMemoSettings();
 };
 $('m-slower').addEventListener('click', () => memoTempo(-5));
@@ -607,6 +622,7 @@ $('play').addEventListener('click', () => (view.playing || practice.active ? sto
 // Mode: Watch / Wait for me / Play along, saved per song (owner, 2026-10-11).
 $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
   if (view.playing || practice.active) stopAll();
+  forgetRun();
   savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
   fillBars();
   if (settingsFor(currentPiece().id).mode === 'ladder' && !view.looped) startPicking('Ladder: tap the first bar to practise');
@@ -685,6 +701,7 @@ score.addEventListener('contextmenu', (e) => e.preventDefault()); // a long pres
 score.addEventListener('pointerup', (e) => {
   clearTimeout(pressTimer);
   if (!down) return;
+  tapped = { x: e.clientX, y: e.clientY, t: performance.now() };
   const dx = e.clientX - down.x, dy = e.clientY - down.y;
   down = null;
   if (pressed) return;
@@ -704,6 +721,15 @@ score.addEventListener('pointerup', (e) => {
   if (bars[0].classList.contains('faded')) showBars();
   else hideBars();
 });
+
+// The phone's click for a tap on the music comes after the tap has already brought the bars (or Memorise's buttons)
+// back, and would land on whatever button now sits under the finger (Done, ▶, Loop): it is dropped.
+let tapped = { x: 0, y: 0, t: -Infinity };
+const TAP_CLICK_MS = 400;
+document.addEventListener('click', (e) => {
+  const same = performance.now() - tapped.t < TAP_CLICK_MS && Math.hypot(e.clientX - tapped.x, e.clientY - tapped.y) < 12; // that tap's own click
+  if (same && !score.contains(e.target as Node)) { e.stopPropagation(); e.preventDefault(); }
+}, true);
 
 // ⋯ menu: fingering, export, backup (owner, 2026-10-11).
 let marking = false;
@@ -737,6 +763,7 @@ freePlay.onClose = () => { fillBars(); showBars(); };
 $('open-freeplay').addEventListener('click', () => {
   moreDialog.close();
   if (view.playing || practice.active) stopAll();
+  forgetRun();
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   freePlay.show(midi.down);
   fillBars();
@@ -780,12 +807,17 @@ function fillExerciseDisplay(): void {
   $<HTMLButtonElement>('ex-smaller').disabled = now <= lo + 1e-9;
   $<HTMLButtonElement>('ex-larger').disabled = now >= hi - 1e-9;
 }
-// Drill cards fit above the frosted panel that floats over the bottom of the music (upright and tablets).
+// The frosted panel floats over the bottom of the music (upright and tablets): drill cards fit above it, Simon keeps
+// the lit item clear of it, and Simon's dots sit above it. reserve: how much of the music's box it covers.
+const overlayFloats = () => getComputedStyle($('ex-overlay')).position === 'absolute';
 exerciseNotation.reserve = () => {
-  const o = $('ex-overlay');
-  return getComputedStyle(o).position === 'absolute' ? o.offsetHeight : 0;
+  if (!overlayFloats()) return 0;
+  return Math.max(0, Math.round($('ex-notation').getBoundingClientRect().bottom - $('ex-overlay').getBoundingClientRect().top));
 };
-new ResizeObserver(() => exerciseNotation.refit()).observe($('ex-overlay'));
+new ResizeObserver(() => {
+  $('exercise').style.setProperty('--ex-overlay-h', `${overlayFloats() ? $('ex-overlay').offsetHeight : 0}px`);
+  exerciseNotation.refit();
+}).observe($('ex-overlay'));
 const stepExerciseSize = (delta: number) => {
   const d = exerciseDisplay();
   if (exerciseKind === 'drill') saveExerciseDisplay({ card: Math.round(Math.min(1, Math.max(EX_CARD_MIN, d.card + delta)) * 100) / 100 });
@@ -798,22 +830,31 @@ $('ex-larger').addEventListener('click', () => stepExerciseSize(0.1));
 window.addEventListener('resize', () => { if (!$('exercise').hidden) fillExerciseDisplay(); });
 let sets: ItemSet[] | null = null;
 const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
+let setProblems = '';
 async function openExercise(kind: 'simon' | 'drill'): Promise<void> {
   moreDialog.close();
   if (view.playing || practice.active) stopAll();
-  void midi.start().catch(() => {});
+  forgetRun();
+  await midi.start().catch(() => {});
+  // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
+  sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
   if (!sets) {
-    const loaded = await loadSets(base, async (id) => xmlFor(pieces.find((p) => p.id === id) ?? currentPiece()));
-    if (loaded.problems.length) showMessage(`Some sets could not be read: ${loaded.problems.join('; ')}`);
+    const loaded = await loadSets(base, async (id) => {
+      const piece = pieces.find((p) => p.id === id);
+      if (!piece) throw new Error(`no score with id "${id}"`);
+      return xmlFor(piece);
+    });
+    setProblems = loaded.problems.length ? `Some sets could not be read: ${loaded.problems.join('; ')}` : '';
     sets = loaded.sets;
   }
-  if (!sets.length) return;
+  if (!sets.length) { showMessage(setProblems || 'No exercise sets to play.'); return; }
   exerciseKind = kind;
   $('ex-kind').textContent = kind === 'drill' ? 'Drill' : 'Simon';
   $('ex-after').hidden = true;
   $('exercise').hidden = false;
   fillExerciseDisplay();
   if (kind === 'drill') drill.open(sets); else simon.open(sets);
+  if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
   fillBars();
 }
 $('open-simon').addEventListener('click', () => void openExercise('simon'));
@@ -906,6 +947,8 @@ $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
     const backup = JSON.parse(await file.text()) as { app?: string; data?: Record<string, string> };
     if (backup.app !== 'piano-web' || !backup.data) throw new Error('This is not a backup from this app.');
     if (!confirm('Replace the settings and marks on this device with the backup?')) return;
+    const mine = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)!).filter((k) => k.startsWith(BACKUP_PREFIX));
+    for (const key of mine) if (!(key in backup.data)) localStorage.removeItem(key);
     for (const [key, value] of Object.entries(backup.data)) if (key.startsWith(BACKUP_PREFIX)) localStorage.setItem(key, value);
     location.reload();
   } catch (cause) {

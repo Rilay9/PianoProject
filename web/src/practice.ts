@@ -69,6 +69,11 @@ export class Practice {
   private passWrong: { step: number; midi: number }[] = [];
   private passHelped: { step: number; midi: number }[] = [];
   private hintTimer = 0;
+  // While the piano leads into your next notes, a key of those notes pressed a shade early (or in time, as the
+  // marker gets there a moment after the sound) counts for them when the marker arrives, not as a wrong key.
+  private coming = new Set<number>();
+  private early = new Set<number>();
+  private dueAt = 0; // performance.now() when your next notes are due (a held note: the hint counts from then)
   /** The pass reached its end (the piano has finished the last bar). */
   onPassEnd: () => void = () => {};
   /** No key for a while: these are the keys wanted next (shown, and counted as helped). */
@@ -102,7 +107,7 @@ export class Practice {
       if (!this.pass || this.running !== 'wait') return;
       this.helped();
       this.onHint([...this.expected]);
-    }, HINT_MS);
+    }, Math.max(HINT_MS, this.dueAt + HINT_MS - performance.now())); // never while you rightly hold a long note
   }
 
   constructor(
@@ -151,6 +156,9 @@ export class Practice {
     clearInterval(this.watch);
     clearTimeout(this.hintTimer);
     this.pass = null;
+    this.coming.clear();
+    this.early.clear();
+    this.dueAt = 0;
     const along = this.running === 'along';
     if (along && summary) this.onSummary(this.merged(this.score()));
     if (along) this.segments = []; // a real stop ends the run (a pause by itself keeps it: see suspend)
@@ -158,6 +166,9 @@ export class Practice {
     this.expected.clear();
     this.fresh.clear();
   }
+
+  /** Another song, mode, loop or screen: a run paused by itself is over (its parts are not carried into the next). */
+  forgetRun(): void { this.segments = []; }
 
   /** Paused by itself: keeps how this part went, for the summary when the run ends. */
   suspend(): void {
@@ -217,6 +228,7 @@ export class Practice {
       }
       return;
     }
+    if (e.on && !this.expected.size && this.coming.has(e.midi)) { this.early.add(e.midi); return; } // your next note, as the piano leads into it
     if (e.on) this.fresh.add(e.midi);
     else this.fresh.delete(e.midi);
     if (this.pass && e.on) {
@@ -230,9 +242,12 @@ export class Practice {
   /** The marker is at a step: what it waits for (or, if nothing is yours here, move on). */
   private arrive(): void {
     if (this.running !== 'wait') return;
-    this.fresh.clear();
     this.expected = new Set(this.view.struckAt(this.view.index, yours(this.settings())));
+    this.fresh = new Set([...this.early].filter((m) => this.expected.has(m))); // (pressed then, held or not: a short note may be up already)
+    this.early.clear();
+    this.coming.clear();
     if (!this.expected.size) { this.advance(); return; }
+    if ([...this.expected].every((m) => this.fresh.has(m))) { this.advance(); return; } // played as the marker came
     this.armHint();
   }
 
@@ -258,11 +273,14 @@ export class Practice {
       if (notes.length) this.sound.play(notes, [], from, s.speed, true);
       if (j >= end && looping) { this.loopBack(); return; }
       if (j >= n) { this.view.goTo(n - 1); this.stop(); this.onDone(); return; } // the end of the song
+      this.dueAt = performance.now() + (this.view.stepT(j) - from) / s.speed;
       this.view.goTo(j);
       this.arrive();
       return;
     }
     const clicks: Beat[] = s.metronome ? this.view.beats(s.clickOn).filter((b) => b.t >= from && b.t < to) : [];
+    this.coming = new Set(j < end ? this.view.struckAt(j, yours(s)) : []);
+    this.early.clear();
     this.sound.play(notes, clicks, from, s.speed, true);
     this.view.songClock = () => this.sound.songTime();
     if (j >= end && looping) { this.view.play(-1, to); return; } // the view calls back at the loop's end
