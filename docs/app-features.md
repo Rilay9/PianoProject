@@ -18,7 +18,11 @@ The library, history and projects that will hold lessons are not built yet. So f
 music always readable ahead of where you are.
 
 **Content:** MusicXML (`.musicxml`) files in `web/public/scores/`, listed in `scores/index.json` with
-`{ id, title, composer, file, source: { dataset, uploadTitle }, license, licenseUrl, status }`. Exercises (scales,
+`{ id, title, composer, file, source: { dataset, uploadTitle }, license, licenseUrl, status }`: `id` is how the piece
+is named everywhere else (the address `?piece=<id>`, a set's `"from": { "score": <id> }`, saved settings and
+progress), so it must not change once used; `file` is the name in `scores/`; `source`, `license`, `licenseUrl` and
+`status` (free text, e.g. whether the notes were checked against an edition) are shown in ⓘ. The list's order is the
+song list's order. Exercises (scales,
 five-finger patterns, cadences as music) are simply short scores. Fingering written in the file shows when Display →
 Fingering is on; the learner can add their own (⋯ → Edit fingering).
 
@@ -195,7 +199,19 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 (The `//` notes are for explanation only: a real set file is plain JSON.)
 
 Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }`
-(`bars` are the printed bar numbers; an unknown score id is reported, never replaced by another score).
+(`bars` are the printed bar numbers, default "1-4"; `staff` default 1; an unknown score id is reported, never
+replaced by another score). A passage becomes one item per moment with notes (a rest goes with the item before it);
+`tempo` may be given, else the score's own at that point.
+
+**The set as a whole:** its id is the file name without `.json`; `index.json` lists the files in the order they appear
+in the set menu, which Simon and Drills share. `order` defaults to `pool`. `tempo` is quarter notes a minute.
+`rhythm` is for Drills only: Simon gives items without written rhythm as even quarter notes.
+
+**Item fields and defaults:** pitches in scientific pitch, middle C = C4, spelled as written (`F#5`, `Bb4`, `Cbb3`);
+`notes` with spaces = together, with commas = one after another (a group per comma); `chord` is a chord symbol as
+Tonal reads it (`C`, `Dm`, `G7`, `Cmaj7`, `F#m7b5`, `Bdim`, `Csus4`…), stacked upwards from its root in `octave`
+(default 4), `arpeggio` default false; `interval` is a Tonal interval name (`m2`, `M3`, `P4`, `A4`, `P5`, `m7`,
+`P8`…) up from `root` (default C4), `together` default true. Every item may give `name` and `short`.
 Items are numbered; `name` (full, used for name-only prompts and feedback) and `short` (a label) are worked out
 when missing. MusicXML items keep their rhythm and rests (at the start and end too: a melody that starts on beat 2
 starts there); a whole MusicXML file also keeps its bars, time signature and key, and a passage takes the tempo in
