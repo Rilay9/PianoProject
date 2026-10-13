@@ -30,6 +30,8 @@ export class KeyRemote {
   learning: ((midi: number) => void) | null = null;
   /** A command: the screen showing decides what it does. */
   onCommand: (c: Command) => void = () => {};
+  /** Whether the screen showing takes commands at all (Free play: every key is just a note). */
+  enabled: () => boolean = () => true;
   /** The keys the music on screen uses (an edge key in it is a note, not a command). */
   musicRange: () => { lo: number; hi: number } | null = () => null;
 
@@ -41,6 +43,7 @@ export class KeyRemote {
   /** Takes a key if it is a command (or part of a mash); true: the mode must not see it. */
   take(e: KeyEvent): boolean {
     if (this.learning) { if (e.on) this.learning(e.midi); return true; }
+    if (!this.enabled()) return false;
     if (e.on && e.time - this.mashedAt < SETTLE_MS) return true;
     if (e.on && this.stored.mash && this.isMash(e)) { this.mashedAt = e.time; this.onCommand('mash'); return true; }
     const edge = this.edge(e.midi);

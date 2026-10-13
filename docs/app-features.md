@@ -248,7 +248,26 @@ placeholders for checking the app, not lesson content.
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
   `piano-web.remote.v1`.
 
-## 8. Not built yet
+## 8. How the app is put together (for adding a screen or a mode)
+
+- `web/src/app.ts`: what every screen shares (the score's drawing `FollowView`, the keyboard strip, the sound, the MIDI
+  keyboard, the practice judge `Practice`, the song list, the message line) and the **`Screen` interface** every
+  screen offers: `key(e)` (a key from the MIDI keyboard or the screen's keys), `command(c)` (a keyboard-remote
+  command: mash, low, high, peek-on/off), `musicRange()` (the keys the music on screen uses), `resized()`, `busy`
+  (the phone stays awake).
+- `web/src/screens/`: one module per screen. `score.ts` (the score screen and its modes), `memorise-screen.ts`
+  (Memorise: it borrows the score's drawing through the `Borrower` interface in `score.ts`: its own settings,
+  layout fit, and the drawing's events), `exercise.ts` (Simon and Drills; their logic is in `web/src/exercise/`).
+  Free play is `web/src/freeplay.ts`, offered as a screen in `main.ts`.
+- `web/src/main.ts`: builds the screens and routes: every key goes first to the keyboard remote (`remote.ts`), then
+  to the screen showing; turning the phone goes to every screen; the ⋯ menu opens screens and holds backup, restore
+  and export.
+- **Adding a screen** (e.g. the accompaniment lab): a module in `web/src/screens/` that offers `Screen`, its markup in
+  `index.html`, a line in `main.ts`'s `showing()` and `app.screens`, a way to reach it, and its section here.
+  A mode that plays a score belongs in `score.ts` (the modes table above); one that only borrows the score's
+  drawing, as Memorise does, can be a `Borrower`.
+
+## 9. Not built yet
 
 Library / history / projects (how lessons and pieces are reached and progress is seen: the owner will explain);
 accompaniment lab / sight-reading tools (mockups first); a standalone metronome; importing your own music; generated
