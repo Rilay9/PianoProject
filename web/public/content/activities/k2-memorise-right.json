@@ -1,0 +1,6 @@
+{
+  "title": "Test: memorise Minuet K. 2, right hand, two bars at a time",
+  "screen": "memorise",
+  "piece": "mozart-k2",
+  "settings": { "hands": "right", "chunk": 2, "learnedAfter": 2 }
+}

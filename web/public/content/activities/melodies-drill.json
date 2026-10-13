@@ -1,0 +1,6 @@
+{
+  "title": "Test: melody drills, music only, 5 cards",
+  "screen": "drills",
+  "set": "melodies-c",
+  "level": { "rung": 3, "onTime": "normal", "cards": 5 }
+}

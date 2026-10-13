@@ -141,7 +141,7 @@ export class Memorise {
   get active(): boolean { return this.phase !== 'off'; }
   /** Bars are covered (your turn): nothing may show them, the keys under the music included. */
   get covering(): boolean { return this.phase === 'ready' || this.phase === 'turn'; }
-  get optionsNow(): MemoriseOptions { return { ...this.stored.options }; }
+  get optionsNow(): MemoriseOptions { return { ...this.opts }; }
   get choosing(): boolean { return this.phase === 'ask'; }
   /** Waiting for a tap to go on to the next chunk. */
   get waitingForNext(): boolean { return this.phase === 'between' && this.tapNext; }
@@ -161,11 +161,11 @@ export class Memorise {
     if (this.testing || this.practising) return [];
     const n = this.chunkBars().length;
     if (this.joining || this.phase === 'done') return Array(n).fill('done');
-    if (this.stored.options.adds === 'chunk') return Array(n).fill('now');
+    if (this.opts.adds === 'chunk') return Array(n).fill('now');
     return Array.from({ length: n }, (_, i) => (i < this.place.learned - 1 ? 'done' : i === this.place.learned - 1 ? 'now' : ''));
   }
   get cleanText(): string {
-    const n = this.stored.options.learnedAfter;
+    const n = this.opts.learnedAfter;
     if (this.testing) return '';
     const passes = this.practising ? this.practisePasses : this.place.passes;
     return this.active && !this.joining && n > 1 && ['ready', 'turn', 'between', 'review'].includes(this.phase) ? `clean ${passes} of ${n}` : '';
@@ -195,27 +195,50 @@ export class Memorise {
     const [, b] = this.chunkRange(), [pa] = this.chunkRange(this.place.chunk - 1);
     const last = this.place.chunk >= this.chunkCount() - 1;
     const [na, nb] = this.chunkRange(this.place.chunk + 1);
-    return { previous: `Join with ${this.bars(pa, pa + this.stored.options.chunk - 1)}`, all: `Everything so far (${this.bars(0, b)})`, next: last ? 'Finish here (that was the last chunk)' : `Next chunk (${this.bars(na, nb)})` };
+    return { previous: `Join with ${this.bars(pa, pa + this.opts.chunk - 1)}`, all: `Everything so far (${this.bars(0, b)})`, next: last ? 'Finish here (that was the last chunk)' : `Next chunk (${this.bars(na, nb)})` };
   }
 
   // ---- its own settings --------------------------------------------------------------------------------
 
   look(device: Device): MemoLook { return { ...LOOK_DEFAULTS[device], ...this.stored.look[device] }; }
   setLook(device: Device, change: Partial<MemoLook>): void { this.stored.look[device] = { ...this.stored.look[device], ...change }; this.save(); }
-  speed(piece: string): number { return this.stored.pieces[piece]?.speed ?? 1; }
-  hands(piece: string): MemoHands { return this.stored.pieces[piece]?.hands ?? 'both'; }
+  speed(piece: string): number {
+    const p = this.preset?.piece === piece ? this.preset : null;
+    return p?.tempo ? p.tempo / this.d.view.baseBpm : this.stored.pieces[piece]?.speed ?? 1;
+  }
+  hands(piece: string): MemoHands { return (this.preset?.piece === piece ? this.preset.hands : undefined) ?? this.stored.pieces[piece]?.hands ?? 'both'; }
   setPiece(piece: string, change: { speed?: number; hands?: MemoHands }): void {
     const handsChanged = change.hands !== undefined && change.hands !== this.hands(piece);
-    this.stored.pieces[piece] = { ...this.stored.pieces[piece], ...change };
+    // An activity's preset hands or tempo change for the activity; otherwise they are yours, saved.
+    const p = this.preset?.piece === piece ? this.preset : null;
+    const mine = { ...change };
+    if (p && change.hands !== undefined && p.hands !== undefined) { p.hands = change.hands; delete mine.hands; }
+    if (p && change.speed !== undefined && p.tempo !== undefined) { p.tempo = change.speed * this.d.view.baseBpm; delete mine.speed; }
+    if (Object.keys(mine).length) this.stored.pieces[piece] = { ...this.stored.pieces[piece], ...mine };
     this.save();
     if (handsChanged) { this.stop(); } // each hand choice has its own place: show that one
   }
 
+  /**
+   * An activity's preset (owner, 2026-10-13): its options, hands and tempo (beats a minute) for one piece, in force
+   * while the activity lasts and changed there if you change them; never saved over your own. null: none.
+   */
+  private preset: { piece: string; options: Partial<MemoriseOptions>; hands?: MemoHands; tempo?: number } | null = null;
+  setPreset(p: { piece: string; options: Partial<MemoriseOptions>; hands?: MemoHands; tempo?: number } | null): void {
+    this.preset = p ? { ...p, options: { ...p.options } } : null;
+  }
+  /** The options in force: yours, with an activity's preset over them. */
+  private get opts(): MemoriseOptions { return this.preset ? { ...this.stored.options, ...this.preset.options } : this.stored.options; }
+
   setOptions(o: Partial<MemoriseOptions>): void {
-    const chunkChanged = o.chunk !== undefined && o.chunk !== this.stored.options.chunk;
+    const chunkChanged = o.chunk !== undefined && o.chunk !== this.opts.chunk;
     // What a pass is judged on changed (in time or not; a bar or the whole chunk): clean passes so far no longer count.
-    const judging = (o.timing !== undefined && o.timing !== this.stored.options.timing) || (o.adds !== undefined && o.adds !== this.stored.options.adds);
-    this.stored.options = { ...this.stored.options, ...o };
+    const judging = (o.timing !== undefined && o.timing !== this.opts.timing) || (o.adds !== undefined && o.adds !== this.opts.adds);
+    // A preset choice (an activity's) changes for the activity; the rest are yours, saved.
+    for (const [k, v] of Object.entries(o)) {
+      if (this.preset && k in this.preset.options) (this.preset.options as Record<string, unknown>)[k] = v;
+      else (this.stored.options as unknown as Record<string, unknown>)[k] = v;
+    }
     // The test and practising its bars do not use chunks: a new chunk size ends them (back to the chunk you were on).
     if (chunkChanged && (this.testing || this.practising || this.phase === 'offer')) { this.loadPlace(); this.save(); this.stop(); return; }
     if (chunkChanged) {
@@ -235,10 +258,10 @@ export class Memorise {
 
   // ---- chunks and scope --------------------------------------------------------------------------------
 
-  private chunkCount(): number { return Math.max(1, Math.ceil(this.d.view.barCount / this.stored.options.chunk)); }
+  private chunkCount(): number { return Math.max(1, Math.ceil(this.d.view.barCount / this.opts.chunk)); }
   private chunkRange(c = this.place.chunk): [number, number] {
-    const a = Math.max(0, c) * this.stored.options.chunk;
-    return [a, Math.min(a + this.stored.options.chunk - 1, this.d.view.barCount - 1)];
+    const a = Math.max(0, c) * this.opts.chunk;
+    return [a, Math.min(a + this.opts.chunk - 1, this.d.view.barCount - 1)];
   }
   private chunkBars(): number[] { const [a, b] = this.chunkRange(); return Array.from({ length: b - a + 1 }, (_, i) => a + i); }
   /** The bars being learned now. */
@@ -262,16 +285,16 @@ export class Memorise {
   }
 
   /** Where the place is kept: per piece, hands and chunk size (before 2026-10-13 per piece and hands, which is still read). */
-  private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}|${this.stored.options.chunk}`; }
+  private key(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}|${this.opts.chunk}`; }
   private loadPlace(): void {
     const old = `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`;
     const saved = this.stored.progress[this.key()] ?? this.stored.progress[old] ?? (this.hands(this.d.pieceId()) === 'both' ? this.stored.progress[this.d.pieceId()] : undefined);
     const fresh: Place = { chunk: 0, learned: 1, passes: 0 };
-    const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved && (saved.size === undefined || saved.size === this.stored.options.chunk) ? saved : fresh;
+    const p: Place = typeof saved === 'number' ? { chunk: saved, learned: 1, passes: 0 } : saved && (saved.size === undefined || saved.size === this.opts.chunk) ? saved : fresh;
     this.place = { ...p, chunk: Math.min(p.chunk, this.chunkCount() - 1) };
-    this.place.learned = this.stored.options.adds === 'chunk' ? this.chunkBars().length : Math.max(1, Math.min(this.place.learned, this.chunkBars().length));
+    this.place.learned = this.opts.adds === 'chunk' ? this.chunkBars().length : Math.max(1, Math.min(this.place.learned, this.chunkBars().length));
   }
-  private savePlace(): void { this.stored.progress[this.key()] = { ...this.place, size: this.stored.options.chunk }; this.save(); }
+  private savePlace(): void { this.stored.progress[this.key()] = { ...this.place, size: this.opts.chunk }; this.save(); }
   /** The bars learned and the memorized mark are per piece and hand choice (any chunk size). */
   private learnedKey(): string { return `${this.d.pieceId()}|${this.hands(this.d.pieceId())}`; }
   private allLearned(): boolean {
@@ -279,7 +302,7 @@ export class Memorise {
     return n > 0 && Array.from({ length: n }, (_, m) => m).every((m) => got.has(m));
   }
   /** In time: a timed pass (the setting), or the notes + rhythm test. */
-  private timing(): boolean { return this.testing ? this.testing === 'rhythm' : this.stored.options.timing; }
+  private timing(): boolean { return this.testing ? this.testing === 'rhythm' : this.opts.timing; }
 
   // ---- the flow ----------------------------------------------------------------------------------------
 
@@ -297,7 +320,7 @@ export class Memorise {
     v.markNotes([]);
     v.showMarker(false);
     this.focus();
-    const [a, b] = this.chunkRange(), o = this.stored.options;
+    const [a, b] = this.chunkRange(), o = this.opts;
     v.goTo(this.steps(a, a).a);
     const mark = this.mark;
     const sub = mark ? `${markText(mark)}${this.allLearned() ? ' · Test to check again' : ''}`
@@ -313,7 +336,7 @@ export class Memorise {
     if (this.active && this.phase !== 'done') return;
     if (this.phase === 'done') {
       this.place = { chunk: 0, learned: 1, passes: 0 };
-      if (this.stored.options.adds === 'chunk') this.place.learned = this.chunkBars().length; // the first chunk's bars
+      if (this.opts.adds === 'chunk') this.place.learned = this.chunkBars().length; // the first chunk's bars
       this.savePlace();
     }
     this.d.practice.autoPause = false;
@@ -341,7 +364,7 @@ export class Memorise {
 
   /** Before your turn, as chosen: the newest bar, everything being learned, or nothing. */
   private hearDefault(): void {
-    const [a, b] = this.scope(), o = this.stored.options;
+    const [a, b] = this.scope(), o = this.opts;
     if (o.before === 'nothing') { this.ready(a); return; }
     if (o.before === 'new' && !this.joining && o.adds === 'bar') this.hear(b, b, a);
     else this.hear(a, b, a);
@@ -442,7 +465,7 @@ export class Memorise {
   }
   private turnSub(): string {
     if (this.testing) return this.testing === 'rhythm' ? 'In time, each note held its length · Stuck shows a bar' : 'It waits for each note · Stuck shows a bar';
-    return this.stored.options.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck';
+    return this.opts.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck';
   }
 
   /** Plays bars a..b: listening (all hands from the piano) or a timed pass (the piano plays the other hand). */
@@ -491,10 +514,10 @@ export class Memorise {
     this.place.passes++;
     this.savePlace();
     this.d.view.setHidden([]);
-    if (this.place.passes < this.stored.options.learnedAfter) {
+    if (this.place.passes < this.opts.learnedAfter) {
       this.phase = 'between';
       this.tapNext = false;
-      this.say(`✓ Clean (${this.place.passes} of ${this.stored.options.learnedAfter})`, 'Again, from memory', 'ok');
+      this.say(`✓ Clean (${this.place.passes} of ${this.opts.learnedAfter})`, 'Again, from memory', 'ok');
       this.timer = window.setTimeout(() => this.ready(this.scope()[0]), PAUSE_MS);
       return;
     }
@@ -517,7 +540,7 @@ export class Memorise {
     this.slipStep = firstStep;
     v.goTo(firstStep); // the slip on screen
     v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
-    this.carry = this.stored.options.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
+    this.carry = this.opts.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
     const missed = slips.filter((x) => x.kind === 'missed').length, short = slips.filter((x) => x.kind === 'short').length, timing = slips.length - missed - short;
     const wrong = this.wrongKeys.map(keyName).join(' ');
     const parts = [missed && `${missed} missed (green)`, timing && `${timing} off time (amber)`, short && `${short} let go early (amber)`, extra.length && `wrong ${extra.length === 1 ? 'key' : 'keys'} ${wrong}`].filter(Boolean);
@@ -528,7 +551,7 @@ export class Memorise {
   /** Learned: add a bar, join up, or move on. */
   private advance(): void {
     const [, b] = this.chunkRange();
-    const scopeEnd = this.scope()[1], o = this.stored.options;
+    const scopeEnd = this.scope()[1], o = this.opts;
     if (!this.joining && o.adds === 'bar' && scopeEnd < b) {
       this.place.learned++;
       this.place.passes = 0;
@@ -552,14 +575,14 @@ export class Memorise {
   /** The choice after a learned chunk; always: remember it (Memorise settings can change it back). */
   choose(choice: 'previous' | 'all' | 'next', always: boolean): void {
     if (this.phase !== 'ask') return;
-    if (always) { this.stored.options.join = choice === 'next' ? 'none' : choice; this.save(); }
+    if (always) { this.setOptions({ join: choice === 'next' ? 'none' : choice }); }
     if (choice === 'next') this.chunkDone();
     else this.startJoin(choice);
   }
 
   private startJoin(kind: 'previous' | 'all'): void {
     this.joining = kind;
-    this.place.passes = this.stored.options.learnedAfter - 1; // one clean pass of the joined bars is enough
+    this.place.passes = this.opts.learnedAfter - 1; // one clean pass of the joined bars is enough
     this.focus();
     const [a, b] = this.scope();
     this.phase = 'between';
@@ -580,7 +603,7 @@ export class Memorise {
       this.waitRelease = this.d.anyKeyDown();
       // Next time it starts from the beginning (the screen still shows the last chunk). Chunks may have been
       // skipped with ›, so only the test (every bar learned) can mark the piece memorized.
-      this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0, size: this.stored.options.chunk };
+      this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0, size: this.opts.chunk };
       this.save();
       if (this.allLearned()) { this.offer('test'); this.say('✓ That was the last chunk: every bar learned', 'Take the test to mark the piece memorized', 'ok'); return; }
       const missing = this.d.view.barCount - (this.stored.learned[lk]?.length ?? 0);
@@ -589,7 +612,7 @@ export class Memorise {
     }
     const [a, b] = this.chunkRange(this.place.chunk + 1);
     this.phase = 'between';
-    if (this.stored.options.next === 'tap') {
+    if (this.opts.next === 'tap') {
       this.tapNext = true;
       this.say(`✓ Chunk learned. Next: ${this.bars(a, b)}`, 'Tap Next chunk when ready', 'ok');
       return;
@@ -606,7 +629,7 @@ export class Memorise {
     this.joining = null;
     this.endTest();
     this.place = { chunk: Math.max(0, Math.min(this.chunkCount() - 1, this.place.chunk + step)), learned: 1, passes: 0 };
-    if (this.stored.options.adds === 'chunk') this.place.learned = this.chunkBars().length;
+    if (this.opts.adds === 'chunk') this.place.learned = this.chunkBars().length;
     this.savePlace();
     if (!was) { this.preview(); return; }
     this.focus();
@@ -742,7 +765,7 @@ export class Memorise {
     this.d.view.setHidden([]);
     this.phase = 'between';
     this.tapNext = false;
-    const n = this.stored.options.learnedAfter;
+    const n = this.opts.learnedAfter;
     if (this.practisePasses < n) {
       this.say(`✓ Clean (${this.practisePasses} of ${n})`, 'Again, from memory', 'ok');
       this.timer = window.setTimeout(() => this.ready(this.scope()[0]), PAUSE_MS);

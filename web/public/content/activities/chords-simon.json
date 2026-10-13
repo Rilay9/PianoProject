@@ -1,0 +1,6 @@
+{
+  "title": "Test: Simon with chords, any octave",
+  "screen": "simon",
+  "set": "chords-c",
+  "level": { "rung": 2, "match": "octave" }
+}

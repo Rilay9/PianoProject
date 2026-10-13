@@ -4,7 +4,9 @@
 //
 // A chart:  { "title", "meter": "4/4", "tempo": 84, "style": "shuffle",
 //             "bars": ["C7", "F7 G7", ...],            one chord a bar, or chords splitting it evenly
-//             "improvise": { "scale": "C blues" } }    the scale lit for improvising (Tonal's scale names)
+//             "improvise": { "scale": "C blues" },     the scale lit for improvising (Tonal's scale names)
+//             "steps": { "accompaniment": ["roots", "beat1"], "lead": [...] },   its own ladder (kinds below), optional
+//             "cleanForNext": 2 }                       clean rounds (lead: rounds played) before the next step, optional
 // A style:  { "name", "meter": "4/4", "grid": 3,         steps a beat in the drum patterns (2: eighths, 3: triplets)
 //             "drums": { "kick": "x.. ... x.. ...", ... }  one character a step ('x' hit, 'X' loud, 'o' soft, '.' none)
 //             "bass":  [[1, "root"], [2, "fifth"], ...]    beat (1-based, may be 2.5) and chord degree
@@ -15,8 +17,15 @@ import { Chord, Note, Scale } from 'tonal';
 import type { Beat, NoteEvent } from '../sound';
 
 export interface Meter { beats: number; beatType: number }
-export interface ChartFile { title: string; meter?: string; tempo?: number; style?: string; bars: string[]; improvise?: { scale?: string } }
-export interface Chart { id: string; title: string; meter: Meter; tempo: number; style: string; bars: string[][]; scale: string | null }
+export interface ChartFile {
+  title: string; meter?: string; tempo?: number; style?: string; bars: string[]; improvise?: { scale?: string };
+  steps?: { accompaniment?: unknown; lead?: unknown }; cleanForNext?: number;
+}
+/** ladder: the chart's own steps by role (null: the built-in ladder); cleanForNext: its own count (null: the lab's). */
+export interface Chart {
+  id: string; title: string; meter: Meter; tempo: number; style: string; bars: string[][]; scale: string | null;
+  ladder: { accomp: StepDef[] | null; lead: StepDef[] | null }; cleanForNext: number | null;
+}
 export interface StyleFile {
   name: string; meter?: string; grid?: number; drums?: Record<string, string>; bass?: [number, string][]; chords?: [number, number][];
   instruments?: { bass?: string; chords?: string };
@@ -49,7 +58,10 @@ export function readChart(id: string, f: ChartFile): Chart {
   if (f.improvise?.scale && Scale.get(f.improvise.scale).empty) throw new Error(`"${f.improvise.scale}" is not a scale name the lab can read`);
   const tempo = f.tempo ?? 90;
   if (typeof tempo !== 'number' || !(tempo >= 20 && tempo <= 300)) throw new Error(`tempo ${tempo} should be a number of beats a minute, 20 to 300`);
-  return { id, title: f.title, meter: meterOf(f.meter), tempo, style: f.style ?? '', bars, scale: f.improvise?.scale ?? null };
+  const ladder = { accomp: f.steps?.accompaniment !== undefined ? readLadder(f.steps.accompaniment, 'accomp') : null, lead: f.steps?.lead !== undefined ? readLadder(f.steps.lead, 'lead') : null };
+  const clean = f.cleanForNext;
+  if (clean !== undefined && !(Number.isInteger(clean) && clean >= 1 && clean <= 10)) throw new Error(`cleanForNext ${clean} should be a whole number, 1 to 10`);
+  return { id, title: f.title, meter: meterOf(f.meter), tempo, style: f.style ?? '', bars, scale: f.improvise?.scale ?? null, ladder, cleanForNext: clean ?? null };
 }
 
 /** General MIDI drum numbers by the names styles use. */
@@ -180,6 +192,12 @@ export function clickBeats(form: Form, style: Style, rounds: number): Beat[] {
 
 // ---- what you play: the beginner steps -------------------------------------------------------------------------
 
+// The kinds of step are the lab's capabilities (what it can judge and light); which steps a learner climbs, in what
+// order and in what words, is content: a chart's (or an activity's) "steps", otherwise these built-in ladders.
+
+/** A step of a ladder: its kind and its words. */
+export interface StepDef { id: AccompStep | LeadStep; name: string; detail: string; doing: string }
+
 /** Accompaniment steps (owner, 2026-10-13): the root on beat 1, the chord on beat 1, the style's rhythm, your own way. */
 export type AccompStep = 'roots' | 'beat1' | 'style' | 'own';
 export const ACCOMP_STEPS: { id: AccompStep; name: string; detail: string; doing: string }[] = [
@@ -197,6 +215,25 @@ export const LEAD_STEPS: { id: LeadStep; name: string; detail: string; doing: st
   { id: 'answer', name: 'Call and answer', detail: 'the band plays two bars, you answer two', doing: 'Listen for two bars · answer in the next two' },
   { id: 'free', name: 'Free', detail: 'nothing lit; just play', doing: 'Play over the band, your way' },
 ];
+
+/**
+ * A ladder from content: a list of step kinds, or { "kind", "name", "detail", "doing" } to give one its own words.
+ * Each kind once; an unknown kind is refused with the reason.
+ */
+export function readLadder(list: unknown, role: 'accomp' | 'lead'): StepDef[] {
+  const kinds: StepDef[] = role === 'accomp' ? ACCOMP_STEPS : LEAD_STEPS, what = role === 'accomp' ? 'accompaniment' : 'lead';
+  if (!Array.isArray(list) || !list.length) throw new Error(`the ${what} steps should be a list of step kinds (${kinds.map((k) => k.id).join(', ')})`);
+  const out = list.map((x) => {
+    const spec = (typeof x === 'string' ? { kind: x } : x) as { kind?: unknown; name?: unknown; detail?: unknown; doing?: unknown };
+    const base = kinds.find((k) => k.id === spec?.kind);
+    if (!base) throw new Error(`${what} step "${String(spec?.kind)}" is not one of ${kinds.map((k) => k.id).join(', ')}`);
+    const words = (v: unknown) => (typeof v === 'string' && v ? v : undefined);
+    return { ...base, name: words(spec.name) ?? base.name, detail: words(spec.detail) ?? base.detail, doing: words(spec.doing) ?? base.doing };
+  });
+  const dup = out.find((s, i) => out.findIndex((o) => o.id === s.id) !== i);
+  if (dup) throw new Error(`${what} step "${dup.id}" is listed twice`);
+  return out;
+}
 
 /**
  * A moment you are to play (accompaniment): its time in the round (ms at speed 1), until when, its chord and bar, and

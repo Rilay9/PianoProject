@@ -1,0 +1,7 @@
+{
+  "title": "Test: Minuet K. 2, right hand, bars 1–4, waiting for you",
+  "screen": "score",
+  "piece": "mozart-k2",
+  "bars": "1-4",
+  "settings": { "mode": "wait", "hands": "right", "tempo": 100 }
+}

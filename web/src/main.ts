@@ -7,6 +7,7 @@
 // open it from where it is reached, and describe it in docs/app-features.md.
 
 import './style.css';
+import { readActivity, type Activity } from './activity';
 import { $, App, type Screen } from './app';
 import { FreePlay } from './freeplay';
 import { holds } from './holds';
@@ -14,6 +15,7 @@ import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
 import { setUpOffline } from './offline';
 import { KeyRemote } from './remote';
+import { clearPreset } from './settings';
 import { createExerciseScreen } from './screens/exercise';
 import { createLabScreen } from './screens/lab';
 import { createMemoriseScreen } from './screens/memorise-screen';
@@ -51,11 +53,12 @@ function showing(): Screen {
   if (memoriseScreen.isOpen) return memoriseScreen;
   return scoreScreen;
 }
-/** Before another screen opens over the score: what plays stops, and a run paused by itself is over. */
+/** Before another screen opens over the score: what plays stops, a run paused by itself is over, and so is a score activity's preset. */
 function leaveScore(): void {
   moreDialog.close();
   scoreScreen.stopAll();
   scoreScreen.forgetRun();
+  clearPreset();
 }
 
 // ---- keys: the keyboard remote first, then the screen showing -------------------------------------------------
@@ -96,7 +99,7 @@ $('open-more').addEventListener('click', () => moreDialog.showModal());
 // The screen asked for last wins: one still getting ready (loading its content) when another is opened stays shut.
 let opening = 0;
 const wanted = () => { const n = ++opening; return () => n === opening; };
-$('open-memorise').addEventListener('click', () => { moreDialog.close(); wanted(); void memoriseScreen.open(); });
+$('open-memorise').addEventListener('click', () => { moreDialog.close(); wanted(); clearPreset(); void memoriseScreen.open(); });
 $('open-freeplay').addEventListener('click', () => {
   leaveScore();
   wanted();
@@ -198,8 +201,63 @@ async function start(): Promise<void> {
     app.showMessage(`Could not load the song list: ${cause instanceof Error ? cause.message : String(cause)}`);
     return;
   }
-  const wanted = new URLSearchParams(location.search).get('piece');
-  await scoreScreen.openSong(wanted && app.pieces.some((p) => p.id === wanted) ? wanted : app.pieces[0].id);
+  const params = new URLSearchParams(location.search), wantedPiece = params.get('piece'), activityId = params.get('activity');
+  await scoreScreen.openSong(wantedPiece && app.pieces.some((p) => p.id === wantedPiece) ? wantedPiece : app.pieces[0].id);
+  if (activityId) await openActivity(activityId);
+}
+
+// ---- activities (activity.ts; owner, 2026-10-13): a screen opened with its content and preset choices ----------
+
+/** Reads content/activities/<id>.json and opens it; anything wrong is said, and the score stays. */
+async function openActivity(id: string): Promise<void> {
+  let a: Activity;
+  try {
+    if (!/^[\w-]+$/.test(id)) throw new Error('an activity id is letters, digits, - and _');
+    const r = await fetch(`${import.meta.env.BASE_URL}content/activities/${id}.json`);
+    // (A missing file can come back as the app's own page rather than a 404: anything not JSON is "no such activity".)
+    let json: unknown;
+    try { json = r.ok ? JSON.parse(await r.text()) : null; } catch { json = null; }
+    if (!json || typeof json !== 'object') throw new Error(`there is no activity "${id}"`);
+    a = readActivity(id, json as Record<string, unknown>);
+  } catch (cause) {
+    app.showMessage(`Could not open the activity: ${cause instanceof Error ? cause.message : String(cause)}`);
+    return;
+  }
+  await launch(a);
+}
+
+/** Opens the activity's screen with its content and presets (in force while it lasts; never saved over yours). */
+async function launch(a: Activity): Promise<void> {
+  const known = (piece: string) => app.pieces.some((p) => p.id === piece) || (app.showMessage(`${a.title}: there is no piece "${piece}"`), false);
+  switch (a.screen) {
+    case 'score':
+      if (known(a.piece)) await scoreScreen.openActivity(a);
+      return;
+    case 'memorise':
+      if (!known(a.piece)) return;
+      leaveScore();
+      await scoreScreen.openSong(a.piece);
+      wanted();
+      await memoriseScreen.open(a.settings);
+      return;
+    case 'simon':
+    case 'drills':
+      leaveScore();
+      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', wanted(), a);
+      return;
+    case 'lab':
+      leaveScore();
+      await labScreen.open(wanted(), a);
+      return;
+    case 'freeplay':
+      leaveScore();
+      wanted();
+      void midi.start().catch(() => {});
+      app.appSound();
+      freePlay.show(midi.down);
+      app.stayAwake();
+      return;
+  }
 }
 
 scoreScreen.applyTheme();

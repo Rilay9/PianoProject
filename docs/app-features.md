@@ -204,7 +204,7 @@ things early on, with clear steps. `web/src/screens/lab.ts`, `web/src/lab/music.
 the steps), `web/src/lab/judge.ts`.
 
 **How it works:** one question first, *Lead* or *Accompaniment*; then a step (the next one picked for you; ✓ marks a
-step played clean twice, over every bar); one sentence says what your part is and what the band plays; the box of
+step played clean twice, over every bar; the ladder below is the built-in one: a chart or activity can give its own); one sentence says what your part is and what the band plays; the box of
 chords shows the form. *▶ Start* (or the keyboard's highest key) gives a bar of count-in, then the band plays round
 after round until ■ (or 40 rounds). Changing anything while the band gets ready drops that start. While playing: one instruction, the beat (1 2 3 4), the chord now and the next two, the box of chords with the bar
 you are in, and the keys to use, lit and named. *Show me first* plays one round with your part played for you.
@@ -225,7 +225,8 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
 - **After:** how it went, the next step once a step has two clean rounds, loop the bars that went wrong, try the other
   part. ■ in the middle of a round shows that round as far as it went, and it does not count. Tap bars in the box
   (stopped) to loop them: a loop is practice (no ✓ from it). A clean round below the chart's own tempo moves it up 5%
-  (as Ladder). A result shows only for the chart, part, step and bars it came from. ⚙: which band parts play (drums, bass, chords), the click, the style, drop-outs (the drums or the whole band
+  (as Ladder). A result shows only for the chart, part, step and bars it came from. The style is the chart's (content, not a choice; owner, 2026-10-13). ⚙: which band parts play (drums, bass,
+  chords), the click, drop-outs (the drums or the whole band
   quiet in bars 5–6 of every 8 of the form, from the second round; their notes are left out of what the band plays,
   so they stop exactly at the bar). A part whose sound cannot be loaded is named on the band line; the rest play.
 - **The band:** drums (the LM-2 kit), bass and chords on the style's instruments (FluidR3 General MIDI sounds: basses
@@ -237,7 +238,10 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
 // a chord chart (charts/*.json)
 { "title": "12-bar blues in C", "meter": "4/4", "tempo": 84, "style": "shuffle",
   "bars": ["C7", "C7", "C7", "C7", "F7", "F7", "C7", "C7", "G7", "F7", "C7", "G7"],   // "F7 G7": two chords share a bar
-  "improvise": { "scale": "C blues" } }                     // a Tonal scale name: what lights for improvising
+  "improvise": { "scale": "C blues" },                      // a Tonal scale name: what lights for improvising
+  "steps": { "accompaniment": ["roots", "beat1"],           // optional: its own ladder, by kind (each once), in order;
+             "lead": [{ "kind": "tones", "name": "Chord notes", "doing": "Play any lit key" }] },   // its own words if given
+  "cleanForNext": 2 }                                       // optional: clean rounds (lead: rounds played) before the next step
 
 // a style (styles/*.json): how a genre's band plays any chord, per bar of its metre
 { "name": "Shuffle", "meter": "4/4", "grid": 3,             // steps a beat in the drum patterns: 2 eighths, 3 triplets (swung)
@@ -251,7 +255,10 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
 
 A chart's chord symbols, scale and tempo (20–300) and a style's grid (1–8), patterns (x X o . only, one bar long),
 beats (inside the bar) and chord lengths (above 0) are checked when the lab opens; one that cannot be read is left
-out with the reason, and so is a chart with no style in its metre (the ⚙ list shows only styles in the chart's metre). Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
+out with the reason, and so is a chart whose style is missing or in another metre (a chart naming no style plays the
+first in its metre). Step kinds: accompaniment `roots`, `beat1` (chords on the beat), `style` (the style's rhythm),
+`own`; lead `root`, `tones`, `scale`, `answer` (call and answer), `free`. The kinds are what the lab can judge (code);
+which, in what order and in what words is content. Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
 are placeholders. **Not built yet** (next): songs with their own melody (a lead sheet: "play the melody" judged as Play
 along, and the accompaniment under a real tune) and several-part MusicXML files (each part on its instrument, you take
 one); examples to copy written into a chart.
@@ -349,6 +356,35 @@ placeholders for checking the app, not lesson content.
   `index.html`, a line in `main.ts`'s `showing()` and `app.screens`, a way to reach it, and its section here.
   A mode that plays a score belongs in `score.ts` (the modes table above); one that only borrows the score's
   drawing, as Memorise does, can be a `Borrower`.
+
+## 8b. Activities: a screen opened with its content and choices (owner, 2026-10-13)
+
+An **activity** is how a lesson (or a link) starts a mode: which screen, its content, and preset choices. A file in
+`web/public/content/activities/<id>.json` (listed in its `index.json`), opened with `?activity=<id>`
+(`web/src/activity.ts` reads it; `main.ts` opens it). The **content** decides what is played (the piece and bars, the
+set, the chart and its ladder and style); **presets** are learner choices set for the activity: in force while it
+lasts (until another song, chart or screen, or Done), changeable there, and never saved over the learner's own. A
+mistake in a file (an unknown screen, a misspelt setting, a value out of range, a piece, set, chart or style that is
+not there) is refused with the reason; nothing is guessed. Examples marked "Test:" are placeholders.
+
+```json
+{ "title": "Minuet K. 2, right hand, bars 1–4", "screen": "score", "piece": "mozart-k2", "bars": "1-4",   // printed bar numbers: looped
+  "settings": { "mode": "wait", "hands": "right", "tempo": 100, "metronome": true, "clickOn": "beats", "onTime": "normal", "ladderStep": 0.05 } }
+{ "title": "…", "screen": "memorise", "piece": "mozart-k2",
+  "settings": { "hands": "right", "tempo": 90, "chunk": 2, "adds": "bar", "learnedAfter": 2, "timing": false, "before": "new",
+                "carryFrom": "bar", "next": "auto", "join": "ask", "metronome": false, "onTime": "normal" } }
+{ "title": "…", "screen": "drills", "set": "melodies-c", "level": { "rung": 3, "start": "clicks", "metronome": true, "onTime": "normal", "cards": 5 } }
+{ "title": "…", "screen": "simon", "set": "chords-c", "level": { "rung": 2, "match": "octave", "miss": "tries", "speed": "up", "onMiss": "all", "onNew": "all" } }
+{ "title": "…", "screen": "lab", "chart": "blues-c",
+  "preset": { "role": "accomp", "step": "roots", "style": "shuffle", "dropouts": "off", "parts": { "drums": true, "bass": true, "chords": true, "click": false },
+              "steps": { "accompaniment": ["roots", "beat1"] }, "cleanForNext": 2 } }
+{ "title": "…", "screen": "freeplay" }
+```
+
+Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out. Values are those of each screen's
+settings (above): score `mode` watch / wait / along / ladder (needs `bars`) / rhythm, `hands` both / right / left / off,
+`tempo` 20–300 beats a minute; Memorise `chunk` 2 / 4 / 8; Drills `rung` 1–5, `cards` 0 (endless)–100. Not yet:
+Memorise limited to some bars (it takes the whole piece).
 
 ## 9. Not built yet
 

@@ -224,11 +224,21 @@ function write(stored: Stored): void {
   }
 }
 
+/**
+ * An activity's preset playing choices for one song (owner, 2026-10-13): in force while the activity lasts, changed
+ * there if you change one of them, never saved over your own; the others are yours as ever.
+ */
+let preset: { pieceId: string; values: Partial<SongWide> } | null = null;
+export function setPreset(pieceId: string, values: Partial<SongWide>): void { preset = { pieceId, values: { ...values } }; }
+export function clearPreset(): void { preset = null; }
+export function presetPiece(): string | null { return preset?.pieceId ?? null; }
+
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
   const s = { ...DEFAULTS, ...DEVICE_DEFAULTS[device], ...d.defaults, ...d.pieces[pieceId] };
   const songs = readSongs(), song = songs[pieceId] ?? {}, all = songs['*'] ?? {};
   for (const key of SONG_WIDE) (s as Record<string, unknown>)[key] = song[key] ?? all[key] ?? DEFAULTS[key];
+  if (preset?.pieceId === pieceId) Object.assign(s, preset.values);
   if (s.mode === 'memorise') s.mode = 'watch'; // Memorise was a mode before it became its own screen
   // The app-wide ones come from their own store only (a per-song value saved before they moved is ignored).
   const app = readApp();
@@ -246,6 +256,7 @@ export function hasPieceOverride(pieceId: string, device = currentDevice()): boo
 /** Saves a change for this song on this kind of screen only (a playing choice: for this song; an app-wide setting: for the whole app). */
 export function savePieceSetting<K extends keyof ScoreSettings>(pieceId: string, key: K, value: ScoreSettings[K], device = currentDevice()): void {
   if (isAppWide(key)) { writeApp({ ...readApp(), [key]: value }); return; }
+  if (isSongWide(key) && preset?.pieceId === pieceId && key in preset.values) { (preset.values as Record<string, unknown>)[key] = value; return; } // the activity's, not yours
   if (isSongWide(key)) { const songs = readSongs(); songs[pieceId] = { ...songs[pieceId], [key]: value }; writeSongs(songs); return; }
   const stored = read();
   stored[device].pieces[pieceId] = { ...stored[device].pieces[pieceId], [key]: value };

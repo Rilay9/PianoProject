@@ -2,6 +2,7 @@
 // (a Borrower of the score screen), laid out to fit what you are memorising (no read-ahead needed). The flow itself
 // (chunks, covers, passes, joining) is in memorise.ts; this is its screen.
 
+import type { MemorisePreset } from '../activity';
 import { $, type App, type Screen, type KeyRange } from '../app';
 import type { StepNotes } from '../follow';
 import { Memorise, type MemoHands, type MemoLook, type MemoriseOptions } from '../memorise';
@@ -11,7 +12,8 @@ import type { Command } from '../remote';
 import { currentDevice, settingsFor, type ScoreSettings } from '../settings';
 import { pianoHands, SIZE_MAX, type Borrower, type ScoreScreen } from './score';
 
-export type MemoriseScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean };
+/** open(preset): an activity's preset for the piece showing (activity.ts), in force until Done. */
+export type MemoriseScreen = Screen & { open(preset?: MemorisePreset): Promise<void>; close(): void; readonly isOpen: boolean };
 
 /** The score's biggest notation size (Display's slider): Memorise never draws bigger, and never stretches (owner). */
 const MEMO_MAX_SIZE = SIZE_MAX;
@@ -181,7 +183,9 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     get busy() { return memorise.active; },
   };
 
-  async function open(): Promise<void> {
+  async function open(preset?: MemorisePreset): Promise<void> {
+    if (preset) { const { hands, tempo, ...options } = preset; memorise.setPreset({ piece: currentPiece().id, options, hands, tempo }); }
+    else memorise.setPreset(null);
     scoreScreen.lend(borrower);
     isOpen = true;
     memoFit = 1;
@@ -195,6 +199,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
 
   function close(): void {
     memorise.leave();
+    memorise.setPreset(null); // an activity's preset ends with it
     isOpen = false;
     document.body.classList.remove('memorising', 'memo-sideways');
     $('memo-head').hidden = true;

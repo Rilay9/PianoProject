@@ -4,19 +4,21 @@
 // melodies are never made up. Content: public/content/lab (charts and styles; docs/app-features.md says how).
 // This first version takes chord charts; songs with their own melody (lead sheets, several parts) come next.
 
+import type { LabPreset } from '../activity';
 import { $, base, type App, type Screen, type KeyRange } from '../app';
 import { holds } from '../holds';
 import { ExerciseKeys } from '../exercise/keys';
 import { barMarks, improvised, judgeHit, ON_TIME_MS, sayHit, type HitResult, type Improv, type Mark, type Press } from '../lab/judge';
 import {
-  ACCOMP_STEPS, bandNotes, clickBeats, formOf, hits, LEAD_STEPS, readChart, readStyle, scalePcs, voicing,
+  ACCOMP_STEPS, bandNotes, clickBeats, formOf, hits, LEAD_STEPS, readChart, readLadder, readStyle, scalePcs, voicing,
   type AccompStep, type Chart, type ChartFile, type Form, type Hit, type LeadStep, type Style, type StyleFile,
 } from '../lab/music';
 import type { KeyEvent } from '../midi';
 import type { Command } from '../remote';
 import type { NoteEvent } from '../sound';
 
-export type LabScreen = Screen & { open(stillWanted?: () => boolean): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+/** open(…, activity): a chart with an activity's preset (activity.ts), in force until another chart is picked or Done. */
+export type LabScreen = Screen & { open(stillWanted?: () => boolean, activity?: { chart: string; preset: LabPreset }): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
 
 type Role = 'accomp' | 'lead';
 interface Stored {
@@ -26,11 +28,10 @@ interface Stored {
   speed: Record<string, number>; // chart -> share of its tempo
   help: 'lit' | 'names' | 'symbol';
   parts: { drums: boolean; bass: boolean; chords: boolean; click: boolean };
-  style: Record<string, string>; // chart -> the style chosen
   dropouts: 'off' | 'drums' | 'band';
 }
 const KEY = 'piano-web.lab.v1';
-const CLEAN_FOR_NEXT = 2; // clean rounds on a step before the next is suggested
+const CLEAN_FOR_NEXT = 2; // clean rounds on a step before the next is suggested (a chart or activity may say otherwise)
 const SPEED_STEP = 0.05; // a clean round under the chart's own tempo moves it up this much (as Ladder does)
 const ROUNDS = 40; // scheduled ahead; the run stops by itself after them (■ any time before)
 const sameMeter = (s: Style, c: Chart) => s.meter.beats === c.meter.beats && s.meter.beatType === c.meter.beatType;
@@ -55,12 +56,33 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   let results: HitResult[] = [], lastRound: { ctx: string; marks: Map<number, Mark>; results: HitResult[]; improv?: Improv; stoppedBar?: number } | null = null;
   let roundsDone = 0, roundsPlayed = 0, loopBars: [number, number] | null = null, picking: number | null = null;
 
-  const role = () => stored.role;
+  // An activity's preset (owner, 2026-10-13): its choices in force while it lasts (changed there if you change them),
+  // never saved over yours; its ladder and style are content. Over when another chart is picked, or on Done.
+  let preset: LabPreset | null = null;
+  const role = () => preset?.role ?? stored.role;
+  const setRole = (r: Role) => { if (preset?.role !== undefined) preset.role = r; else { stored.role = r; save(); } };
   const stepKey = () => `${chart?.id}|${role()}`;
-  const stepIndex = () => stored.step[stepKey()] ?? 0;
-  const accompStep = (): AccompStep => ACCOMP_STEPS[Math.min(stepIndex(), ACCOMP_STEPS.length - 1)].id;
-  const leadStep = (): LeadStep => LEAD_STEPS[Math.min(stepIndex(), LEAD_STEPS.length - 1)].id;
-  const steps = () => (role() === 'accomp' ? ACCOMP_STEPS : LEAD_STEPS);
+  /** The ladder: the activity's, the chart's, or the built-in one. */
+  const steps = () => {
+    const mine = role() === 'accomp' ? preset?.steps?.accompaniment : preset?.steps?.lead;
+    if (mine) return readLadder(mine, role());
+    return (role() === 'accomp' ? chart?.ladder.accomp : chart?.ladder.lead) ?? (role() === 'accomp' ? ACCOMP_STEPS : LEAD_STEPS);
+  };
+  const stepIndex = () => {
+    const list = steps(), want = preset?.step !== undefined ? list.findIndex((s) => s.id === preset!.step) : -1;
+    return want >= 0 ? want : Math.min(stored.step[stepKey()] ?? 0, list.length - 1);
+  };
+  const setStep = (i: number) => {
+    const list = steps();
+    if (preset?.step !== undefined && list.some((s) => s.id === preset!.step)) preset.step = list[i].id;
+    else { stored.step[stepKey()] = i; save(); }
+  };
+  const stepNow = () => steps()[stepIndex()];
+  const accompStep = (): AccompStep => (role() === 'accomp' ? stepNow().id as AccompStep : 'roots');
+  const leadStep = (): LeadStep => (role() === 'lead' ? stepNow().id as LeadStep : 'root');
+  const cleanForNext = () => preset?.cleanForNext ?? chart?.cleanForNext ?? CLEAN_FOR_NEXT;
+  const parts = () => ({ ...stored.parts, ...preset?.parts });
+  const dropouts = () => preset?.dropouts ?? stored.dropouts;
   const speed = () => stored.speed[chart?.id ?? ''] ?? 1;
   const bpm = () => Math.round((chart?.tempo ?? 90) * speed());
   const tol = () => ON_TIME_MS * speed(); // the on-time window in the chart's time (the same real time at any speed)
@@ -80,21 +102,22 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
         try { charts.push(readChart(f.replace(/^.*\/|\.json$/g, ''), await (await fetch(dir + f)).json() as ChartFile)); } catch (e) { problems.push(`${f}: ${e instanceof Error ? e.message : e}`); }
       }
     } catch (e) { problems.push(`index.json: ${e instanceof Error ? e.message : e}`); }
-    // A chart is played in a style of its metre: one with none is left out.
+    // A chart is played in its style (content: owner, 2026-10-13), which must be there and in its metre; a chart
+    // naming none plays the first style in its metre. One that cannot be played is left out with the reason.
     charts = charts.filter((c) => {
-      if (styles.some((s) => sameMeter(s, c))) return true;
-      problems.push(`${c.title}: no style in ${c.meter.beats}/${c.meter.beatType}`);
+      if (c.style ? styles.some((s) => s.id === c.style && sameMeter(s, c)) : styles.some((s) => sameMeter(s, c))) return true;
+      problems.push(c.style ? `${c.title}: no style "${c.style}" in ${c.meter.beats}/${c.meter.beatType}` : `${c.title}: no style in ${c.meter.beats}/${c.meter.beatType}`);
       return false;
     });
     loadProblems = problems.length ? `Some lab content could not be read: ${problems.join('; ')}` : '';
   }
 
-  function choose(id: string): void {
+  /** remember: the chart you chose (not an activity's), opened next time. The style is the activity's or the chart's. */
+  function choose(id: string, remember = true): void {
     chart = charts.find((c) => c.id === id) ?? charts[0];
-    stored.chart = chart.id;
-    save();
-    const styleId = stored.style[chart.id] ?? chart.style, fits = styles.filter((s) => sameMeter(s, chart!));
-    style = fits.find((s) => s.id === styleId) ?? fits.find((s) => s.id === chart!.style) ?? fits[0];
+    if (remember) { stored.chart = chart.id; save(); }
+    const fits = styles.filter((s) => sameMeter(s, chart!));
+    style = fits.find((s) => s.id === (preset?.style ?? chart!.style)) ?? fits[0];
     loopBars = null;
     picking = null;
     rebuildForm();
@@ -123,14 +146,14 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab-steps').replaceChildren(...steps().map((s, i) => {
       const b = document.createElement('button');
       b.type = 'button';
-      const done = (stored.clean[`${stepKey()}|${s.id}`] ?? 0) >= CLEAN_FOR_NEXT;
+      const done = (stored.clean[`${stepKey()}|${s.id}`] ?? 0) >= cleanForNext();
       b.className = `lab-step${i === stepIndex() ? ' on' : ''}${done ? ' done' : ''}`;
       if (i === stepIndex()) b.setAttribute('aria-current', 'step');
       b.innerHTML = `<i></i><span><b></b> <small></small></span>`;
       b.querySelector('i')!.textContent = done ? '✓' : String(i + 1);
       b.querySelector('b')!.textContent = s.name;
       b.querySelector('small')!.textContent = `— ${s.detail}`;
-      b.addEventListener('click', () => { cancelStart(); stored.step[stepKey()] = i; save(); fill(); });
+      b.addEventListener('click', () => { cancelStart(); setStep(i); fill(); });
       return b;
     }));
     const st = steps()[stepIndex()];
@@ -141,7 +164,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab-show').hidden = role() === 'lead'; // improvising has no written part to play for you
   }
   function bandList(): string[] {
-    const p = stored.parts, out: string[] = [];
+    const p = parts(), out: string[] = [];
     if (p.drums) out.push('drums');
     if (p.bass) out.push('bass');
     if (p.chords && role() === 'lead') out.push('chords');
@@ -192,12 +215,12 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   const roundMs = () => (form ? form.length * form.beatMs : 1);
   function events(withDemo: boolean): { notes: NoteEvent[]; beats: { t: number; accent: boolean }[] } {
-    const f = form!, s = style!, p = stored.parts;
-    const parts = { drums: p.drums, bass: p.bass, chords: p.chords && role() === 'lead' };
+    const f = form!, s = style!, p = parts();
+    const playing = { drums: p.drums, bass: p.bass, chords: p.chords && role() === 'lead' };
     // Drop-outs (owner): the drums (or the band) leave out their notes in the 5th and 6th bar of every 8 of the form,
     // from the second round on (the third after Show me); written into the band's notes, so they go exactly at the bars.
-    const outParts = stored.dropouts === 'off' ? [] : stored.dropouts === 'drums' ? ['drums'] : ['drums', s.bassSound, s.chordSound];
-    const notes = bandNotes(f, s, parts, ROUNDS).filter((n) => !(outParts.includes(n.part ?? '') && droppedAt(n.t, withDemo)));
+    const outParts = dropouts() === 'off' ? [] : dropouts() === 'drums' ? ['drums'] : ['drums', s.bassSound, s.chordSound];
+    const notes = bandNotes(f, s, playing, ROUNDS).filter((n) => !(outParts.includes(n.part ?? '') && droppedAt(n.t, withDemo)));
     // Show me: round 0 also has your part, played for you.
     if (withDemo && role() === 'accomp') notes.push(...bandNotes(f, s, { drums: false, bass: false, chords: false }, 1, accompStep()));
     // Call and answer: the band calls in the first two of every four bars played (the chord's notes, up), you answer in
@@ -216,7 +239,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   /** Whether a moment of the run (ms from its start) is in a drop-out. */
   function droppedAt(t: number, withDemo: boolean): boolean {
-    if (stored.dropouts === 'off' || !form || t < 0) return false;
+    if (dropouts() === 'off' || !form || t < 0) return false;
     const r = Math.floor(t / roundMs()), bar = Math.floor((t - r * roundMs()) / (form.barBeats * form.beatMs) + 1e-9) % 8;
     return r >= (withDemo ? 2 : 1) && (bar === 4 || bar === 5);
   }
@@ -230,14 +253,14 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     starting = true;
     startButtons();
     feedback('Getting the band ready…');
-    const parts = ['piano', ...(stored.parts.drums ? ['drums'] : []), ...(stored.parts.bass ? [style.bassSound] : []), ...(stored.parts.chords && role() === 'lead' ? [style.chordSound] : [])];
+    const p = parts(), sounds = ['piano', ...(p.drums ? ['drums'] : []), ...(p.bass ? [style.bassSound] : []), ...(p.chords && role() === 'lead' ? [style.chordSound] : [])];
     await midi.start().catch(() => {});
     sound.keyboard = null; // the band plays on the phone
     // Each sound loads on its own: one that fails leaves the others to finish before the band starts.
-    const loaded = await Promise.allSettled(parts.map((p) => sound.preparePart(p)));
+    const loaded = await Promise.allSettled(sounds.map((s) => sound.preparePart(s)));
     if (mine !== session || !isOpen) return; // stopped, closed or changed while it got ready
     starting = false;
-    unavailable = parts.filter((_, i) => loaded[i].status === 'rejected');
+    unavailable = sounds.filter((_, i) => loaded[i].status === 'rejected');
     const { notes, beats } = events(withDemo);
     app.appSound();
     sound.mute([]);
@@ -313,7 +336,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     lightKeys(lit.chord, yourTurn);
     // Drop-outs: the notes are left out already (events); this says so.
     const out = droppedAt(sound.songTime(), demo);
-    $('lab-band-line').textContent = bandLine(out ? ` · ${stored.dropouts === 'drums' ? 'drums' : 'band'} out: keep going` : '');
+    $('lab-band-line').textContent = bandLine(out ? ` · ${dropouts() === 'drums' ? 'drums' : 'band'} out: keep going` : '');
     if (yourTurn && round >= 0) judgeHits(round, pos);
     fillGrid(role() === 'accomp' ? barMarks(results) : undefined, pos < 0 ? -1 : bar + (loopBars?.[0] ?? 0));
     if (role() === 'lead' && yourTurn && round >= 0) {
@@ -445,18 +468,18 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     }
     if (loopBars && lastRound) add('lab-r-line', "Looping bars is practice: the step's ✓ comes from rounds over every bar.");
     // What next: the next step after enough clean rounds (or rounds played, improvising).
-    const done = (stored.clean[key] ?? 0) >= CLEAN_FOR_NEXT, i = stepIndex();
+    const done = (stored.clean[key] ?? 0) >= cleanForNext(), i = stepIndex();
     const buttons = document.createElement('div');
     buttons.className = 'lab-r-buttons';
     const btn = (text: string, main: boolean, run: () => void) => { const b = Object.assign(document.createElement('button'), { type: 'button', className: `btn${main ? ' main' : ''}`, textContent: text }); b.addEventListener('click', run); buttons.append(b); };
     if (done && i + 1 < steps().length) {
-      add('lab-r-next', `Next: step ${i + 2}, ${steps()[i + 1].name.toLowerCase()} · ${role() === 'accomp' ? `${CLEAN_FOR_NEXT} clean rounds` : `${CLEAN_FOR_NEXT} rounds`} on this one`);
-      btn(`Step ${i + 2} ▶`, true, () => { stored.step[stepKey()] = i + 1; save(); void start(false); });
+      add('lab-r-next', `Next: step ${i + 2}, ${steps()[i + 1].name.toLowerCase()} · ${role() === 'accomp' ? `${cleanForNext()} clean rounds` : `${cleanForNext()} rounds`} on this one`);
+      btn(`Step ${i + 2} ▶`, true, () => { setStep(i + 1); void start(false); });
     }
     btn('Again ▶', !(done && i + 1 < steps().length), () => void start(false));
     const worst = lastRound?.results.find((r) => r.mark === 'miss');
     if (worst && !loopBars) btn(`Loop bars ${worst.hit.bar + 1}–${Math.min(chart!.bars.length, worst.hit.bar + 2)}`, false, () => { loopBars = [worst.hit.bar, Math.min(chart!.bars.length - 1, worst.hit.bar + 1)]; rebuildForm(); backToOpen(); });
-    btn(role() === 'accomp' ? 'Try the lead' : 'Try the accompaniment', false, () => { stored.role = role() === 'accomp' ? 'lead' : 'accomp'; save(); rebuildForm(); backToOpen(); });
+    btn(role() === 'accomp' ? 'Try the lead' : 'Try the accompaniment', false, () => { setRole(role() === 'accomp' ? 'lead' : 'accomp'); rebuildForm(); backToOpen(); });
     btn('Back', false, backToOpen);
     box.append(buttons);
   }
@@ -496,8 +519,8 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   // ---- the controls ------------------------------------------------------------------------------------------------
 
-  $('lab-role-lead').addEventListener('click', () => { cancelStart(); stored.role = 'lead'; save(); rebuildForm(); fill(); });
-  $('lab-role-accomp').addEventListener('click', () => { cancelStart(); stored.role = 'accomp'; save(); rebuildForm(); fill(); });
+  $('lab-role-lead').addEventListener('click', () => { cancelStart(); setRole('lead'); rebuildForm(); fill(); });
+  $('lab-role-accomp').addEventListener('click', () => { cancelStart(); setRole('accomp'); rebuildForm(); fill(); });
   $('lab-start').addEventListener('click', () => void start(false));
   $('lab-show').addEventListener('click', () => void start(true));
   $('lab-stop').addEventListener('click', stop);
@@ -511,35 +534,33 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       b.innerHTML = '<strong></strong><small></small>';
       b.querySelector('strong')!.textContent = c.title;
       b.querySelector('small')!.textContent = `${c.bars.length} bars · ${c.meter.beats}/${c.meter.beatType} · ♩ ${c.tempo}`;
-      b.addEventListener('click', () => { pickDialog.close(); choose(c.id); lastRound = null; feedback(''); fill(); });
+      b.addEventListener('click', () => { pickDialog.close(); preset = null; choose(c.id); lastRound = null; feedback(''); fill(); }); // another chart: the activity is over
       const li = document.createElement('li');
       li.append(b);
       return li;
     }));
     pickDialog.showModal();
   });
-  // ⚙ The band: which parts play, the click, the style, drop-outs.
+  // ⚙ The band: which parts play, the click, drop-outs (the style is the chart's: content, owner 2026-10-13).
   const bandDialog = $<HTMLDialogElement>('lab-band-dialog');
   function fillBand(): void {
-    const p = stored.parts;
+    const p = parts();
     $<HTMLInputElement>('lab-p-drums').checked = p.drums;
     $<HTMLInputElement>('lab-p-bass').checked = p.bass;
     $<HTMLInputElement>('lab-p-chords').checked = p.chords;
     $<HTMLInputElement>('lab-p-click').checked = p.click;
     $('lab-p-chords-label').hidden = role() === 'accomp';
-    $('lab-styles').replaceChildren(Object.assign(document.createElement('legend'), { textContent: 'Style' }), ...styles.filter((s) => chart && sameMeter(s, chart)).map((s) => {
-      const l = document.createElement('label');
-      l.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'lab-style', value: s.id, checked: s.id === style?.id }), ` ${s.name}`);
-      return l;
-    }));
-    for (const r of bandDialog.querySelectorAll<HTMLInputElement>('input[name="lab-dropouts"]')) r.checked = r.value === stored.dropouts;
+    for (const r of bandDialog.querySelectorAll<HTMLInputElement>('input[name="lab-dropouts"]')) r.checked = r.value === dropouts();
   }
   $('lab-band').addEventListener('click', () => { if (running) stop(); else cancelStart(); fillBand(); bandDialog.showModal(); });
   bandDialog.addEventListener('change', (e) => {
     const t = e.target as HTMLInputElement;
-    if (t.name === 'lab-style' && chart) { stored.style[chart.id] = t.value; style = styles.find((s) => s.id === t.value) ?? style; }
-    else if (t.name === 'lab-dropouts') stored.dropouts = t.value as Stored['dropouts'];
-    else if (t.id.startsWith('lab-p-')) stored.parts = { ...stored.parts, [t.id.slice(6)]: t.checked };
+    // An activity's preset choice changes for the activity; the rest are yours, saved.
+    if (t.name === 'lab-dropouts') { if (preset?.dropouts !== undefined) preset.dropouts = t.value as Stored['dropouts']; else stored.dropouts = t.value as Stored['dropouts']; }
+    else if (t.id.startsWith('lab-p-')) {
+      const k = t.id.slice(6) as keyof Stored['parts'];
+      if (preset?.parts && k in preset.parts) preset.parts = { ...preset.parts, [k]: t.checked }; else stored.parts = { ...stored.parts, [k]: t.checked };
+    }
     save();
     fill();
   });
@@ -558,19 +579,34 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     held.set(m, p);
   };
 
-  async function open(stillWanted: () => boolean = () => true): Promise<void> {
+  async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset }): Promise<void> {
     await load();
     if (!stillWanted()) return;
     if (!charts.length || !styles.length) { app.showMessage(loadProblems || 'The lab has no charts or styles to play.'); return; }
+    if (activity) {
+      // The activity's content must be there: its chart, its style (in the chart's metre) and its ladder.
+      const c = charts.find((x) => x.id === activity.chart);
+      const problem = !c ? `no chart "${activity.chart}"${loadProblems ? ` (${loadProblems})` : ''}`
+        : activity.preset.style && !styles.some((s) => s.id === activity.preset.style && sameMeter(s, c)) ? `no style "${activity.preset.style}" in ${c.meter.beats}/${c.meter.beatType}`
+        : ladderProblem(activity.preset);
+      if (problem) { app.showMessage(`This activity cannot open: ${problem}`); return; }
+    }
+    preset = activity ? structuredClone(activity.preset) : null;
     isOpen = true;
     $('lab').hidden = false;
-    choose(stored.chart ?? charts[0].id);
+    choose(activity?.chart ?? stored.chart ?? charts[0].id, !activity);
     backToOpen();
     feedback(loadProblems);
     app.stayAwake();
   }
+  /** An activity's ladder that cannot be read: why (none: fine). */
+  function ladderProblem(p: LabPreset): string {
+    try { if (p.steps?.accompaniment) readLadder(p.steps.accompaniment, 'accomp'); if (p.steps?.lead) readLadder(p.steps.lead, 'lead'); return ''; }
+    catch (e) { return e instanceof Error ? e.message : String(e); }
+  }
   function close(): void {
     stopRun();
+    preset = null; // an activity's preset ends with it
     isOpen = false;
     keys.release();
     $('lab').hidden = true;
@@ -579,7 +615,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   }
 
   function read(): Stored {
-    const empty: Stored = { role: 'accomp', step: {}, clean: {}, speed: {}, help: 'lit', parts: { drums: true, bass: true, chords: true, click: false }, style: {}, dropouts: 'off' };
+    const empty: Stored = { role: 'accomp', step: {}, clean: {}, speed: {}, help: 'lit', parts: { drums: true, bass: true, chords: true, click: false }, dropouts: 'off' };
     try { const s = JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Stored>; return { ...empty, ...s, parts: { ...empty.parts, ...s.parts } }; } catch { return empty; }
   }
   function save(): void { try { localStorage.setItem(KEY, JSON.stringify(stored)); } catch { /* this visit only */ } }

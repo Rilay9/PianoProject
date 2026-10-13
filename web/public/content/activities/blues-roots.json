@@ -1,0 +1,11 @@
+{
+  "title": "Test: 12-bar blues, accompaniment: roots, then chords",
+  "screen": "lab",
+  "chart": "blues-c",
+  "preset": {
+    "role": "accomp",
+    "step": "roots",
+    "steps": { "accompaniment": ["roots", { "kind": "beat1", "name": "Chords on 1", "doing": "Play the whole chord on beat 1 and hold it until it changes" }] },
+    "cleanForNext": 2
+  }
+}

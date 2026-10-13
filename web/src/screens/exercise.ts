@@ -14,7 +14,8 @@ import type { Command } from '../remote';
 import { currentDevice, settingsFor } from '../settings';
 
 export type ExerciseScreen = Screen & {
-  open(kind: 'simon' | 'drill', stillWanted?: () => boolean): Promise<void>;
+  /** activity: a set with a preset level (activity.ts), in force while it is open. */
+  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: { set: string; level: object }): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
@@ -96,7 +97,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
   let setProblems = '';
   /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
-  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true): Promise<void> {
+  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: { set: string; level: object }): Promise<void> {
     await midi.start().catch(() => {});
     // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
     sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
@@ -111,13 +112,14 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     }
     if (!stillWanted()) return;
     if (!sets.length) { app.showMessage(setProblems || 'No exercise sets to play.'); return; }
+    if (activity && !sets.some((s) => s.id === activity.set)) { app.showMessage(`No exercise set "${activity.set}"${setProblems ? ` (${setProblems})` : ''}`); return; }
     app.appSound();
     exerciseKind = kind;
     $('ex-kind').textContent = kind === 'drill' ? 'Drill' : 'Simon';
     $('ex-after').hidden = true;
     $('exercise').hidden = false;
     fillExerciseDisplay();
-    if (kind === 'drill') drill.open(sets); else simon.open(sets);
+    if (kind === 'drill') drill.open(sets, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(sets, activity as { set: string; level: Partial<SimonLevel> } | undefined);
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
     app.stayAwake();
   }

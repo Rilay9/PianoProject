@@ -82,6 +82,12 @@ async function wanted(base: string): Promise<Set<string>> {
       for (const it of Object.values(set.items ?? {})) if (it.musicxml && /\.(musicxml|xml)$/i.test(it.musicxml.trim())) urls.add(new URL(it.musicxml.trim(), url).href);
     }
   } catch { /* no sets yet */ }
+  // The activities (content/activities/index.json lists them).
+  try {
+    const acts = (await (await fetch(`${base}content/activities/index.json`)).json()) as string[];
+    urls.add(new URL(`${base}content/activities/index.json`, origin).href);
+    for (const f of acts) urls.add(new URL(`${base}content/activities/${f}`, origin).href);
+  } catch { /* no activities yet */ }
   // The accompaniment lab: its charts and styles, and the band's sounds (the kit and the kept instruments).
   try {
     const lab = (await (await fetch(`${base}content/lab/index.json`)).json()) as { charts: string[]; styles: string[] };

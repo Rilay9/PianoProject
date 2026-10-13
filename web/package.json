@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check:notes": "vite build && node tests/notes-match.mjs",
     "check:scoring": "node tests/scoring.mjs",
-    "check:lab": "node tests/lab-judge.mjs"
+    "check:lab": "node tests/lab-judge.mjs",
+    "check:activity": "node tests/activity.mjs"
   },
   "dependencies": {
     "opensheetmusicdisplay": "2.2.0",

@@ -63,9 +63,16 @@ export class Simon {
   private token = 0; // bumps to cancel a showing in progress
   private timers: number[] = [];
 
+  /** Your own level, saved; an activity's preset over it (owner, 2026-10-13) is in force while the activity lasts. */
+  private mine: SimonLevel;
+  private preset: Partial<SimonLevel> = {};
+  private mySet: string | undefined; // the set you chose (not an activity's), opened next time
+
   constructor(private readonly ui: SimonParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
     const stored = this.read();
-    this.level = { ...DEFAULT_LEVEL, ...stored.level };
+    this.mine = { ...DEFAULT_LEVEL, ...stored.level };
+    this.level = { ...this.mine };
+    this.mySet = stored.set;
     this.best = stored.best ?? {};
     // The exercise screen is shared with the drills: these act only while Simon is the one open.
     ui.start.addEventListener('click', () => { if (this.on) void this.begin(); });
@@ -79,18 +86,27 @@ export class Simon {
 
   /** Opens with these sets (the last one chosen, if still there). */
   private on = false;
-  open(sets: ItemSet[]): void {
+  /** Opens with these sets: the last one chosen, or an activity's set with its preset level (yours untouched). */
+  open(sets: ItemSet[], activity?: { set: string; level: Partial<SimonLevel> }): void {
     this.on = true;
     this.keys.onKey = (midi, down) => this.key(midi, down);
     this.sets = sets;
+    this.preset = { ...activity?.level };
+    this.level = { ...this.mine, ...this.preset };
     this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
-    this.chooseSet(sets.some((s) => s.id === this.read().set) ? this.read().set! : sets[0].id);
+    if (activity) this.chooseSet(activity.set, false);
+    else this.chooseSet(sets.some((s) => s.id === this.mySet) ? this.mySet! : sets[0].id);
   }
 
   close(): void { this.stopAll(); this.on = false; this.keys.release(); }
 
+  /** A level change: an activity's preset choice changes for the activity; the rest are yours, saved. */
   setLevel(level: Partial<SimonLevel>): void {
-    this.level = { ...this.level, ...level };
+    for (const [k, v] of Object.entries(level)) {
+      if (k in this.preset) (this.preset as Record<string, unknown>)[k] = v;
+      else (this.mine as unknown as Record<string, unknown>)[k] = v;
+    }
+    this.level = { ...this.mine, ...this.preset };
     this.save();
     this.reset();
   }
@@ -99,9 +115,11 @@ export class Simon {
 
   private makeItems(): void { this.items = this.set.items; }
 
-  private chooseSet(id: string): void {
+  /** remember: the set you chose (not an activity's), opened next time. */
+  private chooseSet(id: string, remember = true): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
+    if (remember) this.mySet = this.set.id;
     this.makeItems();
     this.keys.setRange(this.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.save();
@@ -382,7 +400,7 @@ export class Simon {
   }
 
   private save(): void {
-    try { localStorage.setItem(KEY, JSON.stringify({ level: this.level, best: this.best, set: this.set?.id })); } catch { /* this visit only */ }
+    try { localStorage.setItem(KEY, JSON.stringify({ level: this.mine, best: this.best, set: this.mySet })); } catch { /* this visit only */ }
   }
 }
 

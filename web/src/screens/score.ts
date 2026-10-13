@@ -11,8 +11,9 @@ import type { KeyEvent } from '../midi';
 import { yours } from '../practice';
 import type { Command } from '../remote';
 import type { StepNotes } from '../follow';
+import type { ScorePreset } from '../activity';
 import {
-  currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, resetPiece, savePieceSetting, settingsFor,
+  clearPreset, currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, presetPiece, resetPiece, savePieceSetting, setPreset, settingsFor,
   slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Theme, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
 } from '../settings';
 
@@ -62,6 +63,8 @@ export type ScoreScreen = Screen & {
   /** Lays the song out again; keep: stay where the marker is. */
   draw(keep?: boolean): Promise<void>;
   openSong(id: string): Promise<void>;
+  /** A score activity (activity.ts): the piece with its preset playing choices (for the activity only) and bars looped. */
+  openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset }): Promise<void>;
   /** Memorise (or another) takes the drawing; null: back to the score. */
   lend(b: Borrower | null): void;
   /** Stops whatever runs (the score's own, or the borrower's). */
@@ -165,6 +168,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
 
   async function openSong(id: string): Promise<void> {
+    if (presetPiece() !== id) clearPreset(); // another song: an activity's preset is over
     forgetRun();
     sideFit = 1;
     app.currentId = id;
@@ -175,6 +179,24 @@ export function createScoreScreen(app: App): ScoreScreen {
     view.setLoop(null);
     showBars();
     await draw();
+  }
+
+  async function openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset }): Promise<void> {
+    const { tempo, ...choices } = a.settings;
+    setPreset(a.piece, choices); // first, so it is drawn with them
+    await openSong(a.piece);
+    // The tempo in beats a minute is a share of the song's own (known once it is read).
+    if (tempo) { const speed = tempo / view.baseBpm; setPreset(a.piece, { ...choices, speed }); view.setSpeed(speed); }
+    if (a.bars) {
+      const at = (n: number) => { for (let m = 0; m < view.barCount; m++) { const i = view.firstStepOfBar(m); if (i >= 0 && view.barNumber(i) === n) return i; } return -1; };
+      const i = at(a.bars[0]), j = at(a.bars[1]);
+      if (i < 0 || j < 0) { fillBars(); showMessage(`${a.title}: this piece has no bar ${i < 0 ? a.bars[0] : a.bars[1]}`); return; }
+      const range = view.loopRange(i, j);
+      view.setLoop(range);
+      view.goTo(range.a);
+    }
+    fillBars();
+    showMessage(a.title, true);
   }
 
   // Bars: the song's name on top; the playing controls and the notation size at the bottom (the rest of the
@@ -809,6 +831,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     get busy() { return !borrower && (view.playing || practice.active); },
     draw,
     openSong,
+    openActivity,
     lend(b: Borrower | null): void {
       if (b) { stopAll(); forgetRun(); if (marking) setMarking(false); picking = 0; }
       borrower = b;
