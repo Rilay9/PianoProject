@@ -74,9 +74,14 @@ function applyTheme(): void {
   else document.documentElement.dataset.theme = theme;
 }
 
-/** A line over the music: a problem (red) or, with info, just news. */
-function showMessage(text: string, info = false): void {
+/** A line over the music: a problem (red) or, with info, just news; action: a button in it. */
+function showMessage(text: string, info = false, action?: { label: string; run: () => void }): void {
   message.textContent = text;
+  if (action) {
+    const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn msg-action', textContent: action.label });
+    b.addEventListener('click', action.run);
+    message.append(' ', b);
+  }
   message.hidden = text === '';
   message.classList.toggle('info', info);
 }
@@ -109,6 +114,7 @@ async function draw(keep = false): Promise<void> {
     if (request !== drawRequest) return;
     if (memoOpen && memorise.active) memorise.stop(); // laid out again (turned, resized): back to before the pass, place kept
     const s = memoOpen ? memoSettings() : settingsFor(piece.id);
+    warnAboutHands(piece, xml);
     // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
     document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
     if (memoOpen) fillMemo(); // the Memorise panel's height too
@@ -124,6 +130,17 @@ async function draw(keep = false): Promise<void> {
     showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
   fillBars(); // the tempo shown comes from the song
+}
+
+/** The app takes the top staff as the right hand and the rest as the left (solo piano): said once if a file has other parts. */
+const warned = new Set<string>();
+function warnAboutHands(piece: Piece, xml: string): void {
+  if (warned.has(piece.id)) return;
+  warned.add(piece.id);
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  const parts = doc.querySelectorAll('part-list > score-part').length;
+  const staves = Math.max(1, ...[...doc.querySelectorAll('attributes > staves')].map((e) => Number(e.textContent) || 1));
+  if (parts > 1 || staves > 2) showMessage(`${piece.title} has ${parts > 1 ? `${parts} parts` : `${staves} staves`}: the app takes the top staff as the right hand and the rest as the left, which may be wrong here.`, true);
 }
 
 async function openSong(id: string): Promise<void> {
@@ -307,7 +324,9 @@ practice.onAutoPause = (reason, step) => {
   view.pause();
   view.goTo(step);
   resumable = true;
-  showMessage(reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.', true);
+  // Or stop here and see how it went (owner, 2026-10-12).
+  showMessage(reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.', true,
+    { label: 'See how it went', run: () => { resumable = false; showMessage(''); practice.finishRun(); fillBars(); showBars(); } });
 };
 /** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. now: begun by a key just played. */
 function startSound(t: number, now = false): void {
@@ -434,6 +453,7 @@ function memoSettings(): ScoreSettings {
     layout: sideways ? 'smooth' : 'rolling', slots: 1, lines: 'auto',
     size: MEMO_MAX_SIZE * look.size * (sideways ? memoFit : 1),
     under: look.under, hands: memorise.hands(piece), speed: memorise.speed(piece), musicWhilePlaying: true,
+    metronome: memorise.optionsNow.metronome, onTime: memorise.optionsNow.onTime,
   };
 }
 
@@ -494,14 +514,18 @@ function memoKey(e: KeyEvent): void {
   if (ph === 'off' || ph === 'done') { void memoGo(() => memorise.start()); return; }
   if (ph === 'review') { memorise.resumeWith(e.midi); return; }
   if (ph !== 'ready') return;
-  // Your first note starts the pass (any key if your part starts on a rest).
+  // Your first note starts the pass (any key if your part starts on a rest); another key is said, and it waits.
   const first = view.struckAt(view.index, yours(memoSettings()));
-  if (first.length && !first.includes(e.midi)) return;
+  if (first.length && !first.includes(e.midi)) { memorise.notFirst(); return; }
   memorise.begin(e.midi);
 }
 practice.onPassEnd = () => memorise.passEnded();
 midi.onDevices = (names) => { if (names.length && memoProblem) { memoProblem = ''; fillMemo(); } };
-practice.onHint = (keys) => strip.markKeys('now-r', keys);
+practice.onHint = (keys) => {
+  strip.markKeys('now-r', keys);
+  // No keys under the music: the hint names the notes instead (owner, 2026-10-12).
+  if (memoOpen && memoSettings().under === 'nothing') memorise.hint(view.namesAt(view.index, yours(memoSettings())).filter((n) => keys.includes(n.midi)).map((n) => n.name));
+};
 
 function fillMemo(): void {
   if (!memoOpen) return;
@@ -526,7 +550,7 @@ function fillMemo(): void {
     $('memo-join-next').textContent = c.next;
   }
   $('memo-next-chunk').hidden = !memorise.waitingForNext;
-  const running = memorise.active && memorise.phase !== 'done';
+  const running = memorise.active && memorise.phase !== 'done' && !memorise.waitingForNext; // waiting for Next chunk: ▶ goes on
   $('memo-go').textContent = running ? '■' : '▶ Start';
   $('memo-go').setAttribute('aria-label', running ? 'Stop memorising' : 'Start memorising');
   $<HTMLButtonElement>('memo-peek').disabled = !memorise.covering;
@@ -549,7 +573,8 @@ let memoFadePhase = '', memoShown = false; // a tap brings the faded header and 
 $('open-memorise').addEventListener('click', () => void enterMemorise());
 $('memo-done').addEventListener('click', leaveMemorise);
 $('memo-go').addEventListener('click', () => {
-  if (memorise.active && memorise.phase !== 'done') memorise.stop();
+  if (memorise.waitingForNext) memorise.nextChunk(1);
+  else if (memorise.active && memorise.phase !== 'done') memorise.stop();
   else void memoGo(() => memorise.start());
 });
 // Hear: a tap plays the bar you are on (or the slip's); held, everything you are learning (owner, 2026-10-12).
@@ -563,8 +588,9 @@ $('memo-hear').addEventListener('pointerup', () => { clearTimeout(hearTimer); if
 for (const ev of ['pointerleave', 'pointercancel']) $('memo-hear').addEventListener(ev, () => clearTimeout(hearTimer));
 $('memo-hear').addEventListener('contextmenu', (e) => e.preventDefault());
 const peek = (on: boolean) => () => memorise.peek(on);
-$('memo-peek').addEventListener('pointerdown', peek(true));
-for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) $('memo-peek').addEventListener(ev, peek(false));
+$('memo-peek').addEventListener('pointerdown', (e) => { $('memo-peek').setPointerCapture(e.pointerId); memorise.peek(true); });
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) $('memo-peek').addEventListener(ev, peek(false));
+$('memo-hear').addEventListener('pointerdown', (e) => $('memo-hear').setPointerCapture(e.pointerId));
 $('memo-peek').addEventListener('contextmenu', (e) => e.preventDefault());
 $('memo-from-prev').addEventListener('click', () => memorise.stepFrom(-1));
 $('memo-from-next').addEventListener('click', () => memorise.stepFrom(1));
@@ -581,7 +607,9 @@ function fillMemoSettings(): void {
   const values: Record<string, string> = {
     'm-chunk': String(o.chunk), 'm-adds': o.adds, 'm-learnedAfter': String(o.learnedAfter), 'm-timing': o.timing ? 'yes' : 'no',
     'm-carryFrom': o.carryFrom, 'm-before': o.before, 'm-next': o.next, 'm-join': o.join, 'm-hands': memorise.hands(piece), 'm-under': look.under,
+    'm-metronome': o.metronome ? 'yes' : 'no', 'm-onTime': o.onTime,
   };
+  $('m-ontime-set').hidden = !o.timing; // On time only matters when a pass is in time
   for (const [name, value] of Object.entries(values)) for (const r of memoDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
   $<HTMLOutputElement>('m-bpm').value = `♩ ${Math.round(view.baseBpm * memorise.speed(piece))}`;
   $<HTMLOutputElement>('m-size').value = `${Math.round(look.size * 100)}%`;
@@ -593,7 +621,7 @@ memoDialog.addEventListener('change', (e) => {
   else if (r.name === 'm-under') { memorise.setLook(device, { under: r.value as MemoLook['under'] }); memoFit = 1; void draw(); }
   else {
     const key = r.name.slice(2) as keyof MemoriseOptions;
-    const value = key === 'chunk' || key === 'learnedAfter' ? Number(r.value) : key === 'timing' ? r.value === 'yes' : r.value;
+    const value = key === 'chunk' || key === 'learnedAfter' ? Number(r.value) : key === 'timing' || key === 'metronome' ? r.value === 'yes' : r.value;
     memorise.setOptions({ [key]: value } as Partial<MemoriseOptions>);
   }
   fillMemoSettings();
@@ -631,7 +659,7 @@ $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
 // MIDI: pressed keys light on the keyboard strip and go to Wait for me / Play along.
 midi.onKey = (e) => {
   strip.setPressed(midi.down);
-  if (memoOpen && e.on) strip.markKeys('now-r', []); // a key puts away Memorise's hint
+  if (memoOpen && e.on) { strip.markKeys('now-r', []); memorise.unhint(); } // a key puts away Memorise's hint
   if (memoOpen && !e.on && midi.down.size === 0) memorise.released();
   if (freePlay.open) { freePlay.key(e, midi.down); return; }
   if (!$('exercise').hidden) { exerciseKeys.midiKey(e.midi, e.on, midi.down); return; }
@@ -782,7 +810,11 @@ const drill = new Drill({
   set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
   status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
   after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
+  finish: $<HTMLButtonElement>('ex-finish'),
 }, exerciseKeys, exerciseNotation, sound);
+drill.keysShown = () => !$('ex-keyboard').classList.contains('off');
+// No music on screen (Ready, a name, by ear, the results): nothing for A−/A+ to size, so they go.
+exerciseNotation.onShown = (on) => $('exercise').classList.toggle('no-music', !on);
 let exerciseKind: 'simon' | 'drill' = 'simon';
 // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
 function fillExerciseDisplay(): void {
@@ -801,12 +833,14 @@ function fillExerciseDisplay(): void {
   // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
   const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
   $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung !== 1);
-  // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at.
-  const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, 1] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
+  // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
+  const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, cardMost()] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
   $<HTMLOutputElement>('ex-size').value = `${Math.round(now * 100)}%`;
   $<HTMLButtonElement>('ex-smaller').disabled = now <= lo + 1e-9;
-  $<HTMLButtonElement>('ex-larger').disabled = now >= hi - 1e-9;
+  $<HTMLButtonElement>('ex-larger').disabled = now >= hi - 1e-9 || (card && now >= 1 && exerciseNotation.filled);
 }
+/** A drill card's biggest share: the score's biggest size, or on a tablet up to 3× that (as far as the room allows) (owner, 2026-10-12). */
+const cardMost = () => (currentDevice() === 'tablet' ? 3 : 1);
 // The frosted panel floats over the bottom of the music (upright and tablets): drill cards fit above it, Simon keeps
 // the lit item clear of it, and Simon's dots sit above it. reserve: how much of the music's box it covers.
 const overlayFloats = () => getComputedStyle($('ex-overlay')).position === 'absolute';
@@ -820,7 +854,7 @@ new ResizeObserver(() => {
 }).observe($('ex-overlay'));
 const stepExerciseSize = (delta: number) => {
   const d = exerciseDisplay();
-  if (exerciseKind === 'drill') saveExerciseDisplay({ card: Math.round(Math.min(1, Math.max(EX_CARD_MIN, d.card + delta)) * 100) / 100 });
+  if (exerciseKind === 'drill') saveExerciseDisplay({ card: Math.round(Math.min(cardMost(), Math.max(EX_CARD_MIN, d.card + delta)) * 100) / 100 });
   else saveExerciseDisplay({ zoom: Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, d.zoom + delta)) * 100) / 100 });
   fillExerciseDisplay();
 };
@@ -1159,6 +1193,13 @@ setUpOffline(base, (done, total) => {
   showMessage(offlineNews, true);
   if (done === total) setTimeout(() => { if (message.textContent === offlineNews) showMessage(''); }, 4000);
 }).catch((cause) => showMessage(cause instanceof Error ? cause.message : String(cause)));
+
+// Every dialog: a ✕ in its top corner, and its Done bar stays in view while the settings scroll (owner, 2026-10-12).
+for (const form of document.querySelectorAll<HTMLFormElement>('dialog > form')) {
+  const x = Object.assign(document.createElement('button'), { type: 'submit', value: 'close', className: 'dlg-x', textContent: '✕' });
+  x.setAttribute('aria-label', 'Close');
+  form.prepend(x);
+}
 
 // For checks: what the follow view has on screen.
 (window as unknown as { __pianoDebug: unknown }).__pianoDebug = { state: () => view.state(), timeline: () => view.timeline(), goTo: (i: number) => view.goTo(i), drawnNotes: () => view.drawnNotes(), beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length, struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(), sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }), simon: () => simon.expected(), drill: () => drill.debug() };

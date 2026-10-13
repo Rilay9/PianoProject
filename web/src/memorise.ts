@@ -36,8 +36,11 @@ export interface MemoriseOptions {
   timing: boolean;
   /** A learned chunk: ask, or always join it with the chunk before, with everything so far, or go straight on. */
   join: 'ask' | 'previous' | 'all' | 'none';
+  /** Memorise's own metronome and On time (owner, 2026-10-12), apart from the score's. */
+  metronome: boolean;
+  onTime: 'relaxed' | 'normal' | 'strict';
 }
-export const MEMORISE_DEFAULTS: MemoriseOptions = { chunk: 4, adds: 'bar', learnedAfter: 2, carryFrom: 'bar', before: 'new', next: 'auto', timing: false, join: 'ask' };
+export const MEMORISE_DEFAULTS: MemoriseOptions = { chunk: 4, adds: 'bar', learnedAfter: 2, carryFrom: 'bar', before: 'new', next: 'auto', timing: false, join: 'ask', metronome: false, onTime: 'normal' };
 
 /** How the music looks in Memorise, per kind of screen: its size as a share of the biggest, and the keys under it. */
 export interface MemoLook { size: number; under: 'keyboard' | 'nothing' }
@@ -328,15 +331,34 @@ export class Memorise {
       this.d.practice.startPass({ a: range.a, b: range.b, t1: span.t1 }, range.a);
       if (counts) this.d.replayKey(firstKey!);
     }
-    this.say('From memory…', this.stored.options.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck');
+    this.say('From memory…', this.turnSub());
   }
 
-  /** A key while the slip is shown: your turn again from where it carries on, that key its first note. */
+  /** A key while the slip is shown: your turn again from where it carries on, that key its first note (a wrong one: said, and it waits). */
   resumeWith(midi: number): void {
     if (this.phase !== 'review') return;
+    const v = this.d.view, first = v.struckAt(this.steps(this.carry, this.carry).a, yours(this.d.settings()));
+    if (first.length && !first.includes(midi)) { this.notFirst(this.carry); return; }
     this.ready(this.carry);
     this.begin(midi);
   }
+
+  /** A key that is not the first note of the pass: nothing starts and nothing counts. */
+  notFirst(bar = this.from): void {
+    this.message = { ...this.message, text: `That's not the first note of bar ${this.num(bar)}`, kind: 'bad' };
+    this.d.changed();
+  }
+
+  /** The hint while the keys under the music are not shown (owner, 2026-10-12): the notes named instead. */
+  hint(names: string[]): void {
+    if (this.phase !== 'turn' || !names.length) return;
+    this.say(`Next: ${names.join(' ')}`, 'A hint counts as a slip', 'bad');
+  }
+  /** A key after a hint: back to what it said. */
+  unhint(): void {
+    if (this.phase === 'turn' && this.message.text.startsWith('Next: ')) this.say('From memory…', this.turnSub());
+  }
+  private turnSub(): string { return this.stored.options.timing ? 'In time · hold Peek if stuck' : 'It waits for each note · hold Peek if stuck'; }
 
   /** Plays bars a..b: listening (all hands from the piano) or a timed pass (the piano plays the other hand). */
   private run(a: number, b: number, mine: boolean, countIn: boolean, fromKey = false): void {
@@ -368,6 +390,17 @@ export class Memorise {
   }
 
   private clean(): void {
+    // Only a pass from the first bar being learned counts (owner, 2026-10-12): one that started at a later bar
+    // (after a slip, or a tapped bar) was practice, so now the whole of it, from the start.
+    const [a] = this.scope();
+    if (this.from > a) {
+      this.d.view.setHidden([]);
+      this.phase = 'between';
+      this.tapNext = false;
+      this.say(`✓ Clean from bar ${this.num(this.from)}`, `Now from bar ${this.num(a)}`, 'ok');
+      this.timer = window.setTimeout(() => this.ready(a), PAUSE_MS);
+      return;
+    }
     this.place.passes++;
     this.savePlace();
     this.d.view.setHidden([]);
@@ -398,9 +431,10 @@ export class Memorise {
     v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
     this.carry = this.stored.options.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
     const missed = slips.filter((x) => x.kind === 'missed').length, timing = slips.length - missed;
-    const parts = [missed && `${missed} missed (green)`, timing && `${timing} early or late (amber)`, extra.length && `${extra.length} wrong ${extra.length === 1 ? 'key' : 'keys'}`].filter(Boolean);
+    const wrong = this.wrongKeys.map(keyName).join(' ');
+    const parts = [missed && `${missed} missed (green)`, timing && `${timing} off time (amber)`, extra.length && `wrong ${extra.length === 1 ? 'key' : 'keys'} ${wrong}`].filter(Boolean);
     const what = parts.length ? `Bar ${this.num(this.slipBar)}: ${parts.join(', ')}` : 'You peeked: not a clean pass';
-    this.say(what, `Play to go again from bar ${this.num(this.carry)} · Hear plays it`, 'bad');
+    this.say(what, `Play from bar ${this.num(this.carry)} to go again · Hear plays it`, 'bad');
   }
 
   /** Learned: add a bar, join up, or move on. */
@@ -547,4 +581,9 @@ export class Memorise {
   private save(): void {
     try { localStorage.setItem(KEY, JSON.stringify(this.stored)); } catch { /* this visit only */ }
   }
+}
+
+/** A key not in the music (a wrong one) named plainly: sharps, middle C = C4. */
+function keyName(midi: number): string {
+  return `${['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'][midi % 12]}${Math.floor(midi / 12) - 1}`;
 }

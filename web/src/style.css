@@ -113,6 +113,7 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .message { position: fixed; top: 60px; left: 8px; right: 8px; z-index: 1; margin: 0; color: #b91c1c; background: rgba(255, 255, 255, 0.92); border-radius: 6px; padding: 4px 8px; }
 /* Not a problem, just news (a loop pass, what to tap next): dark text on a light strip over the music. */
 .message.info { color: #111827; background: rgba(255, 255, 255, 0.9); border-radius: 6px; padding: 4px 8px; }
+.message .msg-action { margin-left: 6px; padding: 2px 10px; color: #111827; background: #fff; border-color: #c7cad1; }
 
 /* The music fills the screen, on its paper. The bars float over it. */
 .score { position: fixed; inset: 0 0 var(--under-h, 0px); overflow: hidden; background: var(--paper); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -168,8 +169,11 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .ex-notation svg { display: block; filter: var(--music-filter); }
 .ex-keyboard.off { display: none; }
 .ex-tools output { min-width: 3.2em; text-align: center; align-self: center; color: var(--muted); }
+.exercise.no-music :is(#ex-smaller, #ex-size, #ex-larger) { display: none; }
 .ex-name { font-size: 2.2rem; font-weight: 700; }
 .ex-name.small { font-size: 1.3rem; }
+.ex-name.big { font-size: clamp(2.2rem, 11vmin, 5rem); line-height: 1.15; overflow-wrap: anywhere; max-width: 100%; } /* a name to play: the whole card */
+.ex-notation:not(.off) ~ .ex-name { order: -1; } /* with music on screen the name sits above it (the panel floats over the bottom) */
 .ex-name:empty, .ex-chain:empty, .ex-status:empty, .ex-sub:empty { display: none; }
 .ex-chain { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .ex-chain .chip { min-width: 26px; height: 26px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; font-size: 13px; background: var(--btn-bg); color: var(--muted); }
@@ -199,8 +203,10 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
     margin: 0 -12px -8px; padding: 5px 12px; background: var(--bar-bg); border-top: 1px solid var(--bar-line);
     -webkit-backdrop-filter: none; backdrop-filter: none;
   }
-  .ex-overlay .ex-status { flex: 0 0 auto; font-size: 1rem; white-space: nowrap; }
-  .ex-overlay .ex-sub { flex: 1 1 auto; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ex-overlay .ex-status { flex: 0 1 auto; min-width: 0; font-size: 1rem; text-align: left; }
+  .ex-overlay .ex-sub { flex: 1 1 auto; min-width: 0; text-align: left; }
+  .ex-overlay :is(.ex-status, .ex-sub) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; line-height: 1.25; }
+  .ex-overlay :is(.ex-start, .ex-after, .ex-tools) { flex-shrink: 0; }
   .ex-overlay .ex-start { font-size: 1rem; padding: 6px 18px; }
   .ex-overlay .ex-after { flex-wrap: nowrap; }
   .ex-overlay .ex-tools { margin-left: auto; min-height: 0; padding: 0; flex: 0 0 auto; }
@@ -224,13 +230,14 @@ body.memorising .loop-zone, body.memorising .message { display: none; }
 .memo-head-info:empty { display: none; }
 .memo-panel { position: fixed; left: 0; right: 0; bottom: var(--under-h, 0px); z-index: 3; display: flex; flex-direction: column; gap: 6px; padding: 8px max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left)); background: var(--bar-bg); color: var(--bar-fg); border-top: 1px solid var(--bar-line); }
 .memo-prog { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--bar-muted); }
-.btn.mini { padding: 0 8px; line-height: 1.4; }
+.btn.mini { padding: 4px 12px; min-width: 36px; }
+#memo-peek, #memo-hear { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .btn.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .memo-dots { display: inline-flex; gap: 4px; margin-left: 4px; }
 .memo-dots .dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--bar-muted); }
 .memo-dots .dot.done { background: #16a34a; border-color: #16a34a; }
 .memo-dots .dot.now { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25); }
-.memo-say { margin: 0; font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.memo-say { margin: 0; font-weight: 600; font-size: 16px; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } /* two lines when it needs them */
 .memo-say.ok { color: #16a34a; }
 .memo-say.bad { color: #dc2626; }
 .memo-sub { margin: 0; font-size: 13px; color: var(--bar-muted); min-height: 1.4em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* always a line: the panel keeps one height */
@@ -244,7 +251,7 @@ body.memorising .loop-zone, body.memorising .message { display: none; }
 body.memo-sideways .memo-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
 body.memo-sideways .memo-head .memo-title { flex: 0 1 auto; max-width: 30%; }
 body.memo-sideways .memo-head-info { flex: 1; min-width: 0; }
-body.memo-sideways .memo-say { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+body.memo-sideways .memo-say { font-size: 14px; min-width: 0; }
 body.memo-sideways .memo-sub { display: none; }
 /* Sideways the music has the whole height; the header and buttons sit over it and fade while it plays or you play. */
 body.memorising.memo-sideways .score { top: 0; bottom: var(--under-h, 0px); }
@@ -264,7 +271,7 @@ body.memo-sideways .memo-choices { flex-direction: row; flex-wrap: wrap; align-i
 .menu button { font: inherit; text-align: left; padding: 10px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
 /* L | R | Both | Off: one control, the chosen part filled. */
 .seg { display: inline-flex; border: 1px solid var(--btn-line); border-radius: 8px; overflow: hidden; }
-.seg button { font: inherit; padding: 6px 10px; border: 0; background: var(--btn-bg); color: inherit; }
+.seg button { font: inherit; padding: 6px 10px; min-width: 36px; border: 0; background: var(--btn-bg); color: inherit; }
 .seg button + button { border-left: 1px solid var(--btn-line); }
 .seg button[aria-pressed="true"] { background: var(--current-bg); color: var(--accent); font-weight: 600; }
 dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--btn-line); background: var(--btn-bg); border-radius: 8px; color: inherit; }
@@ -294,6 +301,8 @@ dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--b
 dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
 dialog a { color: var(--accent); }
 dialog h2 { margin: 0 0 4px; font-size: 18px; }
+dialog .dlg-x { position: sticky; top: 0; float: right; z-index: 1; margin: -6px -6px 0 8px; width: 36px; height: 36px; font: inherit; font-size: 18px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
+dialog .actions { position: sticky; bottom: -16px; margin-bottom: -16px; padding: 10px 0 16px; background: var(--panel-bg); border-top: 1px solid var(--line); z-index: 1; }
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 12px 0; border: 0; padding: 0; }
 .row legend { padding: 0; margin-bottom: 4px; font-weight: 600; width: 100%; }
 label.row { font-weight: 600; }
@@ -310,6 +319,7 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
   #settings > form > *, #tempo > form > *, #drill-dialog > form > *, #memo-dialog > form > *, #ex-level-dialog > form > * { break-inside: avoid; }
   #settings > form > h2, #tempo > form > h2, #drill-dialog > form > h2, #memo-dialog > form > h2, #ex-level-dialog > form > h2, #settings > form > .actions, #tempo > form > .actions, #drill-dialog > form > .actions, #memo-dialog > form > .actions, #ex-level-dialog > form > .actions { column-span: all; }
   #settings > form > h3, #tempo > form > h3, #drill-dialog > form > h3, #memo-dialog > form > h3, #ex-level-dialog > form > h3 { break-after: avoid; }
+  dialog .dlg-x { position: absolute; top: 8px; right: 8px; float: none; margin: 0; } /* the corner of the dialog, not of its first column */
 }
 
 .song-list { list-style: none; margin: 8px 0 0; padding: 0; }

@@ -40,6 +40,8 @@ export interface DrillParts {
   set: HTMLSelectElement; left: HTMLElement; mid: HTMLElement; right: HTMLElement;
   name: HTMLElement; chain: HTMLElement; status: HTMLElement; sub: HTMLElement; start: HTMLButtonElement; help: HTMLButtonElement;
   after: HTMLElement; again: HTMLButtonElement; next: HTMLButtonElement; misses: HTMLButtonElement; fresh: HTMLButtonElement;
+  /** Endless sets: ends the set and shows the results. */
+  finish: HTMLButtonElement;
 }
 
 /** A card ready to play: its notes in order with when they are due (ms from the card's start) and how long they last. */
@@ -52,7 +54,8 @@ interface Card {
   end: number; // ms: when the last note's written length is over
   beatMs: number; barBeats: number; // the metre's beat, for the count-in and the clicks
 }
-type CardResult = { item: Item; clean: boolean; helped: boolean; text: string };
+/** right: played right (clean, with help, or on a retry); clean: right first time with no help. */
+type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean; helped: boolean; text: string };
 type State = 'idle' | 'demo' | 'countin' | 'turn' | 'result' | 'done';
 
 export class Drill {
@@ -78,14 +81,18 @@ export class Drill {
   private request = 0; // bumps when the set, level or screen changes: a start still getting the sound ready is dropped
   private redo = false; // "the misses again": not a set of its own, so never a best
   private passageAt = 0; // a passage: the next item to give (Again replays a card without moving this on)
+  private retrying = false; // Again: this card's try replaces its result (owner, 2026-10-12), the set still N cards
+  /** Whether the keys are on screen (a hint names the notes when they are not). */
+  keysShown: () => boolean = () => true;
 
   constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
     this.stored = this.read();
     ui.start.addEventListener('click', () => { if (this.on) void this.begin(); });
     ui.help.addEventListener('click', () => { if (this.on) this.help(); });
     ui.set.addEventListener('change', () => { if (this.on) this.chooseSet(ui.set.value); });
-    ui.again.addEventListener('click', () => { if (this.on) void this.playCard(this.card!.item); });
+    ui.again.addEventListener('click', () => { if (this.on && this.card) { this.retrying = true; void this.playCard(this.card.item); } });
     ui.next.addEventListener('click', () => { if (this.on && !this.skip()) this.nextCard(); });
+    ui.finish.addEventListener('click', () => { if (this.on) this.finishSet(); });
     ui.misses.addEventListener('click', () => { if (this.on) this.missesAgain(); });
     ui.fresh.addEventListener('click', () => { if (this.on) void this.begin(); });
   }
@@ -105,7 +112,7 @@ export class Drill {
     this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; }
+  close(): void { this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
 
   setLevel(level: Partial<DrillLevel>): void {
     this.stored.level = { ...this.stored.level, ...level };
@@ -134,7 +141,8 @@ export class Drill {
     this.ui.name.textContent = 'Ready';
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
-    this.status('', `${this.cardsLabel()} · press Start`);
+    const best = this.stored.best[this.bestKey()];
+    this.status('', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · press Start`);
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = false;
     this.ui.help.hidden = true;
@@ -143,7 +151,9 @@ export class Drill {
     this.scoreLine();
   }
 
-  private cardsLabel(): string { const n = this.stored.level.cards; return n ? `${n} cards` : 'Cards until you stop'; }
+  private cardsLabel(): string { const n = this.stored.level.cards; return n ? `${n} cards` : 'Cards until you press Finish'; }
+  /** Bests per set and level (owner, 2026-10-12): the help rung and how timing is judged. */
+  private bestKey(): string { return `${this.set.id}|${this.stored.level.rung}|${this.stored.level.onTime}`; }
 
   // ---- a set -----------------------------------------------------------------------------------------
 
@@ -155,6 +165,7 @@ export class Drill {
     this.results = [];
     this.redo = !!items;
     this.passageAt = 0;
+    this.retrying = false;
     this.queue = items ? [...items] : [];
     this.limit = items ? items.length : this.stored.level.cards || Infinity; // the misses again: just those
     this.ui.start.hidden = true;
@@ -163,6 +174,7 @@ export class Drill {
 
   /** The next card: from the misses being redone, the next of a passage, or a random one of a pool (not the same twice running). */
   private nextCard(): void {
+    this.retrying = false;
     if (this.results.length >= this.limit) { this.setDone(); return; }
     let item: Item;
     if (this.queue.length) item = this.queue.shift()!;
@@ -175,27 +187,35 @@ export class Drill {
   }
 
   private missesAgain(): void {
-    const misses = this.results.filter((r) => !r.clean).map((r) => r.item);
+    const misses = this.results.filter(isMiss).map((r) => r.item);
     if (misses.length) void this.begin(misses);
+  }
+
+  /** Finish (endless sets): the results so far (a card still being played is left out). */
+  private finishSet(): void {
+    if (!this.results.length) { this.reset(); return; }
+    this.setDone();
   }
 
   private setDone(): void {
     this.stopAll();
     this.state = 'done';
     const clean = this.results.filter((r) => r.clean).length, of = this.results.length;
-    const best = this.stored.best[this.set.id];
-    if (!this.redo && (!best || clean / Math.max(1, of) > best.clean / Math.max(1, best.of))) { this.stored.best[this.set.id] = { clean, of }; this.save(); }
+    const key = this.bestKey(), best = this.stored.best[key];
+    const newBest = !this.redo && (!best || clean / Math.max(1, of) > best.clean / Math.max(1, best.of));
+    if (newBest) { this.stored.best[key] = { clean, of }; this.save(); }
     this.notation.clear();
     this.keys.clearMarks();
     this.ui.name.textContent = '';
     this.ui.chain.replaceChildren(...this.results.map((r, i) => Object.assign(document.createElement('div'), {
-      className: `ex-result${r.clean ? ' ok' : ''}`, textContent: `${i + 1}. ${r.item.name}: ${r.text}`,
+      className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: `${i + 1}. ${r.item.name}: ${r.text}`,
     })));
-    this.status(`Set done: ${clean} of ${of} clean`, '');
+    const was = this.stored.best[key];
+    this.status(`Set done: ${clean} of ${of} clean`, this.redo ? '' : newBest ? 'A new best at this level' : was ? `Best at this level: ${was.clean} of ${was.of}` : '');
     this.ui.help.hidden = true;
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = true;
-    const misses = of - clean;
+    const misses = this.results.filter(isMiss).length;
     this.ui.misses.hidden = misses === 0;
     this.ui.misses.textContent = `The ${misses === 1 ? 'miss' : `${misses} misses`} again`;
     this.ui.fresh.hidden = false;
@@ -249,7 +269,7 @@ export class Drill {
     this.scoreLine();
     await this.drawCard(rung <= 3);
     if (!this.on || this.card !== card) return; // closed, or another card, while it was drawn
-    this.ui.name.className = 'ex-name small';
+    this.ui.name.className = rung >= 4 ? 'ex-name big' : 'ex-name small';
     this.ui.name.textContent = rung === 4 ? item.name : rung === 5 ? '🔊' : '';
     this.ui.help.hidden = false;
     this.ui.help.textContent = rung === 4 ? 'Show me' : 'Hear it';
@@ -377,8 +397,10 @@ export class Drill {
     this.hintTimer = window.setTimeout(() => {
       if (this.card !== c || this.state !== 'turn') return;
       this.helped = true;
-      this.keys.light(c.steps[this.pos]?.keys ?? []);
-      this.status('Your turn', 'The next notes are lit (counts as help)');
+      const step = c.steps[this.pos];
+      this.keys.light(step?.keys ?? []);
+      const names = step ? c.item.groups[step.gi].map(shown).join(' ') : '';
+      this.status('Your turn', this.keysShown() ? 'The next notes are lit (counts as help)' : `Next: ${names} (counts as help)`);
     }, HINT_MS);
   }
 
@@ -467,16 +489,20 @@ export class Drill {
       text = clean ? 'clean' : this.pos < c.steps.length ? [`skipped after ${this.pos} of ${c.steps.length} ${c.steps.length === 1 ? 'chord or note' : 'notes or chords'}`, wrongText].filter(Boolean).join(' · ') : `${wrongText} (${total} notes)`;
     }
     if (this.helped) { text = clean ? 'clean, with help' : `${text} · with help`; }
-    const fullyClean = clean && !this.helped;
-    this.results.push({ item: c.item, clean: fullyClean, helped: this.helped, text });
+    const retried = this.retrying;
+    if (retried && clean) text = this.helped ? 'right on a retry, with help' : 'right on a retry';
+    const result: CardResult = { item: c.item, clean: clean && !this.helped && !retried, right: clean, retried, helped: this.helped, text };
+    if (retried && this.results.length) this.results[this.results.length - 1] = result; // Again: this try stands for the card
+    else this.results.push(result);
     void this.drawCard(true, marks); // the music (also for name and ear cards: now you see what it was)
     this.ui.name.textContent = this.stored.level.rung >= 4 ? c.item.name : '';
+    this.ui.name.className = 'ex-name small';
     this.keys.light([]);
     this.keys.wrong([...new Set(wrongKeys)]);
     this.keys.want(Object.keys(marks).filter((k) => marks[k] === MISSED).map((k) => Number(k.split(':')[1])));
     this.scoreLine();
     if (clean) { // right; with help it is noted in the results but moves on all the same (owner)
-      this.status(this.helped ? '✓ Right, with help' : '✓ Clean', 'Next card…', 'ok');
+      this.status(retried ? '✓ Right this time' : this.helped ? '✓ Right, with help' : '✓ Clean', 'Next card…', 'ok');
       const card = c;
       this.later(CLEAN_NEXT_MS, () => { if (this.card === card && this.state === 'result') this.nextCard(); });
       return;
@@ -507,6 +533,8 @@ export class Drill {
     this.ui.left.innerHTML = n ? `Card <b>${at}</b> of ${n}` : `Card <b>${at}</b>`;
     this.ui.mid.innerHTML = `<b>${this.results.filter((r) => r.clean).length}</b> clean`;
     this.ui.right.textContent = this.stored.level.onTime === 'notes' ? `${RUNG_NAMES[this.stored.level.rung]} · notes only` : RUNG_NAMES[this.stored.level.rung];
+    // Endless sets: Finish while a set is going.
+    this.ui.finish.hidden = !(this.on && this.limit === Infinity && this.state !== 'idle' && this.state !== 'done');
   }
 
   private later(ms: number, f: () => void): void { this.timers.push(window.setTimeout(f, Math.max(0, ms))); }
@@ -532,3 +560,6 @@ function noteName(midi: number, c: Card, k: number): string {
   if (spelled) return spelled.replace(/-?\d+$/, '');
   return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][midi % 12];
 }
+
+/** A card for "the misses again": not right first time without help, unless it came right on Again. */
+const isMiss = (r: CardResult) => !r.clean && !(r.retried && r.right);

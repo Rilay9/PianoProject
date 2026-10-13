@@ -951,6 +951,14 @@ export class FollowView {
       .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => n.midi));
   }
 
+  /** The written names (C♯4) of the keys struck at step i by the given hands, low to high. */
+  namesAt(i: number, hands: 'both' | 'right' | 'left'): { midi: number; name: string }[] {
+    return (this.steps[i]?.pos.staves ?? [])
+      .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
+      .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => ({ midi: n.midi, name: n.name })))
+      .sort((a, b) => a.midi - b.midi);
+  }
+
   /** The notes to play from here on, for the chosen hands (right = top staff, left = the others). */
   noteEvents(hands: 'both' | 'right' | 'left'): NoteEvent[] {
     const out: NoteEvent[] = [];

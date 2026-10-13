@@ -1,5 +1,7 @@
 // Score display settings: defaults plus overrides per song, kept separately for each kind of screen
-// (phone upright, phone sideways, tablet), so a change made on one does not reshape the others.
+// (phone upright, phone sideways, tablet), so a change made on one does not reshape the others. The playing
+// choices (tempo, mode, hands, metronome, On time, Ladder) are one per song whichever way it is held (owner,
+// 2026-10-12), and a few are one for the whole app.
 // Stored in localStorage under this app's own key, so nothing collides with the old app's data.
 
 export type Spacing = 'open' | 'compact' | 'tight';
@@ -178,6 +180,38 @@ function readApp(): Partial<AppWide> {
   try { return JSON.parse(localStorage.getItem(APP_KEY) ?? '{}') as Partial<AppWide>; } catch { return {}; }
 }
 
+/** Playing choices: per song only, not per screen (owner, 2026-10-12: turning the phone must not change the tempo or mode). */
+const SONG_KEY = 'piano-web.songs.v1';
+export const SONG_WIDE = ['speed', 'mode', 'hands', 'metronome', 'clickOn', 'onTime', 'ladderStep'] as const;
+type SongWide = Pick<ScoreSettings, (typeof SONG_WIDE)[number]>;
+const isSongWide = (key: string): key is (typeof SONG_WIDE)[number] => (SONG_WIDE as readonly string[]).includes(key);
+
+function readSongs(): Record<string, Partial<SongWide>> {
+  try {
+    const raw = localStorage.getItem(SONG_KEY);
+    if (raw) return JSON.parse(raw) as Record<string, Partial<SongWide>>;
+    // First run since they became per song: each song keeps the choice it had (from the phone upright first,
+    // then the tablet, then sideways), and they leave the screens' stores; a default made on a screen becomes the
+    // default for every song ("*").
+    const stored = read(), songs: Record<string, Partial<SongWide>> = {};
+    for (const d of ['phone-upright', 'tablet', 'phone-sideways'] as Device[]) {
+      for (const [piece, values] of Object.entries(stored[d].pieces)) {
+        const v = values as Record<string, unknown>, song = (songs[piece] ??= {}) as Record<string, unknown>;
+        for (const k of SONG_WIDE) if (k in v) { if (!(k in song)) song[k] = v[k]; delete v[k]; }
+        if (!Object.keys(v).length) delete stored[d].pieces[piece];
+      }
+      const defaults = stored[d].defaults as Record<string, unknown>, all = (songs['*'] ??= {}) as Record<string, unknown>;
+      for (const k of SONG_WIDE) if (k in defaults) { if (!(k in all)) all[k] = defaults[k]; delete defaults[k]; }
+    }
+    write(stored);
+    writeSongs(songs);
+    return songs;
+  } catch { return {}; }
+}
+function writeSongs(songs: Record<string, Partial<SongWide>>): void {
+  try { localStorage.setItem(SONG_KEY, JSON.stringify(songs)); } catch { /* storage unavailable: this visit only */ }
+}
+
 function writeApp(app: Partial<AppWide>): void {
   try { localStorage.setItem(APP_KEY, JSON.stringify(app)); } catch { /* storage unavailable: this visit only */ }
 }
@@ -193,6 +227,8 @@ function write(stored: Stored): void {
 export function settingsFor(pieceId: string, device = currentDevice()): ScoreSettings {
   const d = read()[device];
   const s = { ...DEFAULTS, ...DEVICE_DEFAULTS[device], ...d.defaults, ...d.pieces[pieceId] };
+  const songs = readSongs(), song = songs[pieceId] ?? {}, all = songs['*'] ?? {};
+  for (const key of SONG_WIDE) (s as Record<string, unknown>)[key] = song[key] ?? all[key] ?? DEFAULTS[key];
   if (s.mode === 'memorise') s.mode = 'watch'; // Memorise was a mode before it became its own screen
   // The app-wide ones come from their own store only (a per-song value saved before they moved is ignored).
   const app = readApp();
@@ -207,15 +243,16 @@ export function hasPieceOverride(pieceId: string, device = currentDevice()): boo
   return Object.keys(read()[device].pieces[pieceId] ?? {}).length > 0;
 }
 
-/** Saves a change for this song on this kind of screen only (an app-wide setting: for the whole app). */
+/** Saves a change for this song on this kind of screen only (a playing choice: for this song; an app-wide setting: for the whole app). */
 export function savePieceSetting<K extends keyof ScoreSettings>(pieceId: string, key: K, value: ScoreSettings[K], device = currentDevice()): void {
   if (isAppWide(key)) { writeApp({ ...readApp(), [key]: value }); return; }
+  if (isSongWide(key)) { const songs = readSongs(); songs[pieceId] = { ...songs[pieceId], [key]: value }; writeSongs(songs); return; }
   const stored = read();
   stored[device].pieces[pieceId] = { ...stored[device].pieces[pieceId], [key]: value };
   write(stored);
 }
 
-/** Makes this song's current settings the defaults on this kind of screen. */
+/** Makes this song's look the default on this kind of screen (its playing choices stay its own). */
 export function makeDefaults(pieceId: string, device = currentDevice()): void {
   const stored = read();
   const d = stored[device];

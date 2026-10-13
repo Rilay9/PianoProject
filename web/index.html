@@ -150,6 +150,7 @@
       <output id="ex-size" aria-live="polite"></output>
       <button id="ex-larger" type="button" class="btn" aria-label="Larger music">A+</button>
       <button id="ex-hear" type="button" class="btn" hidden>Hear again</button>
+      <button id="ex-finish" type="button" class="btn" hidden>Finish</button>
     </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
   </section>
@@ -268,6 +269,15 @@
         <label><input type="radio" name="m-timing" value="no"> The right notes (it waits for you)</label>
         <label><input type="radio" name="m-timing" value="yes"> The right notes, in time</label>
       </fieldset>
+      <fieldset class="row" id="m-ontime-set"><legend>On time</legend>
+        <label><input type="radio" name="m-onTime" value="relaxed"> Relaxed ±200 ms</label>
+        <label><input type="radio" name="m-onTime" value="normal"> Normal ±100 ms</label>
+        <label><input type="radio" name="m-onTime" value="strict"> Strict ±50 ms</label>
+      </fieldset>
+      <fieldset class="row"><legend>Metronome</legend>
+        <label><input type="radio" name="m-metronome" value="yes"> On</label>
+        <label><input type="radio" name="m-metronome" value="no"> Off</label>
+      </fieldset>
       <fieldset class="row"><legend>After a slip, start again from</legend>
         <label><input type="radio" name="m-carryFrom" value="bar"> The bar of the slip</label>
         <label><input type="radio" name="m-carryFrom" value="start"> The start</label>
@@ -287,7 +297,7 @@
         <label><input type="radio" name="m-next" value="auto"> By itself</label>
         <label><input type="radio" name="m-next" value="tap"> When I tap</label>
       </fieldset>
-      <p class="note">Your place is kept for each piece and each choice of hands. Size, keyboard and tempo here are Memorise's own.</p>
+      <p class="note">Your place is kept for each piece and each choice of hands. Size, keyboard, tempo, metronome and On time here are Memorise's own.</p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>

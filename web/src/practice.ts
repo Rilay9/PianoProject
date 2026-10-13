@@ -170,6 +170,13 @@ export class Practice {
   /** Another song, mode, loop or screen: a run paused by itself is over (its parts are not carried into the next). */
   forgetRun(): void { this.segments = []; }
 
+  /** Paused by itself, and you want to see how it went: the run ends with its summary. */
+  finishRun(): void {
+    const last = this.segments.pop();
+    if (last) this.onSummary(this.merged(last));
+    this.segments = [];
+  }
+
   /** Paused by itself: keeps how this part went, for the summary when the run ends. */
   suspend(): void {
     clearInterval(this.watch);

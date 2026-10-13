@@ -110,6 +110,10 @@ export class ExerciseNotation {
   private share = 1;
   /** Height at the bottom of the room covered by what floats over it (the frosted panel). */
   reserve: () => number = () => 0;
+  /** Music came on screen (true) or went. */
+  onShown: (on: boolean) => void = () => {};
+  /** Card mode: drawn as big as the room allows (A+ can do no more). */
+  filled = false;
 
   constructor(private readonly box: HTMLElement) {
     this.small = document.createElement('div');
@@ -129,6 +133,7 @@ export class ExerciseNotation {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
+    this.onShown(true);
     await this.osmd.load(itemsXml(items, lit, passage, meter, fifths, marks));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.loaded = true;
@@ -147,7 +152,7 @@ export class ExerciseNotation {
     this.box.classList.toggle('card', mode === 'card');
     if (mode === 'build') { this.box.style.paddingBottom = ''; this.small.style.width = ''; }
   }
-  /** Card mode: the share of the biggest size the card is drawn at (1 = as big as the room allows). */
+  /** Card mode: the share of the biggest size the card is drawn at (1 = that; above 1, tablets: on up to filling the room). */
   setShare(share: number): void { this.share = share; if (this.loaded && this.mode === 'card') this.fitCard(); }
   /** Something floating over the bottom changed height: fit the card again. */
   refit(): void { if (this.loaded && this.mode === 'card') this.fitCard(); }
@@ -199,7 +204,9 @@ export class ExerciseNotation {
     const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - reserve - 8 };
     // Drawn at OSMD zoom 1.1 = 11 px a staff space; the score's biggest size is 1.8 (18 px): never bigger.
     const most = 1.8 / 1.1;
-    const scale = Math.max(0.1, Math.min(room.w / w, room.h / h, most) * this.share);
+    const fit = Math.min(room.w / w, room.h / h);
+    const scale = Math.max(0.1, this.share > 1 ? Math.min(fit, most * this.share) : Math.min(fit, most) * this.share);
+    this.filled = scale >= fit - 1e-6;
     svg.setAttribute('width', String(w * scale));
     svg.setAttribute('height', String(h * scale));
   }
@@ -209,5 +216,6 @@ export class ExerciseNotation {
     this.loaded = false;
     this.small.replaceChildren();
     this.box.classList.add('off');
+    this.onShown(false);
   }
 }

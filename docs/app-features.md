@@ -26,8 +26,15 @@ Fingering is on; the learner can add their own (⋯ → Edit fingering).
 play) or *Rolling* on a phone upright, a scrolling single line (*smooth* or *still then glide*) on a phone sideways,
 *Turn* on a tablet. A marker moves through it (a bar, coloured notes, or both; per hand or across hands). Under the
 music: a keyboard strip and/or note names. Display settings (size, spacing, layout, slots, bars per line, bar
-numbers, tempo marks, fingering, lyrics, marker, what is under the music, "Music while playing", theme) are kept per
-kind of screen, with a default plus each song's own (`web/src/settings.ts`, `web/src/follow.ts`).
+numbers, tempo marks, fingering, lyrics, marker, what is under the music, "Music while playing") are kept per
+kind of screen, with a default plus each song's own (`web/src/settings.ts`, `web/src/follow.ts`); Make default and
+Reset this song touch only these. The playing choices (tempo, mode, hands, metronome and what it clicks on, On time,
+Ladder step) are one per song whichever way the phone is held; theme, volumes, click sound and piano output are
+app-wide.
+
+**Score files:** solo piano, right hand on the top staff (the app takes the top staff as the right hand and every
+other staff as the left). A file with other parts or more than two staves is opened with a note saying the hands may
+be wrong. A per-score hand map is to be added when a piece needs one.
 
 **Hands:** L / R / Both / Off. In Watch these are the hands the piano plays; in the other modes the hands *you*
 play (the piano plays the rest; Off = you play everything, piano silent). Tempo: speed and beats per minute, ±5,
@@ -46,7 +53,8 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due) or on mashing (6+ keys not in the
-score within ¼ s), and carries on from your next key; the parts add up to one summary. *Music while playing* off
+score within ¼ s), and carries on from your next key, or *See how it went* in the pause message ends the run with
+its summary; the parts add up to one summary. *Music while playing* off
 (Blind): the music hides while you play.
 
 **Fit for lessons:** any piece or short exercise score; choose the mode by goal (notes → Wait for me; tempo → Play
@@ -70,8 +78,10 @@ piece, nothing else of the score screen.
 3. *Your turn:* those bars are covered (grey, numbered). Your first note starts the pass. When timing doesn't
    count it **waits for each note** (no clock); with "in time" on it runs at the tempo. The pass always finishes:
    wrong keys are noted and you carry on; stuck, hold *Peek* (uncovers while held) or wait 3 s and the next note
-   lights on the keys — either counts as a slip.
-4. After the pass: clean passes count towards "learned" (1 / 2 / 3 in a row); slips show on the uncovered bars
+   lights on the keys (named in the message when no keys are shown) — either counts as a slip. A key that isn't the
+   first note doesn't start the pass: it says so and waits (also when going again after a slip).
+4. After the pass: clean passes count towards "learned" (1 / 2 / 3 in a row), but only passes from the first bar
+   being learned (one started at a later bar is practice, then it asks for the whole); slips show on the uncovered bars
    (missed notes green, early/late amber when timing counts, wrong keys red on the keys) and stay until you play
    again, from the bar of the first slip (or the start).
 5. A learned chunk asks how to join it up: with the chunk before, everything so far, or on to the next chunk
@@ -81,7 +91,7 @@ Controls: ▶/■, *Hear* (tap: the bar you are on or slipped in; hold: everythi
 tap a covered bar to start your turn there, ‹ › to change chunk. Progress (chunk, bars learned, clean passes) is
 kept per piece and per hand choice, with the chunk size it was made with (another size starts that piece afresh).
 Changing "in time" or "a bar / the whole chunk" mid-turn goes back to the start of the turn and the clean count
-restarts. A key that starts a pass where your part has a rest just starts it (it is not a wrong key). Own settings: hands, tempo, size, keyboard strip, plus the options above.
+restarts. A key that starts a pass where your part has a rest just starts it (it is not a wrong key). Own settings: hands, tempo, size, keyboard strip, metronome and On time (when "in time"), plus the options above.
 
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
@@ -100,8 +110,8 @@ one each round until you slip. `web/src/exercise/simon.ts`.
 **How it works:** the app gives the chain (as the help level says), it stays shown until your first key, then you
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
 outlined, names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
-game over / keep going). Pools add a random item each round; passages grow in their own order. Best chain kept per
-set.
+game over / keep going). Pools add a random item each round; passages grow in their own order; a completed passage
+is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs).
 
 **Help levels** (shared with Drills): 1 music + sound + keys lit, 2 music + sound, 3 music only, 4 name only,
 5 by ear. **Matching:** the same keys, any octave, or any octave and inversion. **Speed:** steady, or quickening as
@@ -127,10 +137,14 @@ your first note (by ear: always your first note); the metronome can keep clickin
   length; *On time: notes only* judges every card on notes alone.
 
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
-red) and waits for *Again* or *Next*. Help (*Hear it*, *Show me*, or the 3 s hint on a notes-only card) is noted and
-the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards or until you stop; then each
-card's result, *the misses again* (just those) or a new set. Best kept per set (from full sets, not "the misses
-again"); tempo per set. A card never grows,
+red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
+different cards); a card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
+Help (*Hear it*, *Show me*, or the 3 s hint on a notes-only card, which names the notes when the keys aren't shown) is
+noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
+*Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
+(help rung, On time), from full sets only, shown on the Ready screen and at the end; tempo per set. A name to play
+is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
+make a card bigger than the score's biggest size, up to filling the room. A card never grows,
 so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
 A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
 
@@ -191,12 +205,14 @@ placeholders for checking the app, not lesson content.
   kept per kind of screen. On the exercise screen (Simon, Drills) a phone sideways gets one bar above the keys for
   what it says, its buttons and the size/Hear tools, and a keyboard a fifth of the height; elsewhere what it says
   floats frosted over the bottom of the music. Sideways the exercise header and score line are one row, and the
-  settings dialogs lay their groups out in two columns.
+  settings dialogs lay their groups out in two columns. Feedback may take two lines rather than being cut. Every
+  dialog has a ✕ in its corner and a Done bar that stays in view while it scrolls.
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.
 - Back up / restore (⋯) saves every setting, mark and progress record (all `piano-web.*` storage) to one file.
-- Saved data: `piano-web.settings.v2` (score look and modes, per screen type and song), `piano-web.app.v1`
+- Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
+  choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`.
 

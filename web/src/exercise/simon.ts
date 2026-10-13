@@ -108,8 +108,8 @@ export class Simon {
     this.reset();
   }
 
-  /** The best chain is kept per set. */
-  private bestKey(): string { return this.set.id; }
+  /** The best chain per set and level (owner, 2026-10-12): the help rung, what must match and what a miss costs. */
+  private bestKey(): string { return `${this.set.id}|${this.level.rung}|${this.level.match}|${this.level.miss}`; }
 
   private reset(): void {
     this.stopAll();
@@ -209,7 +209,7 @@ export class Simon {
         if (rung === 1) this.keys.light(step.keys);
         if (withNotation && step.item !== lastItem) void this.drawChain([step.item]);
         lastItem = step.item;
-        if (rung === 4) this.ui.name.textContent = this.chain[step.item].name;
+        if (rung === 4) { this.ui.name.textContent = this.chain[step.item].name; this.ui.name.className = 'ex-name big'; }
         this.ui.sub.textContent = `${step.item + 1} of ${this.chain.length}`;
       });
     }
@@ -229,7 +229,7 @@ export class Simon {
     if (rung === 1) this.keys.light(this.flat[from]?.keys ?? []); // where to start
     if (rung === 4) {
       this.ui.name.textContent = this.chain.map((it) => it.name).join(' · ');
-      this.ui.name.className = 'ex-name small';
+      this.ui.name.className = 'ex-name big';
     } else this.ui.name.textContent = '';
     const left = this.chain.length - (this.flat[from]?.item ?? 0);
     const what = left === 1 ? 'play it' : `play these ${left}`;
@@ -298,6 +298,7 @@ export class Simon {
     if (this.set.order === 'passage' && length >= this.items.length) {
       this.state = 'done';
       this.waitRelease = this.keys.down.size > 0;
+      void this.drawChain([]); // the whole passage, now that it is played
       this.ui.status.textContent = `You played all of it (${length}).`;
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
@@ -323,17 +324,15 @@ export class Simon {
     // What was wanted: a chord or one note by name; within a longer item (an arpeggio, a bar), the notes due next.
     const played = item.groups.filter((g) => g.length);
     const next = played[this.flat.slice(0, this.pos + 1).filter((g) => g.item === group.item).length - 1] ?? [];
-    this.ui.status.textContent = played.length > 1
-      ? `Not quite: in ${item.name} the next was ${next.map(shown).join(' ')}`
-      : `Not quite: ${item.name}${group.keys.length > 1 ? ` is ${next.map(shown).join(' ')}` : ''}`;
+    this.ui.status.textContent = `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}`;
     this.ui.status.className = 'ex-status bad';
-    this.ui.sub.textContent = `You played ${shown(noteName(midi))}.`;
+    this.ui.sub.textContent = played.length > 1 ? `In ${item.name}.` : group.keys.length > 1 ? `${item.name}.` : '';
     if (this.level.miss === 'tries') this.tries--;
     this.scoreLine();
     if (this.level.miss === 'over' || (this.level.miss === 'tries' && this.tries <= 0)) {
       this.state = 'over';
       this.waitRelease = true; // the miss's own key is still down
-      this.ui.sub.textContent += ` Game over: chain ${this.chain.length - 1}.`;
+      this.ui.sub.textContent = `${this.ui.sub.textContent} Game over: chain ${this.chain.length - 1}.`.trim();
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
       this.ui.hear.hidden = true;
@@ -342,7 +341,7 @@ export class Simon {
     // Again: the whole chain from the start, or from the missed item on (and you carry on from there).
     const fromMiss = this.level.onMiss === 'from-miss';
     const turnFrom = fromMiss ? this.flat.findIndex((g) => g.item === group.item) : 0;
-    this.ui.sub.textContent += fromMiss ? ' Again from there…' : ' The chain again…';
+    this.ui.sub.textContent = `${this.ui.sub.textContent} ${fromMiss ? 'Again from there…' : 'The chain again…'}`.trim();
     const token = ++this.token;
     this.later(REPLAY_MS, () => { if (token === this.token) void this.showChain(fromMiss ? group.item : 0, turnFrom); });
   }
