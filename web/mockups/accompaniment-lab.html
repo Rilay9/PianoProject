@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accompaniment lab mockups</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --line: #b8bcc4;
+    --accent: #2563eb; --ok: #16a34a; --amber: #d97706; --bad: #dc2626; --btn: #f3f4f6; --you: #f59e0b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 8px; }
+  p.intro, .note { max-width: 1000px; color: var(--muted); margin: 4px 0 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 300px; }
+  figcaption b { color: var(--fg); }
+  .phone { width: 300px; height: 610px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .phone.side { width: 610px; height: 300px; }
+  .tablet { width: 780px; height: 540px; background: var(--phone); border-radius: 20px; border: 10px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; }
+  .top { background: var(--bar); padding: 8px 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .top .t { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .x { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 9px; font-size: 12px; white-space: nowrap; }
+  .x.main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .bottom { background: var(--bar); padding: 6px 10px; display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--line); font-size: 12px; }
+  .pad { padding: 10px 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .h { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .title { font-size: 20px; font-weight: 700; } .meta { font-size: 12px; color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .big { border: 1.5px solid var(--line); border-radius: 12px; padding: 10px; font-weight: 700; font-size: 15px; background: #fff; }
+  .big small { display: block; font-weight: 400; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .big.on { border-color: var(--accent); background: #eef4ff; color: #1d4ed8; }
+  .steps { display: flex; flex-direction: column; gap: 4px; }
+  .step { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 6px; border-radius: 8px; }
+  .step i { font-style: normal; width: 18px; height: 18px; border-radius: 9px; border: 1.5px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); flex: none; }
+  .step.on { background: #eef4ff; } .step.on i { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step.done i { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .step small { color: var(--muted); }
+  .say { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+  .say b { display: block; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .grid div { border-radius: 8px; background: #f3f4f6; text-align: center; padding: 4px 0 5px; position: relative; overflow: hidden; }
+  .grid div small { display: block; font-size: 9px; color: #9ca3af; }
+  .grid div b { font: 700 16px 'Times New Roman', serif; }
+  .grid div.now { background: #fff7e6; outline: 2px solid var(--you); }
+  .grid div.now::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: 55%; background: var(--you); }
+  .grid div.ok { background: #dcfce7; } .grid div.amber { background: #fef3c7; } .grid div.miss { background: #fee2e2; }
+  .grid.tall div { padding: 9px 0; } .grid.tall div b { font-size: 20px; }
+  .beats { display: flex; gap: 8px; justify-content: center; align-items: center; font-size: 12px; color: var(--muted); }
+  .beats i { width: 16px; height: 16px; border-radius: 8px; background: #e5e7eb; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 9px; color: #6b7280; }
+  .beats i.hit { background: var(--you); color: #fff; } .beats i.past { background: #fde68a; }
+  .now-next { display: flex; align-items: baseline; justify-content: center; gap: 14px; }
+  .now-next .n { font: 700 38px 'Times New Roman', serif; } .now-next .nx { color: var(--muted); font-size: 13px; }
+  .now-next .nx b { font: 700 18px 'Times New Roman', serif; color: var(--fg); }
+  .do { text-align: center; font-size: 13px; font-weight: 600; background: #fff7e6; border-radius: 8px; padding: 6px 8px; color: #92400e; }
+  .band { display: flex; gap: 5px; flex-wrap: wrap; font-size: 11px; color: var(--muted); align-items: center; }
+  .band span { border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; border-radius: 10px; padding: 1px 7px; }
+  .band span.off { border-style: dashed; background: #fff; color: #9ca3af; }
+  .kb { position: relative; height: 96px; display: flex; padding: 0 4px 4px; background: var(--bar); }
+  .w { flex: 1; border: 1px solid #c7cad1; border-top: none; border-radius: 0 0 4px 4px; background: #fbfbfc; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 8px; color: #6b7280; padding-bottom: 2px; }
+  .b { position: absolute; top: 0; width: 4.8%; height: 60%; background: #23262c; border-radius: 0 0 3px 3px; z-index: 2; }
+  .w.chord { background: #2563eb; color: #fff; } .b.chord { background: #2563eb; }
+  .w.scale { background: #bfdbfe; } .b.scale { background: #5b7fc7; }
+  .w.root { background: #1e3a8a; color: #fff; }
+  .feedback { font-size: 12px; text-align: center; color: var(--muted); }
+  .feedback b { color: var(--ok); }
+  pre { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 12px; overflow: auto; }
+  .cols { display: flex; gap: 16px; flex-wrap: wrap; max-width: 1100px; }
+  .cols > div { flex: 1 1 320px; }
+  table.cmp { border-collapse: collapse; font-size: 13px; max-width: 1000px; background: #fff; }
+  table.cmp td, table.cmp th { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  ul.tight { margin: 4px 0; padding-left: 18px; max-width: 1000px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>Accompaniment lab: mockups, take 2 (2026-10-13)</h1>
+<p class="intro">Built around what went wrong last time: you never knew what to press first, what each control did, what your part was, or what to
+play next. So here: <b>one question first (Lead or Accompaniment)</b>, then <b>a small step to try</b>, a sentence saying exactly what you'll do and what
+the app plays, and while playing <b>one instruction, the chord now and next, the beat, and the keys to use</b>. Everything else (which band parts play,
+the mix) stays out of the way in ⚙.</p>
+<p class="intro">(The staves here are sketches: the noteheads are placeholders, not the real tunes; the keyboards show F7 as F3 A3 C4 E♭4.)</p>
+<p class="intro">Honest about where music comes from: <b>melodies are never made up by the app</b>. "Play the melody" uses a real song's lead sheet, and an
+"example to play" is one written into the lesson's content. What the app makes is the backing: the chords played by a style (a pattern per genre,
+written as content) and the simple beginner steps below, which are standard ways of starting out (roots, then chords on the beat; chord tones and a
+scale for improvising).</p>
+
+<h2>Phone held upright</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Lab</span><span class="x">⚙</span><span class="x">Done</span></div>
+      <div class="pad">
+        <div><div class="title">12-bar blues</div><div class="meta">Key C · Shuffle · ♩ 84 · <u>change</u></div></div>
+        <div class="h">What do you want to play?</div>
+        <div class="two"><div class="big">Lead<small>the tune on top</small></div><div class="big on">Accompaniment<small>the chords under it</small></div></div>
+        <div class="h">Start with a step</div>
+        <div class="steps">
+          <div class="step done"><i>✓</i>Roots <small>— one note a bar, on beat 1</small></div>
+          <div class="step on"><i>2</i>Chords on beat 1 <small>— the whole chord, held</small></div>
+          <div class="step"><i>3</i>The shuffle rhythm <small>— chords on 2 and 4</small></div>
+          <div class="step"><i>4</i>Your own way <small>— any voicing, any rhythm</small></div>
+        </div>
+        <div class="say"><b>You play: the chord on beat 1 of each bar.</b>The app plays drums, bass and the melody. The keys to press light up.</div>
+        <div class="grid"><div><small>1</small><b>C7</b></div><div><small>2</small><b>C7</b></div><div><small>3</small><b>C7</b></div><div><small>4</small><b>C7</b></div><div><small>5</small><b>F7</b></div><div><small>6</small><b>F7</b></div><div><small>7</small><b>C7</b></div><div><small>8</small><b>C7</b></div><div><small>9</small><b>G7</b></div><div><small>10</small><b>F7</b></div><div><small>11</small><b>C7</b></div><div><small>12</small><b>G7</b></div></div>
+      </div>
+      <div class="bottom" style="justify-content:center"><span class="x main" style="padding:7px 34px;font-size:15px">▶ Start</span></div>
+    </div>
+    <figcaption><b>1. Opening.</b> ChatGPT's layout, which you liked: the two big choices, then how. "How" is a short ladder of steps, the next one
+    picked for you (✓ marks a step already played clean). One sentence says what you'll do and what the app does. The box of chords shows the
+    whole form before you start.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">12-bar blues · step 2</span><span class="x">⚙</span><span class="x">■</span></div>
+      <div class="pad">
+        <div class="do">Play the chord on beat 1 · hold it</div>
+        <div class="beats"><i class="hit">1</i><i>2</i><i>3</i><i>4</i><span style="margin-left:6px">bar 5 of 12 · round 1</span></div>
+        <div class="now-next"><span class="n">F7</span><span class="nx">next <b>F7</b><br>then C7</span></div>
+        <div class="grid"><div class="ok"><small>1</small><b>C7</b></div><div class="ok"><small>2</small><b>C7</b></div><div class="amber"><small>3</small><b>C7</b></div><div class="ok"><small>4</small><b>C7</b></div><div class="now"><small>5</small><b>F7</b></div><div><small>6</small><b>F7</b></div><div><small>7</small><b>C7</b></div><div><small>8</small><b>C7</b></div><div><small>9</small><b>G7</b></div><div><small>10</small><b>F7</b></div><div><small>11</small><b>C7</b></div><div><small>12</small><b>G7</b></div></div>
+        <div class="band">The band: <span>drums</span><span>bass</span><span>melody</span><span class="off">chords (you)</span></div>
+        <div class="feedback">Bar 3: right chord, a little late</div>
+        <div style="flex:1"></div>
+      </div>
+      <div class="kb"><div class="w">C3</div><div class="w"></div><div class="w"></div><div class="w chord">F</div><div class="w"></div><div class="w chord">A</div><div class="w"></div><div class="w chord">C4</div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w">C5</div><div class="b" style="left:5%"></div><div class="b" style="left:12%"></div><div class="b" style="left:24.5%"></div><div class="b" style="left:31.5%"></div><div class="b" style="left:38.5%"></div><div class="b" style="left:51.5%"></div><div class="b chord" style="left:58.5%"></div><div class="b" style="left:71%"></div><div class="b" style="left:78%"></div><div class="b" style="left:85%"></div></div>
+      <div class="bottom"><span class="x">Loop</span><span class="x">♩ 84</span><span class="x">Keys lit ▾</span><span style="flex:1"></span><span>F7 = F A C E♭</span></div>
+    </div>
+    <figcaption><b>2. Accompaniment, playing.</b> From the top: <b>what to do</b> (one line, from the step), <b>the beat</b> (1 lights with the drums; a
+    one-bar count-in first), <b>the chord now and the next two</b>, the box of chords with the bar you're in (its line fills as the bar goes), and
+    <b>the keys to press</b> lit with their names. Each bar goes green / amber / red as you go. Help steps down: keys lit → the notes named → the symbol only.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">12-bar blues · improvise</span><span class="x">⚙</span><span class="x">■</span></div>
+      <div class="pad">
+        <div class="do">Play any lit key · land on a dark one when the chord changes</div>
+        <div class="beats"><i class="past">1</i><i class="past">2</i><i class="hit">3</i><i>4</i><span style="margin-left:6px">bar 9 of 12</span></div>
+        <div class="now-next"><span class="n">G7</span><span class="nx">next <b>F7</b><br>in 2 beats</span></div>
+        <div class="grid"><div><small>1</small><b>C7</b></div><div><small>2</small><b>C7</b></div><div><small>3</small><b>C7</b></div><div><small>4</small><b>C7</b></div><div><small>5</small><b>F7</b></div><div><small>6</small><b>F7</b></div><div><small>7</small><b>C7</b></div><div><small>8</small><b>C7</b></div><div class="now"><small>9</small><b>G7</b></div><div><small>10</small><b>F7</b></div><div><small>11</small><b>C7</b></div><div><small>12</small><b>G7</b></div></div>
+        <div class="band">The band: <span>drums</span><span>bass</span><span>chords</span><span class="off">melody (you)</span></div>
+        <div class="feedback">This round: <b>landed on the chord 7 of 8 changes</b> · 92% of notes from the lit keys</div>
+        <div style="flex:1"></div>
+      </div>
+      <div class="kb"><div class="w">C4</div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w">C5</div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w">C6</div><div class="b" style="left:5%"></div><div class="b" style="left:12%"></div><div class="b" style="left:24.5%"></div><div class="b" style="left:31.5%"></div><div class="b" style="left:38.5%"></div><div class="b" style="left:51.5%"></div><div class="b" style="left:58.5%"></div><div class="b" style="left:71%"></div><div class="b" style="left:78%"></div><div class="b" style="left:85%"></div></div>
+      <div class="bottom"><span class="x">Loop</span><span class="x">♩ 84</span><span class="x">Guide ▾</span><span style="flex:1"></span><span>C blues scale · G7 notes dark</span></div>
+    </div>
+    <figcaption><b>3. Lead, improvising.</b> The guide (from the lesson's content: here the C blues scale) lights on the keys, the current chord's own
+    notes darker. The simple rule is the instruction. It isn't marked right or wrong; it just tells you how it went in plain words, and says so.
+    (Keys drawn plain here: in the app they light as described.)</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">12-bar blues · how it went</span><span class="x">Done</span></div>
+      <div class="pad">
+        <div class="grid tall"><div class="ok"><small>1</small><b>C7</b></div><div class="ok"><small>2</small><b>C7</b></div><div class="amber"><small>3</small><b>C7</b></div><div class="ok"><small>4</small><b>C7</b></div><div class="ok"><small>5</small><b>F7</b></div><div class="ok"><small>6</small><b>F7</b></div><div class="ok"><small>7</small><b>C7</b></div><div class="ok"><small>8</small><b>C7</b></div><div class="miss"><small>9</small><b>G7</b></div><div class="ok"><small>10</small><b>F7</b></div><div class="ok"><small>11</small><b>C7</b></div><div class="amber"><small>12</small><b>G7</b></div></div>
+        <div style="font-size:15px;font-weight:700;margin-top:4px">10 of 12 bars right · 8 on the beat</div>
+        <div style="font-size:13px">Bar 9 <b>G7</b>: you played G B D — it needs F as well (the 7th).</div>
+        <div style="font-size:13px">Bars 3 and 12: right chord, a little after the beat.</div>
+        <div class="say"><b>Next: step 3, the shuffle rhythm</b>Two rounds clean on this step. Or stay and tidy bars 9–12.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="x main">Step 3 ▶</span><span class="x">Loop bars 9–12</span><span class="x">Again</span><span class="x">Try the lead</span></div>
+      </div>
+    </div>
+    <figcaption><b>4. How it went, and what's next.</b> In music words (which bar, which chord, which note), then the obvious next move with a reason,
+    and the other choices beside it.</figcaption>
+  </figure>
+</div>
+
+<div class="row" style="margin-top:20px">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Autumn Leaves · melody</span><span class="x">⚙</span><span class="x">■</span></div>
+      <div class="pad" style="gap:6px">
+        <div class="do">Play the melody · the band plays along</div>
+        <div class="beats"><i class="past">1</i><i class="hit">2</i><i>3</i><i>4</i><span style="margin-left:6px">bar 2 of 32</span></div>
+        <svg viewBox="0 0 276 170" width="276" height="170">
+          <g font-family="Times New Roman" font-weight="700" font-size="15"><text x="16" y="22">Cm7</text><text x="84" y="22">F7</text><text x="148" y="22">B♭maj7</text><text x="216" y="22">E♭maj7</text></g>
+          <g stroke="#111"><line x1="6" x2="272" y1="40" y2="40"/><line x1="6" x2="272" y1="48" y2="48"/><line x1="6" x2="272" y1="56" y2="56"/><line x1="6" x2="272" y1="64" y2="64"/><line x1="6" x2="272" y1="72" y2="72"/><line x1="74" x2="74" y1="40" y2="72"/><line x1="140" x2="140" y1="40" y2="72"/><line x1="206" x2="206" y1="40" y2="72"/><line x1="272" x2="272" y1="40" y2="72"/></g>
+          <rect x="82" y="34" width="20" height="44" rx="3" fill="#fde68a" opacity=".7"/>
+          <g fill="#111"><ellipse cx="28" cy="60" rx="5" ry="4"/><ellipse cx="44" cy="56" rx="5" ry="4"/><ellipse cx="60" cy="52" rx="5" ry="4"/><ellipse cx="92" cy="44" rx="5.5" ry="4" fill="none" stroke="#111" stroke-width="1.6"/><ellipse cx="118" cy="44" rx="5" ry="4"/><ellipse cx="156" cy="48" rx="5" ry="4"/><ellipse cx="174" cy="52" rx="5" ry="4"/><ellipse cx="190" cy="56" rx="5" ry="4"/><ellipse cx="228" cy="60" rx="5.5" ry="4" fill="none" stroke="#111" stroke-width="1.6"/></g>
+          <text x="6" y="110" font-size="11" fill="#6b7280" font-family="system-ui">The song's lead sheet, followed like any score</text>
+          <text x="6" y="125" font-size="11" fill="#6b7280" font-family="system-ui">(the same drawing, marker and sizes).</text>
+        </svg>
+        <div class="band">The band: <span>drums</span><span>bass</span><span>chords</span><span class="off">melody (you)</span></div>
+        <div class="feedback">Judged like Play along: notes on time, early, late, missed</div>
+        <div style="flex:1"></div>
+      </div>
+      <div class="bottom"><span class="x">Loop</span><span class="x">♩ 100</span><span class="x">Count-in 1 bar</span><span style="flex:1"></span><span class="x">A−</span><span class="x">A+</span></div>
+    </div>
+    <figcaption><b>5. Lead, from a real song.</b> With a lead sheet the Lead choice offers "Play the melody": the score you know, with the band behind
+    you. Lead steps for a song: hear it → melody with keys lit → melody alone → melody your way (embellish; not judged).</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">⚙ The band</span><span class="x">Done</span></div>
+      <div class="pad">
+        <div class="h">Who plays what</div>
+        <div class="say" style="display:grid;grid-template-columns:70px 1fr;row-gap:6px;align-items:center">
+          <b style="font-size:13px">Melody</b><span><span class="x">Band</span> <span class="x">Off</span></span>
+          <b style="font-size:13px">Chords</b><span><span class="x" style="background:#fff7e6;border-color:#f59e0b">You</span></span>
+          <b style="font-size:13px">Bass</b><span><span class="x" style="background:#eef4ff;border-color:#2563eb">Band</span> <span class="x">Off</span></span>
+          <b style="font-size:13px">Drums</b><span><span class="x" style="background:#eef4ff;border-color:#2563eb">Band</span> <span class="x">Off</span></span>
+        </div>
+        <div class="h">Mix</div>
+        <div style="font-size:13px">Band <input type="range" style="width:150px"><br>Melody <input type="range" style="width:140px"><br>Click <input type="range" style="width:155px"></div>
+        <div class="h">Style</div>
+        <div class="band" style="font-size:12px"><span>Pop</span><span>Rock</span><span>Ballad</span><span style="background:#2563eb;color:#fff">Shuffle</span><span>Swing</span><span>Bossa</span></div>
+        <div class="h">Count-in, loop, tempo</div>
+        <div style="font-size:13px">1 bar · whole form · ♩ 84 (song: 96)</div>
+      </div>
+    </div>
+    <figcaption><b>6. ⚙, for later.</b> Which band parts play (silence the melody to test yourself; drop the drums to keep time alone), the mix,
+    the style, count-in. Out of the way until wanted.</figcaption>
+  </figure>
+</div>
+
+<h2>Phone held sideways and tablet</h2>
+<div class="row">
+  <figure>
+    <div class="phone side">
+      <div class="top"><span class="t">12-bar blues · step 2 · chords on beat 1</span><span class="x">⚙</span><span class="x">■</span></div>
+      <div style="display:flex;flex:1;gap:10px;padding:8px;align-items:center">
+        <div style="width:150px;display:flex;flex-direction:column;gap:6px;align-items:center">
+          <div class="beats"><i class="hit">1</i><i>2</i><i>3</i><i>4</i></div>
+          <div class="now-next" style="flex-direction:column;gap:0;align-items:center"><span class="n" style="font-size:48px">F7</span><span class="nx">next <b>F7</b> · then C7</span></div>
+        </div>
+        <div style="flex:1"><div class="grid" style="grid-template-columns:repeat(6,1fr)"><div class="ok"><small>1</small><b>C7</b></div><div class="ok"><small>2</small><b>C7</b></div><div class="amber"><small>3</small><b>C7</b></div><div class="ok"><small>4</small><b>C7</b></div><div class="now"><small>5</small><b>F7</b></div><div><small>6</small><b>F7</b></div><div><small>7</small><b>C7</b></div><div><small>8</small><b>C7</b></div><div><small>9</small><b>G7</b></div><div><small>10</small><b>F7</b></div><div><small>11</small><b>C7</b></div><div><small>12</small><b>G7</b></div></div></div>
+      </div>
+      <div class="kb" style="height:70px"><div class="w">C3</div><div class="w"></div><div class="w"></div><div class="w chord">F</div><div class="w"></div><div class="w chord">A</div><div class="w"></div><div class="w chord">C4</div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w">C5</div><div class="b" style="left:5%"></div><div class="b" style="left:12%"></div><div class="b" style="left:24.5%"></div><div class="b" style="left:31.5%"></div><div class="b" style="left:38.5%"></div><div class="b" style="left:51.5%"></div><div class="b chord" style="left:58.5%"></div><div class="b" style="left:71%"></div><div class="b" style="left:78%"></div><div class="b" style="left:85%"></div></div>
+    </div>
+    <figcaption style="max-width:610px"><b>7. Sideways.</b> The instruction moves into the top bar; beat and chord now/next on the left; the whole box of
+    chords on the right (two rows of six); a thin keyboard for the lit keys (off when help is "symbol only").</figcaption>
+  </figure>
+  <figure>
+    <div class="tablet">
+      <div class="top"><span class="t">12-bar blues · step 2 · chords on beat 1</span><span class="x">⚙</span><span class="x">■</span></div>
+      <div style="display:flex;flex:1;gap:16px;padding:14px;min-height:0">
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div class="do" style="font-size:15px">Play the chord on beat 1 · hold it</div>
+          <div class="beats" style="font-size:14px"><i class="hit" style="width:22px;height:22px">1</i><i style="width:22px;height:22px">2</i><i style="width:22px;height:22px">3</i><i style="width:22px;height:22px">4</i><span style="margin-left:8px">bar 5 of 12 · round 1</span></div>
+          <div class="grid tall"><div class="ok"><small>1</small><b>C7</b></div><div class="ok"><small>2</small><b>C7</b></div><div class="amber"><small>3</small><b>C7</b></div><div class="ok"><small>4</small><b>C7</b></div><div class="now"><small>5</small><b>F7</b></div><div><small>6</small><b>F7</b></div><div><small>7</small><b>C7</b></div><div><small>8</small><b>C7</b></div><div><small>9</small><b>G7</b></div><div><small>10</small><b>F7</b></div><div><small>11</small><b>C7</b></div><div><small>12</small><b>G7</b></div></div>
+          <div class="band">The band: <span>drums</span><span>bass</span><span>melody</span><span class="off">chords (you)</span></div>
+        </div>
+        <div style="width:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-left:1px solid #e5e7eb">
+          <span style="color:var(--muted);font-size:13px">now</span><span class="n" style="font:700 72px 'Times New Roman',serif">F7</span>
+          <span style="font-size:13px">F A C E♭</span>
+          <span style="color:var(--muted);font-size:13px;margin-top:10px">next</span><span style="font:700 32px 'Times New Roman',serif">F7</span><span style="color:var(--muted);font-size:12px">then C7</span>
+        </div>
+      </div>
+      <div class="kb"><div class="w">C3</div><div class="w"></div><div class="w"></div><div class="w chord">F</div><div class="w"></div><div class="w chord">A</div><div class="w"></div><div class="w chord">C4</div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w">C5</div><div class="b" style="left:5%"></div><div class="b" style="left:12%"></div><div class="b" style="left:24.5%"></div><div class="b" style="left:31.5%"></div><div class="b" style="left:38.5%"></div><div class="b" style="left:51.5%"></div><div class="b chord" style="left:58.5%"></div><div class="b" style="left:71%"></div><div class="b" style="left:78%"></div><div class="b" style="left:85%"></div></div>
+    </div>
+    <figcaption style="max-width:780px"><b>8. Tablet.</b> The box of chords large on the left, the chord now and next very large on the right.</figcaption>
+  </figure>
+</div>
+
+<h2>The beginner steps (what the app can honestly offer from a song's chords)</h2>
+<div class="cols">
+  <div><b>Accompaniment</b>
+    <ul class="tight"><li><b>1 Roots</b>: the chord's root, one note on beat 1 (left hand; the first thing anyone learns).</li>
+    <li><b>2 Chords on beat 1</b>: the whole chord, held for the bar (a simple voicing shown on the keys).</li>
+    <li><b>3 The style's rhythm</b>: the chord in the genre's pattern (shuffle: 2 and 4; rock: steady eighths; ballad: arpeggiated) — from the style file.</li>
+    <li><b>4 Your own way</b>: any voicing, any rhythm; judged on the chord's notes only.</li></ul></div>
+  <div><b>Lead</b>
+    <ul class="tight"><li>With a song's lead sheet: <b>hear it → melody with keys lit → melody alone → your own way</b> (embellish; not judged).</li>
+    <li>With a chord chart (no melody): <b>improvise</b> — <b>1 roots in rhythm</b> (one note, play with the drums) → <b>2 chord notes</b> (the lit dark keys) →
+    <b>3 the scale</b> (the lesson names it, e.g. the blues scale) → free. Not marked; told plainly how it went.</li>
+    <li>"Show me an example": a lick or line written into the lesson's content, played and lit for you to copy.</li></ul></div>
+</div>
+
+<h2>The skeleton: the content it takes</h2>
+<p class="note">Three kinds of file, so weekly lessons plug in without touching the app.</p>
+<div class="cols">
+  <div><b>A song (lead sheet)</b>: MusicXML with the melody and chord symbols (<code>&lt;harmony&gt;</code>), as MuseScore and most lead-sheet
+  sources export. In the song list with <code>"kind": "lead-sheet", "style": "swing"</code>.</div>
+  <div><b>A chord chart</b> (with its guides and examples):
+<pre>{ "title": "12-bar blues in C", "meter": "4/4", "tempo": 84,
+  "style": "shuffle",
+  "bars": ["C7","C7","C7","C7","F7","F7","C7","C7",
+           "G7","F7","C7","G7"],
+  "improvise": { "scale": "C blues" },
+  "examples": { "lead": "blues-lick-1.musicxml" } }</pre></div>
+  <div><b>A style</b> (how a genre's band plays any chord):
+<pre>{ "name": "Shuffle", "meter": "4/4", "feel": "swing",
+  "drums":  { "hat":   "x.x x.x x.x x.x",
+              "snare": "... x.. ... x..",
+              "kick":  "x.. ... x.. ..." },
+  "bass":   [[1,"root"],[2,"fifth"],[3,"sixth"],[4,"fifth"]],
+  "chords": [[2,"chord",0.5],[4,"chord",0.5]] }</pre></div>
+</div>
+
+<h2>Other things that would help (ideas, not decided)</h2>
+<ul class="tight">
+  <li><b>Slow and loop by bars</b>: start at 70%, loop the bars that went wrong; tempo up a step after a clean round (as Ladder does).</li>
+  <li><b>Hear your part first</b>: "Show me" plays one round with your part in the band, lit, before you try.</li>
+  <li><b>Swap</b>: one tap from Accompaniment to Lead on the same song, so you hear both sides of the band.</li>
+  <li><b>Drop-outs</b>: the drums or the melody go quiet for a bar or two to see whether you keep the time and the form.</li>
+  <li><b>Call and answer</b> (later): the band plays two bars, you answer two — the old app's "trading" done with the guides above.</li>
+</ul>
+
+<h2>To choose</h2>
+<table class="cmp">
+  <tr><th>Question</th><th>Options (my recommendation first)</th></tr>
+  <tr><td>The opening</td><td><b>Lead / Accompaniment, then a step (screen 1)</b> · the band list (who plays what) up front instead</td></tr>
+  <tr><td>Improvising: feedback</td><td><b>Told plainly, not marked</b> ("landed on the chord 7 of 8 changes") · not judged at all · judged</td></tr>
+  <tr><td>Chords: what counts as right</td><td><b>The chord's notes by the beat (late = amber)</b> · also in the style's rhythm at step 3 · notes only</td></tr>
+  <tr><td>Sounds</td><td>Drums and a bass sound need samples the app doesn't have (the piano library smplr has a drum machine and bass; bundled for
+  offline, a few MB). <b>Build the lab with piano + click first, add drums and bass sounds next</b> · sounds first</td></tr>
+  <tr><td>First songs and styles</td><td>A 12-bar blues (shuffle) and one pop progression (I–V–vi–IV) as test content to build against; which genres matter to you first?</td></tr>
+</table>
+</body>
+</html>
