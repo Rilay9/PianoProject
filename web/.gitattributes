@@ -1,0 +1,5 @@
+# Binary files git must never rewrite (a PDF that looks like text would have its line endings changed and its byte offsets broken)
+*.pdf binary
+*.mid binary
+*.midi binary
+*.mxl binary
