@@ -10,6 +10,7 @@
 // Playback reads the step list from one clock; nothing is redrawn while the marker moves.
 
 import { ChordSymbolContainer, OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
+import { phraseEndLength } from './holds';
 import { osmdOptions, prepareXml, SIDE_MARGIN_SHARE } from './scoreView';
 import type { Layout, Marker, MarkerFollows, ScoreSettings } from './settings';
 import type { Beat, NoteEvent } from './sound';
@@ -31,7 +32,12 @@ interface StaffPos { staff: number; left: number; right: number; top: number; he
  * how long it sounds in whole notes (tied notes added up; 0 for the later notes of a tie and for grace notes,
  * which the piano does not strike).
  */
-export interface Pitch { midi: number; name: string; spelled: string; len: number; x?: number; y?: number; /** its notehead in the drawing */ id?: string; /** marked staccato, staccatissimo or spiccato: meant shorter than written */ detached?: boolean }
+export interface Pitch {
+  midi: number; name: string; spelled: string; len: number; x?: number; y?: number; /** its notehead in the drawing */ id?: string;
+  /** marked staccato, staccatissimo or spiccato: meant shorter than written */ detached?: boolean;
+  /** a grace note (len 0): the piano plays it just before its note; never judged (owner, 2026-10-13) */ grace?: boolean;
+  /** at a phrase end (a written rest follows in its voice, or it ends a slur): it needs to be held only half its length */ phraseEnd?: boolean;
+}
 /**
  * For the strip under the music: per staff (0 = top staff, right hand), what sounds now and what starts next,
  * and the chord symbol the file gives for this moment, if any.
@@ -49,6 +55,20 @@ const DEFAULT_VELOCITY = 80; // mf, before the first dynamic
 const LETTERS: Record<number, string> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
 const ACCIDENTALS: Record<number, string> = { [-2]: '𝄫', [-1]: '♭', 0: '', 1: '♯', 2: '𝄪' };
 const PLAIN_ACCIDENTALS: Record<number, string> = { [-2]: 'bb', [-1]: 'b', 0: '', 1: '#', 2: '##' };
+
+/** Whether a note ends a phrase: it ends a slur, or the next thing in its voice (grace notes aside) is a rest. */
+function endsPhrase(n: { NoteSlurs?: { EndNote: unknown }[]; ParentVoiceEntry?: { ParentVoice?: { VoiceEntries: { IsGrace: boolean; Notes: { isRest(): boolean }[] }[] } } }): boolean {
+  if ((n.NoteSlurs ?? []).some((sl) => sl.EndNote === n)) return true;
+  const ve = n.ParentVoiceEntry, list = ve?.ParentVoice?.VoiceEntries ?? [];
+  let k = list.indexOf(ve as never);
+  if (k < 0) return false;
+  for (k++; k < list.length && list[k].IsGrace; k++);
+  const next = list[k];
+  return !!next && next.Notes.length > 0 && next.Notes.every((x) => x.isRest());
+}
+
+/** How long ahead of its note a grace note sounds (ms at speed 1): a quick ornament just before the beat. */
+const GRACE_MS = 70;
 
 /** Articulations that mean a note is played shorter than written (OSMD's ArticulationEnum: staccato, staccatissimo, spiccato). */
 const DETACHED = [6, 7, 8];
@@ -327,7 +347,8 @@ export class FollowView {
             const note = n.sourceNote, tie = note.NoteTie;
             const len = note.IsGraceNote || (tie && tie.StartNote !== note) ? 0 : (tie ? tie.Duration : note.Length).RealValue;
             const detached = (note.ParentVoiceEntry?.Articulations ?? []).some((a) => DETACHED.includes(a.articulationEnum));
-            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y), id, ...(detached ? { detached } : {}) });
+            const phraseEnd = len > 0 && endsPhrase(tie ? tie.Notes[tie.Notes.length - 1] : note);
+            st.notes.push({ ...pitchOf(pitch, len), x: this.px(b.AbsolutePosition.x), y: this.px(b.AbsolutePosition.y), id, ...(detached ? { detached } : {}), ...(note.IsGraceNote ? { grace: true } : {}), ...(phraseEnd ? { phraseEnd } : {}) });
           }
           if (id) { ids.push(id); st.ids.push(id); }
         }
@@ -1000,7 +1021,18 @@ export class FollowView {
     if (!s) return [];
     return s.pos.staves
       .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
-      .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => (n.detached ? 0 : this.timeAt(s.ts + n.len, i) - s.t)));
+      .flatMap((st) => st.notes.filter((n) => n.len > 0).map((n) => {
+        if (n.detached) return 0;
+        const written = this.timeAt(s.ts + n.len, i) - s.t;
+        return n.phraseEnd ? phraseEndLength(written) : written; // (a phrase end: held half its length is enough)
+      }));
+  }
+
+  /** The grace notes written before step i's notes by the given hands (played by the piano; never judged, never wrong). */
+  gracesAt(i: number, hands: 'both' | 'right' | 'left'): number[] {
+    return (this.steps[i]?.pos.staves ?? [])
+      .filter((st) => (hands === 'right' ? st.staff === 0 : hands === 'left' ? st.staff !== 0 : true))
+      .flatMap((st) => st.notes.filter((n) => n.grace).map((n) => n.midi));
   }
 
   /** The written names (C♯4) of the keys struck at step i by the given hands, low to high. */
@@ -1019,6 +1051,9 @@ export class FollowView {
         if (hands === 'right' ? st.staff !== 0 : hands === 'left' ? st.staff === 0 : false) continue;
         // A note lasts until its written end on the song's timeline, so a tempo change while it sounds counts.
         for (const n of st.notes) if (n.len > 0) out.push({ t: s.t, midi: n.midi, dur: this.timeAt(s.ts + n.len, i) - s.t, vel: s.vels[st.staff] ?? s.vels[0] });
+        // Grace notes just before their note, one after another (owner, 2026-10-13: played, not judged).
+        const graces = st.notes.filter((n) => n.grace);
+        graces.forEach((n, k) => out.push({ t: s.t - (graces.length - k) * GRACE_MS, midi: n.midi, dur: GRACE_MS * 0.9, vel: s.vels[st.staff] ?? s.vels[0] }));
       }
     });
     return out;

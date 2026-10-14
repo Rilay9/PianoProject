@@ -239,7 +239,7 @@ export class Practice {
       this.lastPress = e.time;
       this.lastPressSong = t;
       // Mashing: many keys the score does not have, all at once (in Rhythm any key is fine, so it never counts).
-      if (this.autoPause && s.mode !== 'rhythm' && !this.nearNote(e.midi, t)) {
+      if (this.autoPause && s.mode !== 'rhythm' && !this.nearNote(e.midi, t) && !this.isGrace(e.midi, this.view.index)) {
         this.odd = [...this.odd.filter((x) => e.time - x < MASH_MS), e.time];
         if (this.odd.length >= MASH_KEYS) { this.odd = []; this.onAutoPause('mash', this.view.index); }
       }
@@ -250,7 +250,7 @@ export class Practice {
     else this.fresh.delete(e.midi);
     if (this.pass && e.on) {
       // A key not wanted here (a chord's other keys are fine) is noted; any key puts the hint off again.
-      if (!this.expected.has(e.midi)) this.passWrong.push({ step: this.view.index, midi: e.midi });
+      if (!this.expected.has(e.midi) && !this.isGrace(e.midi, this.view.index)) this.passWrong.push({ step: this.view.index, midi: e.midi });
       this.armHint();
     }
     if (this.expected.size && [...this.expected].every((m) => this.fresh.has(m) && this.midi.down.has(m))) this.advance();
@@ -334,6 +334,12 @@ export class Practice {
   /** Play along in a loop: how this pass went; the next pass starts with startAlong. */
   passResult(): Summary { return { ...this.score() }; }
 
+  /** A grace note of your hands at step i or the next (played or not, it is never marked, nor a wrong key). */
+  private isGrace(midi: number, i: number): boolean {
+    const hand = yours(this.settings());
+    return [i, i + 1].some((k) => this.view.gracesAt(k, hand).includes(midi) && !this.view.struckAt(k, hand).includes(midi));
+  }
+
   /** Play along: your keys matched with the written notes of your hands (the rule is in matching.ts). */
   /** upTo: the last step scored (default: where the marker is). */
   private score(upTo = this.view.index): Summary {
@@ -349,7 +355,14 @@ export class Practice {
     const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor(p.midi, p.at));
     // Cut short (a pause it carries on from): the presses from there on are the next part's.
     const cut = upTo < this.view.index ? this.view.stepT(upTo + 1) - tolerance : Infinity;
-    const r = (rhythm ? judgeRhythm : judge)(steps, this.played.filter((p) => p.t < cut), tolerance, held);
+    // A grace note you played (just before its note) is welcome, not marked and not a wrong key (owner, 2026-10-13).
+    const graces: { midi: number; t: number }[] = [];
+    if (!rhythm) for (let i = this.fromIndex; i <= upTo; i++) {
+      const own = this.view.struckAt(i, hand);
+      for (const m of this.view.gracesAt(i, hand)) if (!own.includes(m)) graces.push({ midi: m, t: this.view.stepT(i) });
+    }
+    const grace = (p: PlayedKey) => graces.some((g) => g.midi === p.midi && p.t >= g.t - 400 * p.speed && p.t <= g.t + tolerance * p.speed);
+    const r = (rhythm ? judgeRhythm : judge)(steps, this.played.filter((p) => p.t < cut && !grace(p)), tolerance, held);
     return {
       ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt),
       slips: r.offNotes.map((o) => ({ step: index[o.k], midi: o.midi, kind: o.kind })),

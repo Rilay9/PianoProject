@@ -77,6 +77,7 @@ export function keysChord(midis: number[]): { chord: string; names: string } {
 const LOWEST = 21; // A0
 const HIGHEST = 108; // C8
 const MIN_SPAN = 24; // two octaves: enough to see where the hand is
+const FOLLOW_SPAN = 24; // following the music: two octaves (C to C) shown, keys about 28 px on a phone upright
 const isBlack = (midi: number) => [1, 3, 6, 8, 10].includes(((midi % 12) + 12) % 12);
 const octaveFloor = (midi: number) => midi - (((midi % 12) + 12) % 12);
 
@@ -95,6 +96,15 @@ export function keyRange(midis: number[]): { from: number; to: number } {
 export class UnderStrip {
   private keys = new Map<number, HTMLDivElement>();
   private lit: HTMLDivElement[] = [];
+  private song: { from: number; to: number } = { from: 48, to: 72 };
+  private window: number | null = null; // following: the lowest key shown (two octaves on); null: the whole range
+  private down = new Set<number>();
+  private lastNotes: StepNotes | null = null;
+  /**
+   * Whether the keys follow the music two octaves at a time (owner, 2026-10-13: a phone upright where the keys can
+   * be played by touch, so they are wide enough to tap); otherwise the song's whole range.
+   */
+  narrow: () => boolean = () => false;
 
   constructor(private readonly host: HTMLElement, private readonly keyboard: HTMLElement, private readonly line: HTMLElement) {}
 
@@ -106,9 +116,35 @@ export class UnderStrip {
     return this.host.hidden ? 0 : this.host.offsetHeight;
   }
 
-  /** Builds the keys for a song. */
+  /** Builds the keys for a song (following: the two octaves of its first notes). */
   setSong(midis: number[]): void {
-    const { from, to } = keyRange(midis);
+    this.song = keyRange(midis);
+    this.window = null;
+    if (this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN) this.window = this.song.from;
+    this.build();
+  }
+
+  /**
+   * Following: the notes now and next stay on the keys; when they leave the two octaves shown, the keys move (by
+   * octaves) to take them in (both hands wider apart than two octaves: around their middle).
+   */
+  follow(midis: number[]): void {
+    const narrow = this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN;
+    if (!narrow) { if (this.window !== null) { this.window = null; this.build(); } return; }
+    if (!midis.length) return;
+    const lo = Math.min(...midis), hi = Math.max(...midis);
+    if (this.window !== null && lo >= this.window && hi <= this.window + FOLLOW_SPAN) return;
+    let from = octaveFloor(hi - lo <= FOLLOW_SPAN ? lo : Math.round((lo + hi) / 2) - 12);
+    if (hi - lo <= FOLLOW_SPAN && hi > from + FOLLOW_SPAN) from += 12;
+    from = Math.max(this.song.from, Math.min(this.song.to - FOLLOW_SPAN, from));
+    if (from === this.window) return;
+    this.window = from;
+    this.build();
+    if (this.lastNotes) this.show(this.lastNotes);
+  }
+
+  private build(): void {
+    const from = this.window ?? this.song.from, to = this.window !== null ? this.window + FOLLOW_SPAN : this.song.to;
     this.keys.clear();
     this.lit = [];
     const whites = document.createElement('div');
@@ -133,6 +169,7 @@ export class UnderStrip {
     this.keyboard.replaceChildren(whites);
     // Black keys about 0.6 of a white key wide (the old app's 16 px on 26 px), whatever the range.
     this.keyboard.style.setProperty('--black-w', `${60 / whiteCount}%`);
+    this.setPressed(this.down);
   }
 
   /** Marks these keys with a class (exercises: lit, wrong, wanted), clearing it from all others. */
@@ -142,11 +179,13 @@ export class UnderStrip {
 
   /** Shows the keys being pressed on the MIDI keyboard. */
   setPressed(down: Set<number>): void {
+    this.down = new Set(down);
     for (const [midi, key] of this.keys) key.classList.toggle('pressed', down.has(midi));
   }
 
   /** Lights the keys and writes the names for where the marker is. */
   show(notes: StepNotes): void {
+    this.lastNotes = notes;
     for (const k of this.lit) k.classList.remove('now-r', 'now-l', 'next-r', 'next-l');
     this.lit = [];
     const light = (pitches: Pitch[], cls: string) => {

@@ -113,6 +113,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
       return b;
     }));
     $('memo-test').hidden = !memorise.canTest;
+    $('memo-countin').hidden = !memorise.canCountIn; // in time: start after a bar of clicks (or just play the first note)
     $('memo-stuck').hidden = !memorise.canStick;
     $('memo-hear').hidden = memorise.testingNow || memorise.phase === 'offer';
     $('memo-peek').hidden = memorise.testingNow || memorise.phase === 'offer';
@@ -241,6 +242,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
   $('memo-chunk-next').addEventListener('click', () => memorise.nextChunk(1));
   $('memo-next-chunk').addEventListener('click', () => memorise.nextChunk(1));
   $('memo-test').addEventListener('click', () => memorise.openTest());
+  $('memo-countin').addEventListener('click', () => void memoGo(() => memorise.countIn()));
   $('memo-stuck').addEventListener('click', () => memorise.stuck());
   for (const choice of ['previous', 'all', 'next'] as const) {
     $(`memo-join-${choice}`).addEventListener('click', () => memorise.choose(choice, $<HTMLInputElement>('memo-always').checked));
@@ -302,6 +304,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
       if (c === 'mash') { if (memorise.active) { memorise.stop(); memorise.note('Stopped by a mash'); } }
       else if (c === 'low') void memoGo(() => memorise.hearBar());
       else if (c === 'peek-on' || c === 'peek-off') memorise.peek(c === 'peek-on');
+      else if (memorise.canCountIn) void memoGo(() => memorise.countIn()); // highest key, in time and waiting: the count-in
       else if (memorise.waitingForNext) memorise.nextChunk(1);
       else if (memorise.phase === 'review') memorise.goAgain();
       else if (!memorise.active || memorise.phase === 'done') void memoGo(() => memorise.start());

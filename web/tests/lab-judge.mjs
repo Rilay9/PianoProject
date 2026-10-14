@@ -58,5 +58,15 @@ const okIm = im.changes === want.changes && im.playedAt === want.playedAt && im.
 console.log(`${okIm ? 'ok  ' : 'FAIL'} improvising counts every change (3), played at 1, landed 1: got ${im.changes}/${im.playedAt}/${im.landed}`);
 if (!okIm) failed++;
 
-console.log(failed ? `${failed} failed` : `all ${cases.length + 1} passed`);
+// 6/8 is counted in two dotted-quarter beats (owner, 2026-10-13): two beats a bar, a beat at 60 a minute is 1 s.
+const six = formOf(readChart('six', { title: 'six', meter: '6/8', tempo: 60, bars: ['C', 'G'] }));
+const okSix = six.barBeats === 2 && Math.abs(six.beatMs - 1000) < 1e-6 && six.length === 4;
+console.log(`${okSix ? 'ok  ' : 'FAIL'} 6/8 in two: ${six.barBeats} beats a bar of ${six.beatMs} ms`);
+if (!okSix) failed++;
+let slash = '';
+try { readChart('s', { title: 's', bars: ['C/E'] }); } catch (e) { slash = e.message; }
+console.log(`${/slash chords/.test(slash) ? 'ok  ' : 'FAIL'} a slash chord is refused: ${slash}`);
+if (!/slash chords/.test(slash)) failed++;
+
+console.log(failed ? `${failed} failed` : `all ${cases.length + 3} passed`);
 process.exit(failed ? 1 : 0);

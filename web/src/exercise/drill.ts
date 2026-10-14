@@ -11,7 +11,7 @@
 //   is noted. Then the set's results, with "the misses again".
 
 import type { Sound, Beat, NoteEvent } from '../sound';
-import { holds, HOLD_SHARE } from '../holds';
+import { holds, HOLD_SHARE, phraseEndLength } from '../holds';
 import { judge, type PlayedKey } from '../matching';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
@@ -263,7 +263,9 @@ export class Drill {
     item.groups.forEach((g, gi) => {
       const dur = beats[gi] * quarterMs;
       // Written rhythm is held its length (owner, 2026-10-13); steady beats are about when, so their length is not judged.
-      if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? dur : 0 });
+      // A note before a written rest is a phrase end: held half its length is enough (owner, 2026-10-13).
+      const beforeRest = item.groups[gi + 1]?.length === 0;
+      if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? (beforeRest ? phraseEndLength(dur) : dur) : 0 });
       t += dur;
     });
     return { item, shown: shownItem, passage, meter: passage ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };

@@ -62,12 +62,16 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 **Held notes** (owner, 2026-10-13; `web/src/holds.ts`): wherever rhythm is judged (Play along, Ladder, Rhythm,
 timed Drills, Memorise "in time", the lab's chords) a note must sound at least ¾ of its written length at the speed
 played, or it is *let go early* (amber, named). The sustain pedal counts as holding (a key let go under the pedal
-sounds until it lifts, or until struck again). Notes marked staccato, staccatissimo or spiccato are meant short and
-never asked to be held. Holding longer is not marked (legato overlaps are normal). A note already early or late is
-marked for that alone.
+sounds until it lifts, or until struck again; owner, 2026-10-13: what you hear is judged; pedalling itself is not).
+Notes marked staccato, staccatissimo or spiccato are meant short and never asked to be held. A note at a phrase end
+(a written rest follows it in its voice, or it ends a slur) needs only half its length. In Rhythm a tap is never asked
+to be held past the next tap. Holding longer is not marked (legato overlaps are normal). A note already early or late
+is marked for that alone. **Grace notes** are played by the piano just before their note, and never judged: playing
+one is welcome and never a wrong key (owner, 2026-10-13).
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
-(and Memorise) the keys under the music can be played by touch, and count; in the timed modes they only show. In the judged
+(and Memorise) the keys under the music can be played by touch, and count; on a phone upright they then show two
+octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in the timed modes they only show. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
 score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses), and carries on from your next key, or *See how it went* in the pause message ends the run with
 its summary; the parts add up to one summary. *Music while playing* off
@@ -112,12 +116,17 @@ restarts. A key that starts a pass where your part has a rest just starts it (it
 **The test** (owner, 2026-10-13): each finished chunk marks its bars learned (per piece and hand choice, any chunk
 size; skipped chunks are not). Once every bar is learned, *Test* appears (and is offered after the last chunk):
 *notes* (it waits for each note) or *notes + rhythm* (in time at Memorise's tempo, each note held its length). The
-whole piece from bar 1, from memory: no Peek, Hear, hints or choosing a bar; a wrong key is noted (notes: it waits
+whole piece **as performed** (its repeats too; owner, 2026-10-13) from bar 1, from memory: no Peek, Hear, hints or choosing a bar; a wrong key is noted (notes: it waits
 for the right one; rhythm: it keeps going); *Stuck* shows the bar you are on for the rest of the test and counts it.
 Every bar clean marks the piece **Memorized: notes** or **Memorized: notes + rhythm at ♩ n**, with the date (shown in
 Memorise and the song list; notes + rhythm is kept over a later notes-only pass). Otherwise the bars to practise are
 listed and marked on the music: *Practise* takes them one bar at a time (clean passes as "learned after"), then
-offers the test again. A test or practising never moves your chunk place; ■ ends it.
+offers the test again (practising after a notes + rhythm test is in time). A test or practising never moves your
+chunk place; ■ ends it. Chunk practice is each chunk's bars the first time through; joining "everything so far"
+plays from bar 1 as performed up to the chunk's end (a repeat before it is played).
+
+**In time** (a timed pass, or the notes + rhythm test): it starts on your first note, or *▶ Count-in* (or the keyboard's
+highest key) gives a bar of clicks first (owner, 2026-10-13).
 
 **Layout:** no read-ahead is needed, so the music is drawn as large as the score's largest size (scaled, never
 stretched): about one bar across a phone upright, pages turning as you go, spare room showing the following bars
@@ -248,7 +257,7 @@ note is not played yet; owner, 2026-10-13).
 
 ```json
 // a chord chart (charts/*.json)
-{ "title": "12-bar blues in C", "meter": "4/4", "tempo": 84, "style": "shuffle",
+{ "title": "12-bar blues in C", "meter": "4/4", "tempo": 84, "style": "shuffle",   // tempo: beats a minute (6/8: dotted quarters)
   "bars": ["C7", "C7", "C7", "C7", "F7", "F7", "C7", "C7", "G7", "F7", "C7", "G7"],   // "F7 G7": two chords share a bar
   "improvise": { "scale": "C blues" },                      // a Tonal scale name: what lights for improvising
   "steps": { "accompaniment": ["roots", "beat1"],           // optional: its own ladder, by kind (each once), in order;
@@ -256,7 +265,8 @@ note is not played yet; owner, 2026-10-13).
   "cleanForNext": 2 }                                       // optional: clean rounds (lead: rounds played) before the next step
 
 // a style (styles/*.json): how a genre's band plays any chord, per bar of its metre
-{ "name": "Shuffle", "meter": "4/4", "grid": 3,             // steps a beat in the drum patterns: 2 eighths, 3 triplets (swung)
+{ "name": "Shuffle", "meter": "4/4", "grid": 3,             // steps a beat in the drum patterns: 2 eighths, 3 triplets (swung);
+                                                            //   6/8, 9/8, 12/8 are counted in dotted-quarter beats (6/8 in two: grid 3 = eighths)
   "drums": { "hihat": "x.x x.x x.x x.x",                    // one character a step: x hit, X loud, o soft, . none
              "snare": "... x.. ... x..", "kick": "x.. ... x.. ..." },   // kick snare rim clap hihat hihat-open ride crash tom-low tom-high tambourine cowbell
   "bass": [[1, "root"], [2, "fifth"], [3, "sixth"], [4, "fifth"]],      // beat (1-based; 2.5 = the "and"), degree:

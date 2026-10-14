@@ -283,6 +283,8 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   beats: (on?: 'beats' | 'quarters' | 'eighths') => view.beats(on), notes: () => view.noteEvents('both').length,
   struck: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.struckAt(i, hands), songNow: () => view.songNow(),
   durations: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.durationsAt(i, hands),
+  graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
+  keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
   simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(),
 };

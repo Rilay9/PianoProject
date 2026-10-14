@@ -170,6 +170,10 @@ export class Memorise {
     const passes = this.practising ? this.practisePasses : this.place.passes;
     return this.active && !this.joining && n > 1 && ['ready', 'turn', 'between', 'review'].includes(this.phase) ? `clean ${passes} of ${n}` : '';
   }
+  /** In time and waiting for you: it can start on your first note, or after a bar of count-in (owner, 2026-10-13). */
+  get canCountIn(): boolean { return this.phase === 'ready' && this.timing(); }
+  /** ▶ Count-in: a bar of clicks, then the pass (in time) from where your turn starts. */
+  countIn(): void { if (this.canCountIn) this.begin(); }
   /** The test is on: no Peek, Hear or choosing a bar; Stuck instead. */
   get testingNow(): boolean { return !!this.testing; }
   /** Learning chunk by chunk (not the test, its choices or practising its bars): ‹ › and Hear belong to that. */
@@ -401,8 +405,21 @@ export class Memorise {
     this.say(`Your turn: ${this.bars(a, b)} from memory${this.from > a ? `, from bar ${this.num(this.from)}` : ''}`,
       'Play when ready, or tap a bar to start there');
   }
-  /** The bars being played covered (in the test, all but those shown with Stuck). */
+  /** The test's steps: the whole piece as performed, its repeats included (owner, 2026-10-13). */
+  private wholeSteps(): { a: number; b: number } { return { a: 0, b: this.d.view.stepCount - 1 }; }
+  /** The bars being played covered (in the test, every step of the piece as performed, but bars shown with Stuck). */
   private cover(): void {
+    if (this.testing) {
+      const v = this.d.view, runs: { a: number; b: number }[] = [], last = this.wholeSteps().b;
+      let start = -1;
+      for (let i = 0; i <= last + 1; i++) {
+        const covered = i <= last && !this.stuckBars.has(v.barOf(i));
+        if (covered && start < 0) start = i;
+        if (!covered && start >= 0) { runs.push({ a: start, b: i - 1 }); start = -1; }
+      }
+      v.setHidden(runs);
+      return;
+    }
     const [a, b] = this.scope(), runs: { a: number; b: number }[] = [];
     let start = -1;
     for (let m = a; m <= b + 1; m++) {
@@ -425,7 +442,7 @@ export class Memorise {
       if (counts) this.d.practice.startedBy(firstKey!);
     } else {
       const s = this.d.settings(), v = this.d.view;
-      const range = this.steps(this.from, b), span = v.spanOf(range.a, range.b);
+      const range = this.testing ? this.wholeSteps() : this.steps(this.from, b), span = v.spanOf(range.a, range.b);
       this.d.sound.setVolumes(s.pianoVolume, s.clickVolume);
       this.d.sound.setClick(s.click);
       v.songClock = null;
@@ -472,7 +489,7 @@ export class Memorise {
   /** Plays bars a..b: listening (all hands from the piano) or a timed pass (the piano plays the other hand). */
   private run(a: number, b: number, mine: boolean, countIn: boolean, fromKey = false): void {
     const v = this.d.view, s = this.d.settings();
-    const { a: sa, b: sb } = this.steps(a, b);
+    const { a: sa, b: sb } = this.testing && mine ? this.wholeSteps() : this.steps(a, b); // (the test: as performed, repeats too)
     const span = v.spanOf(sa, sb);
     v.goTo(sa);
     const piano = mine ? this.d.pianoHands(s) : 'both';

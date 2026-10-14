@@ -8,6 +8,12 @@
 
 /** The share of a note's written length it must sound for (a little short is normal playing). */
 export const HOLD_SHARE = 0.75;
+/**
+ * A note at a phrase end (followed by a written rest, or ending a slur) is often shortened on purpose: it needs only
+ * this share (owner, 2026-10-13). Given to the judges as a shorter length: written × PHRASE_END_SHARE / HOLD_SHARE.
+ */
+export const PHRASE_END_SHARE = 0.5;
+export const phraseEndLength = (writtenMs: number) => (writtenMs * PHRASE_END_SHARE) / HOLD_SHARE;
 
 interface Sounded { midi: number; down: number; up?: number; end?: number }
 const KEEP = 4000; // presses remembered (minutes of playing); older ones are dropped

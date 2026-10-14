@@ -17,6 +17,12 @@ import { Chord, Note, Scale } from 'tonal';
 import type { Beat, NoteEvent } from '../sound';
 
 export interface Meter { beats: number; beatType: number }
+/**
+ * The beats a bar is counted in (owner, 2026-10-13): a compound metre (6/8, 9/8, 12/8) in dotted quarters (6/8 in two),
+ * every other metre in its own beat (3/4 in three). A chart's tempo is those beats a minute.
+ */
+export const isCompound = (m: Meter) => m.beatType === 8 && m.beats % 3 === 0 && m.beats > 3;
+export const beatsInBar = (m: Meter) => (isCompound(m) ? m.beats / 3 : m.beats);
 export interface ChartFile {
   title: string; meter?: string; tempo?: number; style?: string; bars: string[]; improvise?: { scale?: string };
   steps?: { accompaniment?: unknown; lead?: unknown }; cleanForNext?: number;
@@ -82,7 +88,7 @@ const DRUMS: Record<string, number> = { kick: 36, snare: 38, rim: 37, clap: 39, 
 export function readStyle(id: string, f: StyleFile): Style {
   onlyFields(f, ['name', 'meter', 'grid', 'drums', 'bass', 'chords', 'instruments']);
   if (typeof f.name !== 'string' || !f.name) throw new Error('it needs a "name"');
-  const meter = meterOf(f.meter), grid = f.grid ?? 2, steps = meter.beats * grid;
+  const meter = meterOf(f.meter), grid = f.grid ?? 2, steps = beatsInBar(meter) * grid; // (6/8: two beats, so grid 3 = eighths)
   if (!Number.isInteger(grid) || grid < 1 || grid > 8) throw new Error(`grid ${grid} should be a whole number of steps a beat, 1 to 8`);
   const drums = Object.entries(f.drums ?? {}).map(([name, pattern]) => {
     const midi = DRUMS[name];
@@ -94,13 +100,13 @@ export function readStyle(id: string, f: StyleFile): Style {
     return { midi, steps: [...cells].map((ch) => (ch === 'X' ? 115 : ch === 'x' ? 90 : ch === 'o' ? 60 : 0)) };
   });
   const degrees = ['root', 'third', 'fifth', 'sixth', 'seventh', 'octave', 'approach'];
-  const inBar = (beat: number) => typeof beat === 'number' && beat >= 1 && beat < meter.beats + 1;
+  const inBar = (beat: number) => typeof beat === 'number' && beat >= 1 && beat < beatsInBar(meter) + 1;
   for (const [beat, d] of f.bass ?? []) {
     if (!degrees.includes(d)) throw new Error(`bass degree "${d}" is not one of ${degrees.join(', ')}`);
-    if (!inBar(beat)) throw new Error(`bass beat ${beat} is not in a bar of ${meter.beats}`);
+    if (!inBar(beat)) throw new Error(`bass beat ${beat} is not in a bar of ${beatsInBar(meter)} beats`);
   }
   for (const [beat, len] of f.chords ?? []) {
-    if (!inBar(beat)) throw new Error(`chord beat ${beat} is not in a bar of ${meter.beats}`);
+    if (!inBar(beat)) throw new Error(`chord beat ${beat} is not in a bar of ${beatsInBar(meter)} beats`);
     if (typeof len !== 'number' || !(len > 0)) throw new Error(`the chord on beat ${beat} has length ${len}; it should be more than 0 beats`);
   }
   return { id, name: f.name, meter, grid, drums, bass: f.bass ?? [], chords: f.chords ?? [], bassSound: f.instruments?.bass ?? 'acoustic_bass', chordSound: f.instruments?.chords ?? 'piano' };
@@ -112,13 +118,14 @@ export interface Form { chart: Chart; beatMs: number; barBeats: number; spans: S
 
 /** The chart in time at its own tempo (speed is the clock's business). */
 export function formOf(chart: Chart): Form {
-  const barBeats = chart.meter.beats, spans: Span[] = [];
+  const barBeats = beatsInBar(chart.meter), spans: Span[] = [];
   chart.bars.forEach((symbols, bar) => {
     const each = barBeats / symbols.length;
     symbols.forEach((s, k) => spans.push({ bar, at: bar * barBeats + k * each, beats: each, chord: chordInfo(s) }));
   });
-  // A beat is the metre's beat (a quarter in 4/4); tempo is quarter notes a minute.
-  const beatMs = (60000 / chart.tempo) * (4 / chart.meter.beatType);
+  // A beat is the metre's beat (a quarter in 4/4, a dotted quarter in 6/8); tempo is quarter notes a minute, or in a
+  // compound metre dotted quarters a minute.
+  const beatMs = isCompound(chart.meter) ? 60000 / chart.tempo : (60000 / chart.tempo) * (4 / chart.meter.beatType); // (compound: dotted quarters a minute)
   return { chart, beatMs, barBeats, spans, length: chart.bars.length * barBeats };
 }
 

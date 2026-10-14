@@ -95,7 +95,11 @@ export function createScoreScreen(app: App): ScoreScreen {
   let borrower: Borrower | null = null;
   app.playSettings = () => (borrower ? borrower.settings() : settingsFor(currentPiece().id));
   // Under the music: the notes now and next (a borrower may hide them: Memorise's covered bars).
-  view.onStep = (notes) => strip.show(borrower ? borrower.stepNotes(notes) : notes);
+  view.onStep = (notes) => {
+    // Upright where touch keys play (Wait for me, Memorise), the keys follow the music two octaves at a time.
+    strip.follow([...notes.now.flat(), ...notes.next.flat()].map((p) => p.midi));
+    strip.show(borrower ? borrower.stepNotes(notes) : notes);
+  };
 
   /** Light, dark, or as the phone is (app-wide): the stylesheet reads data-theme on the page. */
   function applyTheme(): void {
@@ -506,6 +510,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   // going the way every key goes (main.ts: the keyboard remote first, then the screen showing).
   const touchKeys = new Map<number, { midi: number; stop: Promise<() => void> }>();
   const touchPlays = () => !!borrower || settingsFor(currentPiece().id).mode === 'wait';
+  strip.narrow = () => currentDevice() === 'phone-upright' && touchPlays(); // (owner, 2026-10-13: wide enough to tap)
   $('keyboard').addEventListener('pointerdown', (e) => {
     const key = (e.target as HTMLElement).closest<HTMLElement>('[data-midi]');
     if (!key || !touchPlays()) return;

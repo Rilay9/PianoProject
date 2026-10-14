@@ -136,12 +136,13 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
       const dur = Number(el.querySelector(':scope > duration')?.textContent ?? 0) / divisions;
       if (el.tagName === 'backup') { cur -= dur; continue; }
       if (el.tagName === 'forward') { cur += dur; len = Math.max(len, cur); continue; }
-      if (el.tagName !== 'note' || el.querySelector(':scope > grace')) continue;
+      if (el.tagName !== 'note') continue;
       const chord = !!el.querySelector(':scope > chord');
       const at = chord ? lastAt : cur;
       if (!chord) { lastAt = cur; cur += dur; len = Math.max(len, cur); }
       const onStaff = Number(el.querySelector(':scope > staff')?.textContent ?? 1);
       if ((staff && onStaff !== staff) || el.querySelector(':scope > cue')) continue;
+      if (el.querySelector(':scope > grace')) throw new Error(`bar ${num(measure, m)} has a grace note, which an exercise cannot draw yet`);
       if (el.querySelector(':scope > time-modification')) throw new Error(`bar ${num(measure, m)} has a tuplet, which cannot be drawn correctly yet`);
       const pitch = el.querySelector(':scope > pitch');
       let p: string | null = null;
