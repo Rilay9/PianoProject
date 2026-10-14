@@ -64,6 +64,8 @@
  */
 import { DIVISIONS, noteShape, writeMusicXml, type WriterMeasure, type WriterNote } from './writer.ts';
 import { type BarMap, barMap, steadyBars } from './bars.ts';
+import { splitVoices } from './voices.ts';
+import { PLAYED_BELOW } from './words.ts';
 import {
   type Frac,
   ZERO,
@@ -108,7 +110,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 2; // 2026-10-14: bars from every time signature, the file's keys, finer grids
+export const MIDI_CONVERTER_VERSION = 3; // 2026-10-14: bars from every time signature, the file's keys, finer grids; then voices
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -126,6 +128,8 @@ export interface ConvertOptions {
   hands?: 'auto' | 'split' | 'keep';
   /** `null` lets the onsets decide. */
   swing?: boolean | null;
+  /** The most voices a staff is written in (2026-10-14; `voices.ts`). */
+  maxVoices?: number;
   key?: EstimatedKey | null;
   timeSignature?: TimeSignature | null;
 }
@@ -192,6 +196,7 @@ function writerNotes(
   at: Frac,
   staff: 1 | 2 | undefined,
   unwritable: string[],
+  voice: number = staff === 2 ? 2 : 1,
 ): WriterNote[] {
   const divisions = toNumber(mul(length, frac(DIVISIONS)));
   const shape = Number.isInteger(divisions) ? noteShape(divisions) : null;
@@ -200,7 +205,6 @@ function writerNotes(
   }
   const written = shape ?? { type: 'quarter' as const, dotted: false };
   const rounded = Math.max(1, Math.round(divisions));
-  const voice = staff === 2 ? 2 : 1;
   if (slice === null) {
     return [
       {
@@ -244,6 +248,9 @@ function barsFor(
   unitForBar: (index: number) => Frac,
   staff: 1 | 2 | undefined,
   unwritable: string[],
+  voice?: number,
+  /** A second voice: its silences are written as <forward> (nothing drawn), not rests. */
+  quiet = false,
 ): WriterNote[][] {
   const bars: WriterNote[][] = [];
   let next = 0;
@@ -254,9 +261,15 @@ function barsFor(
     let at = from;
     const rest = (until: Frac): void => {
       if (lte(until, at)) return;
+      if (quiet) {
+        const ticks = Math.round(toNumber(mul(sub(until, at), frac(DIVISIONS))));
+        notes.push({ midi: null, duration: Math.max(1, ticks), type: 'quarter', forward: true, voice: voice ?? 1, ...(staff === undefined ? {} : { staff }) });
+        at = until;
+        return;
+      }
       const unit = unitForBar(bar);
       for (const piece of notatablePieces(sub(at, from), sub(until, at), unit, beat)) {
-        notes.push(...writerNotes(null, piece, at, staff, unwritable));
+        notes.push(...writerNotes(null, piece, at, staff, unwritable, voice));
         at = add(at, piece);
       }
     };
@@ -264,7 +277,7 @@ function barsFor(
       const slice = slices[next];
       if (!slice || gte(slice.at, to)) break;
       rest(slice.at);
-      notes.push(...writerNotes(slice, slice.length, slice.at, staff, unwritable));
+      notes.push(...writerNotes(slice, slice.length, slice.at, staff, unwritable, voice));
       at = add(slice.at, slice.length);
       next += 1;
     }
@@ -291,7 +304,7 @@ interface ReadBack {
   measures: number;
 }
 
-const NOTE_BLOCK = /<note>([\s\S]*?)<\/note>|<backup>([\s\S]*?)<\/backup>/g;
+const NOTE_BLOCK = /<note>([\s\S]*?)<\/note>|<backup>([\s\S]*?)<\/backup>|<forward>([\s\S]*?)<\/forward>/g;
 const MEASURE_BLOCK = /<measure number="(\d+)"[^>]*>([\s\S]*?)<\/measure>/g;
 
 /**
@@ -316,22 +329,34 @@ export function readBackMusicXml(xml: string, bars: BarMap | Frac): ReadBack {
     measures += 1;
     let position = 0;
     let lastOnset = 0;
-    const perStaff = new Map<number, number>();
+    // Each voice of each staff must fill the bar (2026-10-14: a staff can hold two voices; a second voice's silences
+    // are <forward>s).
+    const perStaff = new Map<string, number>();
     for (const match of (body ?? '').matchAll(NOTE_BLOCK)) {
       const backup = match[2];
       if (backup !== undefined) {
         position -= Number(/<duration>(-?\d+)<\/duration>/.exec(backup)?.[1] ?? 0);
         continue;
       }
+      const forward = match[3];
+      if (forward !== undefined) {
+        const d = Number(/<duration>(\d+)<\/duration>/.exec(forward)?.[1] ?? 0);
+        const line = `${/<staff>(\d)<\/staff>/.exec(forward)?.[1] ?? 1}:${/<voice>(\d+)<\/voice>/.exec(forward)?.[1] ?? 1}`;
+        position += d;
+        perStaff.set(line, (perStaff.get(line) ?? 0) + d);
+        continue;
+      }
       const note = match[1] ?? '';
       const duration = Number(/<duration>(\d+)<\/duration>/.exec(note)?.[1] ?? 0);
       const staff = Number(/<staff>(\d)<\/staff>/.exec(note)?.[1] ?? 1);
+      const voice = Number(/<voice>(\d+)<\/voice>/.exec(note)?.[1] ?? 1);
+      const line = `${String(staff)}:${String(voice)}`;
       const chord = note.includes('<chord/>');
       const onset = chord ? lastOnset : position;
       if (!chord) {
         lastOnset = position;
         position += duration;
-        perStaff.set(staff, (perStaff.get(staff) ?? 0) + duration);
+        perStaff.set(line, (perStaff.get(line) ?? 0) + duration);
       }
       if (note.includes('<rest/>')) continue;
       const step = /<step>([A-G])<\/step>/.exec(note)?.[1] ?? 'C';
@@ -341,7 +366,7 @@ export function readBackMusicXml(xml: string, bars: BarMap | Frac): ReadBack {
         (octave + 1) * 12 + ({ C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[step] ?? 0) + alter;
       const at = add(measureStart, frac(onset, divisions));
       const length = frac(duration, divisions);
-      const key = `${String(staff)}:${String(midi)}`;
+      const key = `${line}:${String(midi)}`;
       const carries = /<tie type="stop"\/>/.test(note);
       const carried = open.get(key);
       if (carries && carried) {
@@ -361,7 +386,7 @@ export function readBackMusicXml(xml: string, bars: BarMap | Frac): ReadBack {
         const got = frac(sum, divisions);
         if (!eq(got, barLength)) {
           badBars.push(
-            `staff ${String(staff)}:${number ?? '?'} (${fracToString(got)} of ${fracToString(barLength)})`,
+            `staff ${staff.replace(':', ' voice ')}:${number ?? '?'} (${fracToString(got)} of ${fracToString(barLength)})`,
           );
         }
       }
@@ -502,10 +527,32 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   const grandStaff = parts.length === 2;
   const unwritable: string[] = [];
+  // Each staff as up to two voices (voices.ts), where the file was written rather than played: a played file's note
+  // lengths are its own touch, not the music's, and voices made from them would be noise (2026-10-14).
+  const written = quantised.onGrid >= PLAYED_BELOW;
   const perPart = parts.map((part, index) => {
     const staff = grandStaff ? ((index + 1) as 1 | 2) : undefined;
-    const slices = sliceIntoChords(part.events, bars, unitForBar);
-    return barsFor(slices, barCount, bars, unitForBar, staff, unwritable);
+    const lines = written ? splitVoices(part.events, options.maxVoices) : [part.events];
+    const voiceBars = lines.map((events, k) => {
+      const voice = (staff ?? 1) + 2 * k; // upper staff 1, 3, 5; lower 2, 4, 6
+      const slices = sliceIntoChords(events, bars, unitForBar);
+      return barsFor(slices, barCount, bars, unitForBar, staff, unwritable, voice, k > 0);
+    });
+    // A bar where a second voice has notes: stems up for the voice whose notes are highest in that bar, down for the
+    // others (the first voice is not always the upper: a bass struck first takes it). A bar where a later voice has no
+    // notes: that voice is left out of the bar altogether.
+    return Array.from({ length: barCount }, (_, bar) => {
+      const used = voiceBars.filter((vb, k) => k === 0 || (vb[bar] ?? []).some((n) => n.midi !== null));
+      if (used.length > 1) {
+        const mean = (vb: WriterNote[][]) => {
+          const pitches = (vb[bar] ?? []).flatMap((n) => (n.midi === null ? [] : [n.midi]));
+          return pitches.length ? pitches.reduce((a, b) => a + b, 0) / pitches.length : -Infinity;
+        };
+        const top = used.reduce((best, vb) => (mean(vb) > mean(best) ? vb : best), used[0]!);
+        used.forEach((vb) => { for (const n of vb[bar] ?? []) if (n.midi !== null) n.stem = vb === top ? 'up' : 'down'; });
+      }
+      return used.flatMap((vb) => vb[bar] ?? []);
+    });
   });
 
   const measures: WriterMeasure[] = [];

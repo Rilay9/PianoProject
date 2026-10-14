@@ -34,6 +34,10 @@ export interface WriterNote {
   /** 1 = upper staff, 2 = lower. Omitted entirely for a one-staff part. */
   staff?: 1 | 2;
   voice?: number;
+  /** A silent stretch of a second voice, written as `<forward>` (nothing drawn) rather than a rest (2026-10-14). */
+  forward?: boolean;
+  /** Stem direction, written when a staff has two voices in the bar: the upper voice up, the lower down. */
+  stem?: 'up' | 'down';
   dotted?: boolean;
   tie?: 'start' | 'stop' | 'both';
   fingering?: number;
@@ -227,6 +231,8 @@ function noteXml(
     lines.push(`${indent}    <normal-notes>${note.tuplet.normal}</normal-notes>`);
     lines.push(`${indent}  </time-modification>`);
   }
+  // <stem> after <time-modification> and before <staff>, per the DTD.
+  if (note.stem && note.midi !== null) lines.push(`${indent}  <stem>${note.stem}</stem>`);
   if (note.staff !== undefined) lines.push(`${indent}  <staff>${note.staff}</staff>`);
   // After <staff> and before <notations>, per the MusicXML DTD.
   if (note.beam !== undefined) lines.push(`${indent}  <beam number="1">${note.beam}</beam>`);
@@ -327,23 +333,32 @@ export function writeMusicXml(options: WriterOptions): string {
       lines.push('      </direction>');
     }
 
-    const byStaff = new Map<number, WriterNote[]>();
+    // One group per staff and voice, in that order, a <backup> before each but the first: MusicXML's way of going back
+    // to the bar's start for the next line (2026-10-14: a staff can hold two voices).
+    const groups = new Map<string, WriterNote[]>();
     for (const note of measure.notes) {
-      const staff = note.staff ?? 1;
-      const bucket = byStaff.get(staff);
+      const key = `${note.staff ?? 1}:${note.voice ?? 1}`;
+      const bucket = groups.get(key);
       if (bucket) bucket.push(note);
-      else byStaff.set(staff, [note]);
+      else groups.set(key, [note]);
     }
-    const staves = [...byStaff.keys()].sort((a, b) => a - b);
-    staves.forEach((staff, i) => {
+    const order = [...groups.keys()].sort((a, b) => {
+      const [sa, va] = a.split(':').map(Number), [sb, vb] = b.split(':').map(Number);
+      return (sa ?? 0) - (sb ?? 0) || (va ?? 0) - (vb ?? 0);
+    });
+    order.forEach((key, i) => {
       if (i > 0) {
-        const previous = byStaff.get(staves[i - 1] ?? 1) ?? [];
+        const previous = groups.get(order[i - 1] ?? '') ?? [];
         // A chord member adds no time, so it must not be counted here or the
         // backup overshoots and the staves drift apart.
         const back = previous.reduce((sum, n) => sum + (n.chord ? 0 : n.duration), 0);
         if (back > 0) lines.push(`      <backup><duration>${back}</duration></backup>`);
       }
-      for (const note of byStaff.get(staff) ?? []) {
+      for (const note of groups.get(key) ?? []) {
+        if (note.forward) {
+          lines.push(`      <forward><duration>${note.duration}</duration><voice>${note.voice ?? 1}</voice>${note.staff ? `<staff>${note.staff}</staff>` : ''}</forward>`);
+          continue;
+        }
         lines.push(noteXml(note, preferFlats, '      ', options.blackKeys, measure.spelling ?? options.spelling));
       }
     });

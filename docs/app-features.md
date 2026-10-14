@@ -335,13 +335,16 @@ one); examples to copy written into a chart.
   is the file's own, with its changes, and estimated from the notes only when the file states none, or states only
   C major while a quarter or more of the notes fall outside it (a sequencer's default); notes are spelled from the key in force. Grids per bar: sixteenths or triplet
   eighths, and 32nds, sextuplets and 64ths only where a bar's notes sit exactly on them. A file whose notes mostly
-  miss the grid (played, not written) is said to have guessed bars and rhythms. Previously converted files keep
+  miss the grid (played, not written) is said to have guessed bars and rhythms. Each hand is written in up to three
+  voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,
+  or a note held under a moving melody, gets a voice of its own, the top of the texture keeping the first; while two
+  lines go on, a new note joins the one it is nearer in pitch; stems up for the highest voice in a bar, down for the
+  others; a played file keeps one voice a hand. Previously converted files keep
   their old conversion; adding the MIDI again converts it anew.
   **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their
   published MusicXML, on the 180 the comparison could line up): 93.9% of notes at the right time and pitch, every
   barline (0.4% extra), the opening key on all 180, spelling 94.2%, written lengths 88.3%, the staff 96.4%.
-  **Not handled yet:** one voice per staff (a melody over an accompaniment in one hand comes out as tied chords);
-  a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes; groups of 5, 7, …
+  **Not handled yet:** a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes; groups of 5, 7, …
   moved onto the nearest grid; only the first tempo. A played file recorded without a click has no reliable bars.
 - **Catalogue** (tab beside Yours, shown when the build has one; a catalogue that could not be read is asked for
   again the next time the library opens; `library/catalogue.ts`, built by

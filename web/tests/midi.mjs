@@ -1033,17 +1033,19 @@ function barsOf(xml) {
   for (const [, body] of xml.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)) {
     const bar = [];
     let pos = 0, last = 0, length = 0;
-    for (const [whole] of body.matchAll(/<note>[\s\S]*?<\/note>|<backup>[\s\S]*?<\/backup>/g)) {
+    for (const [whole] of body.matchAll(/<note>[\s\S]*?<\/note>|<backup>[\s\S]*?<\/backup>|<forward>[\s\S]*?<\/forward>/g)) {
       const dur = Number(/<duration>(\d+)<\/duration>/.exec(whole)?.[1] ?? 0);
       if (whole.startsWith('<backup>')) { pos -= dur; continue; }
+      if (whole.startsWith('<forward>')) { pos += dur; length = Math.max(length, pos); continue; }
       const chord = whole.includes('<chord/>');
       const at = chord ? last : pos;
       if (!chord) { last = pos; pos += dur; length = Math.max(length, pos); }
       if (whole.includes('<rest/>')) continue;
       const step = /<step>([A-G])<\/step>/.exec(whole)[1], alter = Number(/<alter>(-?\d)<\/alter>/.exec(whole)?.[1] ?? 0);
       const octave = Number(/<octave>(\d)<\/octave>/.exec(whole)[1]), staff = Number(/<staff>(\d)<\/staff>/.exec(whole)?.[1] ?? 1);
+      const voice = Number(/<voice>(\d+)<\/voice>/.exec(whole)?.[1] ?? 1), stem = /<stem>(\w+)<\/stem>/.exec(whole)?.[1];
       const name = `${step}${alter > 0 ? '#'.repeat(alter) : 'b'.repeat(-alter)}${octave}`;
-      const key = `${staff}:${name}`;
+      const key = `${staff}:${voice}:${name}`;
       if (whole.includes('<tie type="stop"/>') && open.has(key)) {
         const held = open.get(key);
         held.ticks += dur;
@@ -1051,7 +1053,7 @@ function barsOf(xml) {
         if (!whole.includes('<tie type="start"/>')) open.delete(key);
         continue;
       }
-      const note = { staff, name, at: q(at), ticks: dur, len: q(dur), absolute: barStart + at };
+      const note = { staff, voice, stem, name, at: q(at), ticks: dur, len: q(dur), absolute: barStart + at };
       bar.push(note);
       if (whole.includes('<tie type="start"/>')) open.set(key, note);
     }
@@ -1111,6 +1113,67 @@ describe('a two-hand file with a pickup, metre and key changes and 32nds, conver
     const third = /<measure number="3"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
     expect(third).toContain('<key><fifths>-2</fifths></key>');
     expect(third).toContain('<time><beats>2</beats><beat-type>4</beat-type></time>');
+  });
+});
+
+// --- new (2026-10-14): a melody over moving notes in one hand, written as two voices ------------------------------
+// Before, every staff was one line of chords: the half-note melody here came out cut into eighths and tied, with the
+// tune inside the chords (as Chopin's Op. 10 No. 3 did).
+
+describe('a melody held over moving notes in one hand, converted', () => {
+  const T = 480;
+  const line = (list, shift = () => 0) => {
+    const ev = [];
+    list.forEach(([midi, from, to], i) => { ev.push([from + shift(i), [0x90, midi, 64]], [to + shift(i), [0x80, midi, 0]]); });
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return ev.map(([at, bytes]) => { const delta = Math.max(0, at - now); now = Math.max(now, at); return { delta, bytes }; });
+  };
+  const right = [
+    [76, 0, 2 * T], [74, 2 * T, 4 * T], // the melody: E5, D5, half notes
+    ...[67, 69, 67, 69, 67, 69, 67, 69].map((m, i) => [m, i * T / 2, (i + 1) * T / 2]), // under it: G4 A4 eighths
+    [72, 4 * T, 5 * T], [76, 4 * T, 5 * T], [72, 5 * T, 6 * T], [76, 5 * T, 6 * T], [71, 6 * T, 8 * T], [74, 6 * T, 8 * T], // bar 2: chords only
+  ];
+  const left = [[48, 0, 4 * T], [43, 4 * T, 8 * T]];
+  const build = (shift) => buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }], [{ delta: 0, bytes: trackName('Right') }, ...line(right, shift)], [{ delta: 0, bytes: trackName('Left') }, ...line(left, shift)]]);
+  const { xml, report } = convertMidi(build(), { title: 'voices' });
+  const bars = barsOf(xml);
+  it('writes the melody as one voice, stems up, with no ties', () => {
+    const top = bars[0].filter((n) => n.staff === 1 && n.voice === 1);
+    expect(top.map((n) => `${n.name}@${n.at}/${n.len}:${n.stem}`)).toEqual(['E5@0/2:up', 'D5@2/2:up']);
+    expect(xml.slice(0, xml.indexOf('<measure number="2"')).includes('<tie type="start"/>')).toBe(false);
+  });
+  it('writes the moving notes under it as a second voice, stems down', () => {
+    const under = bars[0].filter((n) => n.staff === 1 && n.voice === 3);
+    expect(under.map((n) => `${n.name}@${n.at}/${n.len}:${n.stem}`)).toEqual(['G4@0/1/2:down', 'A4@1/2/1/2:down', 'G4@1/1/2:down', 'A4@3/2/1/2:down', 'G4@2/1/2:down', 'A4@5/2/1/2:down', 'G4@3/1/2:down', 'A4@7/2/1/2:down']);
+  });
+  it('keeps chords whose notes end together as one voice, and leaves the second voice out of that bar', () => {
+    expect(bars[1].filter((n) => n.staff === 1).map((n) => `${n.voice}:${n.name}@${n.at}`).sort()).toEqual(['1:B4@2', '1:C5@0', '1:C5@1', '1:D5@2', '1:E5@0', '1:E5@1']);
+    const second = /<measure number="2"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(second.includes('<voice>3</voice>')).toBe(false);
+  });
+  it('every voice of every bar adds up, and the converter’s check passes', () => {
+    expect(report.brokenBars).toEqual([]);
+    expect(report.passed).toBe(true);
+  });
+  it('gives a note held under a moving melody a third voice, leaving the moving notes theirs (owner: up to 3)', () => {
+    // Bar 1 of Chopin's Op. 10 No. 3 in small: melody E4 D♯4 E4 then F♯4 held; a D♯4 held under it from beat 2;
+    // sixteenths G♯3 B3 underneath all bar.
+    const three = buildMidiTracks([[{ delta: 0, bytes: timeSignature(2, 2) }], [{ delta: 0, bytes: trackName('Right') }, ...line([
+      [64, 0, T / 2], [63, T / 2, 3 * T / 4], [64, 3 * T / 4, T], [66, T, 7 * T / 4], // the melody (F♯4 let go before the bar ends)
+      [63, T, 2 * T], // held under it to the barline: another length, so not one chord with the F♯4
+      ...[56, 59, 56, 59, 57, 59, 57, 59].map((m, i) => [m, i * T / 4, (i + 1) * T / 4]),
+    ])], [{ delta: 0, bytes: trackName('Left') }, ...line([[40, 0, 2 * T]])]]);
+    const b = barsOf(convertMidi(three, { title: 'three' }).xml)[0].filter((n) => n.staff === 1);
+    const voiceOf = (name, at) => b.find((n) => n.name === name && n.at === at)?.voice;
+    expect([voiceOf('E4', '0'), voiceOf('D#4', '1/2'), voiceOf('F#4', '1')]).toEqual([1, 1, 1]);
+    expect(voiceOf('D#4', '1')).toBe(5);
+    expect(new Set(b.filter((n) => /^(G#3|A3|B3)$/.test(n.name)).map((n) => n.voice))).toEqual(new Set([3]));
+  });
+  it('keeps one voice a staff for a played file (its lengths are its touch, not the music’s)', () => {
+    const played = convertMidi(build((i) => [13, -9, 17, -11, 7, -15, 11, -7][i % 8]), { title: 'played' });
+    expect(played.report.onGrid).toBeLessThan(0.25);
+    expect(played.xml.includes('<voice>3</voice>')).toBe(false);
   });
 });
 
