@@ -489,7 +489,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     else if (i.opens === 'lab') button('Open in the lab', () => openItem(i), true);
     else button('Open', () => openItem(i), true);
     body.append(buttons);
-    if (i.opens === 'pdf') body.append(el('p', 'note', 'A PDF is pages, not notes: it is read a line at a time, turned by your keyboard, a tap or timed; nothing in it is judged.'));
+    if (i.opens === 'pdf') body.append(el('p', 'note', 'A PDF is pages, not notes: it is read a line at a time, turned by your keyboard, a tap or a page-turner pedal; nothing in it is judged.'));
 
     if (i.opens === 'score') {
       // The same piece's page drawn again (a tag, a favourite) keeps its drawing rather than drawing it again.

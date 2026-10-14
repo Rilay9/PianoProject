@@ -231,6 +231,10 @@ export function detectPage(gray: Uint8Array | Uint8ClampedArray, width: number, 
   // Reading along the tilt: the page pixel under row r (of the straightened page) at column x.
   const tan = Math.tan((angle * Math.PI) / 180), cx = width / 2;
   const at = (x: number, r: number) => dark(x, Math.round(r + (x - cx) * tan));
+  // Columns are read along the slant, but the reader shows the page turned about its centre, which also moves a column
+  // sideways by its height (review 2026-10-14: splits found clean landed on notes on a tilted scan): where column x at
+  // row r ends up on the page as shown.
+  const shown = toShown(angle, width, height);
   // Where a staff starts: the first column where most of its lines are inked, for a run (not a stray mark).
   const startOf = (staff: number[]) => {
     const run = Math.max(3, Math.round(width * 0.02));
@@ -305,10 +309,13 @@ export function detectPage(gray: Uint8Array | Uint8ClampedArray, width: number, 
     const above = k > 0 ? Math.round(gapAfter(k - 1) / 2) : Math.round((systems.length > 1 ? gapAfter(0) : space * 8) / 2);
     const below = k < systems.length - 1 ? gapAfter(k) - Math.round(gapAfter(k) / 2) - 1 : Math.round((systems.length > 1 ? gapAfter(k - 1) : space * 8) / 2);
     const { split, ink } = splitOf(s);
-    return { top: Math.max(0, e.first - above), bottom: Math.min(height - 1, e.last + below), staffLines: s.flat(), staves: s.length, split, splitInk: ink };
+    // (split as shown; splitInk is the ink in the column it was chosen from, read along the slant)
+    return { top: Math.max(0, e.first - above), bottom: Math.min(height - 1, e.last + below), staffLines: s.flat(), staves: s.length, split: Math.round(shown(split, (e.first + e.last) / 2)), splitInk: ink };
   });
-  // The margins: from a little left of the earliest staff start (the brace and the part name sit there) to the latest end.
-  const left = Math.max(0, Math.min(...starts) / width - 0.06), right = Math.min(1, Math.max(...ends) / width + 0.01);
+  // The margins, as shown: from a little left of the earliest staff start (the brace and the part name sit there) to the latest end.
+  const mid = (st: number[]) => ((st[0] as number) + (st[4] as number)) / 2;
+  const left = Math.max(0, Math.min(...staves.map((st, i) => shown(starts[i] as number, mid(st)))) / width - 0.06);
+  const right = Math.min(1, Math.max(...staves.map((st, i) => shown(ends[i] as number, mid(st)))) / width + 0.01);
   return { angle, bands, left, right };
 }
 
@@ -329,7 +336,17 @@ export function splitAt(gray: Uint8Array | Uint8ClampedArray, width: number, hei
     const c = col(x - 1) + col(x) + col(x + 1);
     if (c < bestInk || (c === bestInk && Math.abs(x - mid) < Math.abs(best - mid))) { bestInk = c; best = x; }
   }
-  return best;
+  return Math.round(toShown(angle, width, height)(best, (top + bottom) / 2)); // (as shown: see toShown)
+}
+
+/**
+ * Where column x at row r (read along the page's slant, as the detector reads) lands on the page as the reader shows it:
+ * turned back by `angle` about its centre (pdf.ts pageCanvas). The row hardly moves (under a pixel at 3°); the column
+ * moves by about (r − centre)·sin(angle).
+ */
+function toShown(angle: number, width: number, height: number): (x: number, r: number) => number {
+  const a = (angle * Math.PI) / 180, tan = Math.tan(a), sin = Math.sin(a), cos = Math.cos(a), cx = width / 2, cy = height / 2;
+  return (x, r) => cx + (x - cx) * cos + (r + (x - cx) * tan - cy) * sin;
 }
 
 /** The bands alone (a straight page, or callers that don't straighten). */

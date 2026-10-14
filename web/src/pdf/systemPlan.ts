@@ -94,8 +94,11 @@ export function wholePageCuts(): number[] {
 export function moveCut(cuts: readonly number[], index: number, to: number): number[] {
   const next = [...cuts];
   if (index < 0 || index >= next.length) return next;
-  const minimum = index > 0 ? (next[index - 1] as number) + 0.002 : 0;
-  const maximum = index + 1 < next.length ? (next[index + 1] as number) - 0.002 : 1;
+  // A line's own top and bottom stay at least LINE_MIN apart: cutsToSystems drops a thinner band, which would shift
+  // every later line's splits on the page (review 2026-10-14); between two lines 0.002 is enough.
+  const LINE_MIN = 0.006;
+  const minimum = index > 0 ? (next[index - 1] as number) + (index % 2 ? LINE_MIN : 0.002) : 0;
+  const maximum = index + 1 < next.length ? (next[index + 1] as number) - (index % 2 ? 0.002 : LINE_MIN) : 1;
   next[index] = Math.min(maximum, Math.max(minimum, clamp(to)));
   return next;
 }

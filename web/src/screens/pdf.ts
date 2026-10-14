@@ -87,14 +87,17 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     const ofLine = units.filter((u) => u.line === line);
     const u = ofLine.find((x) => x.part === null || x.part === Math.min(want, x.parts - 1)) ?? ofLine[0];
     index = Math.max(0, u ? units.indexOf(u) : 0);
+    // The place saved by its number in the new list (lines added or found on an earlier page renumber it; review
+    // 2026-10-14: the old number was kept, so turning the phone or reopening went a line back).
+    if (keep && units[index]) { st.line = units[index]!.line; st.part = units[index]!.part ?? 0; save(); }
   }
-  /** Finds the lines on a page (once; kept with the piece), its tilt, margins and each line's split. */
-  async function detect(page: number, force = false): Promise<void> {
-    if (!doc) return;
-    if (!force && st.cuts?.[page]) { if (!st.splits?.[page]) await resplit(page); return; } // (lines kept from before splits existed)
+  /** Finds the lines on a page (once; kept with the piece), its tilt, margins and each line's split. True when they changed. */
+  async function detect(page: number, force = false): Promise<boolean> {
+    if (!doc) return false;
+    if (!force && st.cuts?.[page]) { if (st.splits?.[page]) return false; await resplit(page); return true; } // (lines kept from before splits existed)
     const r = await doc.renderPage(page, DETECTION_WIDTH);
     const ctx = r.canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) return false;
     const gray = toGreyscale(ctx.getImageData(0, 0, r.width, r.height).data, r.width, r.height);
     const found = detectPage(gray, r.width, r.height);
     const ok = found.bands.length > 0;
@@ -105,6 +108,7 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     st.spacing = { ...st.spacing, [page]: ok ? found.bands[0]!.staffLines[1]! - found.bands[0]!.staffLines[0]! : 0 };
     for (const k of [...pages.keys()]) if (k.startsWith(`${page}|`)) pages.delete(k);
     save();
+    return true;
   }
   /** Splits for lines set by hand (Adjust lines): found again from the page for the new bands. */
   async function resplit(page: number): Promise<void> {
@@ -144,20 +148,31 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   let drawing = 0, slotH = 0, lastLayout: unknown = null;
   async function render(fade = false): Promise<void> {
     const n = ++drawing;
+    // The pages of the two units shown are read first; a page read now for the first time brings its own lines in
+    // (review 2026-10-14: a page not yet read stayed one whole-page "line" for the whole visit).
+    for (let k = 0; k < 3; k += 1) {
+      const c = units[index], x = units[index + 1];
+      if (!c) break;
+      const changed = await Promise.all([detect(c.sys.page), x ? detect(x.sys.page) : false]);
+      if (n !== drawing) return;
+      if (!changed.some(Boolean)) break;
+      rebuild();
+    }
     const cur = units[index], next = units[index + 1];
     if (!cur) { canvases.forEach((c) => { c.hidden = true; }); return; }
-    await Promise.all([detect(cur.sys.page), next ? detect(next.sys.page) : null]);
-    if (n !== drawing) return;
     const W = stage.clientWidth, H = stage.clientHeight;
     const wd = Math.round(W * (st.size ?? 1));
     // A unit's height on screen: its share of the page, at the width it gets.
     const h = (u: Unit | undefined) => (u ? ((u.sys.bottom - u.sys.top) * (aspect[u.sys.page] ?? 1.414) * wd) / Math.max(0.1, u.x1 - u.x0) : 0);
     // The slots are as tall as the tallest unit met so far in this piece (only growing while it is open), one under
     // the other: fixed places, without half a screen of paper between two short lines.
-    slotH = Math.max(slotH, h(cur), h(next));
-    const two = !!next && slotH <= (H - GAP) / 2;
+    // Only units that fit two to a screen set it: a taller one (a cover page, a page with no lines found) is shown on
+    // its own, and the slots go back to their places after it (it used to grow them for the rest of the visit).
+    const half = (H - GAP) / 2;
+    slotH = Math.max(slotH, ...[h(cur), h(next)].filter((x) => x <= half));
+    const two = !!next && h(cur) <= half && h(next) <= half && slotH <= half;
     const px = Math.min(3000, Math.round((wd * (window.devicePixelRatio || 1)) / Math.max(0.1, Math.min(cur.x1 - cur.x0, next ? next.x1 - next.x0 : 1))));
-    const draw = async (canvas: HTMLCanvasElement, u: Unit | undefined) => {
+    const draw = async (canvas: HTMLCanvasElement, u: Unit | undefined, shownW = wd) => {
       if (!u) { canvas.hidden = true; return; }
       const p = await pageCanvas(u.sys.page, px);
       if (!p || n !== drawing) return;
@@ -168,8 +183,8 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       c.fillStyle = '#fff'; c.fillRect(0, 0, cw, height);
       c.drawImage(p, x0, top, cw, height, 0, 0, cw, height);
       canvas.hidden = false;
-      canvas.style.width = `${wd}px`;
-      canvas.style.height = `${(height * wd) / cw}px`;
+      canvas.style.width = `${shownW}px`;
+      canvas.style.height = `${(height * shownW) / cw}px`;
     };
     if (two) {
       // Fixed slots: unit k always in slot k % 2, so the one you read toward stays put.
@@ -179,15 +194,19 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       slots[1]!.style.top = `${slotH + GAP}px`;
       slots.forEach((s) => { s.style.height = `${slotH}px`; });
       await Promise.all([draw(canvases[a]!, cur), draw(canvases[1 - a]!, next)]);
+      if (n !== drawing) return; // (a newer turn has drawn since)
       slots[a]!.classList.add('now'); slots[1 - a]!.classList.remove('now');
       if (fade) { const s = slots[1 - a]!; s.classList.remove('pdf-in'); void s.offsetWidth; s.classList.add('pdf-in'); }
     } else {
       // The one you're on, whole, with as much of the next as fits under it.
       section.dataset.layout = 'one';
+      // A unit taller than the screen (a whole page where no lines were found, a cover held sideways) is drawn smaller
+      // to fit, rather than cut off at the bottom (review 2026-10-14: a cover sideways showed its top quarter).
       const hc = Math.min(h(cur), H);
       slots[0]!.style.top = '0px'; slots[0]!.style.height = `${hc}px`;
       slots[1]!.style.top = `${hc + GAP}px`; slots[1]!.style.height = `${Math.max(0, H - hc - GAP)}px`;
-      await Promise.all([draw(canvases[0]!, cur), draw(canvases[1]!, next)]);
+      await Promise.all([draw(canvases[0]!, cur, h(cur) > H ? Math.round((wd * H) / h(cur)) : wd), draw(canvases[1]!, next)]);
+      if (n !== drawing) return;
       slots[0]!.classList.add('now'); slots[1]!.classList.remove('now');
     }
     where();
@@ -219,14 +238,29 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   const back = () => go(index - 1);
 
   stage.addEventListener('click', () => next());
+  // A button tapped or clicked lets go of the focus, so a pedal's Space or Enter turns rather than pressing it again.
+  section.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('button'); if (b && e.detail > 0) b.blur(); });
   $('pdf-next').addEventListener('click', next);
   $('pdf-back').addEventListener('click', back);
   const resize = (d: number) => { const i = SIZES.indexOf(st.size ?? 1) + d; if (i < 0 || i >= SIZES.length) return; st.size = SIZES[i]; slotH = 0; save(); void render(); };
   $('pdf-smaller').addEventListener('click', () => resize(-1));
   $('pdf-larger').addEventListener('click', () => resize(1));
   $('pdf-done').addEventListener('click', () => close());
+
+  // ---- Android Back (and the browser's) -------------------------------------------------------------------------
+  // Opening the reader, and Adjust lines, each add a history step (review 2026-10-14: with none, Back left the app);
+  // Back takes Adjust away first, then the reader. Leaving by a button takes the steps off first, then shuts.
+  let steps = 0, afterBack: (() => void) | null = null;
+  const pushStep = () => { history.pushState({ pdf: ++steps }, ''); };
+  window.addEventListener('popstate', () => {
+    if (afterBack) { const f = afterBack; afterBack = null; f(); return; }
+    if (!isOpen || !steps) return;
+    steps -= 1;
+    if (adjusting) endAdjust(); else shut();
+  });
   document.addEventListener('keydown', (e) => {
     if (!isOpen || app.dialogOpen() || adjusting || (e.target as HTMLElement).closest('input, textarea, select')) return;
+    if ((e.key === 'Enter' || e.key === ' ') && (e.target as HTMLElement).closest('button, a, summary')) return; // (presses the button)
     if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
     else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); back(); }
   });
@@ -252,8 +286,9 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
 
   let adjusting = false, adjustPage = 0;
   const adjust = $('pdf-adjust');
-  $('pdf-open-adjust').addEventListener('click', () => { adjusting = true; adjustPage = units[index]?.sys.page ?? 0; adjust.hidden = false; section.classList.add('adjusting'); void drawAdjust(); });
-  $('pdf-adjust-done').addEventListener('click', () => { adjusting = false; adjust.hidden = true; section.classList.remove('adjusting'); rebuild(); slotH = 0; void render(); });
+  $('pdf-open-adjust').addEventListener('click', () => { adjusting = true; adjustPage = units[index]?.sys.page ?? 0; adjust.hidden = false; section.classList.add('adjusting'); pushStep(); void drawAdjust(); });
+  function endAdjust(): void { if (!adjusting) return; adjusting = false; adjust.hidden = true; section.classList.remove('adjusting'); rebuild(); slotH = 0; void render(); }
+  $('pdf-adjust-done').addEventListener('click', () => { if (steps > 1) history.back(); else endAdjust(); }); // (its Back step taken off; popstate ends it)
   $('pdf-adjust-prev').addEventListener('click', () => { if (adjustPage > 0) { adjustPage -= 1; void drawAdjust(); } });
   $('pdf-adjust-next').addEventListener('click', () => { if (adjustPage < aspect.length - 1) { adjustPage += 1; void drawAdjust(); } });
   $('pdf-adjust-add').addEventListener('click', () => void setCuts(addSystem(cutsOf(adjustPage))));
@@ -268,14 +303,27 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     if (c.length !== before || (st.splits?.[adjustPage]?.length ?? 0) !== c.length / 2) await resplit(adjustPage); // (adding or removing lines: each line back to one found split)
     void drawAdjust();
   }
+  /** Removes one line of the page being adjusted; the other lines keep their splits. */
+  function removeLine(k: number): void {
+    const c = [...cutsOf(adjustPage)].sort((a, b) => a - b);
+    if (c.length <= 2) return;
+    c.splice(k * 2, 2);
+    const kept = [...(st.splits?.[adjustPage] ?? [])];
+    kept.splice(k, 1);
+    st.cuts = { ...st.cuts, [adjustPage]: c };
+    st.splits = { ...st.splits, [adjustPage]: kept };
+    save();
+    void drawAdjust();
+  }
+  let adjustImg: HTMLCanvasElement | null = null; // one copy of the page for Adjust, reused (not a new one per drag)
   async function drawAdjust(): Promise<void> {
     await detect(adjustPage);
     const frame = $('pdf-adjust-frame');
     const width = Math.min(adjust.clientWidth - 16, 900);
     const p = await pageCanvas(adjustPage, Math.round(width * (window.devicePixelRatio || 1)));
     if (!p || !adjusting) return;
-    const img = document.createElement('canvas');
-    img.width = p.width; img.height = p.height;
+    const img = adjustImg ??= document.createElement('canvas');
+    if (img.width !== p.width || img.height !== p.height) { img.width = p.width; img.height = p.height; }
     img.getContext('2d')!.drawImage(p, 0, 0);
     img.style.width = `${width}px`;
     const layer = document.createElement('div');
@@ -305,6 +353,18 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       handle.style.top = `${f * 100}%`;
       handle.setAttribute('aria-label', `${k % 2 ? 'Bottom' : 'Top'} of line ${Math.floor(k / 2) + 1}`);
       drag(handle, 'y', (to) => void setCuts(moveCut(cutsOf(adjustPage), k, to)));
+      if (k % 2 === 0) {
+        // x on a line's top handle removes that line (review 2026-10-14: only the last could go, so a title read as a
+        // line at the top could not be removed).
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'pdf-cut-x';
+        x.textContent = '×';
+        x.setAttribute('aria-label', `Remove line ${k / 2 + 1}`);
+        x.addEventListener('pointerdown', (e) => e.stopPropagation());
+        x.addEventListener('click', (e) => { e.stopPropagation(); removeLine(k / 2); });
+        handle.append(x);
+      }
       layer.append(handle);
     });
     // Each line's split points: drag one sideways, × removes it; a tap on a line adds one there (at a barline, say).
@@ -357,6 +417,7 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
 
   async function open(pieceId: string, title: string): Promise<void> {
     const n = ++opening;
+    if (!isOpen) { steps = 0; afterBack = null; pushStep(); } // (Back closes the reader)
     isOpen = true;
     id = pieceId;
     section.hidden = false;
@@ -376,26 +437,43 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       pages.clear();
       slotH = 0;
       systems = [];
-      await detect(0);
-      rebuild();
-      await detect(systems[st.line ?? 0]?.page ?? 0);
+      // The pages up to the saved place are read first (normally already kept with the piece), so its line number
+      // counts the same lines it did when it was saved.
+      for (let p = 0, lines = 0; p < aspect.length; p += 1) {
+        await detect(p);
+        if (n !== opening) return;
+        lines += cutsToSystems(st.cuts?.[p] ?? wholePageCuts(), p).length;
+        if (lines > (st.line ?? 0)) break;
+      }
       rebuild();
       say('');
       await render();
       app.stayAwake();
       // The other pages' lines, found in the background (nearest first), so the count and Adjust are right.
       void (async () => {
-        for (const p of backgroundDetectionOrder(aspect.length, units[index]?.sys.page ?? 0)) {
-          if (n !== opening || !isOpen) return;
-          if (!st.cuts?.[p]) { await detect(p); rebuild(); where(); }
-        }
+        try {
+          for (const p of backgroundDetectionOrder(aspect.length, units[index]?.sys.page ?? 0)) {
+            if (n !== opening || !isOpen) return;
+            if (!st.cuts?.[p]) { await detect(p); if (n !== opening) return; rebuild(); where(); }
+          }
+        } catch { /* closed while a page was being read */ }
       })();
     } catch (e) {
-      say(`This PDF could not be opened: ${e instanceof Error ? e.message : String(e)}`);
+      if (n === opening) say(`This PDF could not be opened: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
+  /** The reader's back arrow, and the app: the history steps taken off first, then shut. */
   function close(): void {
     if (!isOpen) return;
+    if (!steps) { shut(); return; }
+    const n = steps;
+    steps = 0;
+    afterBack = shut;
+    history.go(-n);
+  }
+  function shut(): void {
+    if (!isOpen) return;
+    opening += 1; // (a load still under way stops)
     isOpen = false;
     adjusting = false;
     adjust.hidden = true;
@@ -404,8 +482,11 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     doc?.dispose();
     doc = null;
     pages.clear();
+    if (adjustImg) { adjustImg.width = 0; adjustImg = null; }
     app.stayAwake();
-    closed();
+    // After this Back event has reached every listener: the library, reopened, adds its own history step at once, and
+    // its listener for this same event would take that step as Back and close again.
+    setTimeout(closed, 0);
   }
 
   return {

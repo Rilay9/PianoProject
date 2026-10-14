@@ -9,7 +9,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { collapseRuns, detectPage, detectSystems, groupStaves, toGreyscale } from '../src/pdf/systems.ts';
-import { cutsToSystems, detectPageSystems, reindexAfterRebuild } from '../src/pdf/systemPlan.ts';
+import { cutsToSystems, detectPageSystems, moveCut, reindexAfterRebuild } from '../src/pdf/systemPlan.ts';
 import { BoundedPageCache } from '../src/pdf/pageCache.ts';
 import { backgroundDetectionOrder } from '../src/pdf/detectionOrder.ts';
 import { drawSystemInto, systemScreenHeight } from '../src/pdf/region.ts';
@@ -224,6 +224,25 @@ describe('reindexAfterRebuild', () => {
 
 // --- pdfPageCache.test.ts: the rendered-page cache never evicts a page it is showing --------------------------
 
+describe('moveCut', () => {
+  // A line dragged thinner than cutsToSystems keeps (0.005) used to vanish silently and shift every later line's
+  // splits on its page by one (review 2026-10-14). A line's own top and bottom now stay 0.006 apart.
+  const cuts = [0.1, 0.3, 0.4, 0.6];
+  it('keeps a line when its bottom is dragged onto its top', () => {
+    const c = moveCut(cuts, 1, 0.1);
+    expect(cutsToSystems(c, 0)).toHaveLength(2);
+    expect(c[1] - c[0]).toBeGreaterThan(0.005);
+  });
+  it('keeps a line when its top is dragged onto its bottom', () => {
+    const c = moveCut(cuts, 2, 0.6);
+    expect(cutsToSystems(c, 0)).toHaveLength(2);
+    expect(c[3] - c[2]).toBeGreaterThan(0.005);
+  });
+  it('still lets two lines touch (the gap between lines may be tiny)', () => {
+    expect(moveCut(cuts, 2, 0.3)[2]).toBeCloseTo(0.302, 6);
+  });
+});
+
 describe('BoundedPageCache', () => {
   it('evicts the oldest entry once past its target size', () => {
     const cache = new BoundedPageCache(2);
@@ -393,6 +412,29 @@ if (napi) {
         expect(bands.map((b) => b.splitInk)).toEqual(bands.map(() => 0));
       });
     }
+    // On a tilted page the split is chosen along the slant, but the reader shows the page turned straight about its
+    // centre, which moves every column sideways by its height (review 2026-10-14: before the fix the split, as shown,
+    // crossed 56–95 dark pixels of notes on some lines of a page tilted 1.2°). Measured where it is shown: the page
+    // turned exactly as pdf.ts pageCanvas turns it, and the split's three columns read off the staff lines.
+    it('a tilted scan’s splits fall between notes on the page as the reader shows it (scan.pdf p1, 1.2°)', async () => {
+      const { canvas, context } = await renderFixture(900, fileURLToPath(new URL('./fixtures/pdf/scan.pdf', import.meta.url)), 1);
+      const W = canvas.width, H = canvas.height;
+      const found = detectPage(toGreyscale(context.getImageData(0, 0, W, H).data, W, H), W, H);
+      expect(Math.abs(found.angle)).toBeGreaterThan(0.5);
+      const shown = napi.createCanvas(W, H), sc = shown.getContext('2d');
+      sc.fillStyle = '#fff'; sc.fillRect(0, 0, W, H);
+      sc.translate(W / 2, H / 2); sc.rotate((-found.angle * Math.PI) / 180); sc.drawImage(canvas, -W / 2, -H / 2);
+      const g = toGreyscale(sc.getImageData(0, 0, W, H).data, W, H);
+      const dark = (x, y) => x >= 0 && x < W && y >= 0 && y < H && g[y * W + x] < 140;
+      const inkAt = (b) => {
+        const onLine = (r) => b.staffLines.some((y) => Math.abs(r - y) <= 2);
+        let d = 0;
+        for (let x = b.split - 1; x <= b.split + 1; x += 1) for (let r = b.top; r <= b.bottom; r += 1) if (!onLine(r) && dark(x, r)) d += 1;
+        return d;
+      };
+      const ink = found.bands.map(inkAt);
+      expect(ink.every((d) => d <= 12), `ink at each shown split: ${ink}`).toBe(true);
+    });
   });
 } else {
   skip('PDF pages through pdf.js (11 cases)', `@napi-rs/canvas would not load here: ${napiWhy}`);

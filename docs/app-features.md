@@ -362,20 +362,29 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   piece and per kind of screen** (⚙ → Show) you choose whole lines or split lines; split by default on a phone
   upright, where a whole printed line is too small (measured: a dense page's staff space 2.4 px whole, 4.8 px in
   halves; sideways 5.2 px whole, 10.6 px split, but then only a strip of the next part fits). The slots are as tall as
-  the tallest unit met so far, one under the other; when two don't fit, the unit you're on shows whole with as much
-  of the next as fits under it. A−/A+ choose the size (50–100% of the width); each page's margins are trimmed to
+  the tallest unit met so far that fits two to a screen, one under the other; when two don't fit, the unit you're on
+  shows whole with as much of the next as fits under it, and a unit taller than the screen (a cover page, a page with
+  no lines found) is drawn smaller to fit whole. A−/A+ choose the size (50–100% of the width); each page's margins are trimmed to
   where its staves start and end. Turning the phone keeps your line (and part, where there is one).
 - **Turning** (owner: no timed turning): the keyboard's highest key (next) and lowest key (back), as the keyboard
   remote does elsewhere (they need learning once in Keyboard controls), unless the piece's ⚙ says it uses those keys;
-  a tap on the music; a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶.
+  a tap on the music; a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶. Space or
+  Enter on a button you moved to with Tab presses that button. **Back** (Android's, or the browser's) closes Adjust
+  lines first, then the reader, back to the library.
 - **Finding the lines** (`pdf/systems.ts`, reworked from the old app's after it got 0 of 5 real-looking pages right):
   ink against the page's own paper; the page's tilt measured and straightened (on screen too); staff lines as the
   sharpest rows, five evenly spaced a staff (a too-faint fifth filled in); a second look for short systems at the
   page's own staff spacing; staves joined into a system by a brace or barline where they start; bands to halfway
   between systems. 15 of 15 test pages right, including a tilted grey scan and a one-bar ending (one staff missed on
   one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
-  drag and its split points (green); add or remove a line (that page's lines go back to one found split each), or find
-  the lines again. A page where no lines are found shows whole, unsplit, until you mark them.
+  drag and its split points (green); the blue × on a line removes that line (the others keep their splits); add a line
+  or remove the last (that page's lines go back to one found split each), or find the lines again. A line can't be
+  dragged thinner than 0.6% of the page. A page where no lines are found shows whole, unsplit, until you mark them. On
+  a tilted page the splits and margins are placed on the straightened page as shown. Pages are read as you reach them
+  (and the rest in the background); a page read for the first time brings its lines in at once, and your place keeps
+  its line when lines are added or found on an earlier page. Scanned pages stored as JPEG 2000 (most library scans)
+  are decoded by pdf.js's own decoders (`pdfjs-wasm/`, served from the installed pdfjs-dist by `vite.config.ts` and
+  saved for offline).
 - **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line and part you were on, the lines and split points
   found or placed, whole or split per kind of screen, each page's tilt and margins, the size, and the edge-keys switch.
 - Not built (owner, 2026-10-14): timed turning (tried and measured: fine on lines of equal length, off by seconds on

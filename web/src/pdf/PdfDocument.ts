@@ -20,6 +20,8 @@ import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-d
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 let workerConfigured = false;
+/** Where pdf.js's WebAssembly decoders are served (vite.config.ts). */
+export const PDFJS_WASM = `${import.meta.env.BASE_URL}pdfjs-wasm/`;
 
 function configureWorker(): void {
   if (workerConfigured) return;
@@ -45,7 +47,9 @@ export class PdfDocument {
     // PDF.js takes ownership of the buffer it is handed and detaches it, which
     // would empty the copy held in IndexedDB's in-memory cache; a slice keeps
     // the original readable for a second open.
-    const doc = await getDocument({ data: data.slice(0) }).promise;
+    // wasmUrl: pdf.js's own decoders for JPEG 2000 images and colour profiles (vite.config.ts serves them); without
+    // them a scanned page stored as JPEG 2000 draws blank (review 2026-10-14).
+    const doc = await getDocument({ data: data.slice(0), wasmUrl: PDFJS_WASM }).promise;
     return new PdfDocument(doc);
   }
 

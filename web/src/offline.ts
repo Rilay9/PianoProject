@@ -104,6 +104,8 @@ async function wanted(base: string): Promise<Set<string>> {
   } catch { /* no catalogue in this build */ }
   // The PDF reader's worker (loaded only when a PDF opens, so not in the page's own files above).
   urls.add(new URL(pdfWorker, origin).href);
+  // and its decoders for JPEG 2000 scans and colour profiles (fetched by pdf.js only when a page needs them)
+  for (const f of ['openjpeg.wasm', 'qcms_bg.wasm']) urls.add(new URL(`${base}pdfjs-wasm/${f}`, origin).href);
   const band = `${base}content/audio/band`;
   urls.add(new URL(`${band}/lm-2/dm.json`, origin).href);
   const kit = (await (await fetch(`${band}/lm-2/dm.json`)).json()) as { samples: string[] };
