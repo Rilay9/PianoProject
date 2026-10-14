@@ -576,6 +576,7 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .pdf-cut.bottom { background: #ea580c; }
 .pdf-split { position: absolute; width: 3px; margin-left: -1px; background: #16a34a; touch-action: none; cursor: ew-resize; }
 .pdf-split::before { content: ''; position: absolute; top: 0; bottom: 0; left: -12px; right: -12px; }
+.pdf-split-x { position: absolute; top: -10px; left: -11px; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 11px; background: #16a34a; color: #fff; font: 700 14px/22px system-ui, sans-serif; z-index: 1; }
 @media (orientation: landscape) and (max-height: 599px) {
   .pdf-head { padding-top: 2px; padding-bottom: 2px; }
   .pdf-bar { padding-top: 3px; padding-bottom: 3px; }

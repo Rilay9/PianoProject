@@ -355,14 +355,16 @@ one); examples to copy written into a chart.
 and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394 renders the pages).
 
 - **Two units in fixed places, alternating** (like the score's Turn): the one you're on (marked at its left) and the
-  next; turning replaces the one you finished, so the one you read toward never moves. A unit is a whole line, or
-  **on a phone held upright half a line**: a whole printed line is too small there (measured: dense music at about a
-  quarter of print size), so each line is split at the emptiest place near its middle (between notes: 60 of 71 test
-  lines split with nothing but staff lines cut, the rest through a slur or hairpin) and shown as two halves, which
-  doubled the size (staff space 2.4 → 4.8 px on a dense page; sideways 5.2, a whole line). The slots are as tall as
-  the tallest unit met so far, one under the other; when two don't fit (usually sideways) the unit you're on shows
-  whole with as much of the next as fits under it. A−/A+ choose the size (50–100% of the width); each page's margins
-  are trimmed to where its staves start and end. Turning the phone keeps your line (and half).
+  next; turning replaces the one you finished, so the one you read toward never moves. A unit is a whole line or a
+  **part of a line**: each line has split points, one found for you (the emptiest place near its middle, between
+  notes: 60 of 71 test lines split with nothing but staff lines cut, the rest through a slur or hairpin) and any you
+  add (Adjust lines: a tap on a line adds a split there, at a barline say; drag one sideways; × removes it). **Per
+  piece and per kind of screen** (⚙ → Show) you choose whole lines or split lines; split by default on a phone
+  upright, where a whole printed line is too small (measured: a dense page's staff space 2.4 px whole, 4.8 px in
+  halves; sideways 5.2 px whole, 10.6 px split, but then only a strip of the next part fits). The slots are as tall as
+  the tallest unit met so far, one under the other; when two don't fit, the unit you're on shows whole with as much
+  of the next as fits under it. A−/A+ choose the size (50–100% of the width); each page's margins are trimmed to
+  where its staves start and end. Turning the phone keeps your line (and part, where there is one).
 - **Turning** (owner: no timed turning): the keyboard's highest key (next) and lowest key (back), as the keyboard
   remote does elsewhere (they need learning once in Keyboard controls), unless the piece's ⚙ says it uses those keys;
   a tap on the music; a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶.
@@ -372,10 +374,10 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   page's own staff spacing; staves joined into a system by a brace or barline where they start; bands to halfway
   between systems. 15 of 15 test pages right, including a tilted grey scan and a one-bar ending (one staff missed on
   one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
-  drag and its split (green) to drag sideways; add or remove a line (its page's splits found again), or find the lines
-  again. A page where no lines are found shows whole, unsplit, until you mark them.
-- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line and half you were on, the lines and splits found or
-  adjusted, each page's tilt and margins, the size, and the edge-keys switch.
+  drag and its split points (green); add or remove a line (that page's lines go back to one found split each), or find
+  the lines again. A page where no lines are found shows whole, unsplit, until you mark them.
+- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line and part you were on, the lines and split points
+  found or placed, whole or split per kind of screen, each page's tilt and margins, the size, and the edge-keys switch.
 - Not built (owner, 2026-10-14): timed turning (tried and measured: fine on lines of equal length, off by seconds on
   unequal ones; counting bars from the page only reached 34 of 71 lines right); following your playing (a PDF has no
   notes; with a MusicXML copy you'd use the score screen). Repeats are yours to turn back for.

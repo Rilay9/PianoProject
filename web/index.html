@@ -232,7 +232,7 @@
     </div>
     <div id="pdf-adjust" class="pdf-adjust" hidden>
       <div class="pdf-adjust-row"><button id="pdf-adjust-prev" type="button" class="btn" aria-label="Previous page">◀</button><span id="pdf-adjust-label"></span><button id="pdf-adjust-next" type="button" class="btn" aria-label="Next page">▶</button><span class="lab-sp"></span><button id="pdf-adjust-done" type="button" class="btn main">Done</button></div>
-      <p class="note">Each line of music is between a top (blue) and a bottom (orange) handle: drag them to fit. The green handle is where the line is split in two on a phone held upright: drag it sideways to a gap between notes.</p>
+      <p class="note">Each line of music is between a top (blue) and a bottom (orange) handle: drag them to fit. Green handles are where a line is split into parts (shown when this screen shows split lines): drag one sideways, × removes it, and a tap on a line adds one there.</p>
       <div id="pdf-adjust-frame" class="pdf-adjust-frame"></div>
       <div class="pdf-adjust-row"><button id="pdf-adjust-add" type="button" class="btn">Add a line</button><button id="pdf-adjust-remove" type="button" class="btn">Remove the last</button><button id="pdf-adjust-detect" type="button" class="btn">Find the lines again</button></div>
     </div>
@@ -242,6 +242,11 @@
       <h2 id="pdf-settings-title">Turning</h2>
       <p class="note">Turn with your keyboard's highest key (next) and lowest key (back; they need learning once in ⋯ → Keyboard controls), a tap on the music, a page-turner pedal (it sends page or arrow keys), or ◀ ▶.</p>
       <label class="row"><input id="pdf-edge-music" type="checkbox"> This piece uses the keyboard's lowest or highest key (then they don't turn lines)</label>
+      <h2>Show</h2>
+      <p class="note">Whole lines, or each line in parts at its split points (one is found for you; add your own in Adjust lines). For this piece, per kind of screen.</p>
+      <div class="row">Phone upright <label><input type="radio" name="pdf-view-phone-upright" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-phone-upright" value="split"> Split lines</label></div>
+      <div class="row">Phone sideways <label><input type="radio" name="pdf-view-phone-sideways" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-phone-sideways" value="split"> Split lines</label></div>
+      <div class="row">Tablet <label><input type="radio" name="pdf-view-tablet" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-tablet" value="split"> Split lines</label></div>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
