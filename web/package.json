@@ -11,11 +11,13 @@
     "check:scoring": "node tests/scoring.mjs",
     "check:lab": "node tests/lab-judge.mjs",
     "check:activity": "node tests/activity.mjs",
-    "check:midi": "node tests/midi.mjs"
+    "check:midi": "node tests/midi.mjs",
+    "check:pdf": "node tests/pdf.mjs"
   },
   "dependencies": {
     "jszip": "3.10.1",
     "opensheetmusicdisplay": "2.2.0",
+    "pdfjs-dist": "5.4.394",
     "smplr": "1.0.0",
     "tonal": "6.4.3"
   },

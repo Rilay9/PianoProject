@@ -22,6 +22,7 @@ import { clearPreset } from './settings';
 import { createExerciseScreen } from './screens/exercise';
 import { createLabScreen } from './screens/lab';
 import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
+import { createPdfScreen } from './screens/pdf';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
 import type { Piece } from './app';
@@ -48,7 +49,10 @@ const freePlayScreen: Screen = {
 // The accompaniment lab (owner, 2026-10-13): play along with a band (for now in ⋯).
 const labScreen = createLabScreen(app, () => { scoreScreen.fillBars(); scoreScreen.showBars(); });
 // The library (owner, 2026-10-13): everything you play from (for now in ⋯; where it sits in the app comes later).
+// The PDF reader (owner, 2026-10-14), opened from the library.
+const pdfScreen = createPdfScreen(app, () => { void libraryScreen.open(); });
 const libraryScreen = createLibraryScreen(app, {
+  openPdf: (id, title) => { wanted(); void pdfScreen.open(id, title); },
   openScore: (id) => { wanted(); void scoreScreen.openSong(id); },
   memorise: (id) => { wanted(); clearPreset(); void scoreScreen.openSong(id).then(() => memoriseScreen.open()); },
   openChart: (id) => { void labScreen.open(wanted(), undefined, id); },
@@ -56,11 +60,12 @@ const libraryScreen = createLibraryScreen(app, {
   forgot: () => memoriseScreen.reloadStorage(),
   reopen: (id) => { void scoreScreen.openSong(id); },
 });
-app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, libraryScreen];
+app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, libraryScreen, pdfScreen];
 
 /** The screen showing: one opened over the score, or the score itself. */
 function showing(): Screen {
   if (freePlay.open) return freePlayScreen;
+  if (pdfScreen.isOpen) return pdfScreen;
   if (libraryScreen.isOpen) return libraryScreen;
   if (labScreen.isOpen) return labScreen;
   if (exerciseScreen.isOpen) return exerciseScreen;
@@ -328,6 +333,6 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
-  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(), library: () => libraryScreen.debug(),
+  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
   readScore: (xml: string, name?: string) => readScore(xml, name), // (the catalogue builder reads files with the app's own reader)
 };

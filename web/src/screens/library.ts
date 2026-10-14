@@ -14,6 +14,7 @@ import { fetchCatalogueFile, loadCatalogue, type CatRow } from '../library/catal
 
 export interface LibraryDeps {
   openScore(id: string): void;
+  openPdf(id: string, title: string): void;
   memorise(id: string): void;
   openChart(id: string): void;
   /** The library closed (back to the score). */
@@ -486,9 +487,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     const button = (label: string, run: () => void, main = false) => { const b = el('button', `btn${main ? ' main' : ''}`, label); b.type = 'button'; b.addEventListener('click', run); buttons.append(b); return b; };
     if (i.opens === 'score') { button('Open', () => openItem(i), true); button('Memorise', () => { touch(i.id); close(() => deps.memorise(i.id)); }); }
     else if (i.opens === 'lab') button('Open in the lab', () => openItem(i), true);
-    else button('Open', () => {}).disabled = true;
+    else button('Open', () => openItem(i), true);
     body.append(buttons);
-    if (i.opens === 'pdf') body.append(el('p', 'note', 'The PDF viewer comes next. A PDF is pages, not notes: it has no key or bars, and nothing in it is judged.'));
+    if (i.opens === 'pdf') body.append(el('p', 'note', 'A PDF is pages, not notes: it is read a line at a time, turned by your keyboard, a tap or timed; nothing in it is judged.'));
 
     if (i.opens === 'score') {
       // The same piece's page drawn again (a tag, a favourite) keeps its drawing rather than drawing it again.
@@ -710,9 +711,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   // ---- opening ------------------------------------------------------------------------------------------------------
 
   function openItem(i: LibItem): void {
-    if (i.opens === 'pdf' || (i.cat && !inYours(i))) { showPage(i.id); return; } // (the viewer comes next; a catalogue piece is added first)
+    if (i.cat && !inYours(i)) { showPage(i.id); return; } // (a catalogue piece is added first)
     touch(i.id);
-    close(() => { if (i.opens === 'lab') deps.openChart(i.id.slice('chart:'.length)); else deps.openScore(i.id); });
+    close(() => { if (i.opens === 'lab') deps.openChart(i.id.slice('chart:'.length)); else if (i.opens === 'pdf') deps.openPdf(i.id, i.title); else deps.openScore(i.id); });
   }
 
   // ---- adding -------------------------------------------------------------------------------------------------------

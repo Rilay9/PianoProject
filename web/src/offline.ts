@@ -2,6 +2,7 @@
 // first visit this saves everything the app needs into its store at once: the page and its built files,
 // the song list and scores, and every piano sample in the format this browser plays (as smplr picks it), and the
 // accompaniment lab's content and band sounds.
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { BUNDLED_PARTS } from './sound';
 
 const CACHE = 'piano-web-v1'; // the same store the service worker serves from
@@ -101,6 +102,8 @@ async function wanted(base: string): Promise<Set<string>> {
     const file = cat.fields.indexOf('file');
     for (const r of cat.rows) urls.add(new URL(`${base}catalogue/${String(r[file])}`, origin).href);
   } catch { /* no catalogue in this build */ }
+  // The PDF reader's worker (loaded only when a PDF opens, so not in the page's own files above).
+  urls.add(new URL(pdfWorker, origin).href);
   const band = `${base}content/audio/band`;
   urls.add(new URL(`${band}/lm-2/dm.json`, origin).href);
   const kit = (await (await fetch(`${band}/lm-2/dm.json`)).json()) as { samples: string[] };

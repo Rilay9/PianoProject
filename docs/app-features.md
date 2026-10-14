@@ -314,8 +314,8 @@ one); examples to copy written into a chart.
   Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
   choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
   added), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
-  `library/forget.ts`, and Memorise reads its store again so it can't write them back). A PDF's page says the
-  viewer comes next.
+  `library/forget.ts`, and Memorise reads its store again so it can't write them back). A PDF opens in the PDF
+  reader (§5d).
 - **Adding** (+ Add; several files at once): MusicXML and MXL (title and composer from inside the file), PDF (kept
   as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB for a PDF and 16 MB of MusicXML for
   a score; the same file again (by its contents, even one that replaced another's) is "already in your library";
@@ -346,6 +346,40 @@ one); examples to copy written into a chart.
   scores join the song list at start (ids `u-` + the start of the file's SHA-256), so every score screen, Memorise
   and activities take them. Recently opened is set when you open something deliberately (the library, the song
   list, the lab's chart), not when the app reopens the last piece. The backup includes the library (§7).
+
+---
+
+## 5d. PDF reader (opened from the library; owner, 2026-10-14)
+
+**For:** reading your own PDF scores at the piano. A PDF is pages, not notes, so it is read a line (system) at a time
+and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394 renders the pages).
+
+- **Two lines in fixed places, alternating** (like the score's Turn): the line you're on (marked at its left) and the
+  next; turning replaces the line you finished, so the one you read toward never moves. The slots are as tall as the
+  tallest line met so far, one under the other. When two don't fit at the chosen size (a phone sideways, usually),
+  the line you're on is shown whole with as much of the next as fits under it. A−/A+ choose the size (50–100% of the
+  width); each page's margins are trimmed to where its staves start and end, so the music gets the width.
+- **Turning:** the keyboard's highest key (next) and lowest key (back), as the keyboard remote does elsewhere (they
+  need learning once in Keyboard controls), unless the piece's settings say it uses those keys; a tap on the music;
+  a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶. **Timed:** ▶ Timed turns by
+  itself; the controls hide while it runs, ❚❚ or a mash pauses. It learns from your own turns: the middle of the time
+  you spent on your last three lines (a line gone back to keeps counting, so a too-early turn teaches it to wait
+  longer), plus half their spread, counted from your last own turn (the margin added once, so it doesn't drift);
+  before any turns, tempo × beats a bar × bars a line from its settings. Forget what it learned in the settings.
+  Measured against the MusicXML the test PDFs came from (20 simulated players): lines of equal length, 4 early
+  turns in 140, typically about 1 s late; lines of unequal length (a 4-bar line after 5-bar ones), several seconds
+  off and sometimes early: it learns a time per line, not per bar.
+- **Finding the lines** (`pdf/systems.ts`, reworked from the old app's after it got 0 of 5 real-looking pages right):
+  ink against the page's own paper; the page's tilt measured and straightened (on screen too); staff lines as the
+  sharpest rows, five evenly spaced a staff (a too-faint fifth filled in); a second look for short systems at the
+  page's own staff spacing; staves joined into a system by a brace or barline where they start; bands to halfway
+  between systems. 15 of 15 test pages right, including a tilted grey scan and a one-bar ending (one staff missed on
+  one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
+  drag, add or remove a line, or find the lines again.
+- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line you were on, the lines found or adjusted, each
+  page's tilt and margins, size, timing settings and what it learned, and the edge-keys switch.
+- Not yet: following your playing through a linked MusicXML copy ("smart"); counting bars per line (so timed turning
+  copes with lines of unequal length); repeats (turning back for a repeat is yours to do).
 
 ---
 
@@ -432,7 +466,7 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
+  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -530,7 +564,7 @@ A link opens an activity once: it leaves the address as it opens, so a later rel
 
 ## 9. Not built yet
 
-The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; the PDF viewer; history /
+The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; the PDF reader's smart following (§5d); history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
 drill cards; a setup tour and guide (last).

@@ -549,3 +549,37 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .lib-midi-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
 .lib-midi-fix input { width: 5em; font: inherit; padding: 4px 8px; margin-left: 4px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--bg); color: inherit; }
 #lib-midi .lib-preview { margin: 8px 0; }
+/* The PDF reader (screens/pdf.ts): two slots in fixed places over the whole stage; the line you're on marked at its
+   left. While timed turning runs, the bar hides and only ❚❚ shows. */
+.pdfv { position: fixed; inset: 0; z-index: 6; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
+.pdf-head .title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdf-where { font-size: 13px; color: var(--bar-muted); white-space: nowrap; }
+.pdf-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--bg); }
+.pdf-slot { position: absolute; left: 0; right: 0; display: flex; justify-content: center; overflow: hidden; border-left: 4px solid transparent; }
+.pdf-slot.now { border-left-color: var(--accent); }
+.pdf-slot canvas { display: block; background: #fff; filter: var(--music-filter); }
+.pdf-slot.pdf-in canvas { animation: pdf-in 0.2s ease-out; }
+@keyframes pdf-in { from { opacity: 0.25; } to { opacity: 1; } }
+.pdf-status { position: absolute; left: 12px; right: 12px; bottom: 12px; margin: 0; padding: 8px 12px; border-radius: 8px; background: var(--panel-bg); border: 1px solid var(--line); text-align: center; }
+.pdf-pause { position: absolute; top: 8px; right: 8px; display: none; opacity: 0.8; }
+.pdfv.running .pdf-pause { display: block; }
+.pdfv.running .pdf-bar, .pdfv.running .pdf-head { display: none; }
+.pdf-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px max(6px, env(safe-area-inset-bottom)); background: var(--bar-bg); color: var(--bar-fg); border-top: 1px solid var(--bar-line); }
+.pdf-timing-btn { font-size: 13px; }
+.pdf-sizes { display: inline-flex; align-items: center; gap: 4px; }
+.pdf-sizes output { min-width: 3em; text-align: center; font-size: 13px; }
+.pdf-adjust { position: absolute; inset: 0; z-index: 2; overflow-y: auto; padding: 8px; background: var(--bg); display: flex; flex-direction: column; gap: 8px; }
+.pdf-adjust[hidden] { display: none; }
+.pdfv.adjusting .pdf-bar { display: none; }
+.pdf-adjust-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pdf-adjust-frame { position: relative; align-self: center; }
+.pdf-adjust-frame canvas { display: block; background: #fff; }
+.pdf-cuts { position: absolute; inset: 0; }
+.pdf-cut { position: absolute; left: -6px; right: -6px; height: 3px; margin-top: -1px; background: #2563eb; touch-action: none; cursor: ns-resize; }
+.pdf-cut::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
+.pdf-cut.bottom { background: #ea580c; }
+#pdf-settings input[type="number"] { width: 5em; font: inherit; padding: 4px 8px; margin-left: 8px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--bg); color: inherit; }
+@media (orientation: landscape) and (max-height: 599px) {
+  .pdf-head { padding-top: 2px; padding-bottom: 2px; }
+  .pdf-bar { padding-top: 3px; padding-bottom: 3px; }
+}
