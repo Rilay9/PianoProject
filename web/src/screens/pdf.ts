@@ -16,7 +16,7 @@ import type { Command } from '../remote';
 import { currentDevice, type Device } from '../settings';
 import { PdfDocument, DETECTION_WIDTH } from '../pdf/PdfDocument';
 import { backgroundDetectionOrder } from '../pdf/detectionOrder';
-import { addSystem, bandsToCuts, cutsToSystems, moveCut, reindexAfterRebuild, removeSystem, wholePageCuts, type CutMap, type PlannedSystem } from '../pdf/systemPlan';
+import { addSystem, bandsToCuts, carrySplits, cutsToSystems, moveCut, reindexAfterRebuild, removeSystem, wholePageCuts, type CutMap, type PlannedSystem } from '../pdf/systemPlan';
 import { detectPage, splitAt, toGreyscale } from '../pdf/systems';
 import { fileOf } from '../library/store';
 
@@ -110,14 +110,14 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     save();
     return true;
   }
-  /** Splits for lines set by hand (Adjust lines): found again from the page for the new bands. */
-  async function resplit(page: number): Promise<void> {
+  /** Splits for lines set by hand (Adjust lines): found from the page for each band not given one in `keep`. */
+  async function resplit(page: number, keep: (number[] | null)[] = []): Promise<void> {
     if (!doc) return;
     const r = await doc.renderPage(page, DETECTION_WIDTH);
     const gray = toGreyscale(r.canvas.getContext('2d')!.getImageData(0, 0, r.width, r.height).data, r.width, r.height);
     const [left, right] = st.margins?.[page] ?? [0, 1];
     const bands = cutsToSystems(st.cuts?.[page] ?? wholePageCuts(), page);
-    st.splits = { ...st.splits, [page]: bands.map((b) => [splitAt(gray, r.width, r.height, st.angles?.[page] ?? 0, Math.round(b.top * r.height), Math.round(b.bottom * r.height), Math.round(left * r.width), Math.round(right * r.width)) / r.width]) };
+    st.splits = { ...st.splits, [page]: bands.map((b, i) => keep[i] ?? [splitAt(gray, r.width, r.height, st.angles?.[page] ?? 0, Math.round(b.top * r.height), Math.round(b.bottom * r.height), Math.round(left * r.width), Math.round(right * r.width)) / r.width]) };
     save();
   }
   /** A page drawn at a width, straightened by its tilt (the last four kept). */
@@ -299,12 +299,12 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   $('pdf-adjust-remove').addEventListener('click', () => { const c = cutsOf(adjustPage); if (c.length > 2) void setCuts(removeSystem(c, c.length / 2 - 1)); });
   $('pdf-adjust-detect').addEventListener('click', async () => { await detect(adjustPage, true); void drawAdjust(); });
   const cutsOf = (p: number) => st.cuts?.[p] ?? wholePageCuts();
-  /** New lines on the page; their splits found again only when lines were added or removed (a split you placed stays). */
+  /** New lines on the page; when lines were added or removed, the lines still there keep their splits and a new one's is found. */
   async function setCuts(c: number[]): Promise<void> {
-    const before = cutsOf(adjustPage).length;
+    const before = cutsOf(adjustPage);
     st.cuts = { ...st.cuts, [adjustPage]: c };
     save();
-    if (c.length !== before || (st.splits?.[adjustPage]?.length ?? 0) !== c.length / 2) await resplit(adjustPage); // (adding or removing lines: each line back to one found split)
+    if (c.length !== before.length || (st.splits?.[adjustPage]?.length ?? 0) !== c.length / 2) await resplit(adjustPage, carrySplits(before, c, st.splits?.[adjustPage] ?? []));
     void drawAdjust();
   }
   /** Removes one line of the page being adjusted; the other lines keep their splits. */

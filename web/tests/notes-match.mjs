@@ -48,13 +48,12 @@ try {
     });
   }
   const page = await context.newPage();
-  for (const piece of pieces) {
-    await page.goto(`${BASE}?piece=${piece.id}`);
+  /** The bars that differ between what the app drew for the piece open in `page` and the file's own notes. */
+  async function differences(page, original) {
     await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
     const drawn = await page.evaluate(() => window.__pianoDebug.drawnNotes());
-    // The original file from disk (not through the page, so --corrupt changes only the app's copy), read with
-    // DOMParser: pitched notes (chords, grace notes and tied notes included).
-    const original = readFileSync(new URL(`../public/scores/${piece.file}`, import.meta.url), 'utf8');
+    // The original file (not through the page, so a corrupted copy changes only the app's), read with DOMParser:
+    // pitched notes (chords, grace notes and tied notes included).
     const fromFile = await page.evaluate((xml) => {
       const doc = new DOMParser().parseFromString(xml, 'application/xml');
       const bars = [];
@@ -77,9 +76,45 @@ try {
       const a = (drawn[b] ?? []).join(' '), f = (fromFile[b] ?? []).join(' ');
       if (a !== f) diffs.push(`  bar index ${b}: app [${a}] file [${f}]`);
     }
-    const notes = fromFile.flat().length;
-    if (diffs.length) { failed++; console.log(`FAIL ${piece.id}: ${diffs.length} of ${bars} bars differ`); console.log(diffs.slice(0, 5).join('\n')); }
-    else console.log(`ok   ${piece.id}: ${notes} notes in ${bars} bars match`);
+    return { diffs, bars, notes: fromFile.flat().length };
+  }
+  const report = (name, { diffs, bars, notes }) => {
+    if (diffs.length) { failed++; console.log(`FAIL ${name}: ${diffs.length} of ${bars} bars differ`); console.log(diffs.slice(0, 5).join('\n')); }
+    else console.log(`ok   ${name}: ${notes} notes in ${bars} bars match`);
+  };
+  for (const piece of pieces) {
+    await page.goto(`${BASE}?piece=${piece.id}`);
+    report(piece.id, await differences(page, readFileSync(new URL(`../public/scores/${piece.file}`, import.meta.url), 'utf8')));
+  }
+  if (!corrupt) {
+    // Their own context with the offline cache blocked: the cache, filled by the songs above, answered before the
+    // swapped file and the app drew the song instead.
+    const swapped = await browser.newContext({ viewport: { width: 390, height: 760 }, serviceWorkers: 'block' });
+    // A converted MIDI file drawn by the score screen (test review 2026-10-14, M3): each committed MIDI fixture
+    // converted by the app's converter, served in place of the first song, drawn and compared with the conversion.
+    const { convert } = await import('../src/library/midi/index.ts');
+    const first = pieces[0];
+    for (const name of ['two-hands', 'crossed-hands', 'one-track-two-hands']) {
+      const { xml } = convert(new Uint8Array(readFileSync(new URL(`./fixtures/midi/${name}.mid`, import.meta.url))), { title: name });
+      const own = await swapped.newPage();
+      await own.route(`**/scores/${first.file}`, (route) => route.fulfill({ status: 200, contentType: 'application/xml', body: xml }));
+      await own.goto(`${BASE}?piece=${first.id}`);
+      report(`${name}.mid converted`, await differences(own, xml));
+      await own.close();
+    }
+    // The proof the check can fail, in every run (N4; it ran only by hand with --corrupt): one changed note in the
+    // app's copy of the first song must be caught.
+    const changed = await swapped.newPage();
+    await changed.route(`**/scores/${first.file}`, async (route) => {
+      const response = await route.fetch();
+      const xml = (await response.text()).replace(/<step>([A-G])<\/step>/, (_, st) => `<step>${'CDEFGAB'[('CDEFGAB'.indexOf(st) + 1) % 7]}</step>`);
+      await route.fulfill({ response, body: xml });
+    });
+    await changed.goto(`${BASE}?piece=${first.id}`);
+    const caught = (await differences(changed, readFileSync(new URL(`../public/scores/${first.file}`, import.meta.url), 'utf8'))).diffs.length > 0;
+    if (!caught) failed++;
+    console.log(`${caught ? 'ok  ' : 'FAIL'} one note changed in the app's copy of ${first.id} is caught (the check can fail)`);
+    await swapped.close();
   }
   await browser.close();
 } finally {

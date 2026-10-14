@@ -33,6 +33,9 @@ const cases = [
   { name: 'one note let go early is enough to be short', hit: held, step: 'beat1', presses: keys.map((k, i) => ({ midi: k, t: 0, off: i ? 1800 : 500, end: i ? 1800 : 500 })), want: 'late', short: true },
   { name: 'still sounding (end unknown): not short', hit: held, step: 'beat1', presses: keys.map((k) => ({ midi: k, t: 0 })), want: 'ok' },
   { name: 'roots: the length is yours', step: 'roots', presses: [{ midi: 48, t: 0, off: 100, end: 100 }], want: 'ok' },
+  // Test review 2026-10-14 (L3): at the Roots step the chord's other notes are fine, a key outside it is not.
+  { name: 'roots: the root with the chord’s 3rd and 5th is fine', step: 'roots', presses: [press(48, 0, 900), press(64, 0, 900), press(67, 0, 900)], want: 'ok' },
+  { name: 'roots: the root with a key outside the chord is wrong', step: 'roots', presses: [press(48, 0, 900), press(61, 0, 900)], want: 'miss', wrong: [61] },
 ];
 
 let failed = 0;
@@ -57,6 +60,15 @@ const want = { changes: 3, playedAt: 1, landed: 1 };
 const okIm = im.changes === want.changes && im.playedAt === want.playedAt && im.landed === want.landed;
 console.log(`${okIm ? 'ok  ' : 'FAIL'} improvising counts every change (3), played at 1, landed 1: got ${im.changes}/${im.playedAt}/${im.landed}`);
 if (!okIm) failed++;
+
+// The notes and the share from the guide, with the lab's own guides (screens/lab.ts guideOf): the root alone at the
+// Root step, the chord's notes at Tones (test review 2026-10-14, L2: the guide here was the identity). C then E over
+// bar 1's C, F over bar 2's F: from the root guide 2 of 3, from the chord tones 3 of 3, in 2 bars.
+const lead = [press(60, 0), press(64, 1000), press(65, 4000)];
+const byRoot = improvised(form, lead, (pcs) => pcs.slice(0, 1)), byTones = improvised(form, lead, (pcs) => pcs);
+const okGuide = byRoot.notes === 3 && byRoot.fromGuide === 2 && byTones.fromGuide === 3 && byRoot.bars === 2;
+console.log(`${okGuide ? 'ok  ' : 'FAIL'} improvising: notes from the guide, root 2 of 3, chord tones 3 of 3, in 2 bars: got ${byRoot.fromGuide}/${byRoot.notes}, ${byTones.fromGuide}, bars ${byRoot.bars}`);
+if (!okGuide) failed++;
 
 // 6/8 is counted in two dotted-quarter beats (owner, 2026-10-13): two beats a bar, a beat at 60 a minute is 1 s.
 const six = formOf(readChart('six', { title: 'six', meter: '6/8', tempo: 60, bars: ['C', 'G'] }));
@@ -86,5 +98,5 @@ for (const [symbol, extra, want] of sayings) {
   if (!ok) failed++;
 }
 
-console.log(failed ? `${failed} failed` : `all ${cases.length + 3 + sayings.length} passed`);
+console.log(failed ? `${failed} failed` : `all ${cases.length + 4 + sayings.length} passed`);
 process.exit(failed ? 1 : 0);

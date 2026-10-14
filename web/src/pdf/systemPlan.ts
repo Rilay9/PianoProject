@@ -122,6 +122,21 @@ export function addSystem(cuts: readonly number[]): number[] {
   return [...sorted, top, bottom].sort((a, b) => a - b);
 }
 
+/**
+ * After lines were added or removed on a page: each line still there (same top and bottom) keeps its split points,
+ * and a new line gets null (its split to be found from the page). In line order, as `cutsToSystems` gives them.
+ * Before (2026-10-14), + line and − line found every line's split again, and a split placed by hand on another line
+ * was lost.
+ */
+export function carrySplits(before: readonly number[], after: readonly number[], splits: readonly (readonly number[])[]): (number[] | null)[] {
+  const old = cutsToSystems(before, 0);
+  return cutsToSystems(after, 0).map((line) => {
+    const k = old.findIndex((o) => Math.abs(o.top - line.top) < 1e-9 && Math.abs(o.bottom - line.bottom) < 1e-9);
+    const kept = k >= 0 ? splits[k] : undefined;
+    return kept ? [...kept] : null;
+  });
+}
+
 /** Removes the system at `index` (both of its boundaries). */
 export function removeSystem(cuts: readonly number[], index: number): number[] {
   const sorted = [...cuts].sort((a, b) => a - b);

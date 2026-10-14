@@ -167,6 +167,29 @@ try {
     await ctx.close();
   }
 
+  // P6 (test review): a split placed by hand on one line survives + line (it used to be found again for every line).
+  {
+    const { ctx, page, errors } = await fresh();
+    await add(page, here('fixtures/pdf/simple.pdf'));
+    await page.locator('.lib-row', { hasText: 'simple' }).first().click();
+    await page.waitForTimeout(4000);
+    await page.click('#pdf-open-adjust'); await page.waitForTimeout(3000);
+    const splitsNow = () => page.evaluate(() => window.__pianoDebug.pdf().splits[0] ?? []);
+    const first = await splitsNow();
+    let reached = false;
+    for (let i = 0; i < 40 && !reached; i++) { await page.keyboard.press('Tab'); reached = await page.evaluate(() => document.activeElement?.dataset?.key === 'split-0-0'); }
+    for (let i = 0; i < 6; i++) { await page.keyboard.press('ArrowRight'); await page.waitForTimeout(300); }
+    const placed = await splitsNow();
+    const lines = (await splitsNow()).length;
+    await page.click('#pdf-adjust-add'); await page.waitForTimeout(3000);
+    const after = await splitsNow();
+    const moved = reached && placed[0]?.[0] !== first[0]?.[0];
+    ok('Adjust: a split placed on a line stays when + line is pressed', moved && after.length === lines + 1 && after[0]?.[0] === placed[0]?.[0],
+      `reached ${reached}; line 1 split ${first[0]?.[0]?.toFixed(3)} → placed ${placed[0]?.[0]?.toFixed(3)} → after + line ${after[0]?.[0]?.toFixed(3)}; lines ${lines} → ${after.length}`);
+    ok('Adjust (+ line): no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
   // F05: + Add tapped twice while the catalogue file is still coming (slowed 2 s).
   {
     const { ctx, page, errors } = await fresh();
@@ -198,6 +221,34 @@ try {
     await library(page); await page.waitForTimeout(800);
     const second = await page.locator('#lib-tabs').isVisible();
     ok('catalogue: unreachable once, then the library opened again shows it', !first && second, `first ${first}, then ${second}`);
+    await ctx.close();
+  }
+
+  // S2 (test review): the lengths the judges are given, as the score screen decides them from what OSMD drew. A score
+  // served in place of Mozart's: C plain, D staccato, E–F under a slur, G before a rest, A a half note at the end.
+  {
+    const { ctx, page, errors } = await fresh();
+    const note = (step, extra = '', type = 'quarter', dur = 1) => `<note><pitch><step>${step}</step><octave>4</octave></pitch><duration>${dur}</duration><voice>1</voice><type>${type}</type>${extra}</note>`;
+    const xml = `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="3.1"><part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list><part id="P1">`
+      + `<measure number="1"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><sound tempo="120"/>`
+      + note('C') + note('D', '<notations><articulations><staccato/></articulations></notations>')
+      + note('E', '<notations><slur type="start" number="1"/></notations>') + note('F', '<notations><slur type="stop" number="1"/></notations>')
+      + `</measure><measure number="2">` + note('G') + `<note><rest/><duration>1</duration><voice>1</voice><type>quarter</type></note>` + note('A', '', 'half', 2)
+      + `</measure></part></score-partwise>`;
+    await page.route('**/scores/mozart-k2.musicxml', (route) => route.fulfill({ status: 200, contentType: 'application/xml', body: xml }));
+    await page.goto(`${BASE}?piece=mozart-k2`);
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    const byKey = await page.evaluate(() => {
+      const d = window.__pianoDebug, out = {};
+      for (let i = 0; i < d.state().steps; i++) d.struck(i).forEach((m, j) => { out[m] = d.durations(i)[j]; });
+      return out;
+    });
+    const w = byKey[60], near = (a, b) => Math.abs(a - b) < 1;
+    const want = { 62: 0, 64: w, 65: (w * 2) / 3, 67: (w * 2) / 3, 69: 2 * w };
+    const pass = w > 0 && Object.entries(want).every(([k, v]) => near(byKey[k], v));
+    ok('lengths judged: staccato not judged, a slur end and a note before a rest need ⅔ of their length, others all of it', pass,
+      `quarter ${w}; got ${JSON.stringify(byKey)}`);
+    ok('lengths judged: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
 

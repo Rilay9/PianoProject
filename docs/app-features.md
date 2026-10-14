@@ -409,7 +409,8 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
   drag and its split points (green), each also a slider for the keyboard (Tab to it, arrow keys move it, Shift for
   bigger steps); the blue × on a line removes that line (the others keep their splits); add a line
-  or remove the last (that page's lines go back to one found split each), or find the lines again. A line can't be
+  or remove the last (the other lines keep their splits, a new line gets one found for it; 2026-10-14, before which
+  every line went back to one found split and a split you had placed was lost), or find the lines again. A line can't be
   dragged thinner than 0.6% of the page. A page where no lines are found shows whole, unsplit, until you mark them. On
   a tilted page the splits and margins are placed on the straightened page as shown. Pages are read as you reach them
   (and the rest in the background); a page read for the first time brings its lines in at once, and your place keeps

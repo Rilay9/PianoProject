@@ -54,12 +54,16 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals.
 - **Removing or editing the wrong item.** Controls that act only on the last item, or indexes that shift when an item
-  in the middle disappears (a thin line silently dropped shifted every later line's splits).
+  in the middle disappears (a thin line silently dropped shifted every later line's splits). Or an edit to one item
+  that quietly redoes the others: + line found every line's split again, losing the ones placed by hand
+  (2026-10-14). After changing one item, check the others are as the learner left them.
 
 ## Running checks
 
 - Committed checks: `npm run check:<name>` in `web/` (list in `web/tests/README.md`). Run the ones covering what
   changed, plus `check:notes` when anything about scores or drawing changed.
+- A file swapped in with `page.route` is answered by the offline cache instead once the app has cached the real one:
+  give such a case a context with `serviceWorkers: 'block'` (check:notes drew the real song, 2026-10-14).
 - Browser checks: build (`npx vite build`), serve the build (`npx vite preview --port 5192 --strictPort`), drive it
   with Playwright from a script in the session scratchpad. Use `--strictPort` so a port already taken fails loudly
   instead of quietly testing another server.

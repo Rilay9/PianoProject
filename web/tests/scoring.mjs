@@ -32,6 +32,8 @@ const cases = [
     steps: [{ t: 0, keys: [60] }, { t: 1000, keys: [62] }, { t: 2000, keys: [64] }, { t: 3000, keys: [65] }],
     played: [{ midi: 60, t: 300, speed: 1 }, { midi: 62, t: 700, speed: 1 }, { midi: 61, t: 2000, speed: 1 }],
     tol: 100, want: { total: 4, onTime: 0, early: 1, late: 1, missed: 2, wrong: 1 },
+    // Which notes the screen paints, and which key it paints as wrong (drill.ts, practice.ts read these).
+    marks: { offNotes: ['0:60:late', '1:62:early', '2:64:missed', '3:65:missed'], offSteps: [0, 1, 2, 3], wrongKeys: ['2000:61'] },
   },
   {
     name: 'timing is judged as heard: 50 ms of song time at half speed is 100 ms',
@@ -52,6 +54,7 @@ const cases = [
     steps: [{ t: 0, keys: [60] }, { t: 500, keys: [62] }, { t: 1000, keys: [64] }],
     played: [{ midi: 60, t: 0, speed: 1 }, { midi: 60, t: 250, speed: 1 }, { midi: 60, t: 520, speed: 1 }],
     tol: 100, want: { total: 3, onTime: 2, early: 0, late: 0, missed: 1, wrong: 1 },
+    marks: { offSteps: [2], wrongAt: [250] },
   },
   // Holding (owner, 2026-10-13): a note must sound ¾ of its written length (held: ms each press sounded, real time).
   {
@@ -63,6 +66,7 @@ const cases = [
     name: 'hold: the same let go after 400 ms is let go early',
     steps: [{ t: 0, keys: [60], durs: [1000] }], played: [{ midi: 60, t: 0, speed: 1, held: 400 }],
     tol: 100, want: { total: 1, onTime: 0, short: 1 },
+    marks: { offNotes: ['0:60:short'], offSteps: [0], wrongKeys: [] },
   },
   {
     name: 'hold: a staccato note (length 0: not judged) let go at once is fine',
@@ -78,6 +82,7 @@ const cases = [
     name: 'hold: a late note is marked late only (one thing a note)',
     steps: [{ t: 0, keys: [60], durs: [1000] }, { t: 1000, keys: [62], durs: [1000] }], played: [{ midi: 60, t: 300, speed: 1, held: 100 }, { midi: 62, t: 1000, speed: 1, held: 990 }],
     tol: 100, want: { total: 2, onTime: 1, late: 1, short: 0 },
+    marks: { offNotes: ['0:60:late'], offSteps: [0], wrongKeys: [] },
   },
   {
     name: 'hold: still sounding (unknown) is never marked',
@@ -116,9 +121,20 @@ let failed = 0;
 }
 for (const c of cases) {
   const got = (c.rhythm ? judgeRhythm : judge)(c.steps, c.played, c.tol, (p) => p.held ?? Infinity);
-  const ok = Object.entries(c.want).every(([k, v]) => got[k] === v);
+  // Every count is compared, the ones a case does not name as 0 (a hold case naming only what it is about used to
+  // let a wrong early, late, missed or wrong count through: review 2026-10-14, S3).
+  const want = { early: 0, late: 0, missed: 0, wrong: 0, short: 0, ...c.want };
+  // And, where a case names them, which notes are marked and which presses are wrong, as the screens paint them (S4).
+  const marks = c.marks && {
+    ...(c.marks.offNotes && { offNotes: got.offNotes.map((o) => `${o.k}:${o.midi}:${o.kind}`).sort() }),
+    ...(c.marks.offSteps && { offSteps: [...got.offSteps].sort((a, b) => a - b) }),
+    ...(c.marks.wrongKeys && { wrongKeys: got.wrongKeys.map((w) => `${w.t}:${w.midi}`).sort() }),
+    ...(c.marks.wrongAt && { wrongAt: [...got.wrongAt].sort((a, b) => a - b) }),
+  };
+  const sortedWant = c.marks && Object.fromEntries(Object.entries(c.marks).map(([k, v]) => [k, (typeof v[0] === 'number' ? [...v].sort((a, b) => a - b) : [...v].sort())]));
+  const ok = Object.entries(want).every(([k, v]) => got[k] === v) && (!c.marks || JSON.stringify(marks) === JSON.stringify(sortedWant));
   if (!ok) failed++;
-  console.log(`${ok ? 'ok  ' : 'FAIL'} ${c.name}${ok ? '' : `\n     want ${JSON.stringify(c.want)}\n     got  ${JSON.stringify(got)}`}`);
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${c.name}${ok ? '' : `\n     want ${JSON.stringify(want)} ${JSON.stringify(sortedWant ?? '')}\n     got  ${JSON.stringify(got)}`}`);
 }
 console.log(failed ? `${failed} of ${cases.length + 1} failed` : `all ${cases.length + 1} passed`); // (+1: the holds block above)
 process.exit(failed ? 1 : 0);

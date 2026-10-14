@@ -7,59 +7,15 @@
 // those cases are listed as skipped. PdfDocument.ts itself (the browser build and its Vite worker) is not run here.
 // Old cases that tested old-app code not ported here are listed by `skip(...)` with the reason.
 import { readFileSync } from 'node:fs';
+import { describe, expect, it, run, skip } from './shim.mjs';
 import { fileURLToPath } from 'node:url';
 import { collapseRuns, detectPage, detectSystems, groupStaves, toGreyscale } from '../src/pdf/systems.ts';
-import { cutsToSystems, detectPageSystems, moveCut, reindexAfterRebuild } from '../src/pdf/systemPlan.ts';
+import { addSystem, carrySplits, cutsToSystems, detectPageSystems, moveCut, reindexAfterRebuild, removeSystem } from '../src/pdf/systemPlan.ts';
 import { BoundedPageCache } from '../src/pdf/pageCache.ts';
 import { backgroundDetectionOrder } from '../src/pdf/detectionOrder.ts';
 import { drawSystemInto, systemScreenHeight } from '../src/pdf/region.ts';
 
-// --- the shim: describe / it / expect, only the matchers these cases use (as in midi.mjs) ------------------
-
-const tests = [];
-const skipped = [];
-const stack = [];
-function describe(name, body) {
-  stack.push(name);
-  try { body(); } catch (error) { tests.push({ name: [...stack].join(' > '), fn: () => { throw error; } }); }
-  stack.pop();
-}
-function it(name, fn) { tests.push({ name: [...stack, name].join(' > '), fn }); }
-/** An old case not ported, and why. */
-function skip(name, why) { skipped.push({ name, why }); }
-
-const show = (v) => {
-  try { return JSON.stringify(v, (_, x) => (typeof x === 'bigint' ? `${x}n` : x)); } catch { return String(v); }
-};
-/** vitest's toEqual: recursive, and a property that is undefined counts as absent. */
-function equal(a, b) {
-  if (Object.is(a, b)) return true;
-  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
-  if (Array.isArray(a)) return a.length === b.length && a.every((x, i) => equal(x, b[i]));
-  const keys = (o) => Object.keys(o).filter((k) => o[k] !== undefined);
-  const ka = keys(a), kb = keys(b);
-  return ka.length === kb.length && ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && equal(a[k], b[k]));
-}
-const MATCHERS = {
-  toBe: (a, b) => [Object.is(a, b), `${show(a)} to be ${show(b)}`],
-  toEqual: (a, b) => [equal(a, b), `${show(a)} to equal ${show(b)}`],
-  toHaveLength: (a, n) => [a != null && a.length === n, `length ${a?.length} to be ${n}`],
-  toBeDefined: (a) => [a !== undefined, `${show(a)} to be defined`],
-  toBeGreaterThan: (a, b) => [a > b, `${show(a)} > ${show(b)}`],
-  toBeGreaterThanOrEqual: (a, b) => [a >= b, `${show(a)} >= ${show(b)}`],
-  toBeLessThan: (a, b) => [a < b, `${show(a)} < ${show(b)}`],
-  toBeCloseTo: (a, b, digits = 2) => [Math.abs(a - b) < 10 ** -digits / 2, `${show(a)} close to ${show(b)} (${digits} digits)`],
-};
-function expect(actual, message) {
-  const build = (negate) => Object.fromEntries(Object.entries(MATCHERS).map(([name, matcher]) => [name, (...args) => {
-    const [pass, said] = matcher(actual, ...args);
-    if (pass === negate) throw new Error(`${message ? `${message}: ` : ''}expected ${negate ? 'not ' : ''}${said}`);
-  }]));
-  const out = build(false);
-  out.not = build(true);
-  return out;
-}
+// --- the shim (tests/shim.mjs): describe / it / expect -------------------------------------------------
 
 // --- systems.ts: cutting a page of sheet music into systems (reworked 2026-10-14) -----------------------------
 // Built pages state exactly what the detector must cope with; each case is one of the failures measured on the old
@@ -151,10 +107,11 @@ describe('detectPage', () => {
     expect(staffCounts(detectSystems(gray, WIDTH, 400))).toEqual([2, 2]);
   });
   it('a tilted page: finds the tilt and the systems (the old detector found nothing at 0.4°)', () => {
-    const gray = page({ height: 300, staves: [40, 80, 170, 210], braces: [[0, 1], [2, 3]], tilt: 5 }); // ≈1.2° over 240 px
+    // The lines drop 5 rows over the page's 300 px (4 over the 240 px they span): ≈0.95° (the comment said 1.2°).
+    const gray = page({ height: 300, staves: [40, 80, 170, 210], braces: [[0, 1], [2, 3]], tilt: 5 });
     const { angle, bands } = detectPage(gray, WIDTH, 300);
     expect(staffCounts(bands)).toEqual([2, 2]);
-    expect(Math.abs(angle - (Math.atan(5 / 300) * 180) / Math.PI)).toBeLessThan(0.3);
+    expect(Math.abs(angle - (Math.atan(5 / 300) * 180) / Math.PI)).toBeLessThan(0.1);
   });
   it('a short last system still counts (the old detector wanted lines across 55% of the page)', () => {
     const gray = page({ height: 300, staves: [40, 80, 170, 210], braces: [[0, 1], [2, 3]] });
@@ -169,8 +126,11 @@ describe('detectPage', () => {
   it("bands never overlap, and each holds all its system's lines", () => {
     const gray = page({ height: 300, staves: [40, 80, 150, 190], braces: [[0, 1], [2, 3]] });
     const bands = detectSystems(gray, WIDTH, 300);
+    expect(bands).toHaveLength(2);
     expect(bands[0].bottom).toBeLessThan(bands[1].top);
-    for (const b of bands) expect(b.staffLines.every((r) => r > b.top && r < b.bottom)).toBe(true);
+    // The rows the page was drawn with, not the lines the detector reports finding (test review 2026-10-14, P5).
+    const rows = (tops) => tops.flatMap((top) => [0, 1, 2, 3, 4].map((l) => top + l * 6));
+    [rows([40, 80]), rows([150, 190])].forEach((drawn, i) => expect(drawn.every((r) => r > bands[i].top && r < bands[i].bottom)).toBe(true));
   });
 });
 
@@ -185,6 +145,25 @@ describe('toGreyscale', () => {
 // other than the one being read ----------------------------------------------------------------------------
 
 const sys = (pageIndex, indexOnPage) => ({ page: pageIndex, top: 0, bottom: 0.1, indexOnPage });
+
+describe('adding and removing a line keeps the other lines’ splits (test review 2026-10-14, P6)', () => {
+  const cuts = [0.1, 0.2, 0.4, 0.5, 0.7, 0.8];
+  const splits = [[0.3], [0.45, 0.7], [0.6]]; // the middle line's two placed by hand
+  it('+ line: in the largest gap, every other line keeps its splits and the new one is to be found', () => {
+    const added = addSystem(cuts);
+    expect(cutsToSystems(added, 0)).toHaveLength(4);
+    const carried = carrySplits(cuts, added, splits);
+    expect(carried.filter((x) => x === null)).toHaveLength(1);
+    expect(carried.filter((x) => x !== null)).toEqual(splits);
+  });
+  it('− line (the last) and × on a middle line: the others keep theirs, in order', () => {
+    expect(carrySplits(cuts, removeSystem(cuts, 2), splits)).toEqual([[0.3], [0.45, 0.7]]);
+    expect(carrySplits(cuts, removeSystem(cuts, 1), splits)).toEqual([[0.3], [0.6]]);
+  });
+  it('lines are matched by both edges: one with an edge moved is not taken for the old one', () => {
+    expect(carrySplits(cuts, moveCut(cuts, 2, 0.38), splits)).toEqual([[0.3], null, [0.6]]);
+  });
+});
 
 describe('reindexAfterRebuild', () => {
   it('finds the same (page, indexOnPage) after systems earlier in the book shift', () => {
@@ -341,7 +320,8 @@ const FIXTURE = fileURLToPath(new URL('./fixtures/pdf/two-systems.pdf', import.m
 /** The page the way PdfDocument.renderPage draws it (white behind, scaled to a width), on a Node canvas. */
 async function renderFixture(targetWidth, file = FIXTURE, pageNumber = 1) {
   const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
-  const doc = await getDocument({ data: new Uint8Array(readFileSync(file)) }).promise;
+  // With pdf.js's own JPEG 2000 decoder, as PdfDocument opens a file (without it a page stored as JPEG 2000 is blank).
+  const doc = await getDocument({ data: new Uint8Array(readFileSync(file)), wasmUrl: fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/', import.meta.url)) }).promise;
   try {
     const pdfPage = await doc.getPage(pageNumber);
     const unscaled = pdfPage.getViewport({ scale: 1 });
@@ -392,6 +372,8 @@ if (napi) {
       ['simple.pdf (clean; a short last line)', 'simple', 1, [2, 2, 2, 2]],
       ['scan.pdf p1 (tilted 1.2°, grey, specks, blur, a dark binding edge)', 'scan', 1, [2, 2, 2, 2, 2, 2, 2]],
       ['scan.pdf p2 (tilted −0.8°, beams crowding the staff lines)', 'scan', 2, [2, 2, 2, 2, 2, 2]],
+      // A page stored as a JPEG 2000 image, as many scanners save them (make-jpx-pdf.py; test review 2026-10-14, P7).
+      ['jpx.pdf (one page stored as JPEG 2000: two grand staves)', 'jpx', 1, [2, 2]],
       ['leadsheet.pdf (one staff per system; a quarter-width last line)', 'leadsheet', 1, [1, 1, 1, 1, 1, 1]],
       ['chopin.pdf p2 (a one-bar ending at the foot)', 'chopin', 2, [2, 2]],
       ['text.pdf (prose: no systems)', 'text', 1, []],
@@ -467,17 +449,4 @@ for (const name of [
 
 // --- run -------------------------------------------------------------------------------------------------------
 
-let passed = 0;
-const failed = [];
-for (const test of tests) {
-  try {
-    await test.fn();
-    passed += 1;
-  } catch (error) {
-    failed.push({ name: test.name, error });
-  }
-}
-for (const { name, error } of failed) console.log(`FAIL ${name}\n     ${error instanceof Error ? error.message : String(error)}`);
-for (const { name, why } of skipped) console.log(`skip ${name} — ${why}`);
-console.log(`\n${passed} passed, ${failed.length} failed, ${skipped.length} skipped`);
-process.exit(failed.length > 0 ? 1 : 0);
+await run();
