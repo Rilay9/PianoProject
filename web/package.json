@@ -10,7 +10,8 @@
     "check:notes": "vite build && node tests/notes-match.mjs",
     "check:scoring": "node tests/scoring.mjs",
     "check:lab": "node tests/lab-judge.mjs",
-    "check:activity": "node tests/activity.mjs"
+    "check:activity": "node tests/activity.mjs",
+    "check:midi": "node tests/midi.mjs"
   },
   "dependencies": {
     "jszip": "3.10.1",

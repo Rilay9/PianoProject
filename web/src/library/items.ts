@@ -5,6 +5,7 @@
 
 import type { Piece } from '../app';
 import { readChart, type Chart, type ChartFile } from '../lab/music';
+import type { CatRow } from './catalogue';
 import { readScore, type Facts, type Kind } from './facts';
 import { allRecords, record, type Own } from './store';
 
@@ -28,6 +29,8 @@ export interface LibItem {
   status?: string;
   /** Where it opens. */
   opens: 'score' | 'lab' | 'pdf';
+  /** A catalogue row (the Catalogue tab). */
+  cat?: CatRow;
 }
 
 export const chartId = (id: string) => `chart:${id}`;

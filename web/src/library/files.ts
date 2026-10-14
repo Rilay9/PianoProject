@@ -7,7 +7,7 @@ import { readScore, type ReadScore } from './facts';
 import { sha256, type Own } from './store';
 
 // (application/octet-stream and zip too: Android often labels an .mxl so, and would grey it out otherwise.)
-export const ACCEPT = '.musicxml,.xml,.mxl,.pdf,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml,application/pdf,application/zip,application/octet-stream';
+export const ACCEPT = '.musicxml,.xml,.mxl,.pdf,.mid,.midi,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml,application/pdf,audio/midi,audio/x-midi,application/zip,application/octet-stream';
 const MAX_BYTES = 64 * 1024 * 1024; // a PDF
 const MAX_SCORE_BYTES = 16 * 1024 * 1024; // MusicXML as text: far more than the score screen can draw comfortably
 
@@ -44,7 +44,8 @@ export async function xmlOfFile(blob: Blob): Promise<string> {
   return startsWith(b, 'PK') ? unzipMxl(blob) : decodeText(new Uint8Array(await blob.arrayBuffer()));
 }
 
-export interface Prepared { id: string; own: Own; blob: Blob; read?: ReadScore }
+/** original: a MIDI file's own bytes, kept beside the MusicXML made from it (so it can be converted again later). */
+export interface Prepared { id: string; own: Own; blob: Blob; read?: ReadScore; original?: Blob }
 export type Converter = (data: ArrayBuffer, name: string) => Promise<{ xml: string; guessed: string }>;
 
 /** Reads one file into what the library keeps; throws a one-sentence reason when it cannot. */
@@ -62,12 +63,12 @@ export async function prepare(file: File, midi?: Converter): Promise<Prepared> {
     return { id, blob: file, own: { ...base, kind: 'pdf', title, composer: '', facts: null } };
   }
   if (sort === 'midi') {
-    if (!midi) throw new Error('MIDI files cannot be added yet.');
+    if (!midi) throw new Error('MIDI files cannot be added here.');
     const { xml, guessed } = await midi(data, file.name);
     const read = readScore(xml, file.name);
     const blob = new Blob([xml], { type: 'application/vnd.recordare.musicxml+xml' });
     const name = file.name.replace(/\.midi?$/i, '') + '.musicxml';
-    return { id, blob, read, own: { ...base, file: { name, size: blob.size, type: blob.type }, kind: read.facts.kind, title: read.title, composer: read.composer, facts: read.facts, converted: guessed } };
+    return { id, blob, read, original: file, own: { ...base, file: { name, size: blob.size, type: blob.type }, kind: read.facts.kind, title: read.title, composer: read.composer, facts: read.facts, converted: guessed, midi: { name: file.name, size: file.size } } };
   }
   const xml = sort === 'mxl' ? await unzipMxl(data) : decodeText(bytes);
   if (xml.length > MAX_SCORE_BYTES) throw new Error(`This score is ${Math.round(xml.length / 1048576)} MB of MusicXML; the most the app takes is ${MAX_SCORE_BYTES / 1048576} MB.`);

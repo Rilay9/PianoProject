@@ -4,7 +4,7 @@
 // is never copied into memory whole. Restoring MERGES: what this phone lacks is added, what it has stays (it is the
 // newer); the practice log keeps every run from both. A backup from before the library (.json) restores the same way.
 
-import { allRecords, fileOf, load, putAll, type Stored } from './library/store';
+import { allRecords, fileOf, load, midiKey, putAll, type Stored } from './library/store';
 
 const PREFIX = 'piano-web.';
 const NOT_BACKED_UP = ['piano-web.offline.v1']; // what this device has saved for offline: true of this device only
@@ -35,6 +35,8 @@ export async function makeBackup(): Promise<Blob> {
     if (!r.own) continue;
     const f = await fileOf(r.id);
     if (f) entries.push({ name: `files/${r.id}`, blob: f });
+    const m = r.own.midi ? await fileOf(midiKey(r.id)) : undefined; // the MIDI a score was converted from
+    if (m) entries.push({ name: `files/${r.id}.midi`, blob: m });
   }
   return zipStored(entries);
 }
@@ -77,7 +79,12 @@ export async function restoreBackup(file: File): Promise<{ files: number }> {
       const mine = mineById.get(theirs.id);
       const blob = entries.get(`files/${theirs.id}`);
       const own = mine?.own ?? (theirs.own && blob ? theirs.own : undefined);
-      if (!mine?.own && own) { files.set(theirs.id, blob!); added++; }
+      if (!mine?.own && own) {
+        files.set(theirs.id, blob!);
+        const midi = entries.get(`files/${theirs.id}.midi`);
+        if (midi) files.set(midiKey(theirs.id), midi);
+        added++;
+      }
       const tags = [...new Set([...(mine?.tags ?? []), ...(theirs.tags ?? [])])];
       const opened = [mine?.opened, theirs.opened].filter((x): x is string => !!x).sort().pop();
       const r: Stored = { id: theirs.id, ...(mine?.fav || theirs.fav ? { fav: true } : {}), ...(tags.length ? { tags } : {}), ...(opened ? { opened } : {}), ...(own ? { own } : {}) };

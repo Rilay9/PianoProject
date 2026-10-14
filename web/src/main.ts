@@ -9,6 +9,7 @@
 import './style.css';
 import { readActivity, type Activity } from './activity';
 import { backupContents, makeBackup, restoreBackup } from './backup';
+import { readScore } from './library/facts';
 import { $, App, type Screen } from './app';
 import { FreePlay } from './freeplay';
 import { holds } from './holds';
@@ -328,4 +329,5 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
   simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(), library: () => libraryScreen.debug(),
+  readScore: (xml: string, name?: string) => readScore(xml, name), // (the catalogue builder reads files with the app's own reader)
 };

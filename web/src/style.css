@@ -531,3 +531,21 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
   .lib-row { padding-top: 6px; padding-bottom: 6px; }
   .lib-page-body { padding: 8px 14px 16px; gap: 8px; }
 }
+/* The library's tabs (Yours | Catalogue) and the catalogue's rows: + Add, the versions of one piece folded. */
+.lib-tabs { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+.lib-tabs[hidden] { display: none; }
+.lib-tabs button { flex: 1; font: inherit; padding: 8px 0; border: 0; background: none; color: var(--muted); }
+.lib-tabs button.on { color: var(--fg); font-weight: 700; box-shadow: inset 0 -3px 0 var(--accent); }
+.lib-tabs small { color: var(--muted); font-weight: 400; }
+.lib-addcat { flex: none; font: inherit; font-size: 14px; font-weight: 600; margin-right: 10px; padding: 4px 10px; border: 1px solid var(--accent); border-radius: 8px; background: none; color: var(--accent); white-space: nowrap; }
+.lib-addcat.got { border-color: var(--line); color: var(--muted); font-weight: 400; }
+.lib-versions { flex: none; font: inherit; font-size: 13px; border: 0; background: none; color: var(--accent); padding: 4px 6px; white-space: nowrap; }
+.lib-item.ver { background: color-mix(in srgb, var(--fg) 3%, var(--bg)); }
+.lib-item.ver .lib-row { padding-left: 28px; }
+.lib-item.ver .lib-tt { font-weight: 400; font-size: 14px; }
+.ver-ic { visibility: hidden; width: 20px; }
+.lib-more-rows { padding: 12px; text-align: center; list-style: none; }
+/* The MIDI sheet: Swap hands and the tempo. */
+.lib-midi-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+.lib-midi-fix input { width: 5em; font: inherit; padding: 4px 8px; margin-left: 4px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--bg); color: inherit; }
+#lib-midi .lib-preview { margin: 8px 0; }

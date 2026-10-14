@@ -203,6 +203,7 @@
     <input id="lib-file" type="file" multiple hidden>
     <div class="lib-body">
       <div id="lib-left" class="lib-left">
+        <div id="lib-tabs" class="lib-tabs" role="tablist" hidden><button id="lib-tab-yours" type="button" role="tab">Yours <small></small></button><button id="lib-tab-catalogue" type="button" role="tab">Catalogue <small></small></button></div>
         <input id="lib-search" class="lib-search" type="search" placeholder="Search titles, composers, tags" aria-label="Search the library" autocomplete="off">
         <div id="lib-chips" class="lib-chips"></div>
         <div class="lib-countline"><span id="lib-count"></span><button id="lib-sort" type="button" class="lib-link" aria-haspopup="dialog"></button></div>
@@ -227,6 +228,17 @@
       <p class="note">The name shown in the library and on the score.</p>
       <input id="lib-rename-input" class="lib-rename-input" maxlength="120" aria-label="Name">
       <div class="actions"><button value="cancel" formnovalidate>Cancel</button><button value="save">Save</button></div>
+    </form>
+  </dialog>
+  <dialog id="lib-midi" aria-labelledby="lib-midi-title">
+    <form method="dialog">
+      <h2 id="lib-midi-title">From a MIDI file: check what was guessed</h2>
+      <p id="lib-midi-file" class="note"></p>
+      <div id="lib-midi-preview" class="lib-preview" aria-hidden="true"></div>
+      <dl id="lib-midi-facts" class="lib-facts"></dl>
+      <p class="lib-warn">A MIDI file is a recording of key presses: the notation is worked out from it, and can be messier than a real score.</p>
+      <div class="lib-midi-fix"><button id="lib-midi-swap" type="button" class="btn">Swap hands</button><label>Tempo <input id="lib-midi-bpm" type="number" min="20" max="400" step="1" inputmode="numeric" aria-label="Tempo in beats a minute"></label></div>
+      <div class="actions"><button value="cancel">Cancel</button><button value="add">Add to library</button></div>
     </form>
   </dialog>
   <dialog id="lib-added" aria-labelledby="lib-added-title">

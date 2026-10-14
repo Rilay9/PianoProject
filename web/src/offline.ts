@@ -94,6 +94,13 @@ async function wanted(base: string): Promise<Set<string>> {
     urls.add(new URL(`${base}content/lab/index.json`, origin).href);
     for (const f of [...lab.charts, ...lab.styles]) urls.add(new URL(`${base}content/lab/${f}`, origin).href);
   } catch { /* no lab content yet */ }
+  // The library's catalogue: its index and every file in it (owner, 2026-10-13: saved up front, so adding works offline).
+  try {
+    const cat = (await (await fetch(`${base}catalogue/index.json`)).json()) as { fields: string[]; rows: unknown[][] };
+    urls.add(new URL(`${base}catalogue/index.json`, origin).href);
+    const file = cat.fields.indexOf('file');
+    for (const r of cat.rows) urls.add(new URL(`${base}catalogue/${String(r[file])}`, origin).href);
+  } catch { /* no catalogue in this build */ }
   const band = `${base}content/audio/band`;
   urls.add(new URL(`${band}/lm-2/dm.json`, origin).href);
   const kit = (await (await fetch(`${band}/lm-2/dm.json`)).json()) as { samples: string[] };

@@ -324,7 +324,22 @@ one); examples to copy written into a chart.
   another app** (Share → Piano, Android, the installed app only: the manifest's `share_target`): the service worker
   takes the POST to `./share-target`, keeps the files in the cache `piano-shared` and opens the app with
   `?shared=1`; the library opens and adds them as above. (A change to the share target reaches an installed app
-  only when Android refreshes it, which can take a day.) Not yet: MIDI, the catalogue.
+  only when Android refreshes it, which can take a day.) **MIDI** (`library/midi/`, the old app's converter,
+  ported unchanged; its unit tests: `npm run check:midi`): converted on the phone, then a sheet shows the first bars
+  and what was read from the file and what was guessed (hands kept as recorded or split, tempo, key (always estimated
+  from the notes), time), with **Swap hands** (exchanges the staves, clefs kept) and a tempo to state; Add keeps the
+  MusicXML and the MIDI file beside it (`<id>:midi`, in the backup too), Cancel adds nothing. A file stating no
+  tempo is written without one (the score screen's default applies).
+- **Catalogue** (tab beside Yours, shown when the build has one; `library/catalogue.ts`, built by
+  `web/tools/catalogue/`): a few thousand PDMX scores picked by reading their notes: piano (one part, two staves)
+  and lead sheets (one staff with chord symbols). The index holds what the app's own reader (`facts.ts`) reads from
+  each file, a composer only when it matches the composer table (`tools/catalogue/composers.json`; a bare surname
+  stays a surname), MuseScore's view count (shown as exactly that) and the uploader's licence for the
+  transcription. Never PDMX's genre, difficulty, tags or ratings. Uploads of one piece fold into one row ("2
+  versions"). Sorted by views first; Title, Composer, Fewest bars. Rows drawn 100 at a time (Show more). + Add (on
+  the row or the page) keeps the file as yours (id `u-` + its SHA-256 start, so the same file added by hand is the
+  same piece); the files are saved for offline with the app, so adding works offline. Each tab keeps its own search,
+  filters and sort.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
@@ -515,7 +530,7 @@ A link opens an activity once: it leaves the address as it opens, so a later rel
 
 ## 9. Not built yet
 
-The library's next parts (§5c): MIDI conversion, difficulty in broad bands, the PDMX catalogue, later the phone folder and the Shelf; the PDF viewer; history /
+The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; the PDF viewer; history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
 drill cards; a setup tour and guide (last).

@@ -5,10 +5,12 @@
 
 import { $, base, type App, type Screen } from '../app';
 import { KIND_NAMES, keyText, noteName, type Kind } from '../library/facts';
-import { ACCEPT, prepare, xmlOfFile, type Prepared } from '../library/files';
+import { ACCEPT, prepare, xmlOfFile, type Converter, type Prepared } from '../library/files';
+import { midiConverter, type Guessed } from '../library/midi/index.ts';
 import { forgetPiece } from '../library/forget';
 import { isChartId, isYours, items, loadCharts, pieceOf, readAppFacts, type LibItem } from '../library/items';
-import { addOwn, allRecords, change, fileOf, isSafe, keepSafe, load, remove, touch } from '../library/store';
+import { addOwn, allRecords, change, fileOf, isSafe, keepSafe, load, record, remove, touch } from '../library/store';
+import { fetchCatalogueFile, loadCatalogue, type CatRow } from '../library/catalogue';
 
 export interface LibraryDeps {
   openScore(id: string): void;
@@ -23,8 +25,12 @@ export interface LibraryDeps {
 }
 export type LibraryScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown; add(files: File[]): Promise<void> };
 
-type SortBy = 'opened' | 'added' | 'title' | 'composer' | 'bars';
+type SortBy = 'opened' | 'added' | 'title' | 'composer' | 'bars' | 'views';
 const SORTS: [SortBy, string][] = [['opened', 'Recently opened'], ['added', 'Recently added'], ['title', 'Title A–Z'], ['composer', 'Composer A–Z'], ['bars', 'Fewest bars first']];
+// The catalogue: nothing there has been opened, so its own first sort is MuseScore's view count (a count, not a judgement).
+const CAT_SORTS: [SortBy, string][] = [['views', 'Most viewed on MuseScore'], ['title', 'Title A–Z'], ['composer', 'Composer A–Z'], ['bars', 'Fewest bars first']];
+const PAGE = 100; // rows drawn at a time (Show more adds the next)
+type Tab = 'yours' | 'catalogue';
 const PREFS = 'piano-web.library.v1';
 type Filter = 'kind' | 'key' | 'time' | 'bars' | 'tags';
 
@@ -64,17 +70,49 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   let selected: string | null = null; // the item whose page shows
   let pageOpen = false; // upright: the page covers the list
   const justAdded = new Set<string>(); // this visit: marked in the list
-  const f = { fav: false, kinds: new Set<Kind>(), keys: new Set<string>(), times: new Set<string>(), bars: null as [number, number] | null, tags: new Set<string>() };
-  let sortBy: SortBy = 'opened';
-  try { const p = JSON.parse(localStorage.getItem(PREFS) ?? '{}') as { sort?: SortBy }; if (SORTS.some(([s]) => s === p.sort)) sortBy = p.sort!; } catch { /* the default */ }
-  const savePrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify({ sort: sortBy })); } catch { /* this visit only */ } };
+  // Each tab keeps its own filters and sort.
+  const newFilters = () => ({ fav: false, kinds: new Set<Kind>(), keys: new Set<string>(), times: new Set<string>(), bars: null as [number, number] | null, tags: new Set<string>() });
+  let tab: Tab = 'yours';
+  const filters: Record<Tab, ReturnType<typeof newFilters>> = { yours: newFilters(), catalogue: newFilters() };
+  let f = filters.yours;
+  const sorts: Record<Tab, SortBy> = { yours: 'opened', catalogue: 'views' };
+  try { const p = JSON.parse(localStorage.getItem(PREFS) ?? '{}') as { sort?: SortBy }; if (SORTS.some(([s]) => s === p.sort)) sorts.yours = p.sort!; } catch { /* the default */ }
+  let sortBy: SortBy = sorts.yours;
+  const sortsNow = () => (tab === 'catalogue' ? CAT_SORTS : SORTS);
+  const savePrefs = () => { sorts[tab] = sortBy; try { localStorage.setItem(PREFS, JSON.stringify({ sort: sorts.yours })); } catch { /* this visit only */ } };
+  let yoursAll: LibItem[] = [], catAll: LibItem[] = [];
+  const searches: Record<Tab, string> = { yours: '', catalogue: '' };
+  const expanded = new Set<number>(); // catalogue groups opened to show their versions
+  let limit = PAGE, lastQuery = '';
 
   // ---- what is listed ---------------------------------------------------------------------------------------------
 
   async function refresh(): Promise<void> {
-    const [charts] = await Promise.all([loadCharts(base), readAppFacts(app.pieces, (p) => app.xmlFor(p))]);
-    all = items(app.pieces, charts);
+    const [charts, cat] = await Promise.all([loadCharts(base), loadCatalogue(base), readAppFacts(app.pieces, (p) => app.xmlFor(p))]);
+    yoursAll = items(app.pieces, charts);
+    catAll = cat ? cat.rows.map(catItem) : [];
+    all = tab === 'yours' ? yoursAll : catAll;
   }
+  function catItem(row: CatRow): LibItem {
+    return { id: row.id, kind: row.facts.kind, title: row.title, composer: row.composer, origin: 'catalogue', facts: row.facts, fav: false, tags: [], opens: 'score', cat: row };
+  }
+  /** A catalogue piece already in your library (added from the catalogue, or the same file added by hand). */
+  const inYours = (i: LibItem) => !!record(i.id)?.own;
+  function switchTab(t: Tab): void {
+    if (t === tab) return;
+    toList();
+    searches[tab] = search.value;
+    search.value = searches[t];
+    tab = t;
+    f = filters[t];
+    sortBy = sorts[t];
+    all = t === 'yours' ? yoursAll : catAll;
+    selected = null;
+    render();
+    list.scrollTop = 0;
+  }
+  $('lib-tab-yours').addEventListener('click', () => switchTab('yours'));
+  $('lib-tab-catalogue').addEventListener('click', () => switchTab('catalogue'));
   function matches(i: LibItem, without?: Filter): boolean {
     if (f.fav && !i.fav) return false;
     if (without !== 'kind' && f.kinds.size && !f.kinds.has(i.kind)) return false;
@@ -99,6 +137,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       title: byTitle,
       composer: (a, b) => (a.composer ? 0 : 1) - (b.composer ? 0 : 1) || a.composer.localeCompare(b.composer) || byTitle(a, b),
       bars: (a, b) => (barsOf(a) ?? Infinity) - (barsOf(b) ?? Infinity) || byTitle(a, b),
+      views: (a, b) => (b.cat?.views ?? 0) - (a.cat?.views ?? 0) || byTitle(a, b),
     };
     // What you just added stays on top this visit, whatever the sort (your sort is not changed).
     return [...list].sort((a, b) => Number(justAdded.has(b.id)) - Number(justAdded.has(a.id)) || cmp[sortBy](a, b));
@@ -126,9 +165,56 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     b.addEventListener('click', (e) => { e.stopPropagation(); void setFav(i, !i.fav); });
     return b;
   }
+  /** The catalogue's uploads of one piece fold under the first shown (a group opened shows them all). */
+  function fold(rows: LibItem[]): { item: LibItem; versions: number; version: boolean }[] {
+    const byGroup = new Map<number, LibItem[]>();
+    for (const i of rows) { const g = i.cat!.group; byGroup.set(g, [...(byGroup.get(g) ?? []), i]); }
+    const out: { item: LibItem; versions: number; version: boolean }[] = [];
+    for (const i of rows) {
+      const g = byGroup.get(i.cat!.group)!;
+      if (g[0] !== i) continue;
+      out.push({ item: i, versions: g.length, version: false });
+      if (expanded.has(i.cat!.group)) for (const v of g.slice(1)) out.push({ item: v, versions: g.length, version: true });
+    }
+    return out;
+  }
+  function addButton(i: LibItem): HTMLButtonElement {
+    const got = inYours(i);
+    const b = el('button', `lib-addcat${got ? ' got' : ''}`, got ? 'Added ✓' : '+ Add');
+    b.type = 'button';
+    b.disabled = got;
+    b.setAttribute('aria-label', got ? `${i.title} is in your library` : `Add ${i.title} to your library`);
+    b.addEventListener('click', (e) => { e.stopPropagation(); void addFromCatalogue(i); });
+    return b;
+  }
   function renderList(): void {
-    const rows = shown();
-    list.replaceChildren(...rows.map((i) => {
+    const query = `${tab}|${search.value}|${activeNames().join()}|${sortBy}`;
+    if (query !== lastQuery) { limit = PAGE; lastQuery = query; } // a new search or filter starts from the top
+    const filtered = shown();
+    const entries = tab === 'catalogue' ? fold(filtered) : filtered.map((item) => ({ item, versions: 1, version: false }));
+    const rows = entries.slice(0, limit);
+    list.replaceChildren(...rows.map(({ item: i, versions, version }) => {
+      if (i.cat) {
+        const li = el('li', `lib-item${version ? ' ver' : ''}${twoPanes.matches && i.id === selected ? ' sel' : ''}`);
+        const main = el('button', 'lib-row');
+        main.type = 'button';
+        const tx = el('span', 'lib-tx');
+        tx.append(el('span', 'lib-tt', version ? `${KIND_NAMES[i.kind]} · ${keyText(i.facts!)} · ${i.facts!.bars} bars` : i.title),
+          el('span', 'lib-mm', version ? `${i.cat.views.toLocaleString()} views on MuseScore` : metaOf(i)));
+        main.append(version ? el('span', 'lib-ic ver-ic') : icon(i), tx);
+        main.addEventListener('click', () => showPage(i.id));
+        li.append(main);
+        if (!version && versions > 1) {
+          const open = expanded.has(i.cat.group);
+          const t = el('button', 'lib-versions', `${versions} versions ${open ? '▴' : '▾'}`);
+          t.type = 'button';
+          t.setAttribute('aria-expanded', String(open));
+          t.addEventListener('click', () => { if (open) expanded.delete(i.cat!.group); else expanded.add(i.cat!.group); renderList(); });
+          li.append(t);
+        }
+        li.append(addButton(i));
+        return li;
+      }
       const li = el('li', `lib-item${justAdded.has(i.id) ? ' new' : ''}${twoPanes.matches && i.id === selected ? ' sel' : ''}`);
       const main = el('button', 'lib-row');
       main.type = 'button';
@@ -148,6 +234,14 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       }
       return li;
     }));
+    if (entries.length > limit) {
+      const li = el('li', 'lib-more-rows');
+      const more = el('button', 'btn', `Show more (${(entries.length - limit).toLocaleString()} more)`);
+      more.type = 'button';
+      more.addEventListener('click', () => { limit += PAGE; renderList(); });
+      li.append(more);
+      list.append(li);
+    }
     if (!rows.length) {
       const why = activeNames();
       const li = el('li', 'lib-empty', all.length ? `Nothing matches${why.length || search.value ? `: ${[search.value && `“${search.value}”`, ...why].filter(Boolean).join(', ')}` : ''}.` : 'The library is empty.');
@@ -159,9 +253,18 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       }
       list.replaceChildren(li);
     }
-    const n = rows.length, of = all.length, names = activeNames();
-    countLine.textContent = n === of && !search.value ? `${of} ${of === 1 ? 'item' : 'items'}` : `${n} of ${of}${names.length ? ` · ${names.join(' · ')}` : ''}`;
-    sortButton.textContent = `Sort: ${SORTS.find(([s]) => s === sortBy)![1]} ▾`;
+    const n = filtered.length, of = all.length, names = activeNames(), unit = tab === 'catalogue' ? 'scores' : 'items';
+    countLine.textContent = n === of && !search.value ? `${of.toLocaleString()} ${of === 1 ? unit.slice(0, -1) : unit}` : `${n.toLocaleString()} of ${of.toLocaleString()}${names.length ? ` · ${names.join(' · ')}` : ''}`;
+    sortButton.textContent = `Sort: ${sortsNow().find(([s]) => s === sortBy)![1]} ▾`;
+    // The tabs (only when there is a catalogue).
+    const tabs = $('lib-tabs');
+    tabs.hidden = !catAll.length;
+    for (const t of ['yours', 'catalogue'] as Tab[]) {
+      const b = $(`lib-tab-${t}`);
+      b.classList.toggle('on', t === tab);
+      b.setAttribute('aria-selected', String(t === tab));
+      b.querySelector('small')!.textContent = (t === 'yours' ? yoursAll.length : new Set(catAll.map((i) => i.cat!.group)).size).toLocaleString();
+    }
   }
   function activeNames(): string[] {
     return [
@@ -189,13 +292,13 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     };
     const one = (set: Set<string>, name: string) => (set.size === 1 ? [...set][0] : set.size ? `${name} (${set.size})` : `${name} ▾`);
     const out = [
-      chip('♥ Favourites', f.fav, () => { f.fav = !f.fav; render(); }),
+      ...(tab === 'yours' ? [chip('♥ Favourites', f.fav, () => { f.fav = !f.fav; render(); })] : []),
       chip(f.kinds.size === 1 ? KIND_NAMES[[...f.kinds][0]] : one(f.kinds, 'Kind'), f.kinds.size > 0, () => openSheet('kind'), () => f.kinds.clear()),
       chip(one(f.keys, 'Key'), f.keys.size > 0, () => openSheet('key'), () => f.keys.clear()),
       chip(one(f.times, 'Time'), f.times.size > 0, () => openSheet('time'), () => f.times.clear()),
       chip(f.bars ? `${f.bars[0]}–${f.bars[1]} bars` : 'Bars ▾', !!f.bars, () => openSheet('bars'), () => { f.bars = null; }),
     ];
-    if (all.some((i) => i.tags.length)) out.push(chip(one(f.tags, 'Tags'), f.tags.size > 0, () => openSheet('tags'), () => f.tags.clear()));
+    if (tab === 'yours' && all.some((i) => i.tags.length)) out.push(chip(one(f.tags, 'Tags'), f.tags.size > 0, () => openSheet('tags'), () => f.tags.clear()));
     chips.replaceChildren(...out);
   }
   function clearFilters(): void { f.fav = false; f.kinds.clear(); f.keys.clear(); f.times.clear(); f.bars = null; f.tags.clear(); }
@@ -256,7 +359,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     if (which === 'sort') {
       sheetTitle.textContent = 'Sort';
       const box = el('div', 'lib-opts col');
-      for (const [s, label] of SORTS) {
+      for (const [s, label] of sortsNow()) {
         const b = el('button', `lib-opt${s === sortBy ? ' on' : ''}`, label);
         b.type = 'button';
         b.addEventListener('click', () => { sortBy = s; savePrefs(); render(); sheet.close(); });
@@ -357,8 +460,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   });
   let previewFor = '', previewBox: HTMLElement | null = null;
   function renderPage(): void {
-    const i = all.find((x) => x.id === selected);
+    let i = all.find((x) => x.id === selected);
     if (!i) { page.replaceChildren(el('p', 'note lib-none', all.length ? 'Choose something on the left.' : '')); return; }
+    if (i.cat && inYours(i)) i = yoursAll.find((x) => x.id === i!.id) ?? i; // in your library: its page there
+    if (i.cat && !inYours(i)) { renderCatPage(i); return; }
     const out: HTMLElement[] = [];
     if (!twoPanes.matches) {
       const head = el('div', 'fp-head lib-page-head');
@@ -447,6 +552,64 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     }
     out.push(body);
     page.replaceChildren(...out);
+  }
+
+  /** A catalogue piece not yet in your library: what was read from it, where it came from, and Add. */
+  function renderCatPage(i: LibItem): void {
+    const out: HTMLElement[] = [];
+    if (!twoPanes.matches) {
+      const head = el('div', 'fp-head lib-page-head');
+      const back = el('button', 'btn', '←');
+      back.type = 'button';
+      back.setAttribute('aria-label', 'Back to the list');
+      back.addEventListener('click', closePage);
+      head.append(back, el('span', 'title', i.title));
+      out.push(head);
+    }
+    const body = el('div', 'lib-page-body');
+    const name = el('div');
+    name.append(el('div', 'lib-title', i.title), el('div', 'lib-meta', [i.composer, 'in the catalogue'].filter(Boolean).join(' · ')));
+    body.append(name);
+    const buttons = el('div', 'lib-buttons');
+    const add = el('button', 'btn main', 'Add to your library');
+    add.type = 'button';
+    add.addEventListener('click', () => void addFromCatalogue(i));
+    buttons.append(add);
+    body.append(buttons);
+    const facts = el('dl', 'lib-facts');
+    const x = i.facts!;
+    const fact = (k: string, v: string, small = '') => { if (!v) return; const dd = el('dd', '', v); if (small) dd.append(el('small', '', ` ${small}`)); facts.append(el('dt', '', k), dd); };
+    fact('Kind', x.kind === 'piano' ? 'piano, two staves' : x.kind === 'lead' ? 'lead sheet: a melody with chord symbols' : KIND_NAMES[x.kind]);
+    fact('Key', `${keyText(x, true)}${x.keyChanges ? ', changing later' : ''}`);
+    fact('Time', x.time ? `${x.time}${x.timeChanges ? ', changing later' : ''}` : '');
+    fact('Bars', `${x.bars}`, 'as printed');
+    if (x.low !== null && x.high !== null) fact('Range', `${noteName(x.low)} – ${noteName(x.high)}`);
+    body.append(el('div', 'lib-label', 'Read from the notes'), facts);
+    const from = el('div', 'lib-from');
+    from.append(el('div', '', `From PDMX: an upload to MuseScore, viewed ${i.cat!.views.toLocaleString()} times there.`));
+    if (i.cat!.licence) from.append(el('div', '', `The uploader's licence for this transcription: ${i.cat!.licence}.`));
+    body.append(el('div', 'lib-label', 'Where it came from'), from, el('div', 'lib-warn', 'Notes not checked against a printed edition.'));
+    out.push(body);
+    page.replaceChildren(...out);
+  }
+
+  /** Adds a catalogue piece: its file (saved with the app, so this works offline) kept like a file you added. */
+  async function addFromCatalogue(i: LibItem): Promise<void> {
+    if (!i.cat || inYours(i)) return;
+    try {
+      await load();
+      const p = await prepare(await fetchCatalogueFile(base, i.cat));
+      if (p.id !== i.id) throw new Error('its file is not the one the catalogue lists');
+      await addOwn(p.id, { ...p.own, origin: 'catalogue', title: i.title, composer: i.composer, source: 'PDMX (an upload to MuseScore)', licence: i.cat.licence || undefined }, p.blob);
+      app.pieces.push(pieceOf(p.id, { ...p.own, title: i.title, composer: i.composer }));
+      justAdded.add(p.id);
+      void keepSafe().then(() => renderFoot());
+      await refresh();
+      render();
+      toast(`Added “${i.title}”`, () => { const it = yoursAll.find((x) => x.id === i.id); if (it) openItem(it); });
+    } catch (e) {
+      app.showMessage(`Could not add it: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }
 
   /** The first bars, drawn small (OpenSheetMusicDisplay, loaded only when a page wants it). */
@@ -547,7 +710,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   // ---- opening ------------------------------------------------------------------------------------------------------
 
   function openItem(i: LibItem): void {
-    if (i.opens === 'pdf') { showPage(i.id); return; } // (the viewer comes next: the page says so)
+    if (i.opens === 'pdf' || (i.cat && !inYours(i))) { showPage(i.id); return; } // (the viewer comes next; a catalogue piece is added first)
     touch(i.id);
     close(() => { if (i.opens === 'lab') deps.openChart(i.id.slice('chart:'.length)); else deps.openScore(i.id); });
   }
@@ -569,12 +732,12 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   async function replaceFile(i: LibItem, file: File | undefined): Promise<void> {
     if (!file || !i.own) return;
     try {
-      const p = await prepare(file);
+      const p = await prepare(file, checkMidi);
       if ((p.own.kind === 'pdf') !== (i.kind === 'pdf')) throw new Error(i.kind === 'pdf' ? 'A PDF can only be replaced by a PDF.' : 'A score can only be replaced by a score (MusicXML or MXL).');
       const other = allRecords().find((r) => r.own?.hash === p.own.hash);
       if (other && other.id !== i.id) throw new Error(`That file is already in your library as “${other.own!.title}”.`);
       await saved(async () => {
-        await addOwn(i.id, { ...p.own, title: i.own!.title, added: i.own!.added }, p.blob);
+        await addOwn(i.id, { ...p.own, title: i.own!.title, added: i.own!.added }, p.blob, p.original);
         app.forgetXml(i.id);
         const piece = app.pieces.find((x) => x.id === i.id);
         if (piece) piece.file = p.own.file.name;
@@ -592,11 +755,11 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     for (const file of files) {
       try {
         await load();
-        const p: Prepared = await prepare(file);
+        const p: Prepared = await prepare(file, checkMidi);
         // The same file (by its contents) is never added twice, even one that replaced another piece's file.
         const had = allRecords().find((r) => r.own?.hash === p.own.hash);
         if (had?.own) { results.push({ name: file.name, title: had.own.title, id: had.id, already: true }); continue; }
-        await addOwn(p.id, p.own, p.blob);
+        await addOwn(p.id, p.own, p.blob, p.original);
         if (p.own.kind !== 'pdf') app.pieces.push(pieceOf(p.id, p.own));
         justAdded.add(p.id);
         results.push({ name: file.name, title: p.own.title, id: p.id, note: p.own.kind === 'parts' ? PARTS_WARNING : undefined });
@@ -624,6 +787,55 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     }));
     dlg.showModal();
   }
+  /**
+   * A MIDI file (owner, 2026-10-13): converted on the phone, then shown with what was read from the file and what was
+   * guessed, the first bars drawn, Swap hands and a tempo to state; Add keeps it (Cancel: not added).
+   */
+  const checkMidi: Converter = (data, name) => new Promise((resolve, reject) => {
+    const dlg = $<HTMLDialogElement>('lib-midi'), bpmInput = $<HTMLInputElement>('lib-midi-bpm');
+    let swap = false, bpm: number | undefined, now: { xml: string; guessed: string; account: Guessed } | null = null;
+    const show = async () => {
+      try {
+        now = await midiConverter(data, name, { swapHands: swap, bpm });
+      } catch (e) {
+        if (!now) { reject(e); dlg.close('error'); return; }
+        app.showMessage(e instanceof Error ? e.message : String(e)); // (a tempo out of range: the last good one stays)
+        bpm = now.account.tempo.from === 'stated' ? now.account.tempo.bpm ?? undefined : undefined;
+      }
+      const g = now!.account;
+      $('lib-midi-file').textContent = `${name} · ${g.hands.noteTracks} ${g.hands.noteTracks === 1 ? 'track' : 'tracks'} of notes`;
+      const facts = $('lib-midi-facts');
+      const row = (k: string, v: string, from: string) => { const dd = el('dd', '', v); dd.append(el('small', '', ` (${from})`)); facts.append(el('dt', '', k), dd); };
+      facts.replaceChildren();
+      row('Hands', `${g.hands.sentence}${g.hands.swapped ? ' Swapped.' : ''}${g.hands.swapRefused ? ` ${g.hands.swapRefused}` : ''}`, g.hands.method === 'kept' ? 'from the file' : 'guessed');
+      row('Tempo', g.tempo.bpm ? `♩ ${g.tempo.bpm}` : 'none stated: the app’s default', g.tempo.from === 'file' ? 'from the file' : g.tempo.from === 'stated' ? 'as you stated' : 'not in the file');
+      row('Key', g.key.name, g.key.from === 'chosen' ? 'chosen' : `guessed from the notes${g.key.fileSignatures.length ? `; the file says ${g.key.fileSignatures.join(', ')}` : ''}`);
+      row('Time', `${g.time.beats}/${g.time.beatType}`, g.time.from === 'file' ? 'from the file' : g.time.from === 'assumed' ? 'assumed: the file states none' : 'chosen');
+      row('Check', g.check.sentence, g.check.passed ? 'read back' : 'read back: see this');
+      bpmInput.value = g.tempo.bpm ? String(g.tempo.bpm) : '';
+      void drawXml(now!.xml, $('lib-midi-preview'));
+    };
+    $('lib-midi-swap').onclick = () => { swap = !swap; void show(); };
+    bpmInput.onchange = () => { const v = Number(bpmInput.value); bpm = Number.isFinite(v) && v > 0 ? v : undefined; void show(); };
+    dlg.onclose = () => {
+      if (dlg.returnValue === 'add' && now) resolve({ xml: now.xml, guessed: now.guessed });
+      else if (dlg.returnValue !== 'error') reject(new Error('Not added (cancelled).'));
+    };
+    dlg.returnValue = '';
+    void show().then(() => { if (now) dlg.showModal(); });
+  });
+  /** A score's first bars, drawn small (the MIDI sheet). */
+  async function drawXml(xml: string, box: HTMLElement): Promise<void> {
+    box.replaceChildren();
+    try {
+      const { OpenSheetMusicDisplay } = await import('opensheetmusicdisplay');
+      const osmd = new OpenSheetMusicDisplay(box, { autoResize: false, backend: 'svg', drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawCredits: false, drawPartNames: false, drawMeasureNumbers: false, drawFromMeasureNumber: 1, drawUpToMeasureNumber: 4 });
+      await osmd.load(xml);
+      osmd.zoom = 0.55;
+      osmd.render();
+    } catch { box.textContent = 'The first bars could not be drawn.'; }
+  }
+
   let toastTimer = 0;
   function toast(text: string, open: () => void): void {
     const t = $('lib-toast');

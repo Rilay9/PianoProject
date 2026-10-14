@@ -19,8 +19,9 @@ export interface Own {
   /** Where it came from, in words (a catalogue piece: its uploader), and the uploader's licence for the transcription. */
   source?: string;
   licence?: string;
-  /** A MIDI file converted on the phone: what was guessed. */
+  /** A MIDI file converted on the phone: what was guessed, and the MIDI file itself (kept as "<id>:midi"). */
   converted?: string;
+  midi?: { name: string; size: number };
   /** A PDF: the score it is the same piece as. */
   sameAs?: string;
 }
@@ -76,12 +77,16 @@ export async function change(id: string, f: (r: Stored) => void): Promise<void> 
 /** You opened it now (for Recently opened). Never fails loudly: a missed time is not worth a message. */
 export function touch(id: string): void { void change(id, (r) => { r.opened = new Date().toISOString(); }).catch(() => {}); }
 
-export async function addOwn(id: string, own: Own, file: Blob): Promise<void> {
+/** The MIDI file a score was converted from is kept under this key beside it. */
+export const midiKey = (id: string) => `${id}:midi`;
+export async function addOwn(id: string, own: Own, file: Blob, original?: Blob): Promise<void> {
   await load();
   const t = (await db()).transaction(['items', 'files'], 'readwrite');
   const r: Stored = { ...(records.get(id) ?? { id }), own };
   t.objectStore('items').put(r);
   t.objectStore('files').put(file, id);
+  if (original) t.objectStore('files').put(original, midiKey(id));
+  else t.objectStore('files').delete(midiKey(id));
   await done(t);
   records.set(id, r);
 }
@@ -92,6 +97,7 @@ export async function remove(id: string): Promise<void> {
   const t = (await db()).transaction(['items', 'files'], 'readwrite');
   t.objectStore('items').delete(id);
   t.objectStore('files').delete(id);
+  t.objectStore('files').delete(midiKey(id));
   await done(t);
   records.delete(id);
 }
