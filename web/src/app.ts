@@ -12,6 +12,8 @@ import { settingsFor, type ScoreSettings } from './settings';
 import { Sound } from './sound';
 import { UnderStrip } from './strip';
 import { keepAwake } from './wake';
+import { xmlOfFile } from './library/files';
+import { fileOf } from './library/store';
 
 export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 export const base = import.meta.env.BASE_URL;
@@ -70,11 +72,21 @@ export class App {
     this.practice = new Practice(this.view, this.sound, this.midi, () => this.playSettings());
   }
 
+  /** A file you added was replaced: its MusicXML is read again next time. */
+  forgetXml(id: string): void { this.xmlCache.delete(id); }
+
   currentPiece(): Piece { return this.pieces.find((p) => p.id === this.currentId) ?? this.pieces[0]; }
 
   async xmlFor(piece: Piece): Promise<string> {
     const cached = this.xmlCache.get(piece.id);
     if (cached) return cached;
+    if (piece.id.startsWith('u-')) { // a file you added: kept in the library on this phone
+      const blob = await fileOf(piece.id);
+      if (!blob) throw new Error(`${piece.title} is no longer in the library`);
+      const xml = await xmlOfFile(blob);
+      this.xmlCache.set(piece.id, xml);
+      return xml;
+    }
     const response = await fetch(`${base}scores/${piece.file}`);
     if (!response.ok) throw new Error(`${response.status} for ${piece.file}`);
     const xml = await response.text();

@@ -3,6 +3,7 @@
 // (Watch, Wait for me, Play along, Ladder, Rhythm: practice.ts), loops, the Tempo, Display, songs and info panels,
 // the summary, and editing fingering. Its drawing of the music is lent to Memorise (a Borrower) while that is open.
 
+import { touch } from '../library/store';
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
@@ -774,7 +775,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       const marks = Object.entries(marksNow).filter(([k]) => k.startsWith(`${p.id}|`))
         .map(([k, m]) => `${markText(m)}${k.endsWith('|both') ? '' : ` (${k.split('|')[1]} hand)`}`);
       button.querySelector('small')!.textContent = [p.composer, ...marks].join(' · ');
-      button.addEventListener('click', () => { songsDialog.close(); void openSong(p.id); });
+      button.addEventListener('click', () => { songsDialog.close(); touch(p.id); void openSong(p.id); });
       item.append(button);
       return item;
     }));

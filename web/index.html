@@ -196,6 +196,47 @@
     <div id="lab-keyboard" class="keyboard lab-keyboard"></div>
   </section>
 
+  <!-- The library (screens/library.ts): search, one line of filter chips, the list; a piece's page (over the list
+       upright, beside it sideways and on tablets). -->
+  <section id="library" class="library" aria-label="Library" hidden>
+    <div class="fp-head"><button id="lib-done" type="button" class="btn" aria-label="Back">←</button><span class="title">Library</span><span class="lab-sp"></span><button id="lib-add" type="button" class="btn main">+ Add</button></div>
+    <input id="lib-file" type="file" multiple hidden>
+    <div class="lib-body">
+      <div id="lib-left" class="lib-left">
+        <input id="lib-search" class="lib-search" type="search" placeholder="Search titles, composers, tags" aria-label="Search the library" autocomplete="off">
+        <div id="lib-chips" class="lib-chips"></div>
+        <div class="lib-countline"><span id="lib-count"></span><button id="lib-sort" type="button" class="lib-link" aria-haspopup="dialog"></button></div>
+        <ul id="lib-list" class="lib-list"></ul>
+        <div id="lib-foot" class="lib-foot"></div>
+      </div>
+      <div id="lib-page" class="lib-page" hidden></div>
+    </div>
+    <div id="lib-toast" class="lib-toast" role="status" hidden></div>
+  </section>
+
+  <dialog id="lib-sheet" aria-labelledby="lib-sheet-title">
+    <form method="dialog">
+      <h2 id="lib-sheet-title"></h2>
+      <div id="lib-sheet-body" class="lib-sheet-body"></div>
+      <div class="actions"><button id="lib-sheet-clear" type="button">Clear</button><button id="lib-sheet-show" value="close">Done</button></div>
+    </form>
+  </dialog>
+  <dialog id="lib-rename" aria-labelledby="lib-rename-title">
+    <form method="dialog">
+      <h2 id="lib-rename-title">Rename</h2>
+      <p class="note">The name shown in the library and on the score.</p>
+      <input id="lib-rename-input" class="lib-rename-input" maxlength="120" aria-label="Name">
+      <div class="actions"><button value="cancel" formnovalidate>Cancel</button><button value="save">Save</button></div>
+    </form>
+  </dialog>
+  <dialog id="lib-added" aria-labelledby="lib-added-title">
+    <form method="dialog">
+      <h2 id="lib-added-title"></h2>
+      <ul id="lib-added-list" class="lib-added-list"></ul>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
+
   <dialog id="lab-pick-dialog" aria-labelledby="lab-pick-title">
     <form method="dialog">
       <h2 id="lab-pick-title">Play over</h2>
@@ -391,6 +432,7 @@
     <form method="dialog">
       <h2 id="more-title">More</h2>
       <div class="menu">
+        <button id="open-library" type="button">Library</button>
         <button id="open-memorise" type="button">Memorise this piece</button>
         <button id="open-freeplay" type="button">Free play</button>
         <button id="open-simon" type="button">Simon</button>

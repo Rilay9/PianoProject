@@ -19,6 +19,7 @@ import { KeyRemote } from './remote';
 import { clearPreset } from './settings';
 import { createExerciseScreen } from './screens/exercise';
 import { createLabScreen } from './screens/lab';
+import { createLibraryScreen, yourPieces } from './screens/library';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
 import type { Piece } from './app';
@@ -44,11 +45,21 @@ const freePlayScreen: Screen = {
 };
 // The accompaniment lab (owner, 2026-10-13): play along with a band (for now in ⋯).
 const labScreen = createLabScreen(app, () => { scoreScreen.fillBars(); scoreScreen.showBars(); });
-app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen];
+// The library (owner, 2026-10-13): everything you play from (for now in ⋯; where it sits in the app comes later).
+const libraryScreen = createLibraryScreen(app, {
+  openScore: (id) => { wanted(); void scoreScreen.openSong(id); },
+  memorise: (id) => { wanted(); clearPreset(); void scoreScreen.openSong(id).then(() => memoriseScreen.open()); },
+  openChart: (id) => { void labScreen.open(wanted(), undefined, id); },
+  closed: () => { scoreScreen.fillBars(); scoreScreen.showBars(); },
+  forgot: () => memoriseScreen.reloadStorage(),
+  reopen: (id) => { void scoreScreen.openSong(id); },
+});
+app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, libraryScreen];
 
 /** The screen showing: one opened over the score, or the score itself. */
 function showing(): Screen {
   if (freePlay.open) return freePlayScreen;
+  if (libraryScreen.isOpen) return libraryScreen;
   if (labScreen.isOpen) return labScreen;
   if (exerciseScreen.isOpen) return exerciseScreen;
   if (memoriseScreen.isOpen) return memoriseScreen;
@@ -116,6 +127,7 @@ $('open-freeplay').addEventListener('click', () => {
 $('open-simon').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('simon', wanted()); });
 $('open-drills').addEventListener('click', () => { leaveScore(); void exerciseScreen.open('drill', wanted()); });
 $('open-lab').addEventListener('click', () => { leaveScore(); void labScreen.open(wanted()); });
+$('open-library').addEventListener('click', () => { leaveScore(); wanted(); void libraryScreen.open(); });
 // The ⋯ menu's Metronome… opens the score's Tempo panel at the metronome (owner: reachable from both, 2026-10-11).
 $('open-metronome').addEventListener('click', () => { moreDialog.close(); scoreScreen.openMetronome(); });
 $('edit-marks').addEventListener('click', () => { moreDialog.close(); scoreScreen.editFingering(); });
@@ -213,6 +225,8 @@ async function start(): Promise<void> {
     app.showMessage(`Could not load the song list: ${cause instanceof Error ? cause.message : String(cause)}`);
     return;
   }
+  // The scores you added (the library, on this phone): a problem reading them leaves the app's own.
+  try { app.pieces.push(...await yourPieces()); } catch (cause) { app.showMessage(`Your added scores could not be read: ${cause instanceof Error ? cause.message : String(cause)}`); }
   const params = new URLSearchParams(location.search), wantedPiece = params.get('piece'), activityId = params.get('activity');
   await scoreScreen.openSong(wantedPiece && app.pieces.some((p) => p.id === wantedPiece) ? wantedPiece : app.pieces[0].id);
   if (activityId) await openActivity(activityId);
@@ -301,5 +315,5 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()) }),
-  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(),
+  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(), library: () => libraryScreen.debug(),
 };

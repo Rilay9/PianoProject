@@ -287,6 +287,51 @@ one); examples to copy written into a chart.
 
 ---
 
+## 5c. Library (⋯ → Library; owner, 2026-10-13; mockups `web/mockups/library.html`, option A)
+
+**For:** finding anything you play from: the app's own scores (`scores/index.json`) and chord charts
+(`content/lab`), and the files you add. Where it sits in the app (start screen) is not decided; for now it opens from
+⋯. `web/src/screens/library.ts`, `web/src/library/*`.
+
+- **The list:** search (titles, composers, your tags; accents ignored; each word matches the start of a word, any
+  order), one line of chips (♥ Favourites, Kind, Key signature, Time, Bars as printed, and Tags once you have any),
+  each opening a small sheet whose choices are the ones the other filters leave; the count line names what is set,
+  and nothing matching says so with Clear. Sort: Recently opened (default; never opened after, newest added first),
+  Recently added, Title, Composer, Fewest bars. A row: title, then composer · kind · key signature · time · bars;
+  ♡ and ⋯ (its page). Phone upright: a row's tap opens it; sideways and tablets: the list on the left and the page
+  of the row tapped on the right. Android Back: a page back to the list, the list back to the score.
+- **Facts come only from the file** (`library/facts.ts`): kind (piano = one part on two staves, melody = one staff,
+  lead sheet = one staff with chord symbols, several parts), key signature (major or minor only where the file says;
+  whether it changes; as written when the first part is a transposing instrument), first time signature (and
+  whether it changes), bars as printed (an implicit measure after the first, a bar split around a repeat, is not
+  counted again), lowest and highest note (not for several parts), chord symbols. The title is the one printed on
+  the page first (MuseScore can keep an old work title), the composer its first line. Never a level, genre or other
+  catalogue guess. A file that can't be read is listed as "score".
+- **A piece's page:** Open (the score screen, or the lab for a chart) and Memorise; the first bars drawn small; the
+  facts; your tags (+ tag, ✕); where it came from (the app's own: source and licence of the transcription; yours:
+  the file and date); the song list's status line ("notes not verified…"); a warning for several parts (the score
+  screen takes the top staff as the right hand; choosing the parts comes later) and for a transposing first part.
+  Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
+  choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
+  added), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
+  `library/forget.ts`, and Memorise reads its store again so it can't write them back). A PDF's page says the
+  viewer comes next.
+- **Adding** (+ Add; several files at once): MusicXML and MXL (title and composer from inside the file), PDF (kept
+  as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB for a PDF and 16 MB of MusicXML for
+  a score; the same file again (by its contents, even one that replaced another's) is "already in your library";
+  anything else gets one sentence; a file with several parts is added with the warning. One file: a toast with Open; several: a list of what happened to each. What was just
+  added is on top, marked, with search and filters cleared, for this visit (your sort is kept). Not yet: MIDI,
+  files shared from other apps, the catalogue.
+- **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
+  app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
+  browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
+  scores join the song list at start (ids `u-` + the start of the file's SHA-256), so every score screen, Memorise
+  and activities take them. Recently opened is set when you open something deliberately (the library, the song
+  list, the lab's chart), not when the app reopens the last piece. **The backup does not include the library yet**
+  (files, favourites, tags): that comes with the zip backup.
+
+---
+
 ## 6. Exercise content: item sets (Simon and Drills)
 
 Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/exercise/items.ts`.
@@ -364,7 +409,7 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1` (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline).
+  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is not in the backup yet.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -462,6 +507,8 @@ A link opens an activity once: it leaves the address as it opens, so a later rel
 
 ## 9. Not built yet
 
-Library / history / projects (how lessons and pieces are reached and progress is seen: the owner will explain);
-the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; importing your own music; generated
+The library's next parts (§5c): MIDI conversion, files shared from other apps, the backup with your files,
+difficulty in broad bands, the PDMX catalogue, later the phone folder and the Shelf; the PDF viewer; history /
+projects (the owner will explain);
+the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
 drill cards; a setup tour and guide (last).

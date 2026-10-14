@@ -4,6 +4,7 @@
 // melodies are never made up. Content: public/content/lab (charts and styles; docs/app-features.md says how).
 // This first version takes chord charts; songs with their own melody (lead sheets, several parts) come next.
 
+import { touch } from '../library/store';
 import type { LabPreset } from '../activity';
 import { $, base, type App, type Screen, type KeyRange } from '../app';
 import { holds } from '../holds';
@@ -20,7 +21,7 @@ import { currentDevice } from '../settings';
 import type { NoteEvent } from '../sound';
 
 /** open(…, activity): a chart with an activity's preset (activity.ts), in force until another chart is picked or Done. */
-export type LabScreen = Screen & { open(stillWanted?: () => boolean, activity?: { chart: string; preset: LabPreset; title?: string }): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+export type LabScreen = Screen & { open(stillWanted?: () => boolean, activity?: { chart: string; preset: LabPreset; title?: string }, chartId?: string): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
 
 type Role = 'accomp' | 'lead';
 interface Stored {
@@ -118,7 +119,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   /** remember: the chart you chose (not an activity's), opened next time. The style is the activity's or the chart's. */
   function choose(id: string, remember = true): void {
     chart = charts.find((c) => c.id === id) ?? charts[0];
-    if (remember) { stored.chart = chart.id; save(); }
+    if (remember) { stored.chart = chart.id; save(); touch(`chart:${chart.id}`); } // (the library's Recently opened)
     const fits = styles.filter((s) => sameMeter(s, chart!));
     style = fits.find((s) => s.id === (preset?.style ?? chart!.style)) ?? fits[0];
     loopBars = null;
@@ -626,7 +627,8 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     held.set(m, p);
   };
 
-  async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset; title?: string }): Promise<void> {
+  /** chartId: a chart chosen in the library (remembered, as one chosen with Change). */
+  async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset; title?: string }, chartId?: string): Promise<void> {
     await load();
     if (!stillWanted()) return;
     if (!charts.length || !styles.length) { app.showMessage(loadProblems || 'The lab has no charts or styles to play.'); return; }
@@ -641,7 +643,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     preset = activity ? structuredClone(activity.preset) : null;
     isOpen = true;
     $('lab').hidden = false;
-    choose(activity?.chart ?? stored.chart ?? charts[0].id, !activity);
+    choose(activity?.chart ?? chartId ?? stored.chart ?? charts[0].id, !activity);
     backToOpen();
     feedback(loadProblems || activity?.title || ''); // (an activity's own words)
     app.stayAwake();

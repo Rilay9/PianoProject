@@ -884,6 +884,8 @@ export class Memorise {
     this.d.view.songClock = null;
   }
 
+  /** Reads its storage again (the library deleted a piece's entries: an old copy here would write them back). */
+  reload(): void { if (this.phase === 'off') this.stored = this.read(); }
   private read(): Stored {
     const empty: Stored = { options: MEMORISE_DEFAULTS, progress: {}, learned: {}, marks: {}, look: {}, pieces: {} };
     try {
