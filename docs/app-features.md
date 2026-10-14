@@ -320,15 +320,17 @@ one); examples to copy written into a chart.
   as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB for a PDF and 16 MB of MusicXML for
   a score; the same file again (by its contents, even one that replaced another's) is "already in your library";
   anything else gets one sentence; a file with several parts is added with the warning. One file: a toast with Open; several: a list of what happened to each. What was just
-  added is on top, marked, with search and filters cleared, for this visit (your sort is kept). Not yet: MIDI,
-  files shared from other apps, the catalogue.
+  added is on top, marked, with search and filters cleared, for this visit (your sort is kept). **Shared from
+  another app** (Share → Piano, Android, the installed app only: the manifest's `share_target`): the service worker
+  takes the POST to `./share-target`, keeps the files in the cache `piano-shared` and opens the app with
+  `?shared=1`; the library opens and adds them as above. (A change to the share target reaches an installed app
+  only when Android refreshes it, which can take a day.) Not yet: MIDI, the catalogue.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
   scores join the song list at start (ids `u-` + the start of the file's SHA-256), so every score screen, Memorise
   and activities take them. Recently opened is set when you open something deliberately (the library, the song
-  list, the lab's chart), not when the app reopens the last piece. **The backup does not include the library yet**
-  (files, favourites, tags): that comes with the zip backup.
+  list, the lab's chart), not when the app reopens the last piece. The backup includes the library (§7).
 
 ---
 
@@ -404,12 +406,18 @@ placeholders for checking the app, not lesson content.
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.
-- Back up / restore (⋯) saves every setting, mark and progress record (all `piano-web.*` storage) to one file.
+- Back up / restore (⋯; `web/src/backup.ts`): one zip with every setting, mark and progress record (all
+  `piano-web.*` storage) and the library (its records and your files); the size of your files is asked about first.
+  Files are stored uncompressed and written and read a piece at a time (no copy of the whole library in memory; a
+  zip over 4 GB is refused). **Restoring merges** (owner, 2026-10-13): what this phone lacks is added, what it has
+  stays (object by object; the practice log keeps every run from both, once); library records merge (favourite if
+  either, tags joined, the later last-opened) and missing files are put back. An older .json backup restores the
+  same way.
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is not in the backup yet.
+  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -507,8 +515,7 @@ A link opens an activity once: it leaves the address as it opens, so a later rel
 
 ## 9. Not built yet
 
-The library's next parts (§5c): MIDI conversion, files shared from other apps, the backup with your files,
-difficulty in broad bands, the PDMX catalogue, later the phone folder and the Shelf; the PDF viewer; history /
+The library's next parts (§5c): MIDI conversion, difficulty in broad bands, the PDMX catalogue, later the phone folder and the Shelf; the PDF viewer; history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
 drill cards; a setup tour and guide (last).

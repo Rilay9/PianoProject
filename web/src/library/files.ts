@@ -6,7 +6,8 @@ import JSZip from 'jszip';
 import { readScore, type ReadScore } from './facts';
 import { sha256, type Own } from './store';
 
-export const ACCEPT = '.musicxml,.xml,.mxl,.pdf,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml,application/pdf';
+// (application/octet-stream and zip too: Android often labels an .mxl so, and would grey it out otherwise.)
+export const ACCEPT = '.musicxml,.xml,.mxl,.pdf,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml,application/pdf,application/zip,application/octet-stream';
 const MAX_BYTES = 64 * 1024 * 1024; // a PDF
 const MAX_SCORE_BYTES = 16 * 1024 * 1024; // MusicXML as text: far more than the score screen can draw comfortably
 

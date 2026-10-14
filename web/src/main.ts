@@ -8,6 +8,7 @@
 
 import './style.css';
 import { readActivity, type Activity } from './activity';
+import { backupContents, makeBackup, restoreBackup } from './backup';
 import { $, App, type Screen } from './app';
 import { FreePlay } from './freeplay';
 import { holds } from './holds';
@@ -19,7 +20,7 @@ import { KeyRemote } from './remote';
 import { clearPreset } from './settings';
 import { createExerciseScreen } from './screens/exercise';
 import { createLabScreen } from './screens/lab';
-import { createLibraryScreen, yourPieces } from './screens/library';
+import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
 import type { Piece } from './app';
@@ -157,8 +158,9 @@ $('r-edges').addEventListener('change', (e) => remote.set({ edges: (e.target as 
 $('r-mash').addEventListener('change', (e) => remote.set({ mash: (e.target as HTMLInputElement).checked }));
 
 /** Gives the phone a file to save. */
-function download(name: string, type: string, text: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type }));
+function download(name: string, type: string, text: string): void { downloadBlob(name, new Blob([text], { type })); }
+function downloadBlob(name: string, blob: Blob): void {
+  const url = URL.createObjectURL(blob);
   const a = Object.assign(document.createElement('a'), { href: url, download: name });
   document.body.append(a);
   a.click();
@@ -177,17 +179,18 @@ $<HTMLInputElement>('log-autodelete').addEventListener('change', (e) => {
   $('export-log').textContent = `Export practice log (${entryCount()} ${entryCount() === 1 ? 'entry' : 'entries'})`;
 });
 
-const BACKUP_PREFIX = 'piano-web.';
-const NOT_BACKED_UP = ['piano-web.offline.v1']; // what this device has saved for offline: true of this device only
-const backedUp = (key: string) => key.startsWith(BACKUP_PREFIX) && !NOT_BACKED_UP.includes(key);
-$('backup').addEventListener('click', () => {
-  const data: Record<string, string> = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)!;
-    if (backedUp(key)) data[key] = localStorage.getItem(key)!;
+// Back up and restore (backup.ts): settings, marks, progress and the library with your files, in one zip; the size
+// of your files is said first (owner, 2026-10-13). Restoring merges into this phone.
+$('backup').addEventListener('click', async () => {
+  const { files, bytes } = await backupContents();
+  const size = bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+  if (files && !confirm(`The backup includes your ${files} ${files === 1 ? 'file' : 'files'} (${size}). Save it?`)) return;
+  try {
+    downloadBlob(`piano-backup-${new Date().toISOString().slice(0, 10)}.zip`, await makeBackup());
+  } catch (cause) {
+    moreDialog.close();
+    app.showMessage(`Could not back up: ${cause instanceof Error ? cause.message : String(cause)}`);
   }
-  const day = new Date().toISOString().slice(0, 10);
-  download(`piano-backup-${day}.json`, 'application/json', JSON.stringify({ app: 'piano-web', version: 1, saved: new Date().toISOString(), data }, null, 2));
 });
 $('restore').addEventListener('click', () => $<HTMLInputElement>('restore-file').click());
 $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
@@ -195,12 +198,8 @@ $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
   input.value = ''; // the same file picked again (after Cancel, say) is a new choice
   if (!file) return;
   try {
-    const backup = JSON.parse(await file.text()) as { app?: string; data?: Record<string, string> };
-    if (backup.app !== 'piano-web' || !backup.data) throw new Error('This is not a backup from this app.');
-    if (!confirm('Replace the settings and marks on this device with the backup?')) return;
-    const mine = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)!).filter(backedUp);
-    for (const key of mine) if (!(key in backup.data)) localStorage.removeItem(key);
-    for (const [key, value] of Object.entries(backup.data)) if (backedUp(key)) localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value)); // (a hand-edited backup may hold objects)
+    if (!confirm('Add what is in the backup to this phone? Pieces, progress and settings missing here are added; what is already here stays as it is.')) return;
+    await restoreBackup(file);
     location.reload();
   } catch (cause) {
     moreDialog.close();
@@ -230,6 +229,19 @@ async function start(): Promise<void> {
   const params = new URLSearchParams(location.search), wantedPiece = params.get('piece'), activityId = params.get('activity');
   await scoreScreen.openSong(wantedPiece && app.pieces.some((p) => p.id === wantedPiece) ? wantedPiece : app.pieces[0].id);
   if (activityId) await openActivity(activityId);
+  else await takeShare(params.has('shared'));
+}
+
+/** Files shared to the app from another (Share → Piano): the library opens and adds them. */
+async function takeShare(arrived: boolean): Promise<void> {
+  if (arrived) { const url = new URL(location.href); url.searchParams.delete('shared'); history.replaceState(null, '', url); }
+  let files: File[] = [];
+  try { files = await takeShared(); } catch { /* nothing kept, or the store can't be read */ }
+  if (!files.length) { if (arrived) app.showMessage('Nothing arrived from the share.'); return; }
+  leaveScore();
+  wanted();
+  await libraryScreen.open();
+  await libraryScreen.add(files);
 }
 
 // ---- activities (activity.ts; owner, 2026-10-13): a screen opened with its content and preset choices ----------

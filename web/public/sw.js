@@ -23,9 +23,28 @@ const keep = async (key, response) => {
   return response;
 };
 
+// Files shared to the app (Share → Piano on Android, the installed app only; owner, 2026-10-13): Android posts them
+// here, and there is no server, so they are kept in their own store (not deleted with the app's older stores) and
+// the app opens with ?shared=1; the library takes them from there (screens/library.ts).
+const SHARED = 'piano-shared';
+async function takeShare(request) {
+  try {
+    const form = await request.formData();
+    const store = await caches.open(SHARED);
+    let n = 0;
+    for (const f of form.getAll('files')) {
+      if (typeof f === 'string') continue;
+      await store.put(new Request(`${self.registration.scope}__shared__/${Date.now()}-${n++}/${encodeURIComponent(f.name || 'shared file')}`),
+        new Response(f, { headers: { 'content-type': f.type || 'application/octet-stream' } }));
+    }
+  } catch { /* the library opens anyway, and says if nothing arrived */ }
+  return Response.redirect(new URL('./?shared=1', self.registration.scope).href, 303);
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
+  if (request.method === 'POST' && url.origin === location.origin && url.pathname.endsWith('/share-target')) { event.respondWith(takeShare(request)); return; }
   if (request.method !== 'GET' || url.origin !== location.origin) return;
   if (request.mode === 'navigate') {
     // The page, whatever song is in its address: one kept copy.

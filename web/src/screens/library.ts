@@ -21,7 +21,7 @@ export interface LibraryDeps {
   /** A piece was deleted and its saved data removed: screens holding a copy of that data read it again. */
   forgot(id: string): void;
 }
-export type LibraryScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+export type LibraryScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown; add(files: File[]): Promise<void> };
 
 type SortBy = 'opened' | 'added' | 'title' | 'composer' | 'bars';
 const SORTS: [SortBy, string][] = [['opened', 'Recently opened'], ['added', 'Recently added'], ['title', 'Title A–Z'], ['composer', 'Composer A–Z'], ['bars', 'Fewest bars first']];
@@ -678,7 +678,20 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     get isOpen() { return isOpen; },
     debug: () => ({ items: all.map((i) => ({ id: i.id, kind: i.kind, title: i.title, fav: i.fav, tags: i.tags, opened: i.opened, facts: i.facts, hash: i.own?.hash })), shown: shown().map((i) => i.id), selected, pageOpen, twoPanes: twoPanes.matches }),
     add,
-  } as LibraryScreen & { add(files: File[]): Promise<void> };
+  };
+}
+
+/** Files shared to the app (sw.js kept them): taken out of the store, oldest first. */
+export async function takeShared(): Promise<File[]> {
+  if (!('caches' in window)) return [];
+  const store = await caches.open('piano-shared');
+  const files: File[] = [];
+  for (const req of [...await store.keys()].sort((a, b) => a.url.localeCompare(b.url))) {
+    const r = await store.match(req);
+    if (r) files.push(new File([await r.blob()], decodeURIComponent(req.url.split('/').pop() ?? 'shared file'), { type: r.headers.get('content-type') ?? '' }));
+    await store.delete(req);
+  }
+  return files;
 }
 
 /** Your added scores, for the song list at start (a PDF is not a score). */
