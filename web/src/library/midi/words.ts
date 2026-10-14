@@ -4,12 +4,31 @@
 import type { ConversionReport } from './convert.ts';
 
 /** The self-check's answer, in the words the tool itself prints. */
+/**
+ * Below this share of onsets already on the grid, the file was played rather than written (2026-10-14: on ASAP,
+ * every one of 235 score MIDI files had at least 0.52 of its onsets on the grid, every one of 235 recorded
+ * performances at most 0.047).
+ */
+export const PLAYED_BELOW = 0.25;
+
 export function checkSentence(report: ConversionReport): string {
+  // A played file's notes are all in the score, so the check passes; what it cannot say is whether the bars and
+  // rhythms the grid gave them are the music's. Said first, because it matters more than the check.
+  const played = report.onGrid < PLAYED_BELOW
+    ? `The timing looks played rather than written (only ${String(Math.round(report.onGrid * 100))}% of the notes start on the beat grid), ` +
+      'so the bars and rhythms are the app’s best guess: close if it was played to a click, wrong if the tempo was free. '
+    : '';
+  return played + checkWithoutTiming(report);
+}
+
+function checkWithoutTiming(report: ConversionReport): string {
   if (report.passed) {
-    return (
-      `Checked: all ${String(report.notesIn)} notes the reader found are in the score, ` +
-      'and every bar adds up.'
-    );
+    // Said plainly when the grid moved notes: the check compares the score with the notes after they were put on
+    // the grid, so "all in the score" alone would hide how far a played file's timing was changed.
+    const moved = report.moved > 0
+      ? `; their timing was fitted to a grid, moving a note by at most ${String(Math.round(report.moved * 100) / 100)} of a quarter note`
+      : ', at the times the file gives them';
+    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.`;
   }
   const trouble: string[] = [];
   if (report.lost.length > 0) trouble.push(`${String(report.lost.length)} note(s) lost`);
@@ -22,7 +41,7 @@ export function checkSentence(report: ConversionReport): string {
   }
   return (
     `The score was written, but the check found ${trouble.join(', ')}. ` +
-    'Read it before trusting it, or convert the file with a different grid on the command line.'
+    'Read it before trusting it.'
   );
 }
 

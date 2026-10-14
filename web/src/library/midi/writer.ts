@@ -14,16 +14,16 @@
 // element here is one it parses without complaint (verified by the e2e test
 // that renders generated levels 1–4).
 
-/** Divisions per quarter note. 12 divides by 2, 3 and 4, so eighths, triplets
- *  and sixteenths are all whole numbers. */
-export const DIVISIONS = 12;
+/** Divisions per quarter note. 48 divides by 2, 3, 4, 6, 8, 12, 16 and 24, so everything from eighths to 64ths,
+ *  triplets of each included, is a whole number (12 until 2026-10-14: nothing shorter than a triplet 32nd). */
+export const DIVISIONS = 48;
 
 export type NoteType =
   // `breve` and `32nd` are here for the MIDI import (`src/import/midi/`): a
   // bar longer than a whole note needs the first, and a 32nd inside a triplet
   // — a twelfth of a quarter — is the shortest slice a bar of sixteenths
   // beside a bar of triplets can produce. Nothing generated reaches either.
-  'breve' | 'whole' | 'half' | 'quarter' | 'eighth' | '16th' | '32nd';
+  'breve' | 'whole' | 'half' | 'quarter' | 'eighth' | '16th' | '32nd' | '64th';
 
 export interface WriterNote {
   /** MIDI pitch, or null for a rest. */
@@ -69,6 +69,14 @@ export interface WriterNote {
 export interface WriterMeasure {
   /** Notes for each staff, in order. A `backup` is written between staves. */
   notes: WriterNote[];
+  /** A new metre from this bar on (not the first bar's: that is `WriterOptions.beats`). */
+  time?: { beats: number; beatType: number };
+  /** A new key signature from this bar on (not the first bar's: that is `WriterOptions.fifths`). */
+  fifths?: number;
+  /** A pickup: numbered 0 and marked implicit, so it is not counted as bar 1. Only the first bar. */
+  implicit?: boolean;
+  /** How this bar's notes are spelled when its key differs from the first bar's (`WriterOptions.spelling`). */
+  spelling?: Partial<Record<number, { step: string; alter: number }>>;
   /**
    * A word printed above the bar — a Roman numeral, a chord name (docs/04 §5c).
    *
@@ -264,8 +272,17 @@ export function writeMusicXml(options: WriterOptions): string {
   lines.push('  </part-list>');
   lines.push('  <part id="P1">');
 
+  const pickup = options.measures[0]?.implicit === true;
   options.measures.forEach((measure, index) => {
-    lines.push(`    <measure number="${index + 1}">`);
+    lines.push(`    <measure number="${index + (pickup ? 0 : 1)}"${index === 0 && pickup ? ' implicit="yes"' : ''}>`);
+    if (index > 0 && (measure.time !== undefined || measure.fifths !== undefined)) {
+      lines.push('      <attributes>');
+      if (measure.fifths !== undefined) lines.push(`        <key><fifths>${measure.fifths}</fifths></key>`);
+      if (measure.time !== undefined) {
+        lines.push(`        <time><beats>${measure.time.beats}</beats><beat-type>${measure.time.beatType}</beat-type></time>`);
+      }
+      lines.push('      </attributes>');
+    }
     if (index === 0) {
       lines.push('      <attributes>');
       lines.push(`        <divisions>${DIVISIONS}</divisions>`);
@@ -327,7 +344,7 @@ export function writeMusicXml(options: WriterOptions): string {
         if (back > 0) lines.push(`      <backup><duration>${back}</duration></backup>`);
       }
       for (const note of byStaff.get(staff) ?? []) {
-        lines.push(noteXml(note, preferFlats, '      ', options.blackKeys, options.spelling));
+        lines.push(noteXml(note, preferFlats, '      ', options.blackKeys, measure.spelling ?? options.spelling));
       }
     });
 
@@ -363,6 +380,7 @@ export function noteShape(
     [DIVISIONS / 2, 'eighth'],
     [DIVISIONS / 4, '16th'],
     [DIVISIONS / 8, '32nd'],
+    [DIVISIONS / 16, '64th'],
   ];
   // Plain before dotted and untupleted before tupleted, which is the order a
   // reader would name them in.

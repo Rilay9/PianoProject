@@ -9,7 +9,7 @@ no longer exists.
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules) | 16 |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) | 23 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals |
-| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`) | 117 (+ 11 old cases printed as skipped, with the reason) |
+| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart (2026-10-14) | 128 (+ 11 old cases printed as skipped, with the reason) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build | 50 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | Every note the score screen draws, lights and names matches the file, bar by bar, for every song in `public/scores` (builds, serves on :5193) | one per song; `--corrupt` must fail |
 
@@ -65,6 +65,16 @@ no longer exists.
 - Parity with the Python converter, five files (`two-hands`, `crossed-hands`, `one-track-two-hands`, the rendered
   exercise clean and jittered): tracks, metre/tempo/key, grid per bar, swing counts, quantised events, hands, key,
   self-check, the notes read back, and the split where the reference has one.
+- Bars (2026-10-14): a pickup written as its own short metre is a short bar 0, written implicit in the next bar's
+  metre; a metre change inside a bar ends the bar there; bars go on in the last metre; a converted file with a pickup
+  and a later 3/4 (every time signature read, the 3/4 written where it starts, every bar adding up). These fail on
+  the converter before 2026-10-14.
+- Keys (2026-10-14): the file's key written with its mode and spelled from it; a lone C major the notes contradict
+  taken for a sequencer's default; a key change written at its bar with the notes after it spelled from the new key.
+- Played or written (2026-10-14): the share of onsets already on the grid (1 for the clean exercise, under ¼ for the
+  jittered one), and the check sentence saying the bars and rhythms are a guess for the played one only.
+- Not here: how close a conversion is to the published score. That was measured once on ASAP's 235 score MIDI
+  files against their MusicXML (not redistributable: CC BY-NC-SA), with the numbers in `docs/app-features.md` §5c.
 
 ## pdf.mjs
 

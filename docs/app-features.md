@@ -325,11 +325,23 @@ one); examples to copy written into a chart.
   takes the POST to `./share-target`, keeps the files in the cache `piano-shared` and opens the app with
   `?shared=1`; the library opens and adds them as above. (A change to the share target reaches an installed app
   only when Android refreshes it, which can take a day.) **MIDI** (`library/midi/`, the old app's converter,
-  ported unchanged; its unit tests: `npm run check:midi`): converted on the phone, then a sheet shows the first bars
-  and what was read from the file and what was guessed (hands kept as recorded or split, tempo, key (always estimated
-  from the notes), time), with **Swap hands** (exchanges the staves, clefs kept) and a tempo to state; Add keeps the
+  ported 2026-10-13 and improved 2026-10-14; its unit tests: `npm run check:midi`): converted on the phone, then a
+  sheet shows the first bars and what was read from the file and what was guessed (hands kept as recorded or split,
+  tempo, key, time), with **Swap hands** (exchanges the staves, clefs kept) and a tempo to state; Add keeps the
   MusicXML and the MIDI file beside it (`<id>:midi`, in the backup too), Cancel adds nothing. A file stating no
-  tempo is written without one (the score screen's default applies).
+  tempo is written without one (the score screen's default applies). Bars follow every time signature the file
+  states (a pickup written as its own short bar becomes bar 0; metre changes are written where they fall); the key
+  is the file's own, with its changes, and estimated from the notes only when the file states none or only a
+  C major the notes contradict; notes are spelled from the key in force. Grids per bar: sixteenths or triplet
+  eighths, and 32nds, sextuplets and 64ths only where a bar's notes sit exactly on them. A file whose notes mostly
+  miss the grid (played, not written) is said to have guessed bars and rhythms. Previously converted files keep
+  their old conversion; adding the MIDI again converts it anew.
+  **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their
+  published MusicXML, on the 180 the comparison could line up): 93.9% of notes at the right time and pitch, every
+  barline (0.4% extra), the opening key on all 180, spelling 94.2%, written lengths 88.3%, the staff 96.4%.
+  **Not handled yet:** one voice per staff (a melody over an accompaniment in one hand comes out as tied chords);
+  a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes; groups of 5, 7, …
+  moved onto the nearest grid; only the first tempo. A played file recorded without a click has no reliable bars.
 - **Catalogue** (tab beside Yours, shown when the build has one; `library/catalogue.ts`, built by
   `web/tools/catalogue/`): about 1,600 PDMX scores (855 piano, 776 lead sheets, within ~25 MB) picked by reading their notes: piano (one part, two staves)
   and lead sheets (one staff with chord symbols). The index holds what the app's own reader (`facts.ts`) reads from

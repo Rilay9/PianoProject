@@ -45,6 +45,12 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   applied to speed-scaled song time. Decide which frame or clock each number lives in.
 - **Evidence that doesn't prove the skill.** Notes in a window counted as a chord without being down together;
   silent rounds counted as played; a stopped half-round counted as a round. Ask what each result is evidence of.
+- **A check against the code's own intermediate, not the truth.** The MIDI converter's read-back check passed on
+  232 of 235 ASAP score files while a pickup put every barline in the wrong place and 32nds were moved, because it
+  compares the score with the notes *after* the converter placed them (2026-10-14). Compare with an independent
+  answer (a published score, a file the app did not make), and first run the comparison on a perfect input to show
+  it scores that as perfect: two bugs of the comparison's own (a tempo lookup, a pickup at negative time) made the
+  converter look worse than it was.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals.
 - **Removing or editing the wrong item.** Controls that act only on the last item, or indexes that shift when an item

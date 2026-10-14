@@ -6,6 +6,7 @@
  * copied without its reason is a number somebody will "tune".
  */
 import type { NoteEvent } from './readMidi.ts';
+import type { BarMap } from './bars.ts';
 import {
   type Frac,
   ZERO,
@@ -13,11 +14,11 @@ import {
   add,
   cmp,
   div,
-  floorDiv,
   frac,
   fracToString,
   gt,
   gte,
+  isZero,
   lt,
   lte,
   mod,
@@ -81,6 +82,11 @@ export interface QuantiseReport {
   swing: SwingReport;
   /** The largest distance any onset was moved, in quarter notes. */
   moved: Frac;
+  /**
+   * The share of onsets the grid did not move (0–1). A file written in a notation program has nearly all its
+   * onsets on the grid; a played one, recorded without a click, nearly none, and its bars are then a guess.
+   */
+  onGrid: number;
 }
 
 /** `value` on the nearest multiple of `unit`, halves going up. */
@@ -157,14 +163,14 @@ export function deswing(value: Frac, beat: Frac): Frac {
 export function separateRepeats(
   events: NoteEvent[],
   unitForBar: (index: number) => Frac,
-  barLength: Frac,
+  bars: BarMap,
 ): void {
   const seen = new Map<string, NoteEvent>();
   const key = (event: NoteEvent): string => `${fracToString(event.start)}:${String(event.midi)}`;
   const ordered = [...events].sort((a, b) => cmp(a.start, b.start) || a.midi - b.midi);
   for (const event of ordered) {
     while (seen.has(key(event))) {
-      const unit = unitForBar(floorDiv(event.start, barLength));
+      const unit = unitForBar(bars.indexAt(event.start));
       const earlier = seen.get(key(event));
       if (earlier && gt(earlier.end, add(event.start, unit))) {
         earlier.end = add(event.start, unit);
@@ -201,17 +207,26 @@ export function separateRepeats(
  * Returns the new events in the order they were given — the caller relies on
  * that to put them back into the parts they came from.
  */
+/**
+ * Grids a bar gets only when every onset in it sits exactly on one (or its length needs one): sextuplet sixteenths,
+ * 32nds, triplet 32nds, 64ths, triplet 64ths, coarsest first (2026-10-14). Exported score MIDI files have them
+ * (Chopin, Liszt, Beethoven on ASAP, and grace notes given real time in a bar lengthened by a 64th); a played file's
+ * onsets never sit exactly on them, so it keeps the usual grids.
+ */
+export const EXACT_ONLY_DIVISORS = [6, 8, 12, 16, 24];
+
 export function quantise(
   events: NoteEvent[],
-  options: { barLength: Frac; beat: Frac; divisors: number[]; swing: boolean | null },
+  options: { bars: BarMap; beat: Frac; divisors: number[]; swing: boolean | null },
 ): QuantiseReport {
-  const { barLength, beat, divisors, swing } = options;
+  const { bars, beat, divisors, swing } = options;
   if (events.length === 0) {
     return {
       events: [],
       gridByBar: [],
       swing: { swung: false, nearSwung: 0, nearStraight: 0, onBeatShare: 0 },
       moved: ZERO,
+      onGrid: 1,
     };
   }
 
@@ -224,28 +239,46 @@ export function quantise(
   const starts = events.map((event) => (swung ? deswing(event.start, beat) : event.start));
   let last = events[0]?.end ?? ZERO;
   for (const event of events) if (gt(event.end, last)) last = event.end;
-  const lastBar = floorDiv(last, barLength) + 1;
+  const lastBar = bars.indexAt(last) + 1;
 
+  // The onsets in each bar, sorted into bars once rather than filtered for every bar.
+  const startsByBar = new Map<number, Frac[]>();
+  for (const s of starts) {
+    const index = bars.indexAt(s);
+    const list = startsByBar.get(index);
+    if (list) list.push(s);
+    else startsByBar.set(index, [s]);
+  }
   const gridByBar: Frac[] = [];
   for (let index = 0; index <= lastBar; index += 1) {
-    const low = mul(barLength, frac(index));
-    const high = add(low, barLength);
-    const inside = starts.filter((s) => gte(s, low) && lt(s, high));
+    const low = bars.bar(index).start;
+    const inside = startsByBar.get(index) ?? [];
     if (inside.length === 0) {
       gridByBar.push(units[0] ?? frac(1, 4));
       continue;
     }
     let best = units[0] ?? frac(1, 4);
     let bestCost: Frac | null = null;
-    for (const unit of units) {
+    const cost = (unit: Frac): Frac => {
       let total = ZERO;
-      for (const s of inside) total = add(total, abs(sub(s, snap(s, unit))));
+      for (const s of inside) total = add(total, abs(sub(sub(s, low), snap(sub(s, low), unit))));
+      return total;
+    };
+    for (const unit of units) {
+      const total = cost(unit);
       // `min` in Python keeps the first of equal costs, so the divisors' own
       // order is the tie-break — and it is the order the caller gave.
       if (bestCost === null || lt(total, bestCost)) {
         best = unit;
         bestCost = total;
       }
+    }
+    // A finer grid (32nds, sextuplets, triplet 32nds) only where it fits the bar exactly and the usual ones do not:
+    // a score MIDI's 32nd run or odd-length bar (a written-out cadenza), never a played file's timing noise.
+    const tiles = (unit: Frac): boolean => isZero(mod(bars.bar(index).length, unit));
+    if ((bestCost !== null && !isZero(bestCost)) || !tiles(best)) {
+      const exact = EXACT_ONLY_DIVISORS.map((d) => frac(1, d)).find((unit) => tiles(unit) && isZero(cost(unit)));
+      if (exact) best = exact;
     }
     gridByBar.push(best);
   }
@@ -257,18 +290,26 @@ export function quantise(
 
   const out: NoteEvent[] = [];
   let moved = ZERO;
+  let unmoved = 0;
   events.forEach((event, i) => {
     const start = starts[i] ?? event.start;
-    const startUnit = unitForBar(floorDiv(start, barLength));
-    let newStart = snap(start, startUnit);
+    // On the grid of the bar the moment falls in, counted from that bar's start (a bar after a pickup or a 5/8
+    // bar need not start on the grid counted from 0).
+    const startBar = bars.indexAt(start);
+    const startFrom = bars.bar(startBar).start;
+    const startUnit = unitForBar(startBar);
+    let newStart = add(startFrom, snap(sub(start, startFrom), startUnit));
     if (lt(newStart, ZERO)) newStart = ZERO;
-    const endUnit = unitForBar(floorDiv(event.end, barLength));
-    let newEnd = snap(event.end, endUnit);
+    const endBar = bars.indexAt(event.end);
+    const endFrom = bars.bar(endBar).start;
+    const endUnit = unitForBar(endBar);
+    let newEnd = add(endFrom, snap(sub(event.end, endFrom), endUnit));
     if (lte(newEnd, newStart)) newEnd = add(newStart, startUnit);
     const distance = abs(sub(newStart, event.start));
     if (gt(distance, moved)) moved = distance;
+    if (isZero(distance)) unmoved += 1;
     out.push({ start: newStart, end: newEnd, midi: event.midi, velocity: event.velocity });
   });
-  separateRepeats(out, unitForBar, barLength);
-  return { events: out, gridByBar, swing: swingReport, moved };
+  separateRepeats(out, unitForBar, bars);
+  return { events: out, gridByBar, swing: swingReport, moved, onGrid: unmoved / events.length };
 }

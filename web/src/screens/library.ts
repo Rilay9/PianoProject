@@ -810,8 +810,12 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       facts.replaceChildren();
       row('Hands', `${g.hands.sentence}${g.hands.swapped ? ' Swapped.' : ''}${g.hands.swapRefused ? ` ${g.hands.swapRefused}` : ''}`, g.hands.method === 'kept' ? 'from the file' : 'guessed');
       row('Tempo', g.tempo.bpm ? `♩ ${g.tempo.bpm}` : 'none stated: the app’s default', g.tempo.from === 'file' ? 'from the file' : g.tempo.from === 'stated' ? 'as you stated' : 'not in the file');
-      row('Key', g.key.name, g.key.from === 'chosen' ? 'chosen' : `guessed from the notes${g.key.fileSignatures.length ? `; the file says ${g.key.fileSignatures.join(', ')}` : ''}`);
-      row('Time', `${g.time.beats}/${g.time.beatType}`, g.time.from === 'file' ? 'from the file' : g.time.from === 'assumed' ? 'assumed: the file states none' : 'chosen');
+      row('Key', g.key.name, g.key.from === 'chosen' ? 'chosen'
+        : g.key.from === 'the file' ? `from the file${g.key.changes > 0 ? `; changes ${String(g.key.changes)} time${g.key.changes === 1 ? '' : 's'} later` : ''}`
+        : `guessed from the notes${g.key.fileSignatures.length ? `; the file says ${g.key.fileSignatures.join(', ')}, taken for a default` : ''}`);
+      row('Time', `${g.time.beats}/${g.time.beatType}`, g.time.from === 'file'
+        ? `from the file${g.time.pickup ? ', after a pickup bar' : ''}${g.time.changes > 0 ? `; changes ${String(g.time.changes)} time${g.time.changes === 1 ? '' : 's'} later` : ''}`
+        : g.time.from === 'assumed' ? 'assumed: the file states none' : 'chosen');
       row('Check', g.check.sentence, g.check.passed ? 'read back' : 'read back: see this');
       bpmInput.value = g.tempo.bpm ? String(g.tempo.bpm) : '';
       void drawXml(now!.xml, $('lib-midi-preview'));

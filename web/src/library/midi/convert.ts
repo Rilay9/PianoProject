@@ -49,6 +49,11 @@
  *    the nearest note-head and listed in `unwritable`, and the conversion
  *    reports itself as failed. The learner is told; the app stays up.
  *
+ * 4. **Bars, keys and grids (2026-10-14).** Bars follow every time signature the file states (`bars.ts`), the
+ *    key is the file's own with its changes (estimated only when it states none, or only a C major the notes
+ *    contradict), and a bar whose notes sit exactly on 32nds, sextuplets or 64ths gets that grid. A comparison with
+ *    ASAP's published scores showed each was wrong before: `docs/app-features.md` §5c has the numbers.
+ *
  * What the writer produces is one part on one or two staves. Two hands is a
  * piano: one instrument, braced, which is what `<staves>2</staves>` says and
  * what the app reads a hand off (`converted-import.spec.ts` caught the
@@ -58,13 +63,13 @@
  * written wrongly.
  */
 import { DIVISIONS, noteShape, writeMusicXml, type WriterMeasure, type WriterNote } from './writer.ts';
+import { type BarMap, barMap, steadyBars } from './bars.ts';
 import {
   type Frac,
   ZERO,
   add,
   cmp,
   eq,
-  floorDiv,
   frac,
   fracToString,
   gt,
@@ -79,8 +84,6 @@ import {
   type NoteEvent,
   type TimeSignature,
   MidiReadError,
-  barLengthOf,
-  beatLengthOf,
   mergeNoteTracks,
   readMidi,
 } from './readMidi.ts';
@@ -91,6 +94,7 @@ import { notatablePieces } from './notatable.ts';
 import {
   type EstimatedKey,
   keyEstimate,
+  keyFromSignature,
   relativeByEnding,
   spellingFor,
 } from './key.ts';
@@ -104,7 +108,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 1;
+export const MIDI_CONVERTER_VERSION = 2; // 2026-10-14: bars from every time signature, the file's keys, finer grids
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -129,10 +133,14 @@ export interface ConvertOptions {
 export interface ConversionReport {
   parts: string[];
   key: string;
-  keyFrom: 'chosen' | 'estimated from the notes';
+  keyFrom: 'chosen' | 'the file' | 'estimated from the notes';
+  /** How many times the written key signature changes after the first bar. */
+  keyChanges: number;
   estimatedKey: string;
   midiKeySignatures: string[];
   timeSignature: string;
+  /** The metre the score is written in (after a pickup), how many times it changes, and whether there is a pickup. */
+  metre: { beats: number; beatType: number; changes: number; pickup: boolean };
   respelledNotes: number;
   notesIn: number;
   lost: string[];
@@ -146,6 +154,8 @@ export interface ConversionReport {
   gridByBar: string[];
   swing: SwingReport;
   moved: number;
+  /** The share of onsets already on the grid (`QuantiseReport.onGrid`). */
+  onGrid: number;
   /**
    * How many tracks held notes, and what they were called, in file order.
    *
@@ -227,8 +237,7 @@ function writerNotes(
 function barsFor(
   slices: Slice[],
   barCount: number,
-  barLength: Frac,
-  beat: Frac,
+  map: BarMap,
   unitForBar: (index: number) => Frac,
   staff: 1 | 2 | undefined,
   unwritable: string[],
@@ -236,7 +245,7 @@ function barsFor(
   const bars: WriterNote[][] = [];
   let next = 0;
   for (let bar = 0; bar < barCount; bar += 1) {
-    const from = mul(barLength, frac(bar));
+    const { start: from, length: barLength, beat } = map.bar(bar);
     const to = add(from, barLength);
     const notes: WriterNote[] = [];
     let at = from;
@@ -280,7 +289,7 @@ interface ReadBack {
 }
 
 const NOTE_BLOCK = /<note>([\s\S]*?)<\/note>|<backup>([\s\S]*?)<\/backup>/g;
-const MEASURE_BLOCK = /<measure number="(\d+)">([\s\S]*?)<\/measure>/g;
+const MEASURE_BLOCK = /<measure number="(\d+)"[^>]*>([\s\S]*?)<\/measure>/g;
 
 /**
  * The written score read back, the way anyone opening the file would get it.
@@ -290,7 +299,8 @@ const MEASURE_BLOCK = /<measure number="(\d+)">([\s\S]*?)<\/measure>/g;
  * check whose two sides come from one object proves nothing (the harness's own
  * note-count tautology, corrected on 2026-09-22, was this shape).
  */
-export function readBackMusicXml(xml: string, barLength: Frac): ReadBack {
+export function readBackMusicXml(xml: string, bars: BarMap | Frac): ReadBack {
+  const lengthOfBar = (index: number): Frac => ('bar' in bars ? bars.bar(index).length : bars);
   const divisions = Number(/<divisions>(\d+)<\/divisions>/.exec(xml)?.[1] ?? DIVISIONS);
   const notes: ReadNote[] = [];
   const badBars: string[] = [];
@@ -342,6 +352,7 @@ export function readBackMusicXml(xml: string, barLength: Frac): ReadBack {
       else open.delete(key);
     }
     // Every bar but the first and the last must add up to its time signature.
+    const barLength = lengthOfBar(measureIndex);
     if (measureIndex > 0 && measureIndex < allMeasures.length - 1) {
       for (const [staff, sum] of perStaff) {
         const got = frac(sum, divisions);
@@ -372,9 +383,14 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     );
   }
 
-  const timeSignature = options.timeSignature ?? source.timeSignature;
-  const barLength = barLengthOf(timeSignature);
-  const beat = beatLengthOf(timeSignature);
+  let lastEnd = ZERO;
+  for (const track of withNotes) for (const event of track.events) if (gt(event.end, lastEnd)) lastEnd = event.end;
+  // Where the bars fall: every metre the file states, or the one the caller chose throughout.
+  const bars = options.timeSignature
+    ? steadyBars(options.timeSignature, add(lastEnd, frac(64)))
+    : barMap(source.timeSignatures, add(lastEnd, frac(64)));
+  // Swing is heard against the piece's main beat: the first full bar's.
+  const beat = bars.bar(bars.pickup ? 1 : 0).beat;
 
   const noteTrackNames = withNotes.map((track) => track.name ?? `Part ${String(track.index + 1)}`);
 
@@ -395,7 +411,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
       }));
 
   const flat = raw.flatMap((part) => part.events);
-  const quantised = quantise(flat, { barLength, beat, divisors, swing: options.swing ?? null });
+  const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null });
 
   const handMedian: { left?: number; right?: number } = {};
   let handBoundaries = 0;
@@ -438,27 +454,63 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   };
 
   const allEvents = parts.flatMap((part) => part.events);
+  // The key: the file's own key signatures where it states them, each from the bar it falls in (one stated inside
+  // a bar holds from the next), and an estimate from the notes only where it states none (2026-10-14; before,
+  // always the estimate, which had the wrong opening key on 21 of 180 ASAP score files). A file stating nothing
+  // but C major / A minor while the notes say otherwise is taken to be a sequencer's default: the estimate wins.
   const estimated = relativeByEnding(allEvents, keyEstimate(allEvents));
-  const writtenKey = options.key ?? estimated;
+  const stated: { bar: number; key: EstimatedKey }[] = [];
+  for (const change of [...source.keyChanges].sort((a, b) => cmp(a.at, b.at))) {
+    const index = bars.indexAt(change.at);
+    const bar = eq(bars.bar(index).start, change.at) ? index : index + 1;
+    const key = keyFromSignature(change.fifths, change.minor);
+    const last = stated[stated.length - 1];
+    if (last && last.bar === bar) stated[stated.length - 1] = { bar, key };
+    else if (!last || last.key.fifths !== key.fifths || last.key.mode !== key.mode) stated.push({ bar, key });
+  }
+  const first = stated[0];
+  if (first && first.bar > 0) stated.unshift({ bar: 0, key: first.key });
+  const statedOnlyDefault = stated.length > 0 && stated.every((entry) => entry.key.fifths === 0);
+  const keyFrom: ConversionReport['keyFrom'] = options.key ? 'chosen'
+    : stated.length > 0 && !(statedOnlyDefault && estimated.fifths !== 0) ? 'the file' : 'estimated from the notes';
+  const keyPlan = keyFrom === 'chosen' && options.key ? [{ bar: 0, key: options.key }]
+    : keyFrom === 'the file' ? stated : [{ bar: 0, key: estimated }];
+  const keyAt = (bar: number): EstimatedKey => {
+    let key = keyPlan[0]?.key ?? estimated;
+    for (const entry of keyPlan) if (entry.bar <= bar) key = entry.key;
+    return key;
+  };
+  const writtenKey = keyAt(0);
 
   // How many bars the longest part needs. A slice never crosses a barline, so
   // the last bar is the one holding the last release.
-  let lastEnd = ZERO;
-  for (const event of allEvents) if (gt(event.end, lastEnd)) lastEnd = event.end;
-  const barCount = Math.max(1, floorDiv(sub(lastEnd, frac(1, 1000000)), barLength) + 1);
+  let lastWritten = ZERO;
+  for (const event of allEvents) if (gt(event.end, lastWritten)) lastWritten = event.end;
+  const barCount = Math.max(1, bars.indexAt(sub(lastWritten, frac(1, 1000000))) + 1);
 
   const grandStaff = parts.length === 2;
   const unwritable: string[] = [];
   const perPart = parts.map((part, index) => {
     const staff = grandStaff ? ((index + 1) as 1 | 2) : undefined;
-    const slices = sliceIntoChords(part.events, barLength, beat, unitForBar);
-    return barsFor(slices, barCount, barLength, beat, unitForBar, staff, unwritable);
+    const slices = sliceIntoChords(part.events, bars, unitForBar);
+    return barsFor(slices, barCount, bars, unitForBar, staff, unwritable);
   });
 
   const measures: WriterMeasure[] = [];
   for (let bar = 0; bar < barCount; bar += 1) {
     const notes = perPart.flatMap((bars) => bars[bar] ?? []);
     const measure: WriterMeasure = { notes };
+    const key = keyAt(bar);
+    if (bar > 0 && key !== keyAt(bar - 1)) measure.fifths = key.fifths;
+    if (respell && key !== writtenKey) measure.spelling = spellingFor(key);
+    // A metre that differs from the bar before is written where it starts; a pickup is written in the metre of
+    // the bar after it and marked implicit, so it is not counted as bar 1.
+    const here = bars.bar(bar).time;
+    const before = bar === 0 ? null : bars.bar(bar - 1).time;
+    if (bar === 0 && bars.pickup) measure.implicit = true;
+    else if (bar > 0 && before && (before.beats !== here.beats || before.beatType !== here.beatType) && !(bar === 1 && bars.pickup)) {
+      measure.time = { beats: here.beats, beatType: here.beatType };
+    }
     // The word, not the triplets: what is written is a pair of eighths and the
     // marking is what says how to play them.
     if (bar === 0 && quantised.swing.swung) measure.text = 'Swing eighths';
@@ -470,8 +522,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     ...(options.composer === undefined ? {} : { composer: options.composer }),
     partName: grandStaff ? 'Piano' : (parts[0]?.name ?? 'Piano'),
     fifths: writtenKey.fifths,
-    beats: timeSignature.beats,
-    beatType: timeSignature.beatType,
+    beats: bars.bar(bars.pickup ? 1 : 0).time.beats,
+    beatType: bars.bar(bars.pickup ? 1 : 0).time.beatType,
     bpm: source.tempo === null ? null : Math.round(source.tempo * 1000) / 1000,
     staves: grandStaff ? 2 : 1,
     clef: !grandStaff && (parts[0]?.events ?? []).every((event) => event.midi < 60) ? 'F' : 'G',
@@ -480,7 +532,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   });
 
   // Read back what was written, which is what anyone opening it will get.
-  const read = readBackMusicXml(xml, barLength);
+  const read = readBackMusicXml(xml, bars);
   const expected = new Map<string, number>();
   for (const part of parts) {
     for (const event of part.events) {
@@ -510,29 +562,34 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   let respelled = 0;
   if (respell) {
-    const spelling = spellingFor(writtenKey);
     for (const note of read.notes) {
-      const named = spelling[((note.midi % 12) + 12) % 12];
+      const named = spellingFor(keyAt(bars.indexAt(note.at)))[((note.midi % 12) + 12) % 12];
       const plain = PITCH_NAMES[((note.midi % 12) + 12) % 12] ?? 'C';
       const wrote = `${named?.step ?? ''}${(named?.alter ?? 0) > 0 ? '#' : (named?.alter ?? 0) < 0 ? '-' : ''}`;
       if (named && wrote !== plain) respelled += 1;
     }
   }
 
+  const mainTime = bars.bar(bars.pickup ? 1 : 0).time;
+  const changes = measures.filter((m) => m.time !== undefined).length;
   const units = [...new Set(quantised.gridByBar.map(fracToString))].sort();
   const report: ConversionReport = {
     parts: parts.map((part) => part.name),
     key: `${writtenKey.tonic} ${writtenKey.mode}`,
-    keyFrom: options.key ? 'chosen' : 'estimated from the notes',
+    keyFrom,
+    keyChanges: keyPlan.length - 1,
     estimatedKey: `${estimated.tonic} ${estimated.mode}`,
     midiKeySignatures: source.keySignatures,
     timeSignature:
-      `${String(timeSignature.beats)}/${String(timeSignature.beatType)}` +
+      `${String(mainTime.beats)}/${String(mainTime.beatType)}` +
+      (changes > 0 ? ` (changes ${String(changes)} time${changes === 1 ? '' : 's'})` : '') +
+      (bars.pickup ? ' (with a pickup)' : '') +
       (options.timeSignature
         ? ' (chosen)'
         : source.hadTimeSignature
           ? ''
           : ' (none in the MIDI; assumed)'),
+    metre: { beats: mainTime.beats, beatType: mainTime.beatType, changes, pickup: bars.pickup },
     respelledNotes: respelled,
     notesIn: [...expected.values()].reduce((a, b) => a + b, 0),
     lost,
@@ -546,6 +603,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     gridByBar: quantised.gridByBar.map(fracToString),
     swing: quantised.swing,
     moved: toNumber(quantised.moved),
+    onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
     noteTrackNames,
     passed:

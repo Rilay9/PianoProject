@@ -2,7 +2,7 @@
  * The hand split — the port of `percentile` and `split_hands`.
  */
 import type { NoteEvent } from './readMidi.ts';
-import { type Frac, ZERO, abs, add, cmp, div, frac, fracToString, gt, lt, mul, sub } from './fraction.ts';
+import { type Frac, ZERO, abs, add, cmp, div, frac, fracToString, gt, lt, mul, sub, toNumber } from './fraction.ts';
 
 /**
  * How far apart, in semitones, the two notes of one hand may be before the
@@ -137,7 +137,11 @@ export function splitHands(events: NoteEvent[], maxSpan = HAND_SPAN_SEMITONES): 
       let sum = ZERO;
       for (const event of block) sum = add(sum, frac(event.midi));
       const mean = div(sum, frac(block.length));
-      centre[side] = add(mul(centre[side], sub(frac(1), HAND_MEMORY)), mul(mean, HAND_MEMORY));
+      // Rounded to 1/65536 of a semitone: kept exact, the running average's denominator grew with every onset and
+      // a long piece's split took a minute in big-number arithmetic (Scriabin's Fifth Sonata, 2026-10-14). The
+      // rounding is far below any difference between two cuts' costs.
+      const moved = add(mul(centre[side], sub(frac(1), HAND_MEMORY)), mul(mean, HAND_MEMORY));
+      centre[side] = frac(Math.round(toNumber(moved) * 65536), 65536);
     }
     const lowTop = lowBlock.at(-1);
     const highBottom = highBlock[0];

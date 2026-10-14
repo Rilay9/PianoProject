@@ -1,5 +1,6 @@
 // The MIDI converter as the library calls it (2026-10-13). The converter itself (convert.ts and the files it
-// imports) is the old app's, ported unchanged; this file only gathers what it already reports into one account
+// imports) is the old app's, ported unchanged on 2026-10-13 and changed on 2026-10-14 where a comparison with ASAP's
+// published scores showed it wrong (bars.ts, the file's keys, finer grids); this file only gathers what it reports into one account
 // of what came from the file and what was guessed, and applies the two corrections (corrections.ts) the old
 // import sheet offered: swap the hands, state the tempo. Nothing here decides anything about the music.
 
@@ -40,8 +41,8 @@ export interface Guessed {
     sentence: string;
   };
   tempo: { bpm: number | null; from: 'file' | 'stated' | 'none in the file' };
-  key: { name: string; from: 'estimated from the notes' | 'chosen'; fileSignatures: string[] };
-  time: { beats: number; beatType: number; from: 'file' | 'assumed' | 'chosen' };
+  key: { name: string; from: 'the file' | 'estimated from the notes' | 'chosen'; fileSignatures: string[]; changes: number };
+  time: { beats: number; beatType: number; from: 'file' | 'assumed' | 'chosen'; changes: number; pickup: boolean };
   check: { passed: boolean; sentence: string };
 }
 
@@ -67,7 +68,8 @@ export function convert(data: ArrayBuffer | Uint8Array, options: MidiOptions = {
   const source = readMidi(bytes);
   const fileTempo = source.tempo;
   const chosenTime = options.convert?.timeSignature ?? null;
-  const time = chosenTime ?? source.timeSignature;
+  // The metre the score is written in: after a pickup bar, not the pickup's own (2026-10-14).
+  const time = chosenTime ?? { beats: report.metre.beats, beatType: report.metre.beatType };
 
   let xml = converted;
   let swapped = false;
@@ -94,8 +96,9 @@ export function convert(data: ArrayBuffer | Uint8Array, options: MidiOptions = {
     tempo: options.bpm !== undefined
       ? { bpm: Math.round(options.bpm * 1000) / 1000, from: 'stated' }
       : fileTempo === null ? { bpm: null, from: 'none in the file' } : { bpm: Math.round(fileTempo * 1000) / 1000, from: 'file' },
-    key: { name: report.key, from: report.keyFrom, fileSignatures: report.midiKeySignatures },
-    time: { beats: time.beats, beatType: time.beatType, from: chosenTime ? 'chosen' : source.hadTimeSignature ? 'file' : 'assumed' },
+    // `B- major` is the converter's spelling (music21's); a learner reads B♭ major.
+    key: { name: report.key.replace(/^([A-G])-/, '$1♭').replace(/^([A-G])#/, '$1♯'), from: report.keyFrom, fileSignatures: report.midiKeySignatures, changes: report.keyChanges },
+    time: { beats: time.beats, beatType: time.beatType, from: chosenTime ? 'chosen' : source.hadTimeSignature ? 'file' : 'assumed', changes: report.metre.changes, pickup: report.metre.pickup },
     check: { passed: report.passed, sentence: checkSentence(report) },
   };
   return { xml, report, guessed };
@@ -106,11 +109,14 @@ export function guessedWords(g: Guessed): string {
   const tempo = g.tempo.from === 'stated' ? `Tempo ${String(g.tempo.bpm)} a minute, as you stated it.`
     : g.tempo.from === 'file' ? `Tempo ${String(g.tempo.bpm)} a minute, from the file.`
     : 'The file states no tempo; the app’s default is used.';
+  const changes = g.key.changes > 0 ? `; it changes ${String(g.key.changes)} time${g.key.changes === 1 ? '' : 's'} later` : '';
   const key = g.key.from === 'chosen' ? `Key ${g.key.name}, as chosen.`
-    : `Key ${g.key.name}, estimated from the notes${g.key.fileSignatures.length > 0 ? ` (the file’s own signature: ${g.key.fileSignatures.join(', ')})` : ''}.`;
+    : g.key.from === 'the file' ? `Key ${g.key.name}, from the file${changes}.`
+    : `Key ${g.key.name}, estimated from the notes${g.key.fileSignatures.length > 0 ? ` (the file’s own signature: ${g.key.fileSignatures.join(', ')}, taken for a default)` : ''}.`;
   const metre = `${String(g.time.beats)}/${String(g.time.beatType)}`;
+  const more = `${g.time.pickup ? ', after a pickup bar' : ''}${g.time.changes > 0 ? `; it changes ${String(g.time.changes)} time${g.time.changes === 1 ? '' : 's'} later` : ''}`;
   const time = g.time.from === 'assumed' ? `Time ${metre}, assumed: the file states none.`
-    : g.time.from === 'chosen' ? `Time ${metre}, as chosen.` : `Time ${metre}, from the file.`;
+    : g.time.from === 'chosen' ? `Time ${metre}, as chosen.` : `Time ${metre}, from the file${more}.`;
   return [g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), tempo, key, time, g.check.sentence].join(' ');
 }
 

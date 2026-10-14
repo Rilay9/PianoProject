@@ -20,6 +20,9 @@ import { convertMidi, readBackMusicXml, titleFromFilename } from '../src/library
 import { checkSentence, handsSentence } from '../src/library/midi/words.ts';
 import { swapHands } from '../src/library/midi/corrections.ts';
 import { convert, midiConverter } from '../src/library/midi/index.ts';
+import { barMap, steadyBars } from '../src/library/midi/bars.ts';
+
+const FOUR_FOUR = steadyBars({ beats: 4, beatType: 4 }, frac(64));
 
 // --- the shim: describe / it / expect, only the matchers these cases use ---------------------------------
 
@@ -392,7 +395,7 @@ describe('the quantise policy', () => {
     for (let i = 0; i < 6; i += 1) events.push(ev(i / 3, i / 3 + 0.3, 60 + i));
     events.push(ev(1.98, 2.3, 72));
     for (let i = 0; i < 16; i += 1) events.push(ev(4 + i / 4, 4 + i / 4 + 0.2, 60 + i));
-    const report = quantise(events, { barLength: frac(4), beat: frac(1), divisors: [4, 3], swing: false });
+    const report = quantise(events, { bars: FOUR_FOUR, beat: frac(1), divisors: [4, 3], swing: false });
     expect(fracToString(report.gridByBar[0] ?? frac(0))).toBe('1/3');
     expect(fracToString(report.gridByBar[1] ?? frac(0))).toBe('1/4');
     for (const event of report.events) {
@@ -403,7 +406,7 @@ describe('the quantise policy', () => {
   });
 
   it('gives a note shorter than the grid one unit rather than dropping it', () => {
-    const report = quantise([ev(0, 0.02, 60)], { barLength: frac(4), beat: frac(1), divisors: [4], swing: false });
+    const report = quantise([ev(0, 0.02, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
     const kept = report.events[0];
     expect(kept && fracToString(kept.end)).toBe('1/4');
   });
@@ -415,7 +418,7 @@ describe('the quantise policy', () => {
       events.push(ev(beat + 2 / 3, beat + 1, 64));
     }
     expect(detectSwing(events, frac(1)).swung).toBe(true);
-    const report = quantise(events, { barLength: frac(4), beat: frac(1), divisors: [4, 3], swing: null });
+    const report = quantise(events, { bars: FOUR_FOUR, beat: frac(1), divisors: [4, 3], swing: null });
     const offbeats = report.events.map((event) => mod(event.start, frac(1))).filter((position) => !isZero(position));
     expect(offbeats.length).toBeGreaterThan(0);
     for (const position of offbeats) expect(fracToString(position)).toBe('1/2');
@@ -431,13 +434,13 @@ describe('the quantise policy', () => {
   });
 
   it('pulls apart two strikes of one pitch the grid put on one onset', () => {
-    const report = quantise([ev(0, 0.24, 60), ev(0.05, 0.9, 60)], { barLength: frac(4), beat: frac(1), divisors: [4], swing: false });
+    const report = quantise([ev(0, 0.24, 60), ev(0.05, 0.9, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
     expect(report.events).toHaveLength(2);
     expect(report.events.map((event) => fracToString(event.start)).sort()).toEqual(['0', '1/4']);
   });
 
   it('reports the furthest an onset was moved', () => {
-    const report = quantise([ev(0, 1, 60), ev(1.1, 2, 62)], { barLength: frac(4), beat: frac(1), divisors: [4], swing: false });
+    const report = quantise([ev(0, 1, 60), ev(1.1, 2, 62)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
     expect(fracToString(report.moved)).toBe('1/10');
   });
 });
@@ -497,13 +500,13 @@ describe('cutting the line into chords', () => {
   it('cuts a held note on a triplet grid into rhythms and ties them', () => {
     expect(isNotatable(frac(5, 3))).toBe(false);
     const events = [ev(0, 5 / 3, 48), ev(5 / 3, 7 / 3, 55)];
-    const line = sliceIntoChords(events, frac(4), frac(1), () => frac(1, 3));
+    const line = sliceIntoChords(events, FOUR_FOUR, () => frac(1, 3));
     expect(line.length).toBeGreaterThan(events.length);
     expect(fracToString(total(line.map((slice) => slice.length)))).toBe('7/3');
     for (const slice of line) expect(isNotatable(slice.length)).toBe(true);
   });
   it('ties the pieces of one held note and leaves a struck one alone', () => {
-    const line = sliceIntoChords([ev(0, 5 / 3, 48), ev(5 / 3, 7 / 3, 55)], frac(4), frac(1), () => frac(1, 3));
+    const line = sliceIntoChords([ev(0, 5 / 3, 48), ev(5 / 3, 7 / 3, 55)], FOUR_FOUR, () => frac(1, 3));
     const held = line.filter((slice) => slice.notes.some((note) => note.midi === 48));
     expect(held.length).toBeGreaterThan(1);
     expect(held[0]?.notes[0]?.tie).toBe('start');
@@ -512,7 +515,7 @@ describe('cutting the line into chords', () => {
     expect(struck.every((slice) => slice.notes.every((note) => note.tie !== 'stop'))).toBe(true);
   });
   it('puts a barline between two slices rather than letting a chord cross one', () => {
-    const line = sliceIntoChords([ev(3, 5, 60)], frac(4), frac(1), () => frac(1, 4));
+    const line = sliceIntoChords([ev(3, 5, 60)], FOUR_FOUR, () => frac(1, 4));
     expect(line.map((slice) => fracToString(slice.at))).toEqual(['3', '4']);
     expect(line[0]?.notes[0]?.tie).toBe('start');
     expect(line[1]?.notes[0]?.tie).toBe('stop');
@@ -535,7 +538,9 @@ describe('a note-head for a length', () => {
   });
   it('names a triplet with the claim that makes it one', () => {
     expect(noteShape(DIVISIONS / 3)).toEqual({ type: 'eighth', dotted: false, tuplet: { actual: 3, normal: 2 } });
-    expect(noteShape(1)).toEqual({ type: '32nd', dotted: false, tuplet: { actual: 3, normal: 2 } });
+    expect(noteShape(DIVISIONS / 12)).toEqual({ type: '32nd', dotted: false, tuplet: { actual: 3, normal: 2 } });
+    expect(noteShape(DIVISIONS / 8)).toEqual({ type: '32nd', dotted: false });
+    expect(noteShape(DIVISIONS / 6)).toEqual({ type: '16th', dotted: false, tuplet: { actual: 3, normal: 2 } });
   });
   it('answers null for a length no note-head carries', () => {
     expect(noteShape(5)).toBeNull();
@@ -829,7 +834,7 @@ describe('what the library is told was guessed', () => {
     expect(guessed.hands.method).toBe('kept');
     expect(guessed.hands.swapped).toBe(false);
     expect(guessed.tempo.from).toBe('file');
-    expect(guessed.time).toEqual({ beats: 4, beatType: 4, from: 'file' });
+    expect(guessed.time).toEqual({ beats: 4, beatType: 4, from: 'file', changes: 0, pickup: false });
     expect(guessed.key.from).toBe('estimated from the notes');
   });
   it('swaps the hands on request: the same bytes as swapHands on the plain conversion, and says so', () => {
@@ -882,7 +887,7 @@ describe('the port agrees with the Python converter', () => {
       const barLength = barLengthOf(contents.timeSignature);
       const beat = beatLengthOf(contents.timeSignature);
       const flat = contents.tracks.filter((track) => track.events.length > 0).flatMap((track) => track.events);
-      const report = quantise(flat, { barLength, beat, divisors: [4, 3], swing: null });
+      const report = quantise(flat, { bars: steadyBars(contents.timeSignature, frac(4096)), beat, divisors: [4, 3], swing: null });
 
       it('reads the same tracks, note for note', () => {
         expect(contents.tracks.map((track) => track.events.length)).toEqual(reference.tracks.map((track) => track.noteCount));
@@ -944,6 +949,122 @@ describe('the port agrees with the Python converter', () => {
 });
 skip('parity: the three MAESTRO performances (bach-bwv885, grieg-op38-7, scarlatti-k525)', 'recordings the old project deliberately never committed (build/midi-real, gitignored); not copied into web/');
 skip('the parity reference > is made by a script and a CI step the failure above names', 'about the old CI step and parity_reference.py; neither exists on this branch');
+
+// --- new (2026-10-14): bars from every time signature, not the first (src/library/midi/bars.ts) ---------------------
+// Notation programs export a pickup as a short bar in its own metre (1/8, then 2/4), and pieces change metre. The
+// converter used to lay the whole piece out in the first metre: ASAP's score MIDI of Beethoven Op. 111 i came out as
+// 13,000 bars of 1/16.
+
+describe('the bar map', () => {
+  const q = (n, d = 1) => frac(n, d);
+  it('makes a pickup written as its own short metre a short first bar, and calls it a pickup', () => {
+    const bars = barMap([{ at: q(0), time: { beats: 1, beatType: 8 } }, { at: q(1, 2), time: { beats: 2, beatType: 4 } }], q(10));
+    expect(bars.bars.slice(0, 3).map((b) => [fracToString(b.start), fracToString(b.length)])).toEqual([['0', '1/2'], ['1/2', '2'], ['5/2', '2']]);
+    expect(bars.pickup).toBe(true);
+    expect([bars.indexAt(q(0)), bars.indexAt(q(1, 2)), bars.indexAt(q(5, 2)), bars.indexAt(q(4))]).toEqual([0, 1, 2, 2]);
+  });
+  it('ends a bar where a metre change arrives inside it, and goes on in the new metre', () => {
+    const bars = barMap([{ at: q(0), time: { beats: 4, beatType: 4 } }, { at: q(6), time: { beats: 3, beatType: 4 } }], q(12));
+    expect(bars.bars.slice(0, 4).map((b) => [fracToString(b.start), fracToString(b.length)])).toEqual([['0', '4'], ['4', '2'], ['6', '3'], ['9', '3']]);
+    expect(bars.pickup).toBe(false);
+  });
+  it('counts on in the last metre past the bars built, and gives 4/4 when the file states none', () => {
+    const bars = barMap([{ at: q(0), time: { beats: 6, beatType: 8 } }], q(3));
+    expect(bars.indexAt(q(30))).toBe(10);
+    expect(fracToString(bars.bar(10).start)).toBe('30');
+    expect(fracToString(bars.bar(10).beat)).toBe('3/2');
+    expect(fracToString(barMap([], q(4)).bar(0).length)).toBe('4');
+  });
+});
+
+describe('a file with a pickup bar and a later change of metre, converted', () => {
+  // Conductor: 1/8 at 0 (the pickup), 2/4 from the eighth, 3/4 after two bars of 2/4.
+  const file = buildMidiTracks([
+    [
+      { delta: 0, bytes: timeSignature(1, 3) },
+      { delta: 240, bytes: timeSignature(2, 2) },
+      { delta: 1920, bytes: timeSignature(3, 2) },
+    ],
+    [
+      { delta: 0, bytes: noteOn(64) }, { delta: 240, bytes: noteOff(64) },
+      ...[60, 62, 64, 65].flatMap((m) => [{ delta: 0, bytes: noteOn(m) }, { delta: 480, bytes: noteOff(m) }]),
+      ...[67, 65, 64].flatMap((m) => [{ delta: 0, bytes: noteOn(m) }, { delta: 480, bytes: noteOff(m) }]),
+    ],
+  ]);
+  const { xml, report } = convertMidi(file, { title: 'pickup' });
+  it('reads every time signature with where it falls', () => {
+    expect(readMidi(file).timeSignatures.map((t) => [fracToString(t.at), t.time.beats, t.time.beatType])).toEqual([['0', 1, 8], ['1/2', 2, 4], ['9/2', 3, 4]]);
+  });
+  it('writes the pickup as bar 0, implicit, in the metre of the bars after it', () => {
+    expect(xml).toContain('<measure number="0" implicit="yes">');
+    expect(/<time><beats>(\d+)<\/beats><beat-type>(\d+)<\/beat-type><\/time>/.exec(xml)?.slice(1)).toEqual(['2', '4']);
+    expect(xml.includes('<beats>1</beats><beat-type>8</beat-type>')).toBe(false);
+  });
+  it('writes the 3/4 where it starts, and every bar adds up', () => {
+    const third = /<measure number="3"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(third).toContain('<time><beats>3</beats><beat-type>4</beat-type></time>');
+    expect(report.brokenBars).toEqual([]);
+    expect(report.lost).toEqual([]);
+    expect(report.passed).toBe(true);
+    expect(report.timeSignature).toBe('2/4 (changes 1 time) (with a pickup)');
+  });
+});
+
+// --- new (2026-10-14): the key signatures the file states, and where they change -----------------------------------
+// The converter used to estimate the key from the notes and drop the file's: on ASAP's score MIDI files the
+// opening key was wrong on 21 of 180, and no key change was ever written.
+
+describe('the key the file states', () => {
+  const keyEvent = (sharps, minor) => [0xff, 0x59, 0x02, sharps & 0xff, minor ? 1 : 0];
+  const line = (midis) => midis.flatMap((m) => [{ delta: 0, bytes: noteOn(m) }, { delta: 480, bytes: noteOff(m) }]);
+  const convertWith = (conductor, midis) =>
+    convertMidi(buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }, ...conductor], line(midis)]), { title: 'key' });
+
+  it('is the key written, named with its mode, when the file states one', () => {
+    // G minor's notes, stated as G minor (two flats, the minor byte set).
+    const { xml: written, report } = convertWith([{ delta: 0, bytes: keyEvent(-2, true) }], [67, 70, 74, 72, 70, 69, 66, 67]);
+    const xml = written.replace(/\s+/g, '');
+    expect(report.keyFrom).toBe('the file');
+    expect(report.key).toBe('G minor');
+    expect(xml).toContain('<key><fifths>-2</fifths></key>');
+    expect(xml).toContain('<step>B</step><alter>-1</alter>');
+    expect(xml).toContain('<step>F</step><alter>1</alter>');
+  });
+  it('is taken for a default when the file states only C major and the notes say otherwise', () => {
+    // D major's notes with C major stated, as a sequencer writes when nobody set a key.
+    const { report } = convertWith([{ delta: 0, bytes: keyEvent(0, false) }], [62, 64, 66, 67, 69, 71, 73, 74, 69, 66, 62, 62]);
+    expect(report.keyFrom).toBe('estimated from the notes');
+    expect(report.key).toBe('D major');
+  });
+  it('changes at the bar the file changes it, and the notes after it are spelled from the new key', () => {
+    // C major for a bar, then A major (three sharps) from bar 2.
+    const { xml, report } = convertWith(
+      [{ delta: 0, bytes: keyEvent(0, false) }, { delta: 1920, bytes: keyEvent(3, false) }],
+      [60, 64, 67, 72, 69, 73, 76, 68],
+    );
+    expect(report.keyFrom).toBe('the file');
+    expect(report.keyChanges).toBe(1);
+    const second = (/<measure number="2"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '').replace(/\s+/g, '');
+    expect(second).toContain('<key><fifths>3</fifths></key>');
+    expect(second).toContain('<step>C</step><alter>1</alter>');
+    expect(second).toContain('<step>G</step><alter>1</alter>');
+    expect(second.includes('<step>A</step><alter>-1</alter>')).toBe(false);
+  });
+});
+
+describe('a played file is told apart from a written one', () => {
+  // The same exercise written out exactly, and played with up to 35 ms of jitter on every note.
+  const clean = convertMidi(fixture('parity/rendered-clean.mid'), { title: 'clean' }).report;
+  const played = convertMidi(fixture('parity/rendered-jitter35.mid'), { title: 'played' }).report;
+  it('measures how many onsets were already on the grid', () => {
+    expect(clean.onGrid).toBe(1);
+    expect(played.onGrid).toBeLessThan(0.25);
+  });
+  it('says the bars and rhythms are a guess for the played one, and nothing of the kind for the written one', () => {
+    expect(checkSentence(played)).toMatch(/^The timing looks played rather than written/);
+    expect(checkSentence(clean)).toMatch(/^Checked: all \d+ notes the reader found are in the score, at the times the file gives them/);
+  });
+});
 
 // --- run -------------------------------------------------------------------------------------------------------
 

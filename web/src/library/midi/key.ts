@@ -90,6 +90,13 @@ export function keyOf(tonic: string, mode: Mode): EstimatedKey {
   return { tonic, mode, fifths: fifthsFor(tonic, mode) };
 }
 
+/** The key a MIDI key-signature event states: sharps (negative: flats) and its major/minor byte. */
+export function keyFromSignature(fifths: number, minor: boolean): EstimatedKey {
+  const mode: Mode = minor ? 'minor' : 'major';
+  const tonic = (minor ? MINOR_BY_FIFTHS : MAJOR_BY_FIFTHS)[fifths] ?? (minor ? 'A' : 'C');
+  return { tonic, mode, fifths };
+}
+
 /** music21's `Key.relative`: the same key signature, the other mode. */
 export function relativeOf(key: EstimatedKey): EstimatedKey {
   const mode: Mode = key.mode === 'major' ? 'minor' : 'major';

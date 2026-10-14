@@ -14,6 +14,7 @@
  * afterwards.
  */
 import type { NoteEvent } from './readMidi.ts';
+import type { BarMap } from './bars.ts';
 import { notatablePieces } from './notatable.ts';
 import {
   type Frac,
@@ -21,14 +22,10 @@ import {
   add,
   cmp,
   eq,
-  floorDiv,
-  frac,
   fracToString,
   gt,
   lt,
   lte,
-  mod,
-  mul,
   sub,
 } from './fraction.ts';
 
@@ -49,15 +46,14 @@ export interface Slice {
 
 export function sliceIntoChords(
   events: NoteEvent[],
-  barLength: Frac,
-  beat: Frac,
+  bars: BarMap,
   unitForBar: (index: number) => Frac,
 ): Slice[] {
   if (events.length === 0) return [];
 
   let last = ZERO;
   for (const event of events) if (gt(event.end, last)) last = event.end;
-  const barCount = floorDiv(last, barLength) + 2;
+  const barCount = bars.indexAt(last) + 2;
 
   const boundarySet = new Map<string, Frac>();
   const remember = (value: Frac): void => {
@@ -68,7 +64,7 @@ export function sliceIntoChords(
     remember(event.end);
   }
   for (let i = 0; i < barCount; i += 1) {
-    const edge = mul(barLength, frac(i));
+    const edge = bars.bar(i).start;
     if (lte(edge, last)) remember(edge);
   }
   const boundaries = [...boundarySet.values()].sort(cmp);
@@ -77,8 +73,9 @@ export function sliceIntoChords(
   for (let i = 0; i + 1 < boundaries.length; i += 1) {
     const leftAt = boundaries[i] ?? ZERO;
     const rightAt = boundaries[i + 1] ?? ZERO;
-    const unit = unitForBar(floorDiv(leftAt, barLength));
-    const pieces = notatablePieces(mod(leftAt, barLength), sub(rightAt, leftAt), unit, beat);
+    const index = bars.indexAt(leftAt);
+    const bar = bars.bar(index);
+    const pieces = notatablePieces(sub(leftAt, bar.start), sub(rightAt, leftAt), unitForBar(index), bar.beat);
     let at = leftAt;
     for (const piece of pieces.slice(0, -1)) {
       at = add(at, piece);
@@ -93,12 +90,24 @@ export function sliceIntoChords(
   let previous = new Map<number, { slice: Slice; note: SliceNote }>();
   let previousEnd: Frac | null = null;
 
+  // The notes sounding in each slice, found in one walk through time rather than by reading every note for every
+  // slice (a long piece took a minute: 2026-10-14). Read in the order they were given, as before, which decides
+  // which of two overlapping notes of one pitch is kept.
+  const byStart = events.map((_, index) => index).sort((a, b) => cmp(events[a]?.start ?? ZERO, events[b]?.start ?? ZERO));
+  let nextToStart = 0;
+  let active: number[] = [];
   for (let i = 0; i + 1 < filled.length; i += 1) {
     const leftAt = filled[i] ?? ZERO;
     const rightAt = filled[i + 1] ?? ZERO;
+    while (nextToStart < byStart.length && lt(events[byStart[nextToStart] ?? 0]?.start ?? ZERO, rightAt)) {
+      active.push(byStart[nextToStart] ?? 0);
+      nextToStart += 1;
+    }
+    active = active.filter((index) => gt(events[index]?.end ?? ZERO, leftAt)).sort((a, b) => a - b);
     const sounding = new Map<number, { start: Frac; velocity: number | null }>();
-    for (const event of events) {
-      if (lt(event.start, rightAt) && gt(event.end, leftAt)) {
+    for (const index of active) {
+      const event = events[index];
+      if (event && lt(event.start, rightAt) && gt(event.end, leftAt)) {
         // Two notes of one pitch at once (a legato overlap): keep the one
         // struck here.
         if (!sounding.has(event.midi) || eq(event.start, leftAt)) {

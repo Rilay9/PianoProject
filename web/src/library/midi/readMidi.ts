@@ -20,7 +20,7 @@
  * This file is also the app's whole MIDI dependency: a few hundred bytes of
  * chunk walking rather than a package (`docs/01`'s bundle budget).
  */
-import { type Frac, add, cmp, div, frac, gt, lte, sub } from './fraction.ts';
+import { type Frac, add, cmp, div, frac, gt, lt, lte, sub } from './fraction.ts';
 
 /** One struck note: when it started, when it stopped, what and how hard. */
 export interface NoteEvent {
@@ -43,8 +43,13 @@ export interface TimeSignature {
 
 export interface MidiFileContents {
   tracks: MidiTrack[];
+  /** The first time signature stated (or 4/4). Where bars fall is `timeSignatures`, every one with its moment. */
   timeSignature: TimeSignature;
   hadTimeSignature: boolean;
+  /** Every time signature the file states, in quarter notes from the start, in file order (2026-10-14). */
+  timeSignatures: { at: Frac; time: TimeSignature }[];
+  /** Every key signature the file states: sharps positive, flats negative; `minor` from the event's mode byte. */
+  keyChanges: { at: Frac; fifths: number; minor: boolean }[];
   /** Beats per minute from the first SET_TEMPO, or null when the file states none. */
   tempo: number | null;
   /** How the MIDI spelled its key signature(s), for the report. Sorted, de-duplicated. */
@@ -157,6 +162,8 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
 
   const tracks: MidiTrack[] = [];
   let timeSignature: TimeSignature | null = null;
+  const timeSignatures: { at: Frac; time: TimeSignature }[] = [];
+  const keyChanges: { at: Frac; fifths: number; minor: boolean }[] = [];
   let tempo: number | null = null;
   const keySignatures = new Set<string>();
 
@@ -194,11 +201,18 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
         } else if (type === 0x51 && tempo === null && data.length >= 3) {
           const micros = ((data[0] ?? 0) << 16) | ((data[1] ?? 0) << 8) | (data[2] ?? 0);
           if (micros > 0) tempo = 60_000_000 / micros;
-        } else if (type === 0x58 && timeSignature === null && data.length >= 2) {
-          timeSignature = { beats: data[0] ?? 4, beatType: 2 ** (data[1] ?? 2) };
+        } else if (type === 0x58 && data.length >= 2 && (data[0] ?? 0) > 0) {
+          const time = { beats: data[0] ?? 4, beatType: 2 ** (data[1] ?? 2) };
+          // The first stated, in time order across tracks (a later track's event at 0 is earlier than one at bar 5).
+          const at = div(frac(ticksSoFar), ticks);
+          const earliest = timeSignatures.reduce<Frac | null>((best, one) => (best === null || lt(one.at, best) ? one.at : best), null);
+          if (timeSignature === null || (earliest !== null && lt(at, earliest))) timeSignature = time;
+          timeSignatures.push({ at, time });
         } else if (type === 0x59 && data.length >= 2) {
           const raw = data[0] ?? 0;
-          keySignatures.add(keySignatureName(raw > 127 ? raw - 256 : raw));
+          const fifths = raw > 127 ? raw - 256 : raw;
+          keySignatures.add(keySignatureName(fifths));
+          if (fifths >= -7 && fifths <= 7) keyChanges.push({ at: div(frac(ticksSoFar), ticks), fifths, minor: (data[1] ?? 0) === 1 });
         }
         continue;
       }
@@ -257,6 +271,8 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
     tracks,
     timeSignature: timeSignature ?? DEFAULT_TIME_SIGNATURE,
     hadTimeSignature: timeSignature !== null,
+    timeSignatures,
+    keyChanges,
     tempo,
     keySignatures: [...keySignatures].sort(),
   };
