@@ -1,6 +1,6 @@
 // The accompaniment lab's judge (src/lab/judge.ts) on hand-made cases, including the ones ChatGPT's review found the
 // first version got wrong (2026-10-13). Run: npm run check:lab (Node 22.18+ runs the TypeScript files directly).
-import { improvised, judgeHit, ON_TIME_MS } from '../src/lab/judge.ts';
+import { improvised, judgeHit, ON_TIME_MS, sayHit } from '../src/lab/judge.ts';
 import { chordInfo, formOf, readChart } from '../src/lab/music.ts';
 
 const C7 = chordInfo('C7'); // C E G B♭
@@ -68,5 +68,23 @@ try { readChart('s', { title: 's', bars: ['C/E'] }); } catch (e) { slash = e.mes
 console.log(`${/slash chords/.test(slash) ? 'ok  ' : 'FAIL'} a slash chord is refused: ${slash}`);
 if (!/slash chords/.test(slash)) failed++;
 
-console.log(failed ? `${failed} failed` : `all ${cases.length + 3} passed`);
+// The sentence the learner reads after a red chord, an extra key named from the chord's key signature (test review,
+// 2026-10-14: E♭ over C7 was "D♯", A♭ over Cm "G♯", B♭ over Am "A♯").
+const sayings = [
+  ['C7', 63, "Bar 1 C7: E♭ isn't in C7"],
+  ['Cm', 68, "Bar 1 Cm: A♭ isn't in Cm"],
+  ['Am', 70, "Bar 1 Am: B♭ isn't in Am"],
+  ['Gm', 63, "Bar 1 Gm: E♭ isn't in Gm"],
+  ['E', 63, "Bar 1 E: D♯ isn't in E"],
+  ['D', 61, "Bar 1 D: C♯ isn't in D"],
+];
+for (const [symbol, extra, want] of sayings) {
+  const c = chordInfo(symbol), h = { t: 0, until: 2000, chord: c, bar: 0, span: 0, len: 2000 };
+  const said = sayHit(judgeHit(h, [...c.pcs.map((p) => press(60 + p, 0, 1600)), press(extra, 0, 1600)], 'beat1'), 'beat1');
+  const ok = said === want;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} the extra key over ${symbol} is named: ${said}${ok ? '' : ` (want: ${want})`}`);
+  if (!ok) failed++;
+}
+
+console.log(failed ? `${failed} failed` : `all ${cases.length + 3 + sayings.length} passed`);
 process.exit(failed ? 1 : 0);

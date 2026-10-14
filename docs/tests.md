@@ -65,5 +65,9 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   instead of quietly testing another server.
 - Throwaway scripts stay in the scratchpad and are listed in the session notes with what they check. A case worth
   keeping becomes a committed check, listed in `web/tests/README.md`.
+- **Make the race happen, then show the check fails on the old build.** Slowing the CPU 20× did not reproduce the
+  PDF open race or the double + Add; holding the big file's bytes back in the page, and blocking the offline cache
+  (it answered before a slowed download ever ran), did. A check that also passes on the build before the fix proves
+  nothing: build the old commit and run it there (`tests/browser.mjs --url`; 2026-10-14).
 - Report what was run and what was not. Real phone, real keyboard, and anything heard are not covered by any of
   this; say so.

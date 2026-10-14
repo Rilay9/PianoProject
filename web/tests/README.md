@@ -7,11 +7,14 @@ no longer exists.
 | Check | Run | Covers | Cases |
 |---|---|---|---|
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules) | 16 |
-| `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) | 23 |
+| `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) and the sentence the learner reads after a red chord (`sayHit`, 2026-10-14) | 29 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals |
-| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart (2026-10-14) | 128 (+ 11 old cases printed as skipped, with the reason) |
-| `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build | 50 (+ 7 old screen cases printed as skipped, with the reason) |
-| `notes-match.mjs` | `npm run check:notes` | Every note the score screen draws, lights and names matches the file, bar by bar, for every song in `public/scores` (builds, serves on :5193) | one per song; `--corrupt` must fail |
+| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser (2026-10-14) | 132 (+ 7 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
+| `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build (fails if its canvas library cannot load) | 50 (+ 7 old screen cases printed as skipped, with the reason) |
+| `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`; not where in the bar, how long, or which staff (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song; `--corrupt` must fail |
+| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 14 |
+| `wake.mjs` | `npm run check:wake` | The screen wake lock (`src/wake.ts`): a lock granted after you left is let go; one request at a time | 4 |
+| `practice.mjs` | `npm run check:practice` | The Play along judge (`src/practice.ts`) around a mash: none of its keys counted as wrong keys, a right note inside it still counted | 4 |
 
 ## scoring.mjs
 
@@ -65,6 +68,10 @@ no longer exists.
 - Parity with the Python converter, five files (`two-hands`, `crossed-hands`, `one-track-two-hands`, the rendered
   exercise clean and jittered): tracks, metre/tempo/key, grid per bar, swing counts, quantised events, hands, key,
   self-check, the notes read back, and the split where the reference has one.
+- Where every note lands (2026-10-14): the written MusicXML read by the check's own parser (`barsOf`), not the
+  converter's read-back, each bar compared with the file as built: the pickup file, and a two-hand file with a
+  pickup, 3/4 then 2/4, G then B♭ major and a run of 32nds (15 notes by bar, staff, beat, length and spelling). On a
+  copy that shifts every note an eighth late these fail (the converter's own "nothing lost" asserts still pass).
 - Bars (2026-10-14): a pickup written as its own short metre is a short bar 0, written implicit in the next bar's
   metre; a metre change inside a bar ends the bar there; bars go on in the last metre; a converted file with a pickup
   and a later 3/4 (every time signature read, the 3/4 written where it starts, every bar adding up). These fail on
@@ -95,12 +102,21 @@ no longer exists.
   lines; review 2026-10-14).
 - `moveCut`: a line's bottom dragged onto its top, or its top onto its bottom, keeps a line (a thinner one used to
   vanish and shift the page's later splits; both fail on the old code); two lines may still touch.
-- Ported unchanged: reading position after cuts change; the page cache never evicting a page on screen; the
-  background detection order; a system drawn out of its page (`region.ts`) and its height on screen.
+- Ported unchanged: reading position after cuts change; the background detection order. Also the page cache never
+  evicting a page on screen (`pageCache.ts`) and a system drawn out of its page (`region.ts`) with its height on
+  screen: modules the reader does not use (nothing in `src` imports them, 2026-10-14), so these 6 cases protect
+  nothing on screen until it does.
+- If `@napi-rs/canvas` (it comes with pdfjs-dist) cannot load, the real-page cases fail rather than being skipped.
 - Skipped, printed with the reason: the old screen's 7 cases (its own screen is not ported). `PdfDocument.ts`
   (browser pdf.js, Vite worker) and the reader screen are checked in the browser (session scripts), not here.
 
 ## Browser checks
 
-Throwaway Playwright scripts used while building (not committed; listed in the session notes with what each
-checks). They are written for one change and are not kept up to date; anything worth keeping becomes a check here.
+`browser.mjs` (2026-10-14) keeps the cases from ChatGPT's review of that day (`docs/review-2026-10-14.md`). Each makes
+its race happen on purpose: the offline cache blocked (it would answer before a slowed download), a download
+slowed, a big file's bytes held back in the page (`Blob.arrayBuffer`), a library storage that fails to open. Run
+against the build before the fixes (`--url`), 8 of its 14 cases failed; the other 6 are the shared ones (a full
+backup, no page errors, and the Memorise control). Not in it: the library store's lost update (shown with the store
+module through the dev server: 0 of 10 records kept three simultaneous changes before, 10 of 10 after) and the PDF
+Adjust stale draw (no way found to force it; fixed by reading). Other Playwright scripts used while building stay
+in the session notes; anything worth keeping becomes a case here.

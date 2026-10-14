@@ -185,7 +185,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     b.type = 'button';
     b.disabled = got;
     b.setAttribute('aria-label', got ? `${i.title} is in your library` : `Add ${i.title} to your library`);
-    b.addEventListener('click', (e) => { e.stopPropagation(); void addFromCatalogue(i); });
+    b.addEventListener('click', (e) => { e.stopPropagation(); void addFromCatalogue(i, b); });
     return b;
   }
   function renderList(): void {
@@ -574,7 +574,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     const buttons = el('div', 'lib-buttons');
     const add = el('button', 'btn main', 'Add to your library');
     add.type = 'button';
-    add.addEventListener('click', () => void addFromCatalogue(i));
+    add.addEventListener('click', () => void addFromCatalogue(i, add));
     buttons.append(add);
     body.append(buttons);
     const facts = el('dl', 'lib-facts');
@@ -595,21 +595,27 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   }
 
   /** Adds a catalogue piece: its file (saved with the app, so this works offline) kept like a file you added. */
-  async function addFromCatalogue(i: LibItem): Promise<void> {
-    if (!i.cat || inYours(i)) return;
+  const adding = new Set<string>(); // pieces being added: a second tap while the first is under way does nothing
+  async function addFromCatalogue(i: LibItem, button?: HTMLButtonElement): Promise<void> {
+    if (!i.cat || inYours(i) || adding.has(i.id)) return;
+    adding.add(i.id);
+    if (button) button.disabled = true;
     try {
       await load();
       const p = await prepare(await fetchCatalogueFile(base, i.cat));
       if (p.id !== i.id) throw new Error('its file is not the one the catalogue lists');
       await addOwn(p.id, { ...p.own, origin: 'catalogue', title: i.title, composer: i.composer, source: 'PDMX (an upload to MuseScore)', licence: i.cat.licence || undefined }, p.blob);
-      app.pieces.push(pieceOf(p.id, { ...p.own, title: i.title, composer: i.composer }));
+      if (!app.pieces.some((x) => x.id === p.id)) app.pieces.push(pieceOf(p.id, { ...p.own, title: i.title, composer: i.composer }));
       justAdded.add(p.id);
       void keepSafe().then(() => renderFoot());
       await refresh();
       render();
       toast(`Added “${i.title}”`, () => { const it = yoursAll.find((x) => x.id === i.id); if (it) openItem(it); });
     } catch (e) {
+      if (button) button.disabled = false;
       app.showMessage(`Could not add it: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      adding.delete(i.id);
     }
   }
 

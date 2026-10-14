@@ -67,19 +67,36 @@ async function put(r: Stored): Promise<void> {
   await done(t);
   records.set(r.id, r);
 }
+/**
+ * Changes to one record run one after another, each starting from what the one before left (review 2026-10-14: two
+ * at once, a favourite and a tag, both started from the same copy and the later write lost the other's change).
+ */
+const queues = new Map<string, Promise<void>>();
+function inTurn(id: string, step: () => Promise<void>): Promise<void> {
+  const run = (queues.get(id) ?? Promise.resolve()).catch(() => {}).then(step);
+  const settled = run.catch(() => {});
+  queues.set(id, settled);
+  void settled.then(() => { if (queues.get(id) === settled) queues.delete(id); });
+  return run;
+}
 /** Changes a record (made if there is none yet). */
-export async function change(id: string, f: (r: Stored) => void): Promise<void> {
-  await load();
-  const r = structuredClone(records.get(id) ?? { id });
-  f(r);
-  await put(r);
+export function change(id: string, f: (r: Stored) => void): Promise<void> {
+  return inTurn(id, async () => {
+    await load();
+    const r = structuredClone(records.get(id) ?? { id });
+    f(r);
+    await put(r);
+  });
 }
 /** You opened it now (for Recently opened). Never fails loudly: a missed time is not worth a message. */
 export function touch(id: string): void { void change(id, (r) => { r.opened = new Date().toISOString(); }).catch(() => {}); }
 
 /** The MIDI file a score was converted from is kept under this key beside it. */
 export const midiKey = (id: string) => `${id}:midi`;
-export async function addOwn(id: string, own: Own, file: Blob, original?: Blob): Promise<void> {
+export function addOwn(id: string, own: Own, file: Blob, original?: Blob): Promise<void> {
+  return inTurn(id, () => addOwnNow(id, own, file, original));
+}
+async function addOwnNow(id: string, own: Own, file: Blob, original?: Blob): Promise<void> {
   await load();
   const t = (await db()).transaction(['items', 'files'], 'readwrite');
   const r: Stored = { ...(records.get(id) ?? { id }), own };
@@ -93,7 +110,10 @@ export async function addOwn(id: string, own: Own, file: Blob, original?: Blob):
 export async function fileOf(id: string): Promise<Blob | undefined> {
   return result((await db()).transaction('files').objectStore('files').get(id) as IDBRequest<Blob | undefined>);
 }
-export async function remove(id: string): Promise<void> {
+export function remove(id: string): Promise<void> {
+  return inTurn(id, () => removeNow(id));
+}
+async function removeNow(id: string): Promise<void> {
   const t = (await db()).transaction(['items', 'files'], 'readwrite');
   t.objectStore('items').delete(id);
   t.objectStore('files').delete(id);

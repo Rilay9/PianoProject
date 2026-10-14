@@ -676,11 +676,13 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     close,
     get isOpen() { return isOpen; },
     key: (e: KeyEvent) => keys.midiKey(e.midi, e.on, midi.down, e.time),
-    // The keyboard remote: a mash stops; the highest key starts (or Again); the lowest goes back to the opening.
+    // The keyboard remote: a mash stops; the highest key starts (or Again); the lowest goes back to the opening. The
+    // edge keys come here only when stopped: while the band plays every key is music (musicRange below), so a mash
+    // is the only way to stop from the keyboard then (review 2026-10-14: a "lowest stops" branch here never ran).
     command(c: Command): void {
       if (c === 'mash') { if (running) { stop(); feedback('Stopped by a mash'); } }
       else if (c === 'high') { if (!running) void start(false); }
-      else if (c === 'low') { if (running) stop(); else backToOpen(); }
+      else if (c === 'low') { if (!running) backToOpen(); }
     },
     // The keys the music uses (the remote's edge keys outside them are commands). While the band plays any octave
     // counts (chords any voicing, roots any octave, improvising anywhere), so every key is music then; stopped, the lit range.

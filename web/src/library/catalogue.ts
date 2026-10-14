@@ -49,7 +49,11 @@ export function loadCatalogue(base: string): Promise<Catalogue | null> {
       return { version: f.version, rows };
     } catch { return null; }
   })();
-  return loaded;
+  // A failed load is not kept: the next opening of the library asks again (review 2026-10-14: offline at first, the
+  // catalogue stayed missing until the page was reloaded).
+  const asked = loaded;
+  void asked.then((c) => { if (c === null && loaded === asked) loaded = null; });
+  return asked;
 }
 
 /** The catalogue piece's file, as a File the library adds like any other. */

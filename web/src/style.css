@@ -552,8 +552,8 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 /* The PDF reader (screens/pdf.ts): two slots in fixed places over the whole stage; the line you're on marked at its
    left. While timed turning runs, the bar hides and only ❚❚ shows. */
 .pdfv { position: fixed; inset: 0; z-index: 6; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
-.pdf-head .title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pdf-where { font-size: 13px; color: var(--bar-muted); white-space: nowrap; }
+.pdf-head .title { flex: 1 0 45%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdf-where { font-size: 13px; color: var(--bar-muted); white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .pdf-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--bg); }
 .pdf-slot { position: absolute; left: 0; right: 0; display: flex; justify-content: center; overflow: hidden; border-left: 4px solid transparent; }
 .pdf-slot.now { border-left-color: var(--accent); }
@@ -575,6 +575,7 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .pdf-cut::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
 .pdf-cut.bottom { background: #ea580c; }
 .pdf-cut-x { position: absolute; right: 8px; top: -11px; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 11px; background: #2563eb; color: #fff; font: 700 14px/22px system-ui, sans-serif; z-index: 1; }
+.pdf-cut:focus-visible, .pdf-split:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
 .pdf-split { position: absolute; width: 3px; margin-left: -1px; background: #16a34a; touch-action: none; cursor: ew-resize; }
 .pdf-split::before { content: ''; position: absolute; top: 0; bottom: 0; left: -12px; right: -12px; }
 .pdf-split-x { position: absolute; top: -10px; left: -11px; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 11px; background: #16a34a; color: #fff; font: 700 14px/22px system-ui, sans-serif; z-index: 1; }

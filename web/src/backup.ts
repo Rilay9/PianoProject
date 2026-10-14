@@ -14,31 +14,52 @@ interface Manifest { app: 'piano-web'; version: 2; saved: string; data: Record<s
 
 // ---- what goes in -----------------------------------------------------------------------------------------------
 
-/** What a backup would hold now: the size of your files (asked before saving). */
+/**
+ * The library, read for a backup. A browser with no IndexedDB has no library: settings only. A library that is there
+ * but cannot be read is not "no files": the backup is refused (review 2026-10-14: it used to save a settings-only zip
+ * that looked complete, which could replace the only good backup).
+ */
+async function libraryForBackup(): Promise<Stored[]> {
+  if (typeof indexedDB === 'undefined') return [];
+  try { await load(); } catch (cause) {
+    throw new Error(`your library could not be read (${cause instanceof Error ? cause.message : String(cause)}), so no backup was made. Close the app's other tabs and try again.`);
+  }
+  return allRecords();
+}
+
+/** What a backup would hold now: the size of your files (asked before saving). Throws when the library can't be read. */
 export async function backupContents(): Promise<{ files: number; bytes: number }> {
-  try { await load(); } catch { return { files: 0, bytes: 0 }; }
-  const own = allRecords().filter((r) => r.own);
+  const own = (await libraryForBackup()).filter((r) => r.own);
   return { files: own.length, bytes: own.reduce((s, r) => s + (r.own?.file.size ?? 0), 0) };
 }
 
-export async function makeBackup(): Promise<Blob> {
+/**
+ * The backup zip, and the pieces it could not include. A piece whose file is missing (lost from this phone's storage)
+ * is left out and named, rather than left out unsaid; refusing the whole backup would leave none for ever, since a
+ * lost file does not come back.
+ */
+export async function makeBackup(): Promise<{ zip: Blob; missing: string[] }> {
   const data: Record<string, string> = {};
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)!;
     if (backedUp(key)) data[key] = localStorage.getItem(key)!;
   }
-  let library: Stored[] = [];
-  try { await load(); library = allRecords(); } catch { /* no library on this device: settings only */ }
+  const library = await libraryForBackup();
   const manifest: Manifest = { app: 'piano-web', version: 2, saved: new Date().toISOString(), data, library };
   const entries: { name: string; blob: Blob }[] = [{ name: 'backup.json', blob: new Blob([JSON.stringify(manifest)], { type: 'application/json' }) }];
+  const missing: string[] = [];
   for (const r of library) {
     if (!r.own) continue;
-    const f = await fileOf(r.id);
+    const f = await fileOf(r.id).catch(() => undefined);
     if (f) entries.push({ name: `files/${r.id}`, blob: f });
-    const m = r.own.midi ? await fileOf(midiKey(r.id)) : undefined; // the MIDI a score was converted from
-    if (m) entries.push({ name: `files/${r.id}.midi`, blob: m });
+    else missing.push(r.own.title);
+    if (r.own.midi) { // the MIDI a score was converted from
+      const m = await fileOf(midiKey(r.id)).catch(() => undefined);
+      if (m) entries.push({ name: `files/${r.id}.midi`, blob: m });
+      else missing.push(`${r.own.title} (its MIDI file)`);
+    }
   }
-  return zipStored(entries);
+  return { zip: await zipStored(entries), missing };
 }
 
 // ---- restoring --------------------------------------------------------------------------------------------------

@@ -437,7 +437,9 @@ if (napi) {
     });
   });
 } else {
-  skip('PDF pages through pdf.js (11 cases)', `@napi-rs/canvas would not load here: ${napiWhy}`);
+  // A failure, not a skip: the real pages are this check's only look at what the reader shows, and a skip let it pass
+  // green with them gone (test review, 2026-10-14). @napi-rs/canvas comes with pdfjs-dist (an optional dependency).
+  it('reads real PDF pages through pdf.js', () => { throw new Error(`@napi-rs/canvas would not load, so no real page was checked: ${napiWhy}`); });
 }
 
 describe('systemScreenHeight (screenHeightOf in the old screen)', () => {

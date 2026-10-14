@@ -188,11 +188,16 @@ $<HTMLInputElement>('log-autodelete').addEventListener('change', (e) => {
 // Back up and restore (backup.ts): settings, marks, progress and the library with your files, in one zip; the size
 // of your files is said first (owner, 2026-10-13). Restoring merges into this phone.
 $('backup').addEventListener('click', async () => {
-  const { files, bytes } = await backupContents();
-  const size = bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
-  if (files && !confirm(`The backup includes your ${files} ${files === 1 ? 'file' : 'files'} (${size}). Save it?`)) return;
   try {
-    downloadBlob(`piano-backup-${new Date().toISOString().slice(0, 10)}.zip`, await makeBackup());
+    const { files, bytes } = await backupContents();
+    const size = bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+    if (files && !confirm(`The backup includes your ${files} ${files === 1 ? 'file' : 'files'} (${size}). Save it?`)) return;
+    const { zip, missing } = await makeBackup();
+    downloadBlob(`piano-backup-${new Date().toISOString().slice(0, 10)}.zip`, zip);
+    if (missing.length) {
+      moreDialog.close();
+      app.showMessage(`Backed up, but without ${missing.join(', ')}: ${missing.length === 1 ? 'its file is' : 'their files are'} no longer on this phone.`);
+    }
   } catch (cause) {
     moreDialog.close();
     app.showMessage(`Could not back up: ${cause instanceof Error ? cause.message : String(cause)}`);

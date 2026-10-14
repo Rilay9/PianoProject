@@ -216,7 +216,11 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   function where(): void {
     const u = units[index];
     if (!u) return;
-    $('pdf-where').textContent = `Page ${u.sys.page + 1} of ${aspect.length} · line ${u.line + 1} of ${systems.length}${u.part === null ? '' : ` · part ${u.part + 1} of ${u.parts}`}`;
+    // Short, and the line first: on a narrow phone the place left the title two letters (review 2026-10-14, measured
+    // at 320 px); what does not fit is cut from the end, so the page goes first. The whole sentence is its label.
+    const w = $('pdf-where');
+    w.textContent = `Line ${u.line + 1}/${systems.length}${u.part === null ? '' : ` · part ${u.part + 1}/${u.parts}`} · page ${u.sys.page + 1}/${aspect.length}`;
+    w.setAttribute('aria-label', `Line ${u.line + 1} of ${systems.length}${u.part === null ? '' : `, part ${u.part + 1} of ${u.parts}`}, page ${u.sys.page + 1} of ${aspect.length}`);
   }
 
   // ---- turning ---------------------------------------------------------------------------------------------------
@@ -316,19 +320,27 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     void drawAdjust();
   }
   let adjustImg: HTMLCanvasElement | null = null; // one copy of the page for Adjust, reused (not a new one per drag)
+  let refocus: string | null = null; // the handle moved by a key: focused again once the page is drawn anew
+  let adjustDraw = 0; // the latest Adjust drawing: an older one still waiting for its page gives way to it
   async function drawAdjust(): Promise<void> {
-    await detect(adjustPage);
+    // The page is taken once, here: the image, the handles and the label all come from it, and a drawing overtaken
+    // by a newer one (Previous / Next while a page was still being read) stops (review 2026-10-14: it could paint one
+    // page's image under the next page's handles).
+    const page = adjustPage, draw = ++adjustDraw;
+    const current = () => draw === adjustDraw && adjusting && page === adjustPage;
+    await detect(page);
+    if (!current()) return;
     const frame = $('pdf-adjust-frame');
     const width = Math.min(adjust.clientWidth - 16, 900);
-    const p = await pageCanvas(adjustPage, Math.round(width * (window.devicePixelRatio || 1)));
-    if (!p || !adjusting) return;
+    const p = await pageCanvas(page, Math.round(width * (window.devicePixelRatio || 1)));
+    if (!p || !current()) return;
     const img = adjustImg ??= document.createElement('canvas');
     if (img.width !== p.width || img.height !== p.height) { img.width = p.width; img.height = p.height; }
     img.getContext('2d')!.drawImage(p, 0, 0);
     img.style.width = `${width}px`;
     const layer = document.createElement('div');
     layer.className = 'pdf-cuts';
-    const cuts = cutsOf(adjustPage);
+    const cuts = cutsOf(page);
     const drag = (handle: HTMLElement, axis: 'y' | 'x', done: (to: number) => void) => {
       handle.addEventListener('pointerdown', (e) => {
         e.preventDefault();
@@ -346,13 +358,36 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
         handle.addEventListener('pointerup', up);
       });
     };
+    // Without touch or a mouse (review 2026-10-14): each handle is a slider that Tab reaches and the arrow keys move,
+    // half a percent of the page a press (Shift: two); focus comes back to it after the redraw the move causes.
+    const keys = (handle: HTMLElement, name: string, axis: 'y' | 'x', at: number, done: (to: number) => void) => {
+      handle.tabIndex = 0;
+      handle.dataset.key = name;
+      handle.setAttribute('role', 'slider');
+      handle.setAttribute('aria-orientation', axis === 'y' ? 'vertical' : 'horizontal');
+      handle.setAttribute('aria-valuemin', '0');
+      handle.setAttribute('aria-valuemax', '100');
+      handle.setAttribute('aria-valuenow', String(Math.round(at * 1000) / 10));
+      handle.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 0.02 : 0.005;
+        const by = axis === 'y'
+          ? ({ ArrowUp: -step, ArrowDown: step } as Record<string, number>)[e.key]
+          : ({ ArrowLeft: -step, ArrowRight: step } as Record<string, number>)[e.key];
+        if (by === undefined) return;
+        e.preventDefault();
+        e.stopPropagation();
+        refocus = name;
+        done(Math.max(0, Math.min(1, at + by)));
+      });
+    };
     // A top and a bottom handle per line (drag up or down), and its split (drag left or right; used upright).
     cuts.forEach((f, k) => {
       const handle = document.createElement('div');
       handle.className = `pdf-cut ${k % 2 ? 'bottom' : 'top'}`;
       handle.style.top = `${f * 100}%`;
       handle.setAttribute('aria-label', `${k % 2 ? 'Bottom' : 'Top'} of line ${Math.floor(k / 2) + 1}`);
-      drag(handle, 'y', (to) => void setCuts(moveCut(cutsOf(adjustPage), k, to)));
+      drag(handle, 'y', (to) => void setCuts(moveCut(cutsOf(page), k, to)));
+      keys(handle, `cut-${k}`, 'y', f, (to) => void setCuts(moveCut(cutsOf(page), k, to)));
       if (k % 2 === 0) {
         // x on a line's top handle removes that line (review 2026-10-14: only the last could go, so a title read as a
         // line at the top could not be removed).
@@ -368,16 +403,16 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       layer.append(handle);
     });
     // Each line's split points: drag one sideways, × removes it; a tap on a line adds one there (at a barline, say).
-    const bands = cutsToSystems(cuts, adjustPage);
+    const bands = cutsToSystems(cuts, page);
     const setLine = (k: number, points: number[]) => {
-      const all = bands.map((_, j) => [...(st.splits?.[adjustPage]?.[j] ?? [])]);
+      const all = bands.map((_, j) => [...(st.splits?.[page]?.[j] ?? [])]);
       all[k] = [...points].sort((a, b) => a - b);
-      st.splits = { ...st.splits, [adjustPage]: all };
+      st.splits = { ...st.splits, [page]: all };
       save();
       void drawAdjust();
     };
     bands.forEach((band, k) => {
-      const points = st.splits?.[adjustPage]?.[k] ?? [];
+      const points = st.splits?.[page]?.[k] ?? [];
       points.forEach((x, j) => {
         const handle = document.createElement('div');
         handle.className = 'pdf-split';
@@ -386,6 +421,7 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
         handle.style.height = `${(band.bottom - band.top) * 100}%`;
         handle.setAttribute('aria-label', `Split ${j + 1} of line ${k + 1}`);
         drag(handle, 'x', (to) => setLine(k, points.map((p, i) => (i === j ? to : p))));
+        keys(handle, `split-${k}-${j}`, 'x', x, (to) => setLine(k, points.map((p, i) => (i === j ? to : p))));
         const x0 = document.createElement('button');
         x0.type = 'button';
         x0.className = 'pdf-split-x';
@@ -404,13 +440,14 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
         if (Math.hypot(u.clientX - sx, u.clientY - sy) > 8) return;
         const fx = (u.clientX - rect.left) / Math.max(1, rect.width), fy = (u.clientY - rect.top) / Math.max(1, rect.height);
         const k = bands.findIndex((b) => fy >= b.top && fy <= b.bottom);
-        const [left, right] = st.margins?.[adjustPage] ?? [0, 1];
+        const [left, right] = st.margins?.[page] ?? [0, 1];
         if (k < 0 || fx <= left || fx >= right) return;
-        setLine(k, [...(st.splits?.[adjustPage]?.[k] ?? []), fx]);
+        setLine(k, [...(st.splits?.[page]?.[k] ?? []), fx]);
       }, { once: true });
     });
     frame.replaceChildren(img, layer);
-    $('pdf-adjust-label').textContent = `Page ${adjustPage + 1} of ${aspect.length} · ${cuts.length / 2} ${cuts.length === 2 ? 'line' : 'lines'}`;
+    if (refocus) { layer.querySelector<HTMLElement>(`[data-key="${refocus}"]`)?.focus(); refocus = null; }
+    $('pdf-adjust-label').textContent = `Page ${page + 1} of ${aspect.length} · ${cuts.length / 2} ${cuts.length === 2 ? 'line' : 'lines'}`;
   }
 
   // ---- opening ---------------------------------------------------------------------------------------------------
@@ -427,11 +464,18 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     try {
       const blob = await fileOf(pieceId);
       if (!blob) throw new Error('the file is no longer in the library');
+      // Opened into a local first: an open overtaken by a newer one (or by Close) while it read the file is thrown
+      // away here, and never replaces the document the newer one is showing (review 2026-10-14).
+      const opened = await PdfDocument.open(await blob.arrayBuffer());
+      if (n !== opening) { opened.dispose(); return; }
       doc?.dispose();
-      doc = await PdfDocument.open(await blob.arrayBuffer());
-      if (n !== opening) return;
-      aspect = [];
-      for (let p = 0; p < doc.pageCount; p += 1) aspect.push(await doc.pageAspect(p));
+      doc = opened;
+      const sizes: number[] = [];
+      for (let p = 0; p < opened.pageCount; p += 1) {
+        sizes.push(await opened.pageAspect(p));
+        if (n !== opening) return;
+      }
+      aspect = sizes;
       st = readAll()[pieceId] ?? {};
       $<HTMLInputElement>('pdf-edge-music').checked = !!st.edgeMusic;
       pages.clear();
@@ -448,6 +492,7 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       rebuild();
       say('');
       await render();
+      if (n !== opening) return;
       app.stayAwake();
       // The other pages' lines, found in the background (nearest first), so the count and Adjust are right.
       void (async () => {

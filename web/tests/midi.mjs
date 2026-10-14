@@ -1000,13 +1000,115 @@ describe('a file with a pickup bar and a later change of metre, converted', () =
     expect(/<time><beats>(\d+)<\/beats><beat-type>(\d+)<\/beat-type><\/time>/.exec(xml)?.slice(1)).toEqual(['2', '4']);
     expect(xml.includes('<beats>1</beats><beat-type>8</beat-type>')).toBe(false);
   });
-  it('writes the 3/4 where it starts, and every bar adds up', () => {
+  it('writes the 3/4 where it starts, and the converter’s own check passes', () => {
     const third = /<measure number="3"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
     expect(third).toContain('<time><beats>3</beats><beat-type>4</beat-type></time>');
     expect(report.brokenBars).toEqual([]);
     expect(report.lost).toEqual([]);
     expect(report.passed).toBe(true);
     expect(report.timeSignature).toBe('2/4 (changes 1 time) (with a pickup)');
+  });
+  it('puts each note in the bar and at the beat the file has it (read by the test’s own parser)', () => {
+    expect(barsOf(xml).map((bar) => bar.map((n) => `${n.name}@${n.at}`).sort())).toEqual([
+      ['E4@0'], ['C4@0', 'D4@1'], ['E4@0', 'F4@1'], ['E4@2', 'F4@1', 'G4@0'],
+    ]);
+  });
+});
+
+// --- new (2026-10-14): where every note lands, checked against the file as built ---------------------------------
+// The converter's own check compares the score with the notes after it placed them, so it cannot see a note in the
+// wrong place: with every note shifted an eighth late, all of its asserts still passed (test review, 2026-10-14).
+// These read the written MusicXML with a parser of their own and compare each bar with what the file was built to
+// hold: a pickup, 3/4, then 2/4; G major, then B♭ major; two hands; a run of 32nds.
+
+/** Each bar's struck notes: staff, name (B♭4 as "Bb4"), onset and sounding length in quarters (ties joined). */
+function barsOf(xml) {
+  const divisions = Number(/<divisions>(\d+)<\/divisions>/.exec(xml)?.[1]);
+  const q = (n) => { const g = (a, b) => (b ? g(b, a % b) : a); const d = g(n, divisions); return d === divisions ? String(n / divisions) : `${n / d}/${divisions / d}`; };
+  const out = [];
+  const open = new Map(); // staff:midi -> the note a tie carries on
+  let barStart = 0;
+  for (const [, body] of xml.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)) {
+    const bar = [];
+    let pos = 0, last = 0, length = 0;
+    for (const [whole] of body.matchAll(/<note>[\s\S]*?<\/note>|<backup>[\s\S]*?<\/backup>/g)) {
+      const dur = Number(/<duration>(\d+)<\/duration>/.exec(whole)?.[1] ?? 0);
+      if (whole.startsWith('<backup>')) { pos -= dur; continue; }
+      const chord = whole.includes('<chord/>');
+      const at = chord ? last : pos;
+      if (!chord) { last = pos; pos += dur; length = Math.max(length, pos); }
+      if (whole.includes('<rest/>')) continue;
+      const step = /<step>([A-G])<\/step>/.exec(whole)[1], alter = Number(/<alter>(-?\d)<\/alter>/.exec(whole)?.[1] ?? 0);
+      const octave = Number(/<octave>(\d)<\/octave>/.exec(whole)[1]), staff = Number(/<staff>(\d)<\/staff>/.exec(whole)?.[1] ?? 1);
+      const name = `${step}${alter > 0 ? '#'.repeat(alter) : 'b'.repeat(-alter)}${octave}`;
+      const key = `${staff}:${name}`;
+      if (whole.includes('<tie type="stop"/>') && open.has(key)) {
+        const held = open.get(key);
+        held.ticks += dur;
+        held.len = q(held.ticks);
+        if (!whole.includes('<tie type="start"/>')) open.delete(key);
+        continue;
+      }
+      const note = { staff, name, at: q(at), ticks: dur, len: q(dur), absolute: barStart + at };
+      bar.push(note);
+      if (whole.includes('<tie type="start"/>')) open.set(key, note);
+    }
+    out.push(bar);
+    barStart += length;
+  }
+  return out;
+}
+
+describe('a two-hand file with a pickup, metre and key changes and 32nds, converted', () => {
+  const T = 480; // ticks a quarter
+  const notes = (list) => {
+    const ev = [];
+    for (const [midi, from, to] of list) ev.push([from, noteOn(midi)], [to, noteOff(midi)]);
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return ev.map(([at, bytes]) => { const delta = at - now; now = at; return { delta, bytes }; });
+  };
+  // Bar 0 is the eighth before bar 1; bars 1–2 are 3/4 (1440 ticks), bar 3 is 2/4.
+  const b1 = T / 2, b2 = b1 + 3 * T, b3 = b2 + 3 * T;
+  const file = buildMidiTracks([
+    [
+      { delta: 0, bytes: timeSignature(1, 3) }, { delta: 0, bytes: [0xff, 0x59, 0x02, 1, 0] },
+      { delta: b1, bytes: timeSignature(3, 2) },
+      { delta: b3 - b1, bytes: timeSignature(2, 2) }, { delta: 0, bytes: [0xff, 0x59, 0x02, 0xfe, 0] },
+    ],
+    [{ delta: 0, bytes: trackName('Right') }, ...notes([
+      [74, 0, b1], // D5, the pickup
+      [79, b1, b1 + T], [81, b1 + T, b1 + T + 60], [83, b1 + T + 60, b1 + T + 120], [84, b1 + T + 120, b1 + T + 180], [86, b1 + T + 180, b1 + 2 * T],
+      [88, b1 + 2 * T, b1 + 2 * T + T / 2], [78, b1 + 2 * T + T / 2, b2 + T / 2], // E6 an eighth on beat 3, F♯5 across the barline
+      [79, b2 + T / 2, b3],
+      [70, b3, b3 + T], [75, b3 + T, b3 + 2 * T], // B♭4, E♭5
+    ])],
+    [{ delta: 0, bytes: trackName('Left') }, ...notes([
+      [55, b1, b1 + 2 * T], [50, b1 + 2 * T, b2], [43, b2, b3], [46, b3, b3 + 2 * T],
+    ])],
+  ]);
+  const { xml } = convertMidi(file, { title: 'built' });
+  const bars = barsOf(xml);
+  const show = (bar) => bar.map((n) => `${n.staff}:${n.name}@${n.at}/${n.len}`).sort();
+  it('writes every note in its bar, staff, beat and length, spelled from the key in force', () => {
+    expect(bars.map(show)).toEqual([
+      ['1:D5@0/1/2'],
+      ['1:A5@1/1/8', '1:B5@9/8/1/8', '1:C6@5/4/1/8', '1:D6@11/8/5/8', '1:E6@2/1/2', '1:F#5@5/2/1', '1:G5@0/1', '2:D3@2/1', '2:G3@0/2'],
+      ['1:G5@1/2/5/2', '2:G2@0/3'],
+      ['1:Bb4@0/1', '1:Eb5@1/1', '2:Bb2@0/2'],
+    ]);
+  });
+  it('has nothing in the score the file did not have, and every note of the file', () => {
+    expect(bars.flat().length).toBe(15);
+  });
+  it('writes the pickup implicit, 3/4 and G major first, then 2/4 and B♭ major at bar 3', () => {
+    expect(xml).toContain('<measure number="0" implicit="yes">');
+    const first = /<measure number="0"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(first).toContain('<key><fifths>1</fifths></key>');
+    expect(first).toContain('<time><beats>3</beats><beat-type>4</beat-type></time>');
+    const third = /<measure number="3"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(third).toContain('<key><fifths>-2</fifths></key>');
+    expect(third).toContain('<time><beats>2</beats><beat-type>4</beat-type></time>');
   });
 });
 

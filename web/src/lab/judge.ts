@@ -26,11 +26,11 @@ export interface HitResult { hit: Hit; mark: Mark; missing: number[]; wrong: num
 
 const SHARP = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 const FLAT = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
-/** A key named as the chord spells it if it is one of its notes, otherwise in flats or sharps to suit the chord. */
+/** A key named as the chord spells it if it is one of its notes, otherwise from the chord's key signature (`flats`). */
 export function keyName(midi: number, c: ChordInfo): string {
   const p = midi % 12, i = c.pcs.indexOf(p);
   if (i >= 0) return c.names[i];
-  return (c.rootName.includes('♭') || ['F'].includes(c.rootName) ? FLAT : SHARP)[p];
+  return (c.flats ? FLAT : SHARP)[p];
 }
 
 /** tol: the on-time window in the chart's time (ON_TIME_MS x the speed it was played at). */

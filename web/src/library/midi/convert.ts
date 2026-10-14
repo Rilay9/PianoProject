@@ -50,8 +50,8 @@
  *    reports itself as failed. The learner is told; the app stays up.
  *
  * 4. **Bars, keys and grids (2026-10-14).** Bars follow every time signature the file states (`bars.ts`), the
- *    key is the file's own with its changes (estimated only when it states none, or only a C major the notes
- *    contradict), and a bar whose notes sit exactly on 32nds, sextuplets or 64ths gets that grid. A comparison with
+ *    key is the file's own with its changes (estimated only when it states none, or only a C major a quarter of
+ *    the notes contradict), and a bar whose notes sit exactly on 32nds, sextuplets or 64ths gets that grid. A comparison with
  *    ASAP's published scores showed each was wrong before: `docs/app-features.md` §5c has the numbers.
  *
  * What the writer produces is one part on one or two staves. Two hands is a
@@ -174,6 +174,9 @@ export interface Conversion {
 }
 
 const DEFAULT_DIVISORS = [4, 3];
+
+/** The share of notes outside C major at which a file's lone C major is taken for a sequencer's default. */
+export const DEFAULT_KEY_OUTSIDE = 0.25;
 
 /** What a file the app cannot convert says about itself. */
 export class ConvertError extends Error {}
@@ -471,8 +474,17 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const first = stated[0];
   if (first && first.bar > 0) stated.unshift({ bar: 0, key: first.key });
   const statedOnlyDefault = stated.length > 0 && stated.every((entry) => entry.key.fifths === 0);
+  // Taken for a default only when the notes plainly contradict it: a quarter or more of them outside C major, and
+  // the estimate leaving at most half as many outside. A piece in C that moves to G (an F♯ in eight notes) keeps the
+  // file's C (test review, 2026-10-14: the first rule wrote such a piece in G).
+  const outside = (fifths: number): number => {
+    const inKey = new Set([-1, 0, 1, 2, 3, 4, 5].map((i) => (((fifths + i) * 7) % 12 + 12) % 12));
+    return allEvents.length === 0 ? 0 : allEvents.filter((event) => !inKey.has(((event.midi % 12) + 12) % 12)).length / allEvents.length;
+  };
+  const contradicted = statedOnlyDefault && estimated.fifths !== 0 &&
+    outside(0) >= DEFAULT_KEY_OUTSIDE && outside(estimated.fifths) <= outside(0) / 2;
   const keyFrom: ConversionReport['keyFrom'] = options.key ? 'chosen'
-    : stated.length > 0 && !(statedOnlyDefault && estimated.fifths !== 0) ? 'the file' : 'estimated from the notes';
+    : stated.length > 0 && !contradicted ? 'the file' : 'estimated from the notes';
   const keyPlan = keyFrom === 'chosen' && options.key ? [{ bar: 0, key: options.key }]
     : keyFrom === 'the file' ? stated : [{ bar: 0, key: estimated }];
   const keyAt = (bar: number): EstimatedKey => {

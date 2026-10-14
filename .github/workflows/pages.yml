@@ -32,6 +32,10 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
         working-directory: web
+      # The fast checks first (owner, 2026-10-14: "Yes, gate deploys"): a failing one stops the deploy, and the app
+      # stays on its last good version. The browser check (check:notes) is not here: it needs Playwright's browser.
+      - run: npm run check
+        working-directory: web
       - run: npm run build
         working-directory: web
       - uses: actions/upload-pages-artifact@v3

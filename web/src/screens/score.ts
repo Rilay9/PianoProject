@@ -399,7 +399,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     await play(e.midi, e.time);
   }
   practice.onAutoPause = (reason, step) => {
-    if (reason === 'mash') mashedAt = performance.now();
+    if (reason === 'mash') { mashedAt = performance.now(); practice.forgetMash(mashedAt); }
     pauseRun(step, reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.');
   };
   /** Paused by itself (silence, mashing, the phone turned): the run is kept, and the next start carries it on. */

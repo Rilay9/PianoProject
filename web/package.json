@@ -7,12 +7,16 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice",
     "check:notes": "vite build && node tests/notes-match.mjs",
+    "check:browser": "vite build && node tests/browser.mjs",
     "check:scoring": "node tests/scoring.mjs",
     "check:lab": "node tests/lab-judge.mjs",
     "check:activity": "node tests/activity.mjs",
     "check:midi": "node tests/midi.mjs",
-    "check:pdf": "node tests/pdf.mjs"
+    "check:pdf": "node tests/pdf.mjs",
+    "check:wake": "node tests/wake.mjs",
+    "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs"
   },
   "dependencies": {
     "jszip": "3.10.1",

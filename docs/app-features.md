@@ -226,7 +226,8 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
   when every note of its chord (any voicing or octave; the Roots step: the root) is down together by the beat
   (±150 ms of real time at any speed; a small roll is fine), amber when a little late (before the next chord), red with
   a missing note, the notes only ever played one at a time (Your own way allows that), or a key not in the chord; said
-  in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"). Chords on the beat are held until the
+  in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"); a key not in the chord is named from
+  the chord's key signature (flats for flat-side chords and C: "E♭ isn't in C7", "A♭ isn't in Cm"; 2026-10-14). Chords on the beat are held until the
   chord changes, the style's rhythm as long as the band holds each (¾ of it, pedal counts; amber if let go early);
   Roots and Your own way leave the length to you. Times are the keyboard's own. Help: keys lit, notes named, or the symbol only.
 - **Lead steps (over a chart: improvising):** roots in rhythm → chord notes (lit) → the scale (the chart's, lit pale,
@@ -331,8 +332,8 @@ one); examples to copy written into a chart.
   MusicXML and the MIDI file beside it (`<id>:midi`, in the backup too), Cancel adds nothing. A file stating no
   tempo is written without one (the score screen's default applies). Bars follow every time signature the file
   states (a pickup written as its own short bar becomes bar 0; metre changes are written where they fall); the key
-  is the file's own, with its changes, and estimated from the notes only when the file states none or only a
-  C major the notes contradict; notes are spelled from the key in force. Grids per bar: sixteenths or triplet
+  is the file's own, with its changes, and estimated from the notes only when the file states none, or states only
+  C major while a quarter or more of the notes fall outside it (a sequencer's default); notes are spelled from the key in force. Grids per bar: sixteenths or triplet
   eighths, and 32nds, sextuplets and 64ths only where a bar's notes sit exactly on them. A file whose notes mostly
   miss the grid (played, not written) is said to have guessed bars and rhythms. Previously converted files keep
   their old conversion; adding the MIDI again converts it anew.
@@ -342,7 +343,8 @@ one); examples to copy written into a chart.
   **Not handled yet:** one voice per staff (a melody over an accompaniment in one hand comes out as tied chords);
   a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes; groups of 5, 7, …
   moved onto the nearest grid; only the first tempo. A played file recorded without a click has no reliable bars.
-- **Catalogue** (tab beside Yours, shown when the build has one; `library/catalogue.ts`, built by
+- **Catalogue** (tab beside Yours, shown when the build has one; a catalogue that could not be read is asked for
+  again the next time the library opens; `library/catalogue.ts`, built by
   `web/tools/catalogue/`): about 1,600 PDMX scores (855 piano, 776 lead sheets, within ~25 MB) picked by reading their notes: piano (one part, two staves)
   and lead sheets (one staff with chord symbols). The index holds what the app's own reader (`facts.ts`) reads from
   each file, a composer only when it matches the composer table (`tools/catalogue/composers.json`; a bare surname
@@ -389,7 +391,8 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   page's own staff spacing; staves joined into a system by a brace or barline where they start; bands to halfway
   between systems. 15 of 15 test pages right, including a tilted grey scan and a one-bar ending (one staff missed on
   one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
-  drag and its split points (green); the blue × on a line removes that line (the others keep their splits); add a line
+  drag and its split points (green), each also a slider for the keyboard (Tab to it, arrow keys move it, Shift for
+  bigger steps); the blue × on a line removes that line (the others keep their splits); add a line
   or remove the last (that page's lines go back to one found split each), or find the lines again. A line can't be
   dragged thinner than 0.6% of the page. A page where no lines are found shows whole, unsplit, until you mark them. On
   a tilted page the splits and margins are placed on the straightened page as shown. Pages are read as you reach them
@@ -479,6 +482,8 @@ placeholders for checking the app, not lesson content.
 - The screen stays awake while playing or in an exercise.
 - Back up / restore (⋯; `web/src/backup.ts`): one zip with every setting, mark and progress record (all
   `piano-web.*` storage) and the library (its records and your files); the size of your files is asked about first.
+  A library that cannot be read is not backed up as empty: the backup is refused with the reason; a piece whose file
+  is gone from this phone is left out and named (2026-10-14).
   Files are stored uncompressed and written and read a piece at a time (no copy of the whole library in memory; a
   zip over 4 GB is refused). **Restoring merges** (owner, 2026-10-13): what this phone lacks is added, what it has
   stays (object by object; the practice log keeps every run from both, once); library records merge (favourite if

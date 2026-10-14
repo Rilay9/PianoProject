@@ -222,6 +222,15 @@ export class Practice {
   }
 
   /** Is this key one of your written notes near song time t? */
+  /**
+   * A mash is a gesture, not music: its keys (pressed in the quarter second before `at`, a performance.now() time,
+   * and not near a note of the score) are taken out of this run (review 2026-10-14: in fast music a burst that began
+   * a step or two before the pause counted up to three of them as wrong keys in the summary).
+   */
+  forgetMash(at: number): void {
+    this.played = this.played.filter((p) => p.at === undefined || p.at < at - MASH_MS || this.nearNote(p.midi, p.t));
+  }
+
   private nearNote(midi: number, t: number): boolean {
     const s = this.settings(), hand = yours(s), reach = NEAR_MS * s.speed;
     for (let i = Math.max(0, this.view.index - 12); i < Math.min(this.view.stepCount, this.view.index + 12); i++) {

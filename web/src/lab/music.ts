@@ -13,7 +13,7 @@
 //             "chords": [[2, 0.5], [4, 0.5]]               beat and length in beats of each chord hit
 //             "instruments": { "bass": "acoustic_bass", "chords": "piano" } }   General MIDI names (sound.ts)
 
-import { Chord, Note, Scale } from 'tonal';
+import { Chord, Key, Note, Scale } from 'tonal';
 import type { Beat, NoteEvent } from '../sound';
 
 export interface Meter { beats: number; beatType: number }
@@ -39,7 +39,12 @@ export interface StyleFile {
 export interface Style { id: string; name: string; meter: Meter; grid: number; drums: { midi: number; steps: number[] }[]; bass: [number, string][]; chords: [number, number][]; bassSound: string; chordSound: string }
 
 /** A chord as the lab uses it: its symbol, root, pitch classes (0-11) and what each note is (root, 3rd, ♭5, 7th...). */
-export interface ChordInfo { symbol: string; root: number; rootName: string; pcs: number[]; names: string[]; degrees: string[] }
+export interface ChordInfo {
+  symbol: string; root: number; rootName: string; pcs: number[]; names: string[]; degrees: string[];
+  /** A key outside the chord is named in flats: the chord's own key signature (minor and diminished chords: the minor
+   *  key's) has flats or none, as C7's E♭ (the blue third) and Cm's A♭ (test review, 2026-10-14: they were D♯, G♯). */
+  flats: boolean;
+}
 
 const DEGREE: Record<string, string> = { '1P': 'root', '2M': '2nd', '3m': '3rd', '3M': '3rd', '4P': '4th', '5d': '♭5', '5P': '5th', '5A': '♯5', '6M': '6th', '7d': '7th', '7m': '7th', '7M': '7th', '9m': '♭9', '9M': '9th', '9A': '♯9', '11P': '11th', '11A': '♯11', '13M': '13th' };
 const pc = (n: string) => ((Note.chroma(n) ?? 0) + 12) % 12;
@@ -48,7 +53,9 @@ const show = (n: string) => n.replace(/#/g, '♯').replace(/([A-G])b/g, '$1♭')
 export function chordInfo(symbol: string): ChordInfo {
   const c = Chord.get(symbol);
   if (c.empty || !c.tonic) throw new Error(`"${symbol}" is not a chord symbol the lab can read`);
-  return { symbol, root: pc(c.tonic), rootName: show(c.tonic), pcs: c.notes.map(pc), names: c.notes.map(show), degrees: c.intervals.map((i) => DEGREE[i] ?? i) };
+  const minorish = c.quality === 'Minor' || c.quality === 'Diminished';
+  const signature = (minorish ? Key.minorKey(c.tonic).alteration : Key.majorKey(c.tonic).alteration) ?? 0;
+  return { symbol, root: pc(c.tonic), rootName: show(c.tonic), pcs: c.notes.map(pc), names: c.notes.map(show), degrees: c.intervals.map((i) => DEGREE[i] ?? i), flats: signature <= 0 };
 }
 
 function meterOf(text: string | undefined): Meter {

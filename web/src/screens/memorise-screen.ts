@@ -56,9 +56,11 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
   /** The sound ready (and MIDI listening) before Memorise first plays: browsers allow sound only after a tap. */
   let memoPreparing = false;
   let memoProblem = ''; // no MIDI keyboard to listen to: said in Memorise's own message line (the main one is hidden there)
+  let visit = 0; // each opening of Memorise: a start got ready in an earlier visit does not run in this one
   async function memoGo(then: () => void): Promise<void> {
     if (memoPreparing) return;
     memoPreparing = true;
+    const mine = visit;
     try {
       const onScreen = memorise.look(currentDevice()).under === 'keyboard'
         ? 'Play on the keys below.' : 'Play on a MIDI keyboard, or show the keyboard in Settings.';
@@ -70,7 +72,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     } finally {
       memoPreparing = false;
     }
-    if (!isOpen) return; // left while it got ready
+    if (!isOpen || mine !== visit) return; // left (and perhaps came back) while it got ready (review 2026-10-14)
     then();
     fillMemo();
   }
@@ -190,6 +192,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     else memorise.setPreset(null);
     scoreScreen.lend(borrower);
     isOpen = true;
+    visit += 1;
     memoFit = 1;
     document.body.classList.add('memorising');
     $('memo-head').hidden = false;
