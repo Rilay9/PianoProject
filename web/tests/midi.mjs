@@ -359,6 +359,9 @@ describe('the hand split', () => {
       const right = split.right.filter((e) => fracToString(e.start) === onset).map((e) => e.midi);
       if (left.length > 0 && right.length > 0) expect(Math.max(...left)).toBeLessThan(Math.min(...right));
     }
+    // (and the split is a split: both hands have notes, or the check above would hold of nothing)
+    expect(split.left.length).toBeGreaterThan(0);
+    expect(split.right.length).toBeGreaterThan(0);
   });
 
   it('does not ask a hand to span more than its reach', () => {
@@ -948,7 +951,6 @@ describe('the port agrees with the Python converter', () => {
   }
 });
 skip('parity: the three MAESTRO performances (bach-bwv885, grieg-op38-7, scarlatti-k525)', 'recordings the old project deliberately never committed (build/midi-real, gitignored); not copied into web/');
-skip('the parity reference > is made by a script and a CI step the failure above names', 'about the old CI step and parity_reference.py; neither exists on this branch');
 
 // --- new (2026-10-14): bars from every time signature, not the first (src/library/midi/bars.ts) ---------------------
 // Notation programs export a pickup as a short bar in its own metre (1/8, then 2/4), and pieces change metre. The

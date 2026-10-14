@@ -120,5 +120,5 @@ for (const c of cases) {
   if (!ok) failed++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${c.name}${ok ? '' : `\n     want ${JSON.stringify(c.want)}\n     got  ${JSON.stringify(got)}`}`);
 }
-console.log(failed ? `${failed} of ${cases.length} failed` : `all ${cases.length} passed`);
+console.log(failed ? `${failed} of ${cases.length + 1} failed` : `all ${cases.length + 1} passed`); // (+1: the holds block above)
 process.exit(failed ? 1 : 0);

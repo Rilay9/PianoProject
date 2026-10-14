@@ -5,7 +5,7 @@ import { chordInfo, formOf, readChart } from '../src/lab/music.ts';
 
 const C7 = chordInfo('C7'); // C E G B♭
 const hit = { t: 0, until: 2000, chord: C7, bar: 0, span: 0 };
-const held = { ...hit, len: 2000 }; // chords on the beat: held until the chord changes (¾ of it: to 1500)
+const held = { ...hit, len: 2000 }; // chords on the beat: held until the chord changes (HOLD_SHARE of it, src/holds.ts: ¾, to 1500)
 const keys = [60, 64, 67, 70];
 const press = (midi, t, off) => ({ midi, t, off });
 const together = (t, off = t + 800) => keys.map((k) => press(k, t, off));

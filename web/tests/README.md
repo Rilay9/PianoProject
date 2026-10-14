@@ -6,10 +6,10 @@ no longer exists.
 
 | Check | Run | Covers | Cases |
 |---|---|---|---|
-| `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules) | 16 |
+| `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules) | 17 (16 judging cases and the pedal-holds block) |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) and the sentence the learner reads after a red chord (`sayHit`, 2026-10-14) | 29 |
-| `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals |
-| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser (2026-10-14) | 132 (+ 7 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
+| `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals (24 today; the count is printed) |
+| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser (2026-10-14) | 132 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build (fails if its canvas library cannot load) | 50 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`; not where in the bar, how long, or which staff (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song; `--corrupt` must fail |
 | `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 14 |
@@ -34,6 +34,10 @@ no longer exists.
 - Speed: chart time vs real time at half speed (late and on time) and at 1.5×.
 - Holding: held to 1600 of 2000 is right; let go at 800 is amber and said; the pedal holding it counts; one note
   let go early is enough; still sounding is not short; at the roots step the length is yours.
+- Also: improvising counts every chord change, played at and landed; 6/8 is counted in two beats; a slash chord is
+  refused.
+- The sentence after a red chord (2026-10-14): an extra key named from the chord's key signature (C7 + E♭, Cm + A♭,
+  Am + B♭, Gm + E♭, E + D♯, D + C♯).
 
 ## activity.mjs
 

@@ -6,9 +6,10 @@ Written by hand rather than produced by a tool so the fixture needs no
 toolchain and its contents are obvious: two systems, each a pair of five-line
 staves joined at the very left edge by a brace. That brace is exactly the
 signal `web/src/pdf/systems.ts` reads to decide which staves belong to one
-system, so the fixture exercises the real detection path rather than a special
-case. The brace sits within the first 4% of the page width because that is the
-strip `bridgedAtLeftEdge` looks at.
+system (a brace or barline down the gap between two staves where they start;
+`joined` there since the 2026-10-14 rework, which looks where the staves begin
+rather than at a fixed strip by the page's edge), so the fixture exercises the
+real detection path rather than a special case.
 
 Run from the web directory:
     python3 tests/fixtures/pdf/make-two-systems-pdf.py

@@ -222,7 +222,7 @@ describe('reindexAfterRebuild', () => {
   });
 });
 
-// --- pdfPageCache.test.ts: the rendered-page cache never evicts a page it is showing --------------------------
+// --- new (2026-10-14): moving a line's handle --------------------------------------------------------------------
 
 describe('moveCut', () => {
   // A line dragged thinner than cutsToSystems keeps (0.005) used to vanish silently and shift every later line's

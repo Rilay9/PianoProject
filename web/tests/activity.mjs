@@ -4,8 +4,8 @@ import { readFileSync } from 'node:fs';
 import { readActivity } from '../src/activity.ts';
 
 const dir = new URL('../public/content/activities/', import.meta.url);
-let failed = 0;
-const ok = (name, pass, got) => { console.log(`${pass ? 'ok  ' : 'FAIL'} ${name}${pass ? '' : ` — ${got}`}`); if (!pass) failed++; };
+let failed = 0, ran = 0;
+const ok = (name, pass, got) => { ran++; console.log(`${pass ? 'ok  ' : 'FAIL'} ${name}${pass ? '' : ` — ${got}`}`); if (!pass) failed++; };
 
 for (const f of JSON.parse(readFileSync(new URL('index.json', dir), 'utf8'))) {
   try { const a = readActivity(f.replace(/\.json$/, ''), JSON.parse(readFileSync(new URL(f, dir), 'utf8'))); ok(`${f} reads (${a.screen})`, true); }
@@ -37,5 +37,5 @@ for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }
   catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }
 }
-console.log(failed ? `${failed} failed` : 'all passed');
+console.log(failed ? `${failed} of ${ran} failed` : `all ${ran} passed`); // (a count: an empty index or a dropped case shows)
 process.exit(failed ? 1 : 0);
