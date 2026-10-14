@@ -6,6 +6,7 @@
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
+import { addEntry, keyName, Run, setActivity, type Slip } from '../log';
 import { markText, memorisedMarks } from '../memorise';
 import type { KeyEvent } from '../midi';
 import { yours } from '../practice';
@@ -172,9 +173,10 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
 
   async function openSong(id: string): Promise<void> {
+    endRun();
     startRequest++; // a start still getting ready is dropped
     starting = false;
-    if (presetPiece() !== id) clearPreset(); // another song: an activity's preset is over
+    if (presetPiece() !== id) { clearPreset(); setActivity(null); } // another song: an activity (its preset, its log tag) is over
     forgetRun();
     sideFit = 1;
     app.currentId = id;
@@ -328,6 +330,8 @@ export function createScoreScreen(app: App): ScoreScreen {
     hideBars();
     pass = 0;
     const loop = view.looped, continuing = resumable;
+    // The practice log (owner, 2026-10-13): a run from here to its stop (carrying on after a pause is the same run).
+    if (s.mode !== 'watch' && !(continuing && logRun)) logRun = { run: new Run(), mode: s.mode, fromStep: view.index, passes: [] };
     resumable = false;
     if (s.mode === 'wait') {
       view.songClock = null;
@@ -348,7 +352,34 @@ export function createScoreScreen(app: App): ScoreScreen {
   // marker (any key, if none of your notes are there, and always in Rhythm); in Wait for me any key starts it.
   let resumable = false; // paused by itself: the next start carries on the same run
   /** Another song, mode, loop or screen: a run that paused by itself is over. */
-  function forgetRun(): void { resumable = false; practice.forgetRun(); }
+  function forgetRun(): void { endRun(); resumable = false; practice.forgetRun(); }
+
+  // ---- the practice log (log.ts): one entry per run --------------------------------------------------------------
+  let logRun: { run: Run; mode: string; fromStep: number; passes: Record<string, unknown>[] } | null = null;
+  const WHAT: Record<string, Slip['what']> = { missed: 'missed', early: 'early', late: 'late', short: 'let go early' };
+  /** A run's slips: each note not on time and held (bar, note as written, what), and each key the score did not ask for. */
+  function logSlips(r: { slips: { step: number; midi: number; kind: string }[]; extra: { step: number; midi: number }[] }): void {
+    if (!logRun) return;
+    const s = settingsFor(currentPiece().id), hand = yours(s);
+    for (const x of r.slips) logRun.run.slip({ bar: view.barNumber(x.step), note: view.namesAt(x.step, hand).find((n) => n.midi === x.midi)?.name ?? keyName(x.midi), what: WHAT[x.kind] ?? 'missed' });
+    for (const x of r.extra) logRun.run.slip({ bar: view.barNumber(x.step), note: keyName(x.midi), what: 'wrong key' });
+  }
+  function logSettings(): Record<string, string | number | boolean> {
+    const s = settingsFor(currentPiece().id), loop = view.loopSpan();
+    return { mode: s.mode, hands: s.hands, bpm: Math.round(view.baseBpm * s.speed), onTime: s.onTime, metronome: s.metronome, ...(loop ? { loop: `${view.barNumber(loop.a)}-${view.barNumber(loop.b)}` } : {}) };
+  }
+  /** The run is over: written to the log if anything was played (a summary, loop passes, or bars waited through). */
+  function endRun(result?: Record<string, unknown>): void {
+    const lr = logRun;
+    logRun = null;
+    if (!lr || borrower) return;
+    const piece = currentPiece();
+    const base = { at: lr.run.at, seconds: lr.run.seconds, screen: 'score' as const, mode: lr.mode, piece: piece.id, title: piece.title, settings: logSettings() };
+    const slips = { slips: lr.run.slips, slipCount: lr.run.slipCount };
+    if (result) addEntry({ ...base, result: { ...result, ...slips } });
+    else if (lr.passes.length) addEntry({ ...base, result: { passes: lr.passes, ...slips } });
+    else if (lr.mode === 'wait' && view.index > lr.fromStep) addEntry({ ...base, result: { fromBar: view.barNumber(lr.fromStep), toBar: view.barNumber(view.index) } });
+  }
   let mashedAt = -Infinity;
   const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
   async function startFromKey(e: KeyEvent): Promise<void> {
@@ -458,6 +489,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       const r = practice.passResult();
       pass++;
       const clean = r.total > 0 && r.onTime === r.total && r.wrong === 0;
+      if (logRun) { logRun.passes.push({ pass, notes: r.total, onTime: r.onTime, early: r.early, late: r.late, missed: r.missed, letGoEarly: r.short, wrongKeys: r.wrong, clean, bpm: Math.round(view.baseBpm * s.speed) }); logSlips(r); }
       let line = `Pass ${pass}: ${r.onTime}/${r.total} on time${r.short ? `, ${r.short} let go early` : ''}${r.wrong ? `, ${r.wrong} ${r.rhythm ? 'extra' : 'wrong'}` : ''}`;
       if (s.mode === 'ladder') {
         const next = clean ? (s.speed < 1 ? Math.min(1, s.speed + s.ladderStep) : s.speed) : Math.max(SPEED_MIN, s.speed - s.ladderStep);
@@ -480,6 +512,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (borrower) { borrower.stop(); return; }
     if (view.playing) view.pause();
     else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
+    if (!resumable) endRun(); // (a run paused by itself is not over: it carries on, or See how it went ends it)
   }
   view.onStop = () => {
     sound.stop();
@@ -532,9 +565,13 @@ export function createScoreScreen(app: App): ScoreScreen {
   for (const ev of ['pointerup', 'pointercancel'] as const) $('keyboard').addEventListener(ev, liftKey);
   $('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());
 
-  practice.onDone = () => { fillBars(); showBars(); };
+  practice.onDone = () => { endRun(); fillBars(); showBars(); };
   practice.onSummary = (r) => {
     if (!r.total) return;
+    // The log: the run's counts and slips (owner, 2026-10-13).
+    logSlips(r);
+    endRun({ notes: r.total, onTime: r.onTime, early: r.early, late: r.late, missed: r.missed, letGoEarly: r.short, wrongKeys: r.wrong, toleranceMs: r.tolerance,
+      weakBars: r.weak.map((w) => `${view.barNumber(w.a)}-${view.barNumber(w.b)}`) });
     const pct = (n: number) => `${Math.round((n / r.total) * 100)}%`;
     $('summary-body').textContent = r.rhythm
       ? `${r.total} beats to tap: ${r.onTime} on time and held (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.short} let go early, ${r.early} early, ` +

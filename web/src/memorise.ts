@@ -19,6 +19,7 @@
 // the memorized mark per piece and hand choice.
 
 import type { FollowView } from './follow';
+import { addEntry, keyName as logKey, Run, type Slip } from './log';
 import { yours, type Practice } from './practice';
 import type { Device, ScoreSettings } from './settings';
 import type { Sound } from './sound';
@@ -88,6 +89,8 @@ export interface MemoriseDeps {
   /** What Memorise plays and judges with: the score's settings with Memorise's own hands and tempo. */
   settings: () => ScoreSettings;
   pieceId: () => string;
+  /** The piece's title (for the practice log). */
+  pieceTitle: () => string;
   /** The hands the piano plays while you play yours (null: none). */
   pianoHands: (s: ScoreSettings) => 'both' | 'right' | 'left' | null;
   /** The first key of a waiting pass, passed on to it (it arrived before the pass began). */
@@ -339,6 +342,8 @@ export class Memorise {
   /** ▶ (or your first key): start, or carry on where you were. */
   start(): void {
     if (this.active && this.phase !== 'done') return;
+    this.endLog(); // a new session in the practice log
+    this.beginLog();
     if (this.phase === 'done') {
       this.place = { chunk: 0, learned: 1, passes: 0 };
       if (this.opts.adds === 'chunk') this.place.learned = this.chunkBars().length; // the first chunk's bars
@@ -351,6 +356,7 @@ export class Memorise {
 
   /** ■: back to before you started (your place is kept). */
   stop(): void {
+    this.endLog();
     this.halt();
     this.d.practice.autoPause = true;
     this.preview();
@@ -358,6 +364,7 @@ export class Memorise {
 
   /** Done: leaving the Memorise screen. */
   leave(): void {
+    this.endLog();
     this.halt();
     this.d.practice.autoPause = true;
     clearTimeout(this.timer);
@@ -511,6 +518,7 @@ export class Memorise {
     p.stop(false);
     this.d.view.songClock = null;
     const slips = r.slips.filter((x) => x.kind === 'missed' || this.timing());
+    this.logPass(slips, r.extra);
     if (this.testing) { this.testEnded(slips, r.extra); return; }
     if (!slips.length && !r.extra.length && !this.peeked) { this.clean(); return; }
     this.review(slips, r.extra);
@@ -571,6 +579,7 @@ export class Memorise {
     const [, b] = this.chunkRange();
     const scopeEnd = this.scope()[1], o = this.opts;
     if (!this.joining && o.adds === 'bar' && scopeEnd < b) {
+      this.log?.learned.push(this.bars(this.scope()[0], scopeEnd)); // (the log: these bars learned)
       this.place.learned++;
       this.place.passes = 0;
       this.savePlace();
@@ -612,6 +621,7 @@ export class Memorise {
   private chunkDone(): void {
     this.joining = null;
     // This chunk's bars are learned (the test is offered once every bar is).
+    { const [a, b] = this.chunkRange(); this.log?.learned.push(`chunk: ${this.bars(a, b)}`); }
     const lk = this.learnedKey();
     this.stored.learned[lk] = [...new Set([...(this.stored.learned[lk] ?? []), ...this.chunkBars()])].sort((x, y) => x - y);
     this.save();
@@ -718,6 +728,7 @@ export class Memorise {
   }
 
   private startTest(kind: 'notes' | 'rhythm'): void {
+    this.beginLog();
     this.halt();
     this.endTest();
     this.testing = kind;
@@ -741,6 +752,8 @@ export class Memorise {
   private testEnded(slips: { step: number; midi: number; kind: string }[], extra: { step: number; midi: number }[]): void {
     const v = this.d.view, kind = this.testing!;
     const bars = [...new Set([...slips.map((x) => v.barOf(x.step)), ...extra.map((x) => v.barOf(x.step)), ...this.stuckBars])].sort((x, y) => x - y);
+    this.log?.tests.push({ kind, clean: !bars.length, toPractise: bars.map((m) => this.num(m)), stuck: [...this.stuckBars].map((m) => this.num(m)) });
+    for (const m of this.stuckBars) this.log?.run.slip({ bar: this.num(m), note: '', what: 'stuck' });
     this.testing = null;
     this.d.practice.autoPause = true;
     this.waitRelease = this.d.anyKeyDown();
@@ -770,6 +783,7 @@ export class Memorise {
 
   /** The bars a test found, one at a time (clean passes as for learning), then the test again. */
   private startPractising(bars: number[]): void {
+    this.beginLog();
     this.halt();
     this.endTest();
     this.practising = [...bars];
@@ -827,6 +841,36 @@ export class Memorise {
       return;
     }
     this.d.changed();
+  }
+
+  // ---- the practice log (log.ts; owner, 2026-10-13): one entry per session, from ▶ (or a test) to ■ or Done ----------
+
+  private log: { run: Run; passes: Record<string, unknown>[]; learned: string[]; tests: Record<string, unknown>[] } | null = null;
+  private beginLog(): void { this.log ??= { run: new Run(), passes: [], learned: [], tests: [] }; }
+  /** A pass in the log: its bars, whether clean, and each slip (bar, note as written, what). */
+  private logPass(slips: { step: number; midi: number; kind: string }[], extra: { step: number; midi: number }[]): void {
+    if (!this.log) return;
+    const v = this.d.view, hand = yours(this.d.settings()), [a, b] = this.testing ? [0, v.barCount - 1] : this.scope();
+    const what: Record<string, Slip['what']> = { missed: this.timing() ? 'missed' : 'helped', early: 'early', late: 'late', short: 'let go early' };
+    if (this.log.passes.length < 300) this.log.passes.push({
+      bars: this.bars(a, b).replace(/^bars? /, ''), from: this.num(this.from), clean: !slips.length && !extra.length && !this.peeked,
+      inTime: this.timing(), slips: slips.length, wrongKeys: extra.length, peeked: this.peeked,
+      ...(this.testing ? { test: this.testing } : this.practising ? { practising: true } : this.joining ? { joining: this.joining } : {}),
+    });
+    for (const x of slips) this.log.run.slip({ bar: v.barNumber(x.step), note: v.namesAt(x.step, hand).find((n) => n.midi === x.midi)?.name ?? logKey(x.midi), what: what[x.kind] ?? 'missed' });
+    for (const x of extra) this.log.run.slip({ bar: v.barNumber(x.step), note: logKey(x.midi), what: 'wrong key' });
+  }
+  /** The session is over: written to the log if anything was played. */
+  private endLog(): void {
+    const l = this.log;
+    this.log = null;
+    if (!l || (!l.passes.length && !l.tests.length)) return;
+    const piece = this.d.pieceId(), o = this.opts, mark = this.stored.marks[this.learnedKey()];
+    addEntry({
+      at: l.run.at, seconds: l.run.seconds, screen: 'memorise', piece, title: this.d.pieceTitle(),
+      settings: { hands: this.hands(piece), bpm: Math.round(this.d.view.baseBpm * this.speed(piece)), chunk: o.chunk, adds: o.adds, learnedAfter: o.learnedAfter, inTime: o.timing },
+      result: { passes: l.passes, learned: l.learned, tests: l.tests, ...(mark ? { mark: markText(mark) } : {}), slips: l.run.slips, slipCount: l.run.slipCount },
+    });
   }
 
   /** Stops what is playing (without leaving the flow). */

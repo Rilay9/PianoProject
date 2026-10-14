@@ -10,6 +10,7 @@ import type { Sound, NoteEvent } from '../sound';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
+import { addEntry, Run, setActivity } from '../log';
 
 export type Rung = 1 | 2 | 3 | 4 | 5;
 export interface SimonLevel {
@@ -101,7 +102,20 @@ export class Simon {
     else this.chooseSet(sets.some((s) => s.id === this.mySet) ? this.mySet! : sets[0].id);
   }
 
-  close(): void { this.stopAll(); this.on = false; this.keys.release(); }
+  close(): void { this.endGame('stopped'); this.stopAll(); this.on = false; this.keys.release(); }
+
+  // ---- the practice log (log.ts; owner, 2026-10-13): one entry per game -------------------------------------------
+  private game: { run: Run; longest: number; helped: number; misses: { item: string; wanted: string; played: string }[] } | null = null;
+  private endGame(ended: 'over' | 'all played' | 'stopped'): void {
+    const g = this.game;
+    this.game = null;
+    if (!g || (!g.longest && !g.misses.length)) return;
+    addEntry({
+      at: g.run.at, seconds: g.run.seconds, screen: 'simon', set: this.set.id, title: this.set.title,
+      settings: { rung: this.level.rung, match: this.level.match, miss: this.level.miss, speed: this.level.speed },
+      result: { longestChain: g.longest, ended, helpedChains: g.helped, misses: g.misses },
+    });
+  }
 
   /** A level change: an activity's preset choice changes for the activity; the rest are yours, saved. */
   setLevel(level: Partial<SimonLevel>): void {
@@ -122,7 +136,7 @@ export class Simon {
   private chooseSet(id: string, remember = true): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
-    if (remember) this.mySet = this.set.id;
+    if (remember) { this.mySet = this.set.id; if (this.on) setActivity(null); } // (your own choice: an activity is over)
     this.makeItems();
     this.keys.setRange(this.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.save();
@@ -133,6 +147,7 @@ export class Simon {
   private bestKey(): string { return `${this.set.id}|${this.level.rung}|${this.level.match}|${this.level.miss}`; }
 
   private reset(): void {
+    this.endGame('stopped');
     this.stopAll();
     this.state = 'ready';
     this.chain = [];
@@ -160,6 +175,8 @@ export class Simon {
     if (!this.on || token !== this.token) return; // closed, or another set or level chosen, while it got ready
     this.chain = [];
     this.tries = TRIES;
+    this.endGame('stopped');
+    this.game = { run: new Run(), longest: 0, helped: 0, misses: [] };
     this.ui.start.hidden = true;
     this.grow();
     await this.showChain(0);
@@ -317,6 +334,7 @@ export class Simon {
     this.keys.clearMarks();
     const length = this.chain.length, key = this.bestKey();
     if (!this.helpedNow && length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
+    if (this.game) { if (this.helpedNow) this.game.helped++; else this.game.longest = Math.max(this.game.longest, length); }
     this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : '✓';
     this.ui.status.className = 'ex-status ok';
     this.scoreLine();
@@ -325,6 +343,7 @@ export class Simon {
       this.waitRelease = this.keys.down.size > 0;
       void this.drawChain([]); // the whole passage, now that it is played
       this.ui.status.textContent = `You played all of it (${length}).`;
+      this.endGame('all played');
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
       this.ui.hear.hidden = true;
@@ -350,6 +369,7 @@ export class Simon {
     const played = item.groups.filter((g) => g.length);
     const next = played[this.flat.slice(0, this.pos + 1).filter((g) => g.item === group.item).length - 1] ?? [];
     this.ui.status.textContent = `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}`;
+    if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, wanted: next.map(shown).join(' '), played: shown(noteName(midi)) });
     this.ui.status.className = 'ex-status bad';
     this.ui.sub.textContent = played.length > 1 ? `In ${item.name}.` : group.keys.length > 1 ? `${item.name}.` : '';
     if (this.level.miss === 'tries') this.tries--;
@@ -358,6 +378,7 @@ export class Simon {
       this.state = 'over';
       this.waitRelease = true; // the miss's own key is still down
       this.ui.sub.textContent = `${this.ui.sub.textContent} Game over: chain ${this.chain.length - 1}.`.trim();
+      this.endGame('over');
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
       this.ui.hear.hidden = true;

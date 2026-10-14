@@ -14,6 +14,7 @@ import { holds } from './holds';
 import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
 import { setUpOffline } from './offline';
+import { autoDelete, entryCount, exportLog, setActivity, setAutoDelete } from './log';
 import { KeyRemote } from './remote';
 import { clearPreset } from './settings';
 import { createExerciseScreen } from './screens/exercise';
@@ -95,10 +96,14 @@ document.addEventListener('click', (e) => {
 
 // ---- ⋯ menu ----------------------------------------------------------------------------------------------------
 
-$('open-more').addEventListener('click', () => moreDialog.showModal());
+$('open-more').addEventListener('click', () => {
+  $<HTMLInputElement>('log-autodelete').checked = autoDelete();
+  $('export-log').textContent = `Export practice log (${entryCount()} ${entryCount() === 1 ? 'entry' : 'entries'})`;
+  moreDialog.showModal();
+});
 // The screen asked for last wins: one still getting ready (loading its content) when another is opened stays shut.
 let opening = 0;
-const wanted = () => { const n = ++opening; return () => n === opening; };
+const wanted = () => { const n = ++opening; setActivity(null); return () => n === opening; }; // (another screen: an activity is over)
 $('open-memorise').addEventListener('click', () => { moreDialog.close(); wanted(); clearPreset(); void memoriseScreen.open(); });
 $('open-freeplay').addEventListener('click', () => {
   leaveScore();
@@ -153,6 +158,13 @@ $('export-score').addEventListener('click', async () => {
   // The file as it came, with only your fingering added (not the app's display changes).
   download(`${piece.id}-fingering.musicxml`, 'application/vnd.recordare.musicxml+xml', addFingerings(await app.xmlFor(piece), fingeringsFor(piece.id)));
 });
+// The practice log (log.ts; owner, 2026-10-13): a file for Claude to plan the next lesson from; old entries deleted (a choice).
+$('export-log').addEventListener('click', () => download(`practice-log-${new Date().toISOString().slice(0, 10)}.json`, 'application/json', exportLog()));
+$<HTMLInputElement>('log-autodelete').addEventListener('change', (e) => {
+  setAutoDelete((e.target as HTMLInputElement).checked);
+  $('export-log').textContent = `Export practice log (${entryCount()} ${entryCount() === 1 ? 'entry' : 'entries'})`;
+});
+
 const BACKUP_PREFIX = 'piano-web.';
 const NOT_BACKED_UP = ['piano-web.offline.v1']; // what this device has saved for offline: true of this device only
 const backedUp = (key: string) => key.startsWith(BACKUP_PREFIX) && !NOT_BACKED_UP.includes(key);
@@ -232,6 +244,9 @@ async function openActivity(id: string): Promise<void> {
 
 /** Opens the activity's screen with its content and presets (in force while it lasts; never saved over yours). */
 async function launch(a: Activity): Promise<void> {
+  try { return await launchScreen(a); } finally { setActivity({ id: a.id, screen: a.screen }); } // its runs are logged with it
+}
+async function launchScreen(a: Activity): Promise<void> {
   const known = (piece: string) => app.pieces.some((p) => p.id === piece) || (app.showMessage(`${a.title}: there is no piece "${piece}"`), false);
   switch (a.screen) {
     case 'score':

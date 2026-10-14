@@ -30,6 +30,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     view, sound, practice,
     settings: () => memoSettings(),
     pieceId: () => currentPiece().id,
+    pieceTitle: () => currentPiece().title,
     pianoHands: (s) => pianoHands(s),
     replayKey: (key) => practice.key({ midi: key, on: true, velocity: 100, time: performance.now() }),
     changed: () => fillMemo(),

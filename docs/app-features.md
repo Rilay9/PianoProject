@@ -364,7 +364,39 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1` (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline).
+  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1` (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline).
+
+## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
+
+How practice went, for Claude to plan the next lesson from. **One entry per run**: a start to its stop (the score's Play
+along, Ladder, Rhythm, Wait for me; a Memorise session from ▶ or a test to ■ or Done; a Simon game; a Drills set,
+finished or left part way; a lab run from Start to ■). Watch and Free play are not logged. Kept on the phone (in the
+backup too); **⋯ → Export practice log** downloads it as a file; **Delete practice log entries older than a month** (in
+⋯, on by default) prunes old ones; never more than 3,000 entries (the oldest go first).
+
+```json
+{ "app": "piano-web", "kind": "practice-log", "version": 1, "exported": "2026-10-13T20:00:00.000Z", "entries": [
+  { "at": "2026-10-13T19:40:02.120Z", "seconds": 95, "screen": "score", "mode": "along",
+    "piece": "mozart-k2", "title": "Minuet in F K. 2", "activity": "k2-wait-right",       // the activity, if opened from one
+    "settings": { "mode": "along", "hands": "right", "bpm": 140, "onTime": "normal", "metronome": false, "loop": "5-8" },
+    "result": { "notes": 41, "onTime": 33, "early": 1, "late": 2, "missed": 3, "letGoEarly": 2, "wrongKeys": 1,
+                "toleranceMs": 100, "weakBars": ["9-12"],
+                "slips": [{ "bar": 10, "note": "F♯5", "what": "late" }], "slipCount": 9 } } ] }
+```
+
+`slips` are each note not on time and held: the printed bar, the note as written (wrong keys: by key name), and what
+(`missed`, `early`, `late`, `let go early`, `wrong key`; Memorise also `helped` for a peek or hint, `stuck` in a test);
+at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
+- score: Play along / Rhythm the counts above; Ladder and loops `passes` [{ pass, notes, onTime, early, late, missed,
+  letGoEarly, wrongKeys, clean, bpm }]; Wait for me `fromBar`, `toBar`.
+- memorise: `passes` [{ bars, from, clean, inTime, slips, wrongKeys, peeked, test | practising | joining }], `learned`
+  (bars and chunks learned), `tests` [{ kind, clean, toPractise, stuck }], `mark` (if memorized).
+- simon: `longestChain`, `ended` (over / all played / stopped), `helpedChains`, `misses` [{ item, wanted, played }].
+- drills: `clean`, `of`, `ended` (set done / stopped early / left), `missesAgain`, `cards` [{ item, clean, right,
+  retried, helped, result }].
+- lab: `rounds` [{ round, step, bars ("1:ok 2:late …", accompaniment) or notes, fromGuide, barsPlayedIn, changes,
+  playedAtChanges, landedOnChord (lead), stoppedInBar }], `wholeRounds`, `roundsPlayed` (lead); slips name the chord
+  and what was wrong ("C7 needs B♭").
 
 ## 8. How the app is put together (for adding a screen or a mode)
 

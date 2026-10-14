@@ -7,6 +7,7 @@
 import type { LabPreset } from '../activity';
 import { $, base, type App, type Screen, type KeyRange } from '../app';
 import { holds } from '../holds';
+import { addEntry, keyName as logKey, Run, setActivity, type Slip } from '../log';
 import { ExerciseKeys } from '../exercise/keys';
 import { barMarks, improvised, judgeHit, ON_TIME_MS, sayHit, type HitResult, type Improv, type Mark, type Press } from '../lab/judge';
 import {
@@ -268,6 +269,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     sound.mute([]);
     sound.play(notes, beats, -form.barBeats * form.beatMs, speed());
     running = true; demo = withDemo; presses = []; held = new Map(); roundNow = -1; judged = new Set(); results = []; roundsDone = 0; roundsPlayed = 0; lastRound = null;
+    logRun = { run: new Run(), rounds: [] };
     startButtons();
     $('lab-open').hidden = true;
     $('lab-result').hidden = true;
@@ -403,6 +405,34 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
    * every bar (a loop is practice); a stopped one shows what was played of it. Improvising counts a round as played
    * when you played in at least half its bars (listening alone is not playing it).
    */
+  // ---- the practice log (log.ts; owner, 2026-10-13): one entry per run, Start to ■ ----------------------------------
+  let logRun: { run: Run; rounds: Record<string, unknown>[] } | null = null;
+  /** A round in the log: its bars' marks (accompaniment) or how it went (lead), and each slip (bar, chord, what). */
+  function logRound(r: number, stoppedBar: number | undefined, improv?: Improv): void {
+    if (!logRun || logRun.rounds.length >= 200) return;
+    const off = loopBars?.[0] ?? 0, step = role() === 'accomp' ? accompStep() : leadStep();
+    if (improv) { logRun.rounds.push({ round: r + 1, step, ...(stoppedBar !== undefined ? { stoppedInBar: stoppedBar + 1 + off } : {}), notes: improv.notes, fromGuide: improv.fromGuide, barsPlayedIn: improv.bars, changes: improv.changes, playedAtChanges: improv.playedAt, landedOnChord: improv.landed }); return; }
+    const marks = barMarks(results);
+    logRun.rounds.push({ round: r + 1, step, ...(stoppedBar !== undefined ? { stoppedInBar: stoppedBar + 1 + off } : {}), bars: [...marks].sort((a, b) => a[0] - b[0]).map(([bar, m]) => `${bar + 1 + off}:${m}`).join(' ') });
+    for (const x of results) {
+      if (x.mark === 'ok') continue;
+      const what: Slip['what'] = x.wrong.length ? 'wrong key' : x.short ? 'let go early' : x.mark === 'late' ? 'late' : 'missed';
+      const detail = x.wrong.length ? ` ${x.wrong.map(logKey).join(' ')}` : x.missing.length ? ` needs ${x.missing.map((p) => x.hit.chord.names[x.hit.chord.pcs.indexOf(p)]).join(' ')}` : x.apart ? ' (notes apart)' : '';
+      logRun.run.slip({ bar: x.hit.bar + 1 + off, note: `${x.hit.chord.symbol}${detail}`, what });
+    }
+  }
+  function endLog(): void {
+    const l = logRun;
+    logRun = null;
+    if (!l || !l.rounds.length || !chart) return;
+    addEntry({
+      at: l.run.at, seconds: l.run.seconds, screen: 'lab', chart: chart.id, title: chart.title,
+      ...(loopBars ? { bars: `${loopBars[0] + 1}-${loopBars[1] + 1}` } : {}),
+      settings: { role: role(), step: role() === 'accomp' ? accompStep() : leadStep(), style: style?.id ?? '', bpm: bpm(), help: stored.help, dropouts: dropouts() },
+      result: { rounds: l.rounds, wholeRounds: roundsDone, ...(role() === 'lead' ? { roundsPlayed } : {}), slips: l.run.slips, slipCount: l.run.slipCount },
+    });
+  }
+
   function roundEnded(r: number, stoppedAt = Infinity): void {
     if (demo && r === 0) return; // Show me: nothing of yours to judge
     const f = form!, stopped = stoppedAt !== Infinity, stoppedBar = stopped ? Math.floor(stoppedAt / (f.barBeats * f.beatMs)) : undefined;
@@ -411,6 +441,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       if (stopped && !results.length) return; // stopped before anything was due: the last whole round stays the result
       const marks = barMarks(results);
       lastRound = { ctx: ctx(), marks, results: [...results], stoppedBar };
+      logRound(r, stoppedBar);
       if (stopped) return;
       roundsDone++;
       if (f.chart.bars.every((_, i) => marks.get(i) === 'ok')) {
@@ -422,6 +453,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       if (stopped && stoppedAt < f.barBeats * f.beatMs) return; // not a bar of it yet
       const improv = improvised(f, presses.filter((p) => p.round === r), guideOf, tol(), stoppedAt);
       lastRound = { ctx: ctx(), marks: new Map(), results: [], improv, stoppedBar };
+      logRound(r, stoppedBar, improv);
       if (stopped) return;
       roundsDone++;
       if (improv.bars * 2 >= f.chart.bars.length) {
@@ -439,6 +471,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     const { round, pos } = where();
     if (round >= 0 && !(demo && round === 0)) { judgeHits(round, pos); roundEnded(round, pos); }
     stopRun();
+    endLog();
     showResult();
     app.stayAwake();
   }
@@ -548,7 +581,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       b.innerHTML = '<strong></strong><small></small>';
       b.querySelector('strong')!.textContent = c.title;
       b.querySelector('small')!.textContent = `${c.bars.length} bars · ${c.meter.beats}/${c.meter.beatType} · ♩ ${c.tempo}`;
-      b.addEventListener('click', () => { pickDialog.close(); preset = null; choose(c.id); lastRound = null; feedback(''); fill(); }); // another chart: the activity is over
+      b.addEventListener('click', () => { pickDialog.close(); preset = null; setActivity(null); choose(c.id); lastRound = null; feedback(''); fill(); }); // another chart: the activity is over
       const li = document.createElement('li');
       li.append(b);
       return li;
@@ -619,7 +652,9 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     catch (e) { return e instanceof Error ? e.message : String(e); }
   }
   function close(): void {
+    if (running) stop(); // (the run is logged)
     stopRun();
+    endLog();
     preset = null; // an activity's preset ends with it
     isOpen = false;
     keys.release();

@@ -13,6 +13,7 @@
 import type { Sound, Beat, NoteEvent } from '../sound';
 import { holds, HOLD_SHARE, phraseEndLength } from '../holds';
 import { judge, type PlayedKey } from '../matching';
+import { addEntry, Run, setActivity } from '../log';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
@@ -122,7 +123,24 @@ export class Drill {
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
+  close(): void { this.logSet(false); this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
+
+  // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
+  private run: Run | null = null;
+  private logSet(done: boolean, full = false): void {
+    const run = this.run;
+    this.run = null;
+    if (!run || !this.results.length) return;
+    const clean = this.results.filter((r) => r.clean).length;
+    addEntry({
+      at: run.at, seconds: run.seconds, screen: 'drills', set: this.set.id, title: this.set.title,
+      settings: { rung: this.level.rung, onTime: this.level.onTime, cards: this.level.cards, start: this.level.start, bpm: this.tempo },
+      result: {
+        clean, of: this.results.length, ended: done ? (full ? 'set done' : 'stopped early') : 'left', missesAgain: this.redo,
+        cards: this.results.map((r) => ({ item: r.item.name, clean: r.clean, right: r.right, retried: r.retried, helped: r.helped, result: r.text })),
+      },
+    });
+  }
 
   /** A level change: an activity's preset choice changes for the activity; the rest are yours, saved. */
   setLevel(level: Partial<DrillLevel>): void {
@@ -139,12 +157,13 @@ export class Drill {
   private chooseSet(id: string, remember = true): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
-    if (remember) { this.stored.set = this.set.id; this.save(); }
+    if (remember) { this.stored.set = this.set.id; this.save(); setActivity(null); } // (your own choice: an activity is over)
     this.keys.setRange(this.set.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.reset();
   }
 
   private reset(): void {
+    this.logSet(false); // (another set or level part way: what was played is logged)
     this.request++;
     this.stopAll();
     this.state = 'idle';
@@ -177,6 +196,8 @@ export class Drill {
     const request = ++this.request;
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
     if (!this.on || request !== this.request) return; // closed, or another set or level chosen, while it got ready
+    this.logSet(false); // a set left part way (Again, another set) is logged as it was
+    this.run = new Run();
     this.results = [];
     this.redo = !!items;
     this.passageAt = 0;
@@ -220,6 +241,7 @@ export class Drill {
     // Bests from full sets only (docs §4): not a set stopped early (a mash, Finish) or endless, nor the misses again.
     const full = !this.redo && Number.isFinite(this.limit) && of >= this.limit;
     const newBest = full && (!best || clean > best.clean);
+    this.logSet(true, full);
     if (newBest) { this.stored.best[key] = { clean, of }; this.save(); }
     this.notation.clear();
     this.keys.clearMarks();
