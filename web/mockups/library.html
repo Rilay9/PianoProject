@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library mockups</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --faint: #9ca3af; --line: #b8bcc4;
+    --accent: #2563eb; --ok: #16a34a; --amber: #d97706; --bad: #dc2626; --btn: #f3f4f6; --heart: #e11d48; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 8px; }
+  p.intro, .note { max-width: 1000px; color: var(--muted); margin: 4px 0 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 300px; }
+  figcaption b { color: var(--fg); }
+  .side + figcaption, figure.wide figcaption { max-width: 610px; }
+  .phone { width: 300px; height: 610px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .phone.side { width: 610px; height: 300px; }
+  .top { background: var(--bar); padding: 8px 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .top .t { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .x { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 9px; font-size: 12px; white-space: nowrap; }
+  .x.main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tabs { display: flex; background: var(--bar); font-size: 13px; border-bottom: 1px solid var(--line); }
+  .tabs span { flex: 1; text-align: center; padding: 6px 0; color: var(--muted); }
+  .tabs span.on { color: var(--fg); font-weight: 700; box-shadow: inset 0 -3px 0 var(--accent); }
+  .tabs span small { color: var(--faint); font-weight: 400; }
+  .search { margin: 8px 10px 0; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; font-size: 13px; color: var(--faint); display: flex; gap: 6px; }
+  .search.typed { color: var(--fg); }
+  .chips { display: flex; gap: 5px; padding: 7px 10px 6px; overflow: hidden; white-space: nowrap; font-size: 12px; }
+  .chip { border: 1px solid var(--line); border-radius: 14px; padding: 2px 9px; background: #fff; color: var(--muted); flex: none; }
+  .chip.on { background: #eef4ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .count { padding: 0 10px 4px; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
+  .list { flex: 1; overflow: hidden; border-top: 1px solid #e5e7eb; }
+  .item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #eef0f2; }
+  .item .ic { width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: none; }
+  .item .ic.pdf { background: #fee2e2; font-size: 9px; font-weight: 700; color: #b91c1c; }
+  .item .ic.chart { background: #fef3c7; font: 700 11px 'Times New Roman', serif; color: #92400e; }
+  .item .ic.lead { background: #ede9fe; }
+  .item .tx { flex: 1; min-width: 0; }
+  .item .tt { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .mm { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .hrt { color: var(--faint); font-size: 16px; } .item .hrt.on { color: var(--heart); }
+  .item .more { color: var(--muted); font-size: 16px; padding: 0 2px; }
+  .item.new { background: #f0fdf4; }
+  .item.new .tt::after { content: ' · added'; font-size: 11px; font-weight: 600; color: var(--ok); }
+  .item .add { border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
+  .item .add.got { border-color: var(--line); color: var(--muted); font-weight: 400; }
+  .group { padding: 5px 10px 3px; font-size: 11px; font-weight: 700; color: var(--muted); background: #f8fafc; border-bottom: 1px solid #eef0f2; }
+  .foot { padding: 6px 10px; font-size: 11px; color: var(--muted); border-top: 1px solid #e5e7eb; background: #fafafa; }
+  .toast { position: absolute; left: 10px; right: 10px; bottom: 40px; background: #111827; color: #fff; border-radius: 10px; padding: 8px 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  .toast b { color: #93c5fd; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.18); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
+  .sheet .grab { width: 36px; height: 4px; border-radius: 2px; background: #d1d5db; margin: 0 auto 2px; }
+  .dim { position: absolute; inset: 0; background: rgba(17,24,39,.35); }
+  .sh { font-size: 15px; font-weight: 700; }
+  .opts { display: flex; flex-wrap: wrap; gap: 5px; }
+  .opts span { border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; font-size: 12px; }
+  .opts span.on { background: #eef4ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .lbl { font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+  .slider { position: relative; height: 18px; margin: 0 6px; }
+  .slider::before { content: ''; position: absolute; left: 0; right: 0; top: 8px; height: 3px; background: #e5e7eb; border-radius: 2px; }
+  .slider i { position: absolute; top: 8px; height: 3px; background: var(--accent); }
+  .slider b { position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 7px; background: #fff; border: 2px solid var(--accent); }
+  .pad { padding: 10px 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .title { font-size: 19px; font-weight: 700; line-height: 1.2; } .meta { font-size: 12px; color: var(--muted); }
+  .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btns .x { font-size: 13px; padding: 5px 11px; }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 12px; }
+  .facts dt { color: var(--muted); } .facts dd { margin: 0; }
+  .facts dd small { color: var(--faint); }
+  .warn { font-size: 11px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 5px 8px; }
+  .tags { display: flex; gap: 5px; flex-wrap: wrap; font-size: 12px; }
+  .tags span { background: #f3f4f6; border-radius: 10px; padding: 1px 8px; }
+  .tags span.addtag { border: 1px dashed var(--line); background: #fff; color: var(--muted); }
+  .boxed { border: 1px solid #e5e7eb; border-radius: 10px; padding: 7px 9px; display: flex; flex-direction: column; gap: 5px; }
+  .preview { height: 64px; border: 1px solid #e5e7eb; border-radius: 8px; background:
+    repeating-linear-gradient(to bottom, transparent 0 5px, #9ca3af 5px 6px) 0 6px / 100% 30px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 5px, #9ca3af 5px 6px) 0 38px / 100% 30px no-repeat; position: relative; }
+  .preview::after { content: '♩ ♪♪ ♩ ♩   ♪♪ ♩ 𝅗𝅥'; position: absolute; left: 14px; top: 2px; font-size: 18px; letter-spacing: 6px; color: #374151; }
+  .two { display: flex; flex: 1; min-height: 0; }
+  .two > .left { width: 52%; display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+  .two > .right { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .item.sel { background: #eef4ff; }
+  .shelf-note { border: 1px dashed var(--line); border-radius: 10px; padding: 8px; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Library mockups</h1>
+<p class="intro">For deciding the look before anything is built. The written description in the chat says what everything does; these show where it sits. Grey or dashed parts are for later. Rows show only facts read from the notes or that you set yourself; nothing from the PDMX catalogue that can't be trusted (genre, difficulty, tags, ratings) appears anywhere.</p>
+
+<h2>1. The list: two options for where the catalogue goes</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span class="on">Yours <small>9</small></span><span>Catalogue <small>8,412</small></span><span style="color:var(--faint)">Shelf</span></div>
+      <div class="search">⌕ Search titles, composers, tags</div>
+      <div class="chips"><span class="chip">♥ Favourites</span><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span><span class="chip">Tags ▾</span></div>
+      <div class="count"><span>9 items</span><span>Sort: Recently opened ▾</span></div>
+      <div class="list">
+        <div class="item new"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G</div><div class="mm">C. Petzold · piano · 1♯ · 3/4 · 32 bars</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in F K. 2</div><div class="mm">W. A. Mozart · piano · 1♭ · 3/4 · 20 bars</div></div><span class="hrt on">♥</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic chart">C7</div><div class="tx"><div class="tt">12-bar blues in C</div><div class="mm">chord chart · 4/4 · 12 bars · shuffle</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Prelude in E minor Op. 28 No. 4</div><div class="mm">F. Chopin · piano · 1♯ · 2/2 · 25 bars</div></div><span class="hrt on">♥</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic pdf">PDF</div><div class="tx"><div class="tt">Clair de lune</div><div class="mm">PDF · 7 pages · yours</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic lead">𝄞</div><div class="tx"><div class="tt">Amazing Grace</div><div class="mm">lead sheet · 3♭ · 3/4 · 16 bars</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Chorale BWV 514</div><div class="mm">J. S. Bach · piano · no ♯/♭ · 4/4 · 12 bars</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic pdf">PDF</div><div class="tx"><div class="tt">Gymnopédie No. 1</div><div class="mm">PDF · 3 pages · yours</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+      </div>
+      <div class="foot">Your files: 4 · 23 MB · kept safe from clean-up</div>
+      <div class="toast"><span>Added “Minuet in G”</span><b>Open</b></div>
+    </div>
+    <figcaption><b>A (recommended): tabs.</b> “Yours” is everything you have: the app's own pieces and charts, what you added, and what you took from the catalogue. The catalogue (thousands) has its own tab so it never floods your list. Shelf is greyed: last. Just after adding, the new piece is at the top, marked, with a toast; search and filters are cleared so it can't hide.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="search typed">⌕ minuet</div>
+      <div class="chips"><span class="chip">♥ Favourites</span><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span><span class="chip">Tags ▾</span></div>
+      <div class="list">
+        <div class="group">YOURS · 2</div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G</div><div class="mm">C. Petzold · piano · 1♯ · 3/4 · 32 bars</div></div><span class="hrt">♡</span><span class="more">⋯</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in F K. 2</div><div class="mm">W. A. Mozart · piano · 1♭ · 3/4 · 20 bars</div></div><span class="hrt on">♥</span><span class="more">⋯</span></div>
+        <div class="group">IN THE CATALOGUE · 214</div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G minor</div><div class="mm">C. Petzold · piano · 2♭ · 3/4 · 32 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in C K. 6</div><div class="mm">W. A. Mozart · piano · no ♯/♭ · 3/4 · 24 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in D minor</div><div class="mm">piano · 1♭ · 3/4 · 16 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G (Boccherini)</div><div class="mm">L. Boccherini · piano · 1♯ · 3/4 · 40 bars</div></div><span class="add">+ Add</span></div>
+        <div class="group" style="text-align:center;font-weight:400">Show all 214 in the catalogue →</div>
+      </div>
+    </div>
+    <figcaption><b>B: one list.</b> No tabs; a search shows yours first, then catalogue matches below with + Add. Simpler, but with no search the catalogue has no place to browse, and the filters mix the two.</figcaption>
+  </figure>
+</div>
+
+<h2>2. Filters and sort: one line, opened one at a time</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span class="on">Yours <small>9</small></span><span>Catalogue <small>8,412</small></span><span style="color:var(--faint)">Shelf</span></div>
+      <div class="search">⌕ Search titles, composers, tags</div>
+      <div class="chips"><span class="chip">♥ Favourites</span><span class="chip on">Piano ✕</span><span class="chip on">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span></div>
+      <div class="count"><span>5 of 9 · Piano</span><span>Sort: Recently opened ▾</span></div>
+      <div class="list"></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh">Key signature</div>
+        <div class="meta">What the music is written in. Major or minor is shown only where the file says which.</div>
+        <div class="opts"><span>Any</span><span class="on">No sharps or flats</span><span class="on">1♯</span><span>2♯</span><span>3♯</span><span>4♯+</span><span class="on">1♭</span><span>2♭</span><span>3♭</span><span>4♭+</span></div>
+        <div class="lbl">BARS (AS PRINTED)</div>
+        <div class="slider"><i style="left:8%;right:45%"></i><b style="left:6%"></b><b style="left:53%"></b></div>
+        <div class="meta" style="display:flex;justify-content:space-between"><span>8</span><span>8 – 40 bars</span><span>120+</span></div>
+        <div class="btns" style="justify-content:space-between"><span class="x">Clear</span><span class="x main">Show 3</span></div>
+      </div>
+    </div>
+    <figcaption><b>Filters.</b> One line of chips that scrolls sideways; each opens a small sheet. Chosen ones turn blue, and the count line names them. Kinds: piano · melody · lead sheet · several parts · chord chart · PDF. Nothing matching says what's set, with Clear.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span class="on">Yours <small>9</small></span><span>Catalogue <small>8,412</small></span><span style="color:var(--faint)">Shelf</span></div>
+      <div class="search">⌕ Search titles, composers, tags</div>
+      <div class="chips"><span class="chip">♥ Favourites</span><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span></div>
+      <div class="list"></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh">Sort</div>
+        <div class="opts" style="flex-direction:column;align-items:stretch"><span class="on">Recently opened</span><span>Recently added</span><span>Title A–Z</span><span>Composer A–Z</span><span>Fewest bars first</span></div>
+        <div class="lbl">YOUR TAGS</div>
+        <div class="tags"><span>recital</span><span>sight-reading</span><span>with Dad</span></div>
+        <div class="meta">Tags filter like the other chips: tap one to show only those.</div>
+      </div>
+    </div>
+    <figcaption><b>Sort.</b> Recently opened is the default; pieces never opened follow, newest added first. The catalogue tab adds “Most viewed on MuseScore”, labelled as exactly that (it's a count of views, not quality).</figcaption>
+  </figure>
+</div>
+
+<h2>3. A piece's page (⋯ on a row)</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Minuet in G</span><span class="hrt" style="color:var(--heart);font-size:18px">♥</span></div>
+      <div class="pad">
+        <div><div class="title">Minuet in G</div><div class="meta">C. Petzold · added 13 Oct · opened today</div></div>
+        <div class="btns"><span class="x main">Open</span><span class="x">Memorise</span><span class="x">Watch</span></div>
+        <div class="preview"></div>
+        <div class="lbl">READ FROM THE NOTES</div>
+        <dl class="facts">
+          <dt>Kind</dt><dd>piano, two staves</dd>
+          <dt>Key</dt><dd>1♯ <small>(G major: the file says)</small></dd>
+          <dt>Time</dt><dd>3/4</dd>
+          <dt>Bars</dt><dd>32 as printed <small>(48 with repeats)</small></dd>
+          <dt>Range</dt><dd>G2 – D6</dd>
+        </dl>
+        <div class="lbl">YOURS</div>
+        <div class="tags"><span>recital</span><span class="addtag">+ tag</span></div>
+        <div class="lbl">WHERE IT CAME FROM</div>
+        <div class="meta">PDMX catalogue · uploaded to MuseScore by “jsmith”<br>Uploader's licence for this transcription: CC0</div>
+        <div class="warn">Notes not checked against a printed edition.</div>
+        <div class="btns"><span class="x">Rename</span><span class="x">Export file</span><span class="x" style="color:var(--bad)">Delete</span></div>
+      </div>
+    </div>
+    <figcaption><b>Piece page.</b> Open (the score screen, as you last left it) plus the score screen's other doors. Facts are labelled by where they come from. Composer is whatever the file names, checked by me for catalogue pieces (blank if I couldn't tell). Delete only for pieces you added.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Clair de lune</span><span class="hrt" style="font-size:18px;color:var(--faint)">♡</span></div>
+      <div class="pad">
+        <div><div class="title">Clair de lune</div><div class="meta">PDF · added 10 Oct · never opened</div></div>
+        <div class="btns"><span class="x" style="color:var(--faint)">Open (the viewer comes next)</span></div>
+        <dl class="facts">
+          <dt>File</dt><dd>clair-de-lune.pdf · 2.1 MB</dd>
+          <dt>Pages</dt><dd>7</dd>
+        </dl>
+        <div class="meta">A PDF is pages, not notes: no key, bars or judging. It can be linked to a MusicXML copy of the same piece.</div>
+        <div class="boxed"><div class="lbl" style="margin:0">SAME PIECE AS</div><div class="meta">Not linked · <span style="color:var(--accent)">Link a score…</span></div></div>
+        <div class="lbl">YOURS</div>
+        <div class="tags"><span class="addtag">+ tag</span></div>
+        <div class="btns"><span class="x">Rename</span><span class="x">Export file</span><span class="x" style="color:var(--bad)">Delete</span></div>
+      </div>
+    </div>
+    <figcaption><b>A PDF's page.</b> Until the viewer exists, Open says it's coming. Linking a PDF to a score of the same piece is the same idea as the Shelf's digital twin.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">12-bar blues in C</span><span class="hrt" style="font-size:18px;color:var(--faint)">♡</span></div>
+      <div class="pad">
+        <div><div class="title">12-bar blues in C</div><div class="meta">Chord chart · the app's own · opened 2 days ago</div></div>
+        <div class="btns"><span class="x main">Open in the lab</span></div>
+        <dl class="facts">
+          <dt>Time</dt><dd>4/4 · ♩ 84</dd>
+          <dt>Bars</dt><dd>12</dd>
+          <dt>Chords</dt><dd>C7 · F7 · G7</dd>
+          <dt>Style</dt><dd>shuffle</dd>
+        </dl>
+        <div class="lbl">YOURS</div>
+        <div class="tags"><span class="addtag">+ tag</span></div>
+        <div class="meta">The app's own content can't be deleted or renamed; favourites and tags still work.</div>
+      </div>
+    </div>
+    <figcaption><b>A chord chart.</b> Opens in the accompaniment lab. A lead sheet's page looks like a score's, and opens in the lab or the score screen once lab stage 2 is built.</figcaption>
+  </figure>
+</div>
+
+<h2>4. Adding</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="list"></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh">From a MIDI file: check what was guessed</div>
+        <div class="meta">bach-minuet.mid · 1 track, so the hands were split by pitch</div>
+        <div class="preview"></div>
+        <dl class="facts">
+          <dt>Hands</dt><dd>split at middle C <small>(guessed)</small> · <span style="color:var(--accent)">Swap hands</span></dd>
+          <dt>Tempo</dt><dd>♩ 112 <small>(from the file)</small></dd>
+          <dt>Time</dt><dd>3/4 <small>(from the file)</small></dd>
+          <dt>Key</dt><dd>1♯ <small>(guessed from the notes)</small> · <span style="color:var(--accent)">Change</span></dd>
+        </dl>
+        <div class="warn">A MIDI file is a recording of key presses: the notation is worked out and can be messier than a real score.</div>
+        <div class="btns" style="justify-content:space-between"><span class="x">Cancel</span><span class="x main">Add to library</span></div>
+      </div>
+    </div>
+    <figcaption><b>MIDI.</b> Converted on the phone (the old app's converter, its tests re-run before trusting it). Only the MusicXML it makes is kept. MusicXML, MXL and PDF need no sheet: they're added straight away, with the toast.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="list"></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh">Added 3 of 5</div>
+        <div class="item" style="padding:4px 0"><div class="ic">♪</div><div class="tx"><div class="tt">Für Elise</div><div class="mm">added</div></div></div>
+        <div class="item" style="padding:4px 0"><div class="ic pdf">PDF</div><div class="tx"><div class="tt">Gymnopédie No. 1</div><div class="mm">added</div></div></div>
+        <div class="item" style="padding:4px 0"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G</div><div class="mm">added</div></div></div>
+        <div class="item" style="padding:4px 0"><div class="ic">!</div><div class="tx"><div class="tt">notes.docx</div><div class="mm" style="color:var(--bad)">Not a score: the library takes MusicXML, MXL, MIDI and PDF.</div></div></div>
+        <div class="item" style="padding:4px 0"><div class="ic">=</div><div class="tx"><div class="tt">K2.mxl</div><div class="mm">Already in your library as “Minuet in F K. 2”.</div></div></div>
+        <div class="btns" style="justify-content:flex-end"><span class="x main">Done</span></div>
+      </div>
+    </div>
+    <figcaption><b>Several at once</b> (the picker, or Share → Piano from another app). Each file gets one line; what went wrong is one sentence. A file already in the library isn't added twice.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span>Yours <small>9</small></span><span class="on">Catalogue <small>8,412</small></span><span style="color:var(--faint)">Shelf</span></div>
+      <div class="search typed">⌕ gymnopedie</div>
+      <div class="chips"><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span></div>
+      <div class="count"><span>3 pieces</span><span>Sort: Most viewed ▾</span></div>
+      <div class="list">
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 1</div><div class="mm">E. Satie · piano · 2♯ · 3/4 · 78 bars · <b>9 versions</b> ▾</div></div><span class="add">+ Add</span></div>
+        <div class="item" style="padding-left:46px"><div class="tx"><div class="mm">piano · 2♯ · 3/4 · 78 bars · 412k views</div></div><span class="add">+ Add</span></div>
+        <div class="item" style="padding-left:46px"><div class="tx"><div class="mm">piano · 2♯ · 3/4 · 39 bars · 21k views (shortened)</div></div><span class="add">+ Add</span></div>
+        <div class="item" style="padding-left:46px"><div class="tx"><div class="mm">melody · 2♯ · 3/4 · 78 bars · 3k views</div></div><span class="add got">Added ✓</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 2</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 61 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 3</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 77 bars</div></div><span class="add">+ Add</span></div>
+      </div>
+      <div class="foot">Catalogue works offline once opened · adding a piece needs the internet</div>
+    </div>
+    <figcaption><b>Catalogue tab.</b> Pieces I've read from PDMX's own files and picked for piano. Many uploads of one piece fold into one row with its versions. Adding fetches the file once; after that it's yours offline.</figcaption>
+  </figure>
+</div>
+
+<h2>5. Sideways and tablet: list and page side by side</h2>
+<div class="row">
+  <figure class="wide">
+    <div class="phone side">
+      <div class="top"><span class="x">←</span><span class="t">Library</span><span class="x">⌕</span><span class="x main">+ Add</span></div>
+      <div class="two">
+        <div class="left">
+          <div class="chips" style="padding-top:5px"><span class="chip on">Yours</span><span class="chip">Catalogue</span><span class="chip">♥</span><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Bars ▾</span></div>
+          <div class="list">
+            <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in G</div><div class="mm">C. Petzold · piano · 1♯ · 3/4 · 32 bars</div></div></div>
+            <div class="item sel"><div class="ic">♪</div><div class="tx"><div class="tt">Minuet in F K. 2</div><div class="mm">W. A. Mozart · piano · 1♭ · 3/4 · 20 bars</div></div></div>
+            <div class="item"><div class="ic chart">C7</div><div class="tx"><div class="tt">12-bar blues in C</div><div class="mm">chord chart · 4/4 · 12 bars</div></div></div>
+            <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Prelude in E minor Op. 28 No. 4</div><div class="mm">F. Chopin · piano · 1♯ · 2/2 · 25 bars</div></div></div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="pad" style="gap:6px">
+            <div style="display:flex;justify-content:space-between"><div><div class="title" style="font-size:16px">Minuet in F K. 2</div><div class="meta">W. A. Mozart · the app's own</div></div><span style="color:var(--heart);font-size:18px">♥</span></div>
+            <div class="btns"><span class="x main">Open</span><span class="x">Memorise</span><span class="x">Watch</span></div>
+            <dl class="facts"><dt>Kind</dt><dd>piano, two staves</dd><dt>Key · time</dt><dd>1♭ · 3/4</dd><dt>Bars</dt><dd>20 as printed (40 with repeats)</dd></dl>
+            <div class="tags"><span class="addtag">+ tag</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption><b>Phone sideways (tablets the same, roomier).</b> Tapping a row shows its page on the right instead of opening it, since there's room; Open is one more tap. Upright, a row's tap opens the piece directly and ⋯ shows the page.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Library</span></div>
+      <div class="tabs"><span>Yours</span><span>Catalogue</span><span class="on">Shelf</span></div>
+      <div class="pad"><div class="shelf-note"><b>Later.</b> Your paper books: each lists its pieces with page numbers, and a piece can be linked to its copy in Yours, so a lesson can say “page 34 of your Bastien book” and open the digital copy too.</div></div>
+    </div>
+    <figcaption><b>Shelf.</b> Built last, once lessons can point to it.</figcaption>
+  </figure>
+</div>
+</body>
+</html>
