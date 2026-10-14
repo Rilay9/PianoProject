@@ -215,26 +215,24 @@
     <div id="lib-toast" class="lib-toast" role="status" hidden></div>
   </section>
 
-  <!-- The PDF reader (screens/pdf.ts): two lines in fixed places, alternating; controls hide while timed turning runs. -->
+  <!-- The PDF reader (screens/pdf.ts): two lines (halves, upright) in fixed places, alternating. -->
   <section id="pdfv" class="pdfv" aria-label="PDF reader" hidden>
     <div class="fp-head pdf-head"><button id="pdf-done" type="button" class="btn" aria-label="Back">←</button><span id="pdf-title" class="title"></span><span id="pdf-where" class="pdf-where"></span></div>
     <div id="pdf-stage" class="pdf-stage">
       <div id="pdf-slot-0" class="pdf-slot"><canvas></canvas></div>
       <div id="pdf-slot-1" class="pdf-slot"><canvas></canvas></div>
       <p id="pdf-status" class="pdf-status" role="status" hidden></p>
-      <button id="pdf-pause" type="button" class="btn pdf-pause" aria-label="Pause">❚❚</button>
     </div>
     <div class="pdf-bar">
       <button id="pdf-back" type="button" class="btn" aria-label="Previous line">◀</button>
       <button id="pdf-next" type="button" class="btn" aria-label="Next line">▶</button>
-      <button id="pdf-timed" type="button" class="btn main">▶ Timed</button>
-      <button id="pdf-open-settings" type="button" class="btn pdf-timing-btn" aria-haspopup="dialog"><span id="pdf-timing"></span> ⚙</button>
       <span class="pdf-sizes"><button id="pdf-smaller" type="button" class="btn" aria-label="Smaller">A−</button><output id="pdf-size"></output><button id="pdf-larger" type="button" class="btn" aria-label="Larger">A+</button></span>
       <button id="pdf-open-adjust" type="button" class="btn">Adjust lines</button>
+      <button id="pdf-open-settings" type="button" class="btn" aria-haspopup="dialog" aria-label="Turning">⚙</button>
     </div>
     <div id="pdf-adjust" class="pdf-adjust" hidden>
       <div class="pdf-adjust-row"><button id="pdf-adjust-prev" type="button" class="btn" aria-label="Previous page">◀</button><span id="pdf-adjust-label"></span><button id="pdf-adjust-next" type="button" class="btn" aria-label="Next page">▶</button><span class="lab-sp"></span><button id="pdf-adjust-done" type="button" class="btn main">Done</button></div>
-      <p class="note">Each line of music is between a top (blue) and a bottom (orange) handle: drag them to fit.</p>
+      <p class="note">Each line of music is between a top (blue) and a bottom (orange) handle: drag them to fit. The green handle is where the line is split in two on a phone held upright: drag it sideways to a gap between notes.</p>
       <div id="pdf-adjust-frame" class="pdf-adjust-frame"></div>
       <div class="pdf-adjust-row"><button id="pdf-adjust-add" type="button" class="btn">Add a line</button><button id="pdf-adjust-remove" type="button" class="btn">Remove the last</button><button id="pdf-adjust-detect" type="button" class="btn">Find the lines again</button></div>
     </div>
@@ -242,12 +240,7 @@
   <dialog id="pdf-settings" aria-labelledby="pdf-settings-title">
     <form method="dialog">
       <h2 id="pdf-settings-title">Turning</h2>
-      <p class="note">Timed turning learns from your own turns: turn a few lines yourself while you play, and it takes your pace. Until then it uses these.</p>
-      <label class="row">Tempo ♩ <input id="pdf-bpm" type="number" min="20" max="300" inputmode="numeric"></label>
-      <label class="row">Beats in a bar <input id="pdf-beats" type="number" min="1" max="16" inputmode="numeric"></label>
-      <label class="row">Bars in a line <input id="pdf-bars" type="number" min="1" max="16" inputmode="numeric"></label>
-      <p id="pdf-learned" class="note"></p>
-      <button id="pdf-forget" type="button" class="btn">Forget what it learned</button>
+      <p class="note">Turn with your keyboard's highest key (next) and lowest key (back; they need learning once in ⋯ → Keyboard controls), a tap on the music, a page-turner pedal (it sends page or arrow keys), or ◀ ▶.</p>
       <label class="row"><input id="pdf-edge-music" type="checkbox"> This piece uses the keyboard's lowest or highest key (then they don't turn lines)</label>
       <div class="actions"><button value="close">Done</button></div>
     </form>

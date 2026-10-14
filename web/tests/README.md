@@ -10,7 +10,7 @@ no longer exists.
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) | 23 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals |
 | `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`) | 117 (+ 11 old cases printed as skipped, with the reason) |
-| `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; timed turning's timing; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build | 49 (+ 7 old screen cases printed as skipped, with the reason) |
+| `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build | 46 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | Every note the score screen draws, lights and names matches the file, bar by bar, for every song in `public/scores` (builds, serves on :5193) | one per song; `--corrupt` must fail |
 
 ## scoring.mjs
@@ -79,10 +79,8 @@ no longer exists.
   by eye): simple.pdf (a short last line); scan.pdf p1 (tilted 1.2°, grey, specks, blur, a binding edge) and p2
   (−0.8°, beams crowding the lines); leadsheet.pdf (one staff a line, a quarter-width last line); chopin.pdf p2 (a
   one-bar ending); text.pdf (prose: no systems); and the old `two-systems.pdf` with its cuts worked out from its
-  generator. Each must give exactly the true systems and staves.
-- Timed turning (`timing.ts`): before your turns, tempo × beats × bars; then the middle of your last three lines, one
-  odd line not setting the pace; only the last three; a double tap and a break ignored; the margin (half the spread)
-  added once from your last own turn, never line after line.
+  generator. Each must give exactly the true systems and staves; on simple, leadsheet and scan p1 every line's
+  half-line split must cut nothing but staff lines.
 - Ported unchanged: reading position after cuts change; the page cache never evicting a page on screen; the
   background detection order; a system drawn out of its page (`region.ts`) and its height on screen.
 - Skipped, printed with the reason: the old screen's 7 cases (its own screen is not ported). `PdfDocument.ts`

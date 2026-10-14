@@ -11,7 +11,6 @@ import { fileURLToPath } from 'node:url';
 import { collapseRuns, detectPage, detectSystems, groupStaves, toGreyscale } from '../src/pdf/systems.ts';
 import { cutsToSystems, detectPageSystems, reindexAfterRebuild } from '../src/pdf/systemPlan.ts';
 import { BoundedPageCache } from '../src/pdf/pageCache.ts';
-import { arithmeticMs, learnedMs, linePlan, lineMs, turnAfter, LEARN_MAX_MS, LEARN_MIN_MS } from '../src/pdf/timing.ts';
 import { backgroundDetectionOrder } from '../src/pdf/detectionOrder.ts';
 import { drawSystemInto, systemScreenHeight } from '../src/pdf/region.ts';
 
@@ -273,32 +272,6 @@ describe('BoundedPageCache', () => {
   });
 });
 
-// --- timing.ts: how long timed turning waits on a line (reworked 2026-10-14) -------------------------------------
-
-describe('timed turning: how long a line takes', () => {
-  it('before any turns of yours: tempo × beats a bar × bars a line (no 4/4 assumed)', () => {
-    expect(lineMs([], 80, 4, 4)).toEqual({ ms: 12_000, learned: false });
-    expect(lineMs([], 60, 3, 4)).toEqual({ ms: 12_000, learned: false });
-    expect(arithmeticMs(120, 6, 2)).toBe(6_000);
-  });
-  it('learns the middle of your last three lines, so one hesitation does not set the pace', () => {
-    expect(learnedMs([9_000, 30_000, 10_000])).toBe(10_000);
-    expect(lineMs([9_000, 11_000, 10_000], 80, 4, 4)).toEqual({ ms: 11_000, learned: true }); // + half the spread: errs late
-  });
-  it('only the last three count', () => {
-    expect(learnedMs([50_000, 50_000, 8_000, 9_000, 10_000])).toBe(9_000);
-  });
-  it('ignores a double tap and a break', () => {
-    expect(learnedMs([LEARN_MIN_MS - 1, LEARN_MAX_MS + 1])).toBe(null);
-    expect(learnedMs([LEARN_MIN_MS])).toBe(LEARN_MIN_MS);
-  });
-  it('with two lines, their middle', () => { expect(learnedMs([8_000, 10_000])).toBe(9_000); });
-  it('turns are counted from your last own turn: the margin is added once, not line after line', () => {
-    const plan = linePlan([9_000, 11_000, 10_000], 80, 4, 4); // 10 s a line, margin 1 s
-    expect([turnAfter(plan, 1), turnAfter(plan, 2), turnAfter(plan, 5)]).toEqual([11_000, 21_000, 51_000]);
-  });
-});
-
 // --- pdfDetectionOrder.test.ts: which page the background detector reaches next ---------------------------
 
 describe('backgroundDetectionOrder', () => {
@@ -411,9 +384,18 @@ if (napi) {
         expect(staffCounts(detectSystems(gray, canvas.width, canvas.height))).toEqual(want);
       });
     }
+    // The half-line split (a phone upright): between notes, so nothing but staff lines is cut (on these pages every
+    // line splits clean; on Chopin's, with slurs over whole lines, the split crosses a slur: not tested as clean).
+    for (const [name, file, n] of [['simple.pdf', 'simple', 1], ['leadsheet.pdf', 'leadsheet', 1], ['scan.pdf p1', 'scan', 1]]) {
+      it(`splits every line of ${name} between notes`, async () => {
+        const { canvas, context } = await renderFixture(900, fileURLToPath(new URL(`./fixtures/pdf/${file}.pdf`, import.meta.url)), n);
+        const bands = detectPage(toGreyscale(context.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height), canvas.width, canvas.height).bands;
+        expect(bands.map((b) => b.splitInk)).toEqual(bands.map(() => 0));
+      });
+    }
   });
 } else {
-  skip('PDF pages through pdf.js (8 cases)', `@napi-rs/canvas would not load here: ${napiWhy}`);
+  skip('PDF pages through pdf.js (11 cases)', `@napi-rs/canvas would not load here: ${napiWhy}`);
 }
 
 describe('systemScreenHeight (screenHeightOf in the old screen)', () => {

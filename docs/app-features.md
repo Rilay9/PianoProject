@@ -354,32 +354,31 @@ one); examples to copy written into a chart.
 **For:** reading your own PDF scores at the piano. A PDF is pages, not notes, so it is read a line (system) at a time
 and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394 renders the pages).
 
-- **Two lines in fixed places, alternating** (like the score's Turn): the line you're on (marked at its left) and the
-  next; turning replaces the line you finished, so the one you read toward never moves. The slots are as tall as the
-  tallest line met so far, one under the other. When two don't fit at the chosen size (a phone sideways, usually),
-  the line you're on is shown whole with as much of the next as fits under it. A−/A+ choose the size (50–100% of the
-  width); each page's margins are trimmed to where its staves start and end, so the music gets the width.
-- **Turning:** the keyboard's highest key (next) and lowest key (back), as the keyboard remote does elsewhere (they
-  need learning once in Keyboard controls), unless the piece's settings say it uses those keys; a tap on the music;
-  a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶. **Timed:** ▶ Timed turns by
-  itself; the controls hide while it runs, ❚❚ or a mash pauses. It learns from your own turns: the middle of the time
-  you spent on your last three lines (a line gone back to keeps counting, so a too-early turn teaches it to wait
-  longer), plus half their spread, counted from your last own turn (the margin added once, so it doesn't drift);
-  before any turns, tempo × beats a bar × bars a line from its settings. Forget what it learned in the settings.
-  Measured against the MusicXML the test PDFs came from (20 simulated players): lines of equal length, 4 early
-  turns in 140, typically about 1 s late; lines of unequal length (a 4-bar line after 5-bar ones), several seconds
-  off and sometimes early: it learns a time per line, not per bar.
+- **Two units in fixed places, alternating** (like the score's Turn): the one you're on (marked at its left) and the
+  next; turning replaces the one you finished, so the one you read toward never moves. A unit is a whole line, or
+  **on a phone held upright half a line**: a whole printed line is too small there (measured: dense music at about a
+  quarter of print size), so each line is split at the emptiest place near its middle (between notes: 60 of 71 test
+  lines split with nothing but staff lines cut, the rest through a slur or hairpin) and shown as two halves, which
+  doubled the size (staff space 2.4 → 4.8 px on a dense page; sideways 5.2, a whole line). The slots are as tall as
+  the tallest unit met so far, one under the other; when two don't fit (usually sideways) the unit you're on shows
+  whole with as much of the next as fits under it. A−/A+ choose the size (50–100% of the width); each page's margins
+  are trimmed to where its staves start and end. Turning the phone keeps your line (and half).
+- **Turning** (owner: no timed turning): the keyboard's highest key (next) and lowest key (back), as the keyboard
+  remote does elsewhere (they need learning once in Keyboard controls), unless the piece's ⚙ says it uses those keys;
+  a tap on the music; a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶.
 - **Finding the lines** (`pdf/systems.ts`, reworked from the old app's after it got 0 of 5 real-looking pages right):
   ink against the page's own paper; the page's tilt measured and straightened (on screen too); staff lines as the
   sharpest rows, five evenly spaced a staff (a too-faint fifth filled in); a second look for short systems at the
   page's own staff spacing; staves joined into a system by a brace or barline where they start; bands to halfway
   between systems. 15 of 15 test pages right, including a tilted grey scan and a one-bar ending (one staff missed on
   one page, its band still holding it). **Adjust lines** shows the page with each line's top and bottom handles to
-  drag, add or remove a line, or find the lines again.
-- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line you were on, the lines found or adjusted, each
-  page's tilt and margins, size, timing settings and what it learned, and the edge-keys switch.
-- Not yet: following your playing through a linked MusicXML copy ("smart"); counting bars per line (so timed turning
-  copes with lines of unequal length); repeats (turning back for a repeat is yours to do).
+  drag and its split (green) to drag sideways; add or remove a line (its page's splits found again), or find the lines
+  again. A page where no lines are found shows whole, unsplit, until you mark them.
+- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line and half you were on, the lines and splits found or
+  adjusted, each page's tilt and margins, the size, and the edge-keys switch.
+- Not built (owner, 2026-10-14): timed turning (tried and measured: fine on lines of equal length, off by seconds on
+  unequal ones; counting bars from the page only reached 34 of 71 lines right); following your playing (a PDF has no
+  notes; with a MusicXML copy you'd use the score screen). Repeats are yours to turn back for.
 
 ---
 
@@ -564,7 +563,7 @@ A link opens an activity once: it leaves the address as it opens, so a later rel
 
 ## 9. Not built yet
 
-The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; the PDF reader's smart following (§5d); history /
+The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
 drill cards; a setup tour and guide (last).

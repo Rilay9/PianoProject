@@ -27,6 +27,10 @@ export interface SystemBand {
   staffLines: number[];
   /** Staves in the band: 2 for a piano grand staff, 1 for a lead sheet. */
   staves: number;
+  /** Where to split the line in two (page pixels across): the emptiest column near its middle (the half-line view). */
+  split?: number;
+  /** Ink (besides the staff lines) that split cuts through, in pixels: 0 is a clean split between notes. */
+  splitInk?: number;
 }
 
 /** What was found on a page: its tilt and its systems. */
@@ -273,6 +277,25 @@ export function detectPage(gray: Uint8Array | Uint8ClampedArray, width: number, 
     else systems.push([staves[i] as number[]]);
   }
 
+  // A place to split a line in two (shown as halves on a phone upright): between 40% and 60% of the way across, the
+  // column, with its neighbours, holding least ink besides the staff lines (so no note, stem or beam is cut).
+  const splitOf = (system: number[][]) => {
+    const lines = system.flat();
+    const sp = median(system.flatMap((st) => st.slice(1).map((y, j) => y - (st[j] as number))));
+    const x0 = Math.min(...system.map((st) => starts[staves.indexOf(st)] as number));
+    const x1 = Math.max(...system.map((st) => ends[staves.indexOf(st)] as number));
+    const from = Math.round((lines[0] as number) - 2 * sp), to = Math.round((lines[lines.length - 1] as number) + 2 * sp);
+    const onLine = (r: number) => lines.some((y) => Math.abs(r - y) <= 1);
+    const ink = (x: number) => { let d = 0; for (let r = from; r <= to; r += 1) if (!onLine(r) && at(x, r)) d += 1; return d; };
+    const mid = (x0 + x1) / 2;
+    let best = Math.round(mid), bestInk = Infinity;
+    for (let x = Math.round(x0 + 0.4 * (x1 - x0)); x <= Math.round(x0 + 0.6 * (x1 - x0)); x += 1) {
+      const c = ink(x - 1) + ink(x) + ink(x + 1);
+      if (c < bestInk || (c === bestInk && Math.abs(x - mid) < Math.abs(best - mid))) { bestInk = c; best = x; }
+    }
+    return { split: best, ink: ink(best) };
+  };
+
   // Bands: each system to halfway to its neighbours (the outer ones by half the gap next to them).
   const ext = systems.map((s) => ({ first: (s[0] as number[])[0] as number, last: (s[s.length - 1] as number[])[4] as number }));
   const gapAfter = (k: number) => (ext[k + 1] as { first: number }).first - (ext[k] as { last: number }).last;
@@ -281,11 +304,32 @@ export function detectPage(gray: Uint8Array | Uint8ClampedArray, width: number, 
     const e = ext[k] as { first: number; last: number };
     const above = k > 0 ? Math.round(gapAfter(k - 1) / 2) : Math.round((systems.length > 1 ? gapAfter(0) : space * 8) / 2);
     const below = k < systems.length - 1 ? gapAfter(k) - Math.round(gapAfter(k) / 2) - 1 : Math.round((systems.length > 1 ? gapAfter(k - 1) : space * 8) / 2);
-    return { top: Math.max(0, e.first - above), bottom: Math.min(height - 1, e.last + below), staffLines: s.flat(), staves: s.length };
+    const { split, ink } = splitOf(s);
+    return { top: Math.max(0, e.first - above), bottom: Math.min(height - 1, e.last + below), staffLines: s.flat(), staves: s.length, split, splitInk: ink };
   });
   // The margins: from a little left of the earliest staff start (the brace and the part name sit there) to the latest end.
   const left = Math.max(0, Math.min(...starts) / width - 0.06), right = Math.min(1, Math.max(...ends) / width + 0.01);
   return { angle, bands, left, right };
+}
+
+/**
+ * Where to split a band of a page in two when its lines were set by hand (Adjust lines): between 40% and 60% across
+ * `left`..`right` (page pixels), the column with its neighbours holding least ink, read along the page's tilt. (Staff
+ * lines cross every column there alike, so they don't move the choice.)
+ */
+export function splitAt(gray: Uint8Array | Uint8ClampedArray, width: number, height: number, angle: number, top: number, bottom: number, left: number, right: number): number {
+  const paper = (() => { const h = new Uint32Array(256); for (let i = 0; i < gray.length; i += 1) h[gray[i] as number] += 1; for (let t = 0, seen = 0; t < 256; t += 1) { seen += h[t] as number; if (seen >= gray.length / 2) return t; } return 255; })();
+  const ink = Math.round((inkThresholdOf(gray) + paper) / 2);
+  const tan = Math.tan((angle * Math.PI) / 180), cx = width / 2;
+  const at = (x: number, r: number) => { const y = Math.round(r + (x - cx) * tan); return x >= 0 && x < width && y >= 0 && y < height && (gray[y * width + x] as number) <= ink; };
+  const col = (x: number) => { let d = 0; for (let r = top; r <= bottom; r += 1) if (at(x, r)) d += 1; return d; };
+  const mid = (left + right) / 2;
+  let best = Math.round(mid), bestInk = Infinity;
+  for (let x = Math.round(left + 0.4 * (right - left)); x <= Math.round(left + 0.6 * (right - left)); x += 1) {
+    const c = col(x - 1) + col(x) + col(x + 1);
+    if (c < bestInk || (c === bestInk && Math.abs(x - mid) < Math.abs(best - mid))) { bestInk = c; best = x; }
+  }
+  return best;
 }
 
 /** The bands alone (a straight page, or callers that don't straighten). */
