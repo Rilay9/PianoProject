@@ -184,10 +184,13 @@ export class Practice {
     this.segments = [];
   }
 
-  /** Paused by itself: keeps how this part went, for the summary when the run ends. */
-  suspend(): void {
+  /**
+   * Paused by itself: keeps how this part went, for the summary when the run ends. resumeAt: the step it will carry
+   * on from; this part is scored only before it, so the notes played again after the pause count once (review, 2026-10-13).
+   */
+  suspend(resumeAt?: number): void {
     clearInterval(this.watch);
-    if (this.running === 'along') this.segments.push(this.score());
+    if (this.running === 'along') this.segments.push(this.score(resumeAt === undefined ? undefined : resumeAt - 1));
     this.running = null;
   }
 
@@ -332,18 +335,21 @@ export class Practice {
   passResult(): Summary { return { ...this.score() }; }
 
   /** Play along: your keys matched with the written notes of your hands (the rule is in matching.ts). */
-  private score(): Summary {
+  /** upTo: the last step scored (default: where the marker is). */
+  private score(upTo = this.view.index): Summary {
     const s = this.settings(), hand = yours(s), tolerance = ON_TIME_MS[s.onTime];
     const steps: ExpectedStep[] = [];
     const index: number[] = []; // the view's step for each of these
-    for (let i = this.fromIndex; i <= this.view.index; i++) {
+    for (let i = this.fromIndex; i <= upTo; i++) {
       const keys = this.view.struckAt(i, hand);
       if (keys.length) { steps.push({ t: this.view.stepT(i), keys, durs: this.view.durationsAt(i, hand) }); index.push(i); }
     }
     const rhythm = s.mode === 'rhythm';
     // Each note held its length too (owner, 2026-10-13); a press with no time of its own is not judged for it.
     const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor(p.midi, p.at));
-    const r = (rhythm ? judgeRhythm : judge)(steps, this.played, tolerance, held);
+    // Cut short (a pause it carries on from): the presses from there on are the next part's.
+    const cut = upTo < this.view.index ? this.view.stepT(upTo + 1) - tolerance : Infinity;
+    const r = (rhythm ? judgeRhythm : judge)(steps, this.played.filter((p) => p.t < cut), tolerance, held);
     return {
       ...r, tolerance, rhythm, weak: this.weakSpots(r.offSteps.map((k) => index[k]), r.wrongAt),
       slips: r.offNotes.map((o) => ({ step: index[o.k], midi: o.midi, kind: o.kind })),

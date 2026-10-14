@@ -102,6 +102,8 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
   const isFragment = !/<score-partwise|<score-timewise/.test(xml);
   const doc = new DOMParser().parseFromString(isFragment ? `<measure>${xml}</measure>` : xml, 'application/xml');
   if (doc.querySelector('parsererror')) throw new Error('the MusicXML could not be read');
+  const parts = doc.querySelectorAll('part').length;
+  if (parts > 1) throw new Error(`it has ${parts} parts; only one part (one line of music) can be read so far`);
   const measures = isFragment ? [doc.documentElement] : [...(doc.querySelector('part')?.querySelectorAll(':scope > measure') ?? [])];
   const out: Parsed = { groups: [], beats: [], bars: [], detached: [] };
   type Ev = { at: number; dur: number; pitch: string | null; tied: boolean; line: string; detached: boolean };
@@ -124,6 +126,8 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
       if (fifthsEl) out.fifths = Number(fifthsEl.textContent);
     }
     if (!wanted) return;
+    // Repeats and 1st/2nd endings would be read straight through, in the wrong order: refused (review, 2026-10-13).
+    if (measure.querySelector(':scope > barline > repeat, :scope > barline > ending')) throw new Error(`bar ${num(measure, m)} has a repeat or an ending, which cannot be read in order yet`);
     if (firstTempo === undefined) firstTempo = Number(measure.querySelector('sound[tempo]')?.getAttribute('tempo')) || undefined;
     started = true;
     starts.push({ at: start, m });
@@ -183,6 +187,16 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
 
 /** One item from its source. fetchText: for a MusicXML item given as a file. */
 async function buildItem(n: number, src: ItemSource, base: string, fetchText: (url: string) => Promise<string>): Promise<Item> {
+  // Its fields: one kind of source (notes, chord, interval or musicxml) and that kind's options; anything else is refused.
+  const allowed = ['notes', 'chord', 'octave', 'arpeggio', 'interval', 'root', 'together', 'musicxml', 'name', 'short'];
+  const odd = Object.keys(src).find((k) => !allowed.includes(k));
+  if (odd) throw new Error(`item ${n}: "${odd}" is not one of ${allowed.join(', ')}`);
+  const kinds = (['notes', 'chord', 'interval', 'musicxml'] as const).filter((k) => src[k] !== undefined);
+  if (kinds.length !== 1) throw new Error(`item ${n}: it should give one of notes, chord, interval or musicxml${kinds.length ? ` (it gives ${kinds.join(' and ')})` : ''}`);
+  // A pitch's letter as a capital (c4 is C4; the notation needs it so).
+  const cap = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
+  if (src.notes) src = { ...src, notes: src.notes.split(/(\s+|,)/).map((t) => (/^[a-g]/.test(t) ? cap(t) : t)).join('') };
+  if (src.root) src = { ...src, root: cap(src.root) };
   let groups: string[][] = [], name = '', short = '', beats: number[] | undefined;
   let bars: number[] | undefined, meter: Item['meter'], fifths: number | undefined, detached: boolean[] | undefined;
   if (src.notes) {
@@ -220,9 +234,22 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
  * address (a MusicXML item given as a file is found next to it).
  */
 export async function readSet(id: string, file: SetFile, base: string, scoreXml: (score: string) => Promise<string>, fetchText: (url: string) => Promise<string>): Promise<ItemSet> {
+  // The file's fields and values, checked (a typo is refused with the reason, never quietly read as something else).
+  const fields = ['title', 'order', 'tempo', 'rhythm', 'items', 'from'];
+  const odd = Object.keys(file).find((k) => !fields.includes(k));
+  if (odd) throw new Error(`"${odd}" is not one of ${fields.join(', ')}`);
+  if (typeof file.title !== 'string' || !file.title) throw new Error('it needs a "title"');
+  if (file.order !== undefined && file.order !== 'pool' && file.order !== 'passage') throw new Error(`order "${file.order}" should be pool or passage`);
+  if (file.tempo !== undefined && !(typeof file.tempo === 'number' && file.tempo >= 20 && file.tempo <= 300)) throw new Error(`tempo ${file.tempo} should be a number of beats a minute, 20 to 300`);
+  if (file.rhythm !== undefined && file.rhythm !== 'notes' && !(typeof file.rhythm === 'number' && file.rhythm > 0)) throw new Error(`rhythm ${JSON.stringify(file.rhythm)} should be "notes" or a length in quarter notes (1, 0.5…)`);
+  if (!!file.from === !!file.items) throw new Error('it should give either "items" or "from" (a passage of a score)');
   if (file.from) {
-    const [a, b] = (file.from.bars ?? '1-4').split('-').map(Number);
-    const parsed = groupsFromXml(await scoreXml(file.from.score), file.from.staff ?? 1, [a, b ?? a]);
+    const m = /^(\d+)(?:-(\d+))?$/.exec(file.from.bars ?? '1-4');
+    if (!m) throw new Error(`from.bars "${file.from.bars}" should be like "5-8" (printed bar numbers)`);
+    const [a, b] = [Number(m[1]), Number(m[2] ?? m[1])];
+    if (b < a) throw new Error(`from.bars "${file.from.bars}" end before they start`);
+    const parsed = groupsFromXml(await scoreXml(file.from.score), file.from.staff ?? 1, [a, b]);
+    if (!parsed.groups.some((g) => g.length)) throw new Error(`bars ${a}–${b} of "${file.from.score}" have no notes on staff ${file.from.staff ?? 1} (or are not in it)`);
     // One item per moment with notes; a rest after it stays with it (the chain grows by notes, the rhythm whole).
     const items: Item[] = [];
     parsed.groups.forEach((g, k) => {

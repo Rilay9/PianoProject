@@ -89,7 +89,8 @@ export function judgeRhythm(steps: ExpectedStep[], played: PlayedKey[], toleranc
     if (last && (p.t - last.t) / p.speed < CHORD_MS) continue;
     taps.push({ ...p, midi: 0, key: p });
   }
-  // A tap is held as long as the moment's longest note (the key tapped, as played).
-  return judge(steps.map((s) => ({ t: s.t, keys: [0], durs: [Math.max(0, ...(s.durs ?? []))] })), taps, toleranceMs,
+  // A tap is held as long as the moment's longest note, but never past the next moment (one tap cannot be held
+  // through the next one: review, 2026-10-13).
+  return judge(steps.map((s, i) => ({ t: s.t, keys: [0], durs: [Math.min(Math.max(0, ...(s.durs ?? [])), (steps[i + 1]?.t ?? Infinity) - s.t)] })), taps, toleranceMs,
     held && ((tap) => held((tap as PlayedKey & { key: PlayedKey }).key)));
 }

@@ -7,6 +7,7 @@ import type { SimonLevel } from './exercise/simon';
 import type { DrillLevel } from './exercise/drill';
 import type { MemoriseOptions } from './memorise';
 import type { ClickOn, Hands, Mode, OnTime } from './settings';
+import { readLadder } from './lab/music.ts'; // (with .ts: the checks run this file in Node)
 
 /** The score's playing choices an activity can preset (tempo in beats a minute; the rest as the Tempo panel's). */
 export interface ScorePreset { mode?: Mode; hands?: Hands; tempo?: number; metronome?: boolean; clickOn?: ClickOn; onTime?: OnTime; ladderStep?: number }
@@ -41,21 +42,35 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const str = (v: unknown, what: string): string => { if (typeof v !== 'string' || !v) throw new Error(`it needs "${what}"`); return v; };
   // Each preset key: one of its allowed values, a number in range, true/false or a name; unknown keys are refused,
   // so a typo never passes silently.
-  type Rule = readonly (string | number)[] | 'bool' | 'name' | { min: number; max: number };
-  const say = (r: Rule) => (r === 'bool' ? 'true or false' : r === 'name' ? 'a name' : Array.isArray(r) ? r.join(' / ') : `${(r as { min: number }).min} to ${(r as { max: number }).max}`);
-  const check = <T extends object>(o: Record<string, unknown>, rules: Record<string, Rule>, what: string): T => {
+  type Rule = readonly (string | number)[] | 'bool' | 'name' | { min: number; max: number; whole?: boolean };
+  const say = (r: Rule) => (r === 'bool' ? 'true or false' : r === 'name' ? 'a name' : Array.isArray(r) ? r.join(' / ')
+    : `${(r as { whole?: boolean }).whole ? 'a whole number, ' : ''}${(r as { min: number }).min} to ${(r as { max: number }).max}`);
+  /** keysOnly: only the keys are checked (the values are checked elsewhere). */
+  const check = <T extends object>(o: Record<string, unknown>, rules: Record<string, Rule>, what: string, keysOnly = false): T => {
     for (const [k, v] of Object.entries(o)) {
       const r = rules[k];
       if (!r) throw new Error(`${what} has "${k}", which is not one of ${Object.keys(rules).join(', ')}`);
+      if (keysOnly) continue;
       const ok = r === 'bool' ? typeof v === 'boolean' : r === 'name' ? typeof v === 'string' && v.length > 0
         : Array.isArray(r) ? r.includes(v as string | number)
-        : typeof v === 'number' && v >= (r as { min: number }).min && v <= (r as { max: number }).max;
+        : typeof v === 'number' && v >= (r as { min: number }).min && v <= (r as { max: number }).max && (!(r as { whole?: boolean }).whole || Number.isInteger(v));
       if (!ok) throw new Error(`${what}.${k} is ${JSON.stringify(v)}; it should be ${say(r)}`);
     }
     return o as T;
   };
   const range = (min: number, max: number) => ({ min, max });
+  const whole = (min: number, max: number) => ({ min, max, whole: true });
   const screen = f.screen;
+  // The file's own fields, by screen: anything else (a misspelt "setting", Memorise "bars") is refused, not ignored.
+  const fields: Record<string, string[]> = {
+    score: ['piece', 'bars', 'settings'], memorise: ['piece', 'settings'], simon: ['set', 'level'], drills: ['set', 'level'], lab: ['chart', 'preset'], freeplay: [],
+  };
+  if (typeof screen === 'string' && fields[screen]) {
+    for (const k of Object.keys(f)) {
+      if (k === 'title' || k === 'screen' || fields[screen].includes(k)) continue;
+      throw new Error(k === 'bars' && screen === 'memorise' ? 'Memorise takes the whole piece (bars are not offered yet)' : `"${k}" is not a field of a ${screen} activity (${['title', 'screen', ...fields[screen]].join(', ')})`);
+    }
+  }
   switch (screen) {
     case 'score': {
       let bars: [number, number] | undefined;
@@ -89,7 +104,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
     }
     case 'drills': {
       const level = check<Partial<DrillLevel>>(obj(f.level, 'level'), {
-        rung: [1, 2, 3, 4, 5], start: ['clicks', 'first'], metronome: 'bool', onTime: ['relaxed', 'normal', 'strict', 'notes'], cards: range(0, 100),
+        rung: [1, 2, 3, 4, 5], start: ['clicks', 'first'], metronome: 'bool', onTime: ['relaxed', 'normal', 'strict', 'notes'], cards: whole(0, 100),
       }, 'level');
       return { id, title, screen, set: str(f.set, 'set'), level };
     }
@@ -98,10 +113,25 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
       const { parts, steps, ...rest } = p;
       // (style: a style's id, checked against the styles when the lab opens; steps: kinds checked by lab/music.ts readLadder)
       const preset = check<LabPreset>(rest, {
-        role: ['accomp', 'lead'], step: ['roots', 'beat1', 'style', 'own', 'root', 'tones', 'scale', 'answer', 'free'], style: 'name', dropouts: ['off', 'drums', 'band'], cleanForNext: range(1, 10),
+        role: ['accomp', 'lead'], step: ['roots', 'beat1', 'style', 'own', 'root', 'tones', 'scale', 'answer', 'free'], style: 'name', dropouts: ['off', 'drums', 'band'], cleanForNext: whole(1, 10),
       }, 'preset');
       if (parts !== undefined) preset.parts = check(obj(parts, 'preset.parts'), { drums: 'bool', bass: 'bool', chords: 'bool', click: 'bool' }, 'preset.parts');
-      if (steps !== undefined) preset.steps = obj(steps, 'preset.steps') as LabPreset['steps'];
+      if (steps !== undefined) {
+        // The ladder: "accompaniment" and/or "lead", each a list of that role's step kinds (read as the lab reads them).
+        const st = check<NonNullable<LabPreset['steps']>>(obj(steps, 'preset.steps'), { accompaniment: 'name', lead: 'name' } as Record<string, Rule>, 'preset.steps', true);
+        if (st.accompaniment !== undefined) readLadder(st.accompaniment, 'accomp');
+        if (st.lead !== undefined) readLadder(st.lead, 'lead');
+        preset.steps = st;
+      }
+      // A step belongs to a part: given with the other part it is refused; given alone it says which part.
+      const leadKinds = ['root', 'tones', 'scale', 'answer', 'free'];
+      if (preset.step) {
+        const its = leadKinds.includes(preset.step) ? 'lead' : 'accomp';
+        if (preset.role && preset.role !== its) throw new Error(`preset.step "${preset.step}" is a ${its === 'lead' ? 'lead' : 'accompaniment'} step, but preset.role is "${preset.role}"`);
+        preset.role = its;
+        const ladder = its === 'lead' ? preset.steps?.lead : preset.steps?.accompaniment;
+        if (ladder && !(ladder as unknown[]).some((x) => (typeof x === 'string' ? x : (x as StepSpec)?.kind) === preset.step)) throw new Error(`preset.step "${preset.step}" is not in its ladder (preset.steps)`);
+      }
       return { id, title, screen, chart: str(f.chart, 'chart'), preset };
     }
     case 'freeplay':

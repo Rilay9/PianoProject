@@ -22,10 +22,11 @@ export interface Piece {
   title: string;
   composer: string;
   file: string;
-  license: string;
-  licenseUrl: string;
-  source: { dataset: string; uploadTitle: string };
-  status: string;
+  // Where it came from and its state (shown in ⓘ; optional: an entry without them still opens).
+  license?: string;
+  licenseUrl?: string;
+  source?: { dataset: string; uploadTitle?: string };
+  status?: string;
 }
 
 export interface KeyRange { lo: number; hi: number }

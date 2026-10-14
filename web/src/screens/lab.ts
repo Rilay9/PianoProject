@@ -15,10 +15,11 @@ import {
 } from '../lab/music';
 import type { KeyEvent } from '../midi';
 import type { Command } from '../remote';
+import { currentDevice } from '../settings';
 import type { NoteEvent } from '../sound';
 
 /** open(…, activity): a chart with an activity's preset (activity.ts), in force until another chart is picked or Done. */
-export type LabScreen = Screen & { open(stillWanted?: () => boolean, activity?: { chart: string; preset: LabPreset }): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+export type LabScreen = Screen & { open(stillWanted?: () => boolean, activity?: { chart: string; preset: LabPreset; title?: string }): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
 
 type Role = 'accomp' | 'lead';
 interface Stored {
@@ -91,6 +92,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   async function load(): Promise<void> {
     if (charts.length) return;
+    charts = []; styles = []; // (a load where every chart failed is tried again from nothing)
     const dir = `${base}content/lab/`;
     const problems: string[] = [];
     try {
@@ -441,7 +443,13 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     app.stayAwake();
   }
 
+  /** Sideways, how it went sits down the left (with the choices: what to do next), the box of chords on the right; otherwise under the box. */
+  function placeResult(): void {
+    const box = $('lab-result'), home = currentDevice() === 'phone-sideways' ? document.querySelector('#lab .lab-side')! : document.querySelector('#lab .lab-main')!;
+    if (box.parentElement !== home) home.append(box);
+  }
   function showResult(): void {
+    placeResult();
     feedback('');
     $('lab-play').hidden = true;
     $('lab-stop').hidden = true;
@@ -585,7 +593,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     held.set(m, p);
   };
 
-  async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset }): Promise<void> {
+  async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset; title?: string }): Promise<void> {
     await load();
     if (!stillWanted()) return;
     if (!charts.length || !styles.length) { app.showMessage(loadProblems || 'The lab has no charts or styles to play.'); return; }
@@ -602,7 +610,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab').hidden = false;
     choose(activity?.chart ?? stored.chart ?? charts[0].id, !activity);
     backToOpen();
-    feedback(loadProblems);
+    feedback(loadProblems || activity?.title || ''); // (an activity's own words)
     app.stayAwake();
   }
   /** An activity's ladder that cannot be read: why (none: fine). */
@@ -637,8 +645,10 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       else if (c === 'high') { if (!running) void start(false); }
       else if (c === 'low') { if (running) stop(); else backToOpen(); }
     },
-    musicRange: (): KeyRange | null => keys.span,
-    resized: () => {},
+    // The keys the music uses (the remote's edge keys outside them are commands). While the band plays any octave
+    // counts (chords any voicing, roots any octave, improvising anywhere), so every key is music then; stopped, the lit range.
+    musicRange: (): KeyRange | null => (running ? { lo: 0, hi: 127 } : keys.span),
+    resized: () => placeResult(),
     get busy() { return isOpen; },
     debug: () => ({ running, demo, role: role(), step: role() === 'accomp' ? accompStep() : leadStep(), where: where(), results: results.map((r) => ({ bar: r.hit.bar, mark: r.mark, t: r.hit.t, until: r.hit.until, chord: r.hit.chord.symbol, pcs: r.hit.chord.pcs })), hits: form && style ? hits(form, style, accompStep()).map((h) => ({ t: h.t, until: h.until, bar: h.bar, voicing: voicing(h.chord), root: voicing(h.chord)[0] })) : [], beatMs: form?.beatMs, roundMs: roundMs(), speed: speed(), lastRound: lastRound ? { marks: [...lastRound.marks], improv: lastRound.improv } : null }),
   };

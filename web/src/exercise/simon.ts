@@ -61,6 +61,7 @@ export class Simon {
   // new game at once: only a fresh press after letting go does.
   private waitRelease = false;
   private token = 0; // bumps to cancel a showing in progress
+  private helpedNow = false; // this chain was given again with Hear again / Show me
   private timers: number[] = [];
 
   /** Your own level, saved; an activity's preset over it (owner, 2026-10-13) is in force while the activity lasts. */
@@ -81,6 +82,8 @@ export class Simon {
   }
 
   get levelNow(): SimonLevel { return { ...this.level }; }
+  /** Your turn with any octave counting: every key is music (the keyboard's edge keys are notes, not commands). */
+  get anyOctaveNow(): boolean { return this.on && this.state === 'turn' && this.level.match !== 'same'; }
   /** For checks: the keys of each group still to play this turn. */
   expected(): number[][] { return this.state === 'turn' ? this.flat.slice(this.pos).map((g) => g.keys) : []; }
 
@@ -190,6 +193,9 @@ export class Simon {
   private async showChain(from: number, turnFrom = 0, help = false): Promise<void> {
     const token = ++this.token;
     this.state = 'showing';
+    // Helped (Hear again / Show me): this chain cannot be a best; played whole again unhelped, it can (review, 2026-10-13).
+    if (help) this.helpedNow = true;
+    else if (turnFrom === 0) this.helpedNow = false;
     this.keys.clearMarks();
     this.ui.status.className = 'ex-status';
     const rung = help ? 1 : this.level.rung;
@@ -310,8 +316,8 @@ export class Simon {
     this.state = 'showing';
     this.keys.clearMarks();
     const length = this.chain.length, key = this.bestKey();
-    if (length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
-    this.ui.status.textContent = '✓';
+    if (!this.helpedNow && length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
+    this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : '✓';
     this.ui.status.className = 'ex-status ok';
     this.scoreLine();
     if (this.set.order === 'passage' && length >= this.items.length) {

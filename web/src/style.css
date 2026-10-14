@@ -341,7 +341,8 @@ body.memorising .loop-zone, body.memorising .message { display: none; }
 .memo-head-info:empty { display: none; }
 .memo-panel { position: fixed; left: 0; right: 0; bottom: var(--under-h, 0px); z-index: 3; display: flex; flex-direction: column; gap: 6px; padding: 8px max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left)); background: var(--bar-bg); color: var(--bar-fg); border-top: 1px solid var(--bar-line); }
 .memo-prog { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--bar-muted); }
-.btn.mini { padding: 4px 12px; min-width: 36px; }
+.btn.mini { padding: 4px 12px; min-width: 36px; min-height: 36px; } /* a fingertip's size (review, 2026-10-13) */
+#open-songs { min-width: 40px; }
 #memo-peek, #memo-hear { touch-action: none; }
 /* Holding a control must never start the phone's text selection or copy menu (owner, 2026-10-12: holding Peek
    selected text instead): nothing on the app's own bars, panels and screens is selectable. */

@@ -51,10 +51,22 @@ function meterOf(text: string | undefined): Meter {
   return { beats: Number(m[1]), beatType: Number(m[2]) };
 }
 
+/** A file's fields, checked: one not listed (a misspelt "tempo" or "style") is refused rather than quietly defaulted. */
+function onlyFields(f: object, fields: string[]): void {
+  const odd = Object.keys(f).find((k) => !fields.includes(k));
+  if (odd) throw new Error(`"${odd}" is not one of ${fields.join(', ')}`);
+}
+
 export function readChart(id: string, f: ChartFile): Chart {
+  onlyFields(f, ['title', 'meter', 'tempo', 'style', 'bars', 'improvise', 'steps', 'cleanForNext']);
+  if (typeof f.title !== 'string' || !f.title) throw new Error('it needs a "title"');
   if (!Array.isArray(f.bars) || !f.bars.length) throw new Error('it has no bars');
   const bars = f.bars.map((b) => b.trim().split(/\s+/));
-  for (const bar of bars) for (const s of bar) chordInfo(s); // every symbol readable, or the chart is refused
+  for (const bar of bars) for (const s of bar) {
+    // A slash chord's bass note is not played or asked for yet (owner, 2026-10-13: refused until it is).
+    if (s.includes('/')) throw new Error(`"${s}": slash chords (a chord over another bass note) cannot be played yet`);
+    chordInfo(s); // every symbol readable, or the chart is refused
+  }
   if (f.improvise?.scale && Scale.get(f.improvise.scale).empty) throw new Error(`"${f.improvise.scale}" is not a scale name the lab can read`);
   const tempo = f.tempo ?? 90;
   if (typeof tempo !== 'number' || !(tempo >= 20 && tempo <= 300)) throw new Error(`tempo ${tempo} should be a number of beats a minute, 20 to 300`);
@@ -68,6 +80,8 @@ export function readChart(id: string, f: ChartFile): Chart {
 const DRUMS: Record<string, number> = { kick: 36, snare: 38, rim: 37, clap: 39, hihat: 42, 'hihat-open': 46, ride: 51, crash: 49, 'tom-low': 45, 'tom-high': 48, tambourine: 54, cowbell: 56 };
 
 export function readStyle(id: string, f: StyleFile): Style {
+  onlyFields(f, ['name', 'meter', 'grid', 'drums', 'bass', 'chords', 'instruments']);
+  if (typeof f.name !== 'string' || !f.name) throw new Error('it needs a "name"');
   const meter = meterOf(f.meter), grid = f.grid ?? 2, steps = meter.beats * grid;
   if (!Number.isInteger(grid) || grid < 1 || grid > 8) throw new Error(`grid ${grid} should be a whole number of steps a beat, 1 to 8`);
   const drums = Object.entries(f.drums ?? {}).map(([name, pattern]) => {

@@ -20,8 +20,10 @@ music always readable ahead of where you are.
 **Content:** MusicXML (`.musicxml`) files in `web/public/scores/`, listed in `scores/index.json` with
 `{ id, title, composer, file, source: { dataset, uploadTitle }, license, licenseUrl, status }`: `id` is how the piece
 is named everywhere else (the address `?piece=<id>`, a set's `"from": { "score": <id> }`, saved settings and
-progress), so it must not change once used; `file` is the name in `scores/`; `source`, `license`, `licenseUrl` and
-`status` (free text, e.g. whether the notes were checked against an edition) are shown in ⓘ. The list's order is the
+progress), so it must not change once used; `file` is the name in `scores/`; `id`, `title`, `composer` and `file`
+are needed; `source`, `license`, `licenseUrl` and `status` (free text, e.g. whether the notes were checked against an
+edition) are shown in ⓘ when given. A new score is added by putting its file in `scores/` and its entry in the list,
+then deploying. The list's order is the
 song list's order. Exercises (scales,
 five-finger patterns, cadences as music) are simply short scores. Fingering written in the file shows when Display →
 Fingering is on; the learner can add their own (⋯ → Edit fingering).
@@ -173,7 +175,8 @@ different cards); a card got right on Again shows as "right on a retry", not cle
 Help (*Hear it*, *Show me*, or the hint after 8 s without a key on a notes-only card, which names the notes when the keys aren't shown) is
 noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
 *Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
-(help rung, On time), from full sets only, shown on the Ready screen and at the end; tempo per set. A name to play
+(help rung, On time) and set size, from full sets only (not one stopped early by a mash or Finish, not an endless
+one), shown on the Ready screen and at the end; tempo per set. A name to play
 is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
 make a card bigger than the score's biggest size, up to filling the room. A card never grows,
 so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
@@ -237,7 +240,11 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
 - **The band:** drums (the LM-2 kit), bass and chords on the style's instruments (FluidR3 General MIDI sounds: basses
   and guitars kept in the app for offline; any other General MIDI instrument fetched online), always on the phone.
 
-**Content** (`web/public/content/lab/`, listed in `index.json` as `{ "charts": [...], "styles": [...] }`):
+**Content** (`web/public/content/lab/`, listed in `index.json` as `{ "charts": ["charts/blues-c.json", …], "styles":
+["styles/shuffle.json", …] }`, paths from that folder; a chart's or style's id is its file name without `.json`, and a
+chart's `style` names a style by that id, not by its `name`). Each file's fields are checked: one not listed below (a
+misspelt `tempo`) is refused, and so are a missing `title` (charts) or `name` (styles) and slash chords (`C/E`: the bass
+note is not played yet; owner, 2026-10-13).
 
 ```json
 // a chord chart (charts/*.json)
@@ -295,6 +302,11 @@ Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", 
 replaced by another score). A passage becomes one item per moment with notes (a rest goes with the item before it);
 `tempo` may be given, else the score's own at that point.
 
+**Checked:** a set gives either `items` or `from`, a `title`, `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
+length; an item gives exactly one of `notes`, `chord`, `interval`, `musicxml` with that kind's options; any other field
+is refused with the reason (a typo never reads as something else). A lower-case pitch (`c4`) is read as C4. A passage's
+`bars` must be like "5-8" and hold notes on its staff.
+
 **The set as a whole:** its id is the file name without `.json`; `index.json` lists the files in the order they appear
 in the set menu, which Simon and Drills share. `order` defaults to `pool`. `tempo` is quarter notes a minute.
 `rhythm` is for Drills only: Simon gives items without written rhythm as even quarter notes.
@@ -310,8 +322,8 @@ starts there); a whole MusicXML file also keeps its bars, time signature and key
 force where it starts. MusicXML is read as **one line of music**: notes are placed where they really fall (chords,
 `<backup>`, `<forward>`), a tied note just lasts longer, and staccato (staccatissimo, spiccato) is kept: drawn with
 its dot, and never asked to be held. Music with a second voice or staff (unless the passage
-names a staff), tuplets, or lengths shorter than a 32nd is refused with the reason (shown on the exercise screen),
-not read wrongly. A fragment without `<divisions>` counts durations in quarter notes. Spell pitches as written (F#5, Bb4) — the app draws and names them as given. Sets marked "Test:" are
+names a staff), several parts, repeats or 1st/2nd endings (in the bars read), tuplets, or lengths shorter than a 32nd
+is refused with the reason (shown on the exercise screen), not read wrongly. A fragment without `<divisions>` counts durations in quarter notes. Spell pitches as written (F#5, Bb4) — the app draws and names them as given. Sets marked "Test:" are
 placeholders for checking the app, not lesson content.
 
 ---
@@ -329,9 +341,10 @@ placeholders for checking the app, not lesson content.
   first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
   is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are
   buttons when the music on screen doesn't use them: lowest = back / again (score: to the loop's or the bar's
-  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again), held in Memorise = Peek (held elsewhere: the
-  same as a tap); highest = start /
-  next / carry on (Drills: Start, Next, Skip, New set).
+  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again; the lab, stopped: back to the steps), held in
+  Memorise = Peek (held elsewhere: the same as a tap); highest = start / next / carry on (Drills: Start, Next, Skip,
+  New set; the lab: Start or Again). Where any octave counts (the lab while the band plays, Drills by name, Simon in
+  any octave) the music uses every key, so the edges are notes there; a mash still stops.
 - Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them). A diminished 7th is named from its bass (Cdim7).
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
@@ -386,10 +399,24 @@ not there) is refused with the reason; nothing is guessed. Examples marked "Test
 { "title": "…", "screen": "freeplay" }
 ```
 
-Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out. Values are those of each screen's
-settings (above): score `mode` watch / wait / along / ladder (needs `bars`) / rhythm, `hands` both / right / left / off,
-`tempo` 20–300 beats a minute; Memorise `chunk` 2 / 4 / 8; Drills `rung` 1–5, `cards` 0 (endless)–100. Not yet:
-Memorise limited to some bars (it takes the whole piece).
+Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out; a field not listed for its screen
+is refused. Every value (`web/src/activity.ts` checks each):
+- score: `bars` "5-8" (printed bar numbers); `mode` watch / wait / along / ladder (needs `bars`) / rhythm; `hands` both /
+  right / left / off; `tempo` 20–300; `metronome` true / false; `clickOn` beats / quarters / eighths; `onTime` relaxed /
+  normal / strict; `ladderStep` 0.02 / 0.05 / 0.1.
+- memorise: `hands` both / right / left; `tempo` 20–300; `chunk` 2 / 4 / 8; `adds` bar / chunk; `learnedAfter` 1 / 2 / 3;
+  `carryFrom` bar / start; `before` new / all / nothing; `next` auto / tap; `timing` true / false; `join` ask / previous /
+  all / none; `metronome` true / false; `onTime` relaxed / normal / strict. (Not yet: some bars only.)
+- drills: `rung` 1–5 (1 music + sound + keys lit … 4 name only, 5 by ear); `start` clicks / first; `metronome` true /
+  false; `onTime` relaxed / normal / strict / notes; `cards` a whole number 0 (until you stop)–100.
+- simon: `rung` 1–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
+  from-miss; `onNew` all / new.
+- lab: `role` accomp / lead; `step` roots / beat1 / style / own (accompaniment) or root / tones / scale / answer / free
+  (lead), which also sets the role; `style` a style's id; `dropouts` off / drums / band; `parts` drums / bass / chords /
+  click, each true / false; `steps` { accompaniment: […], lead: […] } (kinds as above, each once; a `step` must be in it);
+  `cleanForNext` a whole number 1–10.
+
+A link opens an activity once: it leaves the address as it opens, so a later reload is the ordinary app.
 
 ## 9. Not built yet
 

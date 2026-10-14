@@ -100,6 +100,8 @@ export class Drill {
   }
 
   get levelNow(): DrillLevel { return { ...this.level }; }
+  /** Your turn at name only (any octave counts): every key is music (the keyboard's edge keys are notes, not commands). */
+  get anyOctaveNow(): boolean { return this.on && (this.state === 'turn' || this.state === 'countin') && this.level.rung === 4; }
   /** An activity's preset level (owner, 2026-10-13): in force while it lasts, never saved over yours. */
   private preset: Partial<DrillLevel> = {};
   private get level(): DrillLevel { return { ...this.stored.level, ...this.preset }; }
@@ -165,7 +167,8 @@ export class Drill {
 
   private cardsLabel(): string { const n = this.level.cards; return n ? `${n} cards` : 'Cards until you press Finish'; }
   /** Bests per set and level (owner, 2026-10-12): the help rung and how timing is judged. */
-  private bestKey(): string { return `${this.set.id}|${this.level.rung}|${this.level.onTime}`; }
+  /** A best is per set, level and set size (10 cards is not compared with 5). */
+  private bestKey(): string { return `${this.set.id}|${this.level.rung}|${this.level.onTime}|${this.level.cards}`; }
 
   // ---- a set -----------------------------------------------------------------------------------------
 
@@ -214,7 +217,9 @@ export class Drill {
     this.state = 'done';
     const clean = this.results.filter((r) => r.clean).length, of = this.results.length;
     const key = this.bestKey(), best = this.stored.best[key];
-    const newBest = !this.redo && (!best || clean / Math.max(1, of) > best.clean / Math.max(1, best.of));
+    // Bests from full sets only (docs §4): not a set stopped early (a mash, Finish) or endless, nor the misses again.
+    const full = !this.redo && Number.isFinite(this.limit) && of >= this.limit;
+    const newBest = full && (!best || clean > best.clean);
     if (newBest) { this.stored.best[key] = { clean, of }; this.save(); }
     this.notation.clear();
     this.keys.clearMarks();
@@ -223,7 +228,7 @@ export class Drill {
       className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: `${i + 1}. ${r.item.name}: ${r.text}`,
     })));
     const was = this.stored.best[key];
-    this.status(`Set done: ${clean} of ${of} clean`, this.redo ? '' : newBest ? 'A new best at this level' : was ? `Best at this level: ${was.clean} of ${was.of}` : '');
+    this.status(`Set done: ${clean} of ${of} clean`, !full ? (this.redo ? '' : Number.isFinite(this.limit) ? 'Stopped early: not counted for a best' : 'Until you stop: no best kept') : newBest ? 'A new best at this level' : was ? `Best at this level: ${was.clean} of ${was.of}` : '');
     this.ui.help.hidden = true;
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = true;

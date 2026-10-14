@@ -176,7 +176,7 @@ $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
     if (!confirm('Replace the settings and marks on this device with the backup?')) return;
     const mine = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)!).filter(backedUp);
     for (const key of mine) if (!(key in backup.data)) localStorage.removeItem(key);
-    for (const [key, value] of Object.entries(backup.data)) if (backedUp(key)) localStorage.setItem(key, value);
+    for (const [key, value] of Object.entries(backup.data)) if (backedUp(key)) localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value)); // (a hand-edited backup may hold objects)
     location.reload();
   } catch (cause) {
     moreDialog.close();
@@ -223,6 +223,10 @@ async function openActivity(id: string): Promise<void> {
     app.showMessage(`Could not open the activity: ${cause instanceof Error ? cause.message : String(cause)}`);
     return;
   }
+  // The link has done its work: out of the address, so a reload later does not jump back into it (review, 2026-10-13).
+  const url = new URL(location.href);
+  url.searchParams.delete('activity');
+  history.replaceState(null, '', url);
   await launch(a);
 }
 
@@ -238,7 +242,7 @@ async function launch(a: Activity): Promise<void> {
       leaveScore();
       await scoreScreen.openSong(a.piece);
       wanted();
-      await memoriseScreen.open(a.settings);
+      await memoriseScreen.open(a.settings, a.title);
       return;
     case 'simon':
     case 'drills':

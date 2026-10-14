@@ -85,6 +85,13 @@ const cases = [
     tol: 100, want: { total: 1, onTime: 1, short: 0 },
   },
   {
+    name: 'hold, rhythm: a half note under eighths: each tap held to the next is fine',
+    rhythm: true,
+    steps: [{ t: 0, keys: [53, 77], durs: [1000, 250] }, { t: 250, keys: [79], durs: [250] }],
+    played: [{ midi: 60, t: 0, speed: 1, held: 240 }, { midi: 60, t: 250, speed: 1, held: 240 }],
+    tol: 100, want: { total: 2, onTime: 2, short: 0 },
+  },
+  {
     name: 'hold, rhythm: a tap for a whole note let go at once is let go early',
     rhythm: true,
     steps: [{ t: 0, keys: [60], durs: [2000] }], played: [{ midi: 50, t: 0, speed: 1, held: 150 }],

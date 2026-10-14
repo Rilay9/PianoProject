@@ -24,6 +24,14 @@ const refused = [
   ['a drill level typo', { screen: 'drills', set: 's', level: { rungs: 2 } }, /level has "rungs"/],
   ['a lab step that is not a kind', { screen: 'lab', chart: 'c', preset: { step: 'jazz' } }, /preset.step is "jazz"/],
   ['a lab part typo', { screen: 'lab', chart: 'c', preset: { parts: { drum: true } } }, /preset.parts has "drum"/],
+  // Review 2 (2026-10-13): these were accepted silently.
+  ['a misspelt top-level field', { screen: 'score', piece: 'x', setting: { mode: 'wait' } }, /"setting" is not a field/],
+  ['Memorise bars (not offered yet)', { screen: 'memorise', piece: 'x', bars: '1-4' }, /whole piece/],
+  ['a misspelt ladder key', { screen: 'lab', chart: 'c', preset: { steps: { accomp: ['roots'] } } }, /preset.steps has "accomp"/],
+  ['a ladder step of the wrong kind', { screen: 'lab', chart: 'c', preset: { steps: { lead: ['roots'] } } }, /lead step "roots"/],
+  ['a step of the other part', { screen: 'lab', chart: 'c', preset: { role: 'lead', step: 'beat1' } }, /accompaniment step, but preset.role is "lead"/],
+  ['a step not in its ladder', { screen: 'lab', chart: 'c', preset: { step: 'style', steps: { accompaniment: ['roots', 'beat1'] } } }, /not in its ladder/],
+  ['a fraction of a card', { screen: 'drills', set: 's', level: { cards: 2.5 } }, /a whole number/],
 ];
 for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }

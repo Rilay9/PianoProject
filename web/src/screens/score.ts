@@ -169,6 +169,7 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   async function openSong(id: string): Promise<void> {
     startRequest++; // a start still getting ready is dropped
+    starting = false;
     if (presetPiece() !== id) clearPreset(); // another song: an activity's preset is over
     forgetRun();
     sideFit = 1;
@@ -309,13 +310,15 @@ export function createScoreScreen(app: App): ScoreScreen {
       // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
       if (pianoHands(s) || s.metronome || view.looped) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
     } catch (cause) {
+      if (request !== startRequest) return; // dropped meanwhile (a tap on … or another choice): say nothing
       showMessage(cause instanceof Error ? cause.message : String(cause));
       starting = false;
       fillBars();
       if (s.mode !== 'watch') return; // no keyboard: nothing to wait for or score
     }
+    if (request !== startRequest) return; // dropped meanwhile: whatever came after is in charge now
     starting = false;
-    if (request !== startRequest || startShape() !== shape) { fillBars(); return; } // something else was chosen meanwhile
+    if (startShape() !== shape) { fillBars(); return; } // something else was chosen meanwhile
     sound.setVolumes(s.pianoVolume, s.clickVolume);
     sound.setClick(s.click);
     hideBars();
@@ -365,7 +368,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   };
   /** Paused by itself (silence, mashing, the phone turned): the run is kept, and the next start carries it on. */
   function pauseRun(step: number, text: string): void {
-    practice.suspend();
+    practice.suspend(step); // (it carries on from `step`: those notes are scored in the next part)
     view.pause();
     view.goTo(step);
     resumable = true;
@@ -469,6 +472,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   /** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
   function stopAll(): void {
     startRequest++; // a start still getting ready is dropped
+    starting = false;
     if (borrower) { borrower.stop(); return; }
     if (view.playing) view.pause();
     else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
@@ -485,7 +489,8 @@ export function createScoreScreen(app: App): ScoreScreen {
     borrower?.hint(keys);
   };
 
-  $('play').addEventListener('click', () => (view.playing || practice.active ? stopAll() : void play()));
+  // ▶ / ⏸; while a start is still getting ready (…), a tap drops it.
+  $('play').addEventListener('click', () => (view.playing || practice.active || starting ? stopAll() : void play()));
 
   // Mode: Watch / Wait for me / Play along, saved per song (owner, 2026-10-11).
   $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
@@ -737,11 +742,11 @@ export function createScoreScreen(app: App): ScoreScreen {
     const piece = currentPiece();
     $('info-title').textContent = piece.title;
     const body = $('info-body');
-    body.replaceChildren(
-      `${piece.composer}. From ${piece.source.dataset} (“${piece.source.uploadTitle}”), licence `,
-      Object.assign(document.createElement('a'), { href: piece.licenseUrl, target: '_blank', rel: 'noopener', textContent: piece.license }),
-      `. ${piece.status[0].toUpperCase()}${piece.status.slice(1)}.`,
-    );
+    // (Each part only if the song list gives it: an entry without a source or status still opens.)
+    const from = piece.source?.dataset ? ` From ${piece.source.dataset}${piece.source.uploadTitle ? ` (“${piece.source.uploadTitle}”)` : ''}.` : '';
+    const licence = piece.license ? [' Licence ', piece.licenseUrl ? Object.assign(document.createElement('a'), { href: piece.licenseUrl, target: '_blank', rel: 'noopener', textContent: piece.license }) : piece.license, '.'] : [];
+    const status = piece.status ? ` ${piece.status.charAt(0).toUpperCase()}${piece.status.slice(1)}.` : '';
+    body.replaceChildren(`${piece.composer ?? ''}.${from}`, ...licence, status);
   }
 
   function radio(name: string, value: string, text: string): HTMLLabelElement {

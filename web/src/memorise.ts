@@ -302,7 +302,8 @@ export class Memorise {
     return n > 0 && Array.from({ length: n }, (_, m) => m).every((m) => got.has(m));
   }
   /** In time: a timed pass (the setting), or the notes + rhythm test. */
-  private timing(): boolean { return this.testing ? this.testing === 'rhythm' : this.opts.timing; }
+  private timing(): boolean { return this.testing ? this.testing === 'rhythm' : this.practising ? this.practiseInTime : this.opts.timing; }
+  private practiseInTime = false; // practising after a notes + rhythm test: in time too (review, 2026-10-13)
 
   // ---- the flow ----------------------------------------------------------------------------------------
 
@@ -735,6 +736,7 @@ export class Memorise {
       if (!(had?.kind === 'rhythm' && kind === 'notes')) this.stored.marks[lk] = mark; // notes + rhythm is kept over a later notes-only pass
       this.save();
       this.phase = 'off'; // stopped, as before you started (▶ carries on with the chunk you were on; Test is there again)
+      v.goTo(this.steps(this.chunkRange()[0], this.chunkRange()[0]).a); // the music back at your chunk
       this.say(`✓ Memorized: ${kind === 'rhythm' ? 'notes + rhythm' : 'notes'}`, `Every bar clean · ${markText(this.stored.marks[lk])}`, 'ok');
       return;
     }
@@ -754,6 +756,7 @@ export class Memorise {
     this.halt();
     this.endTest();
     this.practising = [...bars];
+    this.practiseInTime = this.lastTest === 'rhythm' || this.opts.timing;
     this.practiseTotal = bars.length;
     this.practisePasses = 0;
     this.d.practice.autoPause = false;

@@ -13,7 +13,7 @@ import { currentDevice, settingsFor, type ScoreSettings } from '../settings';
 import { pianoHands, SIZE_MAX, type Borrower, type ScoreScreen } from './score';
 
 /** open(preset): an activity's preset for the piece showing (activity.ts), in force until Done. */
-export type MemoriseScreen = Screen & { open(preset?: MemorisePreset): Promise<void>; close(): void; readonly isOpen: boolean };
+export type MemoriseScreen = Screen & { open(preset?: MemorisePreset, title?: string): Promise<void>; close(): void; readonly isOpen: boolean };
 
 /** The score's biggest notation size (Display's slider): Memorise never draws bigger, and never stretches (owner). */
 const MEMO_MAX_SIZE = SIZE_MAX;
@@ -183,7 +183,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     get busy() { return memorise.active; },
   };
 
-  async function open(preset?: MemorisePreset): Promise<void> {
+  async function open(preset?: MemorisePreset, title?: string): Promise<void> {
     if (preset) { const { hands, tempo, ...options } = preset; memorise.setPreset({ piece: currentPiece().id, options, hands, tempo }); }
     else memorise.setPreset(null);
     scoreScreen.lend(borrower);
@@ -195,6 +195,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     $('memo-piece').textContent = currentPiece().title;
     app.showMessage('');
     await scoreScreen.draw();
+    if (title) memorise.note(title); // an activity's own words, in Memorise's message line
   }
 
   function close(): void {
