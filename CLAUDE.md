@@ -28,7 +28,7 @@ Curriculum is not bulk data production: build selected material as the learner n
 
 Judge a change against the whole journey: find → understand → start → play → accurate, helpful feedback → retry → save → revisit. For visual work inspect the rendered states on phone portrait, landscape and tablet. For timing, input, playback, persistence and progress, test realistic transitions, interruptions and recovery. For feedback and export, check that the exported record carries what the next lesson needs. A green test is not pedagogical, musical or UX quality.
 
-Verify in proportion: focused checks for small local changes, integration and device checks for risky shared ones; distinguish flakes from regressions. Never claim to have run, listened, measured, reviewed, merged, deployed or pushed anything without evidence and a confirmed side effect.
+Verify in proportion: focused checks for small local changes, integration and device checks for risky shared ones; distinguish flakes from regressions. Read `docs/tests.md` before writing or running checks, and include it in any reviewer's brief; when a review finds a kind of bug our checks missed, add it there with the fix. Never claim to have run, listened, measured, reviewed, merged, deployed or pushed anything without evidence and a confirmed side effect.
 
 ## Before sending any brief
 
