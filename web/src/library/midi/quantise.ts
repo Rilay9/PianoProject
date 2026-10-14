@@ -71,6 +71,8 @@ export interface SwingReport {
   swung: boolean;
   nearSwung: number;
   nearStraight: number;
+  /** Onsets a third of the way through the beat: triplets (and the second eighth of 6/8), which swing never has. */
+  nearThird?: number;
   onBeatShare: number;
   /** Set when the caller decided instead of the onsets. */
   forced?: boolean;
@@ -80,6 +82,8 @@ export interface QuantiseReport {
   events: NoteEvent[];
   gridByBar: Frac[];
   swing: SwingReport;
+  /** Strikes (indices into `events`) written as one note with an earlier strike of the same key; left out. */
+  joined: Set<number>;
   /** The largest distance any onset was moved, in quarter notes. */
   moved: Frac;
   /**
@@ -120,6 +124,7 @@ export function snap(value: Frac, unit: Frac): Frac {
 export function detectSwing(events: NoteEvent[], beat: Frac): SwingReport {
   let nearSwung = 0;
   let nearStraight = 0;
+  let nearThird = 0;
   let onBeat = 0;
   for (const event of events) {
     const position = div(mod(event.start, beat), beat);
@@ -127,13 +132,21 @@ export function detectSwing(events: NoteEvent[], beat: Frac): SwingReport {
     if (lte(toTheBeat, SWING_HALF_WINDOW)) onBeat += 1;
     if (lte(abs(sub(position, frac(1, 2))), SWING_HALF_WINDOW)) nearStraight += 1;
     else if (lte(abs(sub(position, SWING_RATIO)), SWING_HALF_WINDOW)) nearSwung += 1;
+    else if (lte(abs(sub(position, frac(1, 3))), SWING_HALF_WINDOW)) nearThird += 1;
   }
   const placed = events.length > 0 ? frac(onBeat, events.length) : ZERO;
+  // Notes at two thirds of a dotted beat (6/8, 9/8, 12/8) are the metre's own eighths, and notes at two thirds of a
+  // plain beat come with notes at one third when they are triplets: swing has the off-beat late and nothing between
+  // (2026-10-14: 27 of ASAP's 235 classical score files were called swung, from Bach preludes to Schubert's
+  // Impromptus, and a sixteenth was taken off every third eighth).
+  const compound = beat.n % 3n === 0n && beat.d % 2n === 0n;
   const swung =
+    !compound &&
     gte(placed, SWING_MIN_ON_BEAT) &&
     nearSwung >= SWING_MIN_OFFBEATS &&
-    nearSwung >= SWING_MIN_RATIO * Math.max(nearStraight, 1);
-  return { swung, nearSwung, nearStraight, onBeatShare: toNumber(placed) };
+    nearSwung >= SWING_MIN_RATIO * Math.max(nearStraight, 1) &&
+    nearSwung >= SWING_MIN_RATIO * nearThird;
+  return { swung, nearSwung, nearStraight, nearThird, onBeatShare: toNumber(placed) };
 }
 
 /**
@@ -158,28 +171,52 @@ export function deswing(value: Frac, beat: Frac): Frac {
  *
  * A grid that merges them loses a note, and losing a note is the one thing this
  * tool refuses to do. The second strike moves forward one grid unit and the
- * first is shortened to meet it.
+ * first is shortened to meet it, when that place is free. Two strikes closer
+ * than the finest grid (a score file's near-zero-length strike just before a
+ * note: Beethoven's Op. 101, every sixteenth of a passage), or two with
+ * another strike of the key already in the next place, are written as one
+ * note, held to the later one's end, and counted. Before (2026-10-14) the
+ * strike was always pushed, onto the next strike, which was pushed in turn:
+ * a run crept beats forward, 11 beats in Op. 101.
+ *
+ * Returns the indices (into `events`) of the strikes written as one with an
+ * earlier one; the caller leaves them out.
  */
 export function separateRepeats(
   events: NoteEvent[],
   unitForBar: (index: number) => Frac,
   bars: BarMap,
-): void {
-  const seen = new Map<string, NoteEvent>();
-  const key = (event: NoteEvent): string => `${fracToString(event.start)}:${String(event.midi)}`;
-  const ordered = [...events].sort((a, b) => cmp(a.start, b.start) || a.midi - b.midi);
-  for (const event of ordered) {
-    while (seen.has(key(event))) {
+  /** Where each strike was before the grid (its played or written time). */
+  played: Frac[] = events.map((e) => e.start),
+  /** Which part each strike is in: only strikes in one part are one key struck twice. */
+  partOf: (index: number) => number = () => 0,
+): Set<number> {
+  const keyOf = (at: Frac, i: number): string => `${fracToString(at)}:${String(events[i]!.midi)}:${String(partOf(i))}`;
+  // Every place a strike was snapped to, so a moved strike does not take a later strike's place.
+  const snapped = new Set(events.map((e, i) => keyOf(e.start, i)));
+  const seen = new Map<string, number>();
+  const joined = new Set<number>();
+  const ordered = events.map((_, i) => i).sort((a, b) => cmp(events[a]!.start, events[b]!.start) || events[a]!.midi - events[b]!.midi);
+  for (const i of ordered) {
+    const event = events[i]!;
+    const before = seen.get(keyOf(event.start, i));
+    if (before !== undefined) {
+      const earlier = events[before]!;
       const unit = unitForBar(bars.indexAt(event.start));
-      const earlier = seen.get(key(event));
-      if (earlier && gt(earlier.end, add(event.start, unit))) {
-        earlier.end = add(event.start, unit);
+      const next = add(event.start, unit);
+      const hair = lt(abs(sub(played[i]!, played[before]!)), FINEST);
+      if (hair || snapped.has(keyOf(next, i)) || seen.has(keyOf(next, i))) {
+        if (gt(event.end, earlier.end)) earlier.end = event.end;
+        joined.add(i);
+        continue;
       }
-      event.start = add(event.start, unit);
+      if (gt(earlier.end, next)) earlier.end = next;
+      event.start = next;
       if (lte(event.end, event.start)) event.end = add(event.start, unit);
     }
-    seen.set(key(event), event);
+    seen.set(keyOf(event.start, i), i);
   }
+  return joined;
 }
 
 /**
@@ -214,15 +251,30 @@ export function separateRepeats(
  * onsets never sit exactly on them, so it keeps the usual grids.
  */
 export const EXACT_ONLY_DIVISORS = [6, 8, 12, 16, 24];
+/** The finest grid a bar takes to keep two strikes of one key apart: triplet 64ths, the finest the writer draws. */
+const FINEST = frac(1, 24);
 
 export function quantise(
   events: NoteEvent[],
-  options: { bars: BarMap; beat: Frac; divisors: number[]; swing: boolean | null },
+  options: {
+    bars: BarMap;
+    beat: Frac;
+    divisors: number[];
+    swing: boolean | null;
+    /**
+     * Which kept part (staff) each event is in, when the file's tracks are kept as the staves: a strike in one
+     * part and one in the other are two hands, never one key struck twice (a unison between the hands was written
+     * as a 16th and a late re-strike, 2026-10-14). Left out, every event is one part.
+     */
+    parts?: number[];
+  },
 ): QuantiseReport {
   const { bars, beat, divisors, swing } = options;
+  const partOf = (i: number): number => options.parts?.[i] ?? 0;
   if (events.length === 0) {
     return {
       events: [],
+      joined: new Set(),
       gridByBar: [],
       swing: { swung: false, nearSwung: 0, nearStraight: 0, onBeatShare: 0 },
       moved: ZERO,
@@ -241,18 +293,20 @@ export function quantise(
   for (const event of events) if (gt(event.end, last)) last = event.end;
   const lastBar = bars.indexAt(last) + 1;
 
-  // The onsets in each bar, sorted into bars once rather than filtered for every bar.
-  const startsByBar = new Map<number, Frac[]>();
-  for (const s of starts) {
+  // The onsets in each bar, with their pitches, sorted into bars once rather than filtered for every bar.
+  const startsByBar = new Map<number, { at: Frac; midi: number; part: number }[]>();
+  starts.forEach((s, i) => {
     const index = bars.indexAt(s);
+    const onset = { at: s, midi: events[i]?.midi ?? 0, part: partOf(i) };
     const list = startsByBar.get(index);
-    if (list) list.push(s);
-    else startsByBar.set(index, [s]);
-  }
+    if (list) list.push(onset);
+    else startsByBar.set(index, [onset]);
+  });
   const gridByBar: Frac[] = [];
   for (let index = 0; index <= lastBar; index += 1) {
     const low = bars.bar(index).start;
-    const inside = startsByBar.get(index) ?? [];
+    const onsets = startsByBar.get(index) ?? [];
+    const inside = onsets.map((o) => o.at);
     if (inside.length === 0) {
       gridByBar.push(units[0] ?? frac(1, 4));
       continue;
@@ -280,6 +334,39 @@ export function quantise(
       const exact = EXACT_ONLY_DIVISORS.map((d) => frac(1, d)).find((unit) => tiles(unit) && isZero(cost(unit)));
       if (exact) best = exact;
     }
+    // A grid that puts two strikes of one key on one onset cannot hold the bar: a trill or a fast repeated note
+    // has more strikes than the grid has places. Halve it (sixteenths to 32nds, triplet eighths to sextuplets)
+    // until the strikes are apart, coarsest first, so the bar is written as the run it is (2026-10-14). Before,
+    // the grid was kept and `separateRepeats` pushed each extra strike one place later, onto the next strike,
+    // which was pushed in turn: a trill crept beats forward into the bars after it (54 of 235 ASAP score files
+    // had notes written more than a beat from where they are played, one 16 beats; Beethoven's Op. 78 trill).
+    // Only strikes a grid could keep apart are counted: two a hair apart (a score file's near-zero-length strike
+    // just before a note) merge on every grid, and counting them hid the 16ths a finer grid would have kept apart
+    // (Chopin's Barcarolle, bar 83).
+    // The strikes on the next barline count too: a strike a 32nd before it is rounded onto it (La Campanella,
+    // bar 67).
+    const nextStart = add(low, bars.bar(index).length);
+    const atBarline = (startsByBar.get(index + 1) ?? []).filter((o) => lt(abs(sub(o.at, nextStart)), FINEST));
+    const merges = (unit: Frac): number => {
+      const taken = new Map<string, Frac>();
+      let merged = 0;
+      for (const o of [...onsets, ...atBarline]) {
+        const k = `${fracToString(snap(sub(o.at, low), unit))}:${String(o.midi)}:${String(o.part)}`;
+        const other = taken.get(k);
+        if (other === undefined) taken.set(k, o.at);
+        else if (gte(abs(sub(o.at, other)), FINEST)) merged += 1;
+      }
+      return merged;
+    };
+    let mergedAt = merges(best);
+    for (let finer = div(best, frac(2)); mergedAt > 0 && gte(finer, FINEST); finer = div(finer, frac(2))) {
+      if (!tiles(finer)) continue;
+      const m = merges(finer);
+      if (m < mergedAt) {
+        best = finer;
+        mergedAt = m;
+      }
+    }
     gridByBar.push(best);
   }
 
@@ -289,8 +376,6 @@ export function quantise(
   };
 
   const out: NoteEvent[] = [];
-  let moved = ZERO;
-  let unmoved = 0;
   events.forEach((event, i) => {
     const start = starts[i] ?? event.start;
     // On the grid of the bar the moment falls in, counted from that bar's start (a bar after a pickup or a 5/8
@@ -304,12 +389,19 @@ export function quantise(
     const endFrom = bars.bar(endBar).start;
     const endUnit = unitForBar(endBar);
     let newEnd = add(endFrom, snap(sub(event.end, endFrom), endUnit));
-    if (lte(newEnd, newStart)) newEnd = add(newStart, startUnit);
-    const distance = abs(sub(newStart, event.start));
-    if (gt(distance, moved)) moved = distance;
-    if (isZero(distance)) unmoved += 1;
+    // A note too short to keep its own end gets one unit of the grid of the bar it now starts in: one rounded onto
+    // the next barline took the last bar's (a triplet eighth in a bar of sixteenths, 2026-10-14).
+    if (lte(newEnd, newStart)) newEnd = add(newStart, unitForBar(bars.indexAt(newStart)));
     out.push({ start: newStart, end: newEnd, midi: event.midi, velocity: event.velocity });
   });
-  separateRepeats(out, unitForBar, bars);
-  return { events: out, gridByBar, swing: swingReport, moved, onGrid: unmoved / events.length };
+  const joined = separateRepeats(out, unitForBar, bars, starts, partOf);
+  // Measured after the repeats are pulled apart, which moves notes too.
+  let moved = ZERO;
+  let unmoved = 0;
+  out.forEach((event, i) => {
+    const distance = abs(sub(event.start, events[i]!.start));
+    if (gt(distance, moved)) moved = distance;
+    if (isZero(distance)) unmoved += 1;
+  });
+  return { events: out, joined, gridByBar, swing: swingReport, moved, onGrid: unmoved / events.length };
 }

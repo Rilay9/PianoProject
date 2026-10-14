@@ -132,6 +132,44 @@ const noteOn = (midi, velocity = 64) => [0x90, midi, velocity];
 const noteOff = (midi) => [0x80, midi, 0];
 const starts = (events) => events.map((event) => fracToString(event.start));
 
+describe('the MIDI reader, on how exporters order and abbreviate events', () => {
+  const read = (events) => readMidi(buildMidiTracks([events], 480, 0)).tracks.flatMap((t) => t.events)
+    .map((e) => `${fracToString(e.start)}-${fracToString(e.end)}:${String(e.midi)}`);
+  it('keeps a repeated note whose next note-on comes before its note-off at the same tick', () => {
+    // An order the MIDI standard allows; three repeated notes in one ASAP file. The release used to end the new
+    // note at its own start, and the note was dropped.
+    expect(read([
+      { delta: 0, bytes: noteOn(60) },
+      { delta: 480, bytes: noteOn(60) }, { delta: 0, bytes: noteOff(60) },
+      { delta: 480, bytes: noteOn(60) }, { delta: 0, bytes: noteOff(60) },
+      { delta: 480, bytes: noteOff(60) },
+    ])).toEqual(['0-1:60', '1-2:60', '2-3:60']);
+  });
+  it('pairs a release with its own channel: two hands holding one key on two channels', () => {
+    expect(read([
+      { delta: 0, bytes: [0x90, 60, 64] },
+      { delta: 480, bytes: [0x91, 60, 64] },
+      { delta: 480, bytes: [0x80, 60, 0] },
+      { delta: 480, bytes: [0x81, 60, 0] },
+    ])).toEqual(['0-2:60', '1-3:60']);
+  });
+  it('takes the tempo in force at the start, not the first in file order', () => {
+    const file = buildMidiTracks([
+      [{ delta: 1920, bytes: setTempo(1_000_000) }],
+      [{ delta: 0, bytes: setTempo(500_000) }, { delta: 0, bytes: noteOn(60) }, { delta: 480, bytes: noteOff(60) }],
+    ]);
+    expect(readMidi(file).tempo).toBe(120);
+  });
+  it('carries running status across a meta event, as mido and pretty_midi do', () => {
+    expect(read([
+      { delta: 0, bytes: [0x90, 60, 64] }, { delta: 480, bytes: [60, 0] },
+      { delta: 0, bytes: [0xff, 0x01, 0x01, 0x41] }, // a text event
+      { delta: 0, bytes: [62, 64] }, { delta: 480, bytes: [62, 0] },
+      { delta: 0, bytes: [64, 64] }, { delta: 480, bytes: [64, 0] },
+    ])).toEqual(['0-1:60', '1-2:62', '2-3:64']);
+  });
+});
+
 describe('the MIDI reader', () => {
   const file = buildMidiTracks([
     [
@@ -427,6 +465,23 @@ describe('the quantise policy', () => {
     for (const position of offbeats) expect(fracToString(position)).toBe('1/2');
   });
 
+  // 2026-10-14: 27 of ASAP's 235 classical score files were called swung (Bach preludes in 12/8, Schubert's
+  // triplet Impromptus) and every third eighth was moved a sixteenth early.
+  it('does not call running eighths in 6/8 swung (the beat is a dotted quarter: its third eighth sits at two thirds)', () => {
+    const events = [];
+    for (let i = 0; i < 24; i += 1) events.push(ev(i / 2, i / 2 + 0.5, 60 + (i % 3)));
+    expect(detectSwing(events, frac(3, 2)).swung).toBe(false);
+    const report = quantise(events, { bars: steadyBars({ beats: 6, beatType: 8 }, frac(64)), beat: frac(3, 2), divisors: [4, 3], swing: null });
+    expect(report.events.map((e) => fracToString(e.start))).toEqual(events.map((e) => fracToString(e.start)));
+  });
+  it('does not call triplet eighths in 4/4 swung (the third at one third of the beat is there)', () => {
+    const events = [];
+    for (let i = 0; i < 24; i += 1) events.push(ev(i / 3, i / 3 + 1 / 3, 60 + (i % 3)));
+    const swing = detectSwing(events, frac(1));
+    expect(swing.swung).toBe(false);
+    expect(swing.nearThird).toBe(8);
+  });
+
   it('does not call a straight run swung', () => {
     const events = [];
     for (let beat = 0; beat < 8; beat += 1) {
@@ -436,10 +491,52 @@ describe('the quantise policy', () => {
     expect(detectSwing(events, frac(1)).swung).toBe(false);
   });
 
-  it('pulls apart two strikes of one pitch the grid put on one onset', () => {
+  it('pulls apart two strikes of one pitch the grid put on one onset, on a finer grid', () => {
+    // A twentieth of a beat apart: the bar takes 64ths rather than pushing the second strike a whole 16th later.
     const report = quantise([ev(0, 0.24, 60), ev(0.05, 0.9, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
     expect(report.events).toHaveLength(2);
-    expect(report.events.map((event) => fracToString(event.start)).sort()).toEqual(['0', '1/4']);
+    expect(report.events.map((event) => fracToString(event.start)).sort()).toEqual(['0', '1/16']);
+    expect(report.joined.size).toBe(0);
+  });
+
+  it('writes a run of one key faster than the grid as the run, not crept forward (Beethoven Op. 78)', () => {
+    // 32nds a hair late, so no grid fits exactly: on the 16th grid each pair met on one onset, and every extra
+    // strike was pushed onto the next, the run ending a beat late.
+    const run = Array.from({ length: 8 }, (_, k) => ev(k / 8 + 0.01, k / 8 + 0.1, 60));
+    const report = quantise(run, { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
+    expect(report.events.map((event) => fracToString(event.start))).toEqual(['0', '1/8', '1/4', '3/8', '1/2', '5/8', '3/4', '7/8']);
+    expect(fracToString(report.gridByBar[0])).toBe('1/8');
+    expect(fracToString(report.moved)).toBe('1/100');
+  });
+
+  it('writes a strike a hair before another of the same key as one note with it, and says so (Op. 101)', () => {
+    const report = quantise([ev(0, 0.002, 60), ev(0.002, 0.25, 60), ev(0.25, 0.5, 60), ev(0.5, 1, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
+    expect([...report.joined]).toEqual([1]);
+    const kept = report.events.filter((_, i) => !report.joined.has(i));
+    expect(kept.map((event) => `${fracToString(event.start)}-${fracToString(event.end)}`)).toEqual(['0-1/4', '1/4-1/2', '1/2-1']);
+  });
+
+  it('does not push a strike rounded onto the barline past the next bar’s strike of the same key (La Campanella)', () => {
+    const report = quantise([ev(0, 1, 48), ev(3.88, 3.99, 60), ev(4, 4.2, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
+    expect(report.events.map((event) => fracToString(event.start))).toEqual(['0', '31/8', '4']);
+  });
+
+  it('keeps a unison between the two kept tracks on both staves, and joins a doubled part when tracks are merged', () => {
+    const kept = quantise([ev(0, 2, 60), ev(0, 2, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false, parts: [0, 1] });
+    expect(kept.events.map((event) => `${fracToString(event.start)}-${fracToString(event.end)}`)).toEqual(['0-2', '0-2']);
+    expect(kept.joined.size).toBe(0);
+    const merged = quantise([ev(0, 2, 60), ev(0, 2, 60)], { bars: FOUR_FOUR, beat: frac(1), divisors: [4], swing: false });
+    expect(merged.joined.size).toBe(1);
+    expect(merged.events.filter((_, i) => !merged.joined.has(i)).map((event) => `${fracToString(event.start)}-${fracToString(event.end)}`)).toEqual(['0-2']);
+  });
+
+  it('gives a note rounded onto the barline a unit of the new bar’s grid, not the last bar’s', () => {
+    const report = quantise(
+      [ev(0, 1 / 3, 60), ev(1 / 3, 2 / 3, 62), ev(2 / 3, 1, 64), ev(3.9, 3.95, 65), ev(4, 4.25, 48), ev(4.25, 4.5, 50)],
+      { bars: FOUR_FOUR, beat: frac(1), divisors: [4, 3], swing: false },
+    );
+    expect(report.gridByBar.slice(0, 2).map(fracToString)).toEqual(['1/3', '1/4']);
+    expect(`${fracToString(report.events[3].start)}-${fracToString(report.events[3].end)}`).toBe('4-17/4');
   });
 
   it('reports the furthest an onset was moved', () => {
@@ -491,6 +588,22 @@ describe('cutting a length into rhythms', () => {
     const pieces = notatablePieces(frac(3, 4), frac(5, 4), frac(1, 4), frac(1));
     expect(pieces.map(fracToString)).toEqual(['1/4', '1']);
     expect(eq(total(pieces), frac(5, 4))).toBe(true);
+  });
+  it('refuses lengths no note-head the writer draws can carry: longer than a dotted breve, shorter than a 64th', () => {
+    expect(isNotatable(frac(16))).toBe(false); // a longa: Liszt's Transcendental Étude No. 9 had one
+    expect(isNotatable(frac(12))).toBe(true); // a dotted breve
+    expect(isNotatable(frac(1, 32))).toBe(false); // a 128th
+    expect(isNotatable(frac(1, 24))).toBe(true); // a triplet 64th
+    for (let n = 1; n <= 64 * DIVISIONS; n += 1) expect(isNotatable(frac(n, DIVISIONS))).toBe(noteShape(n) !== null);
+  });
+  it('cuts a long note into heads the writer draws', () => {
+    const pieces = notatablePieces(frac(0), frac(16), frac(1, 4), frac(4));
+    expect(pieces.map(fracToString)).toEqual(['4', '12']); // cut at the beat first, then the dotted breve
+  });
+  it('cuts a length between two grids into the fewest heads, longest first (Beethoven Op. 78)', () => {
+    // Seven 48ths of a beat (a triplet-32nd onset next to a 64th one) in a bar whose own grid is the 16th.
+    const pieces = notatablePieces(frac(0), frac(7, 48), frac(1, 4), frac(1));
+    expect(pieces.map(fracToString)).toEqual(['1/12', '1/16']);
   });
   it('hands back a length the grid cannot express rather than altering it', () => {
     const pieces = notatablePieces(frac(0), frac(5, 7), frac(1, 7), frac(1));
@@ -741,6 +854,39 @@ describe('importing a MIDI file', () => {
     expect(xml).toContain('<score-partwise');
     expect(xml).toContain('<staves>2</staves>');
     expect(xml.match(/<score-part /g)).toHaveLength(1);
+  });
+  it('marks where each triplet group starts and stops, so the renderer draws the 3 (OSMD grouped none before)', () => {
+    const track = [];
+    // Twelve triplet eighths over a held bass, two tracks kept as the hands: four groups, all in the upper staff.
+    for (let i = 0; i < 12; i += 1) track.push({ delta: 0, bytes: noteOn(72 + (i % 5)) }, { delta: 160, bytes: noteOff(72 + (i % 5)) });
+    const bass = [{ delta: 0, bytes: noteOn(48) }, { delta: 1920, bytes: noteOff(48) }];
+    const { xml, report } = convertMidi(buildMidiTracks([track, bass]), { title: 'triplets' });
+    expect(report.passed).toBe(true);
+    let open = false;
+    let outside = 0;
+    for (const note of xml.match(/<note>[\s\S]*?<\/note>/g) ?? []) {
+      if (note.includes('<chord/>') || !note.includes('<time-modification>')) continue;
+      const starts = note.includes('<tuplet type="start"/>'), stops = note.includes('<tuplet type="stop"/>');
+      if (starts) open = true;
+      if (!open) outside += 1;
+      if (stops) open = false;
+    }
+    expect(outside).toBe(0);
+    expect((xml.match(/<tuplet type="start"\/>/g) ?? []).length).toBe(4);
+    expect((xml.match(/<tuplet type="stop"\/>/g) ?? []).length).toBe(4);
+  });
+  it('says how many strikes it wrote as one note with the strike before', () => {
+    // A one-tick strike just before a note of the same key, as score files have before some notes.
+    const file = buildMidiTracks([[
+      { delta: 0, bytes: noteOn(60) }, { delta: 1, bytes: noteOff(60) },
+      { delta: 0, bytes: noteOn(60) }, { delta: 479, bytes: noteOff(60) },
+      { delta: 0, bytes: noteOn(64) }, { delta: 480 * 3, bytes: noteOff(64) },
+    ]], 480, 0);
+    const { report } = convertMidi(file, { title: 'blip' });
+    expect(report.joined).toBe(1);
+    expect(report.notesIn).toBe(2);
+    expect(report.passed).toBe(true);
+    expect(checkSentence(report)).toContain('1 strike(s) of a key at the same moment as another strike of it, or a hair after');
   });
   it('leaves a note saying what the converter decided', () => {
     const { report, guessed } = convert(TWO_HANDS);
@@ -1174,6 +1320,29 @@ describe('a melody held over moving notes in one hand, converted', () => {
     const played = convertMidi(build((i) => [13, -9, 17, -11, 7, -15, 11, -7][i % 8]), { title: 'played' });
     expect(played.report.onGrid).toBeLessThan(0.25);
     expect(played.xml.includes('<voice>3</voice>')).toBe(false);
+  });
+});
+
+// --- new (2026-10-14): the drum channel is left out ----------------------------------------------------------------
+// Channel 10 holds drum sounds, not pitches: a band file's kick and snare came out as C2 and D2 in the left hand.
+
+describe('a file with a drum track', () => {
+  const drumOn = (n) => [0x99, n, 100], drumOff = (n) => [0x89, n, 0];
+  const file = buildMidiTracks([
+    [{ delta: 0, bytes: timeSignature(4, 2) }],
+    [{ delta: 0, bytes: trackName('Piano right') }, ...[72, 76, 79, 84].flatMap((m) => [{ delta: 0, bytes: noteOn(m) }, { delta: 480, bytes: noteOff(m) }])],
+    [{ delta: 0, bytes: trackName('Piano left') }, { delta: 0, bytes: noteOn(48) }, { delta: 1920, bytes: noteOff(48) }],
+    [{ delta: 0, bytes: trackName('Drums') }, ...[36, 42, 38, 42].flatMap((n) => [{ delta: 0, bytes: drumOn(n) }, { delta: 240, bytes: drumOff(n) }, { delta: 240, bytes: [0x99, 42, 0] }])],
+  ]);
+  it('writes no drum note as a pitch, and keeps the two piano tracks as the hands', () => {
+    const { xml, report } = convertMidi(file, { title: 'band' });
+    const names = barsOf(xml).flat().map((n) => `${n.staff}:${n.name}`).sort();
+    expect(names).toEqual(['1:C5', '1:C6', '1:E5', '1:G5', '2:C3']);
+    expect(report.noteTracks).toBe(2);
+    expect(readMidi(file).drumNotes).toBe(4);
+  });
+  it('says the drums were left out', () => {
+    expect(convert(file, { title: 'band' }).guessed.drumNotes).toBe(4);
   });
 });
 

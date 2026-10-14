@@ -334,18 +334,31 @@ one); examples to copy written into a chart.
   states (a pickup written as its own short bar becomes bar 0; metre changes are written where they fall); the key
   is the file's own, with its changes, and estimated from the notes only when the file states none, or states only
   C major while a quarter or more of the notes fall outside it (a sequencer's default); notes are spelled from the key in force. Grids per bar: sixteenths or triplet
-  eighths, and 32nds, sextuplets and 64ths only where a bar's notes sit exactly on them. A file whose notes mostly
+  eighths, and 32nds, sextuplets and 64ths only where a bar's notes sit exactly on them, or where a run of one key
+  (a trill, a tremolo) has more strikes than the bar's grid has places: halved until they are apart, never pushed
+  later. Two strikes of one key at the same moment or a hair apart (a part doubling another, a near-zero-length
+  note before a note) are written as one note, and the sheet says how many; a unison between two kept tracks stays
+  on both staves. Triplets are written with their groups marked, so the "3" is drawn. Notes are paired by MIDI
+  channel as well as key, so two hands on two channels holding one key stay two notes. A file whose notes mostly
   miss the grid (played, not written) is said to have guessed bars and rhythms. Each hand is written in up to three
   voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,
   or a note held under a moving melody, gets a voice of its own, the top of the texture keeping the first; while two
   lines go on, a new note joins the one it is nearer in pitch; stems up for the highest voice in a bar, down for the
-  others; a played file keeps one voice a hand. Previously converted files keep
+  others; a played file keeps one voice a hand. Notes on the drum channel (MIDI channel 10) are left out, and the
+  sheet says how many. Swing (off-beats written straight with "Swing eighths") is found only in a duple beat with
+  late off-beats and nothing at a third of the beat: never in 6/8, 9/8 or 12/8, nor in triplets. Previously converted files keep
   their old conversion; adding the MIDI again converts it anew.
   **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their
-  published MusicXML, on the 180 the comparison could line up): 93.9% of notes at the right time and pitch, every
-  barline (0.4% extra), the opening key on all 180, spelling 94.2%, written lengths 88.3%, the staff 96.4%.
-  **Not handled yet:** a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes; groups of 5, 7, …
-  moved onto the nearest grid; only the first tempo. A played file recorded without a click has no reliable bars.
+  published MusicXML, on the 180 the comparison could line up): 98.0% of notes at the right time and pitch (96.1%
+  of the notes written are right), every barline (0.4% extra), the opening key on all 180, spelling 94.2%, written
+  lengths 89.5%, the staff 96.5%; its own check passes on all 235.
+  **Not handled yet:** a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes
+  (looked at 2026-10-14, Beethoven Op. 78 bar 28 drawn by OSMD: the score file states the bar as 65/4 and cuts it
+  short after four beats and a 64th to give a trill real time, and it comes out as that metre over a thicket of 64th
+  chords, unreadable); groups of 5, 7, …
+  moved onto the nearest grid; only the first tempo; a fast trill a hair off the grid comes out as sixteenth-note
+  pairs (finer grids are taken only where notes sit exactly on them); a one-track file holding a single line is
+  still split between the hands. A played file recorded without a click has no reliable bars.
 - **Catalogue** (tab beside Yours, shown when the build has one; a catalogue that could not be read is asked for
   again the next time the library opens; `library/catalogue.ts`, built by
   `web/tools/catalogue/`): about 1,600 PDMX scores (855 piano, 776 lead sheets, within ~25 MB) picked by reading their notes: piano (one part, two staves)

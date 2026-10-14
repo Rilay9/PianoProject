@@ -28,7 +28,7 @@ function checkWithoutTiming(report: ConversionReport): string {
     const moved = report.moved > 0
       ? `; their timing was fitted to a grid, moving a note by at most ${String(Math.round(report.moved * 100) / 100)} of a quarter note`
       : ', at the times the file gives them';
-    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.`;
+    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.${joinedSentence(report)}`;
   }
   const trouble: string[] = [];
   if (report.lost.length > 0) trouble.push(`${String(report.lost.length)} note(s) lost`);
@@ -41,8 +41,16 @@ function checkWithoutTiming(report: ConversionReport): string {
   }
   return (
     `The score was written, but the check found ${trouble.join(', ')}. ` +
-    'Read it before trusting it.'
+    'Read it before trusting it.' +
+    joinedSentence(report)
   );
+}
+
+/** Strikes written as one with another, said, because the count above leaves them out. */
+function joinedSentence(report: ConversionReport): string {
+  if (report.joined === 0) return '';
+  return ` ${String(report.joined)} strike(s) of a key at the same moment as another strike of it, or a hair after ` +
+    '(a part doubling another, or a near-zero-length note just before), were written as one note with it.';
 }
 
 /**

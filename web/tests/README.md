@@ -9,7 +9,7 @@ no longer exists.
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules) | 17 (16 judging cases and the pedal-holds block) |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`) and the sentence the learner reads after a red chord (`sayHit`, 2026-10-14) | 29 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads; mistakes are refused with their reason | one per activity file + 18 refusals (24 today; the count is printed) |
-| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices (2026-10-14) | 138 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
+| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices, swing, drums, repeated strikes and lengths (2026-10-14) | 156 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages and the old fixture through pdf.js's Node build (fails if its canvas library cannot load) | 50 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`; not where in the bar, how long, or which staff (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song; `--corrupt` must fail |
 | `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 14 |
@@ -52,17 +52,27 @@ no longer exists.
 
 - Reader: onsets in quarter notes; tempo, metre and key signature from the conductor track; the one note track;
   a note left down gets a length; running status; SysEx skipped; not-MIDI and truncated files said apart; no metre
-  means 4/4, said; bar and beat lengths incl. compound metres. Merge: nothing dropped, onset order, file order kept.
+  means 4/4, said; bar and beat lengths incl. compound metres; a re-strike sent before the last note-off at one
+  tick, running status across a meta event, a release paired with its own channel, and the tempo in force at the
+  start rather than the first in file order (2026-10-14: the first three lost or cut notes silently before). Merge: nothing dropped, onset order, file order kept.
 - Hand split: every note in one hand; the boundary moves; crossing lines kept until they meet, and the two pinned
   failures (lines swap hands at a crossing; a simultaneous crossing cut by pitch); reach; the reach penalty.
 - Quantise: snapping; one grid per bar; a too-short note keeps a unit; swing detected and written straight; straight
-  not called swung; two strikes of one pitch pulled apart; the furthest move reported.
-- Rhythm: which lengths one note-head carries; cutting a length into rhythms loses nothing and cuts at the beat; an
-  inexpressible length handed back; held notes on a triplet grid tied; no chord crosses a barline.
+  not called swung; two strikes of one pitch pulled apart on a finer grid; a run of one key faster than the grid
+  written as the run, not crept forward (Op. 78: it came out twice as long); a strike a hair before another of its
+  key joined and said; a strike rounded onto the barline not pushed past the next bar's; a unison between kept
+  tracks kept on both, a doubled part joined; a note rounded onto the barline given the new bar's grid; the
+  furthest move reported, measured after all of it (2026-10-14; these fail on the converter before the fix).
+- Rhythm: which lengths one note-head carries, exactly the writer's (a breve to a 64th; a longa used to pass); cutting
+  a length into rhythms loses nothing and cuts at the beat; a long note cut into heads; a length between two grids
+  cut into the fewest heads; an inexpressible length handed back; held notes on a triplet grid tied; no chord crosses a barline.
 - Writer: note-heads, dots and triplets for a length; spelling and octave from the letter; one instrument on two
   staves, the backup, both halves of a tie, no tempo when none is stated.
 - Hands: two tracks kept as recorded (`crossed-hands.mid` tells this from a split); one track split; three merged
   then split; three kept is refused; the hands sentence says which.
+- Triplets (2026-10-14): every triplet note of a converted file lies inside a marked group (`<tuplet>` start and
+  stop), which is what OSMD draws the "3" from; it grouped none before (checked with OSMD 2.2.0's reader in a
+  cloud session, not drawn).
 - Import (`two-hands.mid`, at the converter's level): title from the file name, one part on two staves, the check
   sentence, 16 notes, the tracks kept, metre and tempo read; a file with no notes and a non-MIDI file refused with a
   sentence naming the file.
@@ -76,6 +86,9 @@ no longer exists.
   converter's read-back, each bar compared with the file as built: the pickup file, and a two-hand file with a
   pickup, 3/4 then 2/4, G then B♭ major and a run of 32nds (15 notes by bar, staff, beat, length and spelling). On a
   copy that shifts every note an eighth late these fail (the converter's own "nothing lost" asserts still pass).
+- Swing and drums (2026-10-14): running eighths in 6/8 and triplet eighths in 4/4 are not called swung (27 of
+  ASAP's 235 classical files were); a file with two piano tracks and a drum track keeps the two as the hands, writes
+  no drum note as a pitch and says how many it left out. These fail on the converter before the fix.
 - Voices (2026-10-14): a half-note melody over moving eighths in one hand is voice 1 (stems up, no ties) over voice 3
   (stems down); chords whose notes end together stay one voice and the second voice is left out of that bar; every
   voice of every bar adds up; a note held under a moving melody gets a third voice (5) and the moving notes keep

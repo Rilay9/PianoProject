@@ -110,7 +110,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 3; // 2026-10-14: bars from every time signature, the file's keys, finer grids; then voices
+export const MIDI_CONVERTER_VERSION = 4; // 2026-10-14: bars, keys, finer grids; voices; then swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -158,6 +158,8 @@ export interface ConversionReport {
   gridByBar: string[];
   swing: SwingReport;
   moved: number;
+  /** Strikes of one key too close to the one before to write apart, written as one note with it. */
+  joined: number;
   /** The share of onsets already on the grid (`QuantiseReport.onGrid`). */
   onGrid: number;
   /**
@@ -282,9 +284,50 @@ function barsFor(
       next += 1;
     }
     rest(to);
-    bars.push(notes);
+    bars.push(markTuplets(notes));
   }
   return bars;
+}
+
+const QUARTERS_OF: Record<string, number> = { breve: 8, whole: 4, half: 2, quarter: 1, eighth: 1 / 2, '16th': 1 / 4, '32nd': 1 / 8, '64th': 1 / 16 };
+
+/**
+ * Where each triplet group of one voice's bar starts and stops, which is what a reader draws the "3" from
+ * (2026-10-14). The notes carried `<time-modification>` and nothing else, and OSMD (the app's renderer) grouped
+ * none of them as a tuplet. A group is a run of triplet notes and rests whose written length is a whole number of
+ * threes of its shortest value (three triplet eighths, or a triplet quarter and a triplet eighth); anything else
+ * breaks the run and ends it at the note before.
+ */
+function markTuplets(notes: WriterNote[]): WriterNote[] {
+  let group: WriterNote[] = [];
+  let written = 0;
+  let shortest = Infinity;
+  const close = () => {
+    const first = group[0], last = group[group.length - 1];
+    if (first && last && first !== last) {
+      first.tuplet = { ...first.tuplet!, at: 'start' };
+      last.tuplet = { ...last.tuplet!, at: 'stop' };
+    } else if (first) {
+      first.tuplet = { ...first.tuplet!, at: 'both' }; // a lone triplet note or rest still says it is one
+    }
+    group = [];
+    written = 0;
+    shortest = Infinity;
+  };
+  for (const note of notes) {
+    if (note.chord) continue;
+    if (!note.tuplet || note.forward) {
+      close();
+      continue;
+    }
+    const head = (QUARTERS_OF[note.type] ?? 1) * DIVISIONS;
+    group.push(note);
+    written += (note.duration * note.tuplet.actual) / note.tuplet.normal;
+    shortest = Math.min(shortest, head);
+    if (written % (note.tuplet.actual * shortest) === 0) close();
+  }
+  close();
+  return notes;
 }
 
 /** Every struck note in a written score, read back off the text. */
@@ -439,13 +482,15 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
       }));
 
   const flat = raw.flatMap((part) => part.events);
-  const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null });
+  // Kept tracks are the staves: a unison between them is two hands, not one key struck twice.
+  const partOfEvent = split ? undefined : raw.flatMap((part, p) => part.events.map(() => p));
+  const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null, ...(partOfEvent ? { parts: partOfEvent } : {}) });
 
   const handMedian: { left?: number; right?: number } = {};
   let handBoundaries = 0;
   let parts: { name: string; events: NoteEvent[] }[];
   if (split && quantised.events.length > 0) {
-    const sides = splitHands(quantised.events);
+    const sides = splitHands(quantised.events.filter((_, i) => !quantised.joined.has(i)));
     parts = [];
     for (const [label, side] of [
       ['Right hand', sides.right],
@@ -462,7 +507,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     parts = [];
     let at = 0;
     for (const part of raw) {
-      parts.push({ name: part.name, events: quantised.events.slice(at, at + part.events.length) });
+      const from = at;
+      parts.push({ name: part.name, events: quantised.events.slice(from, from + part.events.length).filter((_, i) => !quantised.joined.has(from + i)) });
       at += part.events.length;
     }
   }
@@ -662,6 +708,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     gridByBar: quantised.gridByBar.map(fracToString),
     swing: quantised.swing,
     moved: toNumber(quantised.moved),
+    joined: quantised.joined.size,
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
     noteTrackNames,

@@ -56,7 +56,7 @@ export interface WriterNote {
    * divisions each are read as three twelfth-notes and the bar is wrong. `at`
    * marks the group's first and last note, which is what draws the bracket.
    */
-  tuplet?: { actual: number; normal: number; at?: 'start' | 'stop' };
+  tuplet?: { actual: number; normal: number; at?: 'start' | 'stop' | 'both' };
   /**
    * The note's place in a beam, where one is written (T37).
    *
@@ -242,7 +242,8 @@ function noteXml(
   if (note.fingering !== undefined) {
     notations.push(`<technical><fingering>${note.fingering}</fingering></technical>`);
   }
-  if (note.tuplet?.at) notations.push(`<tuplet type="${note.tuplet.at}"/>`);
+  if (note.tuplet?.at === 'start' || note.tuplet?.at === 'both') notations.push(`<tuplet type="start"/>`);
+  if (note.tuplet?.at === 'stop' || note.tuplet?.at === 'both') notations.push(`<tuplet type="stop"/>`);
   if (notations.length > 0) {
     lines.push(`${indent}  <notations>${notations.join('')}</notations>`);
   }

@@ -50,6 +50,8 @@ export interface MidiFileContents {
   timeSignatures: { at: Frac; time: TimeSignature }[];
   /** Every key signature the file states: sharps positive, flats negative; `minor` from the event's mode byte. */
   keyChanges: { at: Frac; fifths: number; minor: boolean }[];
+  /** Notes on channel 10 (the drums), left out of the score. */
+  drumNotes: number;
   /** Beats per minute from the first SET_TEMPO, or null when the file states none. */
   tempo: number | null;
   /** How the MIDI spelled its key signature(s), for the report. Sorted, de-duplicated. */
@@ -165,6 +167,10 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
   const timeSignatures: { at: Frac; time: TimeSignature }[] = [];
   const keyChanges: { at: Frac; fifths: number; minor: boolean }[] = [];
   let tempo: number | null = null;
+  // The tick the tempo above was stated at: the opening tempo is the earliest in time, not the first in file order
+  // (a track's tempo at 0 read after another's at bar 5 used to lose to it, 2026-10-14).
+  let tempoTick = Infinity;
+  let drumNotes = 0;
   const keySignatures = new Set<string>();
 
   let at = 8 + headerLength;
@@ -179,16 +185,23 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
 
     const r: Reader = { bytes: body, at: 0 };
     let ticksSoFar = 0;
-    let status = 0;
+    let running = 0;
     let name: string | null = null;
     const open = new Map<number, NoteEvent>();
+    // A note ended by a new strike of its key at this tick, whose own note-off is still to come at this tick.
+    const owed = new Map<number, number>();
     const events: NoteEvent[] = [];
     while (r.at < body.length) {
       ticksSoFar += varlen(r);
       const first = body[r.at] ?? 0;
+      // Running status is a channel message's: a meta or system event between two notes leaves it as it was, as
+      // mido and pretty_midi read it (2026-10-14; it used to take the meta event's 0xff, and every note after it
+      // under running status was read as meta data, silently).
+      let status = running;
       if ((first & 0x80) !== 0) {
         status = first;
         r.at += 1;
+        if (first < 0xf0) running = first;
       }
       if (status === 0xff) {
         const type = body[r.at] ?? 0;
@@ -198,9 +211,12 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
         r.at += size;
         if (type === 0x03 && name === null) {
           name = decoder.decode(data).trim() || null;
-        } else if (type === 0x51 && tempo === null && data.length >= 3) {
+        } else if (type === 0x51 && ticksSoFar < tempoTick && data.length >= 3) {
           const micros = ((data[0] ?? 0) << 16) | ((data[1] ?? 0) << 8) | (data[2] ?? 0);
-          if (micros > 0) tempo = 60_000_000 / micros;
+          if (micros > 0) {
+            tempo = 60_000_000 / micros;
+            tempoTick = ticksSoFar;
+          }
         } else if (type === 0x58 && data.length >= 2 && (data[0] ?? 0) > 0) {
           const time = { beats: data[0] ?? 4, beatType: 2 ** (data[1] ?? 2) };
           // The first stated, in time order across tracks (a later track's event at 0 is earlier than one at bar 5).
@@ -229,20 +245,39 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
       const pitch = body[r.at] ?? 0;
       const velocity = body[r.at + 1] ?? 0;
       r.at += 2;
+      // Channel 10 is the drums (General MIDI): its numbers are drum sounds, not pitches, and a band file's kick
+      // and snare came out as C2 and D2 in the left hand (2026-10-14). Left out, and counted.
+      if ((status & 0x0f) === 9 && (high === 0x90 || high === 0x80)) {
+        if (high === 0x90 && velocity > 0) drumNotes += 1;
+        continue;
+      }
       const quarters = div(frac(ticksSoFar), ticks);
+      // A key on one channel and the same key on another are two notes (two hands, two instruments): each release
+      // ends its own channel's note (2026-10-14; the right hand's held C4 was ended by the left hand's).
+      const key = (status & 0x0f) * 128 + pitch;
       if (high === 0x90 && velocity > 0) {
         // The same pitch struck again while it is still down ends the first one
         // here: two overlapping note-ons of one pitch are one string, and a MIDI
         // file that sends them is saying "again".
-        const earlier = open.get(pitch);
-        open.delete(pitch);
-        if (earlier && lte(earlier.end, earlier.start)) earlier.end = quarters;
+        const earlier = open.get(key);
+        open.delete(key);
+        if (earlier && lte(earlier.end, earlier.start)) {
+          earlier.end = quarters;
+          owed.set(key, ticksSoFar);
+        }
         const fresh: NoteEvent = { start: quarters, end: quarters, midi: pitch, velocity };
         events.push(fresh);
-        open.set(pitch, fresh);
+        open.set(key, fresh);
       } else if (high === 0x80 || (high === 0x90 && velocity === 0)) {
-        const earlier = open.get(pitch);
-        open.delete(pitch);
+        // The release of the note a new strike already ended at this tick (an exporter that writes the next
+        // note-on before the last note-off): it is that note's, not the new one's, which it would end at its start
+        // and so drop (2026-10-14; three repeated notes in one ASAP file).
+        if (owed.get(key) === ticksSoFar) {
+          owed.delete(key);
+          continue;
+        }
+        const earlier = open.get(key);
+        open.delete(key);
         if (earlier) earlier.end = quarters;
       }
     }
@@ -273,6 +308,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
     hadTimeSignature: timeSignature !== null,
     timeSignatures,
     keyChanges,
+    drumNotes,
     tempo,
     keySignatures: [...keySignatures].sort(),
   };

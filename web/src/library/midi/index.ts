@@ -44,6 +44,8 @@ export interface Guessed {
   key: { name: string; from: 'the file' | 'estimated from the notes' | 'chosen'; fileSignatures: string[]; changes: number };
   time: { beats: number; beatType: number; from: 'file' | 'assumed' | 'chosen'; changes: number; pickup: boolean };
   check: { passed: boolean; sentence: string };
+  /** Notes on the drum channel, left out of the score. */
+  drumNotes: number;
 }
 
 export interface MidiConversion {
@@ -100,6 +102,7 @@ export function convert(data: ArrayBuffer | Uint8Array, options: MidiOptions = {
     key: { name: report.key.replace(/^([A-G])-/, '$1♭').replace(/^([A-G])#/, '$1♯'), from: report.keyFrom, fileSignatures: report.midiKeySignatures, changes: report.keyChanges },
     time: { beats: time.beats, beatType: time.beatType, from: chosenTime ? 'chosen' : source.hadTimeSignature ? 'file' : 'assumed', changes: report.metre.changes, pickup: report.metre.pickup },
     check: { passed: report.passed, sentence: checkSentence(report) },
+    drumNotes: source.drumNotes,
   };
   return { xml, report, guessed };
 }
@@ -117,7 +120,8 @@ export function guessedWords(g: Guessed): string {
   const more = `${g.time.pickup ? ', after a pickup bar' : ''}${g.time.changes > 0 ? `; it changes ${String(g.time.changes)} time${g.time.changes === 1 ? '' : 's'} later` : ''}`;
   const time = g.time.from === 'assumed' ? `Time ${metre}, assumed: the file states none.`
     : g.time.from === 'chosen' ? `Time ${metre}, as chosen.` : `Time ${metre}, from the file${more}.`;
-  return [g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), tempo, key, time, g.check.sentence].join(' ');
+  const drums = g.drumNotes > 0 ? [`The drums (${String(g.drumNotes)} notes on the drum channel) were left out.`] : [];
+  return [g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), ...drums, tempo, key, time, g.check.sentence].join(' ');
 }
 
 /**
