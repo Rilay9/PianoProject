@@ -75,7 +75,8 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   }
   /** Finds the lines on a page (once; kept with the piece), its tilt, margins and each line's split. */
   async function detect(page: number, force = false): Promise<void> {
-    if (!doc || (!force && st.cuts?.[page])) return;
+    if (!doc) return;
+    if (!force && st.cuts?.[page]) { if (!st.splits?.[page]) await resplit(page); return; } // (lines kept from before splits existed)
     const r = await doc.renderPage(page, DETECTION_WIDTH);
     const ctx = r.canvas.getContext('2d');
     if (!ctx) return;
