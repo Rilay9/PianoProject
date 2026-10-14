@@ -331,7 +331,7 @@ one); examples to copy written into a chart.
   MusicXML and the MIDI file beside it (`<id>:midi`, in the backup too), Cancel adds nothing. A file stating no
   tempo is written without one (the score screen's default applies).
 - **Catalogue** (tab beside Yours, shown when the build has one; `library/catalogue.ts`, built by
-  `web/tools/catalogue/`): a few thousand PDMX scores picked by reading their notes: piano (one part, two staves)
+  `web/tools/catalogue/`): about 1,600 PDMX scores (855 piano, 776 lead sheets, within ~25 MB) picked by reading their notes: piano (one part, two staves)
   and lead sheets (one staff with chord symbols). The index holds what the app's own reader (`facts.ts`) reads from
   each file, a composer only when it matches the composer table (`tools/catalogue/composers.json`; a bare surname
   stays a surname), MuseScore's view count (shown as exactly that) and the uploader's licence for the

@@ -1,4 +1,4 @@
-// The catalogue (owner, 2026-10-13): a few thousand PDMX scores Claude picked by reading their notes (piano on two
+// The catalogue (owner, 2026-10-13): about 1,600 PDMX scores Claude picked by reading their notes (piano on two
 // staves, and lead sheets), built on the computer by web/tools/catalogue/ and served with the app (saved for offline
 // with it). The index holds only what was read from each file (by the same reader as facts.ts) plus MuseScore's view
 // count, labelled as exactly that; never PDMX's genre, difficulty, tags or ratings. Uploads of one piece fold into a

@@ -66,7 +66,9 @@ def checked_composer(raw, table, trad):
 
 def title_of(r, csv_row):
     t = r.get('titlePrinted') or r.get('workTitle') or r.get('movementTitle') or (csv_row or {}).get('title') or ''
-    t = ' '.join(t.split())
+    t = ' '.join(t.split()).strip('"“”~*_ ')  # (wrapping quotes and decoration an uploader added)
+    if len(t) > 1 and t[0] in "'‘" and t[-1] in "'’":  # single quotes only when they wrap it ("Rockin'" keeps its own)
+        t = t[1:-1].strip()
     return t if t and t.upper() != 'NA' else ''
 
 
