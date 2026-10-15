@@ -40,8 +40,9 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   phone, a dialog open while keys arrive, a mouse let go off the on-screen keys (2026-10-15: the key stayed down).
   A stand-in MIDI keyboard for these is in `tests/browser.mjs` (`window.__key`). Each screen: try Back at every level, Tab plus Enter, offline after
   saving, and both orientations.
-- **Extremes of size.** A unit taller than the screen, an empty page, one line, eighty pages, a tablet, a phone
-  sideways. Check that nothing is cut off with no way to see it, and that one odd item doesn't change the layout for
+- **Extremes of size.** A unit taller than the screen, an empty page, one line, eighty pages, a long piece (a 190-bar
+  song's one-line strip is 28,720 px wide: its hidden source, parked 10,000 px off screen, painted over it; 2026-10-15),
+  a tablet, a phone sideways. Check that nothing is cut off with no way to see it, and that one odd item doesn't change the layout for
   the rest of the visit.
 - **Two coordinate frames, or two clocks.** Positions read in one frame and shown in another (slanted versus
   straightened page). Times judged on the page's clock instead of the keyboard's, or a fixed millisecond window

@@ -123,7 +123,10 @@ body { padding: var(--top-bar, 0px) 0 var(--bottom-bar, 0px); }
 .score { position: fixed; inset: var(--score-top, 0px) 0 var(--under-h, 0px); overflow: hidden; background: var(--paper); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .score.strip { touch-action: pan-x; }
 /* Where OSMD draws, off screen; the slots show copies, the one-line layouts show it through <use>. */
-.osmd-source { position: absolute; left: -10000px; top: 0; }
+/* OSMD's own drawing, which the one-line strip shows through <use>: laid out but never painted. It used to be parked
+   10,000 px to the left, and a long piece's line (Seize the Day: 28,720 px) reached back onto the screen over the strip
+   (2026-10-15). A container with no height that clips paints none of it, at any width; the <use> copy is not inside it. */
+.osmd-source { position: absolute; left: 0; top: 0; height: 0; overflow: hidden; pointer-events: none; }
 .slot { position: absolute; left: 0; right: 0; overflow: hidden; }
 .slot + .slot { border-top: 1px solid #eef0f3; }
 .slot > .piece { position: absolute; transform-origin: 0 0; }
@@ -428,6 +431,8 @@ dialog .actions { position: sticky; bottom: -16px; margin-bottom: -16px; padding
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 12px 0; border: 0; padding: 0; }
 .row legend { padding: 0; margin-bottom: 4px; font-weight: 600; width: 100%; }
 label.row { font-weight: 600; }
+/* A checkbox stays beside its words when they run to two lines (2026-10-15: a long label wrapped below its box). */
+label.row:has(> input[type="checkbox"]) { flex-wrap: nowrap; align-items: baseline; gap: 10px; }
 label.row input[type="range"] { flex: 1; min-width: 160px; }
 .note { color: var(--muted); font-size: 14px; margin: 4px 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }

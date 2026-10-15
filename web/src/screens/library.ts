@@ -254,7 +254,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       }
       list.replaceChildren(li);
     }
-    const n = filtered.length, of = all.length, names = activeNames(), unit = tab === 'catalogue' ? 'scores' : 'items';
+    // The catalogue lists a piece once with its versions folded under it (as its tab counts it): counted the same way
+    // (2026-10-15: the line said 1,826 scores, every version, beside a tab of 1,631 and a list of one row a piece).
+    const pieces = (items: LibItem[]) => (tab === 'catalogue' ? new Set(items.map((i) => i.cat?.group ?? i.id)).size : items.length);
+    const n = pieces(filtered), of = pieces(all), names = activeNames(), unit = tab === 'catalogue' ? 'pieces' : 'items';
     countLine.textContent = n === of && !search.value ? `${of.toLocaleString()} ${of === 1 ? unit.slice(0, -1) : unit}` : `${n.toLocaleString()} of ${of.toLocaleString()}${names.length ? ` · ${names.join(' · ')}` : ''}`;
     sortButton.textContent = `Sort: ${sortsNow().find(([s]) => s === sortBy)![1]} ▾`;
     // The tabs (only when there is a catalogue).
