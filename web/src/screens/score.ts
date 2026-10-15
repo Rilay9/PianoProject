@@ -312,6 +312,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     // Begun from a key: it counts as your first note only where you have notes at the marker (in Rhythm: a beat to tap there).
     const startKeyCounts = fromKey !== undefined && view.struckAt(view.index, yours(s)).length > 0;
     $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
+    const bandReady = loadBand(currentPiece()); // read beside the rest; awaited before the band is asked for (B7-03)
     try {
       if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
       // The piano part goes to the keyboard when chosen and one is connected that can play; otherwise the phone.
@@ -319,6 +320,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
       // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
       if (pianoHands(s) || s.metronome || view.looped) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
+      await bandReady;
       if (bandOn(s)) await prepareBand(s);
     } catch (cause) {
       if (request !== startRequest) return; // dropped meanwhile (a tap on … or another choice): say nothing
@@ -419,20 +421,33 @@ export function createScoreScreen(app: App): ScoreScreen {
   // The band (owner, 2026-10-15): a MIDI file's parts that are not piano (library/midi/band.ts), read from the MIDI
   // kept with the piece and played with the score on its own timeline, in every mode that keeps time (not Wait for me).
   let band: { id: string; notes: BandNote[]; names: string[] } | null = null;
+  // The piece whose band is read, or being read, and that read: ▶ waits for it (review 2026-10-15, B7-03: a ▶ tapped
+  // while it was still being read played the first run without the band). It never fails; a read that could not be
+  // done is forgotten, so the next draw or ▶ tries again.
+  let bandRead: { id: string; done: Promise<void> } | null = null;
   const bandFailed = new Set<string>(); // sounds that would not load (fetched online, and offline): left out
-  async function loadBand(piece: Piece): Promise<void> {
-    if (band?.id === piece.id) return;
+  function loadBand(piece: Piece): Promise<void> {
+    if (bandRead?.id === piece.id) return bandRead.done;
     band = null;
-    if (!piece.id.startsWith('u-')) return;
-    const blob = await fileOf(midiKey(piece.id)).catch(() => undefined);
-    if (!blob) return;
-    const [{ readMidi }, { partsOf, bandNotes, trimLeadIn }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
-    try {
-      await loadLibrary().catch(() => {});
-      // The parts chosen for the score on the import sheet; the rest are the band.
-      const parts = partsOf(trimLeadIn(readMidi(new Uint8Array(await blob.arrayBuffer()))), record(piece.id)?.own?.scoreParts).band;
-      if (currentPiece().id === piece.id && parts.length) band = { id: piece.id, notes: bandNotes(parts), names: parts.map((part) => part.name) };
-    } catch { /* a MIDI file that no longer reads: the score plays without a band */ }
+    const read = { id: piece.id, done: Promise.resolve() };
+    const forget = () => { if (bandRead === read) bandRead = null; };
+    read.done = (async () => {
+      if (!piece.id.startsWith('u-')) return;
+      const blob = await fileOf(midiKey(piece.id)).catch(() => null);
+      if (blob === null) { forget(); return; }
+      if (!blob) return;
+      try {
+        const [{ readMidi }, { partsOf, bandNotes, trimLeadIn }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
+        await loadLibrary().catch(() => {});
+        // The parts chosen for the score on the import sheet; the rest are the band.
+        const parts = partsOf(trimLeadIn(readMidi(new Uint8Array(await blob.arrayBuffer()))), record(piece.id)?.own?.scoreParts).band;
+        // Another piece open by now: not kept, and forgotten, so coming back to this one reads it again.
+        if (currentPiece().id !== piece.id) forget();
+        else if (parts.length) band = { id: piece.id, notes: bandNotes(parts), names: parts.map((part) => part.name) };
+      } catch { forget(); /* a MIDI file that no longer reads: the score plays without a band */ }
+    })();
+    bandRead = read;
+    return read.done;
   }
   const bandOn = (s: ScoreSettings): boolean => !!band && band.id === currentPiece().id && s.band && s.mode !== 'wait';
   /** The band's notes on the song's timeline (ms at speed 1), those whose sound loaded. */

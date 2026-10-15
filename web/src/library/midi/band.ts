@@ -3,8 +3,9 @@
  * part becomes the score). Which part is which is read from the file: each channel's General MIDI instrument (its
  * program change) and channel 10 for the drums.
  *
- * A part is a track's notes on one channel (a format 0 file keeps every instrument in one track, told apart by
- * channel). By default the score is every part on a channel set to the General MIDI piano family (programs 0-7: the
+ * A part is a track's notes on one channel and instrument (a format 0 file keeps every instrument in one track, told
+ * apart by channel; a channel can change instrument partway, and each note is the instrument in force where it starts:
+ * review 2026-10-15, B7-01). By default the score is every part on a channel set to the General MIDI piano family (programs 0-7: the
  * pianos, electric pianos, harpsichord and clavinet); a channel the file never sets is program 0, the piano, as General
  * MIDI says, so a file that names no instruments is all piano, as before. The learner can choose other parts on the
  * import sheet (`partsOf`'s `score`); everything not in the score, and the drums, is the band.
@@ -49,20 +50,47 @@ export interface Parts { piano: MidiTrack[]; band: BandPart[] }
  */
 export interface PartInfo { key: string; name: string; instrument: string; sound: string; piano: boolean; notes: number; low: number; high: number; middle: number }
 
-interface Group { key: string; track: MidiTrack; program: number; events: NoteEvent[] }
-/** Every track's notes, a group per channel, in file order. */
+/** channelKey: the whole channel on its track ("track:channel"), which a choice saved before a channel could change instrument names. */
+interface Group { key: string; channelKey: string; name: string; track: MidiTrack; channel: number; program: number; events: NoteEvent[] }
+type Changes = MidiFileContents['programChanges'];
+/**
+ * The instrument a note on a channel plays: the last change on the channel at or before it starts (one at the same moment
+ * counts). Before any, 0, the piano, as General MIDI says a channel starts.
+ */
+function programAt(changes: Changes, start: Frac): number {
+  let program = 0;
+  for (const c of changes) {
+    if (gt(c.at, start)) break;
+    program = c.program;
+  }
+  return program;
+}
+/**
+ * Every track's notes, a group per channel and instrument, in file order (by channel, then by each instrument's first
+ * note). Its key is "track:channel", or "track:channel:program" where the channel changes instrument on the track. Its
+ * name is the track's when the track holds one part; a track holding several (a one-track file, named for the song) names
+ * each by its instrument, and by its channel too where two play the same one (review 2026-10-15, B7-02).
+ */
 function groupsOf(source: MidiFileContents): Group[] {
+  const byChannel = new Map<number, Changes>();
+  for (const c of source.programChanges) byChannel.set(c.channel, [...(byChannel.get(c.channel) ?? []), c]);
   const out: Group[] = [];
   for (const track of source.tracks) {
-    const byChannel = new Map<number, NoteEvent[]>();
+    const parts = new Map<string, Group>();
     for (const e of track.events) {
-      const list = byChannel.get(e.channel ?? 0);
-      if (list) list.push(e);
-      else byChannel.set(e.channel ?? 0, [e]);
+      const channel = e.channel ?? 0, program = programAt(byChannel.get(channel) ?? [], e.start);
+      const id = `${String(channel)}:${String(program)}`;
+      const group = parts.get(id);
+      if (group) group.events.push(e);
+      else parts.set(id, { key: '', channelKey: `${String(track.index)}:${String(channel)}`, name: '', track, channel, program, events: [e] });
     }
-    for (const [channel, events] of [...byChannel].sort((a, b) => a[0] - b[0])) {
-      out.push({ key: `${String(track.index)}:${String(channel)}`, track, program: source.programs[channel] ?? 0, events });
+    const groups = [...parts.values()].sort((a, b) => a.channel - b.channel);
+    for (const g of groups) {
+      g.key = groups.filter((o) => o.channel === g.channel).length > 1 ? `${g.channelKey}:${String(g.program)}` : g.channelKey;
+      g.name = groups.length === 1 ? track.name ?? instrumentName(g.program)
+        : groups.filter((o) => o.program === g.program).length > 1 ? `${instrumentName(g.program)}, channel ${String(g.channel + 1)}` : instrumentName(g.program);
     }
+    out.push(...groups);
   }
   return out;
 }
@@ -73,7 +101,7 @@ const middleOf = (events: NoteEvent[]): number => {
 function infoOf(g: Group): PartInfo {
   const pitches = g.events.map((e) => e.midi);
   return {
-    key: g.key, name: g.track.name ?? instrumentName(g.program), instrument: instrumentName(g.program), sound: soundOf(g.program),
+    key: g.key, name: g.name, instrument: instrumentName(g.program), sound: soundOf(g.program),
     piano: isPiano(g.program), notes: g.events.length, low: Math.min(...pitches), high: Math.max(...pitches), middle: middleOf(g.events),
   };
 }
@@ -107,7 +135,8 @@ export function guessScore(parts: PartInfo[]): { keys: string[]; guessed: boolea
 export function partsOf(source: MidiFileContents, score?: readonly string[]): Parts {
   const groups = groupsOf(source);
   const keys = new Set(score ?? guessScore(listParts(source)).keys);
-  const chosen = groups.filter((g) => keys.has(g.key));
+  const inScore = (g: Group): boolean => keys.has(g.key) || keys.has(g.channelKey);
+  const chosen = groups.filter(inScore);
   const allPiano = chosen.every((g) => isPiano(g.program));
   const ordered = allPiano ? chosen : [...chosen].sort((a, b) => middleOf(b.events) - middleOf(a.events));
   // Piano parts on one track stay one track (a recording of two hands on one channel each is still split by the
@@ -116,9 +145,9 @@ export function partsOf(source: MidiFileContents, score?: readonly string[]): Pa
   for (const g of ordered) {
     const same = allPiano ? piano.find((t) => t.index === g.track.index) : undefined;
     if (same) same.events = [...same.events, ...g.events].sort((a, b) => cmp(a.start, b.start) || a.midi - b.midi);
-    else piano.push({ index: g.track.index, name: allPiano ? g.track.name : g.track.name ?? instrumentName(g.program), events: g.events });
+    else piano.push({ index: g.track.index, name: allPiano ? g.track.name : g.name, events: g.events });
   }
-  const band: BandPart[] = groups.filter((g) => !keys.has(g.key)).map((g) => ({ name: g.track.name ?? instrumentName(g.program), sound: soundOf(g.program), notes: g.events }));
+  const band: BandPart[] = groups.filter((g) => !inScore(g)).map((g) => ({ name: g.name, sound: soundOf(g.program), notes: g.events }));
   if (source.drums.length) band.push({ name: 'Drums', sound: 'drums', notes: source.drums });
   return { piano, band };
 }
@@ -156,6 +185,14 @@ export function trimLeadIn(file: MidiFileContents): MidiFileContents {
     ],
     timeSignatures: from(file.timeSignatures),
     keyChanges: from(file.keyChanges),
+    // Each channel's instrument as it stands where the music starts, then its changes (B7-01).
+    programChanges: [
+      ...[...new Set(file.programChanges.map((c) => c.channel))].flatMap((channel) => {
+        const before = file.programChanges.filter((c) => c.channel === channel && lte(c.at, lead));
+        return before.length ? [{ ...before[before.length - 1]!, at: ZERO }] : [];
+      }),
+      ...file.programChanges.filter((c) => gt(c.at, lead)).map((c) => ({ ...c, at: sub(c.at, lead) })),
+    ],
   };
 }
 

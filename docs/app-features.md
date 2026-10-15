@@ -57,7 +57,9 @@ keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time
 Watch, Play along, Rhythm and Ladder (not Wait for me, which keeps no tempo). On by default; Tempo and sound lists
 the parts, switches the band off for the piece, and sets its volume (one for the app). The sounds are the FluidR3
 General MIDI set the Lab uses: basses and guitars kept in the app, any other instrument fetched online (offline, a
-part that cannot load is left out and said). `web/src/screens/score.ts` (loadBand, songNotes), `library/midi/band.ts`.
+part that cannot load is left out and said). The band is read from the piece's MIDI file when the piece opens; a ▶
+tapped before that read ends waits for it, so the first run has the band too (review 2026-10-15, B7-03).
+`web/src/screens/score.ts` (loadBand, songNotes), `library/midi/band.ts`.
 
 **Modes** (bottom bar; saved per song) — `web/src/main.ts`, `web/src/practice.ts`, `web/src/matching.ts`:
 
@@ -366,9 +368,11 @@ one); examples to copy written into a chart.
   lines go on, a new note joins the one it is nearer in pitch; stems up for the highest voice in a bar, down for the
   others; a played file keeps one voice a hand. A band file (2026-10-15): the score is the file's piano part (every
   note on a channel set to a General MIDI piano, programs 0-7, on any track; a channel the file never sets is a
-  piano, as General MIDI says), and the other parts and the drums (MIDI channel 10) are not written but kept to play
+  piano, as General MIDI says; a channel that changes instrument partway is a part per instrument, each note the
+  instrument in force where it starts: review 2026-10-15, B7-01), and the other parts and the drums (MIDI channel 10) are not written but kept to play
   as the band; the sheet's Band row names them, and the bars run as long as the band plays. **Parts** (owner,
-  2026-10-15: "Let me pick the parts"): the sheet lists the file's parts (name, instrument, notes, range), each ticked
+  2026-10-15: "Let me pick the parts"): the sheet lists the file's parts (name, instrument, notes, range; a track
+  holding several parts, as a one-track file does, names each by its instrument, B7-02), each ticked
   if the score is made of it, and a change converts again; the drums are always the band. A file with no piano part
   gets a guess, said: the highest part (where a tune usually is) and the bass; two parts in the score are the hands,
   the higher on the upper staff. The choice is kept with the piece (`scoreParts`), so the rest play as its band.

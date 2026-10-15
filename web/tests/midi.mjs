@@ -1399,6 +1399,90 @@ describe('a band file: the piano part is the score, the rest is the band', () =>
   });
 });
 
+// --- review 2026-10-15 (B7-01, B7-02): a channel that changes instrument; a one-track file named for the song -------
+// A channel's instrument is the program in force when each note starts, not the first the file sets (B7-01: a channel
+// going from piano to bass put the bass notes in the score). A one-track file's parts are named by their instrument,
+// not the one track name they share (B7-02: "My Song, My Song" in the Band list).
+
+describe('a channel that changes instrument partway (review B7-01)', () => {
+  const program = (channel, n) => [0xc0 | channel, n];
+  const on = (channel, m) => [0x90 | channel, m, 90], off = (channel, m) => [0x80 | channel, m, 0];
+  const line = (channel, midis, len = 480) => midis.flatMap((m) => [{ delta: 0, bytes: on(channel, m) }, { delta: len, bytes: off(channel, m) }]);
+  const scoreOf = (parts) => parts.piano.flatMap((t) => t.events.map((e) => e.midi));
+  const bandOf = (parts) => parts.band.map((p) => `${p.sound}:${p.notes.map((n) => n.midi).join(',')}`);
+  it('piano then bass on one channel: the piano notes are the score, the bass notes the band, on the bass', () => {
+    const file = buildMidiTracks([[{ delta: 0, bytes: program(0, 0) }, ...line(0, [60, 64, 67, 72]), { delta: 0, bytes: program(0, 33) }, ...line(0, [36, 43])]], 480, 0);
+    const parts = partsOf(readMidi(file));
+    expect(scoreOf(parts)).toEqual([60, 64, 67, 72]);
+    expect(bandOf(parts)).toEqual(['electric_bass_finger:36,43']);
+    const { xml } = convertMidi(file, { title: 'changes' });
+    expect(barsOf(xml).flat().map((n) => n.name).sort()).toEqual(['C4', 'C5', 'E4', 'G4']);
+  });
+  it('bass then piano on one channel: the piano notes are still the score', () => {
+    const file = buildMidiTracks([[{ delta: 0, bytes: program(0, 33) }, ...line(0, [36, 43]), { delta: 0, bytes: program(0, 0) }, ...line(0, [60, 64])]], 480, 0);
+    const parts = partsOf(readMidi(file));
+    expect(scoreOf(parts)).toEqual([60, 64]);
+    expect(bandOf(parts)).toEqual(['electric_bass_finger:36,43']);
+  });
+  it('piano, bass, piano again: one piano part and one bass part', () => {
+    const file = buildMidiTracks([[...line(0, [60]), { delta: 0, bytes: program(0, 33) }, ...line(0, [36]), { delta: 0, bytes: program(0, 0) }, ...line(0, [62])]], 480, 0);
+    const parts = listParts(readMidi(file));
+    expect(parts.map((p) => `${p.instrument}:${p.notes}:${p.piano}`)).toEqual(['Acoustic grand piano:2:true', 'Electric bass (finger):1:false']);
+    expect(partsOf(readMidi(file)).piano.flatMap((t) => t.events.map((e) => e.midi))).toEqual([60, 62]);
+  });
+  it('a change on another track counts from its time, not its place in the file', () => {
+    // Track 1 sets channel 1 to the bass at bar 2; track 2 plays channel 1, a piano in bar 1 and the bass from bar 2.
+    const file = buildMidiTracks([
+      [{ delta: 0, bytes: timeSignature(4, 2) }, { delta: 1920, bytes: program(1, 33) }],
+      [{ delta: 0, bytes: program(1, 0) }, ...line(1, [60, 64, 67, 72]), ...line(1, [36, 43])],
+    ]);
+    const parts = partsOf(readMidi(file));
+    expect(scoreOf(parts)).toEqual([60, 64, 67, 72]);
+    expect(bandOf(parts)).toEqual(['electric_bass_finger:36,43']);
+  });
+  it('a change after a count-in moves back with the notes', () => {
+    const file = buildMidiTracks([[{ delta: 1920, bytes: on(0, 60) }, { delta: 1920, bytes: off(0, 60) }, { delta: 0, bytes: program(0, 33) }, ...line(0, [36])]], 480, 0);
+    const parts = partsOf(trimLeadIn(readMidi(file)));
+    expect(scoreOf(parts)).toEqual([60]);
+    expect(bandNotes(parts.band).map((n) => `${n.q}:${n.sound}:${n.midi}`)).toEqual(['4:electric_bass_finger:36']);
+  });
+  it('a change at the moment of a note counts for it; a note before any change is the piano, as General MIDI starts', () => {
+    const file = buildMidiTracks([[...line(0, [60]), { delta: 0, bytes: program(0, 33) }, { delta: 0, bytes: on(0, 36) }, { delta: 480, bytes: off(0, 36) }]], 480, 0);
+    expect(listParts(readMidi(file)).map((p) => `${p.key}:${p.instrument}:${p.notes}`)).toEqual(['0:0:0:Acoustic grand piano:1', '0:0:33:Electric bass (finger):1']);
+  });
+  it('a choice saved before (a whole channel, "track:channel") still takes every instrument on it', () => {
+    const file = buildMidiTracks([[...line(0, [60]), { delta: 0, bytes: program(0, 33) }, ...line(0, [36])]], 480, 0);
+    const parts = partsOf(readMidi(file), ['0:0']);
+    expect(scoreOf(parts)).toEqual([60, 36]);
+    expect(parts.band).toEqual([]);
+  });
+});
+
+describe('a one-track file named for the song (review B7-02)', () => {
+  const program = (channel, n) => [0xc0 | channel, n];
+  const on = (channel, m) => [0x90 | channel, m, 90], off = (channel, m) => [0x80 | channel, m, 0];
+  const line = (channel, midis, len = 480) => midis.flatMap((m) => [{ delta: 0, bytes: on(channel, m) }, { delta: len, bytes: off(channel, m) }]);
+  it('names each instrument in it by its instrument, not the one track name', () => {
+    const file = buildMidiTracks([[{ delta: 0, bytes: trackName('My Song') }, { delta: 0, bytes: program(1, 33) }, { delta: 0, bytes: program(2, 30) },
+      ...line(0, [60, 62]), ...line(1, [36, 38]), ...line(2, [52, 55])]], 480, 0);
+    expect(partsOf(readMidi(file)).band.map((p) => p.name)).toEqual(['Electric bass (finger)', 'Distortion guitar']);
+    expect(listParts(readMidi(file)).map((p) => p.name)).toEqual(['Acoustic grand piano', 'Electric bass (finger)', 'Distortion guitar']);
+    expect(convert(file, { title: 'my song' }).guessed.band.map((b) => b.name)).toEqual(['Electric bass (finger)', 'Distortion guitar']);
+  });
+  it('two parts of one instrument in it are told apart by channel', () => {
+    const file = buildMidiTracks([[{ delta: 0, bytes: trackName('My Song') }, { delta: 0, bytes: program(1, 33) }, { delta: 0, bytes: program(2, 33) },
+      ...line(0, [60]), ...line(1, [36]), ...line(2, [43])]], 480, 0);
+    expect(partsOf(readMidi(file)).band.map((p) => p.name)).toEqual(['Electric bass (finger), channel 2', 'Electric bass (finger), channel 3']);
+  });
+  it('a track that holds one instrument keeps its own name', () => {
+    const file = buildMidiTracks([
+      [{ delta: 0, bytes: trackName('Piano') }, ...line(0, [60])],
+      [{ delta: 0, bytes: trackName('Walking bass') }, { delta: 0, bytes: program(1, 32) }, ...line(1, [36])],
+    ]);
+    expect(partsOf(readMidi(file)).band.map((p) => p.name)).toEqual(['Walking bass']);
+  });
+});
+
 // --- new (2026-10-14): the key signatures the file states, and where they change -----------------------------------
 // The converter used to estimate the key from the notes and drop the file's: on ASAP's score MIDI files the
 // opening key was wrong on 21 of 180, and no key change was ever written.

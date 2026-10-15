@@ -28,7 +28,7 @@ export interface NoteEvent {
   end: Frac;
   midi: number;
   velocity: number | null;
-  /** The MIDI channel it was played on (0-15), where the file says: which instrument it is (`programs`). */
+  /** The MIDI channel it was played on (0-15), where the file says: which instrument it is (`programChanges`). */
   channel?: number;
 }
 
@@ -56,8 +56,12 @@ export interface MidiFileContents {
   drumNotes: number;
   /** Those drum hits (a General MIDI drum number each), for playing with the score as the band (2026-10-15). */
   drums: NoteEvent[];
-  /** Each channel's General MIDI instrument (program 0-127), the first the file sets on it; a channel never set is 0. */
-  programs: Record<number, number>;
+  /**
+   * Every General MIDI instrument (program 0-127) the file sets, on which channel and when, in time order (two at one
+   * moment in file order). A channel can change instrument partway: each note is the one in force where it starts
+   * (band.ts; review 2026-10-15, B7-01: the first program set used to stand for the whole file).
+   */
+  programChanges: { channel: number; at: Frac; program: number }[];
   /** The sustain pedal (controller 64) going down and up, on each channel, in time order (2026-10-15). */
   pedal: { channel: number; at: Frac; down: boolean }[];
   /** Beats per minute from the first SET_TEMPO, or null when the file states none. */
@@ -180,7 +184,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
   let tempoTick = Infinity;
   let drumNotes = 0;
   const drums: NoteEvent[] = [];
-  const programs: Record<number, number> = {};
+  const programChanges: { channel: number; at: Frac; program: number }[] = [];
   const pedal: { channel: number; at: Frac; down: boolean }[] = [];
   const keySignatures = new Set<string>();
 
@@ -251,7 +255,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
       }
       const high = status & 0xf0;
       if (high === 0xc0 || high === 0xd0) {
-        if (high === 0xc0) programs[status & 0x0f] ??= (body[r.at] ?? 0) & 0x7f;
+        if (high === 0xc0) programChanges.push({ channel: status & 0x0f, at: div(frac(ticksSoFar), ticks), program: (body[r.at] ?? 0) & 0x7f });
         r.at += 1;
         continue;
       }
@@ -331,7 +335,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
     keyChanges,
     drumNotes,
     drums: drums.sort((a, b) => cmp(a.start, b.start)),
-    programs,
+    programChanges: programChanges.sort((a, b) => cmp(a.at, b.at)),
     pedal: pedal.sort((a, b) => cmp(a.at, b.at)),
     tempo,
     keySignatures: [...keySignatures].sort(),

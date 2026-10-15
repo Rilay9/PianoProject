@@ -289,6 +289,50 @@ try {
     await ctx.close();
   }
 
+  // --- review 2026-10-15, B7-03: ▶ before the band has loaded (S3) ------------------------------------------------------
+  // The band is read from the piece's MIDI file after the score is drawn. Its bytes are held back here (Blob.arrayBuffer
+  // of a MIDI blob, 2.5 s, from sessionStorage's slowMidi) and ▶ is tapped as soon as the score is drawn: the first run
+  // must still have the band. Then, opened again: ▶ and a stop while the band is read: nothing starts when it arrives.
+  {
+    const { ctx, page, errors } = await fresh(() => {
+      const read = Blob.prototype.arrayBuffer;
+      window.__midiHeld = 0;
+      Blob.prototype.arrayBuffer = async function () {
+        const bytes = await read.call(this), slow = Number(sessionStorage.getItem('slowMidi') || 0);
+        if (slow && new TextDecoder().decode(new Uint8Array(bytes, 0, Math.min(4, bytes.byteLength))) === 'MThd') { window.__midiHeld++; await new Promise((r) => setTimeout(r, slow)); }
+        return bytes;
+      };
+    });
+    await library(page);
+    await page.setInputFiles('#lib-file', BAND);
+    await page.waitForSelector('#lib-midi[open]', { timeout: 20000 });
+    await page.waitForFunction(() => /Check/.test(document.getElementById('lib-midi-facts')?.textContent ?? ''), null, { timeout: 20000 });
+    await page.click('#lib-midi button[value="add"]'); await page.waitForTimeout(1500);
+    await page.evaluate(() => sessionStorage.setItem('slowMidi', '2500'));
+    await page.locator('.lib-row', { hasText: 'little band' }).first().click();
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    const early = await page.evaluate(() => ({ held: window.__midiHeld, bandShown: !document.getElementById('t-band-set').hidden }));
+    await page.click('#play');
+    let played = { playing: false, t: 0, started: {} };
+    for (let i = 0; i < 40; i++) { await page.waitForTimeout(250); played = await page.evaluate(() => window.__pianoDebug.sound()); if (played.playing && played.t > 1600) break; }
+    await page.mouse.click(195, 420); await page.waitForTimeout(600);
+    const s = played.started ?? {};
+    const due = Math.floor((played.t + 150) / 500) + 1, near = (got, want) => got !== undefined && Math.abs(got - want) <= 1;
+    ok('band first ▶ (B7-03): tapped before the band was read, the first run still plays it from the start',
+      early.held > 0 && !early.bandShown && played.playing && near(s.electric_bass_finger, due) && near(s.drums, due),
+      `at the tap: MIDI reads held ${early.held}, band shown ${early.bandShown}; at ${played.t} ms: ${JSON.stringify(s)} (bass and drums due ${due})`);
+    // Opened again (the band read anew, held back again): ▶, then ▶ again (stop) while it is read.
+    await page.reload(); await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    await page.click('#play'); await page.waitForTimeout(300);
+    const waiting = await page.textContent('#play');
+    await page.click('#play'); await page.waitForTimeout(3500);
+    const after = await page.evaluate(() => ({ ...window.__pianoDebug.sound(), held: window.__midiHeld }));
+    ok('band first ▶ (B7-03): a stop while the band is read is kept: nothing starts when it arrives',
+      after.held > 0 && !after.playing && Object.keys(after.started ?? {}).length === 0, `button while waiting "${waiting}"; ${JSON.stringify(after)}`);
+    ok('band first ▶ (B7-03): no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
   // P6 (test review): a split placed by hand on one line survives + line (it used to be found again for every line).
   {
     const { ctx, page, errors } = await fresh();

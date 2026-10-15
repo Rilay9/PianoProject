@@ -17,7 +17,8 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
    handle (2026-10-14). Assert the before and after, not just the end state.
 3. **Are the inputs as messy as real ones?** Tidy generated files hide the real cases. What real files have: a
    cover page or text first, one or two pages, scans stored as JPEG 2000, tilt, very long files, a file that won't
-   open, a piece with repeats, pickups, several voices, grace notes, a lead sheet with no left hand.
+   open, a piece with repeats, pickups, several voices, grace notes, a lead sheet with no left hand, a MIDI channel that
+  changes instrument partway, a one-track MIDI file named for the song (review 2026-10-15).
 4. **Is the screen tested, or only the module under it?** Most bugs live in the glue between a module and the
    screen: when things are read, rebuilt and redrawn, and what is saved. A module test can't see those.
 
@@ -28,7 +29,8 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   elsewhere, turn the phone, close, reopen, and check the place, the result and the saved state after each.
 - **Things read later than the first draw.** A page read in the background after the screen was built never
   updated it. Wherever something loads lazily (pages, samples, a catalogue), check what is on screen when it arrives
-  late and when it fails.
+  late and when it fails. Also what an action does before it arrives: ▶ tapped while a MIDI piece's band was still
+  being read played the first run without it (review 2026-10-15).
 - **Async starts and stale results.** A guard set only after an `await` (double taps start twice); nothing cancelling
   a start when the user stops or closes mid-load; an older draw finishing after a newer one; a result shown after
   the chart, step or loop changed. Use a session counter checked after every await, and tag results with what they
