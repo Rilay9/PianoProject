@@ -411,7 +411,7 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   where its staves start and end. Turning the phone keeps your line (and part, where there is one).
 - **Turning** (owner: no timed turning): the keyboard's highest key (next) and lowest key (back), as the keyboard
   remote does elsewhere (they need learning once in Keyboard controls), unless the piece's ⚙ says it uses those keys;
-  a tap on the music; a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶. Space or
+  a tap on the music (lower half next, upper half back; owner, 2026-10-14); a page-turner pedal or keys (→ ↓ PageDown Space Enter next; ← ↑ PageUp back); ◀ ▶. Space or
   Enter on a button you moved to with Tab presses that button. **Back** (Android's, or the browser's) closes Adjust
   lines first, then the reader, back to the library.
 - **Finding the lines** (`pdf/systems.ts`, reworked from the old app's after it got 0 of 5 real-looking pages right):
@@ -424,7 +424,10 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   bigger steps); the blue × on a line removes that line (the others keep their splits); add a line
   or remove the last (the other lines keep their splits, a new line gets one found for it; 2026-10-14, before which
   every line went back to one found split and a split you had placed was lost), or find the lines again. A line can't be
-  dragged thinner than 0.6% of the page. A page where no lines are found shows whole, unsplit, until you mark them. On
+  dragged thinner than 0.6% of the page. Lines may overlap (owner, 2026-10-14): drag a line's bottom down past the next
+  line's top to take in low notes reaching into its space; lines keep their order (a line's top can't pass the one
+  before's top), so their splits stay with them. Where two lines meet, grab just inside the line you mean: each
+  handle's grip reaches into its own line. A page where no lines are found shows whole, unsplit, until you mark them. On
   a tilted page the splits and margins are placed on the straightened page as shown. Pages are read as you reach them
   (and the rest in the background); a page read for the first time brings its lines in at once, and your place keeps
   its line when lines are added or found on an earlier page. Scanned pages stored as JPEG 2000 (most library scans)

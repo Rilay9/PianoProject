@@ -217,8 +217,27 @@ describe('moveCut', () => {
     expect(cutsToSystems(c, 0)).toHaveLength(2);
     expect(c[3] - c[2]).toBeGreaterThan(0.005);
   });
-  it('still lets two lines touch (the gap between lines may be tiny)', () => {
-    expect(moveCut(cuts, 2, 0.3)[2]).toBeCloseTo(0.302, 6);
+  // Lines may overlap (owner, 2026-10-14): low notes reaching into the next line's space belong to their own line too.
+  it('lets a line reach into the next one: its bottom below the next line’s top, both lines kept in order', () => {
+    const c = moveCut(cuts, 1, 0.5);
+    expect(cutsToSystems(c, 0).map((x) => [x.top, x.bottom])).toEqual([[0.1, 0.5], [0.4, 0.6]]);
+  });
+  it('lets a line’s top rise above the line before’s bottom', () => {
+    const c = moveCut(cuts, 2, 0.25);
+    expect(cutsToSystems(c, 0).map((x) => [x.top, x.bottom])).toEqual([[0.1, 0.3], [0.25, 0.6]]);
+  });
+  it('keeps the order: a line’s top can’t pass the line before’s top (its splits stay with it)', () => {
+    const c = moveCut(cuts, 2, 0.05);
+    expect(c[2]).toBeCloseTo(0.102, 6);
+    expect(cutsToSystems(c, 0)[1].bottom).toBe(0.6);
+  });
+  it('reads overlapping lines pair by pair (sorting the whole list would mix their edges)', () => {
+    expect(cutsToSystems([0.1, 0.5, 0.4, 0.6], 0).map((x) => [x.top, x.bottom])).toEqual([[0.1, 0.5], [0.4, 0.6]]);
+    // and an older saved list (sorted, no overlap) reads as before
+    expect(cutsToSystems([0.1, 0.3, 0.4, 0.6], 0).map((x) => [x.top, x.bottom])).toEqual([[0.1, 0.3], [0.4, 0.6]]);
+  });
+  it('removes the right line where lines overlap', () => {
+    expect(removeSystem([0.1, 0.5, 0.4, 0.6, 0.7, 0.8], 1)).toEqual([0.1, 0.5, 0.7, 0.8]);
   });
 });
 
@@ -317,11 +336,15 @@ let napiWhy = '';
 try { napi = await import('@napi-rs/canvas'); } catch (error) { napiWhy = error instanceof Error ? error.message : String(error); }
 const FIXTURE = fileURLToPath(new URL('./fixtures/pdf/two-systems.pdf', import.meta.url));
 
+// pdf.js's decoders for JPEG 2000 (jpx.pdf). It wants a folder ending in '/'; a Windows path ends in a backslash, so the
+// separators are turned round (the check was written on Linux and failed every page on Windows).
+const WASM_DIR = fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/', import.meta.url)).split('\\').join('/');
+
 /** The page the way PdfDocument.renderPage draws it (white behind, scaled to a width), on a Node canvas. */
 async function renderFixture(targetWidth, file = FIXTURE, pageNumber = 1) {
   const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
   // With pdf.js's own JPEG 2000 decoder, as PdfDocument opens a file (without it a page stored as JPEG 2000 is blank).
-  const doc = await getDocument({ data: new Uint8Array(readFileSync(file)), wasmUrl: fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/', import.meta.url)) }).promise;
+  const doc = await getDocument({ data: new Uint8Array(readFileSync(file)), wasmUrl: WASM_DIR }).promise;
   try {
     const pdfPage = await doc.getPage(pageNumber);
     const unscaled = pdfPage.getViewport({ scale: 1 });

@@ -10,11 +10,15 @@
  * a different device pixel ratio, and an export/import onto another phone.
  * Pixels would survive none of those.
  *
- * A page's cuts are stored as a **flat, sorted list of an even number of
- * fractions**: `[top0, bottom0, top1, bottom1, …]`. Pairs rather than single
- * boundary lines, because the gap *between* two systems is real — a single
- * list of dividing lines would force every system to start where the last one
- * ended and drag half the next stave into view.
+ * A page's cuts are stored as a **flat list of an even number of fractions,
+ * one pair per line in line order**: `[top0, bottom0, top1, bottom1, …]`.
+ * Pairs rather than single boundary lines, because the gap *between* two
+ * systems is real — a single list of dividing lines would force every system
+ * to start where the last one ended and drag half the next stave into view.
+ * Lines may overlap (owner, 2026-10-14: low notes reaching into the next line's
+ * space belong to their own line too), so the list is read pair by pair, never
+ * sorted as a whole; lines keep their order by top. Older saved lists (sorted,
+ * no overlaps) are already in this form.
  */
 import { detectSystems, toGreyscale, type DetectOptions, type SystemBand } from './systems.ts'; // (with .ts: tests/pdf.mjs runs this file in Node)
 
@@ -44,19 +48,27 @@ function clamp(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
+/** The lines of a stored list as [top, bottom] pairs, in order by top (a pair given upside down is turned round; an odd last number is dropped). */
+export function pairsOf(cuts: readonly number[]): [number, number][] {
+  const pairs: [number, number][] = [];
+  for (let i = 0; i + 1 < cuts.length; i += 2) {
+    const a = clamp(cuts[i] as number), b = clamp(cuts[i + 1] as number);
+    pairs.push(a <= b ? [a, b] : [b, a]);
+  }
+  return pairs.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
+}
+const flat = (pairs: readonly [number, number][]): number[] => pairs.flatMap((p) => [p[0], p[1]]);
+
 /**
  * The stored representation -> systems.
  *
- * Tolerant on purpose: a hand-edited or half-dragged list can be unsorted or
+ * Tolerant on purpose: a hand-edited or half-dragged list can be out of order or
  * have an odd length, and losing the whole page to that would be worse than
  * dropping the stray number.
  */
 export function cutsToSystems(cuts: readonly number[], page: number): PlannedSystem[] {
-  const sorted = [...cuts].map(clamp).sort((a, b) => a - b);
   const systems: PlannedSystem[] = [];
-  for (let i = 0; i + 1 < sorted.length; i += 2) {
-    const top = sorted[i] as number;
-    const bottom = sorted[i + 1] as number;
+  for (const [top, bottom] of pairsOf(cuts)) {
     if (bottom - top < 0.005) continue; // A zero-height band is a slip, not a system.
     systems.push({ page, top, bottom, indexOnPage: systems.length });
   }
@@ -90,28 +102,39 @@ export function wholePageCuts(): number[] {
   return [0, 1];
 }
 
-/** Moves one boundary, keeping the list sorted and the neighbours out of the way. */
+/**
+ * Moves one boundary (`index` into the stored list: 2k is line k's top, 2k+1 its bottom). A line may overlap its
+ * neighbours (owner, 2026-10-14), but keeps its place in the order: its top stays below the previous line's top and
+ * above the next line's, so each line's split points stay with it. A line's own top and bottom stay at least
+ * LINE_MIN apart: cutsToSystems drops a thinner band, which would shift every later line's splits (review 2026-10-14).
+ */
 export function moveCut(cuts: readonly number[], index: number, to: number): number[] {
-  const next = [...cuts];
-  if (index < 0 || index >= next.length) return next;
-  // A line's own top and bottom stay at least LINE_MIN apart: cutsToSystems drops a thinner band, which would shift
-  // every later line's splits on the page (review 2026-10-14); between two lines 0.002 is enough.
-  const LINE_MIN = 0.006;
-  const minimum = index > 0 ? (next[index - 1] as number) + (index % 2 ? LINE_MIN : 0.002) : 0;
-  const maximum = index + 1 < next.length ? (next[index + 1] as number) - (index % 2 ? 0.002 : LINE_MIN) : 1;
-  next[index] = Math.min(maximum, Math.max(minimum, clamp(to)));
-  return next;
+  const pairs = pairsOf(cuts);
+  const k = Math.floor(index / 2);
+  const line = pairs[k];
+  if (index < 0 || !line) return flat(pairs);
+  const LINE_MIN = 0.006, ORDER = 0.002;
+  const v = clamp(to);
+  if (index % 2 === 0) {
+    const lo = k > 0 ? (pairs[k - 1] as [number, number])[0] + ORDER : 0;
+    const hi = Math.min(line[1] - LINE_MIN, k + 1 < pairs.length ? (pairs[k + 1] as [number, number])[0] - ORDER : 1);
+    line[0] = Math.min(hi, Math.max(lo, v));
+  } else {
+    line[1] = Math.min(1, Math.max(line[0] + LINE_MIN, v));
+  }
+  return flat(pairs);
 }
 
 /** Adds a system in the largest gap, which is where a missed one almost always is. */
 export function addSystem(cuts: readonly number[]): number[] {
-  const sorted = [...cuts].sort((a, b) => a - b);
-  if (sorted.length === 0) return [0.1, 0.3];
+  const pairs = pairsOf(cuts);
+  if (pairs.length === 0) return [0.1, 0.3];
+  // The gaps: above the first line, between each line's bottom and the next line's top (none where they overlap), below the last.
   let bestStart = 0;
-  let bestSize = sorted[0] as number;
-  for (let i = 1; i < sorted.length; i += 2) {
-    const start = sorted[i] as number;
-    const end = sorted[i + 1] ?? 1;
+  let bestSize = (pairs[0] as [number, number])[0];
+  for (let i = 0; i < pairs.length; i += 1) {
+    const start = (pairs[i] as [number, number])[1];
+    const end = i + 1 < pairs.length ? (pairs[i + 1] as [number, number])[0] : 1;
     if (end - start > bestSize) {
       bestSize = end - start;
       bestStart = start;
@@ -119,7 +142,7 @@ export function addSystem(cuts: readonly number[]): number[] {
   }
   const top = bestStart + bestSize * 0.2;
   const bottom = bestStart + bestSize * 0.8;
-  return [...sorted, top, bottom].sort((a, b) => a - b);
+  return flat(pairsOf([...flat(pairs), top, bottom]));
 }
 
 /**
@@ -139,9 +162,9 @@ export function carrySplits(before: readonly number[], after: readonly number[],
 
 /** Removes the system at `index` (both of its boundaries). */
 export function removeSystem(cuts: readonly number[], index: number): number[] {
-  const sorted = [...cuts].sort((a, b) => a - b);
-  sorted.splice(index * 2, 2);
-  return sorted;
+  const pairs = pairsOf(cuts);
+  pairs.splice(index, 1);
+  return flat(pairs);
 }
 
 /**

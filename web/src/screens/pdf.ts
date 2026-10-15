@@ -241,7 +241,8 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   const next = () => go(index + 1);
   const back = () => go(index - 1);
 
-  stage.addEventListener('click', () => next());
+  // A tap on the music: the lower half turns on, the upper half goes back (owner, 2026-10-14).
+  stage.addEventListener('click', (e) => { const r = stage.getBoundingClientRect(); if (e.clientY < r.top + r.height / 2) back(); else next(); });
   // A button tapped or clicked lets go of the focus, so a pedal's Space or Enter turns rather than pressing it again.
   section.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('button'); if (b && e.detail > 0) b.blur(); });
   $('pdf-next').addEventListener('click', next);
@@ -309,9 +310,8 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   }
   /** Removes one line of the page being adjusted; the other lines keep their splits. */
   function removeLine(k: number): void {
-    const c = [...cutsOf(adjustPage)].sort((a, b) => a - b);
-    if (c.length <= 2) return;
-    c.splice(k * 2, 2);
+    if (cutsOf(adjustPage).length <= 2) return;
+    const c = removeSystem(cutsOf(adjustPage), k);
     const kept = [...(st.splits?.[adjustPage] ?? [])];
     kept.splice(k, 1);
     st.cuts = { ...st.cuts, [adjustPage]: c };
