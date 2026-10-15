@@ -22,6 +22,8 @@ export interface Own {
   /** A MIDI file converted on the phone: what was guessed, and the MIDI file itself (kept as "<id>:midi"). */
   converted?: string;
   midi?: { name: string; size: number };
+  /** The MIDI file's parts written in the score (band.ts keys), as chosen on the import sheet; the rest are the band. */
+  scoreParts?: string[];
   /** A PDF: the score it is the same piece as. */
   sameAs?: string;
 }

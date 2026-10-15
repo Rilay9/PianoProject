@@ -65,7 +65,11 @@ function joinedSentence(report: ConversionReport): string {
 export function handsSentence(report: ConversionReport): string {
   const parts: string[] = [];
   if (report.hands !== 'split into two') {
-    if (report.noteTracks === 2) {
+    // Parts picked from a band file (not the file's piano parts): the app put the higher on the upper staff.
+    const picked = report.scoreParts.some((k) => !report.fileParts.find((p) => p.key === k)?.piano);
+    if (report.noteTracks === 2 && picked) {
+      parts.push(`The two parts in the score are the hands: the higher (${report.parts[0] ?? '?'}) is the upper staff, the lower (${report.parts[1] ?? '?'}) the lower.`);
+    } else if (report.noteTracks === 2) {
       parts.push(
         `The file’s two tracks were kept as recorded: the first (${report.parts[0] ?? '?'}) ` +
           `is the upper staff, the second (${report.parts[1] ?? '?'}) the lower. ` +

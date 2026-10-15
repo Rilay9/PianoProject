@@ -8,6 +8,7 @@ import { ConvertError, convertMidi, titleFromFilename, type ConversionReport, ty
 import { MidiReadError, readMidi } from './readMidi.ts';
 import { STATED_TEMPO_RANGE, swapHands, withOpeningTempo } from './corrections.ts';
 import { checkSentence, handsSentence } from './words.ts';
+import type { PartInfo } from './band.ts';
 
 export { ConvertError, MIDI_CONVERTER_VERSION, titleFromFilename, type ConversionReport } from './convert.ts';
 export { MidiReadError } from './readMidi.ts';
@@ -48,6 +49,10 @@ export interface Guessed {
   drumNotes: number;
   /** The parts that play with the score as the band rather than being written in it (band.ts). */
   band: { name: string; sound: string; notes: number }[];
+  /** The file's parts, the ones written in the score, and whether those were guessed (a band file with no piano). */
+  parts: PartInfo[];
+  scoreParts: string[];
+  partsGuessed: boolean;
 }
 
 export interface MidiConversion {
@@ -106,6 +111,9 @@ export function convert(data: ArrayBuffer | Uint8Array, options: MidiOptions = {
     check: { passed: report.passed, sentence: checkSentence(report) },
     drumNotes: source.drumNotes,
     band: report.band,
+    parts: report.fileParts,
+    scoreParts: report.scoreParts,
+    partsGuessed: report.partsGuessed,
   };
   return { xml, report, guessed };
 }
@@ -127,7 +135,7 @@ export function guessedWords(g: Guessed): string {
   const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1] ?? ''}` : names[0] ?? '';
   const others = g.band.some((part) => part.sound !== 'drums');
   const band = !g.band.length ? []
-    : others ? [`The score is the file’s piano part; ${list} ${g.band.length === 1 ? 'plays' : 'play'} with it as the band.`]
+    : others ? [`The score is ${g.partsGuessed ? 'a guess (the file has no piano part): ' + g.scoreParts.map((k) => g.parts.find((p) => p.key === k)?.name ?? k).join(' and ') : g.parts.some((p) => p.piano && g.scoreParts.includes(p.key)) && g.scoreParts.every((k) => g.parts.find((p) => p.key === k)?.piano) ? 'the file’s piano part' : g.scoreParts.map((k) => g.parts.find((p) => p.key === k)?.name ?? k).join(' and ')}; ${list} ${g.band.length === 1 ? 'plays' : 'play'} with it as the band.`]
     : ['The drums are not written in the score; they play with it as the band.'];
   return [...band, g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), tempo, key, time, g.check.sentence].join(' ');
 }

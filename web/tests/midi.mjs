@@ -21,7 +21,7 @@ import { convertMidi, readBackMusicXml, titleFromFilename } from '../src/library
 import { checkSentence, handsSentence } from '../src/library/midi/words.ts';
 import { swapHands } from '../src/library/midi/corrections.ts';
 import { convert, guessedWords, midiConverter } from '../src/library/midi/index.ts';
-import { bandNotes, isPiano, partsOf, soundOf } from '../src/library/midi/band.ts';
+import { bandNotes, guessScore, isPiano, listParts, partsOf, soundOf } from '../src/library/midi/band.ts';
 import { barMap, steadyBars } from '../src/library/midi/bars.ts';
 
 const FOUR_FOUR = steadyBars({ beats: 4, beatType: 4 }, frac(64));
@@ -1319,14 +1319,37 @@ describe('a band file: the piano part is the score, the rest is the band', () =>
     expect(piano[0].events.map((e) => e.midi)).toEqual([60, 62]);
     expect(band.map((p) => [p.name, p.sound, p.notes.length])).toEqual([['Electric bass (finger)', 'electric_bass_finger', 2]]);
   });
-  it('keeps every part in the score when none is a piano (only the drums play as the band)', () => {
-    const guitars = buildMidiTracks([
-      [{ delta: 0, bytes: program(0, 30) }, ...line(0, [64, 67])],
-      [{ delta: 0, bytes: [0x99, 36, 100] }, { delta: 240, bytes: [0x89, 36, 0] }],
+  // A band file with no piano part (owner, 2026-10-15: "Let me pick the parts"): bass first in the file, then a
+  // guitar, then the voice, then the drums.
+  const rock = buildMidiTracks([
+    [{ delta: 0, bytes: timeSignature(4, 2) }],
+    [{ delta: 0, bytes: trackName('Bass') }, { delta: 0, bytes: program(1, 33) }, ...line(1, [40, 40, 43, 45])],
+    [{ delta: 0, bytes: trackName('Guitar') }, { delta: 0, bytes: program(2, 30) }, ...line(2, [52, 55, 57, 59])],
+    [{ delta: 0, bytes: trackName('Vocals') }, { delta: 0, bytes: program(3, 53) }, ...line(3, [72, 74, 76, 77])],
+    [{ delta: 0, bytes: [0x99, 36, 100] }, { delta: 240, bytes: [0x89, 36, 0] }],
+  ]);
+  it('lists every part with its instrument and range, the drums last', () => {
+    const parts = listParts(readMidi(rock));
+    expect(parts.map((p) => `${p.key} ${p.name} (${p.instrument}) ${p.notes} ${p.low}-${p.high}`)).toEqual([
+      '1:1 Bass (Electric bass (finger)) 4 40-45', '2:2 Guitar (Distortion guitar) 4 52-59', '3:3 Vocals (Voice oohs) 4 72-77', 'drums Drums (Drums) 1 0-0',
     ]);
-    const { piano, band } = partsOf(readMidi(guitars));
-    expect(piano[0].events).toHaveLength(2);
-    expect(band.map((p) => p.sound)).toEqual(['drums']);
+  });
+  it('with no piano part, guesses the tune (the highest part) for the right hand and the bass for the left, and says so', () => {
+    expect(guessScore(listParts(readMidi(rock)))).toEqual({ keys: ['3:3', '1:1'], guessed: true });
+    const { xml, report, guessed } = convert(rock, { title: 'rock' });
+    expect(report.hands).toBe('2 as recorded');
+    expect(guessed.hands.sentence).toBe('The two parts in the score are the hands: the higher (Vocals) is the upper staff, the lower (Bass) the lower.');
+    const notes = barsOf(xml).flat();
+    expect(notes.filter((n) => n.staff === 1).map((n) => n.name)).toEqual(['C5', 'D5', 'E5', 'F5']);
+    expect(notes.filter((n) => n.staff === 2).map((n) => n.name)).toEqual(['E2', 'E2', 'G2', 'A2']);
+    expect(guessedWords(guessed)).toContain('The score is a guess (the file has no piano part): Vocals and Bass; Guitar and Drums play with it as the band.');
+  });
+  it('writes the parts chosen, and the rest is the band', () => {
+    const { xml, guessed } = convert(rock, { title: 'rock', convert: { scoreParts: ['2:2'] } });
+    expect(barsOf(xml).flat().map((n) => n.name).sort()).toEqual(['A3', 'B3', 'E3', 'G3']);
+    expect(guessed.band.map((b) => b.name)).toEqual(['Bass', 'Vocals', 'Drums']);
+    expect(guessed.partsGuessed).toBe(false);
+    expect(guessedWords(guessed)).toContain('The score is Guitar; Bass, Vocals and Drums play with it as the band.');
   });
   it('has a FluidR3 sound for every General MIDI program, and the piano family is programs 0-7', async () => {
     const { getSoundfontNames } = await import('smplr');

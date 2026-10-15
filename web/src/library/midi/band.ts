@@ -3,11 +3,11 @@
  * part becomes the score). Which part is which is read from the file: each channel's General MIDI instrument (its
  * program change) and channel 10 for the drums.
  *
- * The piano part is every note on a channel set to the General MIDI piano family (programs 0-7: the pianos, electric
- * pianos, harpsichord and clavinet), on any track. Everything else is the band, a part per track and channel (a
- * format 0 file keeps every instrument in one track, told apart by channel). A channel the file never sets is
- * program 0, the piano, as General MIDI says; so a file that names no instruments is all piano, as before. A file
- * with no piano notes at all keeps every part in the score, as before, and only its drums play as the band.
+ * A part is a track's notes on one channel (a format 0 file keeps every instrument in one track, told apart by
+ * channel). By default the score is every part on a channel set to the General MIDI piano family (programs 0-7: the
+ * pianos, electric pianos, harpsichord and clavinet); a channel the file never sets is program 0, the piano, as General
+ * MIDI says, so a file that names no instruments is all piano, as before. The learner can choose other parts on the
+ * import sheet (`partsOf`'s `score`); everything not in the score, and the drums, is the band.
  *
  * Reuse: the General MIDI instrument names and families are @tonejs/midi's tables (MIT); the sounds are the FluidR3
  * set the Lab already plays (sound.ts), whose names are the General MIDI ones in snake case except for ten spellings.
@@ -42,27 +42,84 @@ export interface BandPart { name: string; sound: string; notes: NoteEvent[] }
 /** The file split into the piano part (as tracks, for the converter) and the band. */
 export interface Parts { piano: MidiTrack[]; band: BandPart[] }
 
-export function partsOf(source: MidiFileContents): Parts {
-  const programOf = (e: NoteEvent) => source.programs[e.channel ?? 0] ?? 0;
-  const anyPiano = source.tracks.some((t) => t.events.some((e) => isPiano(programOf(e))));
-  const drums: BandPart[] = source.drums.length ? [{ name: 'Drums', sound: 'drums', notes: source.drums }] : [];
-  if (!anyPiano) return { piano: source.tracks, band: drums };
-  const band: BandPart[] = [];
-  const piano = source.tracks.map((track) => {
+/**
+ * One of the file's parts, as the import sheet lists it: a track's notes on one channel (or the drums). `key` names it
+ * in a choice that is kept with the piece ("track:channel", or "drums").
+ */
+export interface PartInfo { key: string; name: string; instrument: string; sound: string; piano: boolean; notes: number; low: number; high: number; middle: number }
+
+interface Group { key: string; track: MidiTrack; program: number; events: NoteEvent[] }
+/** Every track's notes, a group per channel, in file order. */
+function groupsOf(source: MidiFileContents): Group[] {
+  const out: Group[] = [];
+  for (const track of source.tracks) {
     const byChannel = new Map<number, NoteEvent[]>();
     for (const e of track.events) {
-      if (isPiano(programOf(e))) continue;
       const list = byChannel.get(e.channel ?? 0);
       if (list) list.push(e);
       else byChannel.set(e.channel ?? 0, [e]);
     }
-    for (const [channel, notes] of byChannel) {
-      const program = source.programs[channel] ?? 0;
-      band.push({ name: track.name ?? instrumentName(program), sound: soundOf(program), notes });
+    for (const [channel, events] of [...byChannel].sort((a, b) => a[0] - b[0])) {
+      out.push({ key: `${String(track.index)}:${String(channel)}`, track, program: source.programs[channel] ?? 0, events });
     }
-    return { ...track, events: track.events.filter((e) => isPiano(programOf(e))) };
-  });
-  return { piano, band: [...band, ...drums] };
+  }
+  return out;
+}
+const middleOf = (events: NoteEvent[]): number => {
+  const pitches = events.map((e) => e.midi).sort((a, b) => a - b);
+  return pitches[Math.floor(pitches.length / 2)] ?? 60;
+};
+function infoOf(g: Group): PartInfo {
+  const pitches = g.events.map((e) => e.midi);
+  return {
+    key: g.key, name: g.track.name ?? instrumentName(g.program), instrument: instrumentName(g.program), sound: soundOf(g.program),
+    piano: isPiano(g.program), notes: g.events.length, low: Math.min(...pitches), high: Math.max(...pitches), middle: middleOf(g.events),
+  };
+}
+
+/** The file's parts, in file order, the drums last (never in the score: their numbers are drum sounds, not pitches). */
+export function listParts(source: MidiFileContents): PartInfo[] {
+  const parts = groupsOf(source).map(infoOf);
+  if (source.drums.length) parts.push({ key: 'drums', name: 'Drums', instrument: 'Drums', sound: 'drums', piano: false, notes: source.drums.length, low: 0, high: 0, middle: 0 });
+  return parts;
+}
+
+/**
+ * Which parts make the score when nobody has chosen: the piano parts. A file with none (a band's guitars, bass and
+ * voice) gets a guess the sheet says is one: the highest part, where a tune usually is, for the right hand, and the
+ * bass for the left (owner, 2026-10-15: "Let me pick the parts"; before, every part went into the score).
+ */
+export function guessScore(parts: PartInfo[]): { keys: string[]; guessed: boolean } {
+  const pitched = parts.filter((p) => p.key !== 'drums');
+  const piano = pitched.filter((p) => p.piano).map((p) => p.key);
+  if (piano.length || !pitched.length) return { keys: piano, guessed: false };
+  const tune = [...pitched].sort((a, b) => b.middle - a.middle)[0]!;
+  const bass = pitched.find((p) => /bass/.test(p.sound) && p !== tune) ?? [...pitched].sort((a, b) => a.middle - b.middle).find((p) => p !== tune);
+  return { keys: [tune.key, ...(bass ? [bass.key] : [])], guessed: true };
+}
+
+/**
+ * The file as the score's parts and the band: `score` names the parts written (every part named, each as its own
+ * track for the converter: two are kept as the hands, the higher on the upper staff unless all are piano parts, which
+ * keep the file's order), and every other part, with the drums, is the band. Without `score`, `guessScore`'s.
+ */
+export function partsOf(source: MidiFileContents, score?: readonly string[]): Parts {
+  const groups = groupsOf(source);
+  const keys = new Set(score ?? guessScore(listParts(source)).keys);
+  const chosen = groups.filter((g) => keys.has(g.key));
+  const allPiano = chosen.every((g) => isPiano(g.program));
+  const ordered = allPiano ? chosen : [...chosen].sort((a, b) => middleOf(b.events) - middleOf(a.events));
+  // Piano parts on one track stay one track (a recording of two hands on one channel each is still split by the
+  // converter as before); parts chosen from a band file are a track each.
+  const piano: MidiTrack[] = [];
+  for (const g of ordered) {
+    const same = allPiano ? piano.find((t) => t.index === g.track.index) : undefined;
+    if (same) same.events = [...same.events, ...g.events].sort((a, b) => cmp(a.start, b.start) || a.midi - b.midi);
+    else piano.push({ index: g.track.index, name: allPiano ? g.track.name : g.track.name ?? instrumentName(g.program), events: g.events });
+  }
+  const band: BandPart[] = groups.filter((g) => !keys.has(g.key)).map((g) => ({ name: g.track.name ?? instrumentName(g.program), sound: soundOf(g.program), notes: g.events }));
+  if (source.drums.length) band.push({ name: 'Drums', sound: 'drums', notes: source.drums });
+  return { piano, band };
 }
 
 /** Where the last band note ends (quarter notes), so the score's bars run as long as the band plays. */

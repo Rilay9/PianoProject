@@ -73,6 +73,25 @@ function bandMidi() {
 }
 const BAND = join(tmp, 'little band.mid');
 writeFileSync(BAND, bandMidi());
+// A band file with no piano part: bass (33), a rhythm guitar (25, steel) and a lead guitar (24, nylon), and drums.
+function rockMidi() {
+  const varlen = (v) => { const o = [v & 0x7f]; for (v >>= 7; v > 0; v >>= 7) o.unshift((v & 0x7f) | 0x80); return o; };
+  const chunk = (id, body) => [...Buffer.from(id), (body.length >>> 24) & 255, (body.length >> 16) & 255, (body.length >> 8) & 255, body.length & 255, ...body];
+  const track = (events) => { let now = 0; return chunk('MTrk', [...events.sort((a, b) => a[0] - b[0]).flatMap(([t, bytes]) => { const d = t - now; now = t; return [...varlen(d), ...bytes]; }), 0, 0xff, 0x2f, 0]); };
+  const notes = (channel, list) => list.flatMap(([t, len, midi]) => [[t, [0x90 | channel, midi, 90]], [t + len, [0x80 | channel, midi, 0]]]);
+  const name = (n) => [0, [0xff, 0x03, n.length, ...Buffer.from(n)]];
+  const Q = 480, beats = (midis) => midis.map((m, i) => [i * Q, Q - 20, m]);
+  return Buffer.from([
+    ...chunk('MThd', [0, 1, 0, 5, Q >> 8, Q & 255]),
+    ...track([[0, [0xff, 0x58, 4, 4, 2, 24, 8]], [0, [0xff, 0x51, 3, 0x07, 0xa1, 0x20]]]),
+    ...track([name('Bass'), [0, [0xc1, 33]], ...notes(1, beats([40, 40, 43, 45, 40, 40, 43, 45]))]),
+    ...track([name('Rhythm'), [0, [0xc2, 25]], ...notes(2, beats([52, 55, 57, 59, 52, 55, 57, 59]))]),
+    ...track([name('Lead'), [0, [0xc3, 24]], ...notes(3, beats([72, 74, 76, 77, 79, 77, 76, 74]))]),
+    ...track(notes(9, beats([36, 38, 36, 38, 36, 38, 36, 38]))),
+  ]);
+}
+const ROCK = join(tmp, 'rock tune.mid');
+writeFileSync(ROCK, rockMidi());
 
 let server = null, exited = false;
 const stop = () => {
@@ -233,6 +252,40 @@ try {
     if (stopped) ok('band: (the second ▶ stopped it)', false, 'still playing');
     ok('band: switched off, none of its parts is played', off.playing && Object.keys(off.started ?? {}).length === 0, JSON.stringify(off));
     ok('band: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // Picking the parts (owner, 2026-10-15): a band file with no piano part. The sheet guesses the tune and the bass;
+  // the learner ticks the rhythm guitar instead of the bass; the score is then lead and rhythm, the band bass and drums.
+  {
+    const { ctx, page, errors } = await fresh();
+    await library(page);
+    await page.setInputFiles('#lib-file', ROCK);
+    await page.waitForSelector('#lib-midi[open]', { timeout: 20000 });
+    await page.waitForFunction(() => /Check/.test(document.getElementById('lib-midi-facts')?.textContent ?? ''), null, { timeout: 20000 });
+    const ticked = () => page.evaluate(() => [...document.querySelectorAll('#lib-midi-parts-list input')].map((x) => `${x.parentElement.querySelector('span').textContent}:${x.checked ? 'score' : 'band'}`));
+    const guess = await ticked();
+    const note = await page.textContent('#lib-midi-parts-note');
+    ok('parts: with no piano part the sheet lists the parts and guesses the tune and the bass, saying so', JSON.stringify(guess) === JSON.stringify(['Bass:score', 'Rhythm:band', 'Lead:score']) && /no piano part/.test(note ?? ''), `${JSON.stringify(guess)} ${note}`);
+    await page.locator('#lib-midi-parts-list label', { hasText: 'Bass' }).locator('input').uncheck();
+    await page.waitForTimeout(1500);
+    await page.locator('#lib-midi-parts-list label', { hasText: 'Rhythm' }).locator('input').check();
+    await page.waitForFunction(() => /Rhythm/.test(document.getElementById('lib-midi-facts')?.textContent ?? '') === false && /Bass, Drums/.test(document.getElementById('lib-midi-facts')?.textContent ?? ''), null, { timeout: 20000 }).catch(() => {});
+    const chosen = await ticked();
+    const facts = await page.textContent('#lib-midi-facts');
+    ok('parts: ticking converts again: the score is lead and rhythm, the band bass and drums', JSON.stringify(chosen) === JSON.stringify(['Bass:band', 'Rhythm:score', 'Lead:score']) && /BandBass, Drums: they play with the score, which is Rhythm and Lead/.test(facts ?? '') && /\(by pitch\)/.test(facts ?? ''), `${JSON.stringify(chosen)} ${(facts ?? '').slice(0, 300)}`);
+    await page.click('#lib-midi button[value="add"]'); await page.waitForTimeout(1500);
+    await page.locator('.lib-row', { hasText: 'rock tune' }).first().click();
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    await page.waitForTimeout(1000);
+    const parts = await page.evaluate(() => document.getElementById('t-band-parts').textContent);
+    await page.click('#play');
+    let played = null;
+    for (let i = 0; i < 20; i++) { await page.waitForTimeout(250); played = await page.evaluate(() => window.__pianoDebug.sound()); if (played.playing && played.t > 1500) break; }
+    await page.mouse.click(195, 420);
+    const s = played.started ?? {};
+    ok('parts: the choice is kept with the piece: the band plays bass and drums only', parts === 'Bass, Drums.' && s.electric_bass_finger > 0 && s.drums > 0 && !s.acoustic_guitar_steel && !s.acoustic_guitar_nylon, `panel "${parts}"; ${JSON.stringify(s)}`);
+    ok('parts: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
 

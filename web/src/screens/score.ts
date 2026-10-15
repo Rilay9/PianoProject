@@ -3,7 +3,7 @@
 // (Watch, Wait for me, Play along, Ladder, Rhythm: practice.ts), loops, the Tempo, Display, songs and info panels,
 // the summary, and editing fingering. Its drawing of the music is lent to Memorise (a Borrower) while that is open.
 
-import { fileOf, midiKey, touch } from '../library/store';
+import { fileOf, load as loadLibrary, midiKey, record, touch } from '../library/store';
 import type { BandNote } from '../library/midi/band';
 import type { NoteEvent } from '../sound';
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
@@ -428,7 +428,9 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (!blob) return;
     const [{ readMidi }, { partsOf, bandNotes }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
     try {
-      const parts = partsOf(readMidi(new Uint8Array(await blob.arrayBuffer()))).band;
+      await loadLibrary().catch(() => {});
+      // The parts chosen for the score on the import sheet; the rest are the band.
+      const parts = partsOf(readMidi(new Uint8Array(await blob.arrayBuffer())), record(piece.id)?.own?.scoreParts).band;
       if (currentPiece().id === piece.id && parts.length) band = { id: piece.id, notes: bandNotes(parts), names: parts.map((part) => part.name) };
     } catch { /* a MIDI file that no longer reads: the score plays without a band */ }
   }

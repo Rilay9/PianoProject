@@ -46,7 +46,7 @@ export async function xmlOfFile(blob: Blob): Promise<string> {
 
 /** original: a MIDI file's own bytes, kept beside the MusicXML made from it (so it can be converted again later). */
 export interface Prepared { id: string; own: Own; blob: Blob; read?: ReadScore; original?: Blob }
-export type Converter = (data: ArrayBuffer, name: string) => Promise<{ xml: string; guessed: string }>;
+export type Converter = (data: ArrayBuffer, name: string) => Promise<{ xml: string; guessed: string; scoreParts?: string[] }>;
 
 /** Reads one file into what the library keeps; throws a one-sentence reason when it cannot. */
 export async function prepare(file: File, midi?: Converter): Promise<Prepared> {
@@ -64,11 +64,11 @@ export async function prepare(file: File, midi?: Converter): Promise<Prepared> {
   }
   if (sort === 'midi') {
     if (!midi) throw new Error('MIDI files cannot be added here.');
-    const { xml, guessed } = await midi(data, file.name);
+    const { xml, guessed, scoreParts } = await midi(data, file.name);
     const read = readScore(xml, file.name);
     const blob = new Blob([xml], { type: 'application/vnd.recordare.musicxml+xml' });
     const name = file.name.replace(/\.midi?$/i, '') + '.musicxml';
-    return { id, blob, read, original: file, own: { ...base, file: { name, size: blob.size, type: blob.type }, kind: read.facts.kind, title: read.title, composer: read.composer, facts: read.facts, converted: guessed, midi: { name: file.name, size: file.size } } };
+    return { id, blob, read, original: file, own: { ...base, file: { name, size: blob.size, type: blob.type }, kind: read.facts.kind, title: read.title, composer: read.composer, facts: read.facts, converted: guessed, midi: { name: file.name, size: file.size }, ...(scoreParts ? { scoreParts } : {}) } };
   }
   const xml = sort === 'mxl' ? await unzipMxl(data) : decodeText(bytes);
   if (xml.length > MAX_SCORE_BYTES) throw new Error(`This score is ${Math.round(xml.length / 1048576)} MB of MusicXML; the most the app takes is ${MAX_SCORE_BYTES / 1048576} MB.`);

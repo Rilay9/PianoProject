@@ -801,9 +801,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   const checkMidi: Converter = (data, name) => new Promise((resolve, reject) => {
     const dlg = $<HTMLDialogElement>('lib-midi'), bpmInput = $<HTMLInputElement>('lib-midi-bpm');
     let swap = false, bpm: number | undefined, now: { xml: string; guessed: string; account: Guessed } | null = null;
+    let scoreParts: string[] | undefined; // the parts ticked for the score (owner, 2026-10-15: "Let me pick the parts")
     const show = async () => {
       try {
-        now = await midiConverter(data, name, { swapHands: swap, bpm });
+        now = await midiConverter(data, name, { swapHands: swap, bpm, ...(scoreParts ? { convert: { scoreParts } } : {}) });
       } catch (e) {
         if (!now) { reject(e); dlg.close('error'); return; }
         app.showMessage(e instanceof Error ? e.message : String(e)); // (a tempo out of range: the last good one stays)
@@ -814,7 +815,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       const facts = $('lib-midi-facts');
       const row = (k: string, v: string, from: string) => { const dd = el('dd', '', v); dd.append(el('small', '', ` (${from})`)); facts.append(el('dt', '', k), dd); };
       facts.replaceChildren();
-      row('Hands', `${g.hands.sentence}${g.hands.swapped ? ' Swapped.' : ''}${g.hands.swapRefused ? ` ${g.hands.swapRefused}` : ''}`, g.hands.method === 'kept' ? 'from the file' : 'guessed');
+      // Parts picked from a band file (none of them the file's piano part): the score is those parts, the hands by pitch.
+      const picked = g.scoreParts.some((k) => !g.parts.find((p) => p.key === k)?.piano);
+      const scoreNames = g.scoreParts.map((k) => g.parts.find((p) => p.key === k)?.name ?? k).join(' and ');
+      row('Hands', `${g.hands.sentence}${g.hands.swapped ? ' Swapped.' : ''}${g.hands.swapRefused ? ` ${g.hands.swapRefused}` : ''}`, picked && g.hands.method === 'kept' ? 'by pitch' : g.hands.method === 'kept' ? 'from the file' : 'guessed');
       row('Tempo', g.tempo.bpm ? `♩ ${g.tempo.bpm}` : 'none stated: the app’s default', g.tempo.from === 'file' ? 'from the file' : g.tempo.from === 'stated' ? 'as you stated' : 'not in the file');
       row('Key', g.key.name, g.key.from === 'chosen' ? 'chosen'
         : g.key.from === 'the file' ? `from the file${g.key.changes > 0 ? `; changes ${String(g.key.changes)} time${g.key.changes === 1 ? '' : 's'} later` : ''}`
@@ -825,21 +829,45 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       if (g.band.length) {
         const names = g.band.map((part) => part.name);
         const others = g.band.some((part) => part.sound !== 'drums');
-        row('Band', others ? `${names.join(', ')}: they play with the score, which is the file’s piano part` : 'The drums play with the score (not written in it)', 'from the file’s instruments');
+        row('Band', others ? `${names.join(', ')}: they play with the score, which is ${picked ? scoreNames : 'the file’s piano part'}` : 'The drums play with the score (not written in it)', picked ? 'the parts not ticked below' : 'from the file’s instruments');
       }
       row('Check', g.check.sentence, g.check.passed ? 'read back' : 'read back: see this');
       bpmInput.value = g.tempo.bpm ? String(g.tempo.bpm) : '';
+      showParts(g);
       void drawXml(now!.xml, $('lib-midi-preview'));
+    };
+    /** The file's parts, each ticked if the score is made of it; a change converts again. Shown when there is a choice. */
+    const showParts = (g: Guessed) => {
+      const box = $('lib-midi-parts'), list = $('lib-midi-parts-list');
+      const pitched = g.parts.filter((p) => p.key !== 'drums');
+      box.hidden = pitched.length < 2 && g.band.length === 0;
+      $('lib-midi-parts-note').textContent = g.partsGuessed ? 'The file has no piano part: the tune (the highest part) and the bass were guessed. Tick the parts you want to play.' : '';
+      list.replaceChildren(...g.parts.map((p) => {
+        const label = el('label', '');
+        if (p.key === 'drums') { label.append(el('span', '', 'Drums'), el('small', '', ` · ${String(p.notes)} hits · always the band`)); return label; }
+        const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: g.scoreParts.includes(p.key), value: p.key });
+        box.addEventListener('change', () => {
+          const ticked = [...list.querySelectorAll<HTMLInputElement>('input:checked')].map((x) => x.value);
+          if (!ticked.length) { box.checked = true; app.showMessage('At least one part makes the score.'); return; }
+          scoreParts = ticked;
+          void show();
+        });
+        const range = `${pitchName(p.low)}–${pitchName(p.high)}`;
+        label.append(box, el('span', '', p.name), el('small', '', `${p.instrument !== p.name ? ` · ${p.instrument}` : ''} · ${String(p.notes)} notes · ${range}`));
+        return label;
+      }));
     };
     $('lib-midi-swap').onclick = () => { swap = !swap; void show(); };
     bpmInput.onchange = () => { const v = Number(bpmInput.value); bpm = Number.isFinite(v) && v > 0 ? v : undefined; void show(); };
     dlg.onclose = () => {
-      if (dlg.returnValue === 'add' && now) resolve({ xml: now.xml, guessed: now.guessed });
+      if (dlg.returnValue === 'add' && now) resolve({ xml: now.xml, guessed: now.guessed, ...(now.account.band.length || scoreParts ? { scoreParts: now.account.scoreParts } : {}) });
       else if (dlg.returnValue !== 'error') reject(new Error('Not added (cancelled).'));
     };
     dlg.returnValue = '';
     void show().then(() => { if (now) dlg.showModal(); });
   });
+  /** A key as a person reads it (sharps), with its octave: the parts' ranges on the MIDI sheet. */
+  const pitchName = (midi: number) => `${['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'][midi % 12] ?? '?'}${String(Math.floor(midi / 12) - 1)}`;
   /** A score's first bars, drawn small (the MIDI sheet). */
   async function drawXml(xml: string, box: HTMLElement): Promise<void> {
     box.replaceChildren();

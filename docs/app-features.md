@@ -353,9 +353,12 @@ one); examples to copy written into a chart.
   others; a played file keeps one voice a hand. A band file (2026-10-15): the score is the file's piano part (every
   note on a channel set to a General MIDI piano, programs 0-7, on any track; a channel the file never sets is a
   piano, as General MIDI says), and the other parts and the drums (MIDI channel 10) are not written but kept to play
-  as the band; the sheet's Band row names them, and the bars run as long as the band plays. A file with no piano
-  part keeps every part in the score as before (only its drums play as the band): turning a band into a piano
-  arrangement is not done. Swing (off-beats written straight with "Swing eighths") is found only in a duple beat with
+  as the band; the sheet's Band row names them, and the bars run as long as the band plays. **Parts** (owner,
+  2026-10-15: "Let me pick the parts"): the sheet lists the file's parts (name, instrument, notes, range), each ticked
+  if the score is made of it, and a change converts again; the drums are always the band. A file with no piano part
+  gets a guess, said: the highest part (where a tune usually is) and the bass; two parts in the score are the hands,
+  the higher on the upper staff. The choice is kept with the piece (`scoreParts`), so the rest play as its band.
+  Turning a band's parts into a real piano arrangement (voicing, filling in harmony) is not done. Swing (off-beats written straight with "Swing eighths") is found only in a duple beat with
   late off-beats and nothing at a third of the beat: never in 6/8, 9/8 or 12/8, nor in triplets. Previously converted files keep
   their old conversion; adding the MIDI again converts it anew.
   **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their

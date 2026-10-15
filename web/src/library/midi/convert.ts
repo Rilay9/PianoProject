@@ -92,7 +92,7 @@ import {
 import { quantise, type SwingReport } from './quantise.ts';
 import { splitHands } from './handSplit.ts';
 import { sliceIntoChords, type Slice } from './slice.ts';
-import { bandEnd, partsOf } from './band.ts';
+import { bandEnd, guessScore, listParts, partsOf, type PartInfo } from './band.ts';
 import { notatablePieces } from './notatable.ts';
 import {
   type EstimatedKey,
@@ -116,6 +116,8 @@ export const MIDI_CONVERTER_VERSION = 5; // 2026-10-15: the piano part is the sc
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
   title: string;
+  /** The parts written in the score (`PartInfo.key`s, band.ts); the rest play as the band. Default: `guessScore`. */
+  scoreParts?: readonly string[];
   composer?: string;
   /** Candidate grids as divisors of a quarter note; `4,3` is the tool's default. */
   divisors?: number[];
@@ -171,8 +173,12 @@ export interface ConversionReport {
    */
   noteTracks: number;
   noteTrackNames: string[];
-  /** The band: the file's parts that are not piano, which play with the score rather than being written in it. */
+  /** The band: the file's parts not in the score, which play with it rather than being written in it. */
   band: { name: string; sound: string; notes: number }[];
+  /** Every part of the file (band.ts), which of them are written in the score, and whether that was guessed. */
+  fileParts: PartInfo[];
+  scoreParts: string[];
+  partsGuessed: boolean;
   /** True when nothing was lost, nothing was added and every bar adds up. */
   passed: boolean;
 }
@@ -451,7 +457,10 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   const file: MidiFileContents = readMidi(bytes);
   // The piano part becomes the score; the band's parts are left to play with it (band.ts, 2026-10-15).
-  const { piano, band } = partsOf(file);
+  const fileParts = listParts(file);
+  const guess = guessScore(fileParts);
+  const scoreParts = options.scoreParts ? [...options.scoreParts] : guess.keys;
+  const { piano, band } = partsOf(file, scoreParts);
   const source: MidiFileContents = { ...file, tracks: piano };
   const withNotes = source.tracks.filter((track) => track.events.length > 0);
   if (withNotes.length === 0) {
@@ -721,6 +730,9 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
     band: band.map((part) => ({ name: part.name, sound: part.sound, notes: part.notes.length })),
+    fileParts,
+    scoreParts,
+    partsGuessed: !options.scoreParts && guess.guessed,
     noteTrackNames,
     passed:
       lost.length === 0 && added.length === 0 && read.badBars.length === 0 && unwritable.length === 0,
