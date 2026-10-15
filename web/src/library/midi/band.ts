@@ -14,7 +14,8 @@
  */
 import { InstrumentFamilyByID, instrumentByPatchID } from '@tonejs/midi/dist/InstrumentMaps.js';
 import type { MidiFileContents, MidiTrack, NoteEvent } from './readMidi.ts';
-import { type Frac, ZERO, cmp, gt, toNumber } from './fraction.ts';
+import { type Frac, ZERO, add, cmp, frac, gt, isZero, lt, lte, sub, toNumber } from './fraction.ts';
+import { barMap } from './bars.ts';
 
 /** The FluidR3 set's own spelling where it is not the General MIDI name in snake case. */
 const FLUIDR3_SPELLING: Record<string, string> = {
@@ -120,6 +121,42 @@ export function partsOf(source: MidiFileContents, score?: readonly string[]): Pa
   const band: BandPart[] = groups.filter((g) => !keys.has(g.key)).map((g) => ({ name: g.track.name ?? instrumentName(g.program), sound: soundOf(g.program), notes: g.events }));
   if (source.drums.length) band.push({ name: 'Drums', sound: 'drums', notes: source.drums });
   return { piano, band };
+}
+
+/**
+ * The file without the whole bars of silence before its first note (piano or band): a sequencer's count-in. The
+ * owner's Warmness on the Soul opened with three empty bars that the published arrangement does not have
+ * (2026-10-15). Everything moves back by the same whole bars, the metre and key in force there kept from the start.
+ * The converter and the score screen's band both read the file through this, so they stay together.
+ */
+export function trimLeadIn(file: MidiFileContents): MidiFileContents {
+  let first: Frac | null = null;
+  for (const e of [...file.tracks.flatMap((t) => t.events), ...file.drums]) if (first === null || lt(e.start, first)) first = e.start;
+  if (first === null || isZero(first)) return file;
+  const bars = barMap(file.timeSignatures, add(first, frac(64)));
+  const lead = bars.bar(bars.indexAt(first)).start;
+  if (isZero(lead)) return file;
+  const move = (e: NoteEvent): NoteEvent => ({ ...e, start: sub(e.start, lead), end: sub(e.end, lead) });
+  const from = <T extends { at: Frac }>(list: T[]): T[] => {
+    const before = list.filter((x) => lte(x.at, lead));
+    const kept = before.length ? [{ ...before[before.length - 1]!, at: ZERO }] : [];
+    return [...kept, ...list.filter((x) => gt(x.at, lead)).map((x) => ({ ...x, at: sub(x.at, lead) }))];
+  };
+  return {
+    ...file,
+    tracks: file.tracks.map((t) => ({ ...t, events: t.events.map(move) })),
+    drums: file.drums.map(move),
+    // The pedal as it stands where the music starts (pressed in the count-in: down from the start), then its changes.
+    pedal: [
+      ...[...new Set(file.pedal.map((p) => p.channel))].flatMap((channel) => {
+        const before = file.pedal.filter((p) => p.channel === channel && lt(p.at, lead));
+        return before.length && before[before.length - 1]!.down ? [{ channel, at: ZERO, down: true }] : [];
+      }),
+      ...file.pedal.filter((p) => !lt(p.at, lead)).map((p) => ({ ...p, at: sub(p.at, lead) })),
+    ],
+    timeSignatures: from(file.timeSignatures),
+    keyChanges: from(file.keyChanges),
+  };
 }
 
 /** Where the last band note ends (quarter notes), so the score's bars run as long as the band plays. */

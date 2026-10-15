@@ -347,7 +347,13 @@ one); examples to copy written into a chart.
   on both staves. Triplets are written with their groups marked, so the "3" is drawn. Eighths and shorter are beamed
   within the beat, a half bar of plain eighths in 2/4 and 4/4 as one group of four; a note held from a beat is written
   in the longest whole-beat value that does not hide the bar's middle (a dotted half and a dotted eighth, not tied
-  quarters) (2026-10-15, compared with the published arrangement of the owner's Seize the Day). Notes are paired by MIDI
+  quarters) (2026-10-15, compared with the published arrangement of the owner's Seize the Day). A file played in
+  with the sustain pedal (the owner's Warmness on the Soul): a note the pedal holds until the next note of its hand is
+  written to it, and a key held a little into the next one is cut there (legato), so a bass struck short under the
+  pedal is the whole note the published page has; silent bars before the first note (a count-in) are left out; a
+  stated C major is taken for a default when the notes fit another key four times better (Warmness: 10% F♯, 1% outside
+  G). Checked against MuseScore's own MIDI import on the two songs (2026-10-15): about equal on Seize the Day, far
+  worse on Warmness (clef changes, the empty bars, no key), so the app keeps its own converter. Notes are paired by MIDI
   channel as well as key, so two hands on two channels holding one key stay two notes. A file whose notes mostly
   miss the grid (played, not written) is said to have guessed bars and rhythms. Each hand is written in up to three
   voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,

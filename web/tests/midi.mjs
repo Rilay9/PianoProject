@@ -21,7 +21,8 @@ import { convertMidi, readBackMusicXml, titleFromFilename } from '../src/library
 import { checkSentence, handsSentence } from '../src/library/midi/words.ts';
 import { swapHands } from '../src/library/midi/corrections.ts';
 import { convert, guessedWords, midiConverter } from '../src/library/midi/index.ts';
-import { bandNotes, guessScore, isPiano, listParts, partsOf, soundOf } from '../src/library/midi/band.ts';
+import { cutLegato, holdToNext, soundingEnds } from '../src/library/midi/pedal.ts';
+import { bandNotes, guessScore, isPiano, listParts, partsOf, soundOf, trimLeadIn } from '../src/library/midi/band.ts';
 import { barMap, steadyBars } from '../src/library/midi/bars.ts';
 
 const FOUR_FOUR = steadyBars({ beats: 4, beatType: 4 }, frac(64));
@@ -1370,6 +1371,18 @@ describe('a band file: the piano part is the score, the rest is the band', () =>
     expect(notes.filter((n) => n.staff === 2).map((n) => n.name)).toEqual(['E2', 'E2', 'G2', 'A2']);
     expect(guessedWords(guessed)).toContain('The score is a guess (the file has no piano part): Vocals and Bass; Guitar and Drums play with it as the band.');
   });
+  it('leaves out the silent bars before the first note (a count-in), the band moved back with the score (Warmness on the Soul)', () => {
+    const lead = 3 * 1920; // three empty bars of 4/4 at 480 a quarter
+    const file = buildMidiTracks([
+      [{ delta: lead, bytes: timeSignature(4, 2) }, { delta: 0, bytes: keySignature(1) }],
+      [{ delta: lead, bytes: noteOn(67) }, { delta: 480, bytes: noteOff(67) }, { delta: 0, bytes: noteOn(71) }, { delta: 480, bytes: noteOff(71) }],
+      [{ delta: 0, bytes: program(1, 33) }, { delta: lead, bytes: on(1, 43) }, { delta: 960, bytes: off(1, 43) }],
+    ]);
+    const { xml, guessed } = convert(file, { title: 'lead-in' });
+    expect(barsOf(xml)[0].map((n) => n.name)).toEqual(['G4', 'B4']);
+    expect(guessed.key.name).toBe('G major');
+    expect(bandNotes(partsOf(trimLeadIn(readMidi(file))).band).map((n) => `${n.q}:${n.midi}`)).toEqual(['0:43']);
+  });
   it('writes the parts chosen, and the rest is the band', () => {
     const { xml, guessed } = convert(rock, { title: 'rock', convert: { scoreParts: ['2:2'] } });
     expect(barsOf(xml).flat().map((n) => n.name).sort()).toEqual(['A3', 'B3', 'E3', 'G3']);
@@ -1389,6 +1402,54 @@ describe('a band file: the piano part is the score, the rest is the band', () =>
 // --- new (2026-10-14): the key signatures the file states, and where they change -----------------------------------
 // The converter used to estimate the key from the notes and drop the file's: on ASAP's score MIDI files the
 // opening key was wrong on 21 of 180, and no key change was ever written.
+
+describe('the sustain pedal, in a file played rather than written (Warmness on the Soul)', () => {
+  const n = (start, end, midi, channel = 0) => ({ start: limitDenominator(start, 1000), end: limitDenominator(end, 1000), midi, velocity: 80, channel });
+  const ped = (at, down) => ({ channel: 0, at: limitDenominator(at, 1000), down });
+  it('a key let go under the pedal sounds until the pedal lifts, but not past the next strike of that key', () => {
+    const notes = [n(0, 0.25, 43), n(1, 1.25, 50), n(2, 2.25, 50)];
+    const ends = soundingEnds(notes, [ped(0, true), ped(3.9, false)]).map(fracToString);
+    expect(ends).toEqual(['39/10', '2', '39/10']);
+  });
+  it('a note still sounding at the next note of its hand is written to it; one the pedal let go of keeps its length', () => {
+    const held = [n(0, 0.25, 43), n(4, 4.5, 50)], heard = new Map([[held[0], frac(39, 10)]]);
+    expect(holdToNext(held, (e) => heard.get(e), frac(1, 8))).toBe(1);
+    expect(fracToString(held[0].end)).toBe('4');
+    const lifted = [n(0, 0.25, 43), n(4, 4.5, 50)], early = new Map([[lifted[0], frac(2)]]);
+    expect(holdToNext(lifted, (e) => early.get(e), frac(1, 8))).toBe(0);
+    expect(fracToString(lifted[0].end)).toBe('1/4');
+  });
+  it('a key held a little into the next is legato and cut there; a melody note held over moving notes is not', () => {
+    const run = [n(0, 0.75, 83), n(0.5, 1.25, 81), n(1, 1.5, 79)];
+    expect(cutLegato(run)).toBe(2);
+    expect(run.map((e) => fracToString(e.end))).toEqual(['1/2', '1', '3/2']);
+    const melody = [n(0, 2, 79), n(0, 0.25, 55), n(0.25, 0.5, 59), n(0.5, 0.75, 62)];
+    cutLegato(melody);
+    expect(fracToString(melody[0].end)).toBe('2');
+  });
+  it('a bass struck short under the pedal is written as the whole bar it sounds', () => {
+    // The bass track: G1 struck for a 16th with the pedal down until just before the next bar (as Warmness lifts
+    // it, 0.02 of a beat early), then G1 again.
+    const file = buildMidiTracks([
+      [{ delta: 0, bytes: noteOn(79) }, { delta: 240, bytes: noteOff(79) }, { delta: 1680, bytes: noteOn(79) }, { delta: 1920, bytes: noteOff(79) }],
+      [{ delta: 0, bytes: [0xb0, 64, 127] }, { delta: 0, bytes: noteOn(31) }, { delta: 120, bytes: noteOff(31) }, { delta: 1790, bytes: [0xb0, 64, 0] },
+        { delta: 10, bytes: noteOn(31) }, { delta: 1920, bytes: noteOff(31) }],
+    ]);
+    const { xml, report } = convertMidi(file, { title: 'pedal' });
+    expect(barsOf(xml)[0].filter((x) => x.staff === 2).map((x) => `${x.name} ${x.len}`)).toEqual(["G1 4"]);
+    expect(report.pedalled).toBeGreaterThan(0);
+  });
+});
+
+describe('a stated C major over music plainly in another key (a sequencer’s default)', () => {
+  it('takes the key from the notes when C major fits four times worse (Warmness on the Soul: 10% F♯, 1% outside G)', () => {
+    const tune = [67, 71, 74, 66, 67, 69, 71, 72, 74, 76, 78, 79, 71, 74, 67, 66, 64, 62, 67, 71];
+    const file = buildMidiTracks([[{ delta: 0, bytes: keySignature(0) }, ...tune.flatMap((m) => [{ delta: 0, bytes: noteOn(m) }, { delta: 480, bytes: noteOff(m) }])]], 480, 0);
+    const { guessed } = convert(file, { title: 'g' });
+    expect(guessed.key.from).toBe('estimated from the notes');
+    expect(guessed.key.name).toMatch(/^(G major|E minor)$/);
+  });
+});
 
 describe('the key the file states', () => {
   const keyEvent = (sharps, minor) => [0xff, 0x59, 0x02, sharps & 0xff, minor ? 1 : 0];

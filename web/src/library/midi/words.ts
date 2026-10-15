@@ -28,7 +28,7 @@ function checkWithoutTiming(report: ConversionReport): string {
     const moved = report.moved > 0
       ? `; their timing was fitted to a grid, moving a note by at most ${String(Math.round(report.moved * 100) / 100)} of a quarter note`
       : ', at the times the file gives them';
-    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.${joinedSentence(report)}`;
+    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.${joinedSentence(report)}${pedalSentence(report)}`;
   }
   const trouble: string[] = [];
   if (report.lost.length > 0) trouble.push(`${String(report.lost.length)} note(s) lost`);
@@ -42,8 +42,14 @@ function checkWithoutTiming(report: ConversionReport): string {
   return (
     `The score was written, but the check found ${trouble.join(', ')}. ` +
     'Read it before trusting it.' +
-    joinedSentence(report)
+    joinedSentence(report) + pedalSentence(report)
   );
+}
+
+/** Notes the pedal held, written to the next note: said, because the file's own lengths were changed. */
+function pedalSentence(report: ConversionReport): string {
+  if (!report.pedalled) return '';
+  return ` ${String(report.pedalled)} note(s) the sustain pedal held on were written to the next note of their hand, as a score writes them.`;
 }
 
 /** Strikes written as one with another, said, because the count above leaves them out. */

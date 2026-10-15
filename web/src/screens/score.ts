@@ -426,11 +426,11 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (!piece.id.startsWith('u-')) return;
     const blob = await fileOf(midiKey(piece.id)).catch(() => undefined);
     if (!blob) return;
-    const [{ readMidi }, { partsOf, bandNotes }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
+    const [{ readMidi }, { partsOf, bandNotes, trimLeadIn }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
     try {
       await loadLibrary().catch(() => {});
       // The parts chosen for the score on the import sheet; the rest are the band.
-      const parts = partsOf(readMidi(new Uint8Array(await blob.arrayBuffer())), record(piece.id)?.own?.scoreParts).band;
+      const parts = partsOf(trimLeadIn(readMidi(new Uint8Array(await blob.arrayBuffer()))), record(piece.id)?.own?.scoreParts).band;
       if (currentPiece().id === piece.id && parts.length) band = { id: piece.id, notes: bandNotes(parts), names: parts.map((part) => part.name) };
     } catch { /* a MIDI file that no longer reads: the score plays without a band */ }
   }

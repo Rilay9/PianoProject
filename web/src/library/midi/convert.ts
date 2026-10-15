@@ -92,7 +92,8 @@ import {
 import { quantise, type SwingReport } from './quantise.ts';
 import { splitHands } from './handSplit.ts';
 import { sliceIntoChords, type Slice } from './slice.ts';
-import { bandEnd, guessScore, listParts, partsOf, type PartInfo } from './band.ts';
+import { cutLegato, holdToNext, soundingEnds } from './pedal.ts';
+import { bandEnd, guessScore, listParts, partsOf, trimLeadIn, type PartInfo } from './band.ts';
 import { notatablePieces } from './notatable.ts';
 import {
   type EstimatedKey,
@@ -163,6 +164,8 @@ export interface ConversionReport {
   moved: number;
   /** Strikes of one key too close to the one before to write apart, written as one note with it. */
   joined: number;
+  /** Notes the sustain pedal held until the next note of their hand, written to it (pedal.ts). */
+  pedalled: number;
   /** The share of onsets already on the grid (`QuantiseReport.onGrid`). */
   onGrid: number;
   /**
@@ -190,8 +193,12 @@ export interface Conversion {
 
 const DEFAULT_DIVISORS = [4, 3];
 
-/** The share of notes outside C major at which a file's lone C major is taken for a sequencer's default. */
-export const DEFAULT_KEY_OUTSIDE = 0.25;
+/**
+ * A file's lone C major is taken for a sequencer's default when at least this share of the notes fall outside it and
+ * the estimated key leaves at most a quarter as many outside (2026-10-15: a quarter outside was asked for, and the
+ * owner's Warmness on the Soul, in G with 10% of its notes F♯ and 1% outside G, was written in C with F♯ everywhere).
+ */
+export const DEFAULT_KEY_OUTSIDE = 0.05;
 
 /** What a file the app cannot convert says about itself. */
 export class ConvertError extends Error {}
@@ -501,7 +508,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const hands = options.hands ?? 'auto';
   const respell = options.respell ?? true;
 
-  const file: MidiFileContents = readMidi(bytes);
+  const file: MidiFileContents = trimLeadIn(readMidi(bytes));
   // The piano part becomes the score; the band's parts are left to play with it (band.ts, 2026-10-15).
   const fileParts = listParts(file);
   const guess = guessScore(fileParts);
@@ -549,6 +556,9 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   // Kept tracks are the staves: a unison between them is two hands, not one key struck twice.
   const partOfEvent = split ? undefined : raw.flatMap((part, p) => part.events.map(() => p));
   const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null, ...(partOfEvent ? { parts: partOfEvent } : {}) });
+  // When each note stops sounding, the sustain pedal counted (pedal.ts), carried to the quantised notes (same order).
+  const soundEnds = soundingEnds(flat, file.pedal);
+  const soundOf = new Map<NoteEvent, Frac>(quantised.events.map((e, i) => [e, soundEnds[i] ?? e.end]));
 
   const handMedian: { left?: number; right?: number } = {};
   let handBoundaries = 0;
@@ -577,6 +587,13 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     }
   }
 
+  // A note the pedal holds until the next note of its hand is written to it (pedal.ts): a played file's short key
+  // presses under the pedal were short notes and rests where an arrangement writes the held value.
+  let pedalled = 0;
+  for (const part of parts) {
+    if (file.pedal.length) cutLegato(part.events); // played with the pedal: a key's overlap into the next is legato
+    pedalled += holdToNext(part.events, (e) => soundOf.get(e), frac(1, 8));
+  }
   if (parts.length > 2) {
     throw new ConvertError(
       `this file has ${String(parts.length)} parts and the app writes a piano’s two staves — ` +
@@ -609,15 +626,15 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const first = stated[0];
   if (first && first.bar > 0) stated.unshift({ bar: 0, key: first.key });
   const statedOnlyDefault = stated.length > 0 && stated.every((entry) => entry.key.fifths === 0);
-  // Taken for a default only when the notes plainly contradict it: a quarter or more of them outside C major, and
-  // the estimate leaving at most half as many outside. A piece in C that moves to G (an F♯ in eight notes) keeps the
-  // file's C (test review, 2026-10-14: the first rule wrote such a piece in G).
+  // Taken for a default only when the notes plainly contradict it: some of them outside C major, and the estimate
+  // fitting four times better. A piece in C that moves to G (an F♯ in eight notes, and F♮ elsewhere) keeps the file's
+  // C (test review, 2026-10-14: the first rule wrote such a piece in G).
   const outside = (fifths: number): number => {
     const inKey = new Set([-1, 0, 1, 2, 3, 4, 5].map((i) => (((fifths + i) * 7) % 12 + 12) % 12));
     return allEvents.length === 0 ? 0 : allEvents.filter((event) => !inKey.has(((event.midi % 12) + 12) % 12)).length / allEvents.length;
   };
   const contradicted = statedOnlyDefault && estimated.fifths !== 0 &&
-    outside(0) >= DEFAULT_KEY_OUTSIDE && outside(estimated.fifths) <= outside(0) / 2;
+    outside(0) >= DEFAULT_KEY_OUTSIDE && outside(estimated.fifths) <= outside(0) / 4;
   const keyFrom: ConversionReport['keyFrom'] = options.key ? 'chosen'
     : stated.length > 0 && !contradicted ? 'the file' : 'estimated from the notes';
   const keyPlan = keyFrom === 'chosen' && options.key ? [{ bar: 0, key: options.key }]
@@ -773,6 +790,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     swing: quantised.swing,
     moved: toNumber(quantised.moved),
     joined: quantised.joined.size,
+    pedalled,
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
     band: band.map((part) => ({ name: part.name, sound: part.sound, notes: part.notes.length })),

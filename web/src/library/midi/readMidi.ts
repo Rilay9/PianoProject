@@ -58,6 +58,8 @@ export interface MidiFileContents {
   drums: NoteEvent[];
   /** Each channel's General MIDI instrument (program 0-127), the first the file sets on it; a channel never set is 0. */
   programs: Record<number, number>;
+  /** The sustain pedal (controller 64) going down and up, on each channel, in time order (2026-10-15). */
+  pedal: { channel: number; at: Frac; down: boolean }[];
   /** Beats per minute from the first SET_TEMPO, or null when the file states none. */
   tempo: number | null;
   /** How the MIDI spelled its key signature(s), for the report. Sorted, de-duplicated. */
@@ -179,6 +181,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
   let drumNotes = 0;
   const drums: NoteEvent[] = [];
   const programs: Record<number, number> = {};
+  const pedal: { channel: number; at: Frac; down: boolean }[] = [];
   const keySignatures = new Set<string>();
 
   let at = 8 + headerLength;
@@ -256,6 +259,10 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
       const velocity = body[r.at + 1] ?? 0;
       r.at += 2;
       const quarters = div(frac(ticksSoFar), ticks);
+      if (high === 0xb0) {
+        if (pitch === 64) pedal.push({ channel: status & 0x0f, at: quarters, down: velocity >= 64 });
+        continue;
+      }
       // Channel 10 is the drums (General MIDI): its numbers are drum sounds, not pitches, and a band file's kick
       // and snare came out as C2 and D2 in the left hand (2026-10-14). Left out of the score, counted, and kept as
       // hits for the band (a drum sample plays out by itself: the hit's length does not matter).
@@ -325,6 +332,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
     drumNotes,
     drums: drums.sort((a, b) => cmp(a.start, b.start)),
     programs,
+    pedal: pedal.sort((a, b) => cmp(a.at, b.at)),
     tempo,
     keySignatures: [...keySignatures].sort(),
   };
