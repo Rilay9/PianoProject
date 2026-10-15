@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full PDMX mockups</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #d9dce1; --fg: #111827; --muted: #4b5563; --faint: #9ca3af; --line: #b8bcc4;
+    --accent: #2563eb; --ok: #16a34a; --amber: #d97706; --bad: #dc2626; --btn: #f3f4f6; --heart: #e11d48; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 8px; }
+  p.intro, .note { max-width: 1000px; color: var(--muted); margin: 4px 0 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 300px; }
+  figcaption b { color: var(--fg); }
+  .side + figcaption, figure.wide figcaption { max-width: 610px; }
+  .phone { width: 300px; height: 610px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .phone.side { width: 610px; height: 300px; }
+  .top { background: var(--bar); padding: 8px 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .top .t { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .x { border: 1px solid var(--line); background: var(--btn); border-radius: 8px; padding: 3px 9px; font-size: 12px; white-space: nowrap; }
+  .x.main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tabs { display: flex; background: var(--bar); font-size: 13px; border-bottom: 1px solid var(--line); }
+  .tabs span { flex: 1; text-align: center; padding: 6px 0; color: var(--muted); }
+  .tabs span.on { color: var(--fg); font-weight: 700; box-shadow: inset 0 -3px 0 var(--accent); }
+  .tabs span small { color: var(--faint); font-weight: 400; }
+  .search { margin: 8px 10px 0; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; font-size: 13px; color: var(--faint); display: flex; gap: 6px; }
+  .search.typed { color: var(--fg); }
+  .chips { display: flex; gap: 5px; padding: 7px 10px 6px; overflow: hidden; white-space: nowrap; font-size: 12px; }
+  .chip { border: 1px solid var(--line); border-radius: 14px; padding: 2px 9px; background: #fff; color: var(--muted); flex: none; }
+  .chip.on { background: #eef4ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .count { padding: 0 10px 4px; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
+  .list { flex: 1; overflow: hidden; border-top: 1px solid #e5e7eb; }
+  .item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #eef0f2; }
+  .item .ic { width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: none; }
+  .item .ic.pdf { background: #fee2e2; font-size: 9px; font-weight: 700; color: #b91c1c; }
+  .item .ic.chart { background: #fef3c7; font: 700 11px 'Times New Roman', serif; color: #92400e; }
+  .item .ic.lead { background: #ede9fe; }
+  .item .tx { flex: 1; min-width: 0; }
+  .item .tt { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .mm { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .hrt { color: var(--faint); font-size: 16px; } .item .hrt.on { color: var(--heart); }
+  .item .more { color: var(--muted); font-size: 16px; padding: 0 2px; }
+  .item.new { background: #f0fdf4; }
+  .item.new .tt::after { content: ' · added'; font-size: 11px; font-weight: 600; color: var(--ok); }
+  .item .add { border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
+  .item .add.got { border-color: var(--line); color: var(--muted); font-weight: 400; }
+  .group { padding: 5px 10px 3px; font-size: 11px; font-weight: 700; color: var(--muted); background: #f8fafc; border-bottom: 1px solid #eef0f2; }
+  .foot { padding: 6px 10px; font-size: 11px; color: var(--muted); border-top: 1px solid #e5e7eb; background: #fafafa; }
+  .toast { position: absolute; left: 10px; right: 10px; bottom: 40px; background: #111827; color: #fff; border-radius: 10px; padding: 8px 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  .toast b { color: #93c5fd; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.18); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
+  .sheet .grab { width: 36px; height: 4px; border-radius: 2px; background: #d1d5db; margin: 0 auto 2px; }
+  .dim { position: absolute; inset: 0; background: rgba(17,24,39,.35); }
+  .sh { font-size: 15px; font-weight: 700; }
+  .opts { display: flex; flex-wrap: wrap; gap: 5px; }
+  .opts span { border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; font-size: 12px; }
+  .opts span.on { background: #eef4ff; border-color: var(--accent); color: #1d4ed8; font-weight: 600; }
+  .lbl { font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+  .slider { position: relative; height: 18px; margin: 0 6px; }
+  .slider::before { content: ''; position: absolute; left: 0; right: 0; top: 8px; height: 3px; background: #e5e7eb; border-radius: 2px; }
+  .slider i { position: absolute; top: 8px; height: 3px; background: var(--accent); }
+  .slider b { position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 7px; background: #fff; border: 2px solid var(--accent); }
+  .pad { padding: 10px 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .title { font-size: 19px; font-weight: 700; line-height: 1.2; } .meta { font-size: 12px; color: var(--muted); }
+  .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btns .x { font-size: 13px; padding: 5px 11px; }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 12px; }
+  .facts dt { color: var(--muted); } .facts dd { margin: 0; }
+  .facts dd small { color: var(--faint); }
+  .warn { font-size: 11px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 5px 8px; }
+  .tags { display: flex; gap: 5px; flex-wrap: wrap; font-size: 12px; }
+  .tags span { background: #f3f4f6; border-radius: 10px; padding: 1px 8px; }
+  .tags span.addtag { border: 1px dashed var(--line); background: #fff; color: var(--muted); }
+  .boxed { border: 1px solid #e5e7eb; border-radius: 10px; padding: 7px 9px; display: flex; flex-direction: column; gap: 5px; }
+  .preview { height: 64px; border: 1px solid #e5e7eb; border-radius: 8px; background:
+    repeating-linear-gradient(to bottom, transparent 0 5px, #9ca3af 5px 6px) 0 6px / 100% 30px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 5px, #9ca3af 5px 6px) 0 38px / 100% 30px no-repeat; position: relative; }
+  .preview::after { content: '♩ ♪♪ ♩ ♩   ♪♪ ♩ 𝅗𝅥'; position: absolute; left: 14px; top: 2px; font-size: 18px; letter-spacing: 6px; color: #374151; }
+  .two { display: flex; flex: 1; min-height: 0; }
+  .two > .left { width: 52%; display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+  .two > .right { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .item.sel { background: #eef4ff; }
+  .shelf-note { border: 1px dashed var(--line); border-radius: 10px; padding: 8px; font-size: 12px; color: var(--muted); }
+</style>
+<style>
+  .bar { height: 8px; border-radius: 4px; background: #e5e7eb; overflow: hidden; } .bar i { display: block; height: 100%; background: var(--accent); }
+  .choice { border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px; font-size: 12px; } .choice.on { border-color: var(--accent); background: #eef4ff; }
+  .choice b { font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>The full PDMX set in Music (mockups, 2026-10-15)</h1>
+<p class="intro">For deciding where the whole PDMX set (253,391 readable files, measured on the PC) sits and how it gets onto the phone. The curated catalogue (about 1,600, saved with the app) stays as it is. Rows show only facts read from each file's notes on the PC, as the catalogue's do; nothing from PDMX's genre, difficulty, tags or ratings. Titles and numbers below are made up to show layout.</p>
+
+<h2>1. Where it sits: two options</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Music</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span>Yours <small>9</small></span><span>Catalogue <small>1,631</small></span><span class="on">Full PDMX <small>253,391</small></span></div>
+      <div class="search typed">⌕ gymnopedie</div>
+      <div class="chips"><span class="chip on">Kind: piano</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span></div>
+      <div class="count"><span>38 pieces (61 files)</span><span>Sort: Views ▾</span></div>
+      <div class="list">
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 1</div><div class="mm">E. Satie · piano · 2♯ · 3/4 · 78 bars · 4 versions</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 1 (easy)</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 39 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 2</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 70 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 3</div><div class="mm">E. Satie · piano · 3♭ · 3/4 · 77 bars</div></div><span class="add got">in Yours</span></div>
+        <div class="item"><div class="ic lead">𝄞</div><div class="tx"><div class="tt">Gymnopedie (lead sheet)</div><div class="mm">lead sheet · 2♯ · 3/4 · 40 bars</div></div><span class="add">+ Add</span></div>
+      </div>
+      <div class="foot">Full set on this phone: 0.8 GB · piano, lead sheets, melodies</div>
+    </div>
+    <figcaption><b>A: a third tab.</b> Yours / Catalogue / Full PDMX. The catalogue stays the short, picked list; the full set is there when you go looking. Same search, chips and sort; versions of one piece folded into one row.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Music</span><span class="x main">+ Add</span></div>
+      <div class="tabs"><span>Yours <small>9</small></span><span class="on">Catalogue <small>1,631</small></span></div>
+      <div class="search typed">⌕ gymnopedie</div>
+      <div class="chips"><span class="chip">Kind ▾</span><span class="chip">Key ▾</span><span class="chip">Time ▾</span><span class="chip">Bars ▾</span></div>
+      <div class="list">
+        <div class="group">CATALOGUE · 2</div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 1</div><div class="mm">E. Satie · piano · 2♯ · 3/4 · 78 bars · 2 versions</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 3</div><div class="mm">E. Satie · piano · 3♭ · 3/4 · 77 bars</div></div><span class="add got">in Yours</span></div>
+        <div class="group">MORE IN THE FULL PDMX SET · 36</div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 1 (easy)</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 39 bars</div></div><span class="add">+ Add</span></div>
+        <div class="item"><div class="ic">♪</div><div class="tx"><div class="tt">Gymnopédie No. 2</div><div class="mm">E. Satie · piano · no ♯/♭ · 3/4 · 70 bars</div></div><span class="add">+ Add</span></div>
+        <div class="group" style="text-align:center;font-weight:400">Show all 36 →</div>
+      </div>
+    </div>
+    <figcaption><b>B: inside the Catalogue tab.</b> Only when you search: the catalogue's matches first, then "more in the full set". No new tab, but browsing without a search shows only the catalogue.</figcaption>
+  </figure>
+</div>
+
+<h2>2. Getting it onto the phone (once)</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Full PDMX set</span></div>
+      <div class="pad">
+        <div class="title">Put the full set on this phone</div>
+        <div class="meta">1. On the PC, Claude makes the zip files. 2. Copy them to the phone (cable or Drive). 3. Pick them here once.</div>
+        <div class="choice on"><b>Piano, lead sheets and melodies</b><br>187,429 files · 0.8 GB · in zip files</div>
+        <div class="choice"><b>Everything</b>, with band and ensemble scores<br>253,391 files · 2.0 GB · in zip files (several-part scores open with the usual warning)</div>
+        <div class="meta">Android doesn't let an app open a picked file again later, so the app keeps its own copy in its storage (kept safe from clean-up). You can delete the copied zips afterwards.</div>
+        <div class="btns"><span class="x main">Pick the zip files…</span></div>
+        <div class="boxed"><div class="meta">Copying 2 of 2 · 61%</div><div class="bar"><i style="width:61%"></i></div></div>
+      </div>
+    </div>
+    <figcaption><b>Setup.</b> Reached from the Full PDMX tab (option A) or a line under the catalogue (B) while the set isn't on the phone. Remove it again from Settings → Saved for offline. Works offline once copied.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="x">←</span><span class="t">Gymnopédie No. 1 (easy)</span></div>
+      <div class="pad">
+        <div class="title">Gymnopédie No. 1 (easy)</div>
+        <div class="meta">E. Satie · from the full PDMX set</div>
+        <div class="preview"></div>
+        <dl class="facts"><dt>Kind</dt><dd>piano (one part, two staves)</dd><dt>Key signature</dt><dd>no ♯/♭</dd><dt>Time</dt><dd>3/4</dd><dt>Bars</dt><dd>39 <small>as printed</small></dd><dt>Range</dt><dd>D2 – A5</dd><dt>Views</dt><dd>2,140 <small>on MuseScore</small></dd><dt>Licence</dt><dd>CC BY 4.0 <small>the transcription</small></dd></dl>
+        <div class="warn">Not picked or checked: this is a MuseScore user's upload. The catalogue's pieces were chosen by reading their notes; these weren't.</div>
+        <div class="btns"><span class="x main">+ Add</span><span class="x">Open</span></div>
+      </div>
+    </div>
+    <figcaption><b>A full-set piece's page.</b> Facts from the file, the first bars drawn small, a plain warning that nobody picked it. + Add makes it yours (same id as anywhere else); Open plays it without adding.</figcaption>
+  </figure>
+</div>
+</body>
+</html>
