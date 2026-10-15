@@ -23,6 +23,7 @@ import * as nav from './nav';
 import { KeyRemote } from './remote';
 import { clearPreset, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
 import { touch } from './library/store';
+import { addedLine, ensurePiece, takeAdded } from './library/catalogue';
 import { musicExercises } from './lesson/path';
 import type { ScorePreset } from './activity';
 import { createMetronomeScreen } from './screens/metronome';
@@ -458,32 +459,39 @@ async function openActivity(id: string): Promise<void> {
  * opened over a slow start, had your own runs logged as the activity). Says whether it opened.
  */
 async function launch(a: Activity, lesson?: LessonRef): Promise<boolean> {
-  stepParam = lesson ? lesson.step : undefined; // (the screen's address names the step: a reload opens it again, V21)
-  const opened = await launchScreen(a);
-  stepParam = undefined;
+  // (the screen's address names the step: a reload opens it again, V21; passed along, not kept in a variable another
+  // launch could change while this one waits for its piece)
+  const opened = await launchScreen(a, lesson?.step);
   if (!opened()) return false;
   setActivity({ id: a.id, screen: a.screen, ...(lesson ? { lesson } : {}) });
+  // A catalogue piece added for it (owner, 2026-10-15): said once its screen shows, after what the screen says (the
+  // activity's title).
+  const piece = a.screen === 'score' || a.screen === 'memorise' ? app.pieces.find((p) => p.id === a.piece) : undefined;
+  if (piece && takeAdded(piece.id)) app.showMessage(app.messageIsNews ? `${app.messageText} · ${addedLine(piece.title)}` : addedLine(piece.title), true);
   return true;
 }
-let stepParam: string | undefined;
-/** The address of an activity's screen: its own, and the lesson step it was opened for (if any). */
-const withStep = (params: Record<string, string>): Record<string, string> => (stepParam ? { ...params, step: stepParam } : params);
 /** Opens the screen and puts it on top; then says whether it is the activity's and still showing. */
-async function launchScreen(a: Activity): Promise<() => boolean> {
+async function launchScreen(a: Activity, step?: string): Promise<() => boolean> {
   const no = () => false;
-  const known = (piece: string) => app.pieces.some((p) => p.id === piece) || (app.showMessage(`${a.title}: there is no piece "${piece}"`), false);
+  /** The address of the activity's screen: its own, and the lesson step it was opened for (if any). */
+  const withStep = (params: Record<string, string>): Record<string, string> => (step ? { ...params, step } : params);
+  /** Its piece: the app's, yours, or a catalogue piece added to your library first (owner, 2026-10-15); else said. */
+  const known = async (piece: string) => {
+    try { await ensurePiece(app, import.meta.env.BASE_URL, piece); return true; } catch (e) { app.showMessage(`${a.title}: ${e instanceof Error ? e.message : String(e)}`); return false; }
+  };
   switch (a.screen) {
     case 'score': {
-      if (!known(a.piece)) return no;
+      // (taken before the piece is had: an open made meanwhile, or a second tap's, wins, and this one opens nothing)
       const still = wanted(); // (another screen opened meanwhile counts one up; another song ends the preset)
+      if (!await known(a.piece) || !still()) return no;
       const place = scorePlace(a.piece);
       enter({ ...place, params: withStep(place.params!) });
       await scoreScreen.openActivity(a);
       return () => still() && app.currentId === a.piece && presetPiece() === a.piece;
     }
     case 'memorise': {
-      if (!known(a.piece)) return no;
       const still = wanted();
+      if (!await known(a.piece) || !still()) return no;
       clearPreset();
       const place = memorisePlace(a.piece);
       enter({ ...place, params: withStep(place.params!) });
@@ -508,7 +516,7 @@ async function launchScreen(a: Activity): Promise<() => boolean> {
     }
     case 'freeplay': {
       openFreePlay();
-      if (stepParam) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step: stepParam })}`);
+      if (step) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step })}`);
       const still = () => freePlay.open;
       return still;
     }

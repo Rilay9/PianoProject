@@ -100,7 +100,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   view.onStep = (notes) => {
     trackWait();
     // Upright where touch keys play (Wait for me, Memorise), the keys follow the music two octaves at a time.
-    strip.follow([...notes.now.flat(), ...notes.next.flat()].map((p) => p.midi));
+    strip.follow(notes.now.flat().map((p) => p.midi), notes.next.flat().map((p) => p.midi));
     strip.show(borrower ? borrower.stepNotes(notes) : notes);
   };
 
@@ -133,6 +133,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       warnAboutHands(piece, xml);
       // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
       document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
+      placeBottomBar();
       borrower?.beforeShow(); // the borrower's panel height too
       await view.show(addFingerings(xml, fingeringsFor(piece.id)), s, at, () => strip.setSong(view.songPitches));
       if (request !== drawRequest) return;
@@ -210,10 +211,19 @@ export function createScoreScreen(app: App): ScoreScreen {
   // Bars: the song's name on top; the playing controls and the notation size at the bottom (the rest of the
   // song's look is in Display; size is here too so the music can be seen changing).
 
+  /** Wait for me with the keys under the music: the bottom bar sits above the keys, not over them, so they can be
+   * tapped while it shows (owner, 2026-10-15: taps on the keys landed on the bar; Memorise's panel already does this). */
+  function placeBottomBar(): void {
+    const piece = currentPiece();
+    document.body.classList.toggle('keys-play', !!piece && !borrower && settingsFor(piece.id).mode === 'wait' && !$('keyboard').hidden);
+    if (!borrower) strip.refollow(); // (Wait for me chosen: the keys narrow to the music now, not at the first move)
+  }
+
   function fillBars(): void {
     const piece = currentPiece();
     if (!piece) return;
     const s = settingsFor(piece.id);
+    placeBottomBar();
     $('song-title').textContent = piece.title;
     $('song-composer').textContent = piece.composer;
     $('q-bpm').textContent = String(Math.round(view.baseBpm * s.speed));
@@ -310,7 +320,13 @@ export function createScoreScreen(app: App): ScoreScreen {
     $('play').textContent = '…'; // the piano loads on the first play; MIDI may ask to be allowed
     const bandReady = loadBand(currentPiece()); // read beside the rest; awaited before the band is asked for (B7-03)
     try {
-      if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
+      // Wait for me can be played on the keys under the music, so it starts without waiting for MIDI: a browser
+      // without it, one not allowed it, or one still asking you to allow it (owner, 2026-10-15: the touch keys did
+      // nothing on a phone with no keyboard). A keyboard allowed later plays in as it comes. The timed modes need one.
+      const touchOnly = s.mode === 'wait' && !$('keyboard').hidden && s.pianoOut !== 'keyboard'; // (the keys are showing)
+      if (touchOnly) void midi.start().then((names) => names.length ? undefined : 'No MIDI keyboard is connected', () => 'No MIDI keyboard here')
+        .then((why) => { if (why && request === startRequest && !app.messageText) showMessage(`${why}: play on the keys below.`, true); });
+      else if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
       // The piano part goes to the keyboard when chosen and one is connected that can play; otherwise the phone.
       sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
       if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
@@ -983,6 +999,9 @@ export function createScoreScreen(app: App): ScoreScreen {
   return {
     key(e: KeyEvent): void {
       borrower?.keySeen(e);
+      // Wait for me starting from a key: the rest of a chord, pressed while it starts, counts for the first notes as
+      // the key that started it does (owner, 2026-10-15: F3 and F5 together started it with F3 alone).
+      if (e.on && starting && !borrower && settingsFor(currentPiece().id).mode === 'wait') practice.pressedBefore(e.midi);
       practice.key(e);
       if (e.on) void startFromKey(e);
     },

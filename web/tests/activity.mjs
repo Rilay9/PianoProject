@@ -2,6 +2,7 @@
 // with the reason rather than guessed (owner, 2026-10-13). Run: npm run check:activity.
 import { readFileSync, readdirSync } from 'node:fs';
 import { readActivity } from '../src/activity.ts';
+import { namedPieces } from './named-pieces.mjs';
 
 const dir = new URL('../public/content/activities/', import.meta.url);
 const pub = (p) => new URL(`../public/${p}`, import.meta.url);
@@ -14,14 +15,11 @@ const inFolder = readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'in
 ok('every activity file in the folder is in index.json, and every listed one is there', JSON.stringify(inFolder) === JSON.stringify([...index].sort()),
   `folder ${inFolder.join(', ')}; index ${index.join(', ')}`);
 
-// A1: what each activity names exists in the build: its piece (and its bars inside it), set or chart.
-const pieces = new Map(JSON.parse(readFileSync(pub('scores/index.json'), 'utf8')).map((p) => [p.id, p.file]));
+// A1: what each activity names exists in the build: its piece (and its bars inside it), set or chart. A piece is one of
+// the app's scores or, by its "u-" id, a catalogue piece (owner, 2026-10-15; tests/named-pieces.mjs).
+const named = namedPieces();
 const sets = JSON.parse(readFileSync(pub('content/sets/index.json'), 'utf8'));
 const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).charts;
-const printedBars = (file) => {
-  const numbers = [...readFileSync(pub(`scores/${file}`), 'utf8').matchAll(/<measure\b[^>]*\bnumber="(\d+)"/g)].map((m) => Number(m[1]));
-  return numbers.length ? Math.max(...numbers) : 0;
-};
 const read = {};
 for (const f of index) {
   let a;
@@ -29,9 +27,8 @@ for (const f of index) {
   catch (e) { ok(`${f} reads`, false, e.message); continue; }
   read[a.id] = a;
   if ('piece' in a) {
-    const file = pieces.get(a.piece);
-    ok(`${f}: its piece "${a.piece}" is in the scores`, !!file, 'not in public/scores/index.json');
-    if (file && a.bars) ok(`${f}: bars ${a.bars.join('-')} are inside the piece`, a.bars[0] >= 1 && a.bars[1] <= printedBars(file), `the piece has ${printedBars(file)} bars`);
+    ok(`${f}: its piece "${a.piece}" is in the scores or the catalogue`, !!named.barsOf(a.piece), named.problem(a.piece));
+    if (named.barsOf(a.piece) && a.bars) ok(`${f}: bars ${a.bars.join('-')} are inside the piece`, !named.problem(a.piece, a.bars), named.problem(a.piece, a.bars));
   }
   if ('set' in a) ok(`${f}: its set "${a.set}" is in the sets`, sets.includes(`${a.set}.json`), `sets: ${sets.join(', ')}`);
   if ('chart' in a) ok(`${f}: its chart "${a.chart}" is in the Lab`, charts.includes(`charts/${a.chart}.json`), `charts: ${charts.join(', ')}`);
@@ -75,6 +72,22 @@ const refused = [
 for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }
   catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }
+}
+
+// A catalogue piece named by its "u-" id (owner, 2026-10-15): the reader takes it as any piece; this check finds it in the
+// catalogue index and its bars inside the index's bar count. Refused: a u- id that is not there, bars past the end.
+{
+  const cat = 'u-de5f6a78874c'; // "Mary Had A Little Lamb" in the catalogue, 8 bars: the test lesson's piece
+  const a = readActivity('t', { screen: 'score', piece: cat, bars: '1-4' });
+  ok('a catalogue piece: a score activity naming it by its u- id reads, and the piece and bars 1-4 are found', a.piece === cat && same(a.bars, [1, 4]) && named.problem(cat, a.bars) === '', named.problem(cat, a.bars));
+  ok('a catalogue piece: a memorise activity naming it reads, and it is found', readActivity('t', { screen: 'memorise', piece: cat }).piece === cat && !!named.barsOf(cat));
+  ok('a catalogue piece: its bar count is the index\'s (8)', named.barsOf(cat)?.bars === 8 && named.barsOf(cat)?.from === 'the catalogue', JSON.stringify(named.barsOf(cat)));
+  const unknown = named.problem('u-000000000000');
+  ok('refused: a u- id in neither the scores nor the catalogue', /neither in public\/scores\/index.json nor in the catalogue/.test(unknown), unknown || 'accepted');
+  const past = named.problem(cat, [5, 9]);
+  ok('refused: bars past the end of a catalogue piece', /bars 5-9 are not inside "u-de5f6a78874c" \(it has 8 bars, from the catalogue\)/.test(past), past || 'accepted');
+  const bare = named.problem('de5f6a78874c');
+  ok('refused: a catalogue id without its "u-"', /is not a piece; the catalogue piece is named "u-de5f6a78874c"/.test(bare), bare || 'accepted');
 }
 console.log(failed ? `${failed} of ${ran} failed` : `all ${ran} passed`); // (a count: an empty index or a dropped case shows)
 process.exit(failed ? 1 : 0);

@@ -4,6 +4,7 @@
 // page lays them out one under the other on a phone, and in a readable column sideways and on a tablet).
 
 import { base, type App } from '../app';
+import { addedLine, ensurePiece, takeAdded } from '../library/catalogue';
 import { el } from '../ui';
 import { itemsXml } from '../exercise/notation';
 import { readSet } from '../exercise/items';
@@ -102,8 +103,9 @@ function drawVideo(b: Extract<Block, { kind: 'video' }>): HTMLElement {
 async function scoreXml(src: ScoreSource, app: App): Promise<string> {
   const fetchText = async (url: string) => { const r = await fetch(url); if (!r.ok) throw new Error(`${r.status} for ${url}`); return r.text(); };
   if ('piece' in src) {
-    const piece = app.pieces.find((p) => p.id === src.piece);
-    if (!piece) throw new Error(`there is no piece "${src.piece}"`);
+    // (a catalogue piece named by its "u-" id is added to your library first, as + Add adds it: owner, 2026-10-15)
+    const piece = await ensurePiece(app, base, src.piece);
+    if (takeAdded(piece.id)) app.showMessage(addedLine(piece.title), true);
     return excerptXml(await app.xmlFor(piece), src.bars[0], src.bars[1]);
   }
   const fromItems = async (setId: string, file: unknown, at: string, n: number) => {

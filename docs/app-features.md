@@ -161,7 +161,13 @@ one is welcome and never a wrong key (owner, 2026-10-13).
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
 (and Memorise) the keys under the music can be played by touch, and count; on a phone upright they then show two
-octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in the timed modes they only show. In the judged
+octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in the timed modes they only show.
+Following, every key wanted now is always on the keys (starting on a C when the notes allow, otherwise at the lowest
+note wanted, so F3 and F5 together show F3 to F5), the coming notes too where they fit; only notes wanted now further
+apart than two octaves widen it (owner, 2026-10-15: F5 was off the keys). Wait for me with the keys showing starts
+without a MIDI keyboard (no MIDI in the browser, not allowed, or still being asked) and says to play on the keys below;
+the timed modes still need one. The rest of a chord pressed while a run starts counts for the first notes, as the key
+that started it does. With the keys showing in Wait for me, the bottom bar sits above them, never over them. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
 score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses; Wait for me waits at your
 next notes again, also when the piano was leading on to them: 2026-10-15), and carries on from your next key, or *See how it went* in the pause message ends the run with
@@ -540,7 +546,34 @@ one); examples to copy written into a chart.
   versions"). Sorted by views first; Title, Composer, Fewest bars. Rows drawn 100 at a time (Show more). + Add (on
   the row or the page) keeps the file as yours (id `u-` + its SHA-256 start, so the same file added by hand is the
   same piece); in the installed app the files are saved for offline with it, so adding works offline. Each tab keeps its own search,
-  filters and sort.
+  filters and sort. **Named by lessons and activities** (owner, 2026-10-15): a step, an activity or a lesson's score
+  block may name a catalogue piece by the id it gets when added, `u-` + its catalogue id (§8b, §8c). Opened when it is
+  not in your library yet, it is added first by the same code as + Add (`addFromCatalogue` in `library/catalogue.ts`:
+  the same record, origin "catalogue", PDMX source and the uploader's licence), works offline, and says one line
+  ("Added “…” to your library (Music).", after the activity's title on the message line); then the step carries on. So
+  a piece added by hand and one a lesson added are the same piece, with the same choices, fingering and Memorise data.
+  Two opens at once share one add (the file is fetched and kept once). A file that can't be had is said ("“…” could
+  not be added from the catalogue: …"), nothing opens and the step marks nothing; a `u-` id in neither your library
+  nor the catalogue gets the usual "there is no piece". Deleted in Music, a lesson-added piece is gone with its data;
+  the next step or score block naming it adds it again, fresh (accepted, owner 2026-10-15).
+- **Promoting a catalogue piece into the app's own scores** (Claude's procedure, owner 2026-10-15; not done for any
+  piece yet): for a piece a lesson leans on, so its notes are checked and it ships as one of the app's own.
+  1. Its MusicXML, unzipped from the catalogue's `.mxl`, goes to `web/public/scores/<id>.musicxml`, and an entry in
+     `web/public/scores/index.json` with the fields the three there have, and only those: `id` (a readable name like
+     `mozart-k2`, never `u-…`: the app reads `u-` ids from the library on the phone), `title`, `composer`, `file`,
+     `source` (`dataset` "PDMX", `mxl` the PDMX path of the upload, `uploadTitle` its title there: neither is in the
+     shipped index; they come from the catalogue builder's inputs, `chosen.json` and `PDMX.csv`, and what can't be found
+     is said in `status`, not guessed), `license` and `licenseUrl` (the index's "CC0" is `cc-zero` with
+     https://creativecommons.org/publicdomain/zero/1.0/, "Public Domain Mark" is `publicdomain` with
+     https://creativecommons.org/publicdomain/mark/1.0/, as written there), and `status`, which says exactly what was
+     verified (the existing ones: "engine test score; notes not verified against a printed edition").
+  2. Lessons and activities naming its `u-` id are changed to the new id. (A learner's choices, fingering and Memorise
+     data stay with the library copy under the `u-` id: moving them is not built.)
+  3. `npm run check:notes` then covers it with the others. What that check proves: the pitches the score screen draws
+     in each bar are the file's. What it does **not** prove: that the file is the published music. It compares the
+     app's drawing with the file, never the file with a printed edition. The notes have to be read against an
+     independent source (a published edition or a scan of one, bar by bar), and `status` says what was compared, with
+     what, and how far ("bars 1–16 read against …; the rest not verified"); anything not read is said as not verified.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
@@ -806,7 +839,11 @@ not there) is refused with the reason; nothing is guessed. Examples marked "Test
 ```
 
 Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out; a field not listed for its screen
-is refused. Every value (`web/src/activity.ts` checks each):
+is refused. A score or memorise activity's `piece` is one of the app's scores, a piece in the library, or a catalogue
+piece by the id it gets when added, `"u-<catalogue id>"` (owner, 2026-10-15; e.g. `"u-de5f6a78874c"`): opening the
+activity adds it to your library first if it is not there (§5c), and a `u-` id that is in neither says "there is no
+piece". `npm run check:activity` finds each named piece in `scores/index.json` or `catalogue/index.json` and its `bars`
+inside its bar count (a catalogue piece's from the index: bars as printed). Every value (`web/src/activity.ts` checks each):
 - score: `bars` "5-8" (printed bar numbers); `mode` watch / wait / along / ladder (needs `bars`) / rhythm; `hands` both /
   right / left / off; `tempo` 20–300; `metronome` true / false; `clickOn` beats / quarters / eighths; `onTime` relaxed /
   normal / strict; `ladderStep` 0.02 / 0.05 / 0.1.
@@ -846,7 +883,7 @@ next lesson with steps to do.
 
 ```json
 // index.json: the rungs in order, each with its lessons' ids (each id once in the whole path)
-{ "rungs": [ { "id": "test-app", "title": "Test: the app's lesson pages", "lessons": ["test-minuet-opening", "test-chords-and-band"] } ] }
+{ "rungs": [ { "id": "test-app", "title": "Test: the app's lesson pages", "lessons": ["test-minuet-opening", "test-catalogue-piece", "test-chords-and-band"] } ] }
 
 // lessons/<id>.json: a title and its blocks, in the order the page shows them
 { "title": "Test: the Minuet's opening, right hand",
@@ -858,7 +895,7 @@ A paragraph with **bold**, *italics* and [a link](https://…).
 1. a numbered list" },
     { "kind": "image", "src": "media/test-picture.svg", "alt": "what it shows", "caption": "…" },        // png jpg webp svg gif, or an https:// link
     { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "…", "start": 0, "end": 120, "caption": "…" },
-    { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // or "set": "chords-c", "item": 1;
+    { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // piece: or a catalogue piece, "u-<catalogue id>"; or "set": "chords-c", "item": 1;
                                                                          // or "musicxml": "<note>…</note>" (notes, as a set's item) or "media/x.musicxml"
     { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "caption": "…" },     // "-" for a key with no finger
     { "kind": "animation", "src": "media/test-c-major.svg", "alt": "…", "caption": "…" },   // gif webp svg png (animated), mp4 webm
@@ -881,7 +918,8 @@ A paragraph with **bold**, *italics* and [a link](https://…).
   same card. When YouTube itself refuses to play it, its own message shows in the frame and the link is still under it.
   A lesson must make sense without its videos.
 - **score**: a little playable score: bars of a piece (at most 16; cut out with the clefs, key, time and divisions in
-  force where they start, repeats and endings taken out so it plays once), a set's item (drawn as Simon and Drills draw
+  force where they start, repeats and endings taken out so it plays once; the piece may be a catalogue piece named
+  `"u-<catalogue id>"`, added to your library when the page draws it if it is not there yet, as a step adds it), a set's item (drawn as Simon and Drills draw
   it), or MusicXML (notes as a set's item takes them, a whole file inline, or a file). Drawn with the app's own renderer
   (OSMD); **▶ Hear it** plays it on the app's piano at `tempo` (quarter notes a minute; else the score's own, else 80)
   while OSMD's cursor moves over the notes playing and, with `"keys": true`, the keys light on a small keyboard under it.
@@ -901,7 +939,10 @@ A paragraph with **bold**, *italics* and [a link](https://…).
   means in words (`doneWhen`), a line `about` it, and where its activity's result can tell, a `target`; Start ▶. The page's
   bottom bar starts the first step not done. **Steps never lock** (owner, 2026-10-15): every step has its Start.
   A step's screen carries the step in the address: a reload opens it again from its lesson page, with its activity's
-  choices, and ← still goes to the lesson page (V21).
+  choices, and ← still goes to the lesson page (V21). A step whose activity names a catalogue piece (`"u-<catalogue id>"`,
+  owner 2026-10-15) adds it to your library on Start if it is not there (§5c: offline too, one line says so; a file that
+  can't be had is said and the step marks nothing); its card names the piece by its catalogue title meanwhile. Two
+  Starts at once: the later one opens the step, and the step still gets its result.
 - **tip**: a callout (`label`: "Tip" by default, e.g. "Note").
 
 **A step counts as done** (shown in words, never one green tick for all: *target met*, *played*, *opened*; or *tried,
@@ -930,7 +971,13 @@ a file outside the folder or of the wrong type, a video link that is not YouTube
 two sources or more than 16 bars, keys that are not pitches or fingers that are not one a note, a step id used twice in
 a lesson, a written-out activity with a mistake, a target its screen cannot judge (or of another screen, or out of range);
 a lesson id in two rungs, unknown index fields. A lesson that cannot be read is left out and its reason shown on Path.
-Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching.
+`npm run check:path` also finds every piece a score block or a step names (the app's scores, or a catalogue piece by
+its `u-` id in `catalogue/index.json`) with its bars inside it (`tests/named-pieces.mjs`).
+Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching. **Promoting** a catalogue piece a
+lesson leans on into the app's own scores, with its notes checked, is Claude's procedure in §5c.
+The test rung's "Test: a piece from the catalogue" (`test-catalogue-piece`) has one step naming the catalogue's
+"Mary Had A Little Lamb" (`u-de5f6a78874c`: CC0, piano on two staves, 8 bars, chosen as a short piano piece): a
+placeholder for the checks, saying nothing about the music.
 
 **Adding a block kind:** its fields in `read.ts` (`BLOCKS` and `readBlock`), its drawing in `blocks.ts` (`DRAW`: the one
 place that maps a kind to its drawing), a case in `tests/path.mjs`, and a line here.

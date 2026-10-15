@@ -10,7 +10,7 @@ import { midiConverter, type Guessed } from '../library/midi/index.ts';
 import { forgetPiece } from '../library/forget';
 import { isChartId, isYours, items, loadCharts, pieceOf, readAppFacts, type LibItem } from '../library/items';
 import { addOwn, allRecords, change, fileOf, isSafe, keepSafe, load, record, remove, touch } from '../library/store';
-import { fetchCatalogueFile, loadCatalogue, type CatRow } from '../library/catalogue';
+import { addFromCatalogue, isAdding, loadCatalogue, type CatRow } from '../library/catalogue';
 import { markText, memorisedMarks } from '../memorise';
 
 export interface LibraryDeps {
@@ -193,7 +193,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     b.type = 'button';
     b.disabled = got;
     b.setAttribute('aria-label', got ? `${i.title} is in your library` : `Add ${i.title} to your library`);
-    b.addEventListener('click', (e) => { e.stopPropagation(); void addFromCatalogue(i, b); });
+    b.addEventListener('click', (e) => { e.stopPropagation(); void addCatalogueItem(i, b); });
     return b;
   }
   function renderList(): void {
@@ -591,7 +591,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     const buttons = el('div', 'lib-buttons');
     const add = el('button', 'btn main', 'Add to your library');
     add.type = 'button';
-    add.addEventListener('click', () => void addFromCatalogue(i, add));
+    add.addEventListener('click', () => void addCatalogueItem(i, add));
     buttons.append(add);
     body.append(buttons);
     const facts = el('dl', 'lib-facts');
@@ -611,19 +611,14 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     page.replaceChildren(...out);
   }
 
-  /** Adds a catalogue piece: its file (saved with the app, so this works offline) kept like a file you added. */
-  const adding = new Set<string>(); // pieces being added: a second tap while the first is under way does nothing
-  async function addFromCatalogue(i: LibItem, button?: HTMLButtonElement): Promise<void> {
-    if (!i.cat || inYours(i) || adding.has(i.id)) return;
-    adding.add(i.id);
+  /** Adds a catalogue piece (library/catalogue.ts addFromCatalogue, the one way a catalogue piece is added: a lesson or an
+   * activity naming one adds it the same way). A second tap while the first is under way does nothing. */
+  async function addCatalogueItem(i: LibItem, button?: HTMLButtonElement): Promise<void> {
+    if (!i.cat || inYours(i) || isAdding(i.id)) return;
     if (button) button.disabled = true;
     try {
-      await load();
-      const p = await prepare(await fetchCatalogueFile(base, i.cat));
-      if (p.id !== i.id) throw new Error('its file is not the one the catalogue lists');
-      await addOwn(p.id, { ...p.own, origin: 'catalogue', title: i.title, composer: i.composer, source: 'PDMX (an upload to MuseScore)', licence: i.cat.licence || undefined }, p.blob);
-      if (!app.pieces.some((x) => x.id === p.id)) app.pieces.push(pieceOf(p.id, { ...p.own, title: i.title, composer: i.composer }));
-      justAdded.add(p.id);
+      await addFromCatalogue(app, base, i.cat);
+      justAdded.add(i.id);
       void keepSafe().then(() => renderFoot());
       await refresh();
       render();
@@ -631,8 +626,6 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     } catch (e) {
       if (button) button.disabled = false;
       app.showMessage(`Could not add it: ${e instanceof Error ? e.message : String(e)}`);
-    } finally {
-      adding.delete(i.id);
     }
   }
 

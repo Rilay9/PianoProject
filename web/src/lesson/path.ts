@@ -6,6 +6,7 @@ import { base, type App, type Piece } from '../app';
 import { readActivity, type Activity } from '../activity';
 import { loadSets, readPlay, type ItemSet, type Play } from '../exercise/items';
 import { loadCharts } from '../library/items';
+import { loadCatalogue } from '../library/catalogue';
 import { currentLesson, doneSteps, stepWords, triedSteps } from './progress';
 import { readIndex, readLesson, type Block, type Lesson, type PathIndex, type Rung } from './read';
 
@@ -157,7 +158,10 @@ const RUNGS = ['', 'music, sound and keys lit', 'music and sound', 'music only',
 
 /** The step's activity in a few words: the tool, what it plays, the choices that matter ("Wait for me · right hand · bars 1–4"). */
 export async function describe(a: Activity, app: App): Promise<string> {
-  const piece = (id: string) => app.pieces.find((p) => p.id === id)?.title ?? id;
+  // (a catalogue piece not yet in your library: its title from the catalogue, 2026-10-15)
+  const named = a.screen === 'score' || a.screen === 'memorise' ? a.piece : '';
+  const catalogue = named.startsWith('u-') && !app.pieces.some((p) => p.id === named) ? await loadCatalogue(base).catch(() => null) : null;
+  const piece = (id: string) => app.pieces.find((p) => p.id === id)?.title ?? catalogue?.rows.find((r) => r.id === id)?.title ?? id;
   const setTitle = async (id: string) => (await (sets ?? allSets(app).then((x) => x.sets)).catch(() => [] as ItemSet[])).find((s) => s.id === id)?.title.replace(/^Test:\s*/, '') ?? id;
   switch (a.screen) {
     case 'score': {

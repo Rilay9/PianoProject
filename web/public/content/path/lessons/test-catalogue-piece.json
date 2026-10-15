@@ -1,0 +1,7 @@
+{
+  "title": "Test: a piece from the catalogue",
+  "blocks": [
+    {"kind": "text", "text": "## Test lesson\nA placeholder for checking the app, not teaching: its step names a piece from the catalogue (\"Mary Had A Little Lamb\", a CC0 upload to MuseScore), which opening the step adds to your library if it is not there yet. Nothing here says anything about the music."},
+    {"kind": "step", "id": "catalogue-piece", "title": "Test: a catalogue piece, bars 1–4", "activity": {"title": "Test: a catalogue piece, bars 1–4", "screen": "score", "piece": "u-de5f6a78874c", "bars": "1-4", "settings": {"mode": "wait"}}, "about": "Test: the piece comes from the catalogue; the first time, opening the step adds it to Music."}
+  ]
+}

@@ -97,7 +97,8 @@ export class UnderStrip {
   private keys = new Map<number, HTMLDivElement>();
   private lit: HTMLDivElement[] = [];
   private song: { from: number; to: number } = { from: 48, to: 72 };
-  private window: number | null = null; // following: the lowest key shown (two octaves on); null: the whole range
+  private window: number | null = null; // following: the lowest key shown; null: the whole range
+  private span = FOLLOW_SPAN; // following: how many keys on from the lowest (two octaves, more when the notes wanted now need it)
   private down = new Set<number>();
   private lastNotes: StepNotes | null = null;
   /**
@@ -117,37 +118,47 @@ export class UnderStrip {
   }
 
   /** The keys drawn now, lowest and highest. */
-  get shown(): { lo: number; hi: number } { return this.window !== null ? { lo: this.window, hi: this.window + FOLLOW_SPAN } : { lo: this.song.from, hi: this.song.to }; }
+  get shown(): { lo: number; hi: number } { return this.window !== null ? { lo: this.window, hi: this.window + this.span } : { lo: this.song.from, hi: this.song.to }; }
 
   /** Builds the keys for a song (following: the two octaves of its first notes). */
   setSong(midis: number[]): void {
     this.song = keyRange(midis);
     this.window = null;
+    this.span = FOLLOW_SPAN;
     if (this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN) this.window = this.song.from;
     this.build();
   }
 
   /**
-   * Following: the notes now and next stay on the keys; when they leave the two octaves shown, the keys move (by
-   * octaves) to take them in (both hands wider apart than two octaves: around their middle).
+   * Following: every note wanted now stays on the keys, and the coming ones too where they fit. The two octaves start
+   * on a C when the notes allow, otherwise at the lowest note wanted now (F3 and F5 together fit F3 to F5, which C to
+   * C cannot hold: owner, 2026-10-15, F5 was off the keys); only notes wanted now further apart than two octaves widen
+   * the keys (narrower, all tappable). The keys move only when what is wanted leaves them.
    */
-  follow(midis: number[]): void {
+  follow(now: number[], next: number[] = []): void {
     const narrow = this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN;
-    if (!narrow) { if (this.window !== null) { this.window = null; this.build(); } return; }
-    if (!midis.length) return;
-    const lo = Math.min(...midis), hi = Math.max(...midis);
-    if (this.window !== null && lo >= this.window && hi <= this.window + FOLLOW_SPAN) return;
-    let from = octaveFloor(hi - lo <= FOLLOW_SPAN ? lo : Math.round((lo + hi) / 2) - 12);
-    if (hi - lo <= FOLLOW_SPAN && hi > from + FOLLOW_SPAN) from += 12;
-    from = Math.max(this.song.from, Math.min(this.song.to - FOLLOW_SPAN, from));
-    if (from === this.window) return;
+    if (!narrow) { if (this.window !== null) { this.window = null; this.span = FOLLOW_SPAN; this.build(); } return; }
+    const need = now.length ? now : next;
+    if (!need.length) return;
+    const all = [...need, ...(now.length ? next : [])];
+    let lo = Math.min(...all), hi = Math.max(...all);
+    if (hi - lo > FOLLOW_SPAN) { lo = Math.min(...need); hi = Math.max(...need); } // the coming notes don't fit too: what is wanted now
+    if (this.window !== null && lo >= this.window && hi <= this.window + this.span) return;
+    let span = Math.max(FOLLOW_SPAN, hi - lo);
+    let from = octaveFloor(lo);
+    if (hi > from + span) from = isBlack(lo) ? lo - 1 : lo;
+    if (hi > from + span) span = hi - from;
+    if (isBlack(from + span)) span++; // (never a black key at the top edge)
+    from = Math.max(this.song.from, Math.min(this.song.to - span, from));
+    if (from === this.window && span === this.span) return;
     this.window = from;
+    this.span = span;
     this.build();
     if (this.lastNotes) this.show(this.lastNotes);
   }
 
   private build(): void {
-    const from = this.window ?? this.song.from, to = this.window !== null ? this.window + FOLLOW_SPAN : this.song.to;
+    const from = this.window ?? this.song.from, to = this.window !== null ? this.window + this.span : this.song.to;
     this.keys.clear();
     this.lit = [];
     const whites = document.createElement('div');
@@ -187,6 +198,11 @@ export class UnderStrip {
   }
 
   /** Lights the keys and writes the names for where the marker is. */
+  /** Follows the notes shown last again: the keys became playable (Wait for me chosen) after the music was drawn. */
+  refollow(): void {
+    if (this.lastNotes) this.follow(this.lastNotes.now.flat().map((p) => p.midi), this.lastNotes.next.flat().map((p) => p.midi));
+  }
+
   show(notes: StepNotes): void {
     this.lastNotes = notes;
     for (const k of this.lit) k.classList.remove('now-r', 'now-l', 'next-r', 'next-l');

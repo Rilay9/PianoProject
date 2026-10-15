@@ -1461,6 +1461,72 @@ try {
     }
   }
 
+  // Wait for me on the keys under the music, on a phone with no MIDI (owner, 2026-10-15: tapping the lit key did
+  // nothing). No MIDI permission, as a phone that has none or was never asked; taps go by position (the mouse at the
+  // key's place), so whatever lies on top of the keys gets them, as a finger's would. Right hand: the first tap on the
+  // lit key, with the bottom bar still showing, starts the run and moves the marker on, and the reason is said.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(`${BASE}?piece=mozart-k2`);
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    await page.mouse.click(195, 300); await page.waitForTimeout(400); // the first tap (Tap anywhere to start)
+    await page.selectOption('#q-mode', 'wait'); await page.waitForTimeout(400);
+    await page.evaluate(() => [...document.querySelectorAll('#bottom-bar button')].find((b) => b.textContent.trim() === 'R').click());
+    await page.waitForTimeout(600);
+    const key = await page.evaluate(() => {
+      const k = document.querySelector('#keyboard .key.now-r'); if (!k) return null;
+      const r = k.getBoundingClientRect(), x = r.left + r.width / 2, y = r.bottom - 6;
+      const top = document.elementFromPoint(x, y);
+      return { midi: k.dataset.midi, x, y, barShowing: !document.getElementById('bottom-bar').classList.contains('faded'), onTop: top === k || k.contains(top) ? 'the key' : `${top?.tagName}#${top?.id}.${top?.className}` };
+    });
+    ok('Wait for me, keys under the music: with the bottom bar showing, the lit key is on top where a finger taps', !!key && key.barShowing && key.onTop === 'the key', JSON.stringify(key));
+    if (key) { await page.mouse.click(key.x, key.y); await page.waitForTimeout(1200); }
+    const after = await page.evaluate(() => ({ step: window.__pianoDebug.state().step, message: document.querySelector('.message:not([hidden])')?.textContent ?? '' }));
+    ok('Wait for me with no MIDI allowed: tapping the lit key starts the run and moves the marker on, and says to play on the keys', after.step > 0 && /play on the keys below/.test(after.message), JSON.stringify(after));
+    ok('Wait for me on the keys: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+  // Both hands on the keys (owner, 2026-10-15: K. 2 begins with F3 and F5 together, and the keys showed C3–C5, so F5
+  // could not be tapped): every key wanted now is on the keys, and the two pressed together (two fingers, each sent to
+  // whatever lies at its place) move the marker on.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(`${BASE}?piece=mozart-k2`);
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    await page.mouse.click(195, 300); await page.waitForTimeout(400);
+    await page.selectOption('#q-mode', 'wait'); await page.waitForTimeout(400);
+    await page.evaluate(() => [...document.querySelectorAll('#bottom-bar button')].find((b) => b.textContent.trim() === 'Both').click());
+    await page.waitForTimeout(600);
+    const wanted = await page.evaluate(() => ({ shown: window.__pianoDebug.keysShown(), lit: [...document.querySelectorAll('#keyboard .now-l, #keyboard .now-r')].map((k) => Number(k.dataset.midi)) }));
+    ok('Wait for me, Both: F3 and F5 (wanted at the start) are both on the keys and lit', [53, 77].every((m) => wanted.shown.includes(m) && wanted.lit.includes(m)), `shown ${Math.min(...wanted.shown)}–${Math.max(...wanted.shown)}, lit ${wanted.lit}`);
+    const press = (type) => page.evaluate((type) => {
+      for (const [m, id] of [[53, 11], [77, 12]]) {
+        const k = document.querySelector(`#keyboard [data-midi="${m}"]`); if (!k) continue;
+        const r = k.getBoundingClientRect(), x = r.left + r.width / 2, y = r.bottom - 6;
+        document.elementFromPoint(x, y)?.dispatchEvent(new PointerEvent(type, { pointerId: id, bubbles: true, clientX: x, clientY: y, pointerType: 'touch' }));
+      }
+    }, type);
+    await press('pointerdown'); await page.waitForTimeout(1500); await press('pointerup'); await page.waitForTimeout(400);
+    const step = await page.evaluate(() => window.__pianoDebug.state().step);
+    ok('Wait for me, Both, on the keys: F3 and F5 pressed together move the marker on', step > 0, `step ${step}`);
+    // During the run the keys follow the music (two octaves on a phone upright): at every step of bars 1–8, every
+    // key wanted now is on the keys.
+    const missing = [];
+    for (let i = 0; i < 24; i++) {
+      const at = await page.evaluate(() => { const shown = window.__pianoDebug.keysShown(); const lit = [...document.querySelectorAll('#keyboard .now-l, #keyboard .now-r')].map((k) => Number(k.dataset.midi)); return { step: window.__pianoDebug.state().step, shown: `${Math.min(...shown)}–${Math.max(...shown)}`, n: shown.length, lit, want: window.__pianoDebug.struck ? window.__pianoDebug.struck(window.__pianoDebug.state().step) : [] }; });
+      const off = at.want.filter((m) => !at.lit.includes(m));
+      if (off.length) missing.push(`step ${at.step}: ${off} not on ${at.shown}`);
+      await page.evaluate(() => window.__pianoDebug.goTo(window.__pianoDebug.state().step + 1)); await page.waitForTimeout(150);
+    }
+    ok('Wait for me, Both, during a run: every note wanted now is on the keys (24 steps of K. 2)', missing.length === 0, missing.slice(0, 4).join('; '));
+    ok('Wait for me, Both, on the keys: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
   // Offline only for the installed app (owner, 2026-10-15: a visitor in a browser tab downloads nothing extra). With
   // the service worker allowed: a tab starts no save (no message, no catalogue file kept, no saved mark, Settings says
   // to install); the same page run as the installed app (window.__pianoInstalled) starts saving.
@@ -1486,6 +1552,147 @@ try {
     const app = await visit(true);
     ok('offline: the installed app starts saving', app.saving, JSON.stringify({ ...app, said: undefined }));
     ok('offline (tab and app): no page errors', !tab.errors.length && !app.errors.length, [...tab.errors, ...app.errors].join(' | '));
+  }
+
+  // A lesson or activity naming a catalogue piece (owner, 2026-10-15): the test lesson's step names "u-de5f6a78874c" (Mary
+  // Had A Little Lamb in the catalogue). With fresh storage, Start adds it to your library as + Add does (record,
+  // provenance) and opens it; online and offline (the catalogue saved for offline, the network then cut); two Starts at
+  // once add it once (the file held back 2 s, so both are under way together) and the step still gets its result; the
+  // piece is listed in Music afterwards, and deleted there, the next Start adds it again. A score block naming it adds it
+  // too. A u- id in neither the library nor the catalogue, and a catalogue file that can't be had, are said, open
+  // nothing and mark nothing.
+  {
+    const CAT = 'u-de5f6a78874c', LESSON = `${BASE}?page=lesson&lesson=test-catalogue-piece`;
+    async function openCat(url, { sw = false, init } = {}) {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: sw ? 'allow' : 'block' });
+      const page = await ctx.newPage();
+      if (init) await init(page);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      if (url) { await page.goto(url); await page.waitForTimeout(1800); }
+      return { ctx, page, errors };
+    }
+    // The library's records and stored files for the piece, read from its own database.
+    const stored = (page) => page.evaluate((id) => new Promise((resolve) => {
+      const r = indexedDB.open('piano-library');
+      r.onsuccess = () => {
+        const t = r.result.transaction(['items', 'files']);
+        const items = t.objectStore('items').getAll(), files = t.objectStore('files').getAllKeys();
+        t.oncomplete = () => { const rec = items.result.filter((x) => x.id === id); resolve({ records: rec.length, own: rec[0]?.own ? { origin: rec[0].own.origin, title: rec[0].own.title, source: rec[0].own.source, licence: rec[0].own.licence } : null, files: files.result.filter((k) => k === id).length }); r.result.close(); };
+      };
+      r.onerror = () => resolve({ records: -1 });
+    }), CAT);
+    const state = (page) => page.evaluate((id) => ({ screen: window.__pianoDebug.showing(), nav: window.__pianoDebug.nav().join(), url: location.search, pieces: window.__pianoDebug.pieces().filter((p) => p.id === id).length,
+      notes: window.__pianoDebug.showing() === 'score' ? window.__pianoDebug.notes() : 0, message: document.getElementById('message').hidden ? '' : document.getElementById('message').textContent,
+      what: document.querySelector('.les-step[data-step="catalogue-piece"] .les-step-what')?.textContent ?? '' }), CAT);
+    const progress = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.path.v1') ?? '{}'));
+    // (clicked in the page, so a button missing on the build before the change is a failed case, not a stopped run)
+    const domClick = (page, sel, text = '') => page.evaluate(([s, t]) => { const e = [...document.querySelectorAll(s)].find((x) => x.textContent.includes(t)); e?.click(); return !!e; }, [sel, text]);
+    const startStep = (page) => domClick(page, '.les-step[data-step="catalogue-piece"] .btn');
+    const opened = (s) => s.screen === 'score' && s.nav === 'lesson,score' && s.url.includes(`piece=${CAT}`) && s.url.includes('step=catalogue-piece') && s.pieces === 1 && s.notes > 0;
+
+    // Online, fresh storage.
+    {
+      const { ctx, page, errors } = await openCat(LESSON);
+      const before = { ...(await state(page)), db: await stored(page) };
+      await startStep(page); await page.waitForTimeout(3000);
+      const after = { ...(await state(page)), db: await stored(page) };
+      ok('catalogue step, online: before Start the piece is not in the library, and the step names it by its title', before.pieces === 0 && before.db.records === 0 && /Mary Had A Little Lamb/.test(before.what), JSON.stringify(before));
+      ok('catalogue step, online: Start adds it as + Add does (one record, its file, origin catalogue, PDMX source, CC0) and opens it on the score, tagged with the step', opened(after)
+        && after.db.records === 1 && after.db.files === 1 && after.db.own?.origin === 'catalogue' && after.db.own.title === 'Mary Had A Little Lamb' && after.db.own.source === 'PDMX (an upload to MuseScore)' && after.db.own.licence === 'CC0',
+        JSON.stringify(after));
+      ok('catalogue step, online: one line says it was added to your library', /Added “Mary Had A Little Lamb” to your library/.test(after.message), `"${after.message}"`);
+      // Listed in Music afterwards (Yours).
+      await domClick(page, '#score-back'); await page.waitForTimeout(800);
+      await page.goto(`${BASE}?tab=music`); await page.waitForTimeout(2000);
+      const rows = await page.locator('.lib-row', { hasText: 'Mary Had A Little Lamb' }).count();
+      ok('catalogue step: the piece is listed in Music (Yours) afterwards', rows === 1, `${rows} rows`);
+      // Deleted in Music, a later Start adds it again, fresh.
+      await domClick(page, '.lib-more[aria-label="About Mary Had A Little Lamb"]'); await page.waitForTimeout(800);
+      await domClick(page, '#lib-page button.danger', 'Delete'); await page.waitForTimeout(1500);
+      const gone = await stored(page);
+      await page.goto(LESSON); await page.waitForTimeout(1800);
+      await startStep(page); await page.waitForTimeout(3000);
+      const again = { ...(await state(page)), db: await stored(page) };
+      ok('catalogue step: deleted in Music, the next Start adds it again', gone.records === 0 && opened(again) && again.db.records === 1, `after delete ${JSON.stringify(gone)}; again ${JSON.stringify(again)}`);
+      ok('catalogue step, online: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Two Starts at once: the file held back 2 s, so the second Start comes while the first is adding.
+    {
+      let fetched = 0;
+      // (saving for offline is stopped here, at the list of piano samples, so the only fetch of the file is an add's)
+      const { ctx, page, errors } = await openCat(LESSON, { init: async (p) => {
+        await p.route('**/samples/files.json', (route) => route.abort('failed'));
+        await p.route('**/catalogue/de5f6a78874c.mxl', async (route) => { fetched++; await new Promise((r) => setTimeout(r, 2000)); await route.continue(); });
+      } });
+      await startStep(page); await page.waitForTimeout(150); await startStep(page);
+      await page.waitForTimeout(4500);
+      const s = { ...(await state(page)), db: await stored(page) };
+      ok('catalogue step, two Starts at once: the file fetched once, one library record, one piece, one screen open, "added" said once', fetched === 1 && s.db.records === 1 && s.db.files === 1 && opened(s)
+        && (s.message.match(/Added “/g) ?? []).length === 1, `fetched ${fetched}; ${JSON.stringify(s)}`);
+      await domClick(page, '#score-back'); await page.waitForTimeout(1000);
+      const res = await page.evaluate(() => ({ view: window.__pianoDebug.shell().view, result: document.querySelector('.les-result .h')?.textContent ?? '' }));
+      ok('catalogue step, two Starts at once: ← comes back to the step\'s result (the step was not lost)', res.view === 'v-lesson' && /This time/.test(res.result), JSON.stringify(res));
+      ok('catalogue step, two Starts: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Offline: the app saved for offline first (with the catalogue), then the network cut, then the lesson's step.
+    {
+      // (main saves for offline only in the installed app, owner 2026-10-15: checks mark the page as installed with this
+      // flag; the base this was written on ignores it)
+      const { ctx, page, errors } = await openCat(BASE, { sw: true, init: (p) => p.addInitScript(() => { window.__pianoInstalled = true; }) });
+      let saved = false;
+      for (let i = 0; i < 240 && !saved; i++) { await page.waitForTimeout(500); saved = await page.evaluate(() => !!localStorage.getItem('piano-web.offline.v1')); }
+      const db0 = await stored(page);
+      await ctx.setOffline(true);
+      await page.goto(LESSON); await page.waitForTimeout(2500);
+      await startStep(page); await page.waitForTimeout(3500);
+      const s = { ...(await state(page)), db: await stored(page), online: await page.evaluate(() => navigator.onLine) };
+      ok('catalogue step, offline: saved for offline, then with the network cut Start adds the piece and opens it', saved && !s.online && db0.records === 0 && opened(s) && s.db.records === 1 && s.db.own?.origin === 'catalogue', `saved ${saved}; ${JSON.stringify(s)}`);
+      ok('catalogue step, offline: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // A score block naming the catalogue piece (the lesson swapped in): drawn, and the piece added.
+    {
+      const lesson = JSON.parse(readFileSync(here('../public/content/path/lessons/test-catalogue-piece.json'), 'utf8'));
+      lesson.blocks = [{ kind: 'score', piece: CAT, bars: '1-2', caption: 'Test' }];
+      const { ctx, page, errors } = await openCat(LESSON, { init: (p) => p.route('**/content/path/lessons/test-catalogue-piece.json', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(lesson) })) });
+      await page.waitForTimeout(2500);
+      const s = await page.evaluate(() => ({ drawn: document.querySelectorAll('[data-block="score"] svg').length, bad: document.querySelector('[data-block="score"] .les-bad')?.textContent ?? '', play: !document.querySelector('[data-block="score"] .les-play')?.disabled }));
+      const db = await stored(page);
+      ok('catalogue score block: the piece is added and its bars drawn, ▶ ready', s.drawn > 0 && !s.bad && s.play && db.records === 1 && db.own?.origin === 'catalogue', `${JSON.stringify(s)}; ${JSON.stringify(db)}`);
+      ok('catalogue score block: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Missing: a u- id in neither the library nor the catalogue; the catalogue's file unreachable. Said; nothing opened or marked.
+    {
+      const lesson = JSON.parse(readFileSync(here('../public/content/path/lessons/test-catalogue-piece.json'), 'utf8'));
+      lesson.blocks[1].activity.piece = 'u-000000000000';
+      let { ctx, page, errors } = await openCat(LESSON, { init: (p) => p.route('**/content/path/lessons/test-catalogue-piece.json', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(lesson) })) });
+      await startStep(page); await page.waitForTimeout(2000);
+      let s = await state(page), p = await progress(page);
+      ok('catalogue step, unknown u- id: "there is no piece" said, the lesson page stays, the step marks nothing', /there is no piece "u-000000000000"/.test(s.message) && s.screen === 'shell' && s.nav === 'lesson'
+        && !p.done?.['test-catalogue-piece'] && !p.tried?.['test-catalogue-piece'], `${JSON.stringify(s)}; ${JSON.stringify(p)}`);
+      ok('catalogue step, unknown id: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+      // (saving for offline stopped at its list, as above: its own failure to save that file would be said over this)
+      ({ ctx, page, errors } = await openCat(LESSON, { init: async (p) => {
+        await p.route('**/samples/files.json', (route) => route.abort('failed'));
+        await p.route('**/catalogue/de5f6a78874c.mxl', (route) => route.abort('internetdisconnected'));
+      } }));
+      await startStep(page); await page.waitForTimeout(2500);
+      s = { ...(await state(page)), db: await stored(page) }; p = await progress(page);
+      ok('catalogue step, its file unreachable: said ("could not be added"), nothing added or opened, the step marks nothing', /could not be added/.test(s.message) && s.screen === 'shell' && s.nav === 'lesson' && s.db.records === 0 && s.pieces === 0
+        && !p.done?.['test-catalogue-piece'] && !p.tried?.['test-catalogue-piece'], `${JSON.stringify(s)}; ${JSON.stringify(p)}`);
+      ok('catalogue step, file unreachable: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
   }
 } finally {
   await browser?.close();

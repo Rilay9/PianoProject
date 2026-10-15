@@ -122,8 +122,10 @@ export function createLessonPage(d: LessonDeps) {
     const ref: LessonRef = { rung: place.rung.id, lesson: lesson.id, step: b.id };
     shown = null;
     stopMiniScores();
-    pending = { lesson: lesson.id, step: b.id, ref, since: new Date(Date.now() - 1000).toISOString(), activity: a, target };
-    if (!await d.launch(a, ref)) pending = null;
+    const mine = { lesson: lesson.id, step: b.id, ref, since: new Date(Date.now() - 1000).toISOString(), activity: a, target };
+    pending = mine;
+    // (a second Start while this one waits for its piece wins; this one, overtaken, leaves the second's step in place)
+    if (!await d.launch(a, ref) && pending === mine) pending = null;
   }
 
   /** Back from a step's screen: what happened, the step done if it was, and the feedback taps. */

@@ -8,6 +8,7 @@ import { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } from '../s
 import { readText } from '../src/lesson/text.ts';
 import { meets, outcome } from '../src/lesson/result.ts';
 import { readPlay } from '../src/exercise/items.ts';
+import { namedPieces } from './named-pieces.mjs';
 
 const pub = (p) => new URL(`../public/${p}`, import.meta.url);
 let failed = 0, ran = 0;
@@ -19,10 +20,10 @@ const index = readIndex(JSON.parse(readFileSync(pub('content/path/index.json'), 
 const ids = index.rungs.flatMap((r) => r.lessons);
 const inFolder = readdirSync(pub('content/path/lessons')).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')).sort();
 ok('every lesson file is in the index, and every listed one is there', same(inFolder, [...ids].sort()), `folder ${inFolder}; index ${ids}`);
-const pieces = new Map(JSON.parse(readFileSync(pub('scores/index.json'), 'utf8')).map((p) => [p.id, p.file]));
+// A piece is one of the app's scores or, by its "u-" id, a catalogue piece (owner, 2026-10-15; tests/named-pieces.mjs).
+const named = namedPieces();
 const sets = JSON.parse(readFileSync(pub('content/sets/index.json'), 'utf8'));
 const acts = JSON.parse(readFileSync(pub('content/activities/index.json'), 'utf8'));
-const printedBars = (file) => Math.max(...[...readFileSync(pub(`scores/${file}`), 'utf8').matchAll(/<measure\b[^>]*\bnumber="(\d+)"/g)].map((m) => Number(m[1])));
 const kindsUsed = new Set();
 for (const id of ids) {
   let l;
@@ -30,7 +31,7 @@ for (const id of ids) {
   catch (e) { ok(`${id} reads`, false, e.message); continue; }
   for (const b of l.blocks) {
     kindsUsed.add(b.kind);
-    if (b.kind === 'score' && 'piece' in b.source) ok(`${id}: score block's piece and bars are there`, pieces.has(b.source.piece) && b.source.bars[1] <= printedBars(pieces.get(b.source.piece)), JSON.stringify(b.source));
+    if (b.kind === 'score' && 'piece' in b.source) ok(`${id}: score block's piece and bars are there`, !named.problem(b.source.piece, b.source.bars), named.problem(b.source.piece, b.source.bars));
     if (b.kind === 'score' && 'set' in b.source) ok(`${id}: score block's set is there`, sets.includes(`${b.source.set}.json`), b.source.set);
     for (const f of [b.src, 'file' in (b.source ?? {}) ? b.source.file : undefined]) if (f && !f.startsWith('https:')) ok(`${id}: its file ${f} is there`, existsSync(pub(`content/path/${f}`)));
     if (b.kind === 'step') {
@@ -39,6 +40,8 @@ for (const id of ids) {
         ok(`${id}: step "${b.id}" names a listed activity`, acts.includes(`${b.activity}.json`), b.activity);
         try { a = readActivity(b.activity, JSON.parse(readFileSync(pub(`content/activities/${b.activity}.json`), 'utf8'))); } catch (e) { ok(`${id}: step "${b.id}"'s activity reads`, false, e.message); continue; }
       } else a = b.activity;
+      // (a step's piece, written out or in its activity file: there, and its bars inside it; 2026-10-15, with catalogue pieces)
+      if ('piece' in a) ok(`${id}: step "${b.id}"'s piece "${a.piece}"${a.bars ? ` and bars ${a.bars.join('-')}` : ''} are there`, !named.problem(a.piece, a.bars), named.problem(a.piece, a.bars));
       try { checkTarget(b, a); ok(`${id}: step "${b.id}"'s target fits its ${a.screen} activity`, true); } catch (e) { ok(`${id}: step "${b.id}"'s target`, false, e.message); }
     }
   }
@@ -112,6 +115,18 @@ for (const [name, f, want] of [
   let msg = '';
   try { readIndex(f); } catch (e) { msg = e.message; }
   ok(`refused: ${name}`, want.test(msg), msg || 'it was accepted');
+}
+// A catalogue piece named by its "u-" id (owner, 2026-10-15): a score block and a step's activity read with it; the content
+// check finds it in the catalogue index with its bars inside, and refuses a u- id that is not there or bars past the end.
+{
+  const cat = 'u-de5f6a78874c'; // 8 bars in the catalogue index (the test lesson's piece)
+  const blk = one({ kind: 'score', piece: cat, bars: '1-4' }), st = one({ kind: 'step', id: 'a', title: 'A', activity: { screen: 'score', piece: cat, bars: '5-8', settings: { mode: 'wait' } } });
+  ok('a catalogue piece: a score block and a step naming it read, and both are found with their bars', same(blk.source, { piece: cat, bars: [1, 4] }) && st.activity.piece === cat
+    && named.problem(cat, blk.source.bars) === '' && named.problem(cat, st.activity.bars) === '', `${named.problem(cat, blk.source.bars)} ${named.problem(cat, st.activity.bars)}`);
+  const unknown = one({ kind: 'score', piece: 'u-000000000000', bars: '1-2' }).source;
+  ok('refused by the content check: a score block naming a u- id that is in neither the scores nor the catalogue', /neither in public\/scores\/index.json nor in the catalogue/.test(named.problem(unknown.piece, unknown.bars)), named.problem(unknown.piece, unknown.bars) || 'accepted');
+  const past = one({ kind: 'step', id: 'a', title: 'A', activity: { screen: 'score', piece: cat, bars: '7-9' } }).activity;
+  ok('refused by the content check: a step\'s bars past the end of its catalogue piece', /bars 7-9 are not inside "u-de5f6a78874c" \(it has 8 bars, from the catalogue\)/.test(named.problem(past.piece, past.bars)), named.problem(past.piece, past.bars) || 'accepted');
 }
 // A target on an activity named by id is checked once the activity is read (here: a drill's target on a Simon activity).
 {

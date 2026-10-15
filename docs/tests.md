@@ -64,6 +64,11 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
 - **Progress read from where the marker stopped.** Wait for me judged a run by the marker's last place: a loop gone
   round ends where it began ("nothing played"), one note ends past the start ("done"), review 2026-10-15. Count what
   happened during the run, not the end state.
+- **Events sent straight to an element skip what lies on top of it.** The on-screen keys passed every check because
+  the checks dispatched pointer events at the key itself; on the phone the bottom bar lay over the keys and took the
+  taps (one even pressed A+), and Wait for me never started without MIDI permission, which the checks always granted
+  (owner, 2026-10-15). Tap by position (the mouse at the place, or the event sent to `elementFromPoint`), and run at
+  least one case with the permissions a plain phone tab has.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals.
 - **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in
