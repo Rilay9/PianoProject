@@ -1460,6 +1460,33 @@ try {
       await ctx.close();
     }
   }
+
+  // Offline only for the installed app (owner, 2026-10-15: a visitor in a browser tab downloads nothing extra). With
+  // the service worker allowed: a tab starts no save (no message, no catalogue file kept, no saved mark, Settings says
+  // to install); the same page run as the installed app (window.__pianoInstalled) starts saving.
+  {
+    const visit = async (asApp) => {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await ctx.newPage();
+      if (asApp) await page.addInitScript(() => { window.__pianoInstalled = true; });
+      const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+      await page.goto(BASE);
+      let saving = false;
+      for (let i = 0; i < 16 && !saving; i++) { await page.waitForTimeout(500); saving = await page.evaluate(() => /Saving the app for offline|Saved for offline/.test(document.body.innerText)); }
+      const kept = await page.evaluate(async () => { const c = await caches.open('piano-web-v1'); return (await c.keys()).filter((r) => r.url.includes('/catalogue/')).length; });
+      const mark = await page.evaluate(() => localStorage.getItem('piano-web.offline.v1'));
+      await page.evaluate(() => document.getElementById('home-settings').click()); await page.waitForTimeout(300);
+      const said = await page.evaluate(() => document.getElementById('set-offline').textContent);
+      await ctx.close();
+      return { saving, kept, mark, said, errors };
+    };
+    const tab = await visit(false);
+    ok('offline: a browser tab starts no save (no message, no catalogue file kept, no saved mark)', !tab.saving && tab.kept === 0 && !tab.mark, JSON.stringify({ ...tab, said: undefined }));
+    ok('offline: in a tab, Settings says to install the app to use it offline', /Install the app/.test(tab.said), tab.said);
+    const app = await visit(true);
+    ok('offline: the installed app starts saving', app.saving, JSON.stringify({ ...app, said: undefined }));
+    ok('offline (tab and app): no page errors', !tab.errors.length && !app.errors.length, [...tab.errors, ...app.errors].join(' | '));
+  }
 } finally {
   await browser?.close();
   stop();

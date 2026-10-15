@@ -539,7 +539,7 @@ one); examples to copy written into a chart.
   transcription. Never PDMX's genre, difficulty, tags or ratings. Uploads of one piece fold into one row ("2
   versions"). Sorted by views first; Title, Composer, Fewest bars. Rows drawn 100 at a time (Show more). + Add (on
   the row or the page) keeps the file as yours (id `u-` + its SHA-256 start, so the same file added by hand is the
-  same piece); the files are saved for offline with the app, so adding works offline. Each tab keeps its own search,
+  same piece); in the installed app the files are saved for offline with it, so adding works offline. Each tab keeps its own search,
   filters and sort.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
@@ -681,8 +681,12 @@ placeholders for checking the app, not lesson content.
   New set; the lab: Start or Again). Where any octave counts (the lab while the band plays, Drills by name, Simon in
   any octave) the music uses every key, so the edges are notes there; a mash still stops.
 - Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them). A diminished 7th is named from its bass (Cdim7).
-- Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
-  installable as an app.
+- Offline (owner, 2026-10-15: only for the installed app): installed (Chrome ⋮ → Install app / Add to Home screen),
+  the app saves everything (app, scores, sets and the files they point to, lessons and their files, the catalogue,
+  piano samples and band sounds) the first time it opens; someone visiting the page in a browser tab downloads nothing
+  extra (the service worker keeps only what the page itself fetched), and Settings says to install it to use it
+  offline. A tab never deletes what the installed app saved (on Android the two share one store). A file that fails to
+  save is tried once more after a pause, and the message names what still failed; the rest is tried again next time.
 - The screen stays awake while playing or in an exercise.
 - Back up / restore (Settings; `web/src/backup.ts`): one zip with every setting, mark and progress record (all
   `piano-web.*` storage) and the library (its records and your files); the size of your files is asked about first.

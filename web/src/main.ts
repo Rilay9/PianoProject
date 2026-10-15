@@ -17,7 +17,7 @@ import { FreePlay } from './freeplay';
 import { holds } from './holds';
 import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
-import { setUpOffline } from './offline';
+import { installed, setUpOffline } from './offline';
 import { autoDelete, entryCount, exportLog, setActivity, setAutoDelete, type LessonRef } from './log';
 import * as nav from './nav';
 import { KeyRemote } from './remote';
@@ -324,7 +324,9 @@ function offlineState(): string {
   let saved: string | null = null;
   try { saved = localStorage.getItem('piano-web.offline.v1'); } catch { /* no storage */ }
   const files = saved ? Number(saved.split(':')[0]) : 0;
-  return offlineNews && offlineNews !== 'Saved for offline use' ? offlineNews.replace('Saving the app for offline use: ', 'Saving… ') : saved ? `✓ Ready offline (${files.toLocaleString()} files)` : 'Not saved yet: it saves while the app is open online';
+  return offlineNews && offlineNews !== 'Saved for offline use' ? offlineNews.replace('Saving the app for offline use: ', 'Saving… ') : saved ? `✓ Ready offline (${files.toLocaleString()} files)`
+    : installed() ? 'Not saved yet: it saves while the app is open online'
+    : 'Install the app to use it offline (Chrome menu ⋮ → Install app, or Add to Home screen); a browser tab saves nothing extra';
 }
 const appSetting = <K extends 'pianoOut' | 'click' | 'theme' | 'pianoVolume' | 'clickVolume'>(key: K, value: ScoreSettings[K]) => {
   savePieceSetting('', key, value); // (app-wide: the same store whichever piece)

@@ -1,5 +1,5 @@
-// Offline and install (owner, 2026-10-11): the service worker (public/sw.js) serves what is kept; on the
-// first visit this saves everything the app needs into its store at once: the page and its built files,
+// Offline and install (owner, 2026-10-11; installed app only, 2026-10-15): the service worker (public/sw.js) serves
+// what is kept; the installed app's first opening saves everything the app needs into its store at once: the page and its built files,
 // the song list and scores, and every piano sample in the format this browser plays (as smplr picks it), and the
 // accompaniment lab's content and band sounds.
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -19,13 +19,28 @@ function sampleFormat(): 'ogg' | 'm4a' {
 }
 
 /**
- * Registers the service worker and saves everything not yet kept; progress is reported as it goes. What was saved
- * is remembered by its list of files, so a new version of the app, or scores and sets added later, are saved on the
- * next visit too (files already kept are not fetched again).
+ * Running as the installed app (owner, 2026-10-15: "only … available offline if they select installation of the pwa";
+ * someone just visiting the page downloads nothing extra). Checks set `window.__pianoInstalled` (a browser check can't
+ * emulate the display mode).
+ */
+export function installed(): boolean {
+  return (window as unknown as { __pianoInstalled?: boolean }).__pianoInstalled === true
+    || ['standalone', 'fullscreen', 'minimal-ui'].some((m) => matchMedia(`(display-mode: ${m})`).matches)
+    || (navigator as unknown as { standalone?: boolean }).standalone === true;
+}
+
+/**
+ * Registers the service worker and, in the installed app only, saves everything not yet kept; progress is reported as
+ * it goes. A page in a browser tab keeps only what it uses (the service worker keeps what it fetches), and never
+ * deletes what the installed app saved: on Android the two share one store. What was saved is remembered by its list
+ * of files, so a new version of the app, or scores and sets added later, are saved on the next visit too (files
+ * already kept are not fetched again). A file that fails is tried once more after a pause (a new version published
+ * while saving removes the old one's files, say), and the message names what still failed.
  */
 export async function setUpOffline(base: string, progress: (done: number, total: number) => void): Promise<void> {
   if (!('serviceWorker' in navigator) || !('caches' in window)) return;
   await navigator.serviceWorker.register(`${base}sw.js`);
+  if (!installed()) return;
   let saved: string | null = null;
   try { saved = localStorage.getItem(DONE_KEY); } catch { /* no storage: save again */ }
   let urls: Set<string>;
@@ -37,18 +52,26 @@ export async function setUpOffline(base: string, progress: (done: number, total:
   const print = fingerprint(list);
   if (saved === print) return;
   const cache = await caches.open(CACHE);
-  let done = 0, failed = 0, next = 0;
+  let done = 0, next = 0;
+  const failed: string[] = [];
   progress(0, list.length);
   const worker = async () => {
     while (next < list.length) {
       const url = list[next++];
-      try { if (!(await cache.match(url))) await cache.add(url); } catch { failed++; }
+      try { if (!(await cache.match(url))) await cache.add(url); } catch { failed.push(url); }
       progress(++done, list.length);
     }
   };
   await Promise.all([...Array(AT_ONCE)].map(worker));
-  if (!failed) try { localStorage.setItem(DONE_KEY, print); } catch { /* it will check again next visit */ }
-  if (failed) throw new Error(`${failed} of ${list.length} files could not be saved for offline; it tries again next time.`);
+  if (failed.length) {
+    await new Promise((r) => setTimeout(r, 3000));
+    for (const url of failed.splice(0)) try { await cache.add(url); } catch { failed.push(url); }
+  }
+  if (!failed.length) try { localStorage.setItem(DONE_KEY, print); } catch { /* it will check again next visit */ }
+  if (failed.length) {
+    const names = failed.slice(0, 3).map((u) => decodeURIComponent(u.split('/').pop() || u)).join(', ');
+    throw new Error(`${failed.length} of ${list.length} files could not be saved for offline (${names}${failed.length > 3 ? ', …' : ''}); it tries again next time.`);
+  }
 }
 
 /** A short stand-in for the list of files (a change to any of them makes another). */
