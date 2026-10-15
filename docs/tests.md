@@ -55,6 +55,11 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   converter look worse than it was.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals.
+- **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in
+  between files one item's data under another's (a PDF opening saved the previous PDF's lines under its own name, review
+  2026-10-15). Switch the name and its data together, and keep saves off in between.
+- **A passing failure kept as the answer.** A fetch that failed once (offline, a timeout) stored as "none" for the rest
+  of the visit. Keep only answers that came from the real thing; let a failed fetch be tried again.
 - **Removing or editing the wrong item.** Controls that act only on the last item, or indexes that shift when an item
   in the middle disappears (a thin line silently dropped shifted every later line's splits). Or an edit to one item
   that quietly redoes the others: + line found every line's split again, losing the ones placed by hand

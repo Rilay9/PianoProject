@@ -88,22 +88,30 @@ export async function restoreBackup(file: File): Promise<{ files: number }> {
     try { localStorage.setItem(key, JSON.stringify(merge(JSON.parse(mine), JSON.parse(theirs)))); } catch { /* not JSON: this phone's stays */ }
   }
 
-  // The library: records merged, files this phone lacks put back.
+  // The library: records merged, files this phone lacks put back: a piece it doesn't have, and a file lost from a
+  // piece it still lists (review 2026-10-15: that file was never put back, nor a lost MIDI original).
   let added = 0;
   const list = Array.isArray(manifest.library) ? manifest.library : [];
   if (list.length) {
     await load();
     const mineById = new Map(allRecords().map((r) => [r.id, r]));
     const out: Stored[] = [], files = new Map<string, Blob>();
+    // Whether this phone has a file; one that can't be read is taken as there (it is never replaced on a guess).
+    const here = (key: string) => fileOf(key).then((f) => !!f, () => true);
     for (const theirs of list) {
       if (!theirs || typeof theirs.id !== 'string') continue;
       const mine = mineById.get(theirs.id);
-      const blob = entries.get(`files/${theirs.id}`);
-      const own = mine?.own ?? (theirs.own && blob ? theirs.own : undefined);
-      if (!mine?.own && own) {
-        files.set(theirs.id, blob!);
-        const midi = entries.get(`files/${theirs.id}.midi`);
-        if (midi) files.set(midiKey(theirs.id), midi);
+      const blob = entries.get(`files/${theirs.id}`), midi = entries.get(`files/${theirs.id}.midi`);
+      let own = mine?.own;
+      if (theirs.own && blob && !(own && await here(theirs.id))) {
+        // The backup's file goes back with the record that describes it: this phone's when it is the same file (a
+        // rename kept), the backup's when this phone's record was for another (a file replaced since).
+        if (!own || own.hash !== theirs.own.hash) own = theirs.own;
+        files.set(theirs.id, blob);
+        if (midi && own.midi) files.set(midiKey(theirs.id), midi);
+        added++;
+      } else if (own?.midi && midi && own.hash === theirs.own?.hash && !await here(midiKey(theirs.id))) {
+        files.set(midiKey(theirs.id), midi); // (the score is here, the MIDI file it came from was lost)
         added++;
       }
       const tags = [...new Set([...(mine?.tags ?? []), ...(theirs.tags ?? [])])];

@@ -314,13 +314,15 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   }
 
   function render(): void {
+    const twin = twoPanes.matches;
+    // The piece whose page shows is chosen before the list is drawn, so its row is the one marked (review 2026-10-15:
+    // the first time, no row was).
+    if (twin && (!selected || !all.some((i) => i.id === selected))) selected = shown()[0]?.id ?? null;
     renderChips();
     renderList();
     renderFoot();
-    const twin = twoPanes.matches;
     section.classList.toggle('two', twin);
     if (twin) {
-      if (!selected || !all.some((i) => i.id === selected)) selected = shown()[0]?.id ?? null;
       left.hidden = false;
       page.hidden = false;
       renderPage();

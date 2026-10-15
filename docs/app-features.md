@@ -320,7 +320,8 @@ one); examples to copy written into a chart.
   whether it changes), bars as printed (an implicit measure after the first, a bar split around a repeat, is not
   counted again), lowest and highest note (not for several parts), chord symbols. The title is the one printed on
   the page first (MuseScore can keep an old work title), the composer its first line. Never a level, genre or other
-  catalogue guess. A file that can't be read is listed as "score".
+  catalogue guess. A file that can't be read is listed as "score"; one of the app's own that could not be fetched
+  (offline, say) is read again the next time the library opens, and so is a chord chart (2026-10-15).
 - **A piece's page:** Open (the score screen, or the lab for a chart) and Memorise; the first bars drawn small; the
   facts; your tags (+ tag, ✕); where it came from (the app's own: source and licence of the transcription; yours:
   the file and date); the song list's status line ("notes not verified…"); a warning for several parts (the score
@@ -328,8 +329,8 @@ one); examples to copy written into a chart.
   Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
   choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
   added), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
-  `library/forget.ts`, and Memorise reads its store again so it can't write them back). A PDF opens in the PDF
-  reader (§5d).
+  `library/forget.ts`, and Memorise reads its store again so it can't write them back; a PDF's saved place and
+  lines go too, 2026-10-15, so the same PDF added again starts fresh). A PDF opens in the PDF reader (§5d).
 - **Adding** (+ Add; several files at once): MusicXML and MXL (title and composer from inside the file), PDF (kept
   as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB for a PDF and 16 MB of MusicXML for
   a score; the same file again (by its contents, even one that replaced another's) is "already in your library";
@@ -451,8 +452,10 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   its line when lines are added or found on an earlier page. Scanned pages stored as JPEG 2000 (most library scans)
   are decoded by pdf.js's own decoders (`pdfjs-wasm/`, served from the installed pdfjs-dist by `vite.config.ts` and
   saved for offline).
-- **Kept per PDF** (`piano-web.pdf.v1`, in the backup): the line and part you were on, the lines and split points
-  found or placed, whole or split per kind of screen, each page's tilt and margins, the size, and the edge-keys switch.
+- **Kept per PDF** (`piano-web.pdf.v1`, in the backup; deleted with the PDF): the line and part you were on, the
+  lines and split points found or placed, whole or split per kind of screen, each page's tilt and margins, the size,
+  and the edge-keys switch. While a PDF opens, taps and turning keys do nothing, and page work begun for another PDF
+  is dropped, so nothing of one PDF is saved as another's (2026-10-15).
 - Not built (owner, 2026-10-14): timed turning (tried and measured: fine on lines of equal length, off by seconds on
   unequal ones; counting bars from the page only reached 34 of 71 lines right); following your playing (a PDF has no
   notes; with a MusicXML copy you'd use the score screen). Repeats are yours to turn back for.
@@ -538,8 +541,9 @@ placeholders for checking the app, not lesson content.
   Files are stored uncompressed and written and read a piece at a time (no copy of the whole library in memory; a
   zip over 4 GB is refused). **Restoring merges** (owner, 2026-10-13): what this phone lacks is added, what it has
   stays (object by object; the practice log keeps every run from both, once); library records merge (favourite if
-  either, tags joined, the later last-opened) and missing files are put back. An older .json backup restores the
-  same way.
+  either, tags joined, the later last-opened) and missing files are put back: a piece this phone lacks, and a file
+  (or a MIDI piece's original) lost from a piece it still lists (2026-10-15; the file goes back with this phone's
+  record when it is the same file, else with the backup's). An older .json backup restores the same way.
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,

@@ -91,11 +91,15 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     // 2026-10-14: the old number was kept, so turning the phone or reopening went a line back).
     if (keep && units[index]) { st.line = units[index]!.line; st.part = units[index]!.part ?? 0; save(); }
   }
+  // Page work belongs to the document it started on: after each wait it stops if another PDF (or none) is open now,
+  // before it changes or saves anything (review 2026-10-15).
   /** Finds the lines on a page (once; kept with the piece), its tilt, margins and each line's split. True when they changed. */
   async function detect(page: number, force = false): Promise<boolean> {
-    if (!doc) return false;
+    const d = doc;
+    if (!d) return false;
     if (!force && st.cuts?.[page]) { if (st.splits?.[page]) return false; await resplit(page); return true; } // (lines kept from before splits existed)
-    const r = await doc.renderPage(page, DETECTION_WIDTH);
+    const r = await d.renderPage(page, DETECTION_WIDTH);
+    if (d !== doc) return false;
     const ctx = r.canvas.getContext('2d');
     if (!ctx) return false;
     const gray = toGreyscale(ctx.getImageData(0, 0, r.width, r.height).data, r.width, r.height);
@@ -112,8 +116,10 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
   }
   /** Splits for lines set by hand (Adjust lines): found from the page for each band not given one in `keep`. */
   async function resplit(page: number, keep: (number[] | null)[] = []): Promise<void> {
-    if (!doc) return;
-    const r = await doc.renderPage(page, DETECTION_WIDTH);
+    const d = doc;
+    if (!d) return;
+    const r = await d.renderPage(page, DETECTION_WIDTH);
+    if (d !== doc) return;
     const gray = toGreyscale(r.canvas.getContext('2d')!.getImageData(0, 0, r.width, r.height).data, r.width, r.height);
     const [left, right] = st.margins?.[page] ?? [0, 1];
     const bands = cutsToSystems(st.cuts?.[page] ?? wholePageCuts(), page);
@@ -125,8 +131,10 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     const key = `${page}|${width}`;
     const hit = pages.get(key);
     if (hit) return hit;
-    if (!doc) return null;
-    const r = await doc.renderPage(page, width);
+    const d = doc;
+    if (!d) return null;
+    const r = await d.renderPage(page, width);
+    if (d !== doc) return null;
     let out = r.canvas;
     const angle = st.angles?.[page] ?? 0;
     if (angle) {
@@ -456,7 +464,12 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
     const n = ++opening;
     if (!isOpen) { steps = 0; afterBack = null; pushStep(); } // (Back closes the reader)
     isOpen = true;
-    id = pieceId;
+    // Nothing of the PDF shown before is turned, or saved under any name, while this one is read (review 2026-10-15:
+    // the id was this one's at once and the lines the old one's, so a tap while it opened saved the old PDF's lines as
+    // this one's); this one's id, document and saved state come in together below.
+    id = '';
+    units = [];
+    systems = [];
     section.hidden = false;
     $('pdf-title').textContent = title;
     say('Opening…');
@@ -468,13 +481,14 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       // away here, and never replaces the document the newer one is showing (review 2026-10-14).
       const opened = await PdfDocument.open(await blob.arrayBuffer());
       if (n !== opening) { opened.dispose(); return; }
-      doc?.dispose();
-      doc = opened;
       const sizes: number[] = [];
       for (let p = 0; p < opened.pageCount; p += 1) {
         sizes.push(await opened.pageAspect(p));
-        if (n !== opening) return;
+        if (n !== opening) { opened.dispose(); return; }
       }
+      doc?.dispose();
+      doc = opened;
+      id = pieceId;
       aspect = sizes;
       st = readAll()[pieceId] ?? {};
       $<HTMLInputElement>('pdf-edge-music').checked = !!st.edgeMusic;

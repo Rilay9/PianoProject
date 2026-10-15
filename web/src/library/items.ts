@@ -37,26 +37,34 @@ export const chartId = (id: string) => `chart:${id}`;
 export const isChartId = (id: string) => id.startsWith('chart:');
 export const isYours = (id: string) => id.startsWith('u-');
 
-/** The app's own scores' facts, read once from their files. */
+/** The app's own scores' facts, read once from their files. A file that could not be fetched (offline, say) is tried
+ * again the next time; one that was fetched but can't be read stays without facts (review 2026-10-15: a fetch that
+ * failed once left the score without facts for the rest of the visit). */
 const appFacts = new Map<string, Facts | null>();
 export async function readAppFacts(pieces: Piece[], xmlFor: (p: Piece) => Promise<string>): Promise<void> {
   await Promise.all(pieces.filter((p) => !isYours(p.id) && !appFacts.has(p.id)).map(async (p) => {
-    try { appFacts.set(p.id, readScore(await xmlFor(p), p.file).facts); } catch { appFacts.set(p.id, null); }
+    let xml: string;
+    try { xml = await xmlFor(p); } catch { return; }
+    try { appFacts.set(p.id, readScore(xml, p.file).facts); } catch { appFacts.set(p.id, null); }
   }));
 }
 
-/** The lab's charts, as the lab reads them (a chart it would refuse is not listed). */
+/** The lab's charts, as the lab reads them (a chart it would refuse is not listed). The list is kept for the visit only
+ * when every chart file arrived (review 2026-10-15: one that failed to download once stayed missing until a reload). */
 let charts: Chart[] | null = null;
 export async function loadCharts(base: string): Promise<Chart[]> {
   if (charts) return charts;
   const dir = `${base}content/lab/`, got: Chart[] = [];
+  let missed = false;
   try {
     const index = await (await fetch(`${dir}index.json`)).json() as { charts: string[] };
     for (const f of index.charts) {
-      try { got.push(readChart(f.replace(/^.*\/|\.json$/g, ''), await (await fetch(dir + f)).json() as ChartFile)); } catch { /* the lab says what is wrong with it */ }
+      let r: Response;
+      try { r = await fetch(dir + f); if (!r.ok) throw new Error(String(r.status)); } catch { missed = true; continue; } // (not here now: asked for again next time)
+      try { got.push(readChart(f.replace(/^.*\/|\.json$/g, ''), await r.json() as ChartFile)); } catch { /* the lab says what is wrong with it */ }
     }
   } catch { return []; } // offline before it was saved, say: the library lists the rest
-  charts = got;
+  if (!missed) charts = got;
   return got;
 }
 

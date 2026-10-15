@@ -1,6 +1,7 @@
 // Deleting a piece you added also deletes what the app kept for it (owner, 2026-10-13): its playing choices, its
-// look per screen, your fingering and its Memorise place, bars learned and memorized mark. The formats are the
-// owners' (settings.ts, marks.ts, memorise.ts); this only removes the piece's entries from them.
+// look per screen, your fingering and its Memorise place, bars learned and memorized mark, and a PDF's place, lines
+// and splits (review 2026-10-15: they stayed, and the same PDF added again came back with them). The formats are the
+// owners' (settings.ts, marks.ts, memorise.ts, screens/pdf.ts); this only removes the piece's entries from them.
 
 const edit = (key: string, f: (v: Record<string, unknown>) => void) => {
   try {
@@ -22,4 +23,5 @@ export function forgetPiece(id: string): void {
     for (const part of ['progress', 'learned', 'marks']) drop(v[part], mine(id));
     drop(v.pieces, (k) => k === id);
   });
+  edit('piano-web.pdf.v1', (v) => { delete v[id]; });
 }

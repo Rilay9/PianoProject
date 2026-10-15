@@ -439,6 +439,115 @@ try {
     ok('Memorise: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
+
+  // ---- Review 2026-10-15, section S2 (library, storage and PDF) -------------------------------------------------
+  const idOf = (page, title) => page.evaluate((t) => window.__pianoDebug.library().items.find((i) => i.title === t)?.id, title);
+  const pdfSaved = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.pdf.v1') ?? '{}'));
+  const fileKeys = (page) => page.evaluate(() => new Promise((resolve) => {
+    const r = indexedDB.open('piano-library');
+    r.onsuccess = () => { const db = r.result, k = db.transaction('files').objectStore('files').getAllKeys(); k.onsuccess = () => { db.close(); resolve(k.result.map(String).sort()); }; };
+  }));
+
+  // B1-01: a backup restored over records whose files were lost puts the files back (the score's, the MIDI piece's
+  // and the MIDI file it was converted from); it used to put a file back only when the record was missing too.
+  {
+    const { ctx, page, errors } = await fresh();
+    await add(page, SCORE); await add(page, MIDI);
+    const had = await fileKeys(page);
+    await more(page);
+    const download = page.waitForEvent('download', { timeout: 8000 });
+    await page.click('#backup');
+    const zip = join(tmp, 'restore-me.zip');
+    await (await download).saveAs(zip);
+    await page.evaluate(() => new Promise((resolve) => {
+      const r = indexedDB.open('piano-library');
+      r.onsuccess = () => { const db = r.result, t = db.transaction('files', 'readwrite'); t.objectStore('files').clear(); t.oncomplete = () => { db.close(); resolve(); }; };
+    }));
+    const lost = await fileKeys(page);
+    await page.reload(); await page.waitForTimeout(1500);
+    await page.setInputFiles('#restore-file', zip);
+    await page.waitForLoadState('load'); await page.waitForTimeout(2500); // (restoring reloads the page)
+    const back = await fileKeys(page);
+    ok('restore: files lost from records still there are put back, the MIDI original too', had.length === 3 && lost.length === 0 && JSON.stringify(back) === JSON.stringify(had), `before ${JSON.stringify(had)}; lost ${lost.length}; after restore ${JSON.stringify(back)}`);
+    ok('restore: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // B2-02: a tap on the music while a PDF is still opening (its bytes held back 3 s) must not save the PDF shown
+  // before under the new one's name: the new one then opened with the old one's lines and tilt.
+  {
+    const { ctx, page, errors } = await fresh();
+    await add(page, SHAPES); await add(page, BIG);
+    const a = await idOf(page, 'three shapes'), b = await idOf(page, 'big scan');
+    await page.locator('.lib-row', { hasText: 'three shapes' }).first().click();
+    await page.waitForTimeout(4000);
+    await page.evaluate(() => history.back()); await page.waitForTimeout(1000);
+    await page.evaluate(() => {
+      const real = Blob.prototype.arrayBuffer;
+      Blob.prototype.arrayBuffer = function () { const p = real.call(this); return this.size > 100000 ? p.then((x) => new Promise((r) => setTimeout(() => r(x), 3000))) : p; };
+    });
+    await page.locator('.lib-row', { hasText: 'big scan' }).first().click();
+    await page.waitForTimeout(600);
+    const opening = await page.textContent('#pdf-status');
+    const box = await page.locator('#pdf-stage').boundingBox();
+    for (let i = 0; i < 2; i++) { await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.8); await page.waitForTimeout(200); }
+    await page.waitForTimeout(8000);
+    const saved = await pdfSaved(page), shown = await page.evaluate(() => window.__pianoDebug.pdf());
+    const same = JSON.stringify(saved[b]?.cuts?.[0]) === JSON.stringify(saved[a]?.cuts?.[0]);
+    ok('PDF: taps while a PDF opens do not save the one before under its name', /Opening/.test(opening ?? '') && !!saved[a] && !!saved[b] && !same && Math.abs(shown.angles[0] ?? 0) > 0.3,
+      `tapped while "${opening}"; big scan page 1 cuts ${JSON.stringify(saved[b]?.cuts?.[0])} (three shapes: ${JSON.stringify(saved[a]?.cuts?.[0])}); its tilt ${shown.angles[0]}`);
+    ok('PDF (taps while opening): no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // B4-01: deleting a PDF deletes its saved place and lines (piano-web.pdf.v1); another PDF's stay.
+  {
+    const { ctx, page, errors } = await fresh();
+    await add(page, SHAPES); await add(page, here('fixtures/pdf/simple.pdf'));
+    const a = await idOf(page, 'three shapes'), s = await idOf(page, 'simple');
+    for (const t of ['three shapes', 'simple']) { await page.locator('.lib-row', { hasText: t }).first().click(); await page.waitForTimeout(3000); await page.evaluate(() => history.back()); await page.waitForTimeout(1000); }
+    const before = await pdfSaved(page);
+    await page.locator('li.lib-item', { hasText: 'three shapes' }).locator('.lib-more').click(); await page.waitForTimeout(500);
+    await page.locator('#lib-page button.danger', { hasText: 'Delete' }).click(); await page.waitForTimeout(1500);
+    const after = await pdfSaved(page);
+    ok('delete: a PDF\'s saved place and lines go with it, another PDF\'s stay', !!before[a] && !!before[s] && !(a in after) && !!after[s], `before ${Object.keys(before).length} (${!!before[a]}, ${!!before[s]}); after: deleted one kept ${a in after}, other kept ${!!after[s]}`);
+    ok('delete: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // B2-05: in two panes (a phone sideways), the row of the piece whose page shows is the highlighted one, the first
+  // time the library opens too (the list used to be drawn before the first piece was chosen).
+  {
+    const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(BASE); await page.waitForTimeout(1500);
+    await library(page); await page.waitForTimeout(800);
+    const st = await page.evaluate(() => ({ two: window.__pianoDebug.library().twoPanes, sel: [...document.querySelectorAll('#lib-list li.sel .lib-tt')].map((e) => e.textContent), page: document.querySelector('#lib-page .lib-title')?.textContent ?? null }));
+    ok('library, two panes: the highlighted row is the piece whose page shows', st.two && st.sel.length === 1 && st.sel[0] === st.page, JSON.stringify(st));
+    ok('library, two panes: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // B4-02 / B4-03: a score's file and a chart's file unreachable when the library first opens, reachable the next
+  // time: the score's facts and the chart come back (they used to stay missing for the rest of the visit).
+  {
+    const { ctx, page, errors } = await fresh();
+    let failing = true;
+    const fail = async (route) => { if (failing) await route.abort('internetdisconnected'); else await route.continue(); };
+    await page.route('**/scores/chopin-op28-4.musicxml', fail);
+    await page.route('**/content/lab/charts/pop-c.json', fail);
+    const look = () => page.evaluate(() => { const items = window.__pianoDebug.library().items; return { facts: !!items.find((i) => i.id === 'chopin-op28-4')?.facts, chart: items.some((i) => i.id === 'chart:pop-c') }; });
+    await library(page); await page.waitForTimeout(800);
+    const first = await look();
+    failing = false;
+    await page.evaluate(() => history.back()); await page.waitForTimeout(800);
+    await library(page); await page.waitForTimeout(800);
+    const second = await look();
+    ok('library: a score file and a chart unreachable once are read the next time it opens', !first.facts && !first.chart && second.facts && second.chart, `first ${JSON.stringify(first)}, then ${JSON.stringify(second)}`);
+    ok('library (unreachable once): no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
 } finally {
   await browser?.close();
   stop();
