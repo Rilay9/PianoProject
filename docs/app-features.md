@@ -34,6 +34,31 @@ upright and as a rail on the left on a phone sideways and on a tablet (§0).
 Plan a lesson as content on the path (§8c): its text, pictures, video, little scores, and steps that each open an
 activity (§8b: "this piece/set, in this mode or tool, with these settings").
 
+### Content and data interfaces (2026-10-15)
+
+Everything that comes into the app or goes out of it, with where its format is written down. Each content file is
+plain JSON (no comments: the `//` notes in this document's examples are explanation only, and a line break inside a
+text value is written `\n`). A content reader refuses a mistake with the reason, said on screen; where a reader is
+laxer than its format, the format's own check (`npm run check`) refuses it before it ships (said in each section;
+`web/tests/README.md` lists the checks). Ids written by hand are lower-case letters, digits and `-` unless a section says
+otherwise.
+
+| Interface | Direction | Where | Section | Read by | Checked by |
+|---|---|---|---|---|---|
+| The song list and score files | in (Claude) | `web/public/scores/index.json`, `scores/*.musicxml` | §1 | `main.ts` start (no check of its own) | check:content |
+| Exercise sets | in (Claude) | `web/public/content/sets/` | §6 | `exercise/items.ts` | check:content, check:path (kinds) |
+| Chord charts and styles | in (Claude) | `web/public/content/lab/` | §5b | `lab/music.ts`, `screens/lab.ts` | check:content, check:lab |
+| Activities | in (Claude) | `web/public/content/activities/` | §8b | `activity.ts` | check:activity |
+| The path: rungs, lessons, blocks, media | in (Claude) | `web/public/content/path/` | §8c | `lesson/read.ts`, `text.ts` | check:path |
+| The catalogue index | in (built by `web/tools/catalogue/`) | `web/public/catalogue/index.json`, `catalogue/*.mxl` | §5c (Catalogue) | `library/catalogue.ts` | check:content |
+| Addresses (links, reload) | in | `?piece=`, `?activity=`, `tab`, `page`, `lesson`, `step`, `tool`… | §7c | `main.ts` start, `nav.ts`, `screens/shell.ts` | check:browser (routes) |
+| Files a learner adds | in (learner) | + Add, Share → Piano | §5c (Adding) | `library/files.ts`, `library/midi/` | check:midi, check:browser |
+| The practice log export | out (to Claude) | Settings → Export practice log | §7b | Claude | sample in §7b |
+| The backup, and restoring it | out and in | Settings → Back up / Restore | §7 (Back up) | `backup.ts` | check:browser |
+| A score exported with fingering | out | the score's ⋯ → Export | §1 | MuseScore, any MusicXML reader | — |
+| A file you added, exported | out | Music → a piece's page → Export file | §5c | — | — |
+| The `Screen` interface, presets, stores | internal | `app.ts`, `activity.ts`, `localStorage`, IndexedDB | §8, §8b, §7 (Saved data) | the app | — |
+
 ---
 
 ## 0. Home, Practice, Exercises, Settings (owner, 2026-10-15)
@@ -93,16 +118,39 @@ scrolling and honest states.
 **For:** reading and playing a real piece (a song, or a short exercise piece or loop written as music), with the
 music always readable ahead of where you are.
 
-**Content:** MusicXML (`.musicxml`) files in `web/public/scores/`, listed in `scores/index.json` with
-`{ id, title, composer, file, source: { dataset, uploadTitle }, license, licenseUrl, status }`: `id` is how the piece
-is named everywhere else (the address `?piece=<id>`, a set's `"from": { "score": <id> }`, saved settings and
-progress), so it must not change once used; `file` is the name in `scores/`; `id`, `title`, `composer` and `file`
-are needed; `source`, `license`, `licenseUrl` and `status` (free text, e.g. whether the notes were checked against an
-edition) are shown in ⓘ when given. A new score is added by putting its file in `scores/` and its entry in the list,
-then deploying. The list's order is the
-library's order (Music). Exercises (scales,
-five-finger patterns, cadences as music) are simply short scores. Fingering written in the file shows when Display →
-Fingering is on; the learner can add their own (⋯ → Edit fingering).
+**Content:** MusicXML (`.musicxml`) files in `web/public/scores/`, listed in `scores/index.json`, a list of entries:
+
+```json
+[ { "id": "mozart-k2", "title": "Minuet in F K. 2", "composer": "W. A. Mozart", "file": "mozart-k2.musicxml",
+    "source": { "dataset": "PDMX", "mxl": "./mxl/14/37/QmWPF….mxl", "uploadTitle": "W. A. Mozart Minuet in F Major K2." },
+    "license": "cc-zero", "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "status": "engine test score; notes not verified against a printed edition" } ]
+```
+
+| Field | Type | Needed | What |
+|---|---|---|---|
+| `id` | text: lower-case letters, digits, `-` | yes | how the piece is named everywhere else (`?piece=<id>`, an activity's or score block's `piece`, a set's `"from": { "score": <id> }`, saved settings, fingering, Memorise and progress), so it never changes once used; unique; never starting `u-` (the library's pieces) or `ex-` (a set's music, §0) |
+| `title` | text | yes | as shown everywhere |
+| `composer` | text | yes (`""` when unknown) | keeps any doubt the file states ("J. S. Bach?") |
+| `file` | a `.musicxml` or `.xml` file name in `scores/` | yes | read as text (an `.mxl` is not unzipped here) |
+| `source` | `{ dataset, mxl?, uploadTitle? }`, each text | no | shown in ⓘ and on the piece's page as "dataset, uploaded as “uploadTitle”"; `mxl` is the PDMX path, kept for the record |
+| `license`, `licenseUrl` | text; an `https://` link | no | the transcription's licence, shown in ⓘ |
+| `status` | text | no | what was verified, shown in ⓘ and on the piece's page |
+| `kind` | one of the exercise kinds (§6) | no | also lists the score in Exercises under that kind, opening on the score (§0; it stays in Music); none so far; an unknown kind is listed there as a problem |
+
+The list's order is the library's order (Music). The app reads this list **without checking it** (`main.ts` start: a
+typo'd field or a missing `file` loads silently; a reader finding of 2026-10-15); `npm run check:content` checks every
+rule above, and that every file in `scores/` is listed. A new score is added by putting its file in `scores/` and its
+entry in the list, then deploying. Exercises (scales, five-finger patterns, cadences as music) are simply short scores.
+Fingering written in the file shows when Display → Fingering is on; the learner can add their own (⋯ → Edit fingering).
+
+**Exported with fingering** (⋯ → Export score with my fingering; `marks.ts` `addFingerings`): a file named
+`<id>-fingering.musicxml`, the score's MusicXML as the app read it (a file you added: unzipped if it was an MXL),
+with each finger you placed written into its note as `<notations><technical><fingering placement="above">3</fingering>`
+(`above` on the top staff, `below` on the others), replacing a finger the file had on that note; nothing else changes
+(not the look, not the app's settings). With no fingering of yours it is the file as read. MuseScore opens it with the
+fingering. Your fingering is kept in `piano-web.marks.v1`: per piece, `{ m, rel, midi, staff, finger }` (bar index in
+file order from 0, beat in the bar in whole notes, MIDI key, staff from 0 across the score, finger 1-5).
 The three scores shipped now are engine test pieces, not checked against printed editions. `composer` keeps any doubt the
 file itself states (BWV 514's file credits "Johann Sebastian Bach?", so the list says "J. S. Bach?"). BWV 514, titled a
 chorale, is a melody over a single bass line, not four-part harmony: not material for teaching chorale (block-chord)
@@ -413,7 +461,37 @@ beats (inside the bar) and chord lengths (above 0) are checked when the lab open
 out with the reason, and so is a chart whose style is missing or in another metre (a chart naming no style plays the
 first in its metre). Step kinds: accompaniment `roots`, `beat1` (chords on the beat), `style` (the style's rhythm),
 `own`; lead `root`, `tones`, `scale`, `answer` (call and answer), `free`. The kinds are what the lab can judge (code);
-which, in what order and in what words is content. Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
+which, in what order and in what words is content.
+
+**Every field** (`lab/music.ts` `readChart`, `readStyle`, `readLadder`; 2026-10-15):
+
+| Chart field | Type | Needed | Default, range |
+|---|---|---|---|
+| `title` | text | yes | shown in the lab, in Music and in the log |
+| `bars` | list of text, at least one | yes | each a chord symbol Tonal reads (`C7`, `Am`, `F#m7b5`), or several separated by spaces, splitting the bar evenly; no slash chords |
+| `meter` | text like `"4/4"`, `"3/4"`, `"6/8"` | no | `"4/4"`; 6/8, 9/8, 12/8 are counted in dotted quarters |
+| `tempo` | number | no | 90; 20–300 quarter notes a minute (6/8, 9/8, 12/8: dotted quarters a minute; `formOf`) |
+| `style` | a style's id | no | the first style listed in the chart's metre |
+| `improvise` | `{ "scale": "<Tonal scale name>" }` | no | none: no scale is lit pale (Lead's scale step lights the chord notes only) |
+| `steps` | `{ "accompaniment": [...], "lead": [...] }` | no | the built-in ladders; each a list of kinds, each kind once, or `{ "kind", "name", "detail", "doing" }` to give a step its own words (`name` the step's name, `detail` its line on the ladder, `doing` the instruction while playing) |
+| `cleanForNext` | whole number | no | the lab's 2; 1–10 |
+
+| Style field | Type | Needed | Default, range |
+|---|---|---|---|
+| `name` | text | yes | shown with the tempo |
+| `meter` | as a chart's | no | `"4/4"`; a chart plays only with a style in its own metre |
+| `grid` | whole number | no | 2; 1–8 steps a beat in the drum patterns (3 = triplets, swung off-beats) |
+| `drums` | `{ <drum>: "<pattern>" }` | no | none; drums: kick snare rim clap hihat hihat-open ride crash tom-low tom-high tambourine cowbell; a pattern has one character a step for one bar (beats × grid; spaces ignored): `x` hit, `X` loud, `o` soft, `.` none |
+| `bass` | list of `[beat, degree]` | no | none; beat 1-based, may be fractional (2.5), inside the bar; degree root third fifth sixth seventh octave approach |
+| `chords` | list of `[beat, length]` | no | none; length in beats, above 0 (what the style step asks you to play) |
+| `instruments` | `{ "bass", "chords" }` | no | `acoustic_bass` and `piano`; any FluidR3 General MIDI sound name (snake case, `electric_bass_finger`) or `piano`. Kept in the app for offline: `acoustic_bass`, `electric_bass_finger`, `acoustic_guitar_nylon`, `acoustic_guitar_steel`, `electric_guitar_clean` (`sound.ts` `BUNDLED_PARTS`); any other is fetched online |
+
+The index is `{ "charts": [<path>…], "styles": [<path>…] }`, paths from `content/lab/`; ids are the file names
+without `.json`. A chart's id is what an activity's `chart` and Music's `chart:<id>` name. **The reader is laxer than
+this** (reader findings of 2026-10-15): it ignores a misspelt key inside `improvise`, `steps`, `instruments` or a step's
+words, takes any instrument name (one that is no sound fails only when the band loads it, said on the band line), and a
+bar or drum pattern that is not text gives a JavaScript message. `npm run check:content` reads every chart and style
+with the lab's reader and refuses all of these, a style missing or in another metre, and a file not in the index. Melodies are never made up: the band plays only the chords, in the style. Sets marked "Test:"
 are placeholders. **Not built yet** (next): songs with their own melody (a lead sheet: "play the melody" judged as Play
 along, and the accompaniment under a real tune) and several-part MusicXML files (each part on its instrument, you take
 one); examples to copy written into a chart.
@@ -447,12 +525,13 @@ one); examples to copy written into a chart.
   screen takes the top staff as the right hand; choosing the parts comes later) and for a transposing first part.
   Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
   choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
-  added), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
+  added, under its own name; a piece made from a MIDI file exports the MusicXML the app made, `<name>.musicxml`: the
+  MIDI file itself leaves the phone only in a backup), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
   `library/forget.ts`, and Memorise reads its store again so it can't write them back; a PDF's saved place and
   lines go too, 2026-10-15, so the same PDF added again starts fresh). A PDF opens in the PDF reader (§5d).
 - **Adding** (+ Add; several files at once): MusicXML and MXL (title and composer from inside the file), PDF (kept
-  as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB for a PDF and 16 MB of MusicXML for
-  a score; the same file again (by its contents, even one that replaced another's) is "already in your library";
+  as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB a file (any kind), and 16 MB of
+  MusicXML once an MXL is unzipped; the same file again (by its contents, even one that replaced another's) is "already in your library";
   anything else gets one sentence; a file with several parts is added with the warning. One file: a toast with Open; several: a list of what happened to each. What was just
   added is on top, marked, with search and filters cleared, for this visit (your sort is kept). **Shared from
   another app** (Share → Piano, Android, the installed app only: the manifest's `share_target`): the service worker
@@ -556,6 +635,20 @@ one); examples to copy written into a chart.
   not be added from the catalogue: …"), nothing opens and the step marks nothing; a `u-` id in neither your library
   nor the catalogue gets the usual "there is no piece". Deleted in Music, a lesson-added piece is gone with its data;
   the next step or score block naming it adds it again, fresh (accepted, owner 2026-10-15).
+- **The catalogue index's format** (`public/catalogue/index.json`, written by `tools/catalogue/build_index.cjs`, read by
+  `library/catalogue.ts` `loadCatalogue`; 2026-10-15): one object, columns named once to keep it small:
+  `{ "version": "2026-10-14", "source": "<words>", "fields": ["id", "file", "title", "composer", "kind", "fifths", "mode",
+  "keyChanges", "time", "timeChanges", "bars", "low", "high", "chords", "views", "group", "licence", "bytes"], "rows":
+  [["a7e57437303b", "a7e57437303b.mxl", "MEGALOVANIA", "Toby Fox", "piano", -1, null, 0, "4/4", 0, 60, 34, 91, 0,
+  1706949, 0, "CC0", 21493], …] }`. Each row has a value per field, in the fields' order: `id` the first 12 hex digits of
+  the file's SHA-256 (the piece is `u-<id>` once added); `file` its `.mxl` in `catalogue/`; `kind` piano or lead;
+  `fifths` sharps + / flats − (null: none read); `mode` major / minor / null; `keyChanges`, `timeChanges`, `chords` 0 or
+  1; `time` "3/4" or null; `bars` bars as printed; `low`, `high` MIDI keys; `views` MuseScore's view count; `group` the
+  row it folds into (uploads of one piece share it); `licence` the uploader's licence; `bytes` the file's size. Today:
+  1,826 files folding into 1,631 rows (1,050 piano files, 776 lead sheets). The reader takes the columns by name, so
+  their order may change; a field missing reads as nothing, and an index it cannot read is no catalogue (said nowhere
+  but the tab not showing). `npm run check:content` checks every field the reader reads is there, every row's length,
+  id, kind and bars, and that every file is in `catalogue/`.
 - **Promoting a catalogue piece into the app's own scores** (Claude's procedure, owner 2026-10-15; not done for any
   piece yet): for a piece a lesson leans on, so its notes are checked and it ships as one of the app's own.
   1. Its MusicXML, unzipped from the catalogue's `.mxl`, goes to `web/public/scores/<id>.musicxml`, and an entry in
@@ -723,9 +816,33 @@ replaced by another score). A passage becomes one item per moment with notes (a 
 left / off) and `tempo` (20–300); for that visit, never saved over yours. None given: Wait for me.
 
 **Checked:** a set gives either `items` or `from`, a `title`, `kind` one of the seven above (an unknown kind is refused), `play` as above (an unknown mode or field is refused), `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
-length; an item gives exactly one of `notes`, `chord`, `interval`, `musicxml` with that kind's options; any other field
-is refused with the reason (a typo never reads as something else). A lower-case pitch (`c4`) is read as C4. A passage's
-`bars` must be like "5-8" and hold notes on its staff.
+length; an item gives exactly one of `notes`, `chord`, `interval`, `musicxml`, and a field that is no item field at all
+is refused with the reason. A lower-case pitch (`c4`) is read as C4. A passage's `bars` must be like "5-8" and hold
+notes on its staff. **The reader is laxer than the format** (reader findings of 2026-10-15, `exercise/items.ts`): it
+takes an option of another kind (`octave` on a `notes` item, ignored), options of the wrong type (`"together": "false"`
+reads as together, `"arpeggio": "yes"` as true), an empty `items`, items not numbered 1, 2, …, and any field in `from`
+(`"bar": "5-8"` is ignored and bars 1–4 are read); and **a chord's `octave` that is not a whole number (`"five"`, 4.5,
+or 10) hangs the app** when the sets load. `npm run check:content` refuses all of these in the shipped sets, and reads
+every set without MusicXML with the app's own reader (MusicXML items and passages need the browser's DOMParser: they
+are read in the browser, and the check only finds their files).
+
+| Set field | Type | Needed | Default, range |
+|---|---|---|---|
+| `title` | text | yes | the one name it has everywhere ("Test:" marks a placeholder) |
+| `kind` | scales, five-finger, arpeggios, chords, intervals, cadences, melodies | no | none: listed under Other |
+| `items` | `{ "1": item, "2": item, … }`: numbered from 1, at least one | this or `from` | |
+| `from` | `{ "score": <id in scores/index.json>, "bars": "5-8", "staff": 1 }` | this or `items` | `bars` "1-4" (printed bar numbers; one bar "5" too), `staff` 1 (a whole number) |
+| `order` | pool / passage | no | pool; `from` is always a passage |
+| `tempo` | number | no | 80 (a passage: the score's own where it starts); 20–300 quarter notes a minute |
+| `rhythm` | "notes" or a number above 0 | no | "notes"; Drills only: a length in quarter notes (0.5 = steady quavers) for items without written rhythm |
+| `play` | `{ mode, hands, tempo }` | no | how its MusicXML-file items open on the score; above |
+
+| Item | Its options (besides `name` and `short`, both text) |
+|---|---|
+| `notes`: pitches, spaces = together, commas = one after another | none |
+| `chord`: a chord symbol Tonal reads | `octave` a whole number (default 4; the check takes 0–7, a piano's octaves for the root), `arpeggio` true / false (default false) |
+| `interval`: a Tonal interval name | `root` a pitch (default C4), `together` true / false (default true) |
+| `musicxml`: MusicXML written out (a fragment or a whole file), or a `.musicxml` / `.xml` file beside the set | none; any other text is read as MusicXML (an `.mxl` name has no notes) |
 
 **The set as a whole:** its id is the file name without `.json`; `index.json` lists the files in the order they appear
 in the set menu, which Simon and Drills share. `order` defaults to `pool`. `tempo` is quarter notes a minute.
@@ -787,12 +904,56 @@ placeholders for checking the app, not lesson content.
   either, tags joined, the later last-opened) and missing files are put back: a piece this phone lacks, and a file
   (or a MIDI piece's original) lost from a piece it still lists (2026-10-15; the file goes back with this phone's
   record when it is the same file, else with the backup's). An older .json backup restores the same way.
+  **The file** (`piano-backup-<yyyy-mm-dd>.zip`; a real one was made and read on 2026-10-15): a zip whose entries are
+  stored, not compressed (no Zip64, so under 4 GB), holding
+  - `backup.json`: `{ "app": "piano-web", "version": 2, "saved": "<ISO time>", "data": { "<storage key>": "<its value,
+    the JSON text as stored>", … }, "library": [ <record>, … ] }`. `data` holds every `piano-web.*` key of this phone
+    but `piano-web.offline.v1` (Saved data, below). Each library record is `{ id, fav?, tags?, opened?, own? }`: `opened`
+    an ISO time; `own` only for a file you added or took from the catalogue: `{ origin: "yours" | "catalogue", kind
+    ("piano", "melody", "lead", "parts", "score" or "pdf"), title, composer, added (ISO), facts (what §5c reads, or
+    null), file: { name, size, type }, hash (the file's SHA-256, hex), source?, licence?, converted? (a MIDI import's
+    sentence), midi?: { name, size }, scoreParts?, sameAs? }`. The app's own pieces have a record only once you
+    favourite, tag or open them.
+  - `files/<id>`: the file you added, byte for byte (a PDF; an MXL or MusicXML as added; for a MIDI file, the MusicXML
+    the app made from it), and `files/<id>.midi`: a MIDI piece's original file.
+  **Restoring** reads a zip with `backup.json` or an older `.json` backup (the manifest alone); anything else is refused
+  ("This is not a backup from this app.", "This zip is not a backup from this app.", "This backup is damaged."). A key
+  not starting `piano-web.`, and `piano-web.offline.v1`, are skipped. Merging, key by key: a key this phone lacks is
+  added as it is; one it has is merged as JSON, object by object, this phone's value winning wherever both have one; a
+  list of entries each with an `at` time (the practice log's runs) keeps every entry from both, once, in time order; any
+  other list is this phone's whole (so Memorise's learned bars of one piece and hands are this phone's when it has any,
+  not the two joined); a value that is not JSON stays this phone's. The `version` is not read: a backup of a later
+  format is merged as version 2 (a reader finding of 2026-10-15).
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
   `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF), `piano-web.path.v1` (the path: steps done and how, steps tried, the
   lesson you are on; §8c), `piano-web.metronome.v1` (the metronome's tempo and beats) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
+  **The stores as a contract** (for a new screen or mode; 2026-10-15): each key belongs to one module, which reads it
+  forgivingly (a missing or broken value is that module's defaults, never an error) and writes the whole value back.
+  The `.vN` is the shape's version: a change that an older reader would misread takes a new key, and the module reads
+  the old key once and moves it over (as `settings.v1` → `settings.v2`, and the per-song choices out of it into
+  `songs.v1`, `settings.ts`); adding an optional field needs no new key. A new store is named `piano-web.<name>.v1`,
+  is backed up and merged by restore with no more work (§7 Back up: so a list in it is merged only if its entries
+  carry an `at` time), and is removed for a deleted piece in `library/forget.ts` if it is kept per piece.
+
+  | Key | Module | Shape |
+  |---|---|---|
+  | `piano-web.settings.v2` | `settings.ts` | `{ "phone-upright" \| "phone-sideways" \| "tablet": { defaults: {look…}, pieces: { <piece id>: {look…} } } }` |
+  | `piano-web.songs.v1` | `settings.ts` | `{ "*" (every song's default) \| <piece id>: { speed, mode, hands, metronome, band, clickOn, onTime, ladderStep } }` |
+  | `piano-web.app.v1` | `settings.ts` | `{ pianoOut, pianoVolume, clickVolume, bandVolume, click, theme }` |
+  | `piano-web.marks.v1` | `marks.ts` | `{ <piece id>: { fingerings: [{ m, rel, midi, staff, finger }] } }` (§1) |
+  | `piano-web.memorise.v1` | `memorise.ts` | `{ options, progress: { "<piece>\|<hands>\|<chunk>": {…} }, learned: { "<piece>\|<hands>": [bar index…] }, marks, look, pieces }` |
+  | `piano-web.simon.v1`, `piano-web.drills.v1` | `exercise/simon.ts`, `drill.ts` | Simon `{ level, best: { "<set>\|<level>": longest }, set }`; Drills `{ level, tempo: { <set>: bpm }, best: { "<set>\|<level>\|<cards>": { clean, of } }, set }` |
+  | `piano-web.exercise-display.v1`, `freeplay.v1`, `remote.v1`, `library.v1`, `metronome.v1` | their screens | that screen's choices |
+  | `piano-web.lab.v1` | `screens/lab.ts` | `{ chart, role, step, clean, speed, help, parts, dropouts }` |
+  | `piano-web.log.v1` | `log.ts` | `{ autoDelete, entries: [entry…] }` (§7b) |
+  | `piano-web.pdf.v1` | `screens/pdf.ts` | `{ <piece id>: { line, part, cuts (the lines per page), angles, margins, splits, view (whole/split per screen), spacing, size, edgeMusic } }` |
+  | `piano-web.path.v1` | `lesson/progress.ts` | `{ version: 1, current?: <lesson id>, done: { <lesson>: { <step>: { at, how: target \| played \| opened } } }, tried: { <lesson>: { <step>: <ISO time> } } }` |
+  | `piano-web.offline.v1` | `offline.ts` | `"<files saved>:<fingerprint>"`; this device only, not backed up |
+  | IndexedDB `piano-library` (version 1) | `library/store.ts` | store `items` (records, keyed by `id`, as in a backup) and store `files` (the file under `<id>`, a MIDI original under `<id>:midi`) |
+  | Cache `piano-shared` | `sw.js`, `screens/library.ts` | files shared to the app, taken out (and deleted) when the library adds them |
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -802,45 +963,162 @@ finished or left part way; a lab run from Start to ■). Watch and Free play are
 backup too); **Settings → Export practice log** downloads it as a file; **Delete practice log entries older than a month** (in
 Settings, on by default) prunes old ones; never more than 3,000 entries (the oldest go first).
 
+**The file** (`practice-log-<yyyy-mm-dd>.json`). The entries below are from a real export (2026-10-15: the built app
+driven with a stand-in MIDI keyboard; the runs played by a script, so the timings are a script's, not a person's), one
+of each kind, in the order they were played:
+
 ```json
-{ "app": "piano-web", "kind": "practice-log", "version": 1, "exported": "2026-10-13T20:00:00.000Z", "entries": [
-  { "at": "2026-10-13T19:40:02.120Z", "seconds": 95, "screen": "score", "mode": "along",
-    "piece": "mozart-k2", "title": "Minuet in F K. 2", "activity": "k2-wait-right",       // the activity, if opened from one
-    "settings": { "mode": "along", "hands": "right", "bpm": 140, "onTime": "normal", "metronome": false, "loop": "5-8" },
-    "result": { "notes": 41, "onTime": 33, "early": 1, "late": 2, "missed": 3, "letGoEarly": 2, "wrongKeys": 1,
-                "toleranceMs": 100, "weakBars": ["9-12"],
-                "slips": [{ "bar": 10, "note": "F♯5", "what": "late" }], "slipCount": 9 } } ] }
+{ "app": "piano-web", "kind": "practice-log", "version": 1, "exported": "2026-10-15T23:12:18.814Z", "entries": [
+ {"at":"2026-10-15T23:08:50.927Z","seconds":9,"screen":"score","mode":"wait","piece":"mozart-k2","title":"Minuet in F K. 2",
+  "settings":{"mode":"wait","hands":"right","bpm":100,"onTime":"normal","metronome":false,"loop":"1-4"},
+  "result":{"fromBar":1,"toBar":4,"steps":17,"rounds":1},
+  "activity":"k2-wait-right","lesson":{"rung":"test-app","lesson":"test-minuet-opening","step":"wait-rh"}},
+ {"at":"2026-10-15T23:08:59.630Z","seconds":0,"screen":"lesson","title":"Right hand, bars 1–4","activity":"k2-wait-right",
+  "lesson":{"rung":"test-app","lesson":"test-minuet-opening","step":"wait-rh"},"settings":{},
+  "result":{"feedback":{"effort":"hard","note":"bar 3 jump was hard"},"done":true,"runs":1,"line":"Played through bars 1–⁠4"}},
+ {"at":"2026-10-15T23:09:04.003Z","seconds":5,"screen":"score","mode":"along","piece":"mozart-k2","title":"Minuet in F K. 2",
+  "settings":{"mode":"along","hands":"right","bpm":100,"onTime":"normal","metronome":false},
+  "result":{"notes":11,"onTime":8,"early":0,"late":0,"missed":2,"letGoEarly":1,"wrongKeys":1,"toleranceMs":100,"weakBars":["1-2"],
+   "slips":[{"bar":1,"note":"C5","what":"let go early"},{"bar":1,"note":"F5","what":"missed"},{"bar":2,"note":"F5","what":"missed"},
+            {"bar":2,"note":"F♯1","what":"wrong key"}],"slipCount":4}},
+ {"at":"2026-10-15T23:09:12.649Z","seconds":11,"screen":"score","mode":"ladder","piece":"mozart-k2","title":"Minuet in F K. 2",
+  "settings":{"mode":"ladder","hands":"right","bpm":83,"onTime":"normal","metronome":false,"loop":"1-2"},
+  "result":{"passes":[{"pass":1,"notes":8,"onTime":6,"early":1,"late":0,"missed":0,"letGoEarly":1,"wrongKeys":0,"clean":false,"bpm":90}],
+   "slips":[{"bar":1,"note":"C5","what":"let go early"},{"bar":1,"note":"F5","what":"early"}],"slipCount":2}},
+ {"at":"2026-10-15T23:09:29.387Z","seconds":33,"screen":"memorise","piece":"mozart-k2","title":"Minuet in F K. 2",
+  "settings":{"hands":"right","bpm":140,"chunk":2,"adds":"bar","learnedAfter":2,"inTime":false},
+  "result":{"passes":[{"bars":"1","from":1,"clean":true,"inTime":false,"slips":0,"wrongKeys":0,"peeked":false},
+                      {"bars":"1","from":1,"clean":true,"inTime":false,"slips":0,"wrongKeys":0,"peeked":false},
+                      {"bars":"1–2","from":1,"clean":true,"inTime":false,"slips":0,"wrongKeys":0,"peeked":false},
+                      {"bars":"1–2","from":1,"clean":true,"inTime":false,"slips":0,"wrongKeys":0,"peeked":false},
+                      {"bars":"3","from":3,"clean":false,"inTime":false,"slips":0,"wrongKeys":1,"peeked":false}],
+   "learned":["bar 1","chunk: bars 1–2"],"tests":[],"slips":[{"bar":3,"note":"F♯1","what":"wrong key"}],"slipCount":1},
+  "activity":"k2-memorise-right"},
+ {"at":"2026-10-15T23:10:07.592Z","seconds":15,"screen":"simon","set":"chords-c","title":"Test: chords in C",
+  "settings":{"rung":2,"match":"octave","miss":"tries","speed":"up"},
+  "result":{"longestChain":3,"ended":"stopped","helpedChains":0,"misses":[{"item":"G major","wanted":"G4 B4 D5","played":"C♯4"}]},
+  "activity":"chords-simon"},
+ {"at":"2026-10-15T23:10:30.406Z","seconds":50,"screen":"drills","set":"melodies-c","title":"Test: two-bar melodies in C",
+  "settings":{"rung":3,"onTime":"normal","cards":5,"start":"clicks","bpm":80},
+  "result":{"clean":4,"of":5,"ended":"set done","missesAgain":false,
+   "cards":[{"item":"Melody 3","clean":true,"right":true,"retried":false,"helped":false,"result":"clean"},
+            {"item":"Melody 1","clean":false,"right":false,"retried":false,"helped":false,"result":"6 of 7 on time and held · E missed"}, …]},
+  "activity":"melodies-drill","lesson":{"rung":"test-app","lesson":"test-minuet-opening","step":"melody-cards"}},
+ {"at":"2026-10-15T23:11:23.056Z","seconds":0,"screen":"lesson","title":"Melody cards, music only","activity":"melodies-drill",
+  "lesson":{"rung":"test-app","lesson":"test-minuet-opening","step":"melody-cards"},"settings":{},
+  "result":{"feedback":{"effort":"easy"},"done":true,"runs":1,"line":"4 of 5 cards clean"}},
+ {"at":"2026-10-15T23:11:29.334Z","seconds":41,"screen":"lab","chart":"blues-c","title":"Test: 12-bar blues in C",
+  "settings":{"role":"accomp","step":"roots","style":"shuffle","bpm":84,"help":"lit","dropouts":"off"},
+  "result":{"rounds":[{"round":1,"step":"roots","bars":"1:ok 2:ok 3:ok 4:ok 5:miss 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok"},
+                      {"round":2,"step":"roots","stoppedInBar":2,"bars":"1:ok"}],
+   "wholeRounds":1,"slips":[{"bar":5,"note":"F7 F♯2","what":"wrong key"}],"slipCount":1},"activity":"blues-roots"} ] }
 ```
 
-`slips` are each note not on time and held: the printed bar, the note as written (wrong keys: by key name), and what
-(`missed`, `early`, `late`, `let go early`, `wrong key`; Memorise also `helped` for a peek or hint, `stuck` in a test);
-at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
-- score: Play along / Rhythm the counts above; Ladder and loops `passes` [{ pass, notes, onTime, early, late, missed,
-  letGoEarly, wrongKeys, clean, bpm }]; Wait for me `fromBar`, `toBar`, `steps` (the notes the marker moved on from, the
-  piano's lead-ins too), `rounds` (times it went round its loop, or reached the end: what says it was played through;
-  review 2026-10-15, V10).
-- memorise: `passes` [{ bars, from, clean, inTime, slips, wrongKeys, peeked, test | practising | joining }], `learned`
-  (bars and chunks learned), `tests` [{ kind, clean, toPractise, stuck }], `mark` (if memorized).
-- simon: `longestChain`, `ended` (over / all played / stopped), `helpedChains`, `misses` [{ item, wanted, played }].
-- drills: `clean`, `of`, `ended` (set done / stopped early / left), `missesAgain`, `cards` [{ item, clean, right,
-  retried, helped, result }].
-- lab: `rounds` [{ round, step, bars ("1:ok 2:late …", accompaniment) or notes, fromGuide, barsPlayedIn, changes,
-  playedAtChanges, landedOnChord (lead), stoppedInBar }], `wholeRounds`, `roundsPlayed` (lead); slips name the chord
-  and what was wrong ("C7 needs B♭").
+(Three of the Drills set's five cards are left out above, as `…`; the file has all five.)
+
+**Every entry:**
+
+| Field | Type | When absent | What |
+|---|---|---|---|
+| `at` | ISO time (UTC) | never | when the run started (a lesson entry: when the step's result was shown) |
+| `seconds` | whole number | never | from the start to the end of the run, pauses included; 0 for a lesson entry |
+| `screen` | score, memorise, simon, drills, lab, lesson | never | the screen it was played on; `lesson` is not a run but the learner's feedback on a step |
+| `mode` | wait, along, ladder, rhythm | not the score | the score's mode (Watch is never logged) |
+| `piece` | a piece id (§1; `u-…` a library piece; `ex-<set>-<item>` a set's music) | not score or memorise | what was played |
+| `set` | a set id (§6) | not simon or drills | |
+| `chart` | a chart id (§5b) | not the lab | |
+| `title` | text | never | the piece's, set's or chart's title as shown ("Test:" kept); a lesson entry: the step's title |
+| `bars` | text "a-b" | not a lab run with bars looped | the lab's looped bars (the score's loop is `settings.loop`) |
+| `activity` | an activity id; `<lesson>.<step>` for one written out in a lesson | not opened from an activity | |
+| `lesson` | `{ rung, lesson, step }`, ids from `content/path` | not played for a lesson's step | the step it was played for |
+| `settings` | object | never (`{}` for a lesson entry) | the choices in force **when the run ended**, by screen (below) |
+| `result` | object | never | what happened, by screen (below) |
+
+**`settings` by screen:**
+- score: `mode`; `hands` both / right / left / off (the hands *you* played; off = you played both, the piano silent);
+  `bpm` the tempo in beats a minute (the piece's opening tempo, else 80, times the speed played; in Ladder the speed it
+  ended at, while each pass has its own); `onTime` relaxed / normal / strict; `metronome` true / false; `loop` "a-b" printed bars (absent: no
+  loop).
+- memorise: `hands`, `bpm`, `chunk` (2 / 4 / 8), `adds` (bar / chunk), `learnedAfter` (1–3 clean passes), `inTime`
+  (true: timed passes).
+- simon: `rung` (help level 1–5, §3), `match` (same / octave / inversion), `miss` (tries / over / endless), `speed`
+  (up / steady).
+- drills: `rung`, `onTime` (relaxed / normal / strict / notes), `cards` (the set's size; 0 = until you stop), `start`
+  (clicks / first), `bpm` (the set's tempo, quarter notes a minute).
+- lab: `role` (accomp / lead), `step` (its kind, §5b), `style` (id), `bpm` (the chart's tempo at the speed played,
+  in the chart's units, §5b), `help` (lit / names / symbol), `dropouts` (off / drums / band).
+
+**`result` by screen** (counts are whole numbers; bars are the printed bar numbers; a note is spelled as written,
+`F♯5`, or a key by its sharp name, `C♯4`; middle C = C4):
+- score, Play along and Rhythm (no loop): `notes` (the notes, or in Rhythm the taps, due in the part played), `onTime`
+  (on time and held), `early`, `late`, `missed`, `letGoEarly`, `wrongKeys` (keys the score did not have), `toleranceMs`
+  (the on-time window, ± ms of real time: 200 / 100 / 50), `weakBars` (the weakest bars, "a-b", offered as a loop).
+  Not logged: which bars the run covered (a reader finding, 2026-10-15: a run stopped after two bars and a whole run
+  differ only in `notes`).
+- score, Ladder and any loop: `passes` [{ `pass` (1, 2, …), `notes`, `onTime`, `early`, `late`, `missed`,
+  `letGoEarly`, `wrongKeys`, `clean` (every note on time and held, no wrong key), `bpm` (that pass's tempo) }].
+- score, Wait for me: `fromBar`, `toBar` (the bars played through: the loop's when it went round), `steps` (the notes
+  the marker moved on from, the piano's lead-ins too), `rounds` (times it went round its loop, or reached the end: 1 or
+  more = played through; review 2026-10-15, V10). No slips: nothing is judged.
+- memorise: `passes` (at most 300) [{ `bars` ("1", "1–2": the bars being learned), `from` (the bar it started at),
+  `clean`, `inTime`, `slips` (how many notes were missed, early, late or let go early, or helped), `wrongKeys`, `peeked`,
+  and one of `test` (notes / rhythm), `practising` (true: the test's bars to practise) or `joining` (previous / all) }];
+  `learned` (text, in the order learned: "bar 1", "chunk: bars 1–2"); `tests` [{ `kind` (notes / rhythm), `clean`,
+  `toPractise` (bars), `stuck` (bars) }]; `mark` (text, when the piece is memorized: "Memorized: notes + rhythm at ♩ 96 ·
+  13 Oct 2026").
+- simon: `longestChain` (the longest chain played whole without help), `ended` (over / all played / stopped),
+  `helpedChains`, `misses` (at most 40) [{ `item` (its name), `wanted` (its notes), `played` (the key) }].
+- drills: `clean`, `of` (cards played), `ended` (set done / stopped early / left), `missesAgain` (true: this set was
+  "the misses again"), `cards` [{ `item` (its name), `clean`, `right` (right in the end, a retry too), `retried`,
+  `helped`, `result` (the card's line as shown) }].
+- lab: `rounds` (at most 200) [{ `round` (1, 2, …), `step`, `stoppedInBar` (when ■ came in it; the round does not
+  count), and for accompaniment `bars` ("1:ok 2:late 3:miss …", each bar's mark: ok / late / miss), or for lead `notes`,
+  `fromGuide` (of them, from the lit keys), `barsPlayedIn`, `changes` (chord changes), `playedAtChanges`, `landedOnChord`
+  }]; `wholeRounds` (accompaniment rounds finished); `roundsPlayed` (lead).
+- `slips` and `slipCount` (score Play along, Rhythm, Ladder; memorise; lab): each slip `{ bar, note, what }`, `what`
+  one of missed, early, late, let go early, wrong key, and in Memorise helped (a hint or Peek, when timing doesn't
+  count) and stuck (the test's Stuck; `note` is ""); in the lab `note` is the chord and what was wrong ("C7 needs C",
+  "F7 F♯2" for a key not in it, "(notes apart)"). At most 40 kept; `slipCount` is all of them.
+- Text carries the app's own characters: ♯ ♭ ♩, en dashes in bar ranges ("1–2"), and in a lesson entry's `line` a
+  word joiner (U+2060) after the dash. Read them as text, not ASCII.
 
 **Lessons** (owner, 2026-10-15): a run played for a lesson's step carries `"lesson": { "rung", "lesson", "step" }` (the
 ids in `content/path`) beside its `activity` (an activity written out in the lesson has the id `<lesson>.<step>`). After
-the step, the learner's feedback is an entry of its own (only when they tap or write something; it changes as they do):
+the step, the learner's feedback is an entry of its own (`screen` "lesson", above; only when they tap or write
+something; it is replaced as they change it, keyed by its `at` and step). `result.feedback.effort` is hard / ok / easy;
+both it and `feedback.note` (free text) are optional (owner, 2026-10-15: Hard / OK / Easy and a note, both skippable).
+`done` says whether the step counted as done (§8c), `runs` how many runs it had this time, `line` what the learner was
+shown as "This time".
 
-```json
-{ "at": "2026-10-15T10:12:00.000Z", "seconds": 0, "screen": "lesson", "title": "Right hand, bars 1–4",
-  "activity": "k2-wait-right", "lesson": { "rung": "test-app", "lesson": "test-minuet-opening", "step": "wait-rh" },
-  "settings": {}, "result": { "feedback": { "effort": "hard", "note": "the jump in bar 2" }, "done": true, "runs": 1,
-                              "line": "Waited through bars 1–2" } }
-```
-`effort` is hard / ok / easy; both it and `note` are optional (owner, 2026-10-15: Hard / OK / Easy and a note, both
-skippable). `done` says whether the step counted as done (§8c), `runs` how many runs it had this time, `line` what the
-learner was shown.
+**What the next lesson can read from it** (checked on the sample above, 2026-10-15): the piece, set or chart; the bars
+(a loop's, Wait for me's, Memorise's, the lab's, and each slip's); the mode and hands; the tempo; the result and each
+slip; the lesson step and the learner's feedback. Not there: which bars a Play along or Rhythm run without a loop covered
+(above), and an item's number in a set (Simon and Drills give its name).
+
+## 7c. Addresses: links and reload (2026-10-15)
+
+The app's address is `…/PianoProject/?<parameters>` (`main.ts` `start`, `nav.ts`, `screens/shell.ts`). The app writes it
+as you move (so a reload comes back, §0), and a link may use it. Read once, at start; then the address is the app's own.
+
+| Parameter | Values | Opens |
+|---|---|---|
+| `tab` | home (the default) / music / practice / path | that tab |
+| `page` | settings / exercises / lesson (with `lesson`) | that page over the tab |
+| `lesson` | a lesson id (§8c) | with `page=lesson`: its page, and it becomes the lesson you are on |
+| `step` | a step id of that lesson | with `page=lesson&lesson=…`: the lesson page starts that step, with its activity's choices |
+| `piece` | a piece id (§1; `u-…` a library piece) | the score screen; with `tool=memorise`, Memorise |
+| `bars` | "a-b" (both numbers) | with `piece`: those printed bars looped |
+| `mode`, `bpm`, `hands` | as an activity's score settings (§8b): watch / wait / along / ladder (needs `bars`) / rhythm; 20–300; both / right / left / off | with `piece`: for this visit, never saved over yours (Carry on's way back into a run) |
+| `tool` | memorise / drill / simon / lab / freeplay / metronome | that tool over the tab |
+| `set` | a set id (§6) | with `tool=drill` or `simon`: that set |
+| `chart` | a chart id (§5b) | with `tool=lab`: that chart |
+| `activity` | an activity id (§8b; letters, digits, `-`, `_`) | that activity, over whatever the rest opened; its choices for that visit |
+| `shared` | 1 | (the share target's own) Music adds what was shared |
+
+A value the app doesn't know is ignored rather than refused (an unknown `tab` is Home; a `mode` that isn't one, or a
+`bpm` out of range, leaves your own), except a `piece` not there ("There is no piece "…" any more.") and an activity that
+cannot open (said, Home stays). A link that should open a lesson's step: `?tab=path&page=lesson&lesson=<lesson>&step=<step>`;
+a piece in a mode: `?piece=mozart-k2&bars=1-4&mode=wait&hands=right`; an activity: `?activity=k2-wait-right`.
 
 ## 8. How the app is put together (for adding a screen or a mode)
 
@@ -855,7 +1133,11 @@ learner was shown.
   keyboard, the practice judge `Practice`, the pieces, the message line) and the **`Screen` interface** every
   screen offers: `key(e)` (a key from the MIDI keyboard or the screen's keys), `command(c)` (a keyboard-remote
   command: mash, low, high, peek-on/off), `musicRange()` (the keys the music on screen uses), `resized()`, `busy`
-  (the phone stays awake).
+  (the phone stays awake), and, for a screen that judges keys, `panel(open)` (a dialog opened over it, or the last one
+  closed: pause what judges and carry on after, §7; a screen with it gets no key-downs while a panel is open; one
+  without it, as Free play, the library and the PDF reader, is left as it is). A screen that logs runs writes one entry
+  per run with `addEntry` (`log.ts`) in the shape of §7b, and adds its `result` there and in `lesson/result.ts` if a
+  lesson step's target should read it.
 - `web/src/screens/`: one module per screen. `score.ts` (the score screen and its modes), `memorise-screen.ts`
   (Memorise: it borrows the score's drawing through the `Borrower` interface in `score.ts`: its own settings,
   layout fit, and the drawing's events), `exercise.ts` (Simon and Drills; their logic is in `web/src/exercise/`).
@@ -895,7 +1177,14 @@ not there) is refused with the reason; nothing is guessed. Examples marked "Test
 ```
 
 Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out; a field not listed for its screen
-is refused. A score or memorise activity's `piece` is one of the app's scores, a piece in the library, or a catalogue
+is refused. **The file** (2026-10-15): its id is its file name without `.json`, letters, digits, `-` and `_` (what
+`?activity=` and a step's `activity` name); `index.json` is a list of the file names, used to save them for offline and
+by the check (the app opens an activity by its id, so one missing from the index still opens online but is not saved for
+offline; check:activity requires every file listed). `title` is text, shown as the activity opens (and in a message that it cannot);
+left out (or not text: the reader quietly uses the id, a reader finding, refused by
+check:activity) it is the id. `bars` is "5-8" or one bar "5"; bar 0 (a pickup) reads, though the check counts bars from
+1. A lab ladder's step written out is `{ "kind", "name", "detail", "doing" }` as a chart's (§5b); a misspelt word there
+is ignored by the reader and refused by check:activity. A score or memorise activity's `piece` is one of the app's scores, a piece in the library, or a catalogue
 piece by the id it gets when added, `"u-<catalogue id>"` (owner, 2026-10-15; e.g. `"u-de5f6a78874c"`): opening the
 activity adds it to your library first if it is not there (§5c), and a `u-` id that is in neither says "there is no
 piece". `npm run check:activity` finds each named piece in `scores/index.json` or `catalogue/index.json` and its `bars`
@@ -944,15 +1233,11 @@ next lesson with steps to do.
 // lessons/<id>.json: a title and its blocks, in the order the page shows them
 { "title": "Test: the Minuet's opening, right hand",
   "blocks": [
-    { "kind": "text", "text": "# A heading
-A paragraph with **bold**, *italics* and [a link](https://…).
-
-- a list
-1. a numbered list" },
+    { "kind": "text", "text": "# A heading\nA paragraph with **bold**, *italics* and [a link](https://…).\n\n- a list\n1. a numbered list" },
     { "kind": "image", "src": "media/test-picture.svg", "alt": "what it shows", "caption": "…" },        // png jpg webp svg gif, or an https:// link
     { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "…", "start": 0, "end": 120, "caption": "…" },
     { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // piece: or a catalogue piece, "u-<catalogue id>"; or "set": "chords-c", "item": 1;
-                                                                         // or "musicxml": "<note>…</note>" (notes, as a set's item) or "media/x.musicxml"
+                                                                         // or "musicxml": a whole file written out, "<score-partwise …>…</score-partwise>", or "media/x.musicxml"
     { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "caption": "…" },     // "-" for a key with no finger
     { "kind": "animation", "src": "media/test-c-major.svg", "alt": "…", "caption": "…" },   // gif webp svg png (animated), mp4 webm
     { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill",
@@ -1022,13 +1307,36 @@ shows **this time**'s result (as its screen words it), whether the target was me
 lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
 from when it was started; a step whose activity could not open marks nothing.
 
+**Every field, exactly** (`lesson/read.ts` `BLOCKS`; 2026-10-15). Ids (a rung's, a lesson's, a step's) are lower-case
+letters, digits and `-`, starting with a letter or digit; a rung's id once in the index, a lesson's once in the whole
+path, a step's once in its lesson. Text fields are non-empty text.
+
+| File / block | Needed | May have | Values |
+|---|---|---|---|
+| `index.json` | `rungs`: [{ `id`, `title`, `lessons`: [lesson ids] }] | — | a rung may list no lessons yet; a lesson file listed nowhere is never shown (check:path requires every file listed) |
+| `lessons/<id>.json` | `title`, `blocks` (at least one) | — | |
+| `text` | `text` | — | the small text format above; `\n` between lines, a blank line between paragraphs; only `#` and `##` |
+| `image` | `src`, `alt` | `caption` | a `.png .jpg .jpeg .webp .svg .gif` file in the folder (no `..`, no leading `/`), or any `https://` link |
+| `video` | `youtube`, `title` | `start`, `end`, `caption` | a watch / youtu.be / embed / shorts / live link or the bare 11-character id; `start`, `end` whole seconds from 0, `end` after `start` |
+| `score` | one of `piece` (with `bars`), `set` (with `item`), `musicxml` | `tempo`, `keys`, `caption` | `bars` "a-b" or "a", at most 16 bars (needed with a piece); `item` a whole number from 1 (one the set has: check:path); `musicxml` a whole file written out (`<score-partwise>`, a time signature, no bar over-full) or a `.musicxml` / `.xml` file in the folder; `tempo` 20–300 quarter notes a minute; `keys` true / false (default false) |
+| `keys` | `notes` | `fingers`, `caption` | 1–12 pitches like `C4 F#3 Bb4` (capital letter, one-digit octave); `fingers` one per note, 1–5 or `-` |
+| `animation` | `src`, `alt` | `caption` | as `image`, also `.mp4 .webm` |
+| `step` | `id`, `title`, `activity` | `doneWhen`, `target`, `about` | `activity` an activity's id (letters, digits, `-`, `_`) or one written out (§8b, its id `<lesson>.<step>`); `target` below |
+| `tip` | `text` | `label` | `label` default "Tip" |
+
+`target` by its activity's screen, one or both fields: score `onTime` (0.05–1) and `bpm` (a whole number, 20–300);
+drills `clean` (whole, 1–100); simon `chain` (whole, 1–100); lab `cleanRounds` (whole, 1–40; not a lead activity).
+
 **Checked** (strictly, as activities are): an unknown kind or field, a missing field, raw HTML, a link that is not https,
 a file outside the folder or of the wrong type, a video link that is not YouTube or ends before it starts, a score with
 two sources or more than 16 bars, keys that are not pitches or fingers that are not one a note, a step id used twice in
 a lesson, a written-out activity with a mistake, a target its screen cannot judge (or of another screen, or out of range);
 a lesson id in two rungs, unknown index fields. A lesson that cannot be read is left out and its reason shown on Path.
 `npm run check:path` also finds every piece a score block or a step names (the app's scores, or a catalogue piece by
-its `u-` id in `catalogue/index.json`) with its bars inside it (`tests/named-pieces.mjs`).
+its `u-` id in `catalogue/index.json`) with its bars inside it (`tests/named-pieces.mjs`), and (2026-10-15) every set and
+chart a step names, and a score block's set item in its set: the reader itself takes any item number (one the set lacks
+is said only when the page draws the block: "the set … has no item n") and any set or chart name (said only when the
+step is started).
 Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching. **Promoting** a catalogue piece a
 lesson leans on into the app's own scores, with its notes checked, is Claude's procedure in §5c.
 The test rung's "Test: a piece from the catalogue" (`test-catalogue-piece`) has one step naming the catalogue's

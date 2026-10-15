@@ -70,7 +70,10 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   (owner, 2026-10-15). Tap by position (the mouse at the place, or the event sent to `elementFromPoint`), and run at
   least one case with the permissions a plain phone tab has.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
-  Refuse with the reason; test the refusals.
+  Refuse with the reason; test the refusals. Check the nested objects and the value types too, not only the top-level
+  keys: a set's `"octave": "five"` hung the app, `"together": "false"` read as together, a chart's `improvise: { scales }`
+  was ignored, and no check read the sets, the lab's files or the song list at all (interfaces review, 2026-10-15:
+  `tests/content.mjs`). Every content folder needs a check that reads each shipped file with the app's own reader.
 - **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in
   between files one item's data under another's (a PDF opening saved the previous PDF's lines under its own name, review
   2026-10-15). Switch the name and its data together, and keep saves off in between.

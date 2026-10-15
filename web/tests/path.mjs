@@ -25,6 +25,16 @@ const named = namedPieces();
 const sets = JSON.parse(readFileSync(pub('content/sets/index.json'), 'utf8'));
 const acts = JSON.parse(readFileSync(pub('content/activities/index.json'), 'utf8'));
 const kindsUsed = new Set();
+const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).charts;
+/** A step's set or chart: listed in its index (''), else why not. */
+const contentProblem = (a) => ('set' in a ? (sets.includes(`${a.set}.json`) ? '' : `no set "${a.set}" in content/sets/index.json`)
+  : charts.includes(`charts/${a.chart}.json`) ? '' : `no chart "${a.chart}" in content/lab/index.json`);
+/** A score block's set item: one the set has (''), else why not. A passage from a score (from) has one item a moment: not counted here. */
+function itemProblem(set, n) {
+  const f = JSON.parse(readFileSync(pub(`content/sets/${set}.json`), 'utf8'));
+  if (f.from) return '';
+  return Object.keys(f.items ?? {}).includes(String(n)) ? '' : `set "${set}" has items ${Object.keys(f.items ?? {}).join(', ')}, not ${n}`;
+}
 for (const id of ids) {
   let l;
   try { l = readLesson(id, JSON.parse(readFileSync(pub(`content/path/lessons/${id}.json`), 'utf8'))); ok(`${id} reads (${l.blocks.length} blocks)`, true); }
@@ -33,6 +43,8 @@ for (const id of ids) {
     kindsUsed.add(b.kind);
     if (b.kind === 'score' && 'piece' in b.source) ok(`${id}: score block's piece and bars are there`, !named.problem(b.source.piece, b.source.bars), named.problem(b.source.piece, b.source.bars));
     if (b.kind === 'score' && 'set' in b.source) ok(`${id}: score block's set is there`, sets.includes(`${b.source.set}.json`), b.source.set);
+    // (2026-10-15, interfaces review: the reader takes any item number; the item must be one the set has)
+    if (b.kind === 'score' && 'set' in b.source && sets.includes(`${b.source.set}.json`)) ok(`${id}: score block's item ${b.source.item} is in set "${b.source.set}"`, !itemProblem(b.source.set, b.source.item), itemProblem(b.source.set, b.source.item));
     for (const f of [b.src, 'file' in (b.source ?? {}) ? b.source.file : undefined]) if (f && !f.startsWith('https:')) ok(`${id}: its file ${f} is there`, existsSync(pub(`content/path/${f}`)));
     if (b.kind === 'step') {
       let a;
@@ -42,6 +54,8 @@ for (const id of ids) {
       } else a = b.activity;
       // (a step's piece, written out or in its activity file: there, and its bars inside it; 2026-10-15, with catalogue pieces)
       if ('piece' in a) ok(`${id}: step "${b.id}"'s piece "${a.piece}"${a.bars ? ` and bars ${a.bars.join('-')}` : ''} are there`, !named.problem(a.piece, a.bars), named.problem(a.piece, a.bars));
+      // (2026-10-15, interfaces review: a written-out activity's set or chart was not looked for; activity.mjs does it for files)
+      if ('set' in a || 'chart' in a) ok(`${id}: step "${b.id}"'s ${'set' in a ? `set "${a.set}"` : `chart "${a.chart}"`} is there`, !contentProblem(a), contentProblem(a));
       try { checkTarget(b, a); ok(`${id}: step "${b.id}"'s target fits its ${a.screen} activity`, true); } catch (e) { ok(`${id}: step "${b.id}"'s target`, false, e.message); }
     }
   }
@@ -128,6 +142,10 @@ for (const [name, f, want] of [
   const past = one({ kind: 'step', id: 'a', title: 'A', activity: { screen: 'score', piece: cat, bars: '7-9' } }).activity;
   ok('refused by the content check: a step\'s bars past the end of its catalogue piece', /bars 7-9 are not inside "u-de5f6a78874c" \(it has 8 bars, from the catalogue\)/.test(named.problem(past.piece, past.bars)), named.problem(past.piece, past.bars) || 'accepted');
 }
+// (2026-10-15, interfaces review) The reader takes any set item number and any set or chart name; the content check
+// refuses an item the set does not have, and a written-out step's set or chart that is not listed.
+ok('refused by the content check: a score block\'s item the set does not have', /set "chords-c" has items 1, .*not 99/.test(itemProblem('chords-c', 99)), itemProblem('chords-c', 99) || 'accepted');
+ok('refused by the content check: a step naming a set, or a chart, that is not there', /no set "nope"/.test(contentProblem({ set: 'nope' })) && /no chart "nope"/.test(contentProblem({ chart: 'nope' })), `${contentProblem({ set: 'nope' })} ${contentProblem({ chart: 'nope' })}`);
 // A target on an activity named by id is checked once the activity is read (here: a drill's target on a Simon activity).
 {
   const s = one({ kind: 'step', id: 'a', title: 'A', activity: 'chords-simon', target: { clean: 2 } });

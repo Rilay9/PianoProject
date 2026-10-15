@@ -8,8 +8,8 @@ no longer exists.
 |---|---|---|---|
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules); every count compared, and where named which notes are painted and which presses are wrong (2026-10-14) | 17 (16 judging cases and the pedal-holds block) |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`), the sentence the learner reads after a red chord (`sayHit`), the Roots step with other chord notes and outside keys, and improvising's notes from the lab's own guides (2026-10-14) | 32 |
-| `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads and is in its index; the piece, set or chart each names exists and its bars are inside the piece (a piece: one of the app's scores or, by its `u-` id, a catalogue piece, with the index's bar count: `tests/named-pieces.mjs`, 2026-10-15); what one of each kind reads to; mistakes are refused with their reason (2026-10-14: index, names, read results, four more refusals; 2026-10-15: an unknown `u-` id, bars past a catalogue piece's end, a catalogue id without its `u-`) | 46 today (the count is printed) |
-| `path.mjs` | `npm run check:path` | The path's content format (`src/lesson/read.ts`, `text.ts`) and when a step counts as done (`src/lesson/result.ts`; owner, 2026-10-15): every rung and lesson in `public/content/path` reads and is in the index; what each names exists (pieces and bars, sets, activities, files; a piece in a score block or a step's activity may be a catalogue piece by its `u-` id, 2026-10-15); each step's target fits its activity; the test content uses every block kind; every set has a known `kind`; what blocks read to; 24 refusals with their reasons; targets met and not met for each screen, near the line; MusicXML written in a lesson: a whole file whose bars fit their time signature (V13); a set's `play` (re-check V32); a catalogue piece named by a score block and a step, and the content check refusing an unknown `u-` id and bars past its end (2026-10-15) | 80 today (the count is printed) |
+| `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads and is in its index; the piece, set or chart each names exists and its bars are inside the piece (a piece: one of the app's scores or, by its `u-` id, a catalogue piece, with the index's bar count: `tests/named-pieces.mjs`, 2026-10-15); what one of each kind reads to; mistakes are refused with their reason (2026-10-14: index, names, read results, four more refusals; 2026-10-15: an unknown `u-` id, bars past a catalogue piece's end, a catalogue id without its `u-`); 2026-10-15, interfaces review: each file's title is text and a lab ladder's step words are known ones, which the reader lets through | 54 today (the count is printed) |
+| `path.mjs` | `npm run check:path` | The path's content format (`src/lesson/read.ts`, `text.ts`) and when a step counts as done (`src/lesson/result.ts`; owner, 2026-10-15): every rung and lesson in `public/content/path` reads and is in the index; what each names exists (pieces and bars, sets, activities, files; a piece in a score block or a step's activity may be a catalogue piece by its `u-` id, 2026-10-15); each step's target fits its activity; the test content uses every block kind; every set has a known `kind`; what blocks read to; 24 refusals with their reasons; targets met and not met for each screen, near the line; MusicXML written in a lesson: a whole file whose bars fit their time signature (V13); a set's `play` (re-check V32); a catalogue piece named by a score block and a step, and the content check refusing an unknown `u-` id and bars past its end (2026-10-15); every set and chart a step names, and a score block's set item in its set (2026-10-15, interfaces review: the reader takes any) | 86 today (the count is printed) |
 | `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices, swing, drums, repeated strikes and lengths (2026-10-14), a band file's parts and picking them, beams, held notes, the pedal, count-ins and a default C major (2026-10-15), a channel that changes instrument and a one-track file's part names (review B7-01/02), releases as a player lets the keys go and the check's staff and length (review M1–M3, B3-03), a played file with the pedal written one voice a hand and a notation export's gate undone (owner's answers A5, A6), rests that show the beat | 205 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
 | `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, rests (one voice's rests drawn one after another are one), short rests, rests drawn on another voice's notes, rests hiding the beat, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML (rest symbols printed, not guarded); six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one, or fewer of a catalogue conversion's notes are as the engraving writes them (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages, a page stored as JPEG 2000 (`fixtures/pdf/jpx.pdf`, made by `make-jpx-pdf.py`) and the old fixture through pdf.js's Node build with its JPEG 2000 decoder (fails if its canvas library cannot load); adding and removing a line keeps the other lines' splits (2026-10-14) | 58 (+ 7 old screen cases printed as skipped, with the reason) |
@@ -18,6 +18,7 @@ no longer exists.
 | `wake.mjs` | `npm run check:wake` | The screen wake lock (`src/wake.ts`): a lock granted after you left is let go; one request at a time | 4 |
 | `practice.mjs` | `npm run check:practice` | The Play along judge (`src/practice.ts`) around a mash: none of its keys counted as wrong keys, a right note inside it still counted | 4 |
 | `exercise.mjs` | `npm run check:exercise` | The exercise screen's judges driven with stand-ins (2026-10-15): a timed name-only Drill card holds the key pressed, not the written octave's; Simon's best is the whole chain played in one go, not one finished from the miss; Drills deal a pool like a shuffled deck | 15 |
+| `content.mjs` | `npm run check:content` (in `npm run check`) | The content formats no other check reads (2026-10-15, interfaces review; `docs/app-features.md` §1, §5b, §5c, §6): the song list (`public/scores/index.json`: every field, ids, files there, every score file listed), every exercise set (its items and `from`, stricter than `exercise/items.ts`, which takes options of another kind or type, an empty set, a misspelt `from` field, and hangs on a chord octave that is not a whole number; the sets without MusicXML read with the app's reader), the lab's index, charts and styles (read with `lab/music.ts`, plus the nested keys and instrument names it ignores, each chart's style there and in its metre), and the catalogue index's header, rows and files. Each rule also refuses a bad case of its own | 66 today (the count is printed) |
 
 `midi.mjs` and `pdf.mjs` run under one small describe / it / expect (`tests/shim.mjs`; it was copied into both, 2026-10-14).
 
@@ -58,6 +59,9 @@ no longer exists.
   lab step that isn't a kind; a lab part typo; a misspelt top-level field; Memorise bars (not offered yet); a
   misspelt ladder key; a ladder step of the wrong part; a step of the other part; a step not in its ladder; a
   fraction of a card.
+- Content rules the reader lets through (2026-10-15, interfaces review): every shipped activity's `title` is text (the
+  reader quietly uses the id) and a lab ladder's written-out step has only `kind`, `name`, `detail`, `doing` (the reader
+  ignores a misspelt word); each refuses its bad case. Shown failing on `blues-roots.json` with `doing` misspelt.
 
 ## midi.mjs
 
@@ -244,6 +248,31 @@ no longer exists.
 
 - A set's `play` (re-check V32): none given is Wait for me; a mode, hands and tempo read; an unknown mode, Ladder, an
   unknown field and a tempo out of range are refused.
+
+- Names a lesson's reader takes on trust (2026-10-15, interfaces review): every set or chart a step's activity names
+  (written out, or in its file) is listed, and a score block's set item is one the set has (a set cut `from` a score is
+  not counted); bad cases refused: item 99 of chords-c, a set and a chart "nope". Shown failing with the test lesson's
+  item changed to 12.
+
+## content.mjs
+
+- Shipped content: `scores/index.json` (fields, needed fields, id form, no `u-`/`ex-` ids, unique, the file a `.musicxml`/`.xml`
+  in `scores/`, `source` fields, an https licence link, a known `kind`) and every score file listed; every set file listed
+  and every listed one there, its items and `from` as §6 says, and the sets with no MusicXML read by `readSet`; the lab
+  index's two lists and folders, each style and chart read by `readStyle`/`readChart`, `improvise`, `steps` (and step
+  words), `instruments` (a FluidR3 sound or piano), patterns as text, a chart's style there and in its metre; the
+  catalogue index (every field `catalogue.ts` reads, each row's length, id, kind, bars, its file there).
+- Refuses (each rule's own bad case, 38): song entries with a misspelt field, no file, no composer, a missing file, an
+  `.mxl`, a `u-` id, an id twice, an unknown kind, a `source` typo, a list that is not one; set items with a chord octave
+  "five" (the app hangs on it), an option of another kind, `together`/`arpeggio` as text, no items, items as a list or not
+  numbered, a name not text, a pitch or chord that is not one, a MusicXML item naming an `.mxl`; passages with a misspelt
+  field, no score, a score not listed, bars past the end, a staff as text; charts with a misspelt `improvise` or `steps`
+  key, a misspelt step word, a bar not text, a style not there or in another metre, a metre "4/0"; styles with a
+  misspelt instrument part, an instrument that is no sound, a drum pattern not text; a catalogue row a value short, an
+  index without `bars`.
+- Shown failing (2026-10-15) on real files changed by hand: a song entry with `licence`, a chord `octave: "3rd"` in
+  chords-c, `improvise: { scales }` in blues-c: three FAIL lines, exit 1.
+- Not here: MusicXML items and passages (the reader needs the browser's DOMParser; they are read in the browser).
 
 ## exercise.mjs
 

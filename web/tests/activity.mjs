@@ -21,10 +21,22 @@ const named = namedPieces();
 const sets = JSON.parse(readFileSync(pub('content/sets/index.json'), 'utf8'));
 const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).charts;
 const read = {};
+// (2026-10-15, interfaces review) What the reader lets through: a title that is not text is replaced by the id
+// (activity.ts:36), and a ladder step's misspelt words are ignored (lab/music.ts readLadder). Checked here for the files.
+const STEP_WORDS = ['kind', 'name', 'detail', 'doing'];
+function laxProblems(raw) {
+  const out = [];
+  if (raw.title !== undefined && !(typeof raw.title === 'string' && raw.title.trim())) out.push('title should be some text (the reader shows the id instead)');
+  for (const [role, list] of Object.entries(raw.preset?.steps ?? {})) if (Array.isArray(list)) for (const x of list) {
+    if (x && typeof x === 'object') for (const k of Object.keys(x)) if (!STEP_WORDS.includes(k)) out.push(`preset.steps.${role}: a step has "${k}", which is not one of ${STEP_WORDS.join(', ')}`);
+  }
+  return out;
+}
 for (const f of index) {
-  let a;
-  try { a = readActivity(f.replace(/\.json$/, ''), JSON.parse(readFileSync(new URL(f, dir), 'utf8'))); ok(`${f} reads (${a.screen})`, true); }
+  let a, raw;
+  try { raw = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); a = readActivity(f.replace(/\.json$/, ''), raw); ok(`${f} reads (${a.screen})`, true); }
   catch (e) { ok(`${f} reads`, false, e.message); continue; }
+  ok(`${f}: its title and ladder words as §8b says`, !laxProblems(raw).length, laxProblems(raw).join('; '));
   read[a.id] = a;
   if ('piece' in a) {
     ok(`${f}: its piece "${a.piece}" is in the scores or the catalogue`, !!named.barsOf(a.piece), named.problem(a.piece));
@@ -69,6 +81,10 @@ const refused = [
   ['a Simon level typo', { screen: 'simon', set: 's', level: { rungs: 2 } }, /level has "rungs"/],
   ['an empty piece', { screen: 'score', piece: '' }, /needs "piece"/],
 ];
+for (const [name, raw, want] of [
+  ['a title that is not text', { screen: 'freeplay', title: 5 }, /title should be some text/],
+  ['a ladder step with misspelt words', { screen: 'lab', chart: 'c', preset: { steps: { accompaniment: [{ kind: 'roots', nmae: 'x' }] } } }, /a step has "nmae"/],
+]) ok(`refused by the content check: ${name}`, laxProblems(raw).some((p) => want.test(p)), laxProblems(raw).join('; ') || 'accepted');
 for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }
   catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }
