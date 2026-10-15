@@ -691,6 +691,276 @@ try {
       await ctx.close();
     }
   }
+  // ---- Owner's answer A3 (2026-10-15; B1-04): a panel opened over what is running pauses it -------------------------
+  // Keys played while a panel is open count nothing, and closing it carries on: the score's judged modes (paused, the
+  // run kept: your next key carries it on), Wait for me and Memorise's waiting pass (they wait at the same notes),
+  // Memorise's timed pass and notes + rhythm test (they wait to start again), Simon (your turn waits; the chain being
+  // given is given again), Drills (a card waits; one whose clock ran starts its try again), the lab (the round is
+  // played again after a count-in); and turning the phone in Wait for me while the piano leads on. Control: Watch plays
+  // on. Run against the build before (`--url`), every case but the control and the page-error ones failed. Its own
+  // stand-in MIDI keyboard, as in the block above.
+  {
+    const fakeMidi = () => {
+      const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+      const access = { inputs: new Map([[input.id, input]]), outputs: new Map(), onstatechange: null };
+      Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+      window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+    };
+    async function keysPage() {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+      const page = await ctx.newPage();
+      await page.addInitScript(fakeMidi);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(BASE); await page.waitForTimeout(1500);
+      await page.mouse.click(200, 400); await page.waitForTimeout(300); // (the first tap starts MIDI and the sound)
+      return { ctx, page, errors };
+    }
+    const wait = (page, ms) => page.waitForTimeout(ms);
+    /** Keys pressed together, then let go. */
+    const chord = async (page, keys) => { await page.evaluate((ks) => { for (const k of ks) window.__key(k, true); }, keys); await wait(page, 60); await page.evaluate((ks) => { for (const k of ks) window.__key(k, false); }, keys); };
+    const press = (page, sel) => page.evaluate((s) => document.querySelector(s).click(), sel);
+    const closePanel = (page) => page.evaluate(() => document.querySelector('dialog[open] .dlg-x')?.click()); // its ✕
+    const isOpen = (page) => page.evaluate(() => !!document.querySelector('dialog[open]'));
+    const step = (page) => page.evaluate(() => window.__pianoDebug.state().step);
+    const struck = (page) => page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step));
+    const playing = (page) => page.evaluate(() => document.getElementById('play').textContent === '⏸');
+    const msg = (page) => page.evaluate(() => document.getElementById('message')?.textContent ?? '');
+    const lastEntry = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries.at(-1));
+    const until = async (page, f, ms = 8000) => { for (let t = 0; t < ms; t += 100) { if (await f()) return true; await wait(page, 100); } return false; };
+    const PANELS = { 'Tempo and sound': ['#open-tempo'], Display: ['#open-settings'], '⋯': ['#open-more'], 'Keyboard controls': ['#open-more', '#open-remote'], Songs: ['#open-songs'], 'ⓘ': ['#open-info'] };
+    const openPanel = async (page, kind) => { for (const sel of PANELS[kind]) await press(page, sel); await wait(page, 150); };
+
+    // The score, Play along (both hands, BWV 514): started by its first note, a panel opened, two keys the score does
+    // not have played behind it, closed, carried on with the note at the marker, stopped: the run's log has no wrong keys.
+    {
+      const { ctx, page, errors } = await keysPage();
+      await page.selectOption('#q-mode', 'along'); await press(page, '#q-hands button[data-hands="both"]');
+      for (const kind of Object.keys(PANELS)) {
+        await chord(page, (await struck(page)).slice(0, 1)); await wait(page, 500);
+        const started = await playing(page);
+        await openPanel(page, kind);
+        const a = await step(page);
+        for (let i = 0; i < 2; i++) { await chord(page, [30]); await wait(page, 150); }
+        await wait(page, 700);
+        const during = { playing: await playing(page), moved: (await step(page)) - a, open: await isOpen(page) };
+        await closePanel(page); await wait(page, 200);
+        const said = await msg(page);
+        await chord(page, (await struck(page)).slice(0, 1)); await wait(page, 500);
+        const carried = await playing(page);
+        await press(page, '#play'); await wait(page, 400); // ■: the run ends with its summary
+        const e = await lastEntry(page);
+        await closePanel(page); await wait(page, 200); // (the summary)
+        ok(`A3 score, Play along, ${kind}: paused (keys behind it not counted), carries on from a key`, started && during.open && !during.playing && during.moved === 0 && /panel/.test(said) && carried && e?.result?.wrongKeys === 0,
+          `started ${started}; while open ${JSON.stringify(during)}; said "${said}"; carried on ${carried}; logged wrong keys ${e?.result?.wrongKeys}`);
+      }
+      ok('A3 score, Play along: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Rhythm (any key is a tap) pauses the same way; Watch plays on (control: nothing is judged).
+    {
+      const { ctx, page, errors } = await keysPage();
+      await page.selectOption('#q-mode', 'rhythm');
+      await chord(page, [60]); await wait(page, 500);
+      await openPanel(page, 'Tempo and sound');
+      const a = await step(page);
+      await chord(page, [60]); await wait(page, 800);
+      const during = { playing: await playing(page), moved: (await step(page)) - a };
+      await closePanel(page); await wait(page, 200);
+      await chord(page, [60]); await wait(page, 400);
+      const carried = await playing(page);
+      await press(page, '#play'); await wait(page, 300); await closePanel(page);
+      ok('A3 score, Rhythm, Tempo and sound: paused, carries on from a key', !during.playing && during.moved === 0 && carried, `while open ${JSON.stringify(during)}; carried on ${carried}`);
+      await page.selectOption('#q-mode', 'watch');
+      await press(page, '#play'); await wait(page, 800);
+      await openPanel(page, 'Tempo and sound');
+      const w = await step(page); await wait(page, 1500);
+      const watch = { playing: await playing(page), moved: (await step(page)) - w };
+      await closePanel(page); await press(page, '#play');
+      ok('A3 score, Watch (control): a panel does not pause it', watch.playing && watch.moved > 0, JSON.stringify(watch));
+      ok('A3 score, Rhythm and Watch: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Wait for me: the right keys behind Display do not move the marker; closed, they do.
+    {
+      const { ctx, page, errors } = await keysPage();
+      await page.selectOption('#q-mode', 'wait');
+      await press(page, '#play'); await wait(page, 1000);
+      await chord(page, await struck(page)); await wait(page, 500);
+      const a = await step(page);
+      await openPanel(page, 'Display');
+      await chord(page, await struck(page)); await wait(page, 500);
+      const behind = (await step(page)) - a;
+      await closePanel(page); await wait(page, 200);
+      await chord(page, await struck(page)); await wait(page, 500);
+      const after = (await step(page)) - a;
+      ok('A3 score, Wait for me, Display: the right keys behind it do not move the marker; closed, they do', a > 0 && behind === 0 && after > 0, `marker at ${a}; moved behind the panel ${behind}, after closing ${after}`);
+      ok('A3 score, Wait for me: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Memorise: a pass waiting for your notes (no hint behind Settings, the marker stays; closed, it goes on), a timed
+    // pass (behind Settings it stops and waits to start again; closed, your first note starts it), and the test, notes
+    // (waits, as the waiting pass) and notes + rhythm (timed: starts again), every bar marked learned beforehand.
+    for (const kind of ['waiting pass', 'timed pass', 'test, notes', 'test, notes + rhythm']) {
+      const { ctx, page, errors } = await keysPage();
+      const timed = /timed|rhythm/.test(kind), test = /test/.test(kind);
+      if (test) {
+        const bars = Array.from({ length: 400 }, (_, m) => m); // (more than the piece has: all of them learned)
+        await page.evaluate((b) => localStorage.setItem('piano-web.memorise.v1', JSON.stringify({ learned: { 'bach-bwv514|both': b, 'bach-bwv514|right': b, 'bach-bwv514|left': b } })), bars);
+        await page.reload(); await wait(page, 1500); await page.mouse.click(200, 400); await wait(page, 300);
+      }
+      await press(page, '#open-more'); await press(page, '#open-memorise'); await wait(page, 1500);
+      if (kind === 'timed pass') { await press(page, '#memo-settings'); await press(page, 'input[name="m-timing"][value="yes"]'); await closePanel(page); await wait(page, 300); }
+      const say = () => page.evaluate(() => document.getElementById('memo-say').textContent);
+      if (test) {
+        await press(page, '#memo-test'); await wait(page, 300);
+        await page.evaluate((r) => [...document.querySelectorAll('#memo-offers button')].find((b) => (r ? /rhythm/ : /Test: notes \(/).test(b.textContent))?.click(), timed);
+      } else await press(page, '#memo-go');
+      const ready = await until(page, async () => /Your turn|Test: the whole piece from memory \(/.test(await say()), 15000); // (the test: once begun, not its offer)
+      await chord(page, await struck(page)); await wait(page, 600);
+      const a = await step(page), going = await say();
+      await press(page, '#memo-settings'); await wait(page, 150);
+      if (!timed) {
+        await chord(page, await struck(page)); await wait(page, 3500); // (and longer than the 3 s hint)
+        const behind = { moved: (await step(page)) - a, hint: await page.evaluate(() => document.querySelectorAll('#keyboard .now-r').length + /Next:/.test(document.getElementById('memo-say').textContent)) };
+        await closePanel(page); await wait(page, 200);
+        await chord(page, await struck(page)); await wait(page, 500);
+        const after = (await step(page)) - a;
+        ok(`A3 Memorise, ${kind}, Settings: keys behind it count nothing and no hint comes; closed, it goes on`, ready && /rom memory…/.test(going) && behind.moved === 0 && !behind.hint && after > 0,
+          `ready ${ready}, "${going}"; behind the panel ${JSON.stringify(behind)}; after closing moved ${after}`);
+      } else {
+        await wait(page, 1500);
+        const behind = { playing: await page.evaluate(() => window.__pianoDebug.state().playing), say: await say() };
+        await closePanel(page); await wait(page, 200);
+        await chord(page, await struck(page)); await wait(page, 400);
+        const after = { playing: await page.evaluate(() => window.__pianoDebug.state().playing), say: await say() };
+        ok(`A3 Memorise, ${kind}, Settings: it stops and waits to start again; closed, your first note starts it`, ready && /rom memory…/.test(going) && !behind.playing && /Your turn|Test: the whole piece from memory \(/.test(behind.say) && after.playing && /rom memory…/.test(after.say),
+          `ready ${ready}, "${going}"; behind the panel ${JSON.stringify(behind)}; after ${JSON.stringify(after)}`);
+      }
+      ok(`A3 Memorise, ${kind}: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Simon (five notes in C, keys lit): on your turn the wanted key behind Level counts nothing; closed, it does. The
+    // next chain, being given when Level opens, is not given behind it (no turn starts); closed, it is given again.
+    {
+      const { ctx, page, errors } = await keysPage();
+      await press(page, '#open-more'); await press(page, '#open-simon'); await wait(page, 1500);
+      const wanted = () => page.evaluate(() => window.__pianoDebug.simon());
+      const status = () => page.evaluate(() => document.getElementById('ex-status').textContent);
+      await chord(page, [60]);
+      const turn = await until(page, async () => (await wanted()).length > 0);
+      const w = await wanted();
+      await press(page, '#ex-level'); await wait(page, 150);
+      await chord(page, w[0]); await wait(page, 400);
+      const behind = { wanted: (await wanted()).length, status: await status() };
+      await closePanel(page); await wait(page, 200);
+      await chord(page, w[0]); await wait(page, 200);
+      const done = await status();
+      await press(page, '#ex-level'); await wait(page, 3000); // (the next chain is due 0.7 s after the ✓)
+      const giving = { wanted: (await wanted()).length, status: await status() };
+      await closePanel(page);
+      const again = await until(page, async () => /Listen/.test(await status()), 2000);
+      const next = await until(page, async () => (await wanted()).length === 2, 8000);
+      ok('A3 Simon, Level on your turn: the wanted key behind it counts nothing; closed, it does', turn && behind.wanted === w.length && !/✓/.test(behind.status) && /✓/.test(done),
+        `turn ${turn} (${JSON.stringify(w)}); behind the panel ${JSON.stringify(behind)}; after closing "${done}"`);
+      ok('A3 Simon, Level while the next chain is given: no turn behind it; closed, the chain is given again', giving.wanted === 0 && again && next, `behind the panel ${JSON.stringify(giving)}; given again ${again}; your turn at chain 2 ${next}`);
+      ok('A3 Simon: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Drills: a notes-only card (five notes in C) played whole behind Level counts nothing, closed it does; a timed card
+    // (scales, steady quavers, after a count-in) whose clock runs when Level opens does not finish behind it, and starts
+    // its try again (the count-in) when it closes.
+    {
+      const { ctx, page, errors } = await keysPage();
+      await press(page, '#open-more'); await press(page, '#open-drills'); await wait(page, 1500);
+      const d = () => page.evaluate(() => window.__pianoDebug.drill());
+      await page.selectOption('#ex-set', 'five-notes-c'); await wait(page, 300);
+      await chord(page, [60]);
+      await until(page, async () => (await d()).state === 'turn');
+      const card = (await d()).steps.map((s) => s.keys);
+      await press(page, '#ex-level'); await wait(page, 150);
+      for (const k of card) { await chord(page, k); await wait(page, 120); }
+      await wait(page, 300);
+      const behind = (await d()).state;
+      await closePanel(page); await wait(page, 200);
+      for (const k of card) { await chord(page, k); await wait(page, 120); }
+      await wait(page, 300);
+      const after = { state: (await d()).state, status: await page.evaluate(() => document.getElementById('ex-status').textContent) };
+      ok('A3 Drills, Level over a notes-only card: the card played behind it counts nothing; closed, it does', card.length > 0 && behind === 'turn' && after.state === 'result' && /Clean/.test(after.status),
+        `${card.length} notes; behind the panel "${behind}"; after closing ${JSON.stringify(after)}`);
+      await page.selectOption('#ex-set', 'scales-up'); await wait(page, 300);
+      await chord(page, [60]);
+      const running = await until(page, async () => { const x = await d(); return x.state === 'turn' && x.started; }, 10000);
+      await press(page, '#ex-level'); await wait(page, 150);
+      const t = await d();
+      await wait(page, 600 + Math.max(...t.steps.map((s) => s.t)));
+      const timedBehind = (await d()).state;
+      await closePanel(page); await wait(page, 300);
+      const timedAfter = await d();
+      ok('A3 Drills, Level while a timed card\'s clock runs: it does not finish behind it; closed, its try starts again', t.timed && running && timedBehind === 'turn' && timedAfter.state === 'countin' && !timedAfter.started,
+        `timed ${t.timed}, clock running ${running}; behind the panel "${timedBehind}"; after closing ${timedAfter.state}, started ${timedAfter.started}`);
+      ok('A3 Drills: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // The lab (owner, 2026-10-15: option b): ⚙ while the band plays pauses it; keys behind it count nothing; closed, a
+    // bar of count-in leads back into the start of the round it stopped in, the same run; the dropped round is not
+    // counted. Accompaniment, Roots, looping bar 1 (a round is one bar), paused in the second round.
+    {
+      const { ctx, page, errors } = await keysPage();
+      await press(page, '#open-more'); await press(page, '#open-lab'); await wait(page, 1500);
+      const lab = () => page.evaluate(() => window.__pianoDebug.lab());
+      if ((await lab()).role !== 'accomp') await press(page, '#lab-role-accomp');
+      for (let i = 0; i < 2; i++) await page.evaluate(() => document.querySelector('#lab-grid .lab-bar').click()); // loop bar 1
+      await press(page, '#lab-start');
+      const inRound = await until(page, async () => { const x = await lab(); return x.running && x.where.round === 1 && x.where.pos > 300; }, 20000); // (running: the sounds may still be loading)
+      const bar = (await lab()).beatMs * 4;
+      await press(page, '#lab-band'); await wait(page, 300);
+      const behind = await lab();
+      for (const k of [48, 60, 36]) { await chord(page, [k]); await wait(page, 100); } // C, the root, behind the panel
+      await wait(page, 400);
+      const later = await lab();
+      await closePanel(page); await wait(page, 150);
+      const counting = { where: (await lab()).where, said: await page.evaluate(() => document.getElementById('lab-where').textContent) };
+      const back = await until(page, async () => { const w = (await lab()).where; return w.round === 1 && w.pos >= 0 && w.pos < bar / 2; }, 6000);
+      await until(page, async () => (await lab()).where.round === 2, 6000); // the replayed round, unplayed, is over
+      await wait(page, 200);
+      await press(page, '#lab-stop'); await wait(page, 400);
+      const e = await lastEntry(page);
+      const rounds = (e?.result?.rounds ?? []).map((r) => `${r.round}:${r.bars ?? ''}${r.stoppedInBar ? ' stopped' : ''}`);
+      ok('A3 lab, ⚙ while the band plays: paused, keys behind it count nothing', inRound && behind.running && behind.paused === 1 && later.where.pos === behind.where.pos && later.where.round === behind.where.round,
+        `in round 2 ${inRound}; with ⚙ open ${JSON.stringify({ running: behind.running, paused: behind.paused, where: behind.where })}, 0.7 s later ${JSON.stringify(later.where)}`);
+      ok('A3 lab, ⚙ closed: a bar of count-in, then the round it stopped in from its start', counting.where.round === -1 && /count-in/.test(counting.said) && back,
+        `after closing ${JSON.stringify(counting)}; back at the round's start ${back}`);
+      ok('A3 lab, the dropped round is not counted: one run, each round once, the replayed one judged on what came after', e?.screen === 'lab' && rounds.length >= 2 && rounds[0].startsWith('1:') && rounds[1] === '2:1:miss' && new Set(rounds.map((r) => r.split(':')[0])).size === rounds.length,
+        `logged rounds ${JSON.stringify(rounds)}`);
+      ok('A3 lab: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // Wait for me, turning the phone while the piano leads on to your next notes (left hand yours, the piano plays the
+    // right): the run carries on and waits at your next notes, as it does when it was waiting (before: it ended).
+    {
+      const { ctx, page, errors } = await keysPage();
+      await page.selectOption('#q-mode', 'wait'); await press(page, '#q-hands button[data-hands="left"]');
+      await press(page, '#play'); await wait(page, 1000);
+      const mine = () => page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step, 'left'));
+      let leading = false;
+      for (let i = 0; i < 12 && !leading; i++) {
+        await chord(page, await mine());
+        leading = await page.evaluate(() => window.__pianoDebug.state().playing);
+        if (!leading) await wait(page, 300);
+      }
+      await page.setViewportSize({ width: 844, height: 390 }); await wait(page, 1500);
+      const after = { running: await playing(page), step: await step(page) };
+      await chord(page, await mine()); await wait(page, 800);
+      const moved = (await step(page)) - after.step;
+      ok('A3 Wait for me, the phone turned while the piano leads on: the run carries on at your next notes', leading && after.running && moved > 0,
+        `piano leading when turned ${leading}; after turning ${JSON.stringify(after)}; your notes then moved the marker ${moved}`);
+      ok('A3 Wait for me, turned: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+  }
+  // ---- end of A3 -------------------------------------------------------------------------------------------------
 } finally {
   await browser?.close();
   stop();

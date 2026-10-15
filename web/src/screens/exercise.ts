@@ -193,6 +193,8 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     musicRange: (): KeyRange | null => ((exerciseKind === 'drill' ? drill.anyOctaveNow : simon.anyOctaveNow) ? { lo: 0, hi: 127 } : exerciseKeys.span),
     // Turning the phone can change the kind of screen, and each has its own look.
     resized: () => { if (isOpen()) fillExerciseDisplay(); },
+    // A panel (Level) over the game or the card: it pauses, and carries on when it closes (owner, 2026-10-15).
+    panel: (open: boolean) => { if (exerciseKind === 'drill') drill.panel(open); else simon.panel(open); },
     get busy() { return isOpen(); },
     debug: () => ({ simon: simon.expected(), drill: drill.debug() }),
   };

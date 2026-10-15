@@ -13,10 +13,10 @@ no longer exists.
 | `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, rests (one voice's rests drawn one after another are one), short rests, rests drawn on another voice's notes, rests hiding the beat, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML (rest symbols printed, not guarded); six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one, or fewer of a catalogue conversion's notes are as the engraving writes them (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages, a page stored as JPEG 2000 (`fixtures/pdf/jpx.pdf`, made by `make-jpx-pdf.py`) and the old fixture through pdf.js's Node build with its JPEG 2000 decoder (fails if its canvas library cannot load); adding and removing a line keeps the other lines' splits (2026-10-14) | 58 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`, and for the three committed MIDI fixtures as the app converts them; not where in the bar, how long, or which staff; every run also changes one note in the app's copy of the first song and must catch it (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song + 3 converted + the caught change; `--corrupt` must fail |
-| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 54 |
+| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys; a panel opened over what is running pauses it (owner, 2026-10-15, A3: the score's modes, Memorise's passes and test, Simon, Drills, the lab's ⚙; Watch as a control), turning the phone in Wait for me while the piano leads on (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 86 |
 | `wake.mjs` | `npm run check:wake` | The screen wake lock (`src/wake.ts`): a lock granted after you left is let go; one request at a time | 4 |
 | `practice.mjs` | `npm run check:practice` | The Play along judge (`src/practice.ts`) around a mash: none of its keys counted as wrong keys, a right note inside it still counted | 4 |
-| `exercise.mjs` | `npm run check:exercise` | The exercise screen's judges driven with stand-ins (2026-10-15): a timed name-only Drill card holds the key pressed, not the written octave's; Simon's best is the whole chain played in one go, not one finished from the miss | 10 |
+| `exercise.mjs` | `npm run check:exercise` | The exercise screen's judges driven with stand-ins (2026-10-15): a timed name-only Drill card holds the key pressed, not the written octave's; Simon's best is the whole chain played in one go, not one finished from the miss; Drills deal a pool like a shuffled deck | 15 |
 
 `midi.mjs` and `pdf.mjs` run under one small describe / it / expect (`tests/shim.mjs`; it was copied into both, 2026-10-14).
 
@@ -216,6 +216,11 @@ no longer exists.
 - Simon, a five-note passage read from the music: chains 1-3 whole are bests 1-3; chain 4 missed at its last item and
   finished from there (the replay asks for that item only) is not a best of 4 nor the game's longest; chain 5 whole is
   a best of 5; with "the whole chain again" chain 4 replayed whole is a best of 4. The third fails before 2026-10-15.
+- Drills deal a pool like a shuffled deck (owner, 2026-10-15, A1): three notes-only cards, each skipped with Next.
+  40 sets of 5 each hold all three items; 40 sets of 6 each hold every item twice; an endless set of 300 cards has
+  the three items in every three cards in turn and never the same card twice running (across every reshuffle); a new
+  set never starts with the card the last one ended on. The first three fail on the code before (cards drawn at random:
+  e.g. C4 D4 C4 D4 C4); the last two are controls that passed before too (it already never drew a card twice running).
 
 ## Browser checks
 
@@ -247,3 +252,23 @@ your runs, one that opens is (control), and a Simon activity overtaken by openin
 load is not; a mouse pressed on an on-screen key and let go off the keyboard lets it go (score in Wait for me, Free
 play, Simon). Run against the build before these fixes (`--url`), all 7 of these checks failed (the page-error ones
 pass on both).
+
+The block "Owner's answer A3" (2026-10-15) opens a panel over each kind of thing that judges your keys and plays keys
+behind it through the stand-in MIDI keyboard. Score, Play along (BWV 514, both hands), once with each panel (Tempo and
+sound, Display, ⋯, Keyboard controls, Songs, ⓘ): started by its first note, two keys the score does not have played
+behind the panel; it must be paused (not playing, the marker still), say "Paused while a panel was open", carry on from
+the note at the marker, and log no wrong keys. Rhythm: paused, carries on. Wait for me and Memorise's waiting pass and
+notes test: the right keys behind the panel do not move the marker (Memorise: and no hint lights in 3.5 s; without a
+panel it lights by then), closed they do. Memorise's timed pass and notes + rhythm test (every bar marked learned in
+storage first): behind Settings not playing and waiting for your turn again; closed, the first note starts it. Simon
+(five notes): the wanted key behind Level counts nothing, closed it finishes the chain; Level opened just after the ✓:
+no turn starts behind it, closed the chain is given again and it is your turn at chain 2. Drills: a notes-only card
+played whole behind Level is still waiting, closed it comes out clean; a timed card (scales) whose clock runs does not
+reach its result behind Level, closed it is back at the count-in. The lab (accompaniment, Roots, bar 1 looped so a
+round is one bar): ⚙ opened in the second round leaves it paused with the clock still and keys behind it unplayed;
+closed, it is in a count-in and then at the start of that round; the log has rounds 1 and 2 once each, round 2 judged
+on what came after (all missed: the keys behind ⚙ did not count). Wait for me (left hand yours), the viewport turned
+to 844×390 while the piano leads on to your next note: still running and your next notes move the marker. Control:
+Watch plays on behind Tempo and sound. Run against the build before (`0d3267fd`, `--url`), the 20 A3 cases failed
+(e.g. Play along still playing, the marker 2–3 notes on, 2 wrong keys logged; the lab stopped by ⚙; Wait for me ended
+by turning); the control and the page-error cases passed, and so did every earlier case.

@@ -843,6 +843,30 @@ export class Memorise {
     this.d.changed();
   }
 
+  /**
+   * A panel (Settings, …) opened over your turn (owner, 2026-10-15, A3): keys don't count while it is open
+   * (main.ts) and it carries on after, as when the music is laid out again: a pass waiting for your notes waits at the
+   * note it waited for (no hint comes meanwhile; the piano leading on stops); a timed pass or the notes + rhythm test
+   * stops and waits to start again from where it began (its clock cannot carry on; nothing of it is kept). Listening,
+   * and the moments between, carry on (nothing is judged).
+   */
+  private heldForPanel = false;
+  panel(open: boolean): void {
+    if (open) {
+      if (this.phase !== 'turn') return;
+      if (this.timing()) { this.halt(); this.ready(this.from); return; }
+      this.halting = true;
+      if (this.d.view.playing) this.d.view.pause();
+      this.halting = false;
+      this.d.sound.stop();
+      this.d.practice.hold();
+      this.heldForPanel = true;
+      return;
+    }
+    if (this.heldForPanel && this.phase === 'turn' && !this.timing()) this.d.practice.release();
+    this.heldForPanel = false;
+  }
+
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per session, from ▶ (or a test) to ■ or Done ----------
 
   private log: { run: Run; passes: Record<string, unknown>[]; learned: string[]; tests: Record<string, unknown>[] } | null = null;

@@ -327,8 +327,20 @@ export class Practice {
     let i = this.view.index + 1;
     while (i < end && !this.view.struckAt(i, hand).length) i++;
     if (i < end) { this.view.goTo(i); this.arrive(); return; }
-    if (this.pass) { this.loopBack(); return; }
+    if (loop) { this.loopBack(); return; } // (a pass ends there; a loop goes round)
     this.view.goTo(this.view.stepCount - 1); this.stop(); this.onDone();
+  }
+
+  /**
+   * A panel opened over Wait for me or Memorise's waiting pass (owner, 2026-10-15): nothing is due while it is open, so
+   * no hint comes (the caller stops the piano leading on). release(): it closed: the hint waits from now, or (the piano
+   * was leading on) it waits at your next notes, as after the music is laid out again.
+   */
+  hold(): void { clearTimeout(this.hintTimer); }
+  release(): void {
+    if (this.running !== 'wait') return;
+    if (this.expected.size) this.armHint();
+    else this.carryOn();
   }
 
   /** Wait for me in a loop: back to its start, waiting for your first notes there. */

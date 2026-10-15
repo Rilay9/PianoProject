@@ -91,7 +91,17 @@ midi.onKey = (e) => {
   holds.key(e.midi, e.on, e.time); // how long each note sounds (every key, the score's touch keys too)
   app.strip.setPressed(midi.down);
   if (remote.take(e)) return;
+  if (e.on && app.dialogOpen() && showing().panel) return; // a panel is open: keys don't count (letting go still does)
   showing().key(e);
+};
+// A panel over what is running (owner, 2026-10-15, A3): it pauses, and carries on when the panel closes. The screen
+// it opened over is told both, even if another screen showed meanwhile (it then finds its run gone and does nothing).
+let underPanel: Screen | null = null;
+app.onPanel = (open) => {
+  if (open) { underPanel = showing(); underPanel.panel?.(true); return; }
+  const s = underPanel;
+  underPanel = null;
+  s?.panel?.(false);
 };
 midi.onPedal = (down, time) => holds.sustain(down, time);
 window.addEventListener('resize', () => { for (const s of app.screens) s.resized(); });

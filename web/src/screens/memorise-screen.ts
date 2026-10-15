@@ -316,6 +316,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     },
     musicRange: (): KeyRange | null => scoreScreen.musicRange(),
     resized: () => scoreScreen.resized(),
+    panel: (open: boolean) => { if (isOpen) memorise.panel(open); },
     get busy() { return isOpen && memorise.active; },
   };
 }

@@ -4,6 +4,8 @@
 //   it sounded must be looked up by the key actually pressed (B3-01: a short C5 for a written C4 was "held").
 // - Simon, "again from the miss": playing on from the miss finishes the chain (practice), but only the whole chain
 //   played in one go, unhelped, is a best (B3-02: a replayed last item gave the whole chain as a best).
+// - Drills deal a pool like a shuffled deck (owner, 2026-10-15, A1; B8-01: a set of 5 from 3 items was drawn at
+//   random): every item once before any repeats, then shuffled again, never the same card twice running.
 // Run: npm run check:exercise.
 const timers = new Map();
 let nextId = 1, clock = 0;
@@ -109,6 +111,43 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
   check('from the miss: chain 5 then played whole is a best of 5', fromMiss.seen[5] === 5, String(fromMiss.seen[5]));
   const whole = await game('all');
   check('the whole chain again: chain 4 replayed whole after the miss is a best of 4', JSON.stringify(whole.expected) === '[60,62,64,65]' && whole.seen[3] === 4 && whole.seen[4] === 4, `${JSON.stringify(whole.expected)} best ${whole.seen[3]}, longest ${whole.seen[4]}`);
+}
+
+// ---- Drills: a pool dealt like a shuffled deck (A1) -----------------------------------------------------------------
+// Three notes-only cards (no timing); each card is skipped with Next, and the cards dealt are read off as they come.
+{
+  const set = { id: 't-deck', title: 'test', order: 'pool', tempo: 80, items: ['C4', 'D4', 'E4'].map((n, i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
+  async function deal(cards, sets = 1) {
+    store.clear();
+    const d = new Drill(parts(), keysStub(), notation, sound), names = [];
+    d.open([set]);
+    d.setLevel({ rung: 3, start: 'first', onTime: 'notes', metronome: false, cards });
+    for (let k = 0; k < sets; k++) {
+      if (k === 0) d.key(60, true, 1); // (Ready: any key starts a set)
+      else await d.begin(); // (the set's end: New set)
+      await settle();
+      const one = [];
+      while (d.state === 'turn' && one.length < (cards || 300)) { one.push(d.card.item.name); d.skip(); d.nextCard(); await settle(); }
+      names.push(one);
+    }
+    d.close();
+    return names;
+  }
+  const counts = (xs) => ['C4', 'D4', 'E4'].map((n) => xs.filter((x) => x === n).length).join();
+  const twiceRunning = (xs) => xs.findIndex((x, i) => i > 0 && x === xs[i - 1]);
+  // Many sets, since a random draw passes a single set by chance (5 from 3 holds all 3 about half the time).
+  const fives = await deal(5, 40), sixes = await deal(6, 40);
+  const badFive = fives.find((s) => counts(s).split(',').includes('0'));
+  check('a set of 5 from 3 items holds all 3 (40 sets)', !badFive && fives.every((s) => s.length === 5), JSON.stringify(badFive ?? fives.find((s) => s.length !== 5)));
+  const badSix = sixes.find((s) => counts(s) !== '2,2,2');
+  check('a set of 6 from 3 items holds each twice (40 sets)', !badSix, JSON.stringify(badSix));
+  const [endless] = await deal(0);
+  const notDeck = [...Array(Math.floor(endless.length / 3)).keys()].find((k) => counts(endless.slice(3 * k, 3 * k + 3)) !== '1,1,1');
+  check('endless: every three cards in turn are the three items (300 cards)', endless.length === 300 && notDeck === undefined, `${endless.length} cards; deal ${notDeck}: ${JSON.stringify(endless.slice(3 * notDeck, 3 * notDeck + 3))}`);
+  const run = twiceRunning(endless);
+  check('endless: never the same card twice running, across every reshuffle', run < 0, `card ${run}: ${JSON.stringify(endless.slice(run - 1, run + 1))}`);
+  const across = [...fives, ...sixes].findIndex((s, i, all) => i > 0 && i !== 40 && s[0] === all[i - 1].at(-1));
+  check('a new set never starts with the card the last one ended on', across < 0, `set ${across}`);
 }
 
 console.log(failures.length ? `${failures.length} failed` : 'all passed');

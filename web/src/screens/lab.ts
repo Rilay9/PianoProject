@@ -58,6 +58,10 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   // The last round's result, with what it was a result of (ctx) and, when ■ came in the middle of it, the bar it stopped in.
   let results: HitResult[] = [], lastRound: { ctx: string; marks: Map<number, Mark>; results: HitResult[]; improv?: Improv; stoppedBar?: number } | null = null;
   let roundsDone = 0, roundsPlayed = 0, loopBars: [number, number] | null = null, picking: number | null = null;
+  // A panel over the band (owner, 2026-10-15, A3 option b): the round it stopped in (dropped, judged again from its start
+  // after a bar of count-in when the panel closes) and the clock where it stopped; runFrom: the song time this stretch of
+  // the run starts at, after its count-in (0, or the start of the round carried on from).
+  let pausedRound: number | null = null, pausedT = 0, runFrom = 0;
 
   // An activity's preset (owner, 2026-10-13): its choices in force while it lasts (changed there if you change them),
   // never saved over yours; its ladder and style are content. Over when another chart is picked, or on Done.
@@ -257,19 +261,16 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     starting = true;
     startButtons();
     feedback('Getting the band ready…');
-    const p = parts(), sounds = ['piano', ...(p.drums ? ['drums'] : []), ...(p.bass ? [style.bassSound] : []), ...(p.chords && role() === 'lead' ? [style.chordSound] : [])];
     await midi.start().catch(() => {});
     sound.keyboard = null; // the band plays on the phone
-    // Each sound loads on its own: one that fails leaves the others to finish before the band starts.
-    const loaded = await Promise.allSettled(sounds.map((s) => sound.preparePart(s)));
+    await prepareBand();
     if (mine !== session || !isOpen) return; // stopped, closed or changed while it got ready
     starting = false;
-    unavailable = sounds.filter((_, i) => loaded[i].status === 'rejected');
     const { notes, beats } = events(withDemo);
     app.appSound();
     sound.mute([]);
     sound.play(notes, beats, -form.barBeats * form.beatMs, speed());
-    running = true; demo = withDemo; presses = []; held = new Map(); roundNow = -1; judged = new Set(); results = []; roundsDone = 0; roundsPlayed = 0; lastRound = null;
+    running = true; demo = withDemo; presses = []; held = new Map(); roundNow = -1; judged = new Set(); results = []; roundsDone = 0; roundsPlayed = 0; lastRound = null; runFrom = 0;
     logRun = { run: new Run(), rounds: [] };
     startButtons();
     $('lab-open').hidden = true;
@@ -284,7 +285,59 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     app.stayAwake();
   }
 
+  /** The band's sounds for what is chosen, each loaded on its own: one that fails leaves the others (named on the band line). */
+  async function prepareBand(): Promise<void> {
+    const p = parts(), s = style!, sounds = ['piano', ...(p.drums ? ['drums'] : []), ...(p.bass ? [s.bassSound] : []), ...(p.chords && role() === 'lead' ? [s.chordSound] : [])];
+    const loaded = await Promise.allSettled(sounds.map((x) => sound.preparePart(x)));
+    unavailable = sounds.filter((_, i) => loaded[i].status === 'rejected');
+  }
+
+  /**
+   * A panel opened over the band (owner, 2026-10-15, A3: option b): the band stops and the round it was in is dropped
+   * (its keys and marks forgotten: it is played again); keys don't count while the panel is open (main.ts). When the
+   * panel closes, a bar of count-in leads back into the start of that round, the same run: rounds before it stand, and
+   * the parts chosen in ⚙ meanwhile play from there.
+   */
+  function panel(open: boolean): void {
+    if (!isOpen) return;
+    if (open) {
+      if (starting) { cancelStart(); return; }
+      if (!running || pausedRound !== null) return;
+      const t = sound.songTime(), { round } = where(t);
+      pausedRound = round < 0 ? Math.round(runFrom / roundMs()) : round; // (in a count-in: the round it leads into)
+      pausedT = t;
+      clearInterval(ticker);
+      sound.stop();
+      sound.mute([]);
+      keys.clearMarks();
+      presses = presses.filter((x) => x.round < pausedRound!);
+      held = new Map();
+      results = [];
+      judged = new Set();
+      roundNow = -1; // (the dropped round never ends: it is not judged or logged)
+      feedback('Paused: the round starts again after a bar of count-in');
+      return;
+    }
+    if (pausedRound !== null && running) void carryOn(pausedRound);
+  }
+  async function carryOn(round: number): Promise<void> {
+    const mine = session;
+    await prepareBand(); // (a part switched on in ⚙)
+    if (mine !== session || !isOpen || !running || pausedRound !== round || !form) return; // stopped or closed meanwhile
+    pausedRound = null;
+    runFrom = round * roundMs();
+    const f = form, { notes, beats } = events(demo);
+    const countIn = Array.from({ length: f.barBeats }, (_, k) => ({ t: runFrom + (k - f.barBeats) * f.beatMs, accent: k === 0 }));
+    app.appSound();
+    sound.play(notes.filter((n) => n.t >= runFrom - 1), [...countIn, ...beats.filter((b) => b.t >= runFrom - 1)], runFrom - f.barBeats * f.beatMs, speed());
+    feedback('');
+    clearInterval(ticker);
+    ticker = window.setInterval(tick, 30);
+    tick();
+  }
+
   function stopRun(): void {
+    pausedRound = null;
     session++;
     starting = false;
     clearInterval(ticker);
@@ -301,8 +354,8 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   }
 
   /** Where the clock is (or was at song time t): the round (0, 1, ...) and the time in it (ms at the chart's tempo; before 0: the count-in). */
-  function where(t = sound.songTime()): { round: number; pos: number } {
-    if (t < 0) return { round: -1, pos: t };
+  function where(t = pausedRound !== null ? pausedT : sound.songTime()): { round: number; pos: number } {
+    if (t < runFrom) return { round: -1, pos: t - runFrom }; // the count-in
     const round = Math.floor(t / roundMs());
     return { round, pos: t - round * roundMs() };
   }
@@ -470,7 +523,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   function stop(): void {
     if (!running) return;
     const { round, pos } = where();
-    if (round >= 0 && !(demo && round === 0)) { judgeHits(round, pos); roundEnded(round, pos); }
+    if (pausedRound === null && round >= 0 && !(demo && round === 0)) { judgeHits(round, pos); roundEnded(round, pos); } // (a paused round was dropped)
     stopRun();
     endLog();
     showResult();
@@ -600,7 +653,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab-p-chords-label').hidden = role() === 'accomp';
     for (const r of bandDialog.querySelectorAll<HTMLInputElement>('input[name="lab-dropouts"]')) r.checked = r.value === dropouts();
   }
-  $('lab-band').addEventListener('click', () => { if (running) stop(); else cancelStart(); fillBand(); bandDialog.showModal(); });
+  $('lab-band').addEventListener('click', () => { if (!running) cancelStart(); fillBand(); bandDialog.showModal(); }); // (while the band plays: paused, see panel)
   bandDialog.addEventListener('change', (e) => {
     const t = e.target as HTMLInputElement;
     // An activity's preset choice changes for the activity; the rest are yours, saved.
@@ -616,12 +669,13 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   // Keys: from the MIDI keyboard and the screen's keys, timed on the band's clock at the moment the key moved (the
   // keyboard's own time, not when the page got round to it). A key's release is kept: a chord is its notes held together.
   keys.onKey = (m, on, time) => {
-    if (!running) return;
+    if (!running || pausedRound !== null) return;
     const songT = sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time)) * speed();
     if (!on) { const p = held.get(m); if (p) { p.off = songT - p.round * roundMs(); held.delete(m); } return; }
     let { round } = where(songT);
     // A shade before the next round (or the count-in's end) is the next round's first chord, played a little early.
-    if (round < 0 || songT - round * roundMs() > roundMs() - tol()) round++;
+    if (round < 0) round = Math.round(runFrom / roundMs());
+    else if (songT - round * roundMs() > roundMs() - tol()) round++;
     const p = { midi: m, t: songT - round * roundMs(), round, at: time };
     presses.push(p);
     held.set(m, p);
@@ -688,8 +742,9 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     // counts (chords any voicing, roots any octave, improvising anywhere), so every key is music then; stopped, the lit range.
     musicRange: (): KeyRange | null => (running ? { lo: 0, hi: 127 } : keys.span),
     resized: () => placeResult(),
+    panel,
     get busy() { return isOpen; },
-    debug: () => ({ running, demo, role: role(), step: role() === 'accomp' ? accompStep() : leadStep(), where: where(), results: results.map((r) => ({ bar: r.hit.bar, mark: r.mark, t: r.hit.t, until: r.hit.until, chord: r.hit.chord.symbol, pcs: r.hit.chord.pcs })), hits: form && style ? hits(form, style, accompStep()).map((h) => ({ t: h.t, until: h.until, bar: h.bar, voicing: voicing(h.chord), root: voicing(h.chord)[0] })) : [], beatMs: form?.beatMs, roundMs: roundMs(), speed: speed(), lastRound: lastRound ? { marks: [...lastRound.marks], improv: lastRound.improv } : null }),
+    debug: () => ({ running, paused: pausedRound, demo, role: role(), step: role() === 'accomp' ? accompStep() : leadStep(), where: where(), results: results.map((r) => ({ bar: r.hit.bar, mark: r.mark, t: r.hit.t, until: r.hit.until, chord: r.hit.chord.symbol, pcs: r.hit.chord.pcs })), hits: form && style ? hits(form, style, accompStep()).map((h) => ({ t: h.t, until: h.until, bar: h.bar, voicing: voicing(h.chord), root: voicing(h.chord)[0] })) : [], beatMs: form?.beatMs, roundMs: roundMs(), speed: speed(), lastRound: lastRound ? { marks: [...lastRound.marks], improv: lastRound.improv } : null }),
   };
 }
 

@@ -87,8 +87,14 @@ Starting: ▶, or just play your first note (any key on a rest; any key in Rhyth
 (and Memorise) the keys under the music can be played by touch, and count; on a phone upright they then show two
 octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in the timed modes they only show. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
-score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses), and carries on from your next key, or *See how it went* in the pause message ends the run with
-its summary; the parts add up to one summary. *Music while playing* off
+score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses; Wait for me waits at your
+next notes again, also when the piano was leading on to them: 2026-10-15), and carries on from your next key, or *See how it went* in the pause message ends the run with
+its summary; the parts add up to one summary. **A panel opened over a run** (Tempo and sound, Display, ⋯, Keyboard
+controls, Songs, ⓘ; owner, 2026-10-15) pauses it the same way ("Paused while a panel was open. Play to carry on."): keys
+played while it is open count nothing, and after it closes your next key carries the run on. Wait for me has no clock:
+behind a panel the piano leading on to your next notes stops and your keys don't count; closed, it waits at them
+again. A ▶ still getting ready when a panel opens is dropped. Watch plays on behind a panel (nothing is judged, and
+adjusting tempo or volume while listening is the point). `web/src/screens/score.ts` (`panel`). *Music while playing* off
 (Blind): the music hides while you play.
 
 **Fit for lessons:** any piece or short exercise score; choose the mode by goal (notes → Wait for me; tempo → Play
@@ -149,7 +155,11 @@ faded; sideways one line fitted to the height, the header and buttons fading ove
 says takes up to two lines, with the line under it (what next, the mark) shown sideways too. Sideways, a slip and the join question fit the line between the header
 and the buttons, the bars being learned from the left edge. Upright, the join question floats frosted over the music.
 Turning the phone or changing the size mid-pass carries on: a pass waiting for your notes goes on at the note it
-waited for; listening, or a timed pass, starts that again.
+waited for; listening, or a timed pass, starts that again. **Settings opened during your turn** (owner, 2026-10-15)
+pauses it: keys count nothing while it is open; a pass (or the notes test) waiting for your notes gives no hint
+meanwhile and, closed, waits at the same note; a timed pass (or the notes + rhythm test) stops, nothing of it kept, and
+waits to start again from where it began (its clock cannot carry on: the same rule as turning the phone). Listening and
+the moments between passes carry on.
 
 **Fit for lessons:** a piece (any score) once its notes are known; chunk size and "learned after" set the load.
 Known gap: with repeats, only the first time through is walked.
@@ -167,7 +177,9 @@ outlined, names what was due, and replays (the whole chain or from the missed it
 game over / keep going). Pools add a random item each round; passages grow in their own order; a completed passage
 is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
 one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15). While the Level panel is
-open a key does not start a game (as on the score; also Drills).
+open keys count nothing and start nothing (owner, 2026-10-15; also Drills): your turn has no clock, so it simply waits;
+a chain being given when it opens (played, shown, or again after a miss) stops and is given again from its start when
+it closes. A level changed there starts afresh.
 
 **Help levels** (shared with Drills): 1 music + sound + keys lit, 2 music + sound, 3 music only, 4 name only,
 5 by ear. **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
@@ -196,8 +208,10 @@ your first note (by ear: always your first note); the metronome can keep clickin
 
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
-cards: a retry never adds one; cards are drawn at random from the set, never the same one twice running, so a set of
-fewer than N items repeats some); a card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
+cards: a retry never adds one). A pool is dealt like a shuffled deck (owner, 2026-10-15): every item once before any
+comes again, then shuffled again, never the same card twice running (across a reshuffle or into the next set either), so
+a set of 5 from 3 items holds all 3 and 6 from 3 holds each twice; a passage gives its items in order, and *the misses
+again* in the order they were missed. A card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
 Help (*Hear it*, *Show me*, or the hint after 8 s without a key on a notes-only card, which names the notes when the keys aren't shown) is
 noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
 *Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
@@ -207,6 +221,11 @@ is drawn flashcard-size; with the result the music appears and the name sits sma
 make a card bigger than the score's biggest size, up to filling the room. A card never grows,
 so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
 A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
+**The Level panel over a card** (owner, 2026-10-15): keys count nothing while it is open, and the card carries on when
+it closes: one waiting for your first note, or a notes-only card, waits on (the 8 s hint counts from the close); one
+being played to you is played again; a count-in starts again; a card whose clock was running starts its try again
+(count-in or first note, as set; what was played before is dropped, and it is not a retry or help); a clean card's move
+to the next waits for the close. A level, tempo or set changed there starts afresh.
 
 **Content:** item sets (§6), one item per card; for sight-reading give MusicXML items with real rhythm; for
 name or scale cards give `notes`/`chord` items with a `name`, and `rhythm` in the set if timing should count.
@@ -256,7 +275,10 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
 - **After:** how it went, the next step once a step has two clean rounds, loop the bars that went wrong, try the other
   part. ■ in the middle of a round shows that round as far as it went, and it does not count. Tap bars in the box
   (stopped) to loop them: a loop is practice (no ✓ from it). A clean round below the chart's own tempo moves it up 5%
-  (as Ladder). A result shows only for the chart, part, step and bars it came from. The style is the chart's (content, not a choice; owner, 2026-10-13). ⚙: which band parts play (drums, bass,
+  (as Ladder). A result shows only for the chart, part, step and bars it came from. The style is the chart's (content, not a choice; owner, 2026-10-13). ⚙ while
+  the band plays pauses it (owner, 2026-10-15): the round it was in is dropped (not judged or logged; keys played while
+  ⚙ is open count nothing), and when ⚙ closes a bar of count-in leads back into the start of that round, the same run
+  (the rounds before it stand; parts switched in ⚙ play from there). ⚙ sets which band parts play (drums, bass,
   chords), the click, drop-outs (the drums or the whole band
   quiet in bars 5–6 of every 8 of the form, from the second round; their notes are left out of what the band plays,
   so they stop exactly at the bar). A part whose sound cannot be loaded is named on the band line; the rest play.
@@ -497,7 +519,7 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
 Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/exercise/items.ts`.
 
 ```json
-{ "title": "Chords in C", "order": "pool",            // pool: random items; passage: in order
+{ "title": "Chords in C", "order": "pool",            // pool: random items (Drills: a shuffled deck); passage: in order
   "tempo": 80,                                          // quarter notes a minute (default 80)
   "rhythm": "notes",                                    // Drills: items without written rhythm judged on notes only,
                                                         //   or a length in quarter notes, e.g. 0.5 = steady quavers
@@ -552,6 +574,10 @@ placeholders for checking the app, not lesson content.
   settings dialogs lay their groups out in two columns. Feedback may take two lines rather than being cut. Every
   dialog has a ✕ in its corner and a Done bar that stays in view while it scrolls (sideways the Done bar alone). The
   piano and click volumes and the click sound (Tempo panel) are the app's, for every screen.
+- **A panel pauses what is running** (owner, 2026-10-15): any dialog opened over the score, Memorise, Simon, Drills
+  or the lab pauses what judges your keys, keys played while it is open count nothing (letting go still registers), and it carries
+  on when the last panel closes (each screen's way: §1–4, §5b). One watch on every dialog (`app.ts` `onPanel`, `main.ts`,
+  `Screen.panel`); Free play, the library and the PDF reader judge nothing and are left as they were.
 - **The keyboard as a remote** (⋯ → Keyboard controls; `web/src/remote.ts`): every key passes through one filter
   first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
   is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are

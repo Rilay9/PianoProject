@@ -83,6 +83,7 @@ export class Drill {
   private ticker = 0;
   private hintTimer = 0;
   private last: Item | null = null;
+  private deck: Item[] = []; // a pool's cards still to deal before it is shuffled again (owner, 2026-10-15)
   private request = 0; // bumps when the set, level or screen changes: a start still getting the sound ready is dropped
   private redo = false; // "the misses again": not a set of its own, so never a best
   private passageAt = 0; // a passage: the next item to give (Again replays a card without moving this on)
@@ -125,7 +126,7 @@ export class Drill {
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.logSet(false); this.request++; this.stopAll(); this.on = false; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
+  close(): void { this.logSet(false); this.request++; this.stopAll(); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
   private run: Run | null = null;
@@ -204,13 +205,17 @@ export class Drill {
     this.redo = !!items;
     this.passageAt = 0;
     this.retrying = false;
+    this.deck = [];
     this.queue = items ? [...items] : [];
     this.limit = items ? items.length : this.level.cards || Infinity; // the misses again: just those
     this.ui.start.hidden = true;
     this.nextCard();
   }
 
-  /** The next card: from the misses being redone, the next of a passage, or a random one of a pool (not the same twice running). */
+  /**
+   * The next card: from the misses being redone, the next of a passage, or a pool dealt like a shuffled deck (owner,
+   * 2026-10-15): every item once before any comes again, then shuffled again, never the same card twice running.
+   */
   private nextCard(): void {
     this.retrying = false;
     if (this.results.length >= this.limit) { this.setDone(); return; }
@@ -218,8 +223,8 @@ export class Drill {
     if (this.queue.length) item = this.queue.shift()!;
     else if (this.set.order === 'passage') item = this.set.items[this.passageAt++ % this.set.items.length];
     else {
-      const pool = this.set.items.length > 1 ? this.set.items.filter((it) => it !== this.last) : this.set.items;
-      item = pool[Math.floor(Math.random() * pool.length)];
+      if (!this.deck.length) this.deck = shuffled(this.set.items, this.last);
+      item = this.deck.shift()!;
     }
     void this.playCard(item);
   }
@@ -317,14 +322,18 @@ export class Drill {
     this.ui.name.textContent = rung === 4 ? item.name : rung === 5 ? '🔊' : '';
     this.ui.help.hidden = false;
     this.ui.help.textContent = rung === 4 ? 'Show me' : 'Hear it';
-    if (rung === 1 || rung === 2 || rung === 5) {
-      this.state = 'demo';
-      this.status('Listen…', rung === 5 ? 'Then play it back' : '');
-      const ms = this.hear(rung === 1);
-      this.later(ms + DEMO_GAP_MS, () => { if (this.card === card) this.turn(); });
-      return;
-    }
+    if (rung === 1 || rung === 2 || rung === 5) { this.demo(rung === 5 ? 'Then play it back' : ''); return; }
     this.turn();
+  }
+
+  /** It plays the card to you, then it is your turn. */
+  private demo(sub: string): void {
+    const c = this.card!;
+    this.stopAll();
+    this.state = 'demo';
+    this.status('Listen…', sub);
+    const ms = this.hear(this.level.rung === 1);
+    this.later(ms + DEMO_GAP_MS, () => { if (this.card === c) this.turn(); });
   }
 
   private drawCard(withMusic: boolean, marks: Record<string, string> = {}): Promise<void> {
@@ -349,12 +358,41 @@ export class Drill {
     this.helped = true;
     if (this.level.rung === 4) { void this.drawCard(true); return; }
     // During the count-in: it stops, the card is played, then the count-in starts again.
-    const c = this.card;
-    this.stopAll();
-    this.state = 'demo';
-    this.status('Listen…', '');
-    const ms = this.hear(this.level.rung === 1);
-    this.later(ms + DEMO_GAP_MS, () => { if (this.card === c) this.turn(); });
+    this.demo('');
+  }
+
+  /**
+   * A panel (Level) opened over a card, or closed (owner, 2026-10-15, A3). While it is open your keys don't count
+   * (main.ts) and nothing runs on; when it closes the card carries on: a card being played to you is played again, a
+   * count-in starts again, a card waiting for your first note or your notes (no clock) waits on (the 8 s hint counting
+   * from the close), and a card whose clock was running starts its try again: count-in or first note as set, what was
+   * played before the panel dropped (not a retry, not help). A clean card's move to the next one waits for the close.
+   * A level, tempo or set changed meanwhile has started afresh.
+   */
+  private paused: { card: Card; state: State; started: boolean } | null = null;
+  panel(open: boolean): void {
+    if (!this.on) return;
+    if (open) {
+      const c = this.card, s = this.state;
+      if (this.paused || !c || !(s === 'demo' || s === 'countin' || s === 'turn' || s === 'result')) return;
+      this.paused = { card: c, state: s, started: this.started };
+      if (s === 'turn' && (!c.timed || !this.started)) { clearTimeout(this.hintTimer); return; } // waiting for you: nothing runs
+      this.stopAll();
+      return;
+    }
+    const p = this.paused;
+    this.paused = null;
+    if (!p || p.card !== this.card || p.state !== this.state) return; // started afresh meanwhile
+    if (p.state === 'demo') this.demo(this.level.rung === 5 ? 'Then play it back' : '');
+    else if (p.state === 'countin') this.turn();
+    else if (p.state === 'turn' && !p.card.timed) this.armHint();
+    else if (p.state === 'turn' && p.started) {
+      this.played = [];
+      this.started = false;
+      this.keys.clearMarks();
+      this.ui.help.hidden = false; // (help is there again until the clock runs)
+      this.turn();
+    } else if (p.state === 'result' && this.ui.after.hidden) this.nextCard(); // a clean card: on to the next
   }
 
   /** Your turn: after a bar of clicks, or waiting for your first note (by ear always), or notes only (no clock). */
@@ -620,6 +658,14 @@ export class Drill {
     } catch { return { level: DEFAULT_LEVEL, tempo: {}, best: {} }; }
   }
   private save(): void { try { localStorage.setItem(KEY, JSON.stringify(this.stored)); } catch { /* this visit only */ } }
+}
+
+/** The items in a random order (Fisher–Yates), `notFirst` not first when there are others (no card twice running across a reshuffle). */
+export function shuffled<T>(items: readonly T[], notFirst: T | null = null): T[] {
+  const deck = [...items];
+  for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+  if (deck.length > 1 && deck[0] === notFirst) { const j = 1 + Math.floor(Math.random() * (deck.length - 1)); [deck[0], deck[j]] = [deck[j], deck[0]]; }
+  return deck;
 }
 
 /** A missed or mistimed note named as the card spells it (its group's own spelling), falling back to sharps. */

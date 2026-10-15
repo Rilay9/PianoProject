@@ -71,6 +71,10 @@ export class Simon {
   private helpedNow = false; // this chain was given again with Hear again / Show me
   private wholeNow = false; // this turn asks for the whole chain (not from a miss on): only then can it be a best
   private timers: number[] = [];
+  // What it is giving you (the chain played and shown, or played again after a miss), to give again from its start when
+  // a panel interrupted it (owner, 2026-10-15, A3); null on your turn, when it just waits for your keys.
+  private giving: (() => void) | null = null;
+  private interrupted = false;
 
   /** Your own level, saved; an activity's preset over it (owner, 2026-10-13) is in force while the activity lasts. */
   private mine: SimonLevel;
@@ -109,7 +113,7 @@ export class Simon {
     else this.chooseSet(sets.some((s) => s.id === this.mySet) ? this.mySet! : sets[0].id);
   }
 
-  close(): void { this.endGame('stopped'); this.stopAll(); this.on = false; this.keys.release(); }
+  close(): void { this.endGame('stopped'); this.stopAll(); this.on = false; this.interrupted = false; this.keys.release(); }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per game -------------------------------------------
   private game: { run: Run; longest: number; helped: number; misses: { item: string; wanted: string; played: string }[] } | null = null;
@@ -156,6 +160,7 @@ export class Simon {
   private reset(): void {
     this.endGame('stopped');
     this.stopAll();
+    this.giving = null;
     this.state = 'ready';
     this.chain = [];
     this.tries = TRIES;
@@ -217,6 +222,7 @@ export class Simon {
   private async showChain(from: number, turnFrom = 0, help = false): Promise<void> {
     const token = ++this.token;
     this.state = 'showing';
+    this.giving = () => void this.showChain(from, turnFrom, help);
     // Helped (Hear again / Show me): this chain cannot be a best; played whole again unhelped, it can (review, 2026-10-13).
     if (help) this.helpedNow = true;
     else if (turnFrom === 0) this.helpedNow = false;
@@ -267,6 +273,7 @@ export class Simon {
   /** Your turn from group `from`: what was shown stays up until your first key. */
   private yourTurn(from = 0): void {
     this.state = 'turn';
+    this.giving = null;
     this.pos = from;
     this.wholeNow = from === 0;
     this.got.clear();
@@ -351,6 +358,7 @@ export class Simon {
     this.scoreLine();
     if (this.set.order === 'passage' && length >= this.items.length) {
       this.state = 'done';
+      this.giving = null;
       this.waitRelease = this.keys.down.size > 0;
       void this.drawChain([]); // the whole passage, now that it is played
       this.ui.status.textContent = `You played all of it (${length}).`;
@@ -361,12 +369,9 @@ export class Simon {
       return;
     }
     const token = this.token;
-    this.later(PAUSE_MS, () => {
-      if (token !== this.token) return;
-      this.grow();
-      // Play back the whole chain, or only the new item (you play all of it either way).
-      void this.showChain(this.level.onNew === 'new' ? this.chain.length - 1 : 0, 0);
-    });
+    // Then one more: play back the whole chain, or only the new item (you play all of it either way).
+    const next = this.giving = () => { this.grow(); void this.showChain(this.level.onNew === 'new' ? this.chain.length - 1 : 0, 0); };
+    this.later(PAUSE_MS, () => { if (token === this.token) next(); });
   }
 
   private missed(midi: number): void {
@@ -387,6 +392,7 @@ export class Simon {
     this.scoreLine();
     if (this.level.miss === 'over' || (this.level.miss === 'tries' && this.tries <= 0)) {
       this.state = 'over';
+      this.giving = null;
       this.waitRelease = true; // the miss's own key is still down
       this.ui.sub.textContent = `${this.ui.sub.textContent} Game over: chain ${this.chain.length - 1}.`.trim();
       this.endGame('over');
@@ -400,7 +406,27 @@ export class Simon {
     const turnFrom = fromMiss ? this.flat.findIndex((g) => g.item === group.item) : 0;
     this.ui.sub.textContent = `${this.ui.sub.textContent} ${fromMiss ? 'Again from there…' : 'The chain again…'}`.trim();
     const token = ++this.token;
-    this.later(REPLAY_MS, () => { if (token === this.token) void this.showChain(fromMiss ? group.item : 0, turnFrom); });
+    const replay = this.giving = () => void this.showChain(fromMiss ? group.item : 0, turnFrom);
+    this.later(REPLAY_MS, () => { if (token === this.token) replay(); });
+  }
+
+  /**
+   * A panel (Level) opened over the game, or closed (owner, 2026-10-15, A3). Your turn has no clock: it waits, and your
+   * keys don't count while the panel is open (main.ts). The chain being given stops (you would miss it behind the
+   * panel) and is given again from its start when the panel closes. A level changed meanwhile has started afresh.
+   */
+  panel(open: boolean): void {
+    if (!this.on) return;
+    if (open) {
+      if (!this.giving) return;
+      this.stopAll();
+      this.keys.light([]);
+      this.interrupted = true;
+      return;
+    }
+    const again = this.interrupted ? this.giving : null;
+    this.interrupted = false;
+    again?.();
   }
 
   /** The keyboard as a remote (remote.ts): a mash stops the game, the lowest key is Hear again, the highest Start. */

@@ -48,6 +48,12 @@ export interface Screen {
   resized(): void;
   /** Something is playing or being played: the screen stays awake. */
   readonly busy: boolean;
+  /**
+   * A panel (any dialog: its settings, ⋯, Keyboard controls…) opened over this screen, or the last one closed
+   * (owner, 2026-10-15): what it runs pauses, and carries on after. A screen that has this gets no keys while a panel
+   * is open (main.ts); one without it (Free play, the library, the PDF reader) is left as it was.
+   */
+  panel?(open: boolean): void;
 }
 
 export class App {
@@ -70,7 +76,17 @@ export class App {
     this.view = new FollowView(this.score, (text) => this.showMessage(`Could not draw this song: ${text}`));
     this.view.onNotice = (text) => this.showMessage(text);
     this.practice = new Practice(this.view, this.sound, this.midi, () => this.playSettings());
+    // Every dialog, whoever opens it and however it closes (Done, ✕, Esc, another chosen in its place): one watch on
+    // their `open`, so a panel replaced by another (⋯ → Keyboard controls) is one panel, not a close and an open.
+    let was = false;
+    new MutationObserver(() => {
+      const now = this.dialogOpen();
+      if (now !== was) { was = now; this.onPanel(now); }
+    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
   }
+
+  /** A panel opened over the screen, or the last one closed (main.ts passes it to the screen showing). */
+  onPanel: (open: boolean) => void = () => {};
 
   /** A file you added was replaced: its MusicXML is read again next time. */
   forgetXml(id: string): void { this.xmlCache.delete(id); }

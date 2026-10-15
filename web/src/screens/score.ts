@@ -578,7 +578,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
   view.onStop = () => {
     sound.stop();
-    if (borrower) return; // a borrower stops the music itself (memorise.ts); nothing here stops it
+    if (borrower || holding) return; // a borrower stops the music itself (memorise.ts); nothing here stops it
     practice.stop(!view.looped);
     fillBars();
     showBars();
@@ -587,6 +587,39 @@ export function createScoreScreen(app: App): ScoreScreen {
     strip.markKeys('now-r', keys);
     borrower?.hint(keys);
   };
+
+  // A panel over the score (owner, 2026-10-15, A3): what you play pauses, and keys don't count while it is open
+  // (main.ts). Play along, Ladder and Rhythm pause as they do by themselves (the run kept, "Play to carry on": your next
+  // key carries it on from where it stopped); Wait for me has no clock: the piano leading on to your next notes stops,
+  // and when the panel closes it waits at them again. A start still getting ready is dropped. Watch plays on (nothing
+  // is judged, and changing tempo or volume while listening is the point).
+  let holding = false; // stopping the view for a panel: Wait for me is not over
+  let panelPaused = false, heldWait = '';
+  const PANEL_PAUSED = 'Paused while a panel was open. Play to carry on.';
+  function panel(open: boolean): void {
+    const s = settingsFor(currentPiece().id);
+    if (!open) {
+      const paused = panelPaused, held = heldWait;
+      panelPaused = false;
+      heldWait = '';
+      if (borrower) return; // (Memorise opened from ⋯ meanwhile: its run is over)
+      if (paused && resumable) pausedMessage(PANEL_PAUSED); // (a redraw meanwhile clears messages)
+      if (held === currentPiece().id && practice.active && s.mode === 'wait') practice.release();
+      return;
+    }
+    if (borrower || s.mode === 'watch') return; // (Memorise has its own: memorise-screen.ts)
+    if (starting) { stopAll(); return; }
+    if (!practice.active) return;
+    if (judged(s.mode) && view.playing) { pauseRun(view.index, PANEL_PAUSED); panelPaused = true; }
+    else if (s.mode === 'wait') {
+      holding = true;
+      view.pause();
+      holding = false;
+      sound.stop();
+      practice.hold();
+      heldWait = currentPiece().id;
+    }
+  }
 
   // ▶ / ⏸; while a start is still getting ready (…), a tap drops it.
   $('play').addEventListener('click', () => (view.playing || practice.active || starting ? stopAll() : void play()));
@@ -829,9 +862,16 @@ export function createScoreScreen(app: App): ScoreScreen {
       // Playing when the phone turns: it pauses where it was (the run kept: play to carry on) rather than ending it.
       const turned = 'Paused while the music was laid out again. Play to carry on.';
       const along = view.playing && !borrower && practice.active && judged(settingsFor(currentPiece().id).mode);
+      // Wait for me with the piano leading on to your next notes: it stops without ending the run, and waits at them
+      // once laid out again (2026-10-15: it ended the run, though turning while it waited for you kept it).
+      const waiting = view.playing && !borrower && practice.active && settingsFor(currentPiece().id).mode === 'wait';
       if (along) pauseRun(view.index, turned);
+      else if (waiting) { holding = true; view.pause(); holding = false; sound.stop(); }
       else if (view.playing && !borrower) view.pause();
-      void draw(true).then(() => { if (along && resumable) pausedMessage(turned); }); // (drawing clears messages)
+      void draw(true).then(() => {
+        if (along && resumable) pausedMessage(turned); // (drawing clears messages)
+        if (waiting && practice.active) practice.carryOn();
+      });
     }, 150);
   }
 
@@ -960,6 +1000,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       return ps.length ? { lo: Math.min(...ps), hi: Math.max(...ps) } : null;
     },
     resized,
+    panel,
     get busy() { return !borrower && (view.playing || practice.active); },
     draw,
     openSong,
