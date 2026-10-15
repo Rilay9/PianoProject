@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piano app mockups (all)</title>
+<style>
+  :root { --bg: #eef0f3; --phone: #ffffff; --bar: #f3f4f6; --fg: #111827; --muted: #4b5563; --faint: #9ca3af; --line: #d1d5db;
+    --accent: #2563eb; --accent-soft: #eef4ff; --ok: #16a34a; --amber: #b45309; --card: #ffffff; --soft: #f8fafc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 30px 0 8px; }
+  p.intro, .note { max-width: 980px; color: var(--muted); margin: 4px 0 12px; }
+  .q { max-width: 980px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 8px 12px; margin: 10px 0 4px; font-size: 14px; }
+  .q b { color: #92400e; }
+  .row { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 300px; }
+  figcaption b { color: var(--fg); }
+  figure.wide figcaption { max-width: 610px; }
+  .phone { width: 300px; height: 610px; background: var(--phone); border-radius: 26px; border: 8px solid #1f2937; overflow: hidden; display: flex; flex-direction: column; position: relative; font-size: 13px; }
+  .phone.side { width: 610px; height: 300px; flex-direction: row; }
+  .phone.tab { width: 560px; height: 760px; border-radius: 22px; }
+  .phone.dark { --phone: #0f1115; --bar: #171a21; --fg: #e5e7eb; --muted: #9ca3af; --faint: #6b7280; --line: #2a2f3a; --card: #1b1f27; --soft: #151820; --accent-soft: #1e293b; color: var(--fg); }
+  .main { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+  .top { background: var(--bar); padding: 9px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+  .top .t { flex: 1; font-weight: 700; font-size: 15px; }
+  .top .logo { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #2563eb, #7c3aed); }
+  .top .gear { font-size: 17px; color: var(--muted); }
+  .body { flex: 1; overflow: hidden; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .body.cols { flex-direction: row; gap: 12px; }
+  .body.cols > div { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .today { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .today .k { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .today .h { font-size: 16px; font-weight: 700; margin: 3px 0 2px; }
+  .today .s { color: var(--muted); font-size: 12.5px; }
+  .today .go { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .btn { border: 1px solid var(--line); background: var(--bar); border-radius: 9px; padding: 5px 11px; font-size: 12.5px; color: var(--fg); white-space: nowrap; }
+  .btn.main { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .bar { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; flex: 1; margin-right: 10px; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .lbl { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+  .lbl a { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--accent); text-decoration: none; }
+  .steps { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .step { display: flex; gap: 8px; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  .step:last-child { border-bottom: 0; }
+  .step .m { width: 18px; text-align: center; color: var(--faint); }
+  .step.done .m { color: var(--ok); } .step.next { background: var(--accent-soft); } .step.next .m { color: var(--accent); }
+  .step .tx { flex: 1; min-width: 0; } .step .tt { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step .mm { font-size: 11px; color: var(--muted); }
+  .recent { display: flex; gap: 8px; overflow: hidden; }
+  .rc { flex: none; width: 128px; border: 1px solid var(--line); border-radius: 12px; padding: 7px 9px; background: var(--card); }
+  .rc .tt { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rc .mm { font-size: 11px; color: var(--muted); }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tile { border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; background: var(--card); }
+  .tile .i { font-size: 18px; } .tile .tt { font-weight: 700; margin-top: 2px; } .tile .mm { font-size: 11px; color: var(--muted); }
+  .tabsb { display: flex; border-top: 1px solid var(--line); background: var(--bar); }
+  .tabsb span { flex: 1; text-align: center; padding: 6px 0 8px; font-size: 10.5px; color: var(--muted); }
+  .tabsb span b { display: block; font-size: 17px; font-weight: 400; line-height: 1.2; }
+  .tabsb span.on { color: var(--accent); font-weight: 700; }
+  .rail { width: 64px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--bar); padding-top: 6px; }
+  .rail span { text-align: center; padding: 7px 0; font-size: 10px; color: var(--muted); }
+  .rail span b { display: block; font-size: 17px; font-weight: 400; }
+  .rail span.on { color: var(--accent); font-weight: 700; }
+  .list { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .li { display: flex; gap: 8px; align-items: center; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+  .li:last-child { border-bottom: 0; } .li .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--soft); display: flex; align-items: center; justify-content: center; }
+  .li .tx { flex: 1; min-width: 0; } .li .tt { font-weight: 600; } .li .mm { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .li .r { color: var(--faint); }
+  .draft { position: absolute; top: 46px; right: -34px; transform: rotate(35deg); background: #fde68a; color: #92400e; font-size: 10px; font-weight: 800; padding: 2px 40px; letter-spacing: .1em; }
+  .stat { display: flex; gap: 8px; } .stat div { flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 7px 9px; background: var(--card); }
+  .stat b { font-size: 18px; display: block; } .stat span { font-size: 11px; color: var(--muted); }
+  .week { display: flex; gap: 5px; align-items: flex-end; height: 54px; padding: 0 4px; }
+  .week i { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; opacity: .85; }
+  .week.lbls { height: auto; } .week.lbls span { flex: 1; text-align: center; font-size: 10px; color: var(--muted); }
+  .set .sec { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 4px 2px 2px; }
+  .set .li { padding: 8px 10px; } .set .val { color: var(--muted); font-size: 12px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 11.5px; }
+  .seg span { padding: 2px 8px; } .seg span.on { background: var(--accent); color: #fff; }
+  .score { flex: 1; background: repeating-linear-gradient(#fff 0 18px, #9ca3af 18px 19px, #fff 19px 26px); opacity: .55; border-radius: 6px; }
+
+  .rung { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; }
+  .rung .rh { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--soft); border-bottom: 1px solid var(--line); }
+  .rung .rh .n { width: 22px; height: 22px; border-radius: 11px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+  .rung .rh .n.done { background: var(--ok); } .rung .rh .n.todo { background: var(--line); color: var(--muted); }
+  .rung .rh .tt { flex: 1; font-weight: 700; } .rung .rh .pc { font-size: 11px; color: var(--muted); }
+  .rung.closed .les { display: none; }
+  .les { display: flex; gap: 8px; align-items: center; padding: 6px 10px 6px 40px; border-bottom: 1px solid var(--line); }
+  .les:last-child { border-bottom: 0; } .les .m { width: 16px; color: var(--faint); } .les.done .m { color: var(--ok); } .les.now { background: var(--accent-soft); } .les.now .m { color: var(--accent); }
+  .les .tx { flex: 1; min-width: 0; } .les .tt { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .les .mm { font-size: 11px; color: var(--muted); }
+  .chips { display: flex; gap: 6px; overflow: hidden; }
+  .chip { border: 1px solid var(--line); border-radius: 14px; padding: 3px 10px; font-size: 12px; white-space: nowrap; background: var(--card); }
+  .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .ladder { display: flex; flex-direction: column-reverse; gap: 0; padding-left: 14px; position: relative; }
+  .ladder::before { content: ''; position: absolute; left: 24px; top: 8px; bottom: 8px; width: 3px; background: var(--line); }
+  .node { display: flex; gap: 10px; align-items: center; padding: 7px 0; position: relative; }
+  .node .dot { width: 22px; height: 22px; border-radius: 11px; border: 3px solid var(--line); background: var(--phone); flex: none; z-index: 1; }
+  .node.done .dot { background: var(--ok); border-color: var(--ok); } .node.now .dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .node .tt { font-weight: 700; } .node .mm { font-size: 11px; color: var(--muted); }
+  .node.now .card { border: 1px solid var(--accent); border-radius: 10px; padding: 4px 8px; background: var(--accent-soft); }
+  .sheetx { position: absolute; left: 0; right: 0; bottom: 0; background: var(--phone); border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.2); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .sheetx .grab { width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto; }
+  .dimx { position: absolute; inset: 0; background: rgba(17,24,39,.35); }
+  .prose { font-size: 12.5px; color: var(--fg); } .prose p { margin: 0 0 6px; }
+  .video { height: 92px; border-radius: 10px; background: linear-gradient(135deg,#1f2937,#374151); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .fb { display: flex; gap: 6px; } .fb span { flex: 1; text-align: center; border: 1px solid var(--line); border-radius: 9px; padding: 4px 0; font-size: 12px; background: var(--card); }
+  .grp { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 2px 2px 0; }
+</style>
+</head>
+<body>
+<h1>Piano app: Home, tabs, Path, lesson pages, Exercises, Settings (mockups, 2026-10-15)</h1>
+<div class="q" style="background:#ecfdf5;border-color:#6ee7b7"><b style="color:#065f46">Already decided by the owner</b> (the yellow questions below are answered):
+tabs <b>Home · Music · Practice · Path</b> (Path replaces Progress: where you are, progress, switching lessons and rungs);
+bottom tabs on a phone upright, a <b>rail on the left</b> sideways and on tablets; Home layout <b>A</b> (Today card, the lesson's steps,
+recently practised; B when there is no lesson); top bar <b>logo only</b> + ⚙ Settings (app-wide settings only); the score's ⋯ keeps
+only piece things; inside a piece or tool the tabs hide; Path layout <b>A</b> (rungs as sections) with the Switch sheet <b>C</b>;
+skip ahead to any lesson; feedback taps <b>after every step</b>; steps never lock; <b>Exercises</b> gets its own entry in Practice.
+<b>The lesson page is a skeleton</b> (owner): a standard format of content blocks in any order (text, images, YouTube videos,
+animations, mini playable score renders, keyboard diagrams, practice steps, tips) that content is fed into later; mockup D is
+one possible arrangement, not the template. Being built now.</div>
+
+<h2 style="font-size:19px">Part 1 · Home and the tabs</h2>
+<p class="intro">Your answers so far: tabs <b>Home · Music · Practice · Path</b> (Path later replaced Progress; the Progress frames below are superseded by Part 2); app-wide settings behind <b>⚙</b> on Home's top bar;
+Today's <b>Up next</b> is the prepared lesson's next step, or "carry on" when there is none; inside a piece, drill or the Lab the tabs
+<b>hide</b> and ← goes back. The content shown is made up to show the layout (the lesson names are examples, not a plan).
+Questions for you are in the yellow boxes.</p>
+
+<h2>1. Home on a phone</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="logo"></span><span class="t">Piano</span><span class="gear">⚙</span></div>
+      <div class="body">
+        <div class="today">
+          <div class="k">Up next · Lesson 3 · step 2 of 5</div>
+          <div class="h">Alberti bass, slowly</div>
+          <div class="s">Drills · left hand · C, F and G · about 5 min</div>
+          <div class="go"><span class="bar"><i style="width:20%"></i></span><span class="btn main">Start ▶</span></div>
+        </div>
+        <div class="lbl">This lesson <a href="#">All lessons ›</a></div>
+        <div class="steps">
+          <div class="step done"><span class="m">✓</span><div class="tx"><div class="tt">Listen: Minuet in F, K. 2</div><div class="mm">Watch · yesterday</div></div></div>
+          <div class="step next"><span class="m">▶</span><div class="tx"><div class="tt">Alberti bass, slowly</div><div class="mm">Drills · 6 cards</div></div></div>
+          <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Right hand, bars 1–8</div><div class="mm">Wait for me</div></div></div>
+          <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Hands together, bars 1–4</div><div class="mm">Ladder from ♩ 60</div></div></div>
+          <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Play it with the band</div><div class="mm">Accompaniment lab</div></div></div>
+        </div>
+        <div class="lbl">Recently practised</div>
+        <div class="recent">
+          <div class="rc"><div class="tt">Minuet in F</div><div class="mm">Play along · 2 d ago</div></div>
+          <div class="rc"><div class="tt">12-bar blues</div><div class="mm">Lab · 3 d ago</div></div>
+        </div>
+      </div>
+      <div class="tabsb"><span class="on"><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>A. With a lesson.</b> The Today card starts the lesson's next step; under it the lesson's steps (✓ done, ▶ next, ○ to come), each one tap to open; then what you practised recently.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="logo"></span><span class="t">Piano</span><span class="gear">⚙</span></div>
+      <div class="body">
+        <div class="today">
+          <div class="k">Carry on</div>
+          <div class="h">Minuet in F, K. 2</div>
+          <div class="s">Play along · bars 9–16 · last 84% on time</div>
+          <div class="go"><span class="s">2 days ago</span><span class="btn main">Carry on ▶</span></div>
+        </div>
+        <div class="note" style="font-size:12px;margin:0">No lesson prepared yet. Export your practice log (⚙) and Claude plans the next one from it.</div>
+        <div class="lbl">Recently practised</div>
+        <div class="list">
+          <div class="li"><span class="ic">♪</span><div class="tx"><div class="tt">Minuet in F, K. 2</div><div class="mm">Play along · 2 days ago</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">C7</span><div class="tx"><div class="tt">Test: 12-bar blues in C</div><div class="mm">Lab · 3 days ago</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">♩</span><div class="tx"><div class="tt">Melodies in C</div><div class="mm">Drills · 4 days ago</div></div><span class="r">›</span></div>
+        </div>
+      </div>
+      <div class="tabsb"><span class="on"><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>B. No lesson yet.</b> The card carries on with what you last practised, where you left it. A line says how a lesson appears.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone dark">
+      <div class="top"><span class="logo"></span><span class="t">Piano</span><span class="gear">⚙</span></div>
+      <div class="body">
+        <div class="today">
+          <div class="k">Up next · Lesson 3 · step 2 of 5</div>
+          <div class="h">Alberti bass, slowly</div>
+          <div class="s">Drills · left hand · C, F and G · about 5 min</div>
+          <div class="go"><span class="bar"><i style="width:20%"></i></span><span class="btn main">Start ▶</span></div>
+        </div>
+        <div class="tiles">
+          <div class="tile"><div class="i">🧭</div><div class="tt">Lessons</div><div class="mm">3 so far · this one 1 of 5 done</div></div>
+          <div class="tile"><div class="i">♫</div><div class="tt">My music</div><div class="mm">7 pieces and PDFs</div></div>
+          <div class="tile"><div class="i">🎹</div><div class="tt">Practice</div><div class="mm">Drills, Simon, the band, free play</div></div>
+          <div class="tile"><div class="i">📈</div><div class="tt">Progress</div><div class="mm">This week: 42 min</div></div>
+        </div>
+      </div>
+      <div class="tabsb"><span class="on"><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>C. ChatGPT's dashboard, dark.</b> The Today card above four tiles. With the tabs at the bottom the tiles repeat them, so A or B would replace them with the lesson and recent items.</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q1.</b> Home's body under the Today card: <b>A</b> (the lesson's steps + recent), <b>B</b> is the same when there's no lesson, or <b>C</b> (tiles, like ChatGPT's, even though they repeat the tabs)?</div>
+<div class="q"><b>Q2.</b> The app's name in the top bar: "Piano", something else, or just your logo?</div>
+
+<h2>2. Sideways and tablet</h2>
+<div class="row">
+  <figure class="wide">
+    <div class="phone side">
+      <div class="rail"><span class="on"><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+      <div class="main">
+        <div class="top"><span class="logo"></span><span class="t">Piano</span><span class="gear">⚙</span></div>
+        <div class="body cols">
+          <div>
+            <div class="today">
+              <div class="k">Up next · Lesson 3 · step 2 of 5</div>
+              <div class="h">Alberti bass, slowly</div>
+              <div class="s">Drills · left hand · about 5 min</div>
+              <div class="go"><span class="bar"><i style="width:20%"></i></span><span class="btn main">Start ▶</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="lbl">This lesson <a href="#">All lessons ›</a></div>
+            <div class="steps">
+              <div class="step done"><span class="m">✓</span><div class="tx"><div class="tt">Listen: Minuet in F</div></div></div>
+              <div class="step next"><span class="m">▶</span><div class="tx"><div class="tt">Alberti bass, slowly</div></div></div>
+              <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Right hand, bars 1–8</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption><b>D. Sideways, tabs as a rail on the left.</b> A bottom bar would take height a sideways phone can't spare; the rail takes width instead. Today on the left, the lesson on the right.</figcaption>
+  </figure>
+  <figure class="wide">
+    <div class="phone side">
+      <div class="main">
+        <div class="top"><span class="logo"></span><span class="t">Piano</span><span class="gear">⚙</span></div>
+        <div class="body cols">
+          <div>
+            <div class="today">
+              <div class="k">Up next · Lesson 3 · step 2 of 5</div>
+              <div class="h">Alberti bass, slowly</div>
+              <div class="go"><span class="bar"><i style="width:20%"></i></span><span class="btn main">Start ▶</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="lbl">This lesson</div>
+            <div class="steps">
+              <div class="step done"><span class="m">✓</span><div class="tx"><div class="tt">Listen: Minuet in F</div></div></div>
+              <div class="step next"><span class="m">▶</span><div class="tx"><div class="tt">Alberti bass, slowly</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tabsb"><span class="on"><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+      </div>
+    </div>
+    <figcaption><b>E. Sideways, tabs at the bottom</b> as on the upright phone (the same place everywhere, less room).</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q3.</b> Sideways: tabs as a <b>rail on the left (D)</b> or <b>at the bottom (E)</b>? A tablet would follow the same choice in both orientations.</div>
+
+<h2>3. The other tabs</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Music</span><span class="btn main">+ Add</span></div>
+      <div class="body" style="padding:0">
+        <div style="display:flex;border-bottom:1px solid var(--line)"><span style="flex:1;text-align:center;padding:6px;font-weight:700;box-shadow:inset 0 -3px 0 var(--accent)">Yours 7</span><span style="flex:1;text-align:center;padding:6px;color:var(--muted)">Catalogue 1,631</span></div>
+        <div style="margin:8px 10px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;color:var(--faint)">Search titles, composers, tags</div>
+        <div class="list" style="border-radius:0;border-left:0;border-right:0">
+          <div class="li"><span class="ic">♪</span><div class="tx"><div class="tt">Minuet in F, K. 2</div><div class="mm">W. A. Mozart · piano · 24 bars</div></div><span class="r">♡</span></div>
+          <div class="li"><span class="ic">♪</span><div class="tx"><div class="tt">Seize the Day</div><div class="mm">piano · 190 bars · from MIDI</div></div><span class="r">♡</span></div>
+          <div class="li"><span class="ic" style="font-size:9px;color:#b91c1c">PDF</span><div class="tx"><div class="tt">Maple Leaf Rag</div><div class="mm">PDF · 524 KB</div></div><span class="r">♡</span></div>
+          <div class="li"><span class="ic">C7</span><div class="tx"><div class="tt">Test: 12-bar blues in C</div><div class="mm">chord chart · 12 bars</div></div><span class="r">♡</span></div>
+        </div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span class="on"><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>Music</b> is the library you have now (Yours and Catalogue), as a tab instead of from ⋯. Opening a piece hides the tabs; ← comes back here.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Practice</span></div>
+      <div class="body">
+        <div class="list">
+          <div class="li"><span class="ic">🃏</span><div class="tx"><div class="tt">Drills</div><div class="mm">Flashcards of short passages, timed · last: melodies, 4 d</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🔁</span><div class="tx"><div class="tt">Simon</div><div class="mm">Hear it, play it back, one more each time</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🎸</span><div class="tx"><div class="tt">Accompaniment lab</div><div class="mm">Play with a band over chord charts</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🎹</span><div class="tx"><div class="tt">Free play</div><div class="mm">Play anything; see the chords and intervals</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">⏱</span><div class="tx"><div class="tt">Metronome</div><div class="mm">On its own, no score</div></div><span class="r">›</span></div>
+        </div>
+        <div class="note" style="font-size:12px;margin:0">Memorise stays with each piece (Music → a piece → Memorise).</div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span class="on"><b>🎹</b>Practice</span><span><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>Practice</b>: the tools that aren't a piece, each with one line on what it's for and what you last did there.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="draft">DRAFT</div>
+      <div class="top"><span class="t">Progress</span></div>
+      <div class="body">
+        <div class="stat"><div><b>42 min</b><span>this week</span></div><div><b>17</b><span>runs</span></div><div><b>5</b><span>days</span></div></div>
+        <div class="week"><i style="height:30%"></i><i style="height:70%"></i><i style="height:0"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:20%"></i><i style="height:40%"></i></div>
+        <div class="week lbls"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        <div class="lbl">Pieces</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">Minuet in F, K. 2</div><div class="mm">16 of 24 bars learned · best Ladder ♩ 104</div></div></div>
+          <div class="li"><div class="tx"><div class="tt">Prelude in E minor</div><div class="mm">memorised ✓ (notes)</div></div></div>
+        </div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span class="on"><b>📈</b>Progress</span></div>
+    </div>
+    <figcaption><b>Progress (draft: you said "wait")</b>: only what the app records now (practice log time and runs, bars learned, memorised, Ladder bests). Tell me what you had in mind.</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q4.</b> Practice tab: these five, in this order? Anything to add or drop?</div>
+<div class="q"><b>Q5.</b> Progress: what did you want to say about it?</div>
+
+<h2>4. Settings (⚙ on Home)</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="btn">←</span><span class="t">Settings</span></div>
+      <div class="body set">
+        <div class="sec">Sound</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">Piano plays through</div></div><span class="seg"><span class="on">Phone</span><span>Keyboard</span></span></div>
+          <div class="li"><div class="tx"><div class="tt">Piano and click volume</div></div><span class="r">›</span></div>
+        </div>
+        <div class="sec">Keyboard</div>
+        <div class="list"><div class="li"><div class="tx"><div class="tt">Keyboard controls</div><div class="mm">Lowest and highest key as buttons</div></div><span class="r">›</span></div></div>
+        <div class="sec">Look</div>
+        <div class="list"><div class="li"><div class="tx"><div class="tt">Theme</div></div><span class="seg"><span>Light</span><span class="on">Auto</span><span>Dark</span></span></div></div>
+        <div class="sec">Your data</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">Export practice log</div><div class="mm">For Claude to plan your next lesson</div></div><span class="r">›</span></div>
+          <div class="li"><div class="tx"><div class="tt">Back up / Restore</div></div><span class="r">›</span></div>
+          <div class="li"><div class="tx"><div class="tt">Saved for offline</div></div><span class="val">✓ 2,125 files</span></div>
+        </div>
+      </div>
+    </div>
+    <figcaption><b>Settings</b> gathers what's now spread over ⋯ and the panels: app-wide only. A piece's own choices (size, tempo, hands, fingering) stay on its screen.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="btn">←</span><span class="t">Minuet in F, K. 2</span><span class="btn">Display</span><span class="btn">⋯</span></div>
+      <div class="body"><div class="score"></div></div>
+      <div style="display:flex;gap:6px;padding:8px;border-top:1px solid var(--line);background:var(--bar)"><span class="btn">▶</span><span class="btn">Play along</span><span class="btn">Loop</span><span class="btn">♩ 140</span><span class="btn">L R Both</span></div>
+    </div>
+    <figcaption><b>Inside a piece:</b> no tabs; the score has the whole height, as now. ← returns to the tab you opened it from (Home, Music, or a lesson step).</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q6.</b> The ⋯ menu on the score keeps only what belongs to the piece (Memorise, Edit fingering, Export with my fingering); Library, Simon, Drills, Lab, Free play, Metronome, Back up and the practice log move to the tabs and Settings. Agreed?</div>
+
+<h2 style="font-size:19px;margin-top:44px">Part 2 · Path, lesson pages, Exercises</h2>
+<p class="intro">Your answers: the fourth tab is <b>Path</b> (not Progress): where you are, your progress, and an easy way to switch
+between lessons and rungs. A <b>rung</b> is one skill or step on your path (e.g. "Accompaniment patterns in the left hand"),
+made as we go, never a fixed course; a <b>lesson</b> is one sitting's worth of steps on that rung; a <b>step</b> is one thing to do
+(an activity: a piece in a mode, a drill set, Simon, the lab), sometimes with a short explanation or a video. The names and
+numbers are examples only. Questions in the yellow boxes.</p>
+
+<h2>1. The Path tab</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Path</span></div>
+      <div class="body">
+        <div class="today"><div class="k">You are here · Rung 2 · lesson 3</div><div class="h">Alberti bass, slowly</div><div class="go"><span class="bar"><i style="width:40%"></i></span><span class="btn main">Carry on ▶</span></div></div>
+        <div class="stat"><div><b>42 min</b><span>this week</span></div><div><b>5</b><span>days</span></div><div><b>7/18</b><span>steps in rung 2</span></div></div>
+        <div class="rung closed"><div class="rh"><span class="n done">1</span><span class="tt">Reading in C, five fingers</span><span class="pc">✓ 3 lessons</span></div></div>
+        <div class="rung"><div class="rh"><span class="n">2</span><span class="tt">Left-hand accompaniment</span><span class="pc">2 of 4</span></div>
+          <div class="les done"><span class="m">✓</span><div class="tx"><div class="tt">1 · Blocked chords C F G</div><div class="mm">done Oct 12 · 92% on time</div></div></div>
+          <div class="les done"><span class="m">✓</span><div class="tx"><div class="tt">2 · Broken chords</div><div class="mm">done Oct 14</div></div></div>
+          <div class="les now"><span class="m">▶</span><div class="tx"><div class="tt">3 · Alberti bass</div><div class="mm">step 2 of 5</div></div></div>
+          <div class="les"><span class="m">○</span><div class="tx"><div class="tt">4 · With the Minuet</div><div class="mm">to come</div></div></div>
+        </div>
+        <div class="rung closed"><div class="rh"><span class="n todo">3</span><span class="tt">Next: chosen with you</span><span class="pc">—</span></div></div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span class="on"><b>🧭</b>Path</span></div>
+    </div>
+    <figcaption><b>A. A list of rungs.</b> Where you are on top; this week's practice; rungs as sections (the current one open, others fold); every lesson one tap away, done or not.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Path</span></div>
+      <div class="body">
+        <div class="chips"><span class="chip">1 Reading</span><span class="chip on">2 LH accompaniment</span><span class="chip">3 …</span></div>
+        <div class="ladder">
+          <div class="node done"><span class="dot"></span><div><div class="tt">1 · Blocked chords C F G</div><div class="mm">92% on time · Oct 12</div></div></div>
+          <div class="node done"><span class="dot"></span><div><div class="tt">2 · Broken chords</div><div class="mm">Oct 14</div></div></div>
+          <div class="node now"><span class="dot"></span><div class="card"><div class="tt">3 · Alberti bass</div><div class="mm">step 2 of 5 · Carry on ▶</div></div></div>
+          <div class="node"><span class="dot"></span><div><div class="tt">4 · With the Minuet</div><div class="mm">to come</div></div></div>
+        </div>
+        <div class="lbl">Skills in this rung</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">Chord changes C–F–G</div><div class="mm">clean at ♩ 80 · best Ladder ♩ 96</div></div></div>
+          <div class="li"><div class="tx"><div class="tt">Alberti pattern</div><div class="mm">started · 3 drills</div></div></div>
+        </div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span class="on"><b>🧭</b>Path</span></div>
+    </div>
+    <figcaption><b>B. One rung at a time, as a ladder.</b> Chips switch rung; the rung's lessons climb upward with you marked; under it what this rung's skills are and how far you've got with each.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Path</span></div>
+      <div class="body">
+        <div class="rung"><div class="rh"><span class="n">2</span><span class="tt">Left-hand accompaniment</span><span class="pc">2 of 4</span></div>
+          <div class="les now"><span class="m">▶</span><div class="tx"><div class="tt">3 · Alberti bass</div><div class="mm">step 2 of 5</div></div></div></div>
+      </div>
+      <div class="dimx"></div>
+      <div class="sheetx">
+        <div class="grab"></div>
+        <div style="font-weight:700">Switch to…</div>
+        <div class="grp">Rung 2 · Left-hand accompaniment</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">✓ 1 · Blocked chords</div></div><span class="btn">Redo</span></div>
+          <div class="li"><div class="tx"><div class="tt">✓ 2 · Broken chords</div></div><span class="btn">Redo</span></div>
+          <div class="li"><div class="tx"><div class="tt">○ 4 · With the Minuet</div><div class="mm">skip ahead</div></div><span class="btn">Open</span></div>
+        </div>
+        <div class="grp">Other rungs</div>
+        <div class="chips"><span class="chip">1 Reading in C ✓</span><span class="chip">3 not made yet</span></div>
+      </div>
+      <div class="tabsb" style="position:relative;z-index:2"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span><b>🎹</b>Practice</span><span class="on"><b>🧭</b>Path</span></div>
+    </div>
+    <figcaption><b>C. Switching.</b> From anywhere a lesson shows (Home, Path, a lesson page), "Switch…" opens this sheet: redo a done lesson, skip ahead, or go to another rung.</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q1.</b> The Path tab: <b>A</b> (all rungs as a list) or <b>B</b> (one rung at a time as a ladder, with its skills)? And <b>C</b>'s switch sheet: wanted?</div>
+<div class="q"><b>Q2.</b> Can you skip ahead to a lesson not reached yet, or only redo done ones?</div>
+
+<h2>2. A lesson page</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="btn">←</span><span class="t">Rung 2 · Lesson 3</span><span class="btn">Switch…</span></div>
+      <div class="body">
+        <div class="h" style="font-size:17px;font-weight:700">Alberti bass</div>
+        <div class="prose"><p>The left hand plays a chord as low–high–middle–high, four even notes a beat. It keeps a melody moving without a band.</p></div>
+        <div class="video">▶</div>
+        <div class="steps">
+          <div class="step done"><span class="m">✓</span><div class="tx"><div class="tt">Hear it: Minuet in F, bars 1–4</div><div class="mm">Watch</div></div></div>
+          <div class="step next"><span class="m">▶</span><div class="tx"><div class="tt">The pattern on C, F and G</div><div class="mm">Drills · 6 cards · done when 5 clean</div></div></div>
+          <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Left hand, bars 1–4</div><div class="mm">Wait for me · LH</div></div></div>
+          <div class="step"><span class="m">○</span><div class="tx"><div class="tt">Up to speed</div><div class="mm">Ladder from ♩ 60</div></div></div>
+        </div>
+      </div>
+      <div style="padding:8px 12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:var(--bar)"><span class="s" style="font-size:12px;color:var(--muted)">step 2 of 4</span><span class="btn main">Start step 2 ▶</span></div>
+    </div>
+    <figcaption><b>D. The lesson.</b> What it's about in a few lines (and a picture or video when it helps), then its steps; each says what "done" means. Start opens the step's screen; when it's done you come back here with the next one ready.</figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="btn">←</span><span class="t">Rung 2 · Lesson 3</span></div>
+      <div class="body">
+        <div class="today"><div class="k">Step 2 done · The pattern on C, F and G</div><div class="h">5 of 6 clean</div><div class="s">Best so far: ♩ 72 · 2 retries</div></div>
+        <div class="lbl">How was it?</div>
+        <div class="fb"><span>😣 Hard</span><span>🙂 OK</span><span>😎 Easy</span></div>
+        <div class="fb"><span>👍 Useful</span><span>👎 Not useful</span></div>
+        <div style="border:1px solid var(--line);border-radius:10px;padding:6px 10px;color:var(--faint);font-size:12px">A note for Claude (optional)…</div>
+        <div class="go" style="display:flex;justify-content:space-between"><span class="btn">Again</span><span class="btn main">Next step ▶</span></div>
+      </div>
+    </div>
+    <figcaption><b>E. After a step.</b> What happened, then two taps of feedback and an optional note: they go in the practice log with the step, for Claude to plan the next lesson from.</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q3.</b> After each step: the feedback taps (Hard/OK/Easy, Useful/Not useful, a note) every time, only at the end of the lesson, or both?</div>
+<div class="q"><b>Q4.</b> Does a step have to be "done" (its target met) before the next opens, or can you move on anyway?</div>
+
+<h2>3. Exercises in Practice</h2>
+<div class="row">
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="t">Practice</span></div>
+      <div class="body">
+        <div class="list">
+          <div class="li"><span class="ic">🎼</span><div class="tx"><div class="tt">Exercises</div><div class="mm">Scales, five-finger patterns, arpeggios, chords, intervals, cadences</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🃏</span><div class="tx"><div class="tt">Drills</div><div class="mm">Flashcards of short passages, timed</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🔁</span><div class="tx"><div class="tt">Simon</div><div class="mm">Hear it, play it back, one more each time</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🎸</span><div class="tx"><div class="tt">Accompaniment lab</div><div class="mm">Play with a band over chord charts</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">🎹</span><div class="tx"><div class="tt">Free play</div><div class="mm">See the chords and intervals you play</div></div><span class="r">›</span></div>
+          <div class="li"><span class="ic">⏱</span><div class="tx"><div class="tt">Metronome</div><div class="mm">On its own</div></div><span class="r">›</span></div>
+        </div>
+      </div>
+      <div class="tabsb"><span><b>⌂</b>Home</span><span><b>♫</b>Music</span><span class="on"><b>🎹</b>Practice</span><span><b>🧭</b>Path</span></div>
+    </div>
+    <figcaption><b>F. Practice with Exercises first.</b></figcaption>
+  </figure>
+  <figure>
+    <div class="phone">
+      <div class="top"><span class="btn">←</span><span class="t">Exercises</span></div>
+      <div class="body">
+        <div class="chips"><span class="chip on">All</span><span class="chip">Scales</span><span class="chip">Arpeggios</span><span class="chip">Chords</span><span class="chip">Intervals</span></div>
+        <div class="grp">Scales</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">C major, hands separate, 1 octave</div><div class="mm">as music · Wait for me / Play along / Ladder</div></div><span class="btn">Play</span></div>
+          <div class="li"><div class="tx"><div class="tt">Scales going up</div><div class="mm">as cards · Drills or Simon</div></div><span class="btn">Drill</span></div>
+        </div>
+        <div class="grp">Five-finger &amp; arpeggios</div>
+        <div class="list">
+          <div class="li"><div class="tx"><div class="tt">Five notes C–G</div><div class="mm">Drills or Simon</div></div><span class="btn">Drill</span></div>
+          <div class="li"><div class="tx"><div class="tt">Arpeggios in C</div><div class="mm">Drills or Simon</div></div><span class="btn">Drill</span></div>
+        </div>
+        <div class="grp">Chords &amp; cadences</div>
+        <div class="list"><div class="li"><div class="tx"><div class="tt">I–IV–V–I in C</div><div class="mm">Drills or Simon</div></div><span class="btn">Drill</span></div></div>
+      </div>
+    </div>
+    <figcaption><b>G. Exercises</b> gathers every exercise by kind, whether it's music (played in the score modes) or a set of cards (Drills, Simon), so you don't need to know which tool holds it.</figcaption>
+  </figure>
+</div>
+<div class="q"><b>Q5.</b> Exercises as its own entry in Practice (F + G), or only inside lessons?</div>
+</body>
+</html>
