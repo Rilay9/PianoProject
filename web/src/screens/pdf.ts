@@ -447,7 +447,14 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
       layer.addEventListener('pointerup', (u) => {
         if (Math.hypot(u.clientX - sx, u.clientY - sy) > 8) return;
         const fx = (u.clientX - rect.left) / Math.max(1, rect.width), fy = (u.clientY - rect.top) / Math.max(1, rect.height);
-        const k = bands.findIndex((b) => fy >= b.top && fy <= b.bottom);
+        // Where lines overlap, the one whose middle is nearest the tap (owner, 2026-10-15: before, always the upper, so
+        // a line lying inside another could never get a split by tapping).
+        let k = -1;
+        bands.forEach((b, j) => {
+          if (fy < b.top || fy > b.bottom) return;
+          const mid = (b.top + b.bottom) / 2, best = bands[k];
+          if (k < 0 || Math.abs(fy - mid) < Math.abs(fy - (best!.top + best!.bottom) / 2)) k = j;
+        });
         const [left, right] = st.margins?.[page] ?? [0, 1];
         if (k < 0 || fx <= left || fx >= right) return;
         setLine(k, [...(st.splits?.[page]?.[k] ?? []), fx]);

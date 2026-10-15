@@ -461,7 +461,7 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
   dragged thinner than 0.6% of the page. Lines may overlap (owner, 2026-10-14): drag a line's bottom down past the next
   line's top to take in low notes reaching into its space; lines keep their order (a line's top can't pass the one
   before's top), so their splits stay with them. Where two lines meet, grab just inside the line you mean: each
-  handle's grip reaches into its own line. A page where no lines are found shows whole, unsplit, until you mark them. On
+  handle's grip reaches into its own line. A tap that adds a split, where lines overlap, goes to the line whose middle is nearest. A page where no lines are found shows whole, unsplit, until you mark them. On
   a tilted page the splits and margins are placed on the straightened page as shown. Pages are read as you reach them
   (and the rest in the background); a page read for the first time brings its lines in at once, and your place keeps
   its line when lines are added or found on an earlier page. Scanned pages stored as JPEG 2000 (most library scans)
