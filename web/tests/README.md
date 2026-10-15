@@ -9,8 +9,8 @@ no longer exists.
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules); every count compared, and where named which notes are painted and which presses are wrong (2026-10-14) | 17 (16 judging cases and the pedal-holds block) |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`), the sentence the learner reads after a red chord (`sayHit`), the Roots step with other chord notes and outside keys, and improvising's notes from the lab's own guides (2026-10-14) | 32 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads and is in its index; the piece, set or chart each names exists and its bars are inside the piece; what one of each kind reads to; mistakes are refused with their reason (2026-10-14: index, names, read results, four more refusals) | 40 today (the count is printed) |
-| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices, swing, drums, repeated strikes and lengths (2026-10-14), a band file's parts and picking them, beams, held notes, the pedal, count-ins and a default C major (2026-10-15), a channel that changes instrument and a one-track file's part names (review B7-01/02), releases as a player lets the keys go and the check's staff and length (review M1–M3, B3-03) | 192 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
-| `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, visible rests, 16th rests, rests drawn on another voice's notes, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML; six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
+| `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices, swing, drums, repeated strikes and lengths (2026-10-14), a band file's parts and picking them, beams, held notes, the pedal, count-ins and a default C major (2026-10-15), a channel that changes instrument and a one-track file's part names (review B7-01/02), releases as a player lets the keys go and the check's staff and length (review M1–M3, B3-03), a played file with the pedal written one voice a hand and a notation export's gate undone (owner's answers A5, A6), rests that show the beat | 205 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
+| `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, rests (one voice's rests drawn one after another are one), short rests, rests drawn on another voice's notes, rests hiding the beat, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML (rest symbols printed, not guarded); six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one, or fewer of a catalogue conversion's notes are as the engraving writes them (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages, a page stored as JPEG 2000 (`fixtures/pdf/jpx.pdf`, made by `make-jpx-pdf.py`) and the old fixture through pdf.js's Node build with its JPEG 2000 decoder (fails if its canvas library cannot load); adding and removing a line keeps the other lines' splits (2026-10-14) | 58 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`, and for the three committed MIDI fixtures as the app converts them; not where in the bar, how long, or which staff; every run also changes one note in the app's copy of the first song and must catch it (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song + 3 converted + the caught change; `--corrupt` must fail |
 | `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 54 |
@@ -129,15 +129,25 @@ no longer exists.
 
 - The counting, on one bar built by hand: each count as built; fooling cases (the other voice's note removed: no rest
   on a note; a hidden rest printed: one more rest; one voice: no extra voice) each move their count.
+- Rests and the beat (2026-10-15, Gould's rule, the coordinator's decision): a rest split at the beat (an eighth to the
+  beat, a half from the middle) is one rest of two symbols hiding nothing; a half rest from beat 2 and a quarter rest
+  from beat 2½ each hide the beat; a half rest on beat 3 does not; 6/8 and 12/8 cases (a beat is a dotted quarter).
+  The six engravings have none. On the converter before the rule: Seize 4, Warmness 6, four catalogue versions 1-4.
+  Rests were counted per symbol until then, so a correctly split rest counted as clutter.
 - Inputs: Someone You Loved, Fix You, Falling, Mary Did You Know, Your Song and Bach's Prelude I from the catalogue,
   each written to MIDI from its own notes twice: every note at 95% of its length (the gate measured in the owner's
   Seize the Day export) and each key let go between 85% and 100% of its length (seeded). Both converted (the converter's
   own check must pass); the engraving's counts are printed beside them. The owner's Seize the Day and Warmness on the
   Soul with `PIANO_SONGS=<folder>`.
-- Fails when a count is higher than `RECORD` or fewer of the played version's notes match the exported version's
-  conversion (staff, pitch, onset, length). Lower counts print "better: update the record". No threshold is invented:
-  the record is the converter's own measured output (2026-10-15, after `tidy.ts`). On the converter before `tidy.ts`
-  it fails on every played input (e.g. Falling played: rests 157 for 41, extra voices 167 for 88).
+- Fails when a count is higher than `RECORD` or fewer of a version's written notes are as the engraving has them
+  (staff, pitch, onset, length, ties joined; until 2026-10-15 the played version was matched with the export's
+  conversion, which moved whenever that conversion improved). The match tried on a perfect input first: the pieces
+  exported whole match 745/745, 666/673, 922/923, 482/482, 323/323, 533/533. Ties are joined within a voice (keyed by
+  staff alone until 2026-10-15, a tie was joined across voices: one note lost from Fix You's and Falling's MIDI). Lower counts print "better: update the
+  record". No threshold is invented: the record is the converter's own measured output (2026-10-15, after the
+  owner's answers A5 and A6). On the converter before `tidy.ts` it fails on every played input (e.g. Falling played:
+  rests 157 for 41, extra voices 167 for 88); on the converter before A5 and A6 (0d3267fd) 41 lines fail with the songs,
+  28 without, and it is no better than the current one on any count.
 - Not covered: how close to the published arrangement (photos only); a real player's releases beyond the seeded model.
 
 ## midi.mjs additions (2026-10-15, S4)
@@ -149,6 +159,23 @@ no longer exists.
 - The check's staff and length (B3-03): the score as written compares perfect; a dotted eighth and 16th rest rewritten
   as two eighths (bar still adding up) is named as held for another length; the hands swapped is named note by note as
   on the other staff, where the time-and-pitch lists stay empty (what the old check passed).
+
+## midi.mjs additions (2026-10-15, owner's answers A5 and A6)
+
+- A5, a played file with the pedal (two hands, ragged chord releases, CC64): a bass key held under the pedal past its
+  hand's next note is cut there, one voice; cut too where the pedal changes while the key is down (owner, 2026-10-15); kept in a file whose
+  chords are let go together (an export); a silence after the pedal lifts measured from the lift (0.15 before the next
+  note: no rest), under an eighth taken for the pedal changing (0.3: no rest; 0.9: a rest, the note written as long as
+  it sounded). Each case fails with its step off (cut, the export guard, the silence from the lift, the eighth, the
+  sounded length).
+- A6, a notation export's gate: found at 95% and 90% (within 0.005), none in a file exported whole or played; not
+  fooled by a file of mostly halves (the first share from 1 down that explains half the notes is 0.995 there); a
+  half note before a sextuplet written as a half with no ties (with the gate off: 11/6 in tied pieces); a triplet
+  quarter still one (the guard against releases moved to 16ths, which made it a dotted eighth and a 16th rest).
+
+- Rests that show the beat: a silence from beat 2 to 4 is two quarter rests (was a half rest on beat 2); Seize bar 3's
+  shape has no rest hiding the beat (was a half rest on beat 2½); a half rest on beat 3 stays one. The first two fail
+  on the converter before the rule.
 
 ## pdf.mjs
 

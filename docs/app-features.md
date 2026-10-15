@@ -362,7 +362,20 @@ one); examples to copy written into a chart.
   quarters) (2026-10-15, compared with the published arrangement of the owner's Seize the Day). A file played in
   with the sustain pedal (the owner's Warmness on the Soul): a note the pedal holds until the next note of its hand is
   written to it, and a key held a little into the next one is cut there (legato), so a bass struck short under the
-  pedal is the whole note the published page has; silent bars before the first note (a count-in) are left out; a
+  pedal is the whole note the published page has; and (owner's answer A5, 2026-10-15) it is written as the published
+  arrangements write it, one voice a hand: a key held past its hand's next note is written to that note (under the
+  pedal the sound is the same; a key a finger holds through a change of the pedal is written shorter than it is held,
+  the owner's choice of 2026-10-15, "one voice, like the published page"; a file exported from a notation program keeps
+  its written lengths, told by its chords being let go at one moment: Seize the Day 578 of 583, Warmness 7 of 343), a note the pedal holds is written as long as it sounds (as far
+  as one note-head reaches in its bar), and a silence after the pedal lifts is measured from the lift, one under an
+  eighth taken for the pedal changing (Warmness: 124 of its 141 lifts come under 0.44 of a beat before the next note).
+  Warmness: extra voices 1.14 → 0.10 a bar, ties 1.52 → 1.05. Rests show the beat (Gould, Behind Bars; 2026-10-15):
+  a rest begun off a beat is written to the beat first, and one begun on a later beat of a bar of an even number of
+  beats does not run over its middle (in 4/4 a half rest only on beat 1 or 3; Seize bar 3 had one on beat 2½). A notation program's export that plays every note a
+  share of its written length (owner's answer A6: Seize the Day, 95%) has that share found (the one at which most
+  lengths come out as whole twelfths of a beat, from 100% down to 80%) and undone before the grid, so a half note in a
+  bar of sextuplets is a half, not tied triplet pieces (Seize bars 157 and 159); a played file has none (at most 32% of
+  its notes fit any share). A release already on the grid is kept; silent bars before the first note (a count-in) are left out; a
   stated C major is taken for a default when the notes fit another key four times better (Warmness: 10% F♯, 1% outside
   G). Checked against MuseScore's own MIDI import on the two songs (2026-10-15): about equal on Seize the Day, far
   worse on Warmness (clef changes, the empty bars, no key), so the app keeps its own converter. Notes are paired by MIDI
@@ -378,7 +391,9 @@ one); examples to copy written into a chart.
   (the later voices' silences never were). The sheet says how many notes were given their chord's length or written
   to the next note. `tests/readability.mjs` counts per bar what a reader notices (visible rests, short rests, rests on
   another voice's notes, extra voices, ties, tuplets, 32nds) on six catalogue scores turned into MIDI (as exported and
-  as played) and the owner's two songs, against the engraving; a change that makes any count worse fails it. A band file (2026-10-15): the score is the file's piano part (every
+  as played) and the owner's two songs, against the engraving, and how many notes come out as the engraving writes
+  them; a change that makes any count worse fails it. Rests are counted as silences (a rest split at the beat is one),
+  and rests that hide the beat are counted as a defect (none in the six engravings); the rest symbols are printed only. A band file (2026-10-15): the score is the file's piano part (every
   note on a channel set to a General MIDI piano, programs 0-7, on any track; a channel the file never sets is a
   piano, as General MIDI says; a channel that changes instrument partway is a part per instrument, each note the
   instrument in force where it starts: review 2026-10-15, B7-01), and the other parts and the drums (MIDI channel 10) are not written but kept to play

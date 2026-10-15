@@ -47,10 +47,19 @@ function checkWithoutTiming(report: ConversionReport): string {
   );
 }
 
-/** Notes the pedal held, written to the next note: said, because the file's own lengths were changed. */
+/** Lengths the pedal or an export's gate decided: said, because the file's own lengths were changed. */
 function pedalSentence(report: ConversionReport): string {
-  if (!report.pedalled) return '';
-  return ` ${String(report.pedalled)} note(s) the sustain pedal held on were written to the next note of their hand, as a score writes them.`;
+  let out = '';
+  if (report.gate !== null) {
+    out += ` The file plays every note for about ${String(Math.round(report.gate * 100))}% of its written length, as notation programs export; the written lengths were restored.`;
+  }
+  if (report.pedalled) {
+    out += ` ${String(report.pedalled)} note(s) the sustain pedal held on were written as long as they sound, to the next note of their hand at most, as a score writes them.`;
+  }
+  if (report.pedalCut) {
+    out += ` ${String(report.pedalCut)} key(s) held past the next note of their hand were written to that note, one voice a hand as the published arrangements write it (under the pedal it sounds the same).`;
+  }
+  return out;
 }
 
 /** Notes given their chord's length or written to the next note (tidy.ts): said, as the pedal's are. */

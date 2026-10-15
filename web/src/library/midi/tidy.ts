@@ -32,6 +32,14 @@ import { type Frac, cmp, frac, fracToString, gt, lt, sub } from './fraction.ts';
 export const NEAR_RELEASES = frac(1, 5);
 /** How short (quarter notes, in the file's time) a silence in one voice must be to be a lifted finger, not a rest. */
 export const NEAR_STRIKE = frac(1, 4);
+/**
+ * How short a silence after the pedal lifts must be to be the pedal changing, not a rest, where the pedal (not the
+ * key) ended the note in a played file (2026-10-15). A player lifts the pedal a moment before the next harmony to
+ * clear the sound; Warmness on the Soul, measured from each of its 141 lifts to the next strike (scratch lift.mjs):
+ * 124 under 0.44 of a quarter, 2 at 0.5-0.56, 15 from 0.8 up (its rests). An eighth sits in that gap. The page
+ * then has the bass the published arrangement has (bar 19's last D3: a quarter, not a 16th and a dotted eighth rest).
+ */
+export const NEAR_PEDAL_LIFT = frac(1, 2);
 
 /**
  * Notes struck together (one written onset) whose played releases lie less than `NEAR_RELEASES` before the latest one's
@@ -73,7 +81,12 @@ export function oneLengthChords(events: NoteEvent[], releases: Map<NoteEvent, Fr
  * file's own silence between them is less than `NEAR_STRIKE`, is written to that strike. `played` gives each note's release
  * and `struck` its onset as the file has them. Returns how many were lengthened.
  */
-export function closeSmallGaps(line: NoteEvent[], played: (e: NoteEvent) => Frac, struck: (e: NoteEvent) => Frac): number {
+export function closeSmallGaps(
+  line: NoteEvent[],
+  played: (e: NoteEvent) => Frac,
+  struck: (e: NoteEvent) => Frac,
+  near: (e: NoteEvent) => Frac = () => NEAR_STRIKE,
+): number {
   const onsets: NoteEvent[] = [];
   const seen = new Set<string>();
   for (const e of [...line].sort((a, b) => cmp(a.start, b.start))) {
@@ -87,7 +100,7 @@ export function closeSmallGaps(line: NoteEvent[], played: (e: NoteEvent) => Frac
     while (lo < hi) { const mid = (lo + hi) >> 1; if (gt(onsets[mid]!.start, e.start)) hi = mid; else lo = mid + 1; }
     const next = onsets[lo];
     if (!next || !gt(next.start, e.end)) continue;
-    if (!lt(sub(struck(next), played(e)), NEAR_STRIKE)) continue;
+    if (!lt(sub(struck(next), played(e)), near(e))) continue;
     e.end = next.start;
     changed += 1;
   }
@@ -129,4 +142,37 @@ export function hideCoveredRests(first: WriterNote[], others: WriterNote[][]): n
     hidden += 1;
   }
   return hidden;
+}
+
+/**
+ * Was the file played in rather than exported from a notation program? Told by how a hand lets go of a chord: an
+ * export releases every key of a chord at one moment (or a written value apart), a player's keys come up raggedly.
+ * Measured 2026-10-15 (chords as counted here): Seize the Day (export) 578 of 583 chords released together; Warmness on the Soul (played) 7 of
+ * 343. "Played" is fewer than half released together, the middle of that gap. `parts` are the hands' notes on the
+ * grid (a chord is one written onset of one hand); `releases` each note's release as the file has it.
+ */
+export function playedIn(parts: readonly (readonly NoteEvent[])[], releases: Map<NoteEvent, Frac>): boolean {
+  const { chords, together } = releasedTogether(parts, releases);
+  return chords > 0 && together * 2 < chords;
+}
+
+/** How many chords (two or more notes of one hand at one written onset) there are, and how many let go at one moment. */
+export function releasedTogether(parts: readonly (readonly NoteEvent[])[], releases: Map<NoteEvent, Frac>): { chords: number; together: number } {
+  let chords = 0, together = 0;
+  for (const events of parts) {
+    const byStart = new Map<string, NoteEvent[]>();
+    for (const e of events) {
+      const k = fracToString(e.start);
+      const list = byStart.get(k);
+      if (list) list.push(e);
+      else byStart.set(k, [e]);
+    }
+    for (const chord of byStart.values()) {
+      if (chord.length < 2) continue;
+      chords += 1;
+      const first = releases.get(chord[0]!) ?? chord[0]!.end;
+      if (chord.every((e) => cmp(releases.get(e) ?? e.end, first) === 0)) together += 1;
+    }
+  }
+  return { chords, together };
 }

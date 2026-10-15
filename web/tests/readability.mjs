@@ -10,13 +10,14 @@
 //   MuseScore, CC0 or public domain; four pop arrangements like the owner's songs, Bach's Prelude I for held notes in
 //   voices). Each is turned into a MIDI file here, two ways: as a notation program exports it (every note at 95% of
 //   its written length, the gate measured in the owner's Seize the Day), and as a player lets the keys go (each key
-//   released between 85% and 100% of its written length, seeded): the converter must read the second about as well
-//   as the first, and the engraving itself is printed beside both, as the picture of a readable score.
+//   released between 85% and 100% of its written length, seeded): the converter must read both as near the engraving
+//   as it can, and the engraving itself is printed beside both, as the picture of a readable score.
 // - The owner's two songs, when PIANO_SONGS names the folder holding them (they are not in the repo, which is
 //   public): Seize the Day (a notation export) and Warmness on the Soul (played in with the pedal).
 //
-// What fails: any count higher than the one recorded below (RECORD), or fewer written notes of the player's version
-// matching the export's conversion than recorded. No threshold is invented: the record is the converter's measured
+// What fails: any count higher than the one recorded below (RECORD), or fewer written notes of a catalogue piece's
+// conversion as the engraving has them than recorded (the comparison scores an export at the written lengths 99-100%:
+// 666 of 673 notes in Fix You, every note in four of the six). No threshold is invented: the record is the converter's measured
 // output, so a change may make scores tidier (it prints "better: update the record") but not more cluttered without
 // someone deciding to and changing the record. Against real scores more widely: over the catalogue's 1,050 piano
 // scores (2026-10-15) the per-bar 50th/90th percentiles were rests 0.59/1.95, 16th rests 0/0.37, rests on another
@@ -30,19 +31,50 @@ import { existsSync, readFileSync } from 'node:fs';
 import JSZip from 'jszip';
 import { convertMidi } from '../src/library/midi/convert.ts';
 
-const COUNTS = ['rests', 'shortRests', 'restsOnNotes', 'extraVoices', 'ties', 'tuplets', 'oddTuplets', 'veryShort'];
+const COUNTS = ['rests', 'shortRests', 'restsOnNotes', 'restsHidingBeat', 'extraVoices', 'ties', 'tuplets', 'oddTuplets', 'veryShort'];
+/** Printed, not guarded: every rest symbol drawn (a rest split to show the beat is two symbols and one silence). */
+const INFO = ['restSymbols'];
 
-/** Totals over a score: bars, notes, and each of COUNTS. */
+/**
+ * Does a rest from `a` to `b` (quarter notes from the barline) hide the beat? Gould, Behind Bars, rests in simple and
+ * compound time: a rest begun off a beat does not run across the next beat; a rest begun on a beat after the first
+ * does not run across the middle of a bar of an even number of beats (in 4/4 a half rest only on beat 1 or 3; in
+ * 12/8 a dotted half rest only on the first or third beat). `beat` is the beat's length (a dotted quarter in 6/8,
+ * 9/8, 12/8), `bar` the bar's.
+ */
+export function hidesBeat(a, b, beat, bar) {
+  const eps = 1e-9;
+  const into = a / beat - Math.floor(a / beat + eps);
+  if (into > eps) return b > (Math.floor(a / beat + eps) + 1) * beat + eps;
+  const beats = Math.round(bar / beat);
+  const middle = bar / 2;
+  return a > eps && beats > 2 && beats % 2 === 0 && a < middle - eps && b > middle + eps;
+}
+
+/**
+ * Totals over a score: bars, notes, and each of COUNTS and INFO. Rests are counted as silences: the rests one voice
+ * draws one after another are one rest (`rests`), short when the whole silence is a 16th or less (`shortRests`), on a
+ * note when another voice of the staff sounds during it (`restsOnNotes`); `restSymbols` counts every rest drawn, and
+ * `restsHidingBeat` every rest symbol that hides the beat (`hidesBeat`). Until 2026-10-15 each symbol was a rest, so a
+ * rest correctly split at the beat counted as more clutter than one hiding it.
+ */
 export function measure(xml) {
   const parts = [...xml.matchAll(/<part\b[^>]*>([\s\S]*?)<\/part>/g)].map((m) => m[1]);
   const bars = Math.max(0, ...parts.map((p) => (p.match(/<measure\b/g) ?? []).length));
-  const t = { bars, notes: 0, ...Object.fromEntries(COUNTS.map((k) => [k, 0])) };
+  const t = { bars, notes: 0, ...Object.fromEntries([...COUNTS, ...INFO].map((k) => [k, 0])) };
   for (const part of parts) {
-    for (const [, body] of part.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)) {
+    let divisions = 1, beats = 4, beatType = 4;
+    for (const [, mattrs, body] of part.matchAll(/<measure\b([^>]*)>([\s\S]*?)<\/measure>/g)) {
+      divisions = Number(/<divisions>(\d+)<\/divisions>/.exec(body)?.[1] ?? divisions);
+      const time = /<time\b[^>]*>\s*<beats>(\d+)<\/beats>\s*<beat-type>(\d+)<\/beat-type>/.exec(body);
+      if (time) { beats = Number(time[1]); beatType = Number(time[2]); }
+      const beat = (beatType >= 8 && beats % 3 === 0 ? 12 : 4) / beatType;
+      const barLength = beats * 4 / beatType;
+      const pickup = /implicit="yes"/.test(mattrs); // a pickup's beats are counted from its end, not its start: not judged
       const lines = new Set();
       const staves = new Set();
       const sounding = []; // [staff, voice, from, to] of notes
-      const rests = []; // visible rests, the same
+      const rests = []; // visible rests, the same, in the order drawn
       let pos = 0, last = 0;
       for (const [whole, attrs = '', inner = ''] of body.matchAll(/<note\b([^>]*)>([\s\S]*?)<\/note>|<backup>[\s\S]*?<\/backup>|<forward>[\s\S]*?<\/forward>/g)) {
         const dur = Number(/<duration>(\d+)<\/duration>/.exec(whole)?.[1] ?? 0);
@@ -66,8 +98,8 @@ export function measure(xml) {
         }
         if (chord) continue;
         if (inner.includes('<rest')) {
-          t.rests += 1;
-          if (type === '16th' || veryShort) t.shortRests += 1;
+          t.restSymbols += 1;
+          if (!pickup && hidesBeat(at / divisions, (at + dur) / divisions, beat, barLength)) t.restsHidingBeat += 1;
           rests.push([staff, voice, at, at + dur]);
           continue;
         }
@@ -76,7 +108,16 @@ export function measure(xml) {
         if (veryShort) t.veryShort += 1;
       }
       t.extraVoices += Math.max(0, lines.size - staves.size);
-      for (const [s, v, a, b] of rests) {
+      // One voice's rests drawn one after another are one silence.
+      const silences = [];
+      for (const r of rests) {
+        const prev = silences.find((x) => x[0] === r[0] && x[1] === r[1] && x[3] === r[2]);
+        if (prev) prev[3] = r[3];
+        else silences.push([...r]);
+      }
+      t.rests += silences.length;
+      for (const [s, v, a, b] of silences) {
+        if (b - a <= divisions / 4) t.shortRests += 1;
         if (sounding.some(([s2, v2, c, d]) => s2 === s && v2 !== v && c < b && d > a)) t.restsOnNotes += 1;
       }
     }
@@ -104,7 +145,10 @@ export function notesOf(xml) {
       const step = /<step>([A-G])<\/step>/.exec(inner)[1];
       const midi = (Number(/<octave>(-?\d+)<\/octave>/.exec(inner)[1]) + 1) * 12 + { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[step] + Number(/<alter>(-?[\d.]+)<\/alter>/.exec(inner)?.[1] ?? 0);
       const staff = Number(/<staff>(\d+)<\/staff>/.exec(inner)?.[1] ?? 1);
-      const key = `${staff}:${midi}`;
+      // A tie joins notes of one voice (2026-10-15: keyed by staff alone, a tie in one voice was joined to the same key
+      // tied in another, and a note came out ending before it started: Warmness bar 73).
+      const voice = /<voice>([^<]+)<\/voice>/.exec(inner)?.[1] ?? '1';
+      const key = `${staff}:${voice}:${midi}`;
       if (inner.includes('<tie type="stop"/>') && open.has(key)) {
         open.get(key).end = barStart + at + dur;
         if (!inner.includes('<tie type="start"/>')) open.delete(key);
@@ -158,23 +202,24 @@ function player(seed) {
   return (n) => n.start + (n.end - n.start) * (0.85 + 0.15 * next());
 }
 
-// The converter's measured output (totals; `match`: written notes of the player's version equal to the export's in
-// staff, pitch, onset and length). Lower is tidier; the check fails on any rise. Refresh with --record.
+// The converter's measured output (totals; `match`: written notes equal to the engraving's in staff, pitch, onset and
+// length, ties joined). Lower counts are tidier, a higher match truer; the check fails on any count rising or match
+// falling. Refresh with --record.
 const RECORD = {
-  '0f933bca649d export': { rests: 18, shortRests: 10, restsOnNotes: 0, extraVoices: 0, ties: 1, tuplets: 0, oddTuplets: 0, veryShort: 4 },
-  '0f933bca649d played': { rests: 21, shortRests: 12, restsOnNotes: 0, extraVoices: 0, ties: 6, tuplets: 0, oddTuplets: 0, veryShort: 4, match: 741 },
-  '5b25b9a71cd4 export': { rests: 4, shortRests: 2, restsOnNotes: 0, extraVoices: 71, ties: 48, tuplets: 0, oddTuplets: 0, veryShort: 0 },
-  '5b25b9a71cd4 played': { rests: 20, shortRests: 12, restsOnNotes: 1, extraVoices: 77, ties: 84, tuplets: 0, oddTuplets: 0, veryShort: 0, match: 619 },
-  '4868a4d633b2 export': { rests: 21, shortRests: 6, restsOnNotes: 0, extraVoices: 0, ties: 312, tuplets: 20, oddTuplets: 0, veryShort: 0 },
-  '4868a4d633b2 played': { rests: 41, shortRests: 7, restsOnNotes: 9, extraVoices: 88, ties: 388, tuplets: 39, oddTuplets: 0, veryShort: 0, match: 814 },
-  '6197ae3ab855 export': { rests: 38, shortRests: 13, restsOnNotes: 0, extraVoices: 0, ties: 117, tuplets: 0, oddTuplets: 0, veryShort: 0 },
-  '6197ae3ab855 played': { rests: 56, shortRests: 26, restsOnNotes: 4, extraVoices: 7, ties: 135, tuplets: 0, oddTuplets: 0, veryShort: 0, match: 438 },
-  'a1fff4796177 export': { rests: 26, shortRests: 9, restsOnNotes: 0, extraVoices: 0, ties: 29, tuplets: 1, oddTuplets: 0, veryShort: 0 },
-  'a1fff4796177 played': { rests: 28, shortRests: 8, restsOnNotes: 2, extraVoices: 40, ties: 51, tuplets: 2, oddTuplets: 0, veryShort: 0, match: 282 },
-  'b11bdb7fe924 export': { rests: 66, shortRests: 2, restsOnNotes: 0, extraVoices: 34, ties: 71, tuplets: 0, oddTuplets: 0, veryShort: 0 },
-  'b11bdb7fe924 played': { rests: 75, shortRests: 10, restsOnNotes: 1, extraVoices: 35, ties: 50, tuplets: 0, oddTuplets: 0, veryShort: 0, match: 485 },
-  'seize': { rests: 101, shortRests: 6, restsOnNotes: 2, extraVoices: 14, ties: 115, tuplets: 11, oddTuplets: 0, veryShort: 0 },
-  'warmness': { rests: 98, shortRests: 16, restsOnNotes: 9, extraVoices: 143, ties: 190, tuplets: 0, oddTuplets: 0, veryShort: 5 },
+  '0f933bca649d export': { rests: 16, shortRests: 8, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 0, ties: 1, tuplets: 0, oddTuplets: 0, veryShort: 4, restSymbols: 20, match: 745 },
+  '0f933bca649d played': { rests: 18, shortRests: 10, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 0, ties: 6, tuplets: 0, oddTuplets: 0, veryShort: 4, restSymbols: 22, match: 741 },
+  '5b25b9a71cd4 export': { rests: 2, shortRests: 0, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 69, ties: 26, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 2, match: 666 },
+  '5b25b9a71cd4 played': { rests: 21, shortRests: 13, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 79, ties: 86, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 21, match: 600 },
+  '4868a4d633b2 export': { rests: 8, shortRests: 0, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 0, ties: 290, tuplets: 17, oddTuplets: 0, veryShort: 0, restSymbols: 8, match: 922 },
+  '4868a4d633b2 played': { rests: 43, shortRests: 12, restsOnNotes: 11, restsHidingBeat: 0, extraVoices: 92, ties: 381, tuplets: 36, oddTuplets: 0, veryShort: 0, restSymbols: 50, match: 814 },
+  '6197ae3ab855 export': { rests: 29, shortRests: 4, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 0, ties: 103, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 29, match: 478 },
+  '6197ae3ab855 played': { rests: 54, shortRests: 24, restsOnNotes: 3, restsHidingBeat: 0, extraVoices: 7, ties: 135, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 59, match: 438 },
+  'a1fff4796177 export': { rests: 17, shortRests: 1, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 0, ties: 12, tuplets: 1, oddTuplets: 0, veryShort: 0, restSymbols: 17, match: 322 },
+  'a1fff4796177 played': { rests: 28, shortRests: 8, restsOnNotes: 2, restsHidingBeat: 0, extraVoices: 40, ties: 51, tuplets: 2, oddTuplets: 0, veryShort: 0, restSymbols: 28, match: 280 },
+  'b11bdb7fe924 export': { rests: 64, shortRests: 0, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 34, ties: 64, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 64, match: 533 },
+  'b11bdb7fe924 played': { rests: 75, shortRests: 10, restsOnNotes: 1, restsHidingBeat: 0, extraVoices: 35, ties: 50, tuplets: 0, oddTuplets: 0, veryShort: 0, restSymbols: 75, match: 480 },
+  'seize': { rests: 89, shortRests: 1, restsOnNotes: 1, restsHidingBeat: 0, extraVoices: 14, ties: 101, tuplets: 9, oddTuplets: 0, veryShort: 0, restSymbols: 98 },
+  'warmness': { rests: 27, shortRests: 4, restsOnNotes: 0, restsHidingBeat: 0, extraVoices: 12, ties: 131, tuplets: 0, oddTuplets: 0, veryShort: 2, restSymbols: 41 },
 };
 
 const CATALOGUE = {
@@ -188,18 +233,21 @@ const CATALOGUE = {
 const SONGS = { seize: 'Seize_the_Day_1.mid', warmness: 'Warmness_On_The_Soul_2023.mid' };
 
 /**
- * The counting itself, on a bar made by hand (2026-10-15). Staff 1: voice 1 a quarter tied to a dotted eighth, a 16th
- * rest and a half rest; voice 3 a half note under the first two, then a <forward> (nothing drawn). Staff 2: a triplet
+ * The counting itself, on bars made by hand (2026-10-15). Staff 1: voice 1 a quarter tied to a dotted eighth, a 16th
+ * rest and a half note; voice 3 a half note under the first two, then a <forward> (nothing drawn). Staff 2: a triplet
  * of eighths, a 32nd, and a rest not printed. Each count must come out as built, and each fooling case must move it.
+ * Then rests and the beat: a rest split as Gould writes it (an eighth to the beat, then a half from the middle) is
+ * one silence of two symbols hiding nothing; a half rest from beat 2 and a quarter rest from beat 2½ each hide it.
  */
 function selfTest() {
   const note = (body, attrs = '') => `<note${attrs}>${body}</note>`;
   const p = (step) => `<pitch><step>${step}</step><octave>4</octave></pitch>`;
-  const bar = (extra = '') => `<part id="P1"><measure number="1">
+  const head = '<attributes><divisions>48</divisions><time><beats>4</beats><beat-type>4</beat-type></time></attributes>';
+  const bar = (extra = '') => `<part id="P1"><measure number="1">${head}
     ${note(`${p('C')}<duration>48</duration><tie type="start"/><voice>1</voice><type>quarter</type><staff>1</staff>`)}
     ${note(`${p('C')}<duration>36</duration><tie type="stop"/><voice>1</voice><type>eighth</type><dot/><staff>1</staff>`)}
     ${note(`<rest/><duration>12</duration><voice>1</voice><type>16th</type><staff>1</staff>`)}
-    ${note(`<rest/><duration>96</duration><voice>1</voice><type>half</type><staff>1</staff>`)}
+    ${note(`${p('D')}<duration>96</duration><voice>1</voice><type>half</type><staff>1</staff>`)}
     <backup><duration>192</duration></backup>
     ${note(`${p('A')}<duration>96</duration><voice>3</voice><type>half</type><staff>1</staff>`)}
     <forward><duration>96</duration><voice>3</voice><staff>1</staff></forward>
@@ -212,15 +260,29 @@ function selfTest() {
     ${extra}
   </measure></part>`;
   const got = measure(bar());
-  const want = { bars: 1, notes: 7, rests: 2, shortRests: 1, restsOnNotes: 1, extraVoices: 1, ties: 1, tuplets: 1, oddTuplets: 0, veryShort: 1 };
+  const want = { bars: 1, notes: 8, rests: 1, restSymbols: 1, shortRests: 1, restsOnNotes: 1, restsHidingBeat: 0, extraVoices: 1, ties: 1, tuplets: 1, oddTuplets: 0, veryShort: 1 };
   const bad = Object.keys(want).filter((k) => got[k] !== want[k]).map((k) => `${k} ${got[k]} (built ${want[k]})`);
   // Fooling cases: without voice 3's note the rests are on no note; a hidden rest drawn counts; one voice is no extra.
   const alone = measure(bar().replace(/<note><pitch><step>A<\/step><octave>4<\/octave><\/pitch><duration>96<\/duration>[\s\S]*?<\/note>/, '<forward><duration>96</duration><voice>3</voice><staff>1</staff></forward>'));
   if (alone.restsOnNotes !== 0) bad.push(`rests on no note: restsOnNotes ${alone.restsOnNotes} (built 0)`);
   const shown = measure(bar().replace(' print-object="no"', ''));
-  if (shown.rests !== 3) bad.push(`a rest drawn after print-object is removed: rests ${shown.rests} (built 3)`);
+  if (shown.rests !== 2) bad.push(`a rest drawn after print-object is removed: rests ${shown.rests} (built 2)`);
   const twoVoices = measure(bar().replace(/<voice>3<\/voice>/g, '<voice>1</voice>'));
   if (twoVoices.extraVoices !== 0) bad.push(`one voice a staff: extraVoices ${twoVoices.extraVoices} (built 0)`);
+  // Rests and the beat, in one voice of 4/4 (durations in 48ths of a quarter).
+  const line = (...items) => measure(`<part id="P1"><measure number="1">${head}${items.map(([rest, d, type, dot = false]) =>
+    note(`${rest ? '<rest/>' : p('C')}<duration>${d}</duration><voice>1</voice><type>${type}</type>${dot ? '<dot/>' : ''}<staff>1</staff>`)).join('')}</measure></part>`);
+  const split = line([false, 48, 'quarter'], [false, 24, 'eighth'], [true, 24, 'eighth'], [true, 96, 'half']);
+  if (split.restsHidingBeat !== 0 || split.rests !== 1 || split.restSymbols !== 2) bad.push(`a rest split at the beat: restsHidingBeat ${split.restsHidingBeat} rests ${split.rests} symbols ${split.restSymbols} (built 0, 1, 2)`);
+  const middle = line([false, 48, 'quarter'], [true, 96, 'half'], [false, 48, 'quarter']);
+  if (middle.restsHidingBeat !== 1) bad.push(`a half rest from beat 2: restsHidingBeat ${middle.restsHidingBeat} (built 1)`);
+  const across = line([false, 72, 'quarter', true], [true, 48, 'quarter'], [false, 24, 'eighth'], [false, 48, 'quarter']);
+  if (across.restsHidingBeat !== 1) bad.push(`a quarter rest from beat 2½: restsHidingBeat ${across.restsHidingBeat} (built 1)`);
+  const third = line([false, 96, 'half'], [true, 96, 'half']);
+  if (third.restsHidingBeat !== 0) bad.push(`a half rest on beat 3: restsHidingBeat ${third.restsHidingBeat} (built 0)`);
+  // Compound time: 6/8 (a beat is 1.5 quarters, the bar 3) and 12/8 (the bar 6, its middle 3).
+  const cases = [[1, 2, 1.5, 3, true], [1, 1.5, 1.5, 3, false], [0, 3, 1.5, 3, false], [1.5, 4.5, 1.5, 6, true], [3, 6, 1.5, 6, false], [0, 3, 1.5, 6, false], [3, 4, 1, 3, false]];
+  for (const [a, b, beat, len, want2] of cases) if (hidesBeat(a, b, beat, len) !== want2) bad.push(`hidesBeat(${a}, ${b}, beat ${beat}, bar ${len}) is ${!want2} (built ${want2})`);
   return bad;
 }
 
@@ -244,10 +306,12 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '
       const piece = notesOf(engraved);
       const exported = convert(midiOf(piece, (n) => n.start + 0.95 * (n.end - n.start)), name);
       const played = convert(midiOf(piece, player(7)), name);
-      const clean = new Set(writtenNotes(exported));
+      // Matched against the engraving itself, the independent answer (before 2026-10-15 against the export's own
+      // conversion, which moved whenever the export's conversion got better).
+      const truth = new Set(writtenNotes(engraved));
       shown.push([`${name}: engraved`, measure(engraved)]);
-      results[`${id} export`] = { counts: measure(exported) };
-      results[`${id} played`] = { counts: measure(played), match: writtenNotes(played).filter((x) => clean.has(x)).length };
+      results[`${id} export`] = { counts: measure(exported), match: writtenNotes(exported).filter((x) => truth.has(x)).length };
+      results[`${id} played`] = { counts: measure(played), match: writtenNotes(played).filter((x) => truth.has(x)).length };
       shown.push([`${name}: export`, results[`${id} export`].counts], [`${name}: played`, results[`${id} played`].counts]);
     }
   }
@@ -262,11 +326,11 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '
     }
   }
   const perBar = (t, k) => (t.bars ? t[k] / t.bars : 0).toFixed(2);
-  console.log(`${'per bar'.padEnd(34)}${['bars', 'notes', ...COUNTS].map((k) => k.padStart(13)).join('')}`);
-  for (const [name, t] of shown) console.log(`${name.padEnd(34)}${String(t.bars).padStart(13)}${['notes', ...COUNTS].map((k) => perBar(t, k).padStart(13)).join('')}`);
+  console.log(`${'per bar'.padEnd(34)}${['bars', 'notes', ...COUNTS, ...INFO].map((k) => k.padStart(16)).join('')}`);
+  for (const [name, t] of shown) console.log(`${name.padEnd(34)}${String(t.bars).padStart(16)}${['notes', ...COUNTS, ...INFO].map((k) => perBar(t, k).padStart(16)).join('')}`);
   if (recordMode) {
     for (const [name, r] of Object.entries(results)) {
-      console.log(`  '${name}': { ${COUNTS.map((k) => `${k}: ${r.counts[k]}`).join(', ')}${r.match === undefined ? '' : `, match: ${r.match}`} },`);
+      console.log(`  '${name}': { ${COUNTS.map((k) => `${k}: ${r.counts[k]}`).join(', ')}, restSymbols: ${r.counts.restSymbols}${r.match === undefined ? '' : `, match: ${r.match}`} },`);
     }
   } else {
     let failed = 0, better = 0, checked = 0;
@@ -275,11 +339,12 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '
       if (!want) { console.log(`FAIL ${name}: no record (run with --record)`); failed += 1; continue; }
       checked += 1;
       for (const k of COUNTS) {
-        if (r.counts[k] > want[k]) { console.log(`FAIL ${name}: ${k} ${r.counts[k]} (recorded ${want[k]})`); failed += 1; }
+        if (want[k] === undefined) { console.log(`FAIL ${name}: no record of ${k} (run with --record)`); failed += 1; }
+        else if (r.counts[k] > want[k]) { console.log(`FAIL ${name}: ${k} ${r.counts[k]} (recorded ${want[k]})`); failed += 1; }
         else if (r.counts[k] < want[k]) better += 1;
       }
       if (want.match !== undefined) {
-        if (r.match < want.match) { console.log(`FAIL ${name}: ${r.match} written notes match the export's (recorded ${want.match})`); failed += 1; }
+        if (r.match < want.match) { console.log(`FAIL ${name}: ${r.match} written notes as the engraving has them (recorded ${want.match})`); failed += 1; }
         else if (r.match > want.match) better += 1;
       }
     }

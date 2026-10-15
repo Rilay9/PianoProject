@@ -10,9 +10,11 @@
 import type { MidiFileContents, NoteEvent } from './readMidi.ts';
 import { type Frac, cmp, gt, lt, lte, sub } from './fraction.ts';
 
-export function soundingEnds(events: readonly NoteEvent[], pedal: MidiFileContents['pedal']): Frac[] {
-  // Each channel's pedal-down spans, [from, to); a span still down at the end runs on (to: null).
-  const spans = new Map<number, { from: Frac; to: Frac | null }[]>();
+/** Each channel's pedal-down spans, [from, to); a span still down at the end runs on (to: null). */
+export type PedalSpans = Map<number, { from: Frac; to: Frac | null }[]>;
+
+export function pedalSpans(pedal: MidiFileContents['pedal']): PedalSpans {
+  const spans: PedalSpans = new Map();
   for (const change of pedal) {
     const list = spans.get(change.channel) ?? [];
     const open = list[list.length - 1];
@@ -20,6 +22,11 @@ export function soundingEnds(events: readonly NoteEvent[], pedal: MidiFileConten
     else if (open && open.to === null) open.to = change.at;
     spans.set(change.channel, list);
   }
+  return spans;
+}
+
+export function soundingEnds(events: readonly NoteEvent[], pedal: MidiFileContents['pedal']): Frac[] {
+  const spans = pedalSpans(pedal);
   // The next strike of each key on each channel, for cutting the sound there.
   const byKey = new Map<string, Frac[]>();
   for (const e of events) {
@@ -87,4 +94,68 @@ export function cutLegato(events: NoteEvent[]): number {
     cut += 1;
   }
   return cut;
+}
+
+/**
+ * A played file with the pedal is written as the published arrangements write it, one voice a hand (owner's answers
+ * A5 and, 2026-10-15, "one voice, like the published page" for keys held through a change of the pedal): a key held
+ * down past the next note of its hand is written to that note. Where the pedal is down until the key comes up the
+ * sound is unchanged; where a finger holds the key through a change of the pedal, the page shows it shorter than it
+ * is held (the owner's choice; Warmness on the Soul bars 12-14, E4 held under the repeated B4). Before (A5 alone) the
+ * second kind kept its length and made 30 of the 42 extra voices left in Warmness. Returns how many were cut.
+ */
+export function cutAtNextNote(events: NoteEvent[]): number {
+  const onsets = [...new Map(events.map((e) => [`${e.start.n}/${e.start.d}`, e.start])).values()].sort(cmp);
+  const after = (t: Frac): Frac | undefined => {
+    let lo = 0, hi = onsets.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (gt(onsets[mid]!, t)) hi = mid; else lo = mid + 1; }
+    return onsets[lo];
+  };
+  let cut = 0;
+  for (const e of events) {
+    const next = after(e.start);
+    if (!next || !gt(e.end, next)) continue;
+    e.end = next;
+    cut += 1;
+  }
+  return cut;
+}
+
+/**
+ * In a played file with the pedal, a note is written as long as it sounds (owner's answer A5: an arrangement writes
+ * the pedal's held value), up to its hand's next note: a bass key let go at once with the pedal holding it for three
+ * beats is a dotted half, not a 16th and rests. `holdToNext` already writes it to the next note where it sounds to
+ * within an eighth of it; this covers a note whose pedal lifts earlier, where the rest after it is real. Only as far
+ * as one written note reaches inside its bar (`longest`: the latest end, not after `to`, that one note-head from the
+ * note's start can carry, or null): a length that needs ties, or a tie over the barline, is a worse read than the
+ * rest it replaces (tried 2026-10-15: written to the sound itself, Warmness gained 12 ties and two bars of a held
+ * last chord). `sound` is each note's sounding end, `snapEnd` puts a moment on the grid of its bar. Returns how many
+ * were lengthened.
+ */
+export function holdToSound(
+  events: NoteEvent[],
+  sound: (e: NoteEvent) => Frac | undefined,
+  snapEnd: (t: Frac) => Frac,
+  longest: (e: NoteEvent, to: Frac) => Frac | null,
+): number {
+  const onsets = [...new Map(events.map((e) => [`${e.start.n}/${e.start.d}`, e.start])).values()].sort(cmp);
+  const after = (t: Frac): Frac | undefined => {
+    let lo = 0, hi = onsets.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (gt(onsets[mid]!, t)) hi = mid; else lo = mid + 1; }
+    return onsets[lo];
+  };
+  let lengthened = 0;
+  for (const e of events) {
+    const heard = sound(e);
+    if (!heard) continue;
+    let to = snapEnd(heard);
+    const next = after(e.start);
+    if (next && gt(to, next)) to = next;
+    if (!gt(to, e.end)) continue;
+    const end = longest(e, to);
+    if (!end || !gt(end, e.end)) continue;
+    e.end = end;
+    lengthened += 1;
+  }
+  return lengthened;
 }

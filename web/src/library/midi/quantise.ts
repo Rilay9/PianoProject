@@ -254,6 +254,70 @@ export const EXACT_ONLY_DIVISORS = [6, 8, 12, 16, 24];
 /** The finest grid a bar takes to keep two strikes of one key apart: triplet 64ths, the finest the writer draws. */
 const FINEST = frac(1, 24);
 
+/**
+ * How much a notation program's export shortened every note (its "gate"), or null when the file has none to undo
+ * (owner's answer A6, 2026-10-15: undo it, so held notes come out at their written lengths).
+ *
+ * Why: a program exporting a score plays each note a share of its written length (Seize the Day: 95%, every note
+ * 0.95 of its value less a tick: 0.948 quarters for a quarter, 1.898 for a half). Snapping that release to the grid
+ * works only while the shortfall is under half a grid step: a half note's 0.1 is more than half a sextuplet 16th,
+ * so in a bar with a sextuplet (bar 157) it was written as a quarter tied to a quarter-triplet tied to a 16th-triplet.
+ * Snapping releases to 16ths instead (tried 2026-10-15) wrote a triplet quarter as a dotted eighth and a 16th rest
+ * (Falling): a release alone cannot tell a gated half from a triplet value, the gate can.
+ *
+ * How it is told: a written length divided by the gate is a whole number of twelfths of a quarter (16ths, triplet
+ * eighths and everything built of them; `twelfths`). The gate is the share, from 1 down to 80% in thousandths, at
+ * which the most notes' lengths come out so, the larger of equals (a smaller share can fit as well: 0.95 x 3/4 makes
+ * every length a twelfth again), provided that is more than half of the notes; then the middle of the shares those
+ * notes show. A share chosen by the first that fits half would be fooled: 0.991 makes Your Song's 95% halves 23
+ * twelfths. Measured (2026-10-15, scratch gate4.mjs): Seize 0.945 at 99.6% of its notes; the readability check's
+ * pieces exported at 95%, 90% and 85% found at their gate (98-100% of notes), exported whole found none; played in
+ * (Warmness, the check's player versions) at most 32% at any share, so no gate. Half sits in that gap.
+ */
+export function estimateGate(events: readonly NoteEvent[]): number | null {
+  const lengths = events.map((e) => toNumber(sub(e.end, e.start))).filter((l) => l > 0);
+  if (lengths.length === 0) return null;
+  const fitting = (gate: number): number[] => lengths.filter((l) => twelfths(l / gate) !== null);
+  let best = 1000, most = -1;
+  for (let k = 1000; k >= GATE_LOWEST * 1000; k -= 1) {
+    const n = fitting(k / 1000).length;
+    if (n > most) { most = n; best = k; }
+  }
+  if (most * 2 <= lengths.length) return null;
+  // The best share found is at the edge of the tolerance; the gate is the middle of what the explained notes say.
+  const shares = fitting(best / 1000).map((l) => l / (twelfths(l / (best / 1000))! / 12)).sort((x, y) => x - y);
+  const gate = Math.round((shares[Math.floor(shares.length / 2)] ?? best / 1000) * 1000) / 1000;
+  return gate >= 0.999 ? null : gate;
+}
+
+/** The smallest gate looked for: 80%, the least the converter's chord rule already assumes (tidy.ts NEAR_RELEASES). */
+export const GATE_LOWEST = 0.8;
+
+/**
+ * A length as a whole number of twelfths of a quarter, or null when it is not near one. Near: within a 192nd of a
+ * quarter (2.5 ticks at 480 a quarter: the export's rounding to its ticks) for each quarter of the length, at least
+ * one, because an error in the gate grows with the length it is applied to.
+ */
+export function twelfths(length: number): number | null {
+  const n = Math.round(length * 12);
+  if (n <= 0) return null;
+  return Math.abs(length - n / 12) < Math.max(1, length) / 192 ? n : null;
+}
+
+/**
+ * A note's release with the gate undone, where the gate explains its length (it then comes out a whole number of
+ * twelfths). Kept as the file has it where it already falls on a twelfth of its bar (a note the program did not
+ * shorten: Seize the Day's rolled chord in bar 156, struck late and let go on the barline) or the gate does not
+ * explain it (a 32nd).
+ */
+export function ungated(event: NoteEvent, gate: number | null, bars: BarMap): Frac {
+  if (gate === null) return event.end;
+  const inBar = toNumber(sub(event.end, bars.bar(bars.indexAt(event.end)).start));
+  if (Math.abs(inBar - Math.round(inBar * 12) / 12) < 1 / 192) return event.end;
+  const n = twelfths(toNumber(sub(event.end, event.start)) / gate);
+  return n === null ? event.end : add(event.start, frac(n, 12));
+}
+
 export function quantise(
   events: NoteEvent[],
   options: {
@@ -261,6 +325,8 @@ export function quantise(
     beat: Frac;
     divisors: number[];
     swing: boolean | null;
+    /** The export's gate (`estimateGate`), undone before releases are snapped; null or left out, none. */
+    gate?: number | null;
     /**
      * Which kept part (staff) each event is in, when the file's tracks are kept as the staves: a strike in one
      * part and one in the other are two hands, never one key struck twice (a unison between the hands was written
@@ -385,10 +451,11 @@ export function quantise(
     const startUnit = unitForBar(startBar);
     let newStart = add(startFrom, snap(sub(start, startFrom), startUnit));
     if (lt(newStart, ZERO)) newStart = ZERO;
-    const endBar = bars.indexAt(event.end);
+    const release = ungated(event, options.gate ?? null, bars);
+    const endBar = bars.indexAt(release);
     const endFrom = bars.bar(endBar).start;
     const endUnit = unitForBar(endBar);
-    let newEnd = add(endFrom, snap(sub(event.end, endFrom), endUnit));
+    let newEnd = add(endFrom, snap(sub(release, endFrom), endUnit));
     // A note too short to keep its own end gets one unit of the grid of the bar it now starts in: one rounded onto
     // the next barline took the last bar's (a triplet eighth in a bar of sixteenths, 2026-10-14).
     if (lte(newEnd, newStart)) newEnd = add(newStart, unitForBar(bars.indexAt(newStart)));

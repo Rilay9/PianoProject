@@ -13,7 +13,7 @@ import {
   ZERO, add, eq, frac, fracToString, isZero, limitDenominator, mod, sub, toNumber,
 } from '../src/library/midi/fraction.ts';
 import { HAND_SPAN_SEMITONES, splitHands } from '../src/library/midi/handSplit.ts';
-import { detectSwing, quantise, snap } from '../src/library/midi/quantise.ts';
+import { detectSwing, estimateGate, quantise, snap } from '../src/library/midi/quantise.ts';
 import { isNotatable, notatablePieces } from '../src/library/midi/notatable.ts';
 import { sliceIntoChords } from '../src/library/midi/slice.ts';
 import { DIVISIONS, noteShape, spelledPitch, writeMusicXml } from '../src/library/midi/writer.ts';
@@ -1594,6 +1594,7 @@ describe('a played file is told apart from a written one', () => {
 
 const { compareWritten } = await import('../src/library/midi/convert.ts');
 const { NEAR_RELEASES, NEAR_STRIKE } = await import('../src/library/midi/tidy.ts');
+const { measure } = await import('./readability.mjs');
 
 describe('releases as a player lets the keys go, converted', () => {
   const T = 480;
@@ -1681,6 +1682,153 @@ describe('the converter’s own check compares staff and length too (B3-03)', ()
     expect([result.lost, result.added]).toEqual([[], []]);
     expect(result.changed.length).toBe(3);
     expect(result.changed.every((line) => line.endsWith('on the other staff'))).toBe(true);
+  });
+});
+
+describe('a played file with the pedal is written as an arrangement writes it (owner’s answer A5)', () => {
+  const T = 480;
+  // A list of [midi, from, to] notes (quarters) and [at, down] pedal changes, as one track.
+  const track = (name, notes, pedal = []) => {
+    const ev = [];
+    for (const [midi, from, to] of notes) ev.push([Math.round(from * T), noteOn(midi)], [Math.round(to * T), noteOff(midi)]);
+    for (const [at, down] of pedal) ev.push([Math.round(at * T), [0xb0, 64, down ? 127 : 0]]);
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return [{ delta: 0, bytes: trackName(name) }, ...ev.map(([t, bytes]) => { const delta = t - now; now = t; return { delta, bytes }; })];
+  };
+  // Right hand: two chords whose keys come up raggedly (a player's), or together (an export's).
+  const right = (ragged) => [[76, 0, ragged ? 1.86 : 1.9], [79, 0, 1.9], [77, 2, ragged ? 3.8 : 3.9], [81, 2, 3.9], [76, 4, 7.9], [79, 4, 7.9], [76, 8, 12]];
+  // Left hand, bar 1: C3 held down for three beats under the broken chord G3, C4 (as Warmness holds its bass keys);
+  // bar 2: C3 let go at once, the pedal holding it until just before bar 3.
+  const left = [[48, 0, 3], [55, 1, 1.9], [60, 2, 3.95], [48, 4, 4.2], [48, 8, 12]];
+  const convert = (ragged, pedal) =>
+    convertMidi(buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }], track('Right', right(ragged)), track('Left', left, pedal)]), { title: 'A5' });
+  const lower = (xml, bar) => barsOf(xml)[bar].filter((n) => n.staff === 2).map((n) => `${n.name}@${n.at}/${n.len}:${n.voice}`);
+  const pedal = [[0.1, true], [3.97, false], [4.05, true], [7.85, false], [8.05, true], [12, false]];
+
+  it('cuts a bass key held under the pedal at its hand’s next note: one voice, the sound unchanged', () => {
+    const { xml, report } = convert(true, pedal);
+    expect(lower(xml, 0)).toEqual(['C3@0/1:2', 'G3@1/1:2', 'C4@2/2:2']);
+    expect(report.pedalCut).toBe(1);
+    expect(report.passed).toBe(true);
+  });
+  it('cuts a key held through a change of the pedal too: one voice a hand (owner, 2026-10-15)', () => {
+    const lifted = [[0.1, true], [1.5, false], [1.6, true], [3.97, false], [4.05, true], [7.85, false], [8.05, true], [12, false]];
+    const { xml, report } = convert(true, lifted);
+    expect(lower(xml, 0)).toEqual(['C3@0/1:2', 'G3@1/1:2', 'C4@2/2:2']); // before: C3 a whole bar in a voice of its own
+    expect(report.passed).toBe(true);
+  });
+  it('keeps the written lengths of a file exported from a notation program (each chord let go at one moment)', () => {
+    const { xml, report } = convert(false, pedal);
+    expect(lower(xml, 0)).toEqual(['C3@0/3:2', 'G3@1/1:4', 'C4@2/2:4']);
+    expect(report.pedalCut).toBe(0);
+  });
+  it('measures a silence from where the pedal stopped the sound: a lift just before the next note is no rest', () => {
+    // Bar 2's C3: key up after a fifth of a beat, the pedal holding it until 0.15 of a beat before bar 3.
+    const { xml } = convert(true, pedal);
+    expect(lower(xml, 1)).toEqual(['C3@0/4:2']);
+    const second = /<measure number="2"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(second.split('<staff>2</staff>').length > 1 && /<rest\/>[\s\S]*?<staff>2<\/staff>/.test(second)).toBe(false);
+  });
+  it('takes a silence after the pedal lifts of less than an eighth for the pedal changing; after a longer one, the note is as long as it sounded, then a rest', () => {
+    const lift = (at) => [[0.1, true], [3.97, false], [4.05, true], [at, false], [8.05, true], [12, false]];
+    expect(lower(convert(true, lift(7.7)).xml, 1)).toEqual(['C3@0/4:2']); // 0.3 before bar 3 (Warmness bar 19)
+    expect(lower(convert(true, lift(7.1)).xml, 1)).toEqual(['C3@0/3:2']); // 0.9 before: the rest is kept
+  });
+});
+
+describe('a notation export that shortens every note: the written lengths restored (owner’s answer A6)', () => {
+  const T = 480;
+  const track = (name, notes, gate) => {
+    const ev = [];
+    for (const [midi, from, to] of notes) ev.push([Math.round(from * T), noteOn(midi)], [Math.round((from + gate * (to - from)) * T) - 1, noteOff(midi)]);
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return [{ delta: 0, bytes: trackName(name) }, ...ev.map(([t, bytes]) => { const delta = t - now; now = t; return { delta, bytes }; })];
+  };
+  // Seize the Day bar 157, as written: A4 a half, an eighth rest, A4 an eighth, a sextuplet of 16ths; eighths below.
+  const six = [70, 69, 67, 65, 67, 70].map((m, i) => [m, 3 + i / 6, 3 + (i + 1) / 6]);
+  const right = [[69, 0, 2], [69, 2.5, 3], ...six, [72, 4, 7], [69, 7, 7 + 2 / 3], [70, 7 + 2 / 3, 8]];
+  const left = Array.from({ length: 16 }, (_, i) => [55, i / 2, (i + 1) / 2]);
+  const convert = (gate) => convertMidi(buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }], track('Right', right, gate), track('Left', left, gate)]), { title: 'A6' });
+  const upper = (xml) => barsOf(xml)[0].filter((n) => n.staff === 1).map((n) => `${n.name}@${n.at}/${n.len}`);
+
+  it('finds the share a file plays each note for, and none in a file exported whole', () => {
+    // As an export writes them: the share of the written length, a tick short (Seize: 0.948 for a quarter).
+    const lengths = (gate, tick = 1 / T) => right.concat(left).map(([midi, from, to]) => ({ start: limitDenominator(from, 1000), end: limitDenominator(from + gate * (to - from) - tick, 100000), midi, velocity: 64 }));
+    expect(estimateGate(lengths(0.95))).toBeCloseTo(0.95, 2);
+    expect(estimateGate(lengths(0.9))).toBeCloseTo(0.9, 2);
+    expect(estimateGate(lengths(1, 0))).toBe(null);
+  });
+  it('is not fooled by halves alone (0.991 makes a 95% half 23 twelfths)', () => {
+    const halves = [...Array.from({ length: 12 }, (_, i) => [60, 2 * i, 2 * i + 2]), [64, 0, 1], [64, 1, 1.5], [64, 1.5, 1.75], [64, 1.75, 2], [64, 2, 3]];
+    const events = halves.map(([midi, from, to]) => ({ start: limitDenominator(from, 1000), end: limitDenominator(from + 0.95 * (to - from) - 1 / T, 100000), midi, velocity: 64 }));
+    expect(estimateGate(events)).toBeCloseTo(0.95, 2);
+  });
+  it('finds no gate in a played file (keys let go anywhere from 85% to 100%)', () => {
+    let seed = 7;
+    const next = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const events = right.concat(left).map(([midi, from, to]) => ({ start: limitDenominator(from, 1000), end: limitDenominator(from + (0.85 + 0.15 * next()) * (to - from), 1000), midi, velocity: 64 }));
+    expect(estimateGate(events)).toBe(null);
+  });
+  it('writes the half note before a sextuplet as a half, not tied triplet pieces', () => {
+    const { xml, report } = convert(0.95);
+    expect(upper(xml)).toEqual(['A4@0/2', 'A4@5/2/1/2', 'Bb4@3/1/6', 'A4@19/6/1/6', 'G4@10/3/1/6', 'F4@7/2/1/6', 'G4@11/3/1/6', 'Bb4@23/6/1/6']);
+    expect(report.passed).toBe(true);
+    expect(report.gate).toBeCloseTo(0.95, 2);
+    const first = /<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(first.includes('<tie type="start"/>')).toBe(false);
+  });
+  it('still writes a triplet quarter as one (releases moved to 16ths made it a dotted eighth and a 16th rest, Falling)', () => {
+    const { xml } = convert(0.95);
+    expect(barsOf(xml)[1].filter((n) => n.staff === 1).map((n) => `${n.name}@${n.at}/${n.len}`)).toEqual(['C5@0/3', 'A4@3/2/3', 'Bb4@11/3/1/3']);
+  });
+});
+
+describe('rests that show the beat (Gould, Behind Bars; coordinator 2026-10-15)', () => {
+  const T = 480;
+  const track = (name, notes) => {
+    const ev = [];
+    for (const [midi, from, to] of notes) ev.push([Math.round(from * T), noteOn(midi)], [Math.round(to * T), noteOff(midi)]);
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return [{ delta: 0, bytes: trackName(name) }, ...ev.map(([t, bytes]) => { const delta = t - now; now = t; return { delta, bytes }; })];
+  };
+  const convert = (right, left) => convertMidi(buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }], track('Right', right), track('Left', left)]), { title: 'rests' });
+  /** Each visible rest of a staff in bar 1 as onset/length in quarters. */
+  const restsOf = (xml, staff) => {
+    const body = /<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    const out = [];
+    let pos = 0;
+    for (const [w] of body.matchAll(/<note>[\s\S]*?<\/note>|<backup>[\s\S]*?<\/backup>|<forward>[\s\S]*?<\/forward>/g)) {
+      const d = Number(/<duration>(\d+)<\/duration>/.exec(w)?.[1] ?? 0) / DIVISIONS;
+      if (w.startsWith('<backup>')) { pos -= d; continue; }
+      if (w.startsWith('<forward>')) { pos += d; continue; }
+      if (w.includes('<chord/>')) continue;
+      if (w.includes('<rest/>') && w.includes(`<staff>${staff}</staff>`)) out.push(`${pos}/${d}`);
+      pos += d;
+    }
+    return out;
+  };
+  const whole = [[72, 0, 4]];
+
+  it('writes a silence from beat 2 to beat 4 as two quarter rests, not a half rest on beat 2', () => {
+    const { xml, report } = convert(whole, [[48, 0, 1], [48, 3, 4]]);
+    expect(restsOf(xml, 2)).toEqual(['1/1', '2/1']);
+    expect(measure(xml).restsHidingBeat).toBe(0);
+    expect(report.passed).toBe(true);
+  });
+  it('writes a rest from beat 2½ to the beat first (Seize the Day bar 3: no half rest on beat 2½)', () => {
+    // As Seize bar 3's left hand: G3+B♭3 a dotted half, D4 a dotted quarter beside them, D3 the last eighth.
+    const { xml } = convert(whole, [[55, 0, 3], [58, 0, 3], [62, 0, 1.5], [50, 3.5, 4]]);
+    expect(measure(xml).restsHidingBeat).toBe(0);
+    // Beat 2½ to 3 is an eighth rest under the chord, not drawn; from beat 3 a dotted quarter rest (drawn: the chord
+    // ends on beat 4, so it is not wholly under it).
+    expect(restsOf(xml, 2)).toEqual(['2/1.5']);
+  });
+  it('still writes a half rest on beat 3 and a whole bar’s rest as one', () => {
+    const { xml } = convert([[72, 0, 2], [72, 4, 8]], [[48, 0, 8]]);
+    expect(restsOf(xml, 1)).toEqual(['2/2']);
   });
 });
 

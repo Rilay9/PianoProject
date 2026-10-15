@@ -71,12 +71,16 @@ import {
   ZERO,
   add,
   cmp,
+  div,
   eq,
   frac,
   fracToString,
   gt,
   gte,
+  isZero,
+  lt,
   lte,
+  mod,
   mul,
   sub,
   toNumber,
@@ -89,11 +93,11 @@ import {
   mergeNoteTracks,
   readMidi,
 } from './readMidi.ts';
-import { quantise, type SwingReport } from './quantise.ts';
+import { estimateGate, quantise, snap, type SwingReport } from './quantise.ts';
 import { splitHands } from './handSplit.ts';
 import { sliceIntoChords, type Slice } from './slice.ts';
-import { cutLegato, holdToNext, soundingEnds } from './pedal.ts';
-import { closeSmallGaps, hideCoveredRests, oneLengthChords } from './tidy.ts';
+import { cutAtNextNote, cutLegato, holdToNext, holdToSound, soundingEnds } from './pedal.ts';
+import { NEAR_PEDAL_LIFT, NEAR_STRIKE, closeSmallGaps, hideCoveredRests, oneLengthChords, playedIn } from './tidy.ts';
 import { bandEnd, guessScore, listParts, partsOf, trimLeadIn, type PartInfo } from './band.ts';
 import { notatablePieces } from './notatable.ts';
 import {
@@ -113,7 +117,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 7; // 2026-10-15 (7): a chord let go raggedly is one length, a silence under a 16th in a voice is closed, a rest under another voice's note is not drawn (tidy.ts); the check compares staff and length. 6 (2026-10-15): held notes in the longest beat-aligned values, eighths and shorter beamed by the beat. 5 (2026-10-15): the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
+export const MIDI_CONVERTER_VERSION = 8; // 2026-10-15 (8): owner's answers A5 and A6: a played file with the pedal written one voice a hand (each note to its hand's next note, also through a change of the pedal; rests that show the beat; as long as it sounds, the pedal's lift no rest); a notation export's gate undone. 7 (2026-10-15): a chord let go raggedly is one length, a silence under a 16th in a voice is closed, a rest under another voice's note is not drawn (tidy.ts); the check compares staff and length. 6 (2026-10-15): held notes in the longest beat-aligned values, eighths and shorter beamed by the beat. 5 (2026-10-15): the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -169,6 +173,10 @@ export interface ConversionReport {
   joined: number;
   /** Notes the sustain pedal held until the next note of their hand, written to it (pedal.ts). */
   pedalled: number;
+  /** Notes of a played file with the pedal held past their hand's next note, written to it (pedal.ts cutAtNextNote). */
+  pedalCut: number;
+  /** The share of its written length the file plays each note for (a notation export's gate), undone; null: none found. */
+  gate: number | null;
   /**
    * tidy.ts (2026-10-15): notes given their chord's length (released less than a fifth of a quarter apart), notes
    * written to their voice's next note over a silence under a 16th, and first-voice rests left undrawn under another
@@ -295,10 +303,22 @@ function barsFor(
         return;
       }
       const unit = unitForBar(bar);
-      for (const piece of notatablePieces(sub(at, from), sub(until, at), unit, beat, barLength)) {
-        notes.push(...writerNotes(null, piece, at, staff, unwritable, voice));
-        at = add(at, piece);
-      }
+      const write = (to: Frac): void => {
+        for (const piece of notatablePieces(sub(at, from), sub(to, at), unit, beat, barLength)) {
+          notes.push(...writerNotes(null, piece, at, staff, unwritable, voice));
+          at = add(at, piece);
+        }
+      };
+      // Rests show the beat (Gould, Behind Bars; 2026-10-15): one begun off a beat is written to the beat first, and
+      // one begun on a later beat of a bar of an even number of beats does not run over its middle (in 4/4 a half
+      // rest only on beat 1 or 3). Seize the Day bar 3 had a half rest from beat 2½.
+      const offBeat = mod(sub(at, from), beat);
+      const nextBeat = add(at, sub(beat, offBeat));
+      if (!isZero(offBeat) && lt(nextBeat, until)) write(nextBeat);
+      const beats = div(barLength, beat);
+      const middle = add(from, div(barLength, frac(2)));
+      if (gt(at, from) && lt(at, middle) && lt(middle, until) && gt(beats, frac(2)) && isZero(mod(beats, frac(2)))) write(middle);
+      write(until);
     };
     while (next < slices.length) {
       const slice = slices[next];
@@ -620,7 +640,9 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const flat = raw.flatMap((part) => part.events);
   // Kept tracks are the staves: a unison between them is two hands, not one key struck twice.
   const partOfEvent = split ? undefined : raw.flatMap((part, p) => part.events.map(() => p));
-  const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null, ...(partOfEvent ? { parts: partOfEvent } : {}) });
+  // A notation program's export shortens every note by one share: undone before the grid (owner's answer A6).
+  const gate = estimateGate(flat);
+  const quantised = quantise(flat, { bars, beat, divisors, swing: options.swing ?? null, gate, ...(partOfEvent ? { parts: partOfEvent } : {}) });
   // When each note stops sounding, the sustain pedal counted (pedal.ts), carried to the quantised notes (same order).
   const soundEnds = soundingEnds(flat, file.pedal);
   const soundOf = new Map<NoteEvent, Frac>(quantised.events.map((e, i) => [e, soundEnds[i] ?? e.end]));
@@ -659,11 +681,38 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   // presses under the pedal were short notes and rests where an arrangement writes the held value.
   let pedalled = 0;
   let chordsJoined = 0;
+  let pedalCut = 0;
+  // Played in (its chords' keys let go raggedly, tidy.ts playedIn) with the pedal: written as an arrangement writes
+  // it, one voice a hand: each note to its hand's next note (owner's answers A5 and, for keys held through a change
+  // of the pedal, "one voice, like the published page", 2026-10-15). Judged before oneLengthChords evens the releases out.
+  const pedalWritten = file.pedal.length > 0 && playedIn(parts.map((part) => part.events), releases);
+  /** A moment on the grid of the bar it falls in. */
+  const snapEnd = (t: Frac): Frac => {
+    const index = bars.indexAt(t);
+    const from = bars.bar(index).start;
+    const grid = quantised.gridByBar;
+    return add(from, snap(sub(t, from), grid[Math.min(Math.max(index, 0), grid.length - 1)] ?? frac(1, 4)));
+  };
+  /** The latest end, not after `to` nor the note's barline, that one note-head from the note's start carries. */
+  const oneHeadTo = (e: NoteEvent, to: Frac): Frac | null => {
+    const index = bars.indexAt(e.start);
+    const bar = bars.bar(index);
+    const barEnd = add(bar.start, bar.length);
+    const unit = quantised.gridByBar[Math.min(Math.max(index, 0), quantised.gridByBar.length - 1)] ?? frac(1, 4);
+    for (let end = lt(to, barEnd) ? to : barEnd; gt(end, e.start); end = sub(end, unit)) {
+      if (notatablePieces(sub(e.start, bar.start), sub(end, e.start), unit, bar.beat, bar.length).length === 1) return end;
+    }
+    return null;
+  };
   for (const part of parts) {
     // Notes of a hand struck together and let go less than a 16th apart: one chord, one length (tidy.ts).
     chordsJoined += oneLengthChords(part.events, releases);
     if (file.pedal.length) cutLegato(part.events); // played with the pedal: a key's overlap into the next is legato
+    if (pedalWritten) {
+      pedalCut += cutAtNextNote(part.events);
+    }
     pedalled += holdToNext(part.events, (e) => soundOf.get(e), frac(1, 8));
+    if (pedalWritten) pedalled += holdToSound(part.events, (e) => soundOf.get(e), snapEnd, oneHeadTo);
   }
   if (parts.length > 2) {
     throw new ConvertError(
@@ -734,7 +783,16 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     const staff = grandStaff ? ((index + 1) as 1 | 2) : undefined;
     const lines = written ? splitVoices(part.events, options.maxVoices) : [part.events];
     // In each voice, a silence of less than a 16th in the file before the voice's next note is a lifted finger (tidy.ts).
-    for (const line of lines) gapsClosed += closeSmallGaps(line, (e) => releases.get(e) ?? e.end, (e) => strikes.get(e) ?? e.start);
+    // In a played file with the pedal the silence is measured from when the note stops sounding: its release, or
+    // later where the pedal held it (Warmness lifts the pedal a little before the next harmony: that gap is no rest).
+    // An export's rests are the ones written, pedal or not.
+    const heardTo = (e: NoteEvent): Frac => {
+      const released = releases.get(e) ?? e.end, sound = soundOf.get(e);
+      return pedalWritten && sound && gt(sound, released) ? sound : released;
+    };
+    // A silence after the pedal ended the note is the pedal changing when shorter than an eighth (tidy.ts).
+    const near = (e: NoteEvent): Frac => (cmp(heardTo(e), releases.get(e) ?? e.end) > 0 ? NEAR_PEDAL_LIFT : NEAR_STRIKE);
+    for (const line of lines) gapsClosed += closeSmallGaps(line, heardTo, (e) => strikes.get(e) ?? e.start, near);
     const voiceBars = lines.map((events, k) => {
       const voice = (staff ?? 1) + 2 * k; // upper staff 1, 3, 5; lower 2, 4, 6
       const slices = sliceIntoChords(events, bars, unitForBar);
@@ -844,6 +902,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     moved: toNumber(quantised.moved),
     joined: quantised.joined.size,
     pedalled,
+    pedalCut,
+    gate,
     tidied: { chords: chordsJoined, gaps: gapsClosed, restsHidden },
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
