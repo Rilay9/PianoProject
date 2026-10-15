@@ -48,6 +48,12 @@ be wrong. A per-score hand map is to be added when a piece needs one.
 play (the piano plays the rest; Off = you play everything, piano silent). Tempo: speed and beats per minute, ±5,
 tap tempo; metronome (click sound, beats/quarters/eighths, volume); piano through the phone or out to the MIDI
 keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time round (none in Wait for me).
+**Band** (owner, 2026-10-15; a piece added from a MIDI file that has other parts than piano): the file's other parts
+(bass, guitars, strings, drums …) play with the score on its own timeline, at its speed and round its loops, in
+Watch, Play along, Rhythm and Ladder (not Wait for me, which keeps no tempo). On by default; Tempo and sound lists
+the parts, switches the band off for the piece, and sets its volume (one for the app). The sounds are the FluidR3
+General MIDI set the Lab uses: basses and guitars kept in the app, any other instrument fetched online (offline, a
+part that cannot load is left out and said). `web/src/screens/score.ts` (loadBand, songNotes), `library/midi/band.ts`.
 
 **Modes** (bottom bar; saved per song) — `web/src/main.ts`, `web/src/practice.ts`, `web/src/matching.ts`:
 
@@ -344,8 +350,12 @@ one); examples to copy written into a chart.
   voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,
   or a note held under a moving melody, gets a voice of its own, the top of the texture keeping the first; while two
   lines go on, a new note joins the one it is nearer in pitch; stems up for the highest voice in a bar, down for the
-  others; a played file keeps one voice a hand. Notes on the drum channel (MIDI channel 10) are left out, and the
-  sheet says how many. Swing (off-beats written straight with "Swing eighths") is found only in a duple beat with
+  others; a played file keeps one voice a hand. A band file (2026-10-15): the score is the file's piano part (every
+  note on a channel set to a General MIDI piano, programs 0-7, on any track; a channel the file never sets is a
+  piano, as General MIDI says), and the other parts and the drums (MIDI channel 10) are not written but kept to play
+  as the band; the sheet's Band row names them, and the bars run as long as the band plays. A file with no piano
+  part keeps every part in the score as before (only its drums play as the band): turning a band into a piano
+  arrangement is not done. Swing (off-beats written straight with "Swing eighths") is found only in a duple beat with
   late off-beats and nothing at a third of the beat: never in 6/8, 9/8 or 12/8, nor in triplets. Previously converted files keep
   their old conversion; adding the MIDI again converts it anew.
   **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their

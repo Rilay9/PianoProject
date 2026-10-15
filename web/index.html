@@ -557,6 +557,11 @@
         <label><input type="radio" name="clickOn" value="eighths"> Eighths</label>
       </fieldset>
       <label class="row">Metronome volume <input id="t-click-vol" type="range" min="0" max="100" step="5"></label>
+      <fieldset class="row" id="t-band-set" hidden><legend>Band</legend>
+        <label><input id="t-band" type="checkbox"> Plays with the score</label>
+        <p id="t-band-parts" class="note"></p>
+      </fieldset>
+      <label class="row" id="t-band-vol-row" hidden>Band volume <input id="t-band-vol" type="range" min="0" max="100" step="5"></label>
       <fieldset class="row" id="t-ontime"><legend>On time</legend>
         <label><input type="radio" name="onTime" value="relaxed"> Relaxed ±200 ms</label>
         <label><input type="radio" name="onTime" value="normal"> Normal ±100 ms</label>

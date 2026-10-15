@@ -20,7 +20,8 @@ import { DIVISIONS, noteShape, spelledPitch, writeMusicXml } from '../src/librar
 import { convertMidi, readBackMusicXml, titleFromFilename } from '../src/library/midi/convert.ts';
 import { checkSentence, handsSentence } from '../src/library/midi/words.ts';
 import { swapHands } from '../src/library/midi/corrections.ts';
-import { convert, midiConverter } from '../src/library/midi/index.ts';
+import { convert, guessedWords, midiConverter } from '../src/library/midi/index.ts';
+import { bandNotes, isPiano, partsOf, soundOf } from '../src/library/midi/band.ts';
 import { barMap, steadyBars } from '../src/library/midi/bars.ts';
 
 const FOUR_FOUR = steadyBars({ beats: 4, beatType: 4 }, frac(64));
@@ -1270,8 +1271,69 @@ describe('a file with a drum track', () => {
     expect(report.noteTracks).toBe(2);
     expect(readMidi(file).drumNotes).toBe(4);
   });
-  it('says the drums were left out', () => {
-    expect(convert(file, { title: 'band' }).guessed.drumNotes).toBe(4);
+  it('says the drums were left out of the score, to play as the band', () => {
+    const { guessed } = convert(file, { title: 'band' });
+    expect(guessed.drumNotes).toBe(4);
+    expect(guessed.band).toEqual([{ name: 'Drums', sound: 'drums', notes: 4 }]);
+    expect(guessedWords(guessed)).toContain('The drums are not written in the score; they play with it as the band.');
+  });
+});
+
+// --- new (2026-10-15): the band (owner: keep the non-piano parts as MIDI and play them; the piano part is the score) ---
+
+describe('a band file: the piano part is the score, the rest is the band', () => {
+  const program = (channel, n) => [0xc0 | channel, n];
+  const on = (channel, m) => [0x90 | channel, m, 90], off = (channel, m) => [0x80 | channel, m, 0];
+  const line = (channel, midis, len = 480) => midis.flatMap((m) => [{ delta: 0, bytes: on(channel, m) }, { delta: len, bytes: off(channel, m) }]);
+  const file = buildMidiTracks([
+    [{ delta: 0, bytes: timeSignature(4, 2) }, { delta: 0, bytes: setTempo(500_000) }],
+    [{ delta: 0, bytes: trackName('Piano') }, ...line(0, [60, 64, 67, 72])], // no program: General MIDI's default, the piano
+    [{ delta: 0, bytes: trackName('Bass') }, { delta: 0, bytes: program(1, 33) }, ...line(1, [36, 36, 43, 43, 41, 41, 43, 43])], // two bars
+    [{ delta: 0, bytes: trackName('Guitar') }, { delta: 0, bytes: program(2, 30) }, ...line(2, [52, 55], 960)],
+    [{ delta: 0, bytes: trackName('Drums') }, { delta: 0, bytes: [0x99, 36, 100] }, { delta: 240, bytes: [0x89, 36, 0] }],
+  ]);
+  it('writes only the piano part, and runs the bars as long as the band plays', () => {
+    const { xml, report } = convertMidi(file, { title: 'band' });
+    expect(barsOf(xml).flat().map((n) => n.name).sort()).toEqual(['C4', 'C5', 'E4', 'G4']);
+    expect(barsOf(xml)).toHaveLength(2);
+    expect(report.passed).toBe(true);
+  });
+  it('names each band part with its General MIDI sound', () => {
+    const { report, guessed } = convert(file, { title: 'band' });
+    expect(report.band).toEqual([
+      { name: 'Bass', sound: 'electric_bass_finger', notes: 8 },
+      { name: 'Guitar', sound: 'distortion_guitar', notes: 2 },
+      { name: 'Drums', sound: 'drums', notes: 1 },
+    ]);
+    expect(guessedWords(guessed)).toContain('The score is the file’s piano part; Bass, Guitar and Drums play with it as the band.');
+  });
+  it('gives the band its notes in quarter notes from the start, in time order', () => {
+    const notes = bandNotes(partsOf(readMidi(file)).band);
+    expect(notes).toHaveLength(11);
+    expect(notes.slice(0, 4).map((n) => `${n.q}:${n.sound}:${n.midi}`)).toEqual(['0:electric_bass_finger:36', '0:distortion_guitar:52', '0:drums:36', '1:electric_bass_finger:36']);
+    expect(notes.at(-1)).toEqual({ q: 7, len: 1, midi: 43, vel: 90, sound: 'electric_bass_finger' });
+  });
+  it('finds the parts in a one-track file by channel (format 0), named by their instrument', () => {
+    const one = buildMidiTracks([[{ delta: 0, bytes: program(1, 33) }, ...line(0, [60, 62]), ...line(1, [36, 38])]], 480, 0);
+    const { piano, band } = partsOf(readMidi(one));
+    expect(piano[0].events.map((e) => e.midi)).toEqual([60, 62]);
+    expect(band.map((p) => [p.name, p.sound, p.notes.length])).toEqual([['Electric bass (finger)', 'electric_bass_finger', 2]]);
+  });
+  it('keeps every part in the score when none is a piano (only the drums play as the band)', () => {
+    const guitars = buildMidiTracks([
+      [{ delta: 0, bytes: program(0, 30) }, ...line(0, [64, 67])],
+      [{ delta: 0, bytes: [0x99, 36, 100] }, { delta: 240, bytes: [0x89, 36, 0] }],
+    ]);
+    const { piano, band } = partsOf(readMidi(guitars));
+    expect(piano[0].events).toHaveLength(2);
+    expect(band.map((p) => p.sound)).toEqual(['drums']);
+  });
+  it('has a FluidR3 sound for every General MIDI program, and the piano family is programs 0-7', async () => {
+    const { getSoundfontNames } = await import('smplr');
+    const sounds = new Set(getSoundfontNames());
+    const missing = Array.from({ length: 128 }, (_, p) => soundOf(p)).filter((name) => !sounds.has(name));
+    expect(missing).toEqual([]);
+    expect(Array.from({ length: 128 }, (_, p) => p).filter(isPiano)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
   });
 });
 

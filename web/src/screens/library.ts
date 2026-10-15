@@ -822,6 +822,11 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       row('Time', `${g.time.beats}/${g.time.beatType}`, g.time.from === 'file'
         ? `from the file${g.time.pickup ? ', after a pickup bar' : ''}${g.time.changes > 0 ? `; changes ${String(g.time.changes)} time${g.time.changes === 1 ? '' : 's'} later` : ''}`
         : g.time.from === 'assumed' ? 'assumed: the file states none' : 'chosen');
+      if (g.band.length) {
+        const names = g.band.map((part) => part.name);
+        const others = g.band.some((part) => part.sound !== 'drums');
+        row('Band', others ? `${names.join(', ')}: they play with the score, which is the file’s piano part` : 'The drums play with the score (not written in it)', 'from the file’s instruments');
+      }
       row('Check', g.check.sentence, g.check.passed ? 'read back' : 'read back: see this');
       bpmInput.value = g.tempo.bpm ? String(g.tempo.bpm) : '';
       void drawXml(now!.xml, $('lib-midi-preview'));

@@ -3,7 +3,9 @@
 // (Watch, Wait for me, Play along, Ladder, Rhythm: practice.ts), loops, the Tempo, Display, songs and info panels,
 // the summary, and editing fingering. Its drawing of the music is lent to Memorise (a Borrower) while that is open.
 
-import { touch } from '../library/store';
+import { fileOf, midiKey, touch } from '../library/store';
+import type { BandNote } from '../library/midi/band';
+import type { NoteEvent } from '../sound';
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
@@ -146,6 +148,7 @@ export function createScoreScreen(app: App): ScoreScreen {
         }
       }
       borrower?.afterShow();
+      void loadBand(piece).then(() => { if (request === drawRequest) fillTempo(); });
     } catch (cause) {
       showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
     }
@@ -316,6 +319,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
       // The phone's piano samples load only when the phone plays piano notes (not for the metronome alone).
       if (pianoHands(s) || s.metronome || view.looped) await sound.prepare(!!pianoHands(s) && !sound.keyboard);
+      if (bandOn(s)) await prepareBand(s);
     } catch (cause) {
       if (request !== startRequest) return; // dropped meanwhile (a tap on … or another choice): say nothing
       showMessage(cause instanceof Error ? cause.message : String(cause));
@@ -412,14 +416,54 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
   // Or stop here and see how it went (owner, 2026-10-12).
   const pausedMessage = (text: string) => showMessage(text, true, { label: 'See how it went', run: () => { resumable = false; showMessage(''); practice.finishRun(); fillBars(); showBars(); } });
+  // The band (owner, 2026-10-15): a MIDI file's parts that are not piano (library/midi/band.ts), read from the MIDI
+  // kept with the piece and played with the score on its own timeline, in every mode that keeps time (not Wait for me).
+  let band: { id: string; notes: BandNote[]; names: string[] } | null = null;
+  const bandFailed = new Set<string>(); // sounds that would not load (fetched online, and offline): left out
+  async function loadBand(piece: Piece): Promise<void> {
+    if (band?.id === piece.id) return;
+    band = null;
+    if (!piece.id.startsWith('u-')) return;
+    const blob = await fileOf(midiKey(piece.id)).catch(() => undefined);
+    if (!blob) return;
+    const [{ readMidi }, { partsOf, bandNotes }] = await Promise.all([import('../library/midi/readMidi'), import('../library/midi/band')]);
+    try {
+      const parts = partsOf(readMidi(new Uint8Array(await blob.arrayBuffer()))).band;
+      if (currentPiece().id === piece.id && parts.length) band = { id: piece.id, notes: bandNotes(parts), names: parts.map((part) => part.name) };
+    } catch { /* a MIDI file that no longer reads: the score plays without a band */ }
+  }
+  const bandOn = (s: ScoreSettings): boolean => !!band && band.id === currentPiece().id && s.band && s.mode !== 'wait';
+  /** The band's notes on the song's timeline (ms at speed 1), those whose sound loaded. */
+  function bandEvents(): NoteEvent[] {
+    if (!band) return [];
+    const times = view.songTimes(band.notes);
+    return band.notes.flatMap((n, i) => (bandFailed.has(n.sound) ? [] : [{ t: times[i]!.t, dur: times[i]!.dur, midi: n.midi, vel: n.vel, part: n.sound }]));
+  }
+  /** Gets the band's instruments ready; one that cannot load (offline, for a sound fetched online) is left out, and said. */
+  async function prepareBand(s: ScoreSettings): Promise<void> {
+    if (!band) return;
+    const sounds = [...new Set(band.notes.map((n) => n.sound))];
+    bandFailed.clear();
+    await Promise.all(sounds.map((part) => sound.preparePart(part).catch(() => { bandFailed.add(part); })));
+    for (const part of sounds) sound.setPartVolume(part, s.bandVolume);
+    if (bandFailed.size) showMessage(`The band plays without ${[...bandFailed].map((x) => x.replace(/_/g, ' ')).join(', ')}: ${bandFailed.size === 1 ? 'its sound' : 'their sounds'} could not be loaded (offline?).`, true);
+  }
+  /** The piano's notes (if it plays) and the band's (if on), in time order, as the sound plays them. */
+  function songNotes(s: ScoreSettings, piano: ReturnType<typeof pianoHands>, from = -Infinity, to = Infinity): NoteEvent[] {
+    const notes = [
+      ...(piano ? (to === Infinity ? view.noteEvents(piano) : view.notesBetween(piano, from, to)) : []),
+      ...(bandOn(s) ? bandEvents().filter((n) => n.t >= from - 1 && n.t < to).map((n) => ({ ...n, dur: Math.min(n.dur, to - n.t) })) : []),
+    ];
+    return notes.sort((a, b) => a.t - b.t);
+  }
   /** (Re)starts the sound at song time t with the current choices; the marker then follows its clock. now: begun by a key just played. */
   function startSound(t: number, now = false): void {
     const s = settingsFor(currentPiece().id);
     const piano = pianoHands(s);
     sound.setVolumes(s.pianoVolume, s.clickVolume);
     sound.setClick(s.click);
-    if (!piano && !s.metronome) { sound.stop(); view.songClock = null; return; }
-    sound.play(piano ? view.noteEvents(piano) : [], s.metronome ? view.beats(s.clickOn) : [], t, s.speed, false, now);
+    if (!piano && !s.metronome && !bandOn(s)) { sound.stop(); view.songClock = null; return; }
+    sound.play(songNotes(s, piano), s.metronome ? view.beats(s.clickOn) : [], t, s.speed, false, now);
     view.songClock = () => sound.songTime();
   }
   // Loop and Ladder (owner, 2026-10-11): the Loop button, then a tap on the first and the last bar. Each pass
@@ -477,7 +521,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     sound.setVolumes(s.pianoVolume, s.clickVolume);
     sound.setClick(s.click);
     const clicks = s.metronome ? view.beats(s.clickOn).filter((b) => b.t >= from - 1 && b.t < span.t1) : [];
-    sound.play(piano ? view.notesBetween(piano, from, span.t1) : [], [...(fromMarker ? [] : span.countIn), ...clicks], fromMarker ? from : span.from, s.speed, false, now);
+    sound.play(songNotes(s, piano, from, span.t1), [...(fromMarker ? [] : span.countIn), ...clicks], fromMarker ? from : span.from, s.speed, false, now);
     view.songClock = () => sound.songTime();
     view.play(-1, span.t1);
     if (judged(s.mode)) practice.startAlong(continuing);
@@ -684,6 +728,12 @@ export function createScoreScreen(app: App): ScoreScreen {
     $<HTMLInputElement>('t-piano-vol').value = String(Math.round(s.pianoVolume * 100));
     $<HTMLInputElement>('t-click-vol').value = String(Math.round(s.clickVolume * 100));
     $<HTMLInputElement>('t-metronome').checked = s.metronome;
+    const hasBand = !!band && band.id === currentPiece().id;
+    $('t-band-set').hidden = !hasBand;
+    $('t-band-vol-row').hidden = !hasBand;
+    $<HTMLInputElement>('t-band').checked = s.band;
+    $<HTMLInputElement>('t-band-vol').value = String(Math.round(s.bandVolume * 100));
+    $('t-band-parts').textContent = hasBand ? `${band!.names.join(', ')}${s.mode === 'wait' ? '. Not in Wait for me, which keeps no tempo.' : '.'}` : '';
     for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.checked = r.value === s.click;
     for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.checked = r.value === s.clickOn;
     for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.checked = r.value === s.onTime;
@@ -705,16 +755,20 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
   // Sound choices in the panel: saved per song; volumes and the click sound apply at once, the metronome
   // switch at the next play (or straight away if playing).
-  function soundChange<K extends 'metronome' | 'click' | 'clickOn' | 'pianoVolume' | 'clickVolume'>(key: K, value: ScoreSettings[K]): void {
+  function soundChange<K extends 'metronome' | 'band' | 'click' | 'clickOn' | 'pianoVolume' | 'clickVolume' | 'bandVolume'>(key: K, value: ScoreSettings[K]): void {
     savePieceSetting(currentPiece().id, key, value);
     const s = settingsFor(currentPiece().id);
     sound.setVolumes(s.pianoVolume, s.clickVolume);
     sound.setClick(s.click);
-    if ((key === 'metronome' || key === 'clickOn') && view.playing && sound.playing) startSound(sound.songTime());
+    if (band) for (const part of new Set(band.notes.map((n) => n.sound))) sound.setPartVolume(part, s.bandVolume);
+    if (key === 'band' && value && view.playing && sound.playing) { void prepareBand(s).then(() => { if (view.playing && sound.playing) startSound(sound.songTime()); }); return; }
+    if ((key === 'metronome' || key === 'clickOn' || key === 'band') && view.playing && sound.playing) startSound(sound.songTime());
   }
   $<HTMLInputElement>('t-piano-vol').addEventListener('input', (e) => soundChange('pianoVolume', Number((e.target as HTMLInputElement).value) / 100));
   $<HTMLInputElement>('t-click-vol').addEventListener('input', (e) => soundChange('clickVolume', Number((e.target as HTMLInputElement).value) / 100));
   $<HTMLInputElement>('t-metronome').addEventListener('change', (e) => soundChange('metronome', (e.target as HTMLInputElement).checked));
+  $<HTMLInputElement>('t-band').addEventListener('change', (e) => soundChange('band', (e.target as HTMLInputElement).checked));
+  $<HTMLInputElement>('t-band-vol').addEventListener('input', (e) => soundChange('bandVolume', Number((e.target as HTMLInputElement).value) / 100));
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="click"]')) r.addEventListener('change', () => soundChange('click', r.value as Click));
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="clickOn"]')) r.addEventListener('change', () => soundChange('clickOn', r.value as ClickOn));
   for (const r of tempoDialog.querySelectorAll<HTMLInputElement>('input[name="onTime"]')) r.addEventListener('change', () => savePieceSetting(currentPiece().id, 'onTime', r.value as OnTime));

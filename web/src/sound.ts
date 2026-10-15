@@ -55,6 +55,8 @@ export class Sound {
   private partGains = new Map<string, GainNode>();
   private muted = new Set<string>(); // parts silenced for now (drop-outs)
   playing = false;
+  /** For checks: how many notes each band part was given to play since the last play() (nothing about the sound). */
+  started: Record<string, number> = {};
   /** When set, piano notes go to the MIDI keyboard instead of the phone (the metronome stays on the phone). */
   keyboard: MidiInput | null = null;
 
@@ -141,6 +143,7 @@ export class Sound {
     if (!this.ctx) return;
     this.notes = notes;
     this.beats = beats;
+    this.started = {};
     this.speed = speed;
     this.anchorT = fromT;
     this.anchorCtx = this.ctx.currentTime + (now ? 0 : START_LEAD_S);
@@ -191,6 +194,7 @@ export class Sound {
         const note = n.part === 'drums' ? GM_DRUMS[n.midi] : n.midi;
         if (!player || note === undefined) continue;
         const stop = player.start({ note, velocity: n.vel, time, duration });
+        this.started[n.part] = (this.started[n.part] ?? 0) + 1;
         this.voices.push({ stop, end: time + duration + 1 });
         continue;
       }

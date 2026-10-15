@@ -92,6 +92,7 @@ import {
 import { quantise, type SwingReport } from './quantise.ts';
 import { splitHands } from './handSplit.ts';
 import { sliceIntoChords, type Slice } from './slice.ts';
+import { bandEnd, partsOf } from './band.ts';
 import { notatablePieces } from './notatable.ts';
 import {
   type EstimatedKey,
@@ -110,7 +111,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 4; // 2026-10-14: bars, keys, finer grids; voices; then swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
+export const MIDI_CONVERTER_VERSION = 5; // 2026-10-15: the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -170,6 +171,8 @@ export interface ConversionReport {
    */
   noteTracks: number;
   noteTrackNames: string[];
+  /** The band: the file's parts that are not piano, which play with the score rather than being written in it. */
+  band: { name: string; sound: string; notes: number }[];
   /** True when nothing was lost, nothing was added and every bar adds up. */
   passed: boolean;
 }
@@ -446,7 +449,10 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const hands = options.hands ?? 'auto';
   const respell = options.respell ?? true;
 
-  const source: MidiFileContents = readMidi(bytes);
+  const file: MidiFileContents = readMidi(bytes);
+  // The piano part becomes the score; the band's parts are left to play with it (band.ts, 2026-10-15).
+  const { piano, band } = partsOf(file);
+  const source: MidiFileContents = { ...file, tracks: piano };
   const withNotes = source.tracks.filter((track) => track.events.length > 0);
   if (withNotes.length === 0) {
     throw new MidiReadError(
@@ -456,6 +462,9 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   let lastEnd = ZERO;
   for (const track of withNotes) for (const event of track.events) if (gt(event.end, lastEnd)) lastEnd = event.end;
+  // The bars run as long as the band plays, so it has a score to play with to its end.
+  const bandLast = bandEnd(band);
+  if (gt(bandLast, lastEnd)) lastEnd = bandLast;
   // Where the bars fall: every metre the file states, or the one the caller chose throughout.
   const bars = options.timeSignature
     ? steadyBars(options.timeSignature, add(lastEnd, frac(64)))
@@ -567,7 +576,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   // How many bars the longest part needs. A slice never crosses a barline, so
   // the last bar is the one holding the last release.
-  let lastWritten = ZERO;
+  let lastWritten = bandLast;
   for (const event of allEvents) if (gt(event.end, lastWritten)) lastWritten = event.end;
   const barCount = Math.max(1, bars.indexAt(sub(lastWritten, frac(1, 1000000))) + 1);
 
@@ -711,6 +720,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     joined: quantised.joined.size,
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
+    band: band.map((part) => ({ name: part.name, sound: part.sound, notes: part.notes.length })),
     noteTrackNames,
     passed:
       lost.length === 0 && added.length === 0 && read.badBars.length === 0 && unwritable.length === 0,

@@ -28,6 +28,8 @@ export interface NoteEvent {
   end: Frac;
   midi: number;
   velocity: number | null;
+  /** The MIDI channel it was played on (0-15), where the file says: which instrument it is (`programs`). */
+  channel?: number;
 }
 
 export interface MidiTrack {
@@ -52,6 +54,10 @@ export interface MidiFileContents {
   keyChanges: { at: Frac; fifths: number; minor: boolean }[];
   /** Notes on channel 10 (the drums), left out of the score. */
   drumNotes: number;
+  /** Those drum hits (a General MIDI drum number each), for playing with the score as the band (2026-10-15). */
+  drums: NoteEvent[];
+  /** Each channel's General MIDI instrument (program 0-127), the first the file sets on it; a channel never set is 0. */
+  programs: Record<number, number>;
   /** Beats per minute from the first SET_TEMPO, or null when the file states none. */
   tempo: number | null;
   /** How the MIDI spelled its key signature(s), for the report. Sorted, de-duplicated. */
@@ -171,6 +177,8 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
   // (a track's tempo at 0 read after another's at bar 5 used to lose to it, 2026-10-14).
   let tempoTick = Infinity;
   let drumNotes = 0;
+  const drums: NoteEvent[] = [];
+  const programs: Record<number, number> = {};
   const keySignatures = new Set<string>();
 
   let at = 8 + headerLength;
@@ -239,19 +247,24 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
       }
       const high = status & 0xf0;
       if (high === 0xc0 || high === 0xd0) {
+        if (high === 0xc0) programs[status & 0x0f] ??= (body[r.at] ?? 0) & 0x7f;
         r.at += 1;
         continue;
       }
       const pitch = body[r.at] ?? 0;
       const velocity = body[r.at + 1] ?? 0;
       r.at += 2;
+      const quarters = div(frac(ticksSoFar), ticks);
       // Channel 10 is the drums (General MIDI): its numbers are drum sounds, not pitches, and a band file's kick
-      // and snare came out as C2 and D2 in the left hand (2026-10-14). Left out, and counted.
+      // and snare came out as C2 and D2 in the left hand (2026-10-14). Left out of the score, counted, and kept as
+      // hits for the band (a drum sample plays out by itself: the hit's length does not matter).
       if ((status & 0x0f) === 9 && (high === 0x90 || high === 0x80)) {
-        if (high === 0x90 && velocity > 0) drumNotes += 1;
+        if (high === 0x90 && velocity > 0) {
+          drumNotes += 1;
+          drums.push({ start: quarters, end: add(quarters, frac(1, 8)), midi: pitch, velocity, channel: 9 });
+        }
         continue;
       }
-      const quarters = div(frac(ticksSoFar), ticks);
       // A key on one channel and the same key on another are two notes (two hands, two instruments): each release
       // ends its own channel's note (2026-10-14; the right hand's held C4 was ended by the left hand's).
       const key = (status & 0x0f) * 128 + pitch;
@@ -265,7 +278,7 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
           earlier.end = quarters;
           owed.set(key, ticksSoFar);
         }
-        const fresh: NoteEvent = { start: quarters, end: quarters, midi: pitch, velocity };
+        const fresh: NoteEvent = { start: quarters, end: quarters, midi: pitch, velocity, channel: status & 0x0f };
         events.push(fresh);
         open.set(key, fresh);
       } else if (high === 0x80 || (high === 0x90 && velocity === 0)) {
@@ -309,6 +322,8 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
     timeSignatures,
     keyChanges,
     drumNotes,
+    drums: drums.sort((a, b) => cmp(a.start, b.start)),
+    programs,
     tempo,
     keySignatures: [...keySignatures].sort(),
   };

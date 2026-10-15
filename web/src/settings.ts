@@ -58,6 +58,8 @@ export interface ScoreSettings {
   under: Under;
   hands: Hands;
   metronome: boolean;
+  /** A MIDI file's other parts play with the score (band.ts, owner 2026-10-15), where it has them. */
+  band: boolean;
   click: Click;
   clickOn: ClickOn;
   mode: Mode;
@@ -69,6 +71,7 @@ export interface ScoreSettings {
   /** 0 to 1. */
   pianoVolume: number;
   clickVolume: number;
+  bandVolume: number;
 }
 
 export const DEFAULTS: ScoreSettings = {
@@ -88,6 +91,7 @@ export const DEFAULTS: ScoreSettings = {
   under: 'keyboard',
   hands: 'both',
   metronome: false,
+  band: true,
   click: 'wood',
   clickOn: 'beats',
   mode: 'watch',
@@ -97,6 +101,7 @@ export const DEFAULTS: ScoreSettings = {
   theme: 'system',
   pianoVolume: 0.8,
   clickVolume: 0.6,
+  bandVolume: 0.7,
 };
 
 export const DEVICES: Device[] = ['phone-upright', 'phone-sideways', 'tablet'];
@@ -172,7 +177,7 @@ function read(): Stored {
  * piano plays, the two volumes and the click sound. Kept under their own key.
  */
 const APP_KEY = 'piano-web.app.v1';
-export const APP_WIDE = ['pianoOut', 'pianoVolume', 'clickVolume', 'click', 'theme'] as const;
+export const APP_WIDE = ['pianoOut', 'pianoVolume', 'clickVolume', 'bandVolume', 'click', 'theme'] as const;
 type AppWide = Pick<ScoreSettings, (typeof APP_WIDE)[number]>;
 const isAppWide = (key: string): key is (typeof APP_WIDE)[number] => (APP_WIDE as readonly string[]).includes(key);
 
@@ -182,7 +187,7 @@ function readApp(): Partial<AppWide> {
 
 /** Playing choices: per song only, not per screen (owner, 2026-10-12: turning the phone must not change the tempo or mode). */
 const SONG_KEY = 'piano-web.songs.v1';
-export const SONG_WIDE = ['speed', 'mode', 'hands', 'metronome', 'clickOn', 'onTime', 'ladderStep'] as const;
+export const SONG_WIDE = ['speed', 'mode', 'hands', 'metronome', 'band', 'clickOn', 'onTime', 'ladderStep'] as const;
 type SongWide = Pick<ScoreSettings, (typeof SONG_WIDE)[number]>;
 const isSongWide = (key: string): key is (typeof SONG_WIDE)[number] => (SONG_WIDE as readonly string[]).includes(key);
 

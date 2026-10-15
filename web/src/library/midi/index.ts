@@ -46,6 +46,8 @@ export interface Guessed {
   check: { passed: boolean; sentence: string };
   /** Notes on the drum channel, left out of the score. */
   drumNotes: number;
+  /** The parts that play with the score as the band rather than being written in it (band.ts). */
+  band: { name: string; sound: string; notes: number }[];
 }
 
 export interface MidiConversion {
@@ -103,6 +105,7 @@ export function convert(data: ArrayBuffer | Uint8Array, options: MidiOptions = {
     time: { beats: time.beats, beatType: time.beatType, from: chosenTime ? 'chosen' : source.hadTimeSignature ? 'file' : 'assumed', changes: report.metre.changes, pickup: report.metre.pickup },
     check: { passed: report.passed, sentence: checkSentence(report) },
     drumNotes: source.drumNotes,
+    band: report.band,
   };
   return { xml, report, guessed };
 }
@@ -120,8 +123,13 @@ export function guessedWords(g: Guessed): string {
   const more = `${g.time.pickup ? ', after a pickup bar' : ''}${g.time.changes > 0 ? `; it changes ${String(g.time.changes)} time${g.time.changes === 1 ? '' : 's'} later` : ''}`;
   const time = g.time.from === 'assumed' ? `Time ${metre}, assumed: the file states none.`
     : g.time.from === 'chosen' ? `Time ${metre}, as chosen.` : `Time ${metre}, from the file${more}.`;
-  const drums = g.drumNotes > 0 ? [`The drums (${String(g.drumNotes)} notes on the drum channel) were left out.`] : [];
-  return [g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), ...drums, tempo, key, time, g.check.sentence].join(' ');
+  const names = g.band.map((part) => part.name);
+  const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1] ?? ''}` : names[0] ?? '';
+  const others = g.band.some((part) => part.sound !== 'drums');
+  const band = !g.band.length ? []
+    : others ? [`The score is the file’s piano part; ${list} ${g.band.length === 1 ? 'plays' : 'play'} with it as the band.`]
+    : ['The drums are not written in the score; they play with it as the band.'];
+  return [...band, g.hands.sentence, ...(g.hands.swapRefused ? [g.hands.swapRefused] : []), tempo, key, time, g.check.sentence].join(' ');
 }
 
 /**

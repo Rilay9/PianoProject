@@ -1091,6 +1091,20 @@ export class FollowView {
   }
 
   /** Song ms at speed 1 for a timestamp (whole notes), from the steps around it and the tempo in force. */
+  /**
+   * Band notes (in time order, quarter notes from the music's start) on the song's timeline: when each starts and how
+   * long it sounds (ms at speed 1), tempo changes counted. One walk through the steps.
+   */
+  songTimes(notes: readonly { q: number; len: number }[]): { t: number; dur: number }[] {
+    if (!this.steps.length) return notes.map(() => ({ t: 0, dur: 0 }));
+    let i = 0;
+    return notes.map((n) => {
+      while (i + 1 < this.steps.length && this.steps[i + 1].ts <= n.q / 4 + 1e-9) i++;
+      const t = this.timeAt(n.q / 4, i);
+      return { t, dur: Math.max(1, this.timeAt((n.q + n.len) / 4, i) - t) };
+    });
+  }
+
   private timeAt(ts: number, from = 0): number {
     let i = Math.max(0, Math.min(from, this.steps.length - 1));
     while (i + 1 < this.steps.length && this.steps[i + 1].ts <= ts + 1e-9) i++;

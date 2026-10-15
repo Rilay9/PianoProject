@@ -19,6 +19,7 @@
     "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs"
   },
   "dependencies": {
+    "@tonejs/midi": "2.0.28",
     "jszip": "3.10.1",
     "opensheetmusicdisplay": "2.2.0",
     "pdfjs-dist": "5.4.394",

@@ -49,6 +49,31 @@ const SCORE = here('../public/scores/mozart-k2.musicxml');
 const MIDI = join(tmp, 'two hands.mid');
 writeFileSync(MIDI, readFileSync(here('./fixtures/midi/two-hands.mid')));
 
+// A small band file (the band, 2026-10-15): at 120 a minute in 4/4, four bars of a piano's whole-note chords, a bass
+// (General MIDI 33) in quarters, a steel-string guitar (25) in halves and a kick drum on every beat: sounds kept in the
+// app, so the check needs no network.
+function bandMidi() {
+  const varlen = (v) => { const o = [v & 0x7f]; for (v >>= 7; v > 0; v >>= 7) o.unshift((v & 0x7f) | 0x80); return o; };
+  const chunk = (id, body) => [...Buffer.from(id), (body.length >>> 24) & 255, (body.length >> 16) & 255, (body.length >> 8) & 255, body.length & 255, ...body];
+  const track = (events) => { // [tick, bytes]
+    let now = 0;
+    const body = events.sort((a, b) => a[0] - b[0] || (a[1][0] & 0xf0) - (b[1][0] & 0xf0)).flatMap(([t, bytes]) => { const d = t - now; now = t; return [...varlen(d), ...bytes]; });
+    return chunk('MTrk', [...body, 0, 0xff, 0x2f, 0]);
+  };
+  const notes = (channel, list) => list.flatMap(([t, len, midi]) => [[t, [0x90 | channel, midi, 90]], [t + len, [0x80 | channel, midi, 0]]]);
+  const Q = 480;
+  return Buffer.from([
+    ...chunk('MThd', [0, 1, 0, 5, Q >> 8, Q & 255]),
+    ...track([[0, [0xff, 0x58, 4, 4, 2, 24, 8]], [0, [0xff, 0x51, 3, 0x07, 0xa1, 0x20]]]),
+    ...track([[0, [0xff, 0x03, 5, ...Buffer.from('Piano')]], ...notes(0, [0, 1, 2, 3].flatMap((b) => [60, 64, 67].map((m) => [b * 4 * Q, 4 * Q, m])))]),
+    ...track([[0, [0xff, 0x03, 4, ...Buffer.from('Bass')]], [0, [0xc1, 33]], ...notes(1, Array.from({ length: 16 }, (_, i) => [i * Q, Q - 20, 36]))]),
+    ...track([[0, [0xff, 0x03, 6, ...Buffer.from('Guitar')]], [0, [0xc2, 25]], ...notes(2, Array.from({ length: 8 }, (_, i) => [i * 2 * Q, 2 * Q - 20, 52]))]),
+    ...track(notes(9, Array.from({ length: 16 }, (_, i) => [i * Q, 60, 36]))),
+  ]);
+}
+const BAND = join(tmp, 'little band.mid');
+writeFileSync(BAND, bandMidi());
+
 let server = null, exited = false;
 const stop = () => {
   if (!server) return;
@@ -164,6 +189,50 @@ try {
     const after = await page.evaluate(() => ({ key: document.activeElement?.dataset?.key, now: Number(document.activeElement?.getAttribute('aria-valuenow')) }));
     ok('Adjust: Tab reaches a handle, ArrowDown x4 moves it 2% of the page, focus stays', reached && Math.abs(after.now - before - 2) < 0.15 && after.key === 'cut-0', `reached ${reached}, ${before} → ${after.now}, focus ${after.key}`);
     ok('PDF: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // The band (owner, 2026-10-15): a MIDI file's other parts play with its score. Imported, opened, played in Watch: the
+  // sheet names them, the Tempo panel shows them, and each part is handed its notes as the song's clock reaches them.
+  {
+    const { ctx, page, errors } = await fresh();
+    await library(page);
+    await page.setInputFiles('#lib-file', BAND);
+    await page.waitForSelector('#lib-midi[open]', { timeout: 20000 });
+    await page.waitForFunction(() => /Check/.test(document.getElementById('lib-midi-facts')?.textContent ?? ''), null, { timeout: 20000 });
+    const sheet = await page.textContent('#lib-midi-facts');
+    await page.click('#lib-midi button[value="add"]'); await page.waitForTimeout(1500);
+    ok('band: the import sheet names the band and says the score is the piano part', /BandBass, Guitar, Drums: they play with the score, which is the file’s piano part/.test(sheet ?? ''), (sheet ?? '').slice(0, 400));
+    await page.locator('.lib-row', { hasText: 'little band' }).first().click();
+    await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    await page.waitForTimeout(1000);
+    await page.evaluate(() => document.getElementById('tempo').showModal());
+    const panel = await page.evaluate(() => ({ shown: !document.getElementById('t-band-set').hidden, on: document.getElementById('t-band').checked, parts: document.getElementById('t-band-parts').textContent }));
+    await page.evaluate(() => document.getElementById('tempo').close());
+    ok('band: the Tempo panel shows the band, on, with its parts', panel.shown && panel.on && panel.parts === 'Bass, Guitar, Drums.', JSON.stringify(panel));
+    await page.click('#play');
+    let played = null;
+    for (let i = 0; i < 40; i++) { await page.waitForTimeout(250); played = await page.evaluate(() => window.__pianoDebug.sound()); if (played.playing && played.t > 2600) break; }
+    // At 120 a minute a beat is 500 ms: by song time t the bass and the kick have had a note on every beat so far (the
+    // sound is handed notes 150 ms ahead), the guitar one every two beats.
+    const due = (every) => Math.floor((played.t + 150) / every) + 1;
+    const s = played.started ?? {};
+    const near = (got, want) => got !== undefined && Math.abs(got - want) <= 1;
+    ok('band: bass, guitar and drums are each handed their notes as the song reaches them', played.playing && near(s.electric_bass_finger, due(500)) && near(s.drums, due(500)) && near(s.acoustic_guitar_steel, due(1000)),
+      `at ${played.t} ms: ${JSON.stringify(s)} (due: bass and drums ${due(500)}, guitar ${due(1000)})`);
+    // A tap on the music stops it (the bars are away while it plays).
+    await page.mouse.click(195, 420); await page.waitForTimeout(600);
+    const stopped = await page.evaluate(() => window.__pianoDebug.sound().playing);
+    // Off: the band is not played (the piano still is). From the top again.
+    await page.evaluate(() => { window.__pianoDebug.goTo(0); document.getElementById('tempo').showModal(); });
+    await page.click('#t-band');
+    await page.evaluate(() => document.getElementById('tempo').close());
+    await page.click('#play'); await page.waitForTimeout(1500);
+    const off = await page.evaluate(() => window.__pianoDebug.sound());
+    await page.mouse.click(195, 420);
+    if (stopped) ok('band: (the second ▶ stopped it)', false, 'still playing');
+    ok('band: switched off, none of its parts is played', off.playing && Object.keys(off.started ?? {}).length === 0, JSON.stringify(off));
+    ok('band: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
 
