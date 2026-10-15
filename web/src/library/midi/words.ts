@@ -28,11 +28,12 @@ function checkWithoutTiming(report: ConversionReport): string {
     const moved = report.moved > 0
       ? `; their timing was fitted to a grid, moving a note by at most ${String(Math.round(report.moved * 100) / 100)} of a quarter note`
       : ', at the times the file gives them';
-    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.${joinedSentence(report)}${pedalSentence(report)}`;
+    return `Checked: all ${String(report.notesIn)} notes the reader found are in the score${moved}, and every bar adds up.${joinedSentence(report)}${pedalSentence(report)}${tidySentence(report)}`;
   }
   const trouble: string[] = [];
   if (report.lost.length > 0) trouble.push(`${String(report.lost.length)} note(s) lost`);
   if (report.added.length > 0) trouble.push(`${String(report.added.length)} note(s) added`);
+  if (report.changed.length > 0) trouble.push(`${String(report.changed.length)} note(s) on the other staff or held for another length`);
   if (report.brokenBars.length > 0) {
     trouble.push(`${String(report.brokenBars.length)} bar(s) that do not add up`);
   }
@@ -42,7 +43,7 @@ function checkWithoutTiming(report: ConversionReport): string {
   return (
     `The score was written, but the check found ${trouble.join(', ')}. ` +
     'Read it before trusting it.' +
-    joinedSentence(report) + pedalSentence(report)
+    joinedSentence(report) + pedalSentence(report) + tidySentence(report)
   );
 }
 
@@ -50,6 +51,13 @@ function checkWithoutTiming(report: ConversionReport): string {
 function pedalSentence(report: ConversionReport): string {
   if (!report.pedalled) return '';
   return ` ${String(report.pedalled)} note(s) the sustain pedal held on were written to the next note of their hand, as a score writes them.`;
+}
+
+/** Notes given their chord's length or written to the next note (tidy.ts): said, as the pedal's are. */
+function tidySentence(report: ConversionReport): string {
+  const n = report.tidied.chords + report.tidied.gaps;
+  if (!n) return '';
+  return ` ${String(n)} note(s) let go a little before the rest of their chord, or a little before the next note, were written with the chord or to that note, as a score writes them.`;
 }
 
 /** Strikes written as one with another, said, because the count above leaves them out. */

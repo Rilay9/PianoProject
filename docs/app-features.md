@@ -364,10 +364,17 @@ one); examples to copy written into a chart.
   worse on Warmness (clef changes, the empty bars, no key), so the app keeps its own converter. Notes are paired by MIDI
   channel as well as key, so two hands on two channels holding one key stay two notes. A file whose notes mostly
   miss the grid (played, not written) is said to have guessed bars and rhythms. Each hand is written in up to three
-  voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,
+  voices (owner, 2026-10-14): notes struck together that end together are one chord (and, 2026-10-15, ones the file lets go
+  less than a fifth of a quarter apart: a hand's keys come up raggedly, and each difference had made another voice); a melody held over moving notes,
   or a note held under a moving melody, gets a voice of its own, the top of the texture keeping the first; while two
   lines go on, a new note joins the one it is nearer in pitch; stems up for the highest voice in a bar, down for the
-  others; a played file keeps one voice a hand. A band file (2026-10-15): the score is the file's piano part (every
+  others; a played file keeps one voice a hand. Tidied as a score is written (2026-10-15, `tidy.ts`): in one voice, a
+  silence the file has as less than a 16th before the voice's next note is a lifted finger and the note is written to
+  it (no "dotted eighth, 16th rest"); a first voice's rest wholly under another voice's note of its staff is not drawn
+  (the later voices' silences never were). The sheet says how many notes were given their chord's length or written
+  to the next note. `tests/readability.mjs` counts per bar what a reader notices (visible rests, short rests, rests on
+  another voice's notes, extra voices, ties, tuplets, 32nds) on six catalogue scores turned into MIDI (as exported and
+  as played) and the owner's two songs, against the engraving; a change that makes any count worse fails it. A band file (2026-10-15): the score is the file's piano part (every
   note on a channel set to a General MIDI piano, programs 0-7, on any track; a channel the file never sets is a
   piano, as General MIDI says; a channel that changes instrument partway is a part per instrument, each note the
   instrument in force where it starts: review 2026-10-15, B7-01), and the other parts and the drums (MIDI channel 10) are not written but kept to play
@@ -383,7 +390,11 @@ one); examples to copy written into a chart.
   **How close it comes** (measured 2026-10-14 in a cloud session against ASAP's 235 score MIDI files and their
   published MusicXML, on the 180 the comparison could line up): 98.0% of notes at the right time and pitch (96.1%
   of the notes written are right), every barline (0.4% extra), the opening key on all 180, spelling 94.2%, written
-  lengths 89.5%, the staff 96.5%; its own check passes on all 235.
+  lengths 89.5%, the staff 96.5%; its own check passes on all 235 (measured before `tidy.ts`, 2026-10-15; not measured again since:
+  ASAP is not on the machine that made it). Its own check (the import sheet's "Checked") compares
+  the score read back with what the converter decided: every note at its time and pitch, and since 2026-10-15 on its
+  staff and at its length (a note moved to the other staff or held for another length is listed and the check fails);
+  it proves the score says what was decided, not that the decided lengths or a split's hands are the music's.
   **Not handled yet:** a rolled chord as a cascade of tied short notes; grace notes and ornaments as real short notes
   (looked at 2026-10-14, Beethoven Op. 78 bar 28 drawn by OSMD: the score file states the bar as 65/4 and cuts it
   short after four beats and a 64th to give a trill real time, and it comes out as that metre over a thicket of 64th

@@ -93,6 +93,7 @@ import { quantise, type SwingReport } from './quantise.ts';
 import { splitHands } from './handSplit.ts';
 import { sliceIntoChords, type Slice } from './slice.ts';
 import { cutLegato, holdToNext, soundingEnds } from './pedal.ts';
+import { closeSmallGaps, hideCoveredRests, oneLengthChords } from './tidy.ts';
 import { bandEnd, guessScore, listParts, partsOf, trimLeadIn, type PartInfo } from './band.ts';
 import { notatablePieces } from './notatable.ts';
 import {
@@ -112,7 +113,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 6; // 2026-10-15: held notes in the longest beat-aligned values, eighths and shorter beamed by the beat. 5 (2026-10-15): the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
+export const MIDI_CONVERTER_VERSION = 7; // 2026-10-15 (7): a chord let go raggedly is one length, a silence under a 16th in a voice is closed, a rest under another voice's note is not drawn (tidy.ts); the check compares staff and length. 6 (2026-10-15): held notes in the longest beat-aligned values, eighths and shorter beamed by the beat. 5 (2026-10-15): the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -153,6 +154,8 @@ export interface ConversionReport {
   notesIn: number;
   lost: string[];
   added: string[];
+  /** Notes written at their time and pitch but on the other staff or with another length than decided (B3-03). */
+  changed: string[];
   brokenBars: string[];
   unwritable: string[];
   hands: string;
@@ -166,6 +169,12 @@ export interface ConversionReport {
   joined: number;
   /** Notes the sustain pedal held until the next note of their hand, written to it (pedal.ts). */
   pedalled: number;
+  /**
+   * tidy.ts (2026-10-15): notes given their chord's length (released less than a fifth of a quarter apart), notes
+   * written to their voice's next note over a silence under a 16th, and first-voice rests left undrawn under another
+   * voice's note.
+   */
+  tidied: { chords: number; gaps: number; restsHidden: number };
   /** The share of onsets already on the grid (`QuantiseReport.onGrid`). */
   onGrid: number;
   /**
@@ -502,6 +511,62 @@ export function readBackMusicXml(xml: string, bars: BarMap | Frac): ReadBack {
   return { notes, badBars, measures };
 }
 
+/**
+ * The converter's notes against the score read back: notes lost or added (by time and pitch), and notes at their time
+ * and pitch but on the other staff or held for another length (B3-03, 2026-10-15: the check compared time and pitch
+ * only, so a note moved to the other hand or given another length passed). `parts` are the staves, upper first. It
+ * proves that the score says what the converter decided, not that the decisions are the music's: the lengths are the
+ * converter's (after the grid, the pedal and tidy.ts), and a split's hands are its guess.
+ */
+export function compareWritten(parts: readonly { events: readonly NoteEvent[] }[], readNotes: readonly ReadNote[]): { lost: string[]; added: string[]; changed: string[] } {
+  const expected = new Map<string, number>();
+  for (const part of parts) {
+    for (const event of part.events) {
+      const key = `${fracToString(event.start)}:${String(event.midi)}`;
+      expected.set(key, (expected.get(key) ?? 0) + 1);
+    }
+  }
+  const sounding = new Map<string, number>();
+  for (const note of readNotes) {
+    const key = `${fracToString(note.at)}:${String(note.midi)}`;
+    sounding.set(key, (sounding.get(key) ?? 0) + 1);
+  }
+  const difference = (a: Map<string, number>, b: Map<string, number>): string[] => {
+    const out: string[] = [];
+    for (const [key, count] of a) {
+      const missing = count - (b.get(key) ?? 0);
+      if (missing <= 0) continue;
+      const [at, midi] = key.split(':');
+      out.push(
+        `${nameOf(Number(midi))} at beat ${at ?? '?'}${missing > 1 ? ` x${String(missing)}` : ''}`,
+      );
+    }
+    return out.sort();
+  };
+  const lost = difference(expected, sounding);
+  const added = difference(sounding, expected);
+  // The staff and the length too (B3-03, 2026-10-15): a note at its time and pitch but on the other staff, or held for
+  // another length than the converter decided, is listed apart, so the check says which property failed.
+  const placedRead = new Map<string, number>();
+  for (const note of readNotes) {
+    const key = `${String(note.part)}:${fracToString(note.at)}:${String(note.midi)}:${fracToString(note.length)}`;
+    placedRead.set(key, (placedRead.get(key) ?? 0) + 1);
+  }
+  const changed: string[] = [];
+  parts.forEach((part, p) => {
+    for (const event of part.events) {
+      const key = `${String(p)}:${fracToString(event.start)}:${String(event.midi)}:${fracToString(sub(event.end, event.start))}`;
+      const left = placedRead.get(key) ?? 0;
+      if (left > 0) { placedRead.set(key, left - 1); continue; }
+      if (!sounding.has(`${fracToString(event.start)}:${String(event.midi)}`)) continue; // already counted as lost
+      const there = readNotes.find((n) => eq(n.at, event.start) && n.midi === event.midi);
+      changed.push(`${nameOf(event.midi)} at beat ${fracToString(event.start)}: ${there && there.part !== p ? 'on the other staff' : `held ${there ? fracToString(there.length) : '?'} for ${fracToString(sub(event.end, event.start))}`}`);
+    }
+  });
+
+  return { lost, added, changed };
+}
+
 /** One MIDI file as MusicXML, with the self-check's answer beside it. */
 export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Conversion {
   const divisors = options.divisors ?? DEFAULT_DIVISORS;
@@ -559,6 +624,9 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   // When each note stops sounding, the sustain pedal counted (pedal.ts), carried to the quantised notes (same order).
   const soundEnds = soundingEnds(flat, file.pedal);
   const soundOf = new Map<NoteEvent, Frac>(quantised.events.map((e, i) => [e, soundEnds[i] ?? e.end]));
+  // Each note's release and strike as the file has them, before the grid (tidy.ts judges "less than a 16th" on these).
+  const releases = new Map<NoteEvent, Frac>(quantised.events.map((e, i) => [e, flat[i]?.end ?? e.end]));
+  const strikes = new Map<NoteEvent, Frac>(quantised.events.map((e, i) => [e, flat[i]?.start ?? e.start]));
 
   const handMedian: { left?: number; right?: number } = {};
   let handBoundaries = 0;
@@ -590,7 +658,10 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   // A note the pedal holds until the next note of its hand is written to it (pedal.ts): a played file's short key
   // presses under the pedal were short notes and rests where an arrangement writes the held value.
   let pedalled = 0;
+  let chordsJoined = 0;
   for (const part of parts) {
+    // Notes of a hand struck together and let go less than a 16th apart: one chord, one length (tidy.ts).
+    chordsJoined += oneLengthChords(part.events, releases);
     if (file.pedal.length) cutLegato(part.events); // played with the pedal: a key's overlap into the next is legato
     pedalled += holdToNext(part.events, (e) => soundOf.get(e), frac(1, 8));
   }
@@ -657,9 +728,13 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   // Each staff as up to two voices (voices.ts), where the file was written rather than played: a played file's note
   // lengths are its own touch, not the music's, and voices made from them would be noise (2026-10-14).
   const written = quantised.onGrid >= PLAYED_BELOW;
+  let gapsClosed = 0;
+  let restsHidden = 0;
   const perPart = parts.map((part, index) => {
     const staff = grandStaff ? ((index + 1) as 1 | 2) : undefined;
     const lines = written ? splitVoices(part.events, options.maxVoices) : [part.events];
+    // In each voice, a silence of less than a 16th in the file before the voice's next note is a lifted finger (tidy.ts).
+    for (const line of lines) gapsClosed += closeSmallGaps(line, (e) => releases.get(e) ?? e.end, (e) => strikes.get(e) ?? e.start);
     const voiceBars = lines.map((events, k) => {
       const voice = (staff ?? 1) + 2 * k; // upper staff 1, 3, 5; lower 2, 4, 6
       const slices = sliceIntoChords(events, bars, unitForBar);
@@ -677,6 +752,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
         };
         const top = used.reduce((best, vb) => (mean(vb) > mean(best) ? vb : best), used[0]!);
         used.forEach((vb) => { for (const n of vb[bar] ?? []) if (n.midi !== null) n.stem = vb === top ? 'up' : 'down'; });
+        // The first voice's rests under another voice's notes are not drawn (tidy.ts).
+        restsHidden += hideCoveredRests(used[0]![bar] ?? [], used.slice(1).map((vb) => vb[bar] ?? []));
       }
       return used.flatMap((vb) => vb[bar] ?? []);
     });
@@ -719,32 +796,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
 
   // Read back what was written, which is what anyone opening it will get.
   const read = readBackMusicXml(xml, bars);
-  const expected = new Map<string, number>();
-  for (const part of parts) {
-    for (const event of part.events) {
-      const key = `${fracToString(event.start)}:${String(event.midi)}`;
-      expected.set(key, (expected.get(key) ?? 0) + 1);
-    }
-  }
-  const sounding = new Map<string, number>();
-  for (const note of read.notes) {
-    const key = `${fracToString(note.at)}:${String(note.midi)}`;
-    sounding.set(key, (sounding.get(key) ?? 0) + 1);
-  }
-  const difference = (a: Map<string, number>, b: Map<string, number>): string[] => {
-    const out: string[] = [];
-    for (const [key, count] of a) {
-      const missing = count - (b.get(key) ?? 0);
-      if (missing <= 0) continue;
-      const [at, midi] = key.split(':');
-      out.push(
-        `${nameOf(Number(midi))} at beat ${at ?? '?'}${missing > 1 ? ` x${String(missing)}` : ''}`,
-      );
-    }
-    return out.sort();
-  };
-  const lost = difference(expected, sounding);
-  const added = difference(sounding, expected);
+  const { lost, added, changed } = compareWritten(parts, read.notes);
 
   let respelled = 0;
   if (respell) {
@@ -777,9 +829,10 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
           : ' (none in the MIDI; assumed)'),
     metre: { beats: mainTime.beats, beatType: mainTime.beatType, changes, pickup: bars.pickup },
     respelledNotes: respelled,
-    notesIn: [...expected.values()].reduce((a, b) => a + b, 0),
+    notesIn: parts.reduce((sum, part) => sum + part.events.length, 0),
     lost,
     added,
+    changed,
     brokenBars: read.badBars,
     unwritable,
     hands: split ? 'split into two' : `${String(parts.length)} as recorded`,
@@ -791,6 +844,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     moved: toNumber(quantised.moved),
     joined: quantised.joined.size,
     pedalled,
+    tidied: { chords: chordsJoined, gaps: gapsClosed, restsHidden },
     onGrid: quantised.onGrid,
     noteTracks: withNotes.length,
     band: band.map((part) => ({ name: part.name, sound: part.sound, notes: part.notes.length })),
@@ -799,7 +853,7 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     partsGuessed: !options.scoreParts && guess.guessed,
     noteTrackNames,
     passed:
-      lost.length === 0 && added.length === 0 && read.badBars.length === 0 && unwritable.length === 0,
+      lost.length === 0 && added.length === 0 && changed.length === 0 && read.badBars.length === 0 && unwritable.length === 0,
   };
   return { xml, report };
 }

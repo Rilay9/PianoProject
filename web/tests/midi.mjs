@@ -1587,6 +1587,103 @@ describe('a played file is told apart from a written one', () => {
   });
 });
 
+// --- new (2026-10-15): readability, judged by tests/readability.mjs (review item S4: M1-M3, B3-03) ----------------
+// Releases are a player's touch: notes struck together and let go a hair apart are one chord with one length (M1); a
+// silence under a 16th in one voice is a lifted finger, not a rest (M3); a voice's rest under another voice's note is
+// not drawn (M2). Each case has a near miss that must stay as written. Each "one" case fails on 20d02f84.
+
+const { compareWritten } = await import('../src/library/midi/convert.ts');
+const { NEAR_RELEASES, NEAR_STRIKE } = await import('../src/library/midi/tidy.ts');
+
+describe('releases as a player lets the keys go, converted', () => {
+  const T = 480;
+  const track = (name, list) => {
+    const ev = [];
+    for (const [midi, from, to] of list) ev.push([from, noteOn(midi)], [to, noteOff(midi)]);
+    ev.sort((a, b) => a[0] - b[0] || (a[1][0] === 0x80 ? -1 : 1));
+    let now = 0;
+    return [{ delta: 0, bytes: trackName(name) }, ...ev.map(([t, bytes]) => { const delta = t - now; now = t; return { delta, bytes }; })];
+  };
+  const convertHands = (right, left = [[36, 0, 8 * T]]) =>
+    convertMidi(buildMidiTracks([[{ delta: 0, bytes: timeSignature(4, 2) }], track('Right', right), track('Left', left)]), { title: 'touch' });
+  const upper = (xml, bar = 0) => barsOf(xml)[bar].filter((n) => n.staff === 1);
+
+  it('measures "about a 16th" as a fifth of a quarter between releases and a quarter of a quarter before a strike', () => {
+    expect([fracToString(NEAR_RELEASES), fracToString(NEAR_STRIKE)]).toEqual(['1/5', '1/4']);
+  });
+  it('writes a chord whose keys came up up to 0.15 of a quarter apart as one chord of one length, in one voice', () => {
+    // C5 E5 G5 struck together, let go at 1.85, 1.95 and 2 (the grid alone made C5 a dotted quarter and a second voice).
+    const { xml, report } = convertHands([[72, 0, 888], [76, 0, 936], [79, 0, 960], [77, 960, 1920], [81, 960, 1920]]);
+    const bar = upper(xml);
+    expect(bar.filter((n) => n.at === '0').map((n) => `${n.name}/${n.len}:${n.voice}`)).toEqual(['C5/2:1', 'E5/2:1', 'G5/2:1']);
+    expect(new Set(bar.map((n) => n.voice))).toEqual(new Set([1]));
+    expect(report.passed).toBe(true);
+  });
+  it('keeps a written eighth beside a dotted eighth (exported at 95% of their lengths) as two lengths', () => {
+    const { xml } = convertHands([[72, 0, Math.round(0.7125 * T)], [76, 0, Math.round(0.475 * T)], [79, T, 2 * T]]);
+    expect(upper(xml).filter((n) => n.at === '0').map((n) => `${n.name}/${n.len}`).sort()).toEqual(['C5/3/4', 'E5/1/2']);
+  });
+  it('writes quarters let go 0.15 of a quarter early as quarters, with no 16th rests', () => {
+    const { xml } = convertHands([72, 74, 76, 77, 79].map((m, i) => [m, i * T, i * T + Math.round(0.85 * T)]));
+    expect(upper(xml).map((n) => `${n.name}/${n.len}`)).toEqual(['C5/1', 'D5/1', 'E5/1', 'F5/1']);
+    const first = /<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(first.includes('<type>16th</type>')).toBe(false);
+  });
+  it('keeps a written 16th rest (a dotted eighth exported at 95%, the next note a 16th later)', () => {
+    const { xml } = convertHands([[72, 0, Math.round(0.7125 * T)], [74, T, 2 * T], [76, 2 * T, 4 * T]]);
+    expect(upper(xml).map((n) => `${n.name}/${n.len}`)).toEqual(['C5/3/4', 'D5/1', 'E5/2']);
+    const first = /<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(xml)?.[1] ?? '';
+    expect(/<rest\/>\s*<duration>12<\/duration>/.test(first)).toBe(true);
+  });
+  it('does not draw the melody voice’s rest under the held voice’s note, and still draws one only partly under it', () => {
+    // E5 for a beat, silent for a beat, E5 again for two; G4 held under it all bar (a second voice).
+    const held = convertHands([[76, 0, T], [76, 2 * T, 4 * T], [67, 0, 4 * T]]).xml;
+    const bar1 = /<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(held)?.[1] ?? '';
+    const voice1 = bar1.split('<backup>')[0];
+    expect(voice1.includes('<rest/>')).toBe(false);
+    expect(voice1).toContain('<forward><duration>48</duration><voice>1</voice><staff>1</staff></forward>');
+    // G4 held only a beat and a half: the rest from beat 2 is partly over nothing, so it is drawn.
+    const partly = convertHands([[76, 0, T], [76, 2 * T, 4 * T], [67, 0, 3 * T / 2]]).xml;
+    const voice1b = (/<measure number="1"[^>]*>([\s\S]*?)<\/measure>/.exec(partly)?.[1] ?? '').split('<backup>')[0];
+    expect(voice1b.includes('<rest/>')).toBe(true);
+  });
+});
+
+describe('the converter’s own check compares staff and length too (B3-03)', () => {
+  const T = 480;
+  const file = buildMidiTracks([
+    [{ delta: 0, bytes: timeSignature(4, 2) }],
+    [{ delta: 0, bytes: trackName('Right') }, { delta: 0, bytes: noteOn(72) }, { delta: 360, bytes: noteOff(72) }, { delta: 120, bytes: noteOn(74) }, { delta: 3 * T, bytes: noteOff(74) }],
+    [{ delta: 0, bytes: trackName('Left') }, { delta: 0, bytes: noteOn(48) }, { delta: 4 * T, bytes: noteOff(48) }],
+  ]);
+  const { xml, report } = convertMidi(file, { title: 'b3' });
+  const bars = steadyBars({ beats: 4, beatType: 4 }, frac(64));
+  // The decided notes, taken from the written score itself (so the unaltered score must compare as perfect).
+  const decided = [0, 1].map((p) => ({ events: readBackMusicXml(xml, bars).notes.filter((n) => n.part === p).map((n) => ({ start: n.at, end: add(n.at, n.length), midi: n.midi, velocity: null })) }));
+  it('passes the score as written, with nothing lost, added or changed', () => {
+    expect(report.passed).toBe(true);
+    expect(report.changed).toEqual([]);
+    expect(compareWritten(decided, readBackMusicXml(xml, bars).notes)).toEqual({ lost: [], added: [], changed: [] });
+  });
+  it('names a note held for another length, with the bar still adding up and the times and pitches unchanged', () => {
+    // C5's dotted eighth and the 16th rest after it become an eighth and an eighth rest.
+    const shorter = xml.replace(/(<step>C<\/step>\s*<octave>5<\/octave>\s*<\/pitch>\s*<duration>)36(<\/duration>[\s\S]*?<rest\/>\s*<duration>)12</, '$124$224<');
+    expect(shorter).not.toBe(xml);
+    const read = readBackMusicXml(shorter, bars);
+    expect(read.badBars).toEqual([]);
+    const result = compareWritten(decided, read.notes);
+    expect([result.lost, result.added]).toEqual([[], []]);
+    expect(result.changed).toEqual(['C5 at beat 0: held 1/2 for 3/4']);
+  });
+  it('names every note written on the other staff (the hands swapped), which the time-and-pitch check passed', () => {
+    const swapped = swapHands(xml);
+    const result = compareWritten(decided, readBackMusicXml(swapped.xml, bars).notes);
+    expect([result.lost, result.added]).toEqual([[], []]);
+    expect(result.changed.length).toBe(3);
+    expect(result.changed.every((line) => line.endsWith('on the other staff'))).toBe(true);
+  });
+});
+
 // --- run -------------------------------------------------------------------------------------------------------
 
 await run({ skipIfWhy: 'no hand split in this reference: kept as recorded' });
