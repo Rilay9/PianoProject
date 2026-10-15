@@ -7,6 +7,8 @@
 //   node build_index.cjs <chosen dir (from select_pieces.py)> <served app url, e.g. http://localhost:5192/PianoProject/>
 //
 // Writes web/public/catalogue/index.json and copies the files to web/public/catalogue/.
+// The full PDMX set (full_set.py) does not go through here: reading 253k files in the browser would take over an hour,
+// and on 5,990 random files the app's reader and scan.py agreed on every field this index holds (2026-10-15).
 const fs = require('fs');
 const path = require('path');
 const JSZip = require('jszip');

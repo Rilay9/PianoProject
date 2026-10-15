@@ -574,6 +574,62 @@ one); examples to copy written into a chart.
      app's drawing with the file, never the file with a printed edition. The notes have to be read against an
      independent source (a published edition or a scan of one, bar by bar), and `status` says what was compared, with
      what, and how far ("bars 1–16 read against …; the rest not verified"); anything not read is said as not verified.
+- **Full PDMX set (PC side; owner, 2026-10-15; mockup `web/mockups/pdmx-full.html`; the phone side is not built yet).**
+  The whole set as a third tab, set up as piano + lead sheets + melodies or everything. Built on the PC by
+  `web/tools/catalogue/scan.py` then `full_set.py` (`rows`, `zips`, `index`, `verify`); outputs stay outside the repo
+  (`catalogue-work/full/`). Facts are scan.py's reading of the notes, the same as the app's `facts.ts` (5,990 random
+  files read by both: every field agreed). From PDMX.csv only what the catalogue takes (the upload's title when the file
+  has none, the uploader's composer if it matches the table, views, licence); never its genre, difficulty, tags,
+  ratings or validity columns (those were used only to cross-check). 253,391 readable files (644 that can't be read
+  are left out): piano 23,150, lead sheets 23,273, melodies 141,000, several parts 65,968.
+  - **Flags** (what was found, in words a learner reads; never a judgment of the music or its difficulty). Each was
+    tested on made-up cases (fires, doesn't, near miss), then 12 random flagged files per flag were drawn with OSMD
+    and looked at:
+    - *most bars empty*: more than half the bars hold no note in any part ("most", by the flag's words). 1,322
+      files. Looked: 12/12 right; 9 unfinished uploads, 3 one instrument's part with long rests.
+    - *under 4 bars of music*: fewer than 4 bars with notes (a phrase, the smallest whole unit of a tune, is 4 bars),
+      unless the bars are over-long (then it is the next flag). 858. Looked: 7 of 8 fragments or tests, 1 a real
+      two-bar recitative; 4-5 bar files are mostly fragments too (5/6), not caught.
+    - *most bars longer than the time signature*: more than half the bars (of every part) run past the time
+      signature in force. Among files with any such bar the share is bimodal (one odd bar, or nearly all); the
+      valley is at 0.45-0.5, where "most" falls. 2,930. Looked: 12/12 right: the whole piece in one bar, music under
+      the wrong time signature, junk. Files at 0.3-0.5 were mostly broken too (5/6, not caught); at 0.05-0.3 real
+      tunes with an odd long bar (a pickup).
+    - *notes outside the piano*: a note below A0 or above C8 (not for several parts, whose written pitches may be a
+      transposing instrument's). 85. Looked: 12/12 right; 7 junk, 4 real pieces with one stray wrong note, 1 a tuba
+      exercise.
+    - *one staff has no notes* (piano): 161. Looked: 12/12 right, mostly a melody written on a piano template; a
+      staff with 1-3 notes is not caught (3 of 6 such looked one-handed).
+    - *no title*: neither the file nor the upload has a title other than a placeholder ("Untitled score", "Title",
+      "#"). 108. Looked: 11/12 right (one had its title in an untyped text box scan.py doesn't read). "Gan ainm" and
+      "No name" are folk tunes' real names, not flagged.
+    - *the title says test, draft or unfinished*: 370. Looked: 11/12 test uploads, 1 an unfinished composition.
+    - Tried and dropped: *more than 10 notes at once* (half were Debussy, Ravel and other real pieces with spread
+      chords); *exact duplicate files* (PDMX has none: no two files share a SHA-256).
+    - 36 random unflagged files looked at: 34 real music, 1 erratic junk, 1 glitchy first bar.
+    - Cross-check with PDMX's columns (share of files rated on MuseScore; unflagged 0.056): overfull 0.014, short
+      0.023, test 0.035, no title 0.037 agree (rated less); empty 0.080, one staff 0.137, outside the piano 0.200 do
+      not (real but unusual files are rated as often or more).
+    - Any flag: 5,517 files (piano 528, lead 411, melody 3,212, parts 1,366), 2.2%. Hiding them leaves 173,649 of
+      177,631 pieces (piano 21,912, lead 12,887, melody 85,251, parts 53,599). Which flags hide is the owner's call.
+  - **Versions fold** into one row: within a kind, files with the same notes (start and pitch of every note, any
+    title; 88,393 files have such a twin, re-uploads) and files with the same title (folded with every script's
+    letters) and checked composer whose openings agree (the first 4 steps of the first part's top line: at 4 steps
+    80% of uploads with one title and checked composer share their group's opening, against 18% under generic titles
+    like "Hornpipe"; each further step costs real versions more than it separates generic ones; the 20% stay separate
+    rows). 177,631 pieces. Looked: the biggest "Hornpipe" row and a random 6-file row were one tune each.
+  - **Piece lists**, one a kind (`index-piano.json`, `index-lead.json`, `index-melody.json`, `index-parts.json`):
+    the catalogue index's fields, then `flags` (codes separated by spaces; `flags` in the header gives their words),
+    `zip` (number into `zips`) and `offset` (the file's first byte in that zip; its length is `bytes`). Sizes raw /
+    gzip: 3.6/1.2, 3.4/1.1, 21.3/6.3, 10.1/3.2 MB. JSON.parse in headless Chromium: melodies 50 ms, 206 ms with the
+    CPU slowed 4x (DevTools' mid-tier phone); all four 93 / 373 ms, about 71 MB kept in memory. A column-wise
+    encoding (one array a field, repeated strings as numbers) would cut melodies to 12.9 MB and 93 ms at 4x.
+  - **Zips** (`pdmx-a1..3.zip` piano, lead sheets and melodies, 0.80 GB; `pdmx-b1..2.zip` several parts, 1.21 GB;
+    everything = a + b, so adding the rest later copies only b). Stored, not compressed (.mxl is zipped already), so a
+    file's bytes sit whole at its offset and the phone reads one with `File.slice(offset, offset + bytes)` on its
+    own copy. No Zip64: at most 65,535 files a zip (the zip format's own limit without that extension), files shared
+    evenly, so 3 + 2 zips of 265 MB and 600 MB; a copy that fails restarts one zip. Checked: 50 random files read
+    back by offset match their SHA-256 (a shifted offset fails), and every entry's CRC is good.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added

@@ -12,6 +12,11 @@ the file gave more than a bare surname ("Bach" stays "Bach": several Bachs). Oth
     python -I select_pieces.py <scan.jsonl> <PDMX.csv> <mxl.tar.gz> <app scores/index.json> <out dir>
 
 Writes <out dir>/chosen.json (one row per file, with what scan.py read) and <out dir>/files/<sha12>.mxl.
+
+full_set.py (the whole set for the phone) reuses composer_table, checked_composer and title_of. Two limits found there
+at full scale that this catalogue's grouping still has: fold() keeps a-z and digits only, so titles in other scripts
+fold to "" and group together; and title + composer alone groups different pieces under a generic title ("Minuet").
+full_set.py folds with every script's letters and also asks the openings to agree.
 """
 
 import csv
