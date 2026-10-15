@@ -27,6 +27,10 @@ then deploying. The list's order is the
 song list's order. Exercises (scales,
 five-finger patterns, cadences as music) are simply short scores. Fingering written in the file shows when Display →
 Fingering is on; the learner can add their own (⋯ → Edit fingering).
+The three scores shipped now are engine test pieces, not checked against printed editions. `composer` keeps any doubt the
+file itself states (BWV 514's file credits "Johann Sebastian Bach?", so the list says "J. S. Bach?"). BWV 514, titled a
+chorale, is a melody over a single bass line, not four-part harmony: not material for teaching chorale (block-chord)
+playing (review 2026-10-15, B8-02/B8-03).
 
 **What the learner sees:** the music laid out to keep what comes next in view: *Turn* (slots that swap as you
 play) or *Rolling* on a phone upright, a scrolling single line (*smooth* or *still then glide*) on a phone sideways,
@@ -186,7 +190,8 @@ your first note (by ear: always your first note); the metronome can keep clickin
 
 A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
 red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
-different cards); a card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
+cards: a retry never adds one; cards are drawn at random from the set, never the same one twice running, so a set of
+fewer than N items repeats some); a card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
 Help (*Hear it*, *Show me*, or the hint after 8 s without a key on a notes-only card, which names the notes when the keys aren't shown) is
 noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
 *Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
@@ -491,7 +496,7 @@ Tonal reads it (`C`, `Dm`, `G7`, `Cmaj7`, `F#m7b5`, `Bdim`, `Csus4`…), stacked
 `P8`…) up from `root` (default C4), `together` default true. Every item may give `name` and `short`.
 Items are numbered; `name` (full, used for name-only prompts and feedback) and `short` (a label) are worked out
 when missing. MusicXML items keep their rhythm and rests (at the start and end too: a melody that starts on beat 2
-starts there); a whole MusicXML file also keeps its bars, time signature and key, and a passage takes the tempo in
+starts there, whether the wait is written as a rest or as a `<forward>`); a whole MusicXML file also keeps its bars, time signature and key, and a passage takes the tempo in
 force where it starts. MusicXML is read as **one line of music**: notes are placed where they really fall (chords,
 `<backup>`, `<forward>`), a tied note just lasts longer, and staccato (staccatissimo, spiccato) is kept: drawn with
 its dot, and never asked to be held. Music with a second voice or staff (unless the passage

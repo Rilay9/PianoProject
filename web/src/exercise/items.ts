@@ -181,6 +181,13 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
     out.groups.push(g.keys); out.beats.push(until - g.at); out.bars.push(barAt(g.at)); out.detached.push(g.detached);
     if (next > until + 1e-6) { out.groups.push([]); out.beats.push(next - until); out.bars.push(barAt(until)); out.detached.push(false); } // silence between (a forward)
   });
+  // Silence before the first moment or after the last, written with <forward> rather than a rest, is kept too (review
+  // 2026-10-15, B3-06: it was dropped, so a passage that waits a beat started at once). `start` is the excerpt's length.
+  if (groups.length) {
+    const first = groups[0]!.at, last = groups[groups.length - 1]!, end = Math.max(last.end, last.at);
+    if (first > 1e-6) { out.groups.unshift([]); out.beats.unshift(first); out.bars.unshift(barAt(0)); out.detached.unshift(false); }
+    if (start > end + 1e-6) { out.groups.push([]); out.beats.push(start - end); out.bars.push(barAt(end)); out.detached.push(false); }
+  }
   // A length the notation cannot write (DIVISIONS: 32nd notes) is refused rather than drawn wrong.
   if (out.beats.some((b) => Math.abs(b * 8 - Math.round(b * 8)) > 1e-6)) throw new Error('it has a note length shorter than a 32nd or an uneven one, which cannot be drawn yet');
   return out;
