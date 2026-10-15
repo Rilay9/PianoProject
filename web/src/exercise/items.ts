@@ -4,7 +4,7 @@
 // random item each round; a passage grows in its own order.
 //
 // A set file:
-//   { "title": "Chords in C", "order": "pool" | "passage",
+//   { "title": "Chords in C", "kind": "chords", "order": "pool" | "passage",
 //     "items": { "1": <item>, "2": <item>, ... },          numbered; or, for a passage cut from a piece:
 //     "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }
 // An item is one of (name and short are optional; they are worked out when missing):
@@ -43,8 +43,30 @@ export interface Item {
   fifths?: number;
 }
 
+/** The score modes an exercise that is music can open in (Ladder needs a loop of bars, which a set does not give). */
+export const PLAY_MODES = ['watch', 'wait', 'along', 'rhythm'] as const;
+/** How a set's MusicXML items open on the score (review re-check 2026-10-15, V32): the score's own preset choices, as
+ * an activity gives them (activity.ts), limited to the mode, the hands and the tempo; the mode Wait for me when not
+ * given. Anything else is refused with the reason. */
+export interface Play { mode: (typeof PLAY_MODES)[number]; hands?: 'both' | 'right' | 'left' | 'off'; tempo?: number }
+export function readPlay(v: unknown): Play {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new Error('play should be an object, like { "mode": "wait" }');
+  const o = v as Record<string, unknown>;
+  for (const k of Object.keys(o)) if (!['mode', 'hands', 'tempo'].includes(k)) throw new Error(`play has "${k}", which is not one of mode, hands, tempo`);
+  if (o.mode !== undefined && !(PLAY_MODES as readonly unknown[]).includes(o.mode)) throw new Error(`play.mode ${JSON.stringify(o.mode)} should be one of ${PLAY_MODES.join(', ')}${o.mode === 'ladder' ? ' (Ladder needs a loop of bars)' : ''}`);
+  if (o.hands !== undefined && !['both', 'right', 'left', 'off'].includes(o.hands as string)) throw new Error(`play.hands ${JSON.stringify(o.hands)} should be both, right, left or off`);
+  if (o.tempo !== undefined && !(typeof o.tempo === 'number' && o.tempo >= 20 && o.tempo <= 300)) throw new Error(`play.tempo ${JSON.stringify(o.tempo)} should be beats a minute, 20 to 300`);
+  return { mode: (o.mode as Play['mode']) ?? 'wait', ...(o.hands ? { hands: o.hands as Play['hands'] } : {}), ...(o.tempo ? { tempo: o.tempo as number } : {}) };
+}
+
+/** What kind of exercise a set is (owner, 2026-10-15: Exercises lists them by kind). */
+export const EXERCISE_KINDS = ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies'] as const;
+export type ExerciseKind = (typeof EXERCISE_KINDS)[number];
+
 export interface ItemSet {
   id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number;
+  /** Its kind of exercise, as the file says (none: listed under "Other" in Exercises). */
+  kind?: ExerciseKind;
   /** A passage from a score: its time signature and key (sharps +, flats −), drawn as the score has them. */
   meter?: { beats: number; beatType: number }; fifths?: number;
   /** Drills: how items with no written rhythm are judged: notes only, or steady beats of this many quarter notes. */
@@ -57,7 +79,7 @@ interface ItemSource {
   notes?: string; chord?: string; octave?: number; arpeggio?: boolean;
   interval?: string; root?: string; together?: boolean; musicxml?: string; name?: string; short?: string;
 }
-interface SetFile { title: string; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number } }
+interface SetFile { title: string; kind?: string; play?: unknown; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number } }
 
 export const midiOf = (spelled: string): number => Note.midi(spelled) ?? 60;
 /** A spelled pitch as a learner reads it: C#4 as C♯4, Bb3 as B♭3. */
@@ -243,10 +265,13 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
  */
 export async function readSet(id: string, file: SetFile, base: string, scoreXml: (score: string) => Promise<string>, fetchText: (url: string) => Promise<string>): Promise<ItemSet> {
   // The file's fields and values, checked (a typo is refused with the reason, never quietly read as something else).
-  const fields = ['title', 'order', 'tempo', 'rhythm', 'items', 'from'];
+  const fields = ['title', 'kind', 'play', 'order', 'tempo', 'rhythm', 'items', 'from'];
   const odd = Object.keys(file).find((k) => !fields.includes(k));
   if (odd) throw new Error(`"${odd}" is not one of ${fields.join(', ')}`);
   if (typeof file.title !== 'string' || !file.title) throw new Error('it needs a "title"');
+  if (file.kind !== undefined && !(EXERCISE_KINDS as readonly string[]).includes(file.kind)) throw new Error(`kind ${JSON.stringify(file.kind)} should be one of ${EXERCISE_KINDS.join(', ')}`);
+  const kind = file.kind as ExerciseKind | undefined;
+  if (file.play !== undefined) readPlay(file.play);
   if (file.order !== undefined && file.order !== 'pool' && file.order !== 'passage') throw new Error(`order "${file.order}" should be pool or passage`);
   if (file.tempo !== undefined && !(typeof file.tempo === 'number' && file.tempo >= 20 && file.tempo <= 300)) throw new Error(`tempo ${file.tempo} should be a number of beats a minute, 20 to 300`);
   if (file.rhythm !== undefined && file.rhythm !== 'notes' && !(typeof file.rhythm === 'number' && file.rhythm > 0)) throw new Error(`rhythm ${JSON.stringify(file.rhythm)} should be "notes" or a length in quarter notes (1, 0.5…)`);
@@ -265,11 +290,11 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
       if (!g.length && items.length) { const it = items.at(-1)!; it.groups.push([]); it.beats!.push(at.beats); it.bars!.push(at.bar); it.detached!.push(false); return; }
       if (g.length) items.push({ n: items.length + 1, name: g.map(shown).join(' '), short: letters(g[0]), groups: [g], beats: [at.beats], bars: [at.bar], detached: [at.detached] });
     });
-    return { id, title: file.title, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths, rhythm: file.rhythm };
+    return { id, title: file.title, kind, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths, rhythm: file.rhythm };
   }
   const entries = Object.entries(file.items ?? {}).map(([k, v]) => [Number(k), v] as const).sort((x, y) => x[0] - y[0]);
   const items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
-  return { id, title: file.title, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm };
+  return { id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm };
 }
 
 /** Every set listed in content/sets/index.json; a set that cannot be read is left out and reported. */

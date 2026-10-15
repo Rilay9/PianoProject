@@ -1,5 +1,5 @@
 {
-  "title": "Test: arpeggios in C",
+  "title": "Test: arpeggios in C", "kind": "arpeggios",
   "order": "pool",
   "items": {
     "1": { "chord": "C", "arpeggio": true },

@@ -120,7 +120,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     if (activity && !sets.some((s) => s.id === activity.set)) { app.showMessage(`No exercise set "${activity.set}"${setProblems ? ` (${setProblems})` : ''}`); return; }
     app.appSound();
     exerciseKind = kind;
-    $('ex-kind').textContent = kind === 'drill' ? 'Drill' : 'Simon';
+    $('ex-kind').textContent = `${kind === 'drill' ? 'Drills' : 'Simon'}▾`;
     $('ex-after').hidden = true;
     $('exercise').hidden = false;
     fillExerciseDisplay();
@@ -137,6 +137,21 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     closed();
   }
   $('ex-done').addEventListener('click', close);
+  // Practise as… (owner, 2026-10-15): the set on screen in the other way (its run so far is logged as it ends); the
+  // screen stays the same place, so ← still goes back where it came from.
+  const asDialog = $<HTMLDialogElement>('ex-as-dialog');
+  $('ex-kind').addEventListener('click', () => {
+    for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) b.setAttribute('aria-current', String(b.dataset.as === exerciseKind));
+    asDialog.showModal();
+  });
+  for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) b.addEventListener('click', () => {
+    asDialog.close();
+    const kind = b.dataset.as as 'simon' | 'drill', set = $<HTMLSelectElement>('ex-set').value;
+    if (kind === exerciseKind) return;
+    simon.close();
+    drill.close();
+    void open(kind, () => true, set ? { set, level: {} } : undefined);
+  });
 
   const drillDialog = $<HTMLDialogElement>('drill-dialog');
   function fillDrillDialog(): void {

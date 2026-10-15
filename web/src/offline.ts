@@ -89,6 +89,19 @@ async function wanted(base: string): Promise<Set<string>> {
     urls.add(new URL(`${base}content/activities/index.json`, origin).href);
     for (const f of acts) urls.add(new URL(`${base}content/activities/${f}`, origin).href);
   } catch { /* no activities yet */ }
+  // The path (owner, 2026-10-15): its index, every lesson, and the files its blocks name (pictures, animations, MusicXML);
+  // links to other sites (a video) are not saved: a video needs the internet, and says so offline.
+  try {
+    const dir = `${base}content/path/`;
+    const index = (await (await fetch(`${dir}index.json`)).json()) as { rungs: { lessons: string[] }[] };
+    urls.add(new URL(`${dir}index.json`, origin).href);
+    for (const id of index.rungs.flatMap((r) => r.lessons)) {
+      const url = new URL(`${dir}lessons/${id}.json`, origin).href;
+      urls.add(url);
+      const lesson = (await (await fetch(url)).json()) as { blocks: { src?: string; musicxml?: string }[] };
+      for (const b of lesson.blocks) for (const f of [b.src, b.musicxml]) if (f && !/^https:|^</.test(f.trim())) urls.add(new URL(`${dir}${f.trim()}`, origin).href);
+    }
+  } catch { /* no path yet, or a lesson that cannot be read (the Path says why) */ }
   // The accompaniment lab: its charts and styles, and the band's sounds (the kit and the kept instruments).
   try {
     const lab = (await (await fetch(`${base}content/lab/index.json`)).json()) as { charts: string[]; styles: string[] };

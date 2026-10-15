@@ -1,5 +1,5 @@
 {
-  "title": "Test: intervals from middle C",
+  "title": "Test: intervals from middle C", "kind": "intervals",
   "order": "pool",
   "items": {
     "1": { "interval": "m2", "root": "C4" },

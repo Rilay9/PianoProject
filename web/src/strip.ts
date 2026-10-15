@@ -116,6 +116,9 @@ export class UnderStrip {
     return this.host.hidden ? 0 : this.host.offsetHeight;
   }
 
+  /** The keys drawn now, lowest and highest. */
+  get shown(): { lo: number; hi: number } { return this.window !== null ? { lo: this.window, hi: this.window + FOLLOW_SPAN } : { lo: this.song.from, hi: this.song.to }; }
+
   /** Builds the keys for a song (following: the two octaves of its first notes). */
   setSong(midis: number[]): void {
     this.song = keyRange(midis);

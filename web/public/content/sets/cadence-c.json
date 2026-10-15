@@ -1,5 +1,5 @@
 {
-  "title": "Test: cadence chords (MusicXML blocks)",
+  "title": "Test: cadence I–IV–V–I in C", "kind": "cadences",
   "order": "passage",
   "items": {
     "1": { "name": "I (C major)", "short": "I", "musicxml": "<note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration></note><note><chord/><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration></note>" },

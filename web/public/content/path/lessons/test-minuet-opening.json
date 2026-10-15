@@ -1,0 +1,11 @@
+{
+  "title": "Test: the Minuet's opening, right hand",
+  "blocks": [
+    { "kind": "text", "text": "# A test lesson\n**Test:** this lesson only shows the kinds of block a lesson page can hold. Its words are placeholders, not teaching; real lessons are written with you later.\n\nIn it:\n- a little score to *hear* first,\n- a step that waits for your notes,\n- a video, and a step of melody cards.\n\n(A link, to show one: [the video on YouTube](https://www.youtube.com/watch?v=ZD_sAWAlWq0).)" },
+    { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "caption": "Test: Minuet in F, K. 2, bars 1–4. ▶ plays them: the marker moves and the keys light." },
+    { "kind": "tip", "text": "Test tip: tap **Hear it** before you play a step's bars." },
+    { "kind": "step", "id": "wait-rh", "title": "Right hand, bars 1–4", "activity": "k2-wait-right", "doneWhen": "you have played through them once (nothing is marked in Wait for me)" },
+    { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "Piano Lessons for Beginners: Part 4 - What About the Left Hand? (MangoldProject)", "start": 0, "end": 120, "caption": "Test: any public music lesson, to show the video block (the first two minutes)." },
+    { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill", "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 } }
+  ]
+}

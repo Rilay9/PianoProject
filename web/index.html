@@ -12,7 +12,7 @@
 <body>
   <!-- Controls layer: a top bar and a bottom bar over the music, shown when a song opens and on a tap. -->
   <header class="bar top" id="top-bar">
-    <button id="open-songs" type="button" class="btn" aria-label="Songs">‹</button>
+    <button id="score-back" type="button" class="btn" aria-label="Back">←</button>
     <div class="title"><span id="song-title"></span> <small id="song-composer"></small></div>
     <button id="open-info" type="button" class="btn" aria-label="About this song">ⓘ</button>
     <button id="open-settings" type="button" class="btn" aria-haspopup="dialog">Display</button>
@@ -36,9 +36,7 @@
       <button type="button" data-hands="off" aria-label="No piano sound">Off</button>
     </div>
     <!-- Size stays here, so the music can be seen changing (spacing and Make default are in Display). -->
-    <button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button>
-    <output id="q-size" aria-live="polite"></output>
-    <button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button>
+    <span class="q-sizes"><button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button><output id="q-size" aria-live="polite"></output><button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button></span>
   </div>
 
   <p id="message" class="message" hidden></p>
@@ -54,10 +52,10 @@
   <!-- The Memorise screen (memorise.ts): its own header and panel over the score's drawing of the music.
        Sideways, what it says moves into the header and the panel is one row of buttons. -->
   <div id="memo-head" class="memo-head" hidden>
+    <button id="memo-done" type="button" class="btn back" aria-label="Back">←</button>
     <span class="memo-title">Memorise · <b id="memo-piece"></b></span>
     <span id="memo-head-info" class="memo-head-info"></span>
     <button id="memo-settings" type="button" class="btn" aria-haspopup="dialog">Settings</button>
-    <button id="memo-done" type="button" class="btn">Done</button>
   </div>
   <div id="memo-panel" class="memo-panel" hidden>
     <div id="memo-info" class="memo-info">
@@ -103,7 +101,7 @@
 
   <!-- Free play: just the keys, named; nothing judged. -->
   <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
-    <div class="fp-head"><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button><button id="fp-done" type="button" class="btn">Done</button></div>
+    <div class="fp-head"><button id="fp-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button></div>
     <p id="fp-chord" class="fp-chord"></p>
     <p id="fp-notes" class="fp-notes"></p>
     <!-- What you played lately: chords, notes and intervals, newest on top; each can be turned off. -->
@@ -132,7 +130,7 @@
   <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
        the keyboard at the bottom. -->
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
-    <div class="fp-head"><span id="ex-kind" class="ex-kind">Simon</span><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button><button id="ex-done" type="button" class="btn">Done</button></div>
+    <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
     <div class="ex-prompt">
       <div id="ex-notation" class="ex-notation off"></div>
@@ -165,7 +163,7 @@
   <!-- The accompaniment lab (screens/lab.ts): Lead or Accompaniment, a step, then the beat, the chord now and next,
        the box of chords and the keys to use. -->
   <section id="lab" class="lab" aria-label="Accompaniment lab" hidden>
-    <div class="fp-head"><span class="title">Lab</span><span class="lab-sp"></span><button id="lab-band" type="button" class="btn" aria-haspopup="dialog" aria-label="The band">⚙</button><button id="lab-stop" type="button" class="btn" hidden aria-label="Stop">■</button><button id="lab-done" type="button" class="btn">Done</button></div>
+    <div class="fp-head"><button id="lab-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Lab</span><span class="lab-sp"></span><button id="lab-band" type="button" class="btn" aria-haspopup="dialog" aria-label="The band">⚙</button><button id="lab-stop" type="button" class="btn" hidden aria-label="Stop">■</button></div>
     <div class="lab-body">
       <div class="lab-side">
         <div id="lab-open" class="lab-open">
@@ -199,7 +197,7 @@
   <!-- The library (screens/library.ts): search, one line of filter chips, the list; a piece's page (over the list
        upright, beside it sideways and on tablets). -->
   <section id="library" class="library" aria-label="Library" hidden>
-    <div class="fp-head"><button id="lib-done" type="button" class="btn" aria-label="Back">←</button><span class="title">Library</span><span class="lab-sp"></span><button id="lib-add" type="button" class="btn main">+ Add</button></div>
+    <div class="fp-head"><span class="title">Music</span><span class="lab-sp"></span><button id="lib-add" type="button" class="btn main">+ Add</button></div>
     <input id="lib-file" type="file" multiple hidden>
     <div class="lib-body">
       <div id="lib-left" class="lib-left">
@@ -240,7 +238,7 @@
   <dialog id="pdf-settings" aria-labelledby="pdf-settings-title">
     <form method="dialog">
       <h2 id="pdf-settings-title">Turning</h2>
-      <p class="note">Turn with your keyboard's highest key (next) and lowest key (back; they need learning once in ⋯ → Keyboard controls), a tap on the music, a page-turner pedal (it sends page or arrow keys), or ◀ ▶.</p>
+      <p class="note">Turn with your keyboard's highest key (next) and lowest key (back; they need learning once in ⚙ → Keyboard controls), a tap on the music, a page-turner pedal (it sends page or arrow keys), or ◀ ▶.</p>
       <label class="row"><input id="pdf-edge-music" type="checkbox"> This piece uses the keyboard's lowest or highest key (then they don't turn lines)</label>
       <h2>Show</h2>
       <p class="note">Whole lines, or each line in parts at its split points (one is found for you; add your own in Adjust lines). For this piece, per kind of screen.</p>
@@ -353,6 +351,18 @@
     </form>
   </dialog>
 
+  <!-- Practise as… (owner, 2026-10-15): the same set in the other way of practising it. -->
+  <dialog id="ex-as-dialog" aria-labelledby="ex-as-title">
+    <form method="dialog">
+      <h2 id="ex-as-title">Practise as…</h2>
+      <div class="menu">
+        <button type="button" data-as="drill">Drills<small>flashcards: each item a card to play, judged as it is played</small></button>
+        <button type="button" data-as="simon">Simon<small>a chain that grows by one each round, played from memory</small></button>
+      </div>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
   <dialog id="ex-level-dialog" aria-labelledby="ex-level-title">
     <form method="dialog">
       <h2 id="ex-level-title">Level</h2>
@@ -460,14 +470,6 @@
     </form>
   </dialog>
 
-  <dialog id="songs" aria-labelledby="songs-title">
-    <form method="dialog">
-      <h2 id="songs-title">Songs</h2>
-      <ul id="song-list" class="song-list"></ul>
-      <div class="actions"><button value="close">Close</button></div>
-    </form>
-  </dialog>
-
   <dialog id="info" aria-labelledby="info-title">
     <form method="dialog">
       <h2 id="info-title"></h2>
@@ -480,23 +482,11 @@
     <form method="dialog">
       <h2 id="more-title">More</h2>
       <div class="menu">
-        <button id="open-library" type="button">Library</button>
         <button id="open-memorise" type="button">Memorise this piece</button>
-        <button id="open-freeplay" type="button">Free play</button>
-        <button id="open-simon" type="button">Simon</button>
-        <button id="open-drills" type="button">Drills</button>
-        <button id="open-lab" type="button">Accompaniment lab</button>
-        <button id="open-metronome" type="button">Metronome…</button>
-        <button id="open-remote" type="button">Keyboard controls…</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
-        <button id="backup" type="button">Back up (settings, progress, library)</button>
-        <button id="restore" type="button">Restore from a backup…</button>
-        <input id="restore-file" type="file" accept=".zip,.json,application/zip,application/json,application/octet-stream" hidden>
-        <button id="export-log" type="button">Export practice log</button>
       </div>
-      <label class="row"><input id="log-autodelete" type="checkbox"> Delete practice log entries older than a month</label>
-      <p class="note">Fingering is written into the score: it shows when Display → Show → Fingering is on, and the exported file opens in MuseScore with it.</p>
+      <p class="note">Fingering is written into the score: it shows when Display → Show → Fingering is on, and the exported file opens in MuseScore with it. The app's own settings (sound, keyboard controls, theme, the practice log, backup) are in ⚙ on Home.</p>
       <div class="actions"><button value="close">Close</button></div>
     </form>
   </dialog>
@@ -655,6 +645,89 @@
       </div>
     </form>
   </dialog>
+  <!-- The app's top level (owner, 2026-10-15; mockups web/mockups/home.html, path.html): Home, Music (the library),
+       Practice and Path as tabs, at the bottom on a phone upright and as a rail on the left sideways and on a tablet;
+       and the pages opened from them (Settings, Exercises, a lesson), which hide the tabs. screens/shell.ts. -->
+  <section id="shell" class="shell" aria-label="Piano" hidden>
+    <nav id="tabs" class="tabs" aria-label="Sections">
+      <button type="button" data-tab="home"><svg aria-hidden="true"></svg><span>Home</span></button>
+      <button type="button" data-tab="music"><svg aria-hidden="true"></svg><span>Music</span></button>
+      <button type="button" data-tab="practice"><svg aria-hidden="true"></svg><span>Practice</span></button>
+      <button type="button" data-tab="path"><svg aria-hidden="true"></svg><span>Path</span></button>
+    </nav>
+    <div class="shell-main">
+      <div id="v-home" class="view" hidden>
+        <div class="fp-head view-head"><img id="home-logo" class="home-logo" alt="Piano" width="34" height="34"><span class="lab-sp"></span><button id="home-settings" type="button" class="btn" aria-label="Settings">⚙</button></div>
+        <div id="home-body" class="view-body"></div>
+      </div>
+      <div id="v-practice" class="view" hidden>
+        <div class="fp-head view-head"><span class="title">Practice</span></div>
+        <div id="practice-body" class="view-body"></div>
+      </div>
+      <div id="v-path" class="view" hidden>
+        <div class="fp-head view-head"><span class="title">Path</span></div>
+        <div id="path-body" class="view-body"></div>
+      </div>
+      <div id="v-settings" class="view" hidden>
+        <div class="fp-head view-head"><button id="settings-back" type="button" class="btn" aria-label="Back">←</button><span class="title">Settings</span></div>
+        <div class="view-body set-body">
+          <p class="set-sec">Sound</p>
+          <div class="set-list">
+            <div class="set-row"><span class="set-name">Piano plays through<small id="set-out-note" hidden></small></span><span class="seg" role="group" aria-label="Piano plays through"><button type="button" data-out="phone">Phone</button><button type="button" data-out="keyboard">Keyboard</button></span></div>
+            <label class="set-row"><span class="set-name">Piano volume</span><input id="set-piano-vol" type="range" min="0" max="100" step="5"></label>
+            <label class="set-row"><span class="set-name">Click volume</span><input id="set-click-vol" type="range" min="0" max="100" step="5"></label>
+            <div class="set-row"><span class="set-name">Click sound</span><span class="seg" role="group" aria-label="Click sound"><button type="button" data-click="wood">Wood</button><button type="button" data-click="beep">Beep</button><button type="button" data-click="high">High</button></span></div>
+          </div>
+          <p class="set-sec">Keyboard</p>
+          <div class="set-list"><button id="set-remote" type="button" class="set-row"><span class="set-name">Keyboard controls<small>Your lowest and highest key as buttons; a mash stops</small></span><span class="set-go">›</span></button></div>
+          <p class="set-sec">Look</p>
+          <div class="set-list"><div class="set-row"><span class="set-name">Theme</span><span class="seg" role="group" aria-label="Theme"><button type="button" data-theme-pick="light">Light</button><button type="button" data-theme-pick="system">Auto</button><button type="button" data-theme-pick="dark">Dark</button></span></div></div>
+          <p class="set-sec">Your data</p>
+          <div class="set-list">
+            <button id="export-log" type="button" class="set-row"><span class="set-name">Export practice log<small id="export-log-count">For Claude to plan your next lesson</small></span><span class="set-go">›</span></button>
+            <label class="set-row"><span class="set-name">Delete practice log entries older than a month</span><input id="log-autodelete" type="checkbox"></label>
+            <button id="backup" type="button" class="set-row"><span class="set-name">Back up<small>Settings, progress and your library, in one file</small></span><span class="set-go">›</span></button>
+            <button id="restore" type="button" class="set-row"><span class="set-name">Restore from a backup…<small>Adds what this phone lacks; what it has stays</small></span><span class="set-go">›</span></button>
+            <input id="restore-file" type="file" accept=".zip,.json,application/zip,application/json,application/octet-stream" hidden>
+            <div class="set-row"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
+          </div>
+          <p class="note">A piece's own choices (size, tempo, hands, fingering) stay on its screen. The Tempo panel inside a piece changes the same piano and click settings.</p>
+        </div>
+      </div>
+      <div id="v-exercises" class="view" hidden>
+        <div class="fp-head view-head"><button id="exercises-back" type="button" class="btn" aria-label="Back">←</button><span class="title">Exercises</span></div>
+        <div id="exercises-chips" class="chips" role="group" aria-label="Kind"></div>
+        <div id="exercises-body" class="view-body"></div>
+      </div>
+      <div id="v-lesson" class="view" hidden>
+        <div class="fp-head view-head"><button id="lesson-back" type="button" class="btn" aria-label="Back">←</button><span id="lesson-where" class="title"></span><button id="lesson-switch" type="button" class="btn" aria-haspopup="dialog">Switch…</button></div>
+        <div id="lesson-body" class="view-body lesson-body"></div>
+        <div id="lesson-bar" class="lesson-bar"><span id="lesson-bar-note" class="lesson-bar-note"></span><button id="lesson-next" type="button" class="btn main"></button></div>
+      </div>
+    </div>
+  </section>
+  <dialog id="switch-sheet" class="sheet" aria-labelledby="switch-title">
+    <form method="dialog">
+      <h2 id="switch-title">Switch to…</h2>
+      <div id="switch-body"></div>
+      <div class="actions"><button value="close">Close</button></div>
+    </form>
+  </dialog>
+
+  <!-- The metronome on its own, no score (screens/metronome.ts): the app's own click (Sound), at a tempo. -->
+  <section id="metronome" class="metro" aria-label="Metronome" hidden>
+    <div class="fp-head"><button id="metro-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Metronome</span></div>
+    <div class="metro-body">
+      <div id="metro-dots" class="metro-dots" aria-hidden="true"></div>
+      <div class="metro-bpm"><button id="metro-slower" type="button" class="btn" aria-label="5 slower">−5</button><output id="metro-bpm" aria-live="polite"></output><button id="metro-faster" type="button" class="btn" aria-label="5 faster">+5</button></div>
+      <input id="metro-range" type="range" min="20" max="300" step="1" aria-label="Beats a minute">
+      <div class="metro-row"><label>Beats in a bar <select id="metro-beats"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></label><button id="metro-tap" type="button" class="btn">Tap tempo</button></div>
+      <div class="metro-row"><span>Sound</span><span class="seg" role="group" aria-label="Click sound"><button type="button" data-mclick="wood">Wood</button><button type="button" data-mclick="beep">Beep</button><button type="button" data-mclick="high">High</button></span></div>
+      <button id="metro-go" type="button" class="btn main metro-go">▶ Start</button>
+      <p class="note">The click sound is the app's own (the score and the drills use it too); its volume is in ⚙ on Home.</p>
+    </div>
+  </section>
+
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

@@ -58,6 +58,12 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   answer (a published score, a file the app did not make), and first run the comparison on a perfect input to show
   it scores that as perfect: two bugs of the comparison's own (a tempo lookup, a pickup at negative time) made the
   converter look worse than it was.
+- **One state, several ways in.** A lesson step reached from the lesson page kept its address through a reload; the
+  same step reached from the result's Again or Next did not, and reopened as a bare piece (review 2026-10-15). List
+  every way into a state (buttons, links, Back, reload, Carry on) and check each, not only the main one.
+- **Progress read from where the marker stopped.** Wait for me judged a run by the marker's last place: a loop gone
+  round ends where it began ("nothing played"), one note ends past the start ("done"), review 2026-10-15. Count what
+  happened during the run, not the end state.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals.
 - **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in

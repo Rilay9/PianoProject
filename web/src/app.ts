@@ -29,6 +29,14 @@ export interface Piece {
   licenseUrl?: string;
   source?: { dataset: string; uploadTitle?: string };
   status?: string;
+  /** An exercise score (owner, 2026-10-15): its kind of exercise (Exercises lists it by this; docs §0). */
+  kind?: string;
+  /** A MusicXML exercise taken from a set (lesson/path.ts musicExercises): the set's id; not listed in Music. */
+  exerciseOf?: string;
+  /** Every item of its set is such a file: the set is listed as these pieces, not as cards. */
+  allOfSet?: boolean;
+  /** How it opens on the score (its set's `play`; Wait for me when the set names none). */
+  play?: { mode: string; hands?: string; tempo?: number };
 }
 
 export interface KeyRange { lo: number; hi: number }

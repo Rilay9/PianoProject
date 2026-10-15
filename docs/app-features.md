@@ -6,9 +6,85 @@ behaviour, its settings or a content format updates its section here in the same
 when the two disagree (paths are given); the owner's decisions behind each design are in `docs/inputs/` and the
 commit history.
 
-How things are reached is temporary: a song list, and a ⋯ menu that opens Memorise, Simon, Drills and Free play.
-The library, history and projects that will hold lessons are not built yet. So for now, plan a lesson as
-"this piece/set, in this mode or tool, with these settings".
+**How things are reached** (owner, 2026-10-15; mockups `web/mockups/home.html`, `path.html`; `web/src/screens/shell.ts`,
+`web/src/nav.ts`): the app opens to **Home**. Four tabs, **Home · Music · Practice · Path**, sit at the bottom on a phone
+upright and as a rail on the left on a phone sideways and on a tablet (§0).
+- **Home**: the owner's logo and ⚙ (Settings); *Up next* (the lesson you are on, its next step, Start ▶), the lesson's
+  steps, and what you practised lately. With no lesson: *Carry on* with the last thing practised, and ways in.
+- **Music**: the library (§5c), Yours and Catalogue. A piece opens on the score (§1); its page also offers Memorise (§2);
+  a PDF opens in the PDF reader (§5d); a chord chart in the lab (§5b).
+- **Practice**: Exercises (every set by kind, §0), Drills (§4), Simon (§3), the accompaniment lab (§5b), Free play (§5),
+  the metronome (§5). Memorise stays with each piece.
+- **Path**: rungs and lessons (§8c); a lesson's page holds its content and steps; a step opens its activity (§8b).
+- Inside a piece or a tool (the score, Memorise, Simon, Drills, the lab, Free play, the metronome, the PDF reader, a
+  lesson's step) there are no tabs; **← at the top left** (owner, 2026-10-15: one way out everywhere, as on the score) and
+  Android Back go back to where it was opened from (the tab, the page, or the lesson page). A link with `?piece=<id>` or
+  `?activity=<id>` opens that over Home (an activity link's choices are for that visit: a reload is the screen with your
+  own). The address names where you are (review 2026-10-15, V21): the tab, a page over it, and a screen over that (the
+  piece, or `tool=` drill / simon / lab / freeplay / metronome / memorise with its set or chart, or a lesson's `step`), so a
+  reload comes back to the same screen with ← still going where it went; a lesson's step is opened again by its lesson
+  page, with its activity's choices, however it was started (the lesson page's Start, Home's Start, the result's Again,
+  Next and Next lesson: a place with no address of its own, the result or the sheet, carries the one under it; re-check
+  V33). A Switch… sheet is a place too: Back closes it and nothing else (V19).
+- **Tap to start** (re-check V31): opened straight into a screen (a reload into a step or a tool, a link), nothing has
+  been tapped, and the browser starts the sound and the MIDI keyboard only after a tap; keys would be judged with the
+  piano silent. So until the first tap the screen says "Tap anywhere to start" (with why), and keys do nothing; the tap
+  starts both and the words go. No tap is faked; back on the tabs the words go too.
+
+Plan a lesson as content on the path (§8c): its text, pictures, video, little scores, and steps that each open an
+activity (§8b: "this piece/set, in this mode or tool, with these settings").
+
+---
+
+## 0. Home, Practice, Exercises, Settings (owner, 2026-10-15)
+
+`web/src/screens/shell.ts` (with `index.html`'s `#shell`), mockups `web/mockups/home.html` (A, B, D) and `path.html`
+(F, G); ChatGPT's review of the mockups (2026-10-15, `design/2026-10-15-home/chatgpt-ux/UX_review.md`) for sizes,
+scrolling and honest states.
+
+- **Layout:** each tab and page has its header fixed and its content scrolling under it; the tabs (or rail) and a
+  lesson's bottom bar stay put. Sideways and on a tablet Home is two columns (Up next and recent | the lesson's steps); on a tablet Path,
+  Practice and Exercises are two columns too (V02).
+  Pages over a tab (Settings, Exercises, a lesson) hide the tabs, as the mockups do.
+- **Home A (a lesson to do):** *Up next · Rung n · Lesson n · step n of m*, the step's title, "k of m steps done", Start ▶
+  (it opens the lesson page and the step at once, so you come back to the lesson page and its feedback). Under it the
+  lesson's steps, each in words: *target met*, *played through* (done ✓), *visited* (a step with nothing to judge: it counts,
+  without a ✓; V18), *tried, target not met yet*, *skipped* (a later step was played), *up next*, *to come*; a tap
+  starts that step (steps never lock). "Switch…" and "All lessons ›". A lesson you came back to with Revisit (every step
+  done) shows *Again* and its first step. Then *Recently practised*. The order is always Today → the lesson's steps →
+  recently practised (V16): one under the other on a phone upright; sideways and on a tablet Today and recent on the left,
+  the lesson on the right. On a tablet (re-check V02) Home has its own layout: Today across the page and larger, and
+  under it the lesson's steps on the left, this week's practice (minutes and days) and recently practised on the right.
+- **Home B (no lesson):** *Carry on* with what you practised last (from the practice log, or a piece, PDF or chart
+  opened from Music: its title, mode, bars if a loop, how it went, when); the line "No lesson yet: pick something from
+  Music or Exercises." with both; the recent list (without the Carry on item again). With nothing practised: Music and
+  Exercises as ways in. **Carry on** (and a recent row) reopens a score run as it was played (V27): its loop, mode, tempo
+  and hands, for that visit (an activity's preset: never saved over your own).
+- **Practice:** Exercises, Drills, Simon, Accompaniment lab, Free play, Metronome, each with its icon, one line on what it
+  is and the last thing done there (Drills, Simon, the lab); two columns of cards on a tablet (V02).
+- **Icons** (owner, 2026-10-15: one consistent line-icon set; `web/src/icons.ts`): simple outline drawings as inline SVG,
+  one meaning each wherever they appear: home, music (a piece), practice (the keys), path, settings (the gear), exercises,
+  drills (cards), simon (going round), lab (the band's drum), free play, metronome, document (a PDF), sound, look, data.
+- **Sizes** (review 2026-10-15): text 13 px and up on these screens; ⚙, ← and the segment buttons 44 px; a message (the
+  first visit's "Saving for offline…") has its own room above the tabs instead of covering the last rows (V04).
+- **Exercises:** every exercise by its `kind` (chips to filter: All, Scales, Five-finger patterns, Arpeggios, Chords,
+  Intervals, Cadences, Melodies, Other for a set with none; they wrap), under the one name it has everywhere (the set's
+  title, "Test:" kept; V06). **Exercises that are MusicXML are music and open straight on the score** (owner,
+  2026-10-15): each item of a set given as a MusicXML file (the melodies set's three) is listed as its own exercise and
+  opens on the score screen in a way where you play: **Wait for me**, unless its set's `play` names another (§6; re-check
+  V32), the row saying which ("opens on the score in Wait for me (also Play along, Ladder, Rhythm)"); it joins the app's pieces as
+  `ex-<set>-<item>` (its choices kept like any piece's) and is not listed in Music; a set whose every item is such a file
+  is listed only as these. So is a short score whose `scores/index.json` entry has a `kind` (none yet; an unknown kind is
+  listed as a problem). **A set of cards opens with one tap in its kind's default way** (owner, 2026-10-15): Drills for
+  scales, five-finger patterns, arpeggios, chords and intervals (flashcards to play on sight, by name or by ear); Simon
+  for cadences (a progression built up in order from memory). Inside, **Practise as…** (the "Drills▾" / "Simon▾" button
+  on the exercise screen) switches the same set to the other way. ← comes back to Exercises. On a tablet the kinds are
+  two columns (V02).
+- **Settings** (⚙ on Home; app-wide only): piano plays through (phone / MIDI keyboard; said when there is none to play
+  through), piano and click volume, click sound, Keyboard controls (§7), theme, export practice log (with its count)
+  and "delete entries older than a month", back up, restore, and what is saved for offline. The same stores as before
+  (`piano-web.app.v1`, the remote, the log, the backup); the Tempo panel inside a piece keeps its piano-out and volume
+  controls (the same settings).
 
 ---
 
@@ -24,7 +100,7 @@ progress), so it must not change once used; `file` is the name in `scores/`; `id
 are needed; `source`, `license`, `licenseUrl` and `status` (free text, e.g. whether the notes were checked against an
 edition) are shown in ⓘ when given. A new score is added by putting its file in `scores/` and its entry in the list,
 then deploying. The list's order is the
-song list's order. Exercises (scales,
+library's order (Music). Exercises (scales,
 five-finger patterns, cadences as music) are simply short scores. Fingering written in the file shows when Display →
 Fingering is on; the learner can add their own (⋯ → Edit fingering).
 The three scores shipped now are engine test pieces, not checked against printed editions. `composer` keeps any doubt the
@@ -89,8 +165,8 @@ octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in t
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
 score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses; Wait for me waits at your
 next notes again, also when the piano was leading on to them: 2026-10-15), and carries on from your next key, or *See how it went* in the pause message ends the run with
-its summary; the parts add up to one summary. **A panel opened over a run** (Tempo and sound, Display, ⋯, Keyboard
-controls, Songs, ⓘ; owner, 2026-10-15) pauses it the same way ("Paused while a panel was open. Play to carry on."): keys
+its summary; the parts add up to one summary. **A panel opened over a run** (Tempo and sound, Display, ⋯, ⓘ;
+owner, 2026-10-15) pauses it the same way ("Paused while a panel was open. Play to carry on."): keys
 played while it is open count nothing, and after it closes your next key carries the run on. Wait for me has no clock:
 behind a panel the piano leading on to your next notes stops and your keys don't count; closed, it waits at them
 again. A ▶ still getting ready when a panel opens is dropped. Watch plays on behind a panel (nothing is judged, and
@@ -108,7 +184,8 @@ Safari; every connected keyboard counts, a key held on either is down, and one u
 **For:** learning a real piece by heart, chunk by chunk, with the app doing the hiding, checking, replaying and
 moving on so the learner just plays and takes in the corrections. `web/src/memorise.ts`, `web/src/main.ts`.
 
-**Reached:** on a piece's score, ⋯ → *Memorise this piece*; Done goes back. It uses the score's drawing of the
+**Reached:** on a piece's score, ⋯ → *Memorise this piece* (← goes back to the score), or Music → a piece's page →
+Memorise (← goes back to Music). It uses the score's drawing of the
 piece, nothing else of the score screen.
 
 **How it works:**
@@ -139,7 +216,7 @@ size; skipped chunks are not). Once every bar is learned, *Test* appears (and is
 whole piece **as performed** (its repeats too; owner, 2026-10-13) from bar 1, from memory: no Peek, Hear, hints or choosing a bar; a wrong key is noted (notes: it waits
 for the right one; rhythm: it keeps going); *Stuck* shows the bar you are on for the rest of the test and counts it.
 Every bar clean marks the piece **Memorized: notes** or **Memorized: notes + rhythm at ♩ n**, with the date (shown in
-Memorise and the song list; notes + rhythm is kept over a later notes-only pass). Otherwise the bars to practise are
+Memorise and on the piece's page in Music; notes + rhythm is kept over a later notes-only pass). Otherwise the bars to practise are
 listed and marked on the music: *Practise* takes them one bar at a time (clean passes as "learned after"), then
 offers the test again (practising after a notes + rhythm test is in time). A test or practising never moves your
 chunk place; ■ ends it. Chunk practice is each chunk's bars the first time through; joining "everything so far"
@@ -171,6 +248,9 @@ Known gap: with repeats, only the first time through is walked.
 **For:** remembering small units — notes, intervals, chords, scales, arpeggios — as a game: a chain that grows by
 one each round until you slip. `web/src/exercise/simon.ts`.
 
+**Reached:** Practice → Simon, an exercise in Exercises whose kind opens in Simon (§0), a lesson's step, a link. The
+header's **Simon▾** is *Practise as…*: the same set in Drills (owner, 2026-10-15). ← at the top left goes back where it was opened.
+
 **How it works:** the app gives the chain (as the help level says), it stays shown until your first key, then you
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
 outlined, names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
@@ -197,6 +277,9 @@ the music.
 
 **For:** practising a concept as flashcards: each card is one complete short thing to play (a few bars to read, a
 scale or chord by name, something to play back by ear), given at once — not from memory. `web/src/exercise/drill.ts`.
+
+**Reached:** Practice → Drills, an exercise in Exercises (most kinds open here, §0), a lesson's step, a link. The
+header's **Drills▾** is *Practise as…*: the same set in Simon (owner, 2026-10-15). ← at the top left goes back where it was opened.
 
 **How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
 octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
@@ -233,7 +316,7 @@ Fresh generated cards (new music each time) are planned as another source of ite
 
 ---
 
-## 5. Free play (⋯ → Free play)
+## 5. Free play (Practice → Free play; ← at the top left goes back)
 
 **For:** playing anything and seeing what it is. The keys you play light up and are named, with the chord or
 interval they make; below, three columns of what you played lately (newest on top): chords held together (three
@@ -241,12 +324,16 @@ or more notes that make a named chord), notes (keys pressed together on one line
 direction, and two notes held together; wider than an octave it says so: "major 3rd + 2 octaves"). *Show* turns
 columns off. Nothing is judged or kept. `web/src/freeplay.ts`.
 
-**Metronome:** in the score's Tempo panel (⋯ → Metronome… opens it). A metronome usable on its own, without a
-score, is planned.
+**Metronome** (owner, 2026-10-15): on its own, Practice → Metronome (`web/src/screens/metronome.ts`): tempo (−5/+5, a
+slider 20–300, tap tempo), beats in a bar (1–7, the first accented), its sound (Wood / Beep / High: the app's click, one
+setting for the app), ▶ Start / ■ Stop, a dot per beat. It is the app's own click on the audio clock (Sound.play with
+beats only: what the score and the drills use), not a new engine. The keyboard's highest key starts it, the lowest (or
+a mash) stops it. Nothing is judged or logged; tempo and beats are kept (`piano-web.metronome.v1`). With a score, the
+metronome is still in the Tempo panel.
 
 ---
 
-## 5b. Accompaniment lab (⋯ → Accompaniment lab)
+## 5b. Accompaniment lab (Practice → Accompaniment lab, or a chart in Music)
 
 **For:** playing with a band: the lead over a backing, or the backing (the chords) for the band. Simple, rewarding
 things early on, with clear steps. `web/src/screens/lab.ts`, `web/src/lab/music.ts` (charts, styles, the band's notes,
@@ -327,11 +414,10 @@ one); examples to copy written into a chart.
 
 ---
 
-## 5c. Library (⋯ → Library; owner, 2026-10-13; mockups `web/mockups/library.html`, option A)
+## 5c. Library: the Music tab (owner, 2026-10-13, 2026-10-15; mockups `web/mockups/library.html`, option A)
 
 **For:** finding anything you play from: the app's own scores (`scores/index.json`) and chord charts
-(`content/lab`), and the files you add. Where it sits in the app (start screen) is not decided; for now it opens from
-⋯. `web/src/screens/library.ts`, `web/src/library/*`.
+(`content/lab`), and the files you add. It is the Music tab (owner, 2026-10-15): everything below works as before. `web/src/screens/library.ts`, `web/src/library/*`.
 
 - **The list:** search (titles, composers, your tags; accents ignored; each word matches the start of a word, any
   order), one line of chips (♥ Favourites, Kind, Key signature, Time, Bars as printed, and Tags once you have any),
@@ -339,7 +425,8 @@ one); examples to copy written into a chart.
   and nothing matching says so with Clear. Sort: Recently opened (default; never opened after, newest added first),
   Recently added, Title, Composer, Fewest bars. A row: title, then composer · kind · key signature · time · bars;
   ♡ and ⋯ (its page). Phone upright: a row's tap opens it; sideways and tablets: the list on the left and the page
-  of the row tapped on the right. Android Back: a page back to the list, the list back to the score.
+  of the row tapped on the right. Android Back: a page back to the list, the list (the Music tab) back to Home. A piece's row and its page show
+  its memorized marks (Memorise's test), per hand, in Memorise's words, as the old song list did (re-check V34).
 - **Facts come only from the file** (`library/facts.ts`): kind (piano = one part on two staves, melody = one staff,
   lead sheet = one staff with chord symbols, several parts), key signature (major or minor only where the file says;
   whether it changes; as written when the first part is a transposing instrument), first time signature (and
@@ -350,7 +437,7 @@ one); examples to copy written into a chart.
   (offline, say) is read again the next time the library opens, and so is a chord chart (2026-10-15).
 - **A piece's page:** Open (the score screen, or the lab for a chart) and Memorise; the first bars drawn small; the
   facts; your tags (+ tag, ✕); where it came from (the app's own: source and licence of the transcription; yours:
-  the file and date); the song list's status line ("notes not verified…"); a warning for several parts (the score
+  the file and date); the scores list's status line ("notes not verified…"); a warning for several parts (the score
   screen takes the top staff as the right hand; choosing the parts comes later) and for a transposing first part.
   Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
   choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
@@ -457,7 +544,7 @@ one); examples to copy written into a chart.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
-  scores join the song list at start (ids `u-` + the start of the file's SHA-256), so every score screen, Memorise
+  scores join the app's pieces at start (ids `u-` + the start of the file's SHA-256), so every score screen, Memorise
   and activities take them. Recently opened is set when you open something deliberately (the library, the song
   list, the lab's chart), not when the app reopens the last piece. The backup includes the library (§7).
 
@@ -519,7 +606,9 @@ and nothing is judged. `web/src/screens/pdf.ts`, `web/src/pdf/*` (pdf.js 5.4.394
 Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/exercise/items.ts`.
 
 ```json
-{ "title": "Chords in C", "order": "pool",            // pool: random items (Drills: a shuffled deck); passage: in order
+{ "title": "Chords in C", "kind": "chords",           // kind: Exercises lists it by this (§0); one of scales, five-finger,
+                                                        //   arpeggios, chords, intervals, cadences, melodies (or none: "Other")
+  "order": "pool",                                      // pool: random items (Drills: a shuffled deck); passage: in order
   "tempo": 80,                                          // quarter notes a minute (default 80)
   "rhythm": "notes",                                    // Drills: items without written rhythm judged on notes only,
                                                         //   or a length in quarter notes, e.g. 0.5 = steady quavers
@@ -539,7 +628,12 @@ Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", 
 replaced by another score). A passage becomes one item per moment with notes (a rest goes with the item before it);
 `tempo` may be given, else the score's own at that point.
 
-**Checked:** a set gives either `items` or `from`, a `title`, `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
+**How its music opens** (re-check V32): a set whose items include MusicXML files (Exercises lists each as music) may say
+`"play": { "mode": "wait", "hands": "right", "tempo": 90 }`: the score's preset choices, as an activity gives them
+(§8b), limited to `mode` (watch / wait / along / rhythm; not Ladder, which needs a loop of bars), `hands` (both / right /
+left / off) and `tempo` (20–300); for that visit, never saved over yours. None given: Wait for me.
+
+**Checked:** a set gives either `items` or `from`, a `title`, `kind` one of the seven above (an unknown kind is refused), `play` as above (an unknown mode or field is refused), `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
 length; an item gives exactly one of `notes`, `chord`, `interval`, `musicxml` with that kind's options; any other field
 is refused with the reason (a typo never reads as something else). A lower-case pitch (`c4`) is read as C4. A passage's
 `bars` must be like "5-8" and hold notes on its staff.
@@ -578,7 +672,7 @@ placeholders for checking the app, not lesson content.
   or the lab pauses what judges your keys, keys played while it is open count nothing (letting go still registers), and it carries
   on when the last panel closes (each screen's way: §1–4, §5b). One watch on every dialog (`app.ts` `onPanel`, `main.ts`,
   `Screen.panel`); Free play, the library and the PDF reader judge nothing and are left as they were.
-- **The keyboard as a remote** (⋯ → Keyboard controls; `web/src/remote.ts`): every key passes through one filter
+- **The keyboard as a remote** (Settings → Keyboard controls; `web/src/remote.ts`): every key passes through one filter
   first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
   is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are
   buttons when the music on screen doesn't use them: lowest = back / again (score: to the loop's or the bar's
@@ -590,7 +684,7 @@ placeholders for checking the app, not lesson content.
 - Offline: everything (app, scores, sets and the files they point to, piano samples) is saved on the first visit;
   installable as an app.
 - The screen stays awake while playing or in an exercise.
-- Back up / restore (⋯; `web/src/backup.ts`): one zip with every setting, mark and progress record (all
+- Back up / restore (Settings; `web/src/backup.ts`): one zip with every setting, mark and progress record (all
   `piano-web.*` storage) and the library (its records and your files); the size of your files is asked about first.
   A library that cannot be read is not backed up as empty: the backup is refused with the reason; a piece whose file
   is gone from this phone is left out and named (2026-10-14).
@@ -604,15 +698,16 @@ placeholders for checking the app, not lesson content.
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
-  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
+  `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF), `piano-web.path.v1` (the path: steps done and how, steps tried, the
+  lesson you are on; §8c), `piano-web.metronome.v1` (the metronome's tempo and beats) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
 How practice went, for Claude to plan the next lesson from. **One entry per run**: a start to its stop (the score's Play
-along, Ladder, Rhythm, Wait for me; a Memorise session from ▶ or a test to ■ or Done; a Simon game; a Drills set,
+along, Ladder, Rhythm, Wait for me; a Memorise session from ▶ or a test to ■ or ←; a Simon game; a Drills set,
 finished or left part way; a lab run from Start to ■). Watch and Free play are not logged. Kept on the phone (in the
-backup too); **⋯ → Export practice log** downloads it as a file; **Delete practice log entries older than a month** (in
-⋯, on by default) prunes old ones; never more than 3,000 entries (the oldest go first).
+backup too); **Settings → Export practice log** downloads it as a file; **Delete practice log entries older than a month** (in
+Settings, on by default) prunes old ones; never more than 3,000 entries (the oldest go first).
 
 ```json
 { "app": "piano-web", "kind": "practice-log", "version": 1, "exported": "2026-10-13T20:00:00.000Z", "entries": [
@@ -628,7 +723,9 @@ backup too); **⋯ → Export practice log** downloads it as a file; **Delete pr
 (`missed`, `early`, `late`, `let go early`, `wrong key`; Memorise also `helped` for a peek or hint, `stuck` in a test);
 at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
 - score: Play along / Rhythm the counts above; Ladder and loops `passes` [{ pass, notes, onTime, early, late, missed,
-  letGoEarly, wrongKeys, clean, bpm }]; Wait for me `fromBar`, `toBar`.
+  letGoEarly, wrongKeys, clean, bpm }]; Wait for me `fromBar`, `toBar`, `steps` (the notes the marker moved on from, the
+  piano's lead-ins too), `rounds` (times it went round its loop, or reached the end: what says it was played through;
+  review 2026-10-15, V10).
 - memorise: `passes` [{ bars, from, clean, inTime, slips, wrongKeys, peeked, test | practising | joining }], `learned`
   (bars and chunks learned), `tests` [{ kind, clean, toPractise, stuck }], `mark` (if memorized).
 - simon: `longestChain`, `ended` (over / all played / stopped), `helpedChains`, `misses` [{ item, wanted, played }].
@@ -638,10 +735,31 @@ at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
   playedAtChanges, landedOnChord (lead), stoppedInBar }], `wholeRounds`, `roundsPlayed` (lead); slips name the chord
   and what was wrong ("C7 needs B♭").
 
+**Lessons** (owner, 2026-10-15): a run played for a lesson's step carries `"lesson": { "rung", "lesson", "step" }` (the
+ids in `content/path`) beside its `activity` (an activity written out in the lesson has the id `<lesson>.<step>`). After
+the step, the learner's feedback is an entry of its own (only when they tap or write something; it changes as they do):
+
+```json
+{ "at": "2026-10-15T10:12:00.000Z", "seconds": 0, "screen": "lesson", "title": "Right hand, bars 1–4",
+  "activity": "k2-wait-right", "lesson": { "rung": "test-app", "lesson": "test-minuet-opening", "step": "wait-rh" },
+  "settings": {}, "result": { "feedback": { "effort": "hard", "note": "the jump in bar 2" }, "done": true, "runs": 1,
+                              "line": "Waited through bars 1–2" } }
+```
+`effort` is hard / ok / easy; both it and `note` are optional (owner, 2026-10-15: Hard / OK / Easy and a note, both
+skippable). `done` says whether the step counted as done (§8c), `runs` how many runs it had this time, `line` what the
+learner was shown.
+
 ## 8. How the app is put together (for adding a screen or a mode)
 
+- `web/src/nav.ts`: where you are. Home is the root; a tab other than Home, a page (Settings, Exercises, a lesson) and a
+  screen each stand on top of where they were opened from, with one history step each, so ← and Android Back go back
+  alike. A place's `leave()` closes what it opened; a screen that closes itself (its own ←) calls
+  `nav.closedItself(name)`. The library's page (upright) and the PDF reader keep their own history steps.
+- `web/src/screens/shell.ts`: the tabs and pages (§0); `web/src/lesson/`: the path, its reader, the lesson page and its
+  blocks (§8c).
+
 - `web/src/app.ts`: what every screen shares (the score's drawing `FollowView`, the keyboard strip, the sound, the MIDI
-  keyboard, the practice judge `Practice`, the song list, the message line) and the **`Screen` interface** every
+  keyboard, the practice judge `Practice`, the pieces, the message line) and the **`Screen` interface** every
   screen offers: `key(e)` (a key from the MIDI keyboard or the screen's keys), `command(c)` (a keyboard-remote
   command: mash, low, high, peek-on/off), `musicRange()` (the keys the music on screen uses), `resized()`, `busy`
   (the phone stays awake).
@@ -650,10 +768,11 @@ at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
   layout fit, and the drawing's events), `exercise.ts` (Simon and Drills; their logic is in `web/src/exercise/`).
   Free play is `web/src/freeplay.ts`, offered as a screen in `main.ts`.
 - `web/src/main.ts`: builds the screens and routes: every key goes first to the keyboard remote (`remote.ts`), then
-  to the screen showing; turning the phone goes to every screen; the ⋯ menu opens screens and holds backup, restore
-  and export.
+  to the screen showing; turning the phone goes to every screen; the open helpers put each screen on the stack
+  (`enter()`); Settings holds backup, restore and export.
 - **Adding a screen** (e.g. the accompaniment lab): a module in `web/src/screens/` that offers `Screen`, its markup in
-  `index.html`, a line in `main.ts`'s `showing()` and `app.screens`, a way to reach it, and its section here.
+  `index.html`, a line in `main.ts`'s `showing()` and `app.screens`, a way to reach it (a row in Practice, say) that
+  opens it with `enter({ name, leave })`, its ← calling `nav.closedItself(name)`, and its section here.
   A mode that plays a score belongs in `score.ts` (the modes table above); one that only borrows the score's
   drawing, as Memorise does, can be a `Borrower`.
 
@@ -664,7 +783,7 @@ An **activity** is how a lesson (or a link) starts a mode: which screen, its con
 (`web/src/activity.ts` reads it; `main.ts` opens it; its runs are logged with its id only once its screen has opened,
 not when its piece is missing or another screen was opened while it loaded). The **content** decides what is played (the piece and bars, the
 set, the chart and its ladder and style); **presets** are learner choices set for the activity: in force while it
-lasts (until another song, chart or screen, or Done), changeable there, and never saved over the learner's own. A
+lasts (until another song, chart or screen, or ←), changeable there, and never saved over the learner's own. A
 mistake in a file (an unknown screen, a misspelt setting, a value out of range, a piece, set, chart or style that is
 not there) is refused with the reason; nothing is guessed. Examples marked "Test:" are placeholders.
 
@@ -701,9 +820,120 @@ is refused. Every value (`web/src/activity.ts` checks each):
 
 A link opens an activity once: it leaves the address as it opens, so a later reload is the ordinary app.
 
+## 8c. The path: rungs, lessons and their blocks (owner, 2026-10-15)
+
+**For:** the lessons Claude writes as the owner learns (no fixed course). A **rung** is one skill on the path; a
+**lesson** is one sitting's worth on a rung; a lesson's page is a **skeleton of content blocks**, in any order and any
+number (owner: "a skeleton … that takes in content of YouTube videos, animations, mini playable score renders, text, etc
+… standard format so you can feed it content later"). Mockup D in `web/mockups/path.html` is one arrangement, not the
+template. `web/src/lesson/read.ts` (the reader), `blocks.ts` (the drawings), `page.ts` (the page), `progress.ts`,
+`path.ts`, `result.ts`; check `npm run check:path` (`web/tests/path.mjs`).
+
+**Reached:** the Path tab (*You are here* with Carry on; this week's practice: minutes and days from the practice log,
+and steps done in the rung, all as plain counts: time is time, not mastery; then the rungs as sections, the one you are
+on open, the others folded with a ▸; each lesson one tap away, done or not, with "k of m steps done"); Home's Up next;
+**Switch…** (from Path, Home and a lesson page): the rung's lessons (*Revisit* a done one, *Open* the one you are on, one
+started or one behind you, *Skip ahead* only to one after the one you are on, not started: V30; none on the lesson's own
+page for itself) and the other rungs; Back, Esc, ✕ or Close close it (V19); opening a lesson there makes it the one you are on
+(owner, 2026-10-15), and earlier progress is kept. When a lesson's last step is done, the one you are on moves to the
+next lesson with steps to do.
+
+**Files** (`web/public/content/path/`; a lesson's files are relative to this folder; all saved for offline):
+
+```json
+// index.json: the rungs in order, each with its lessons' ids (each id once in the whole path)
+{ "rungs": [ { "id": "test-app", "title": "Test: the app's lesson pages", "lessons": ["test-minuet-opening", "test-chords-and-band"] } ] }
+
+// lessons/<id>.json: a title and its blocks, in the order the page shows them
+{ "title": "Test: the Minuet's opening, right hand",
+  "blocks": [
+    { "kind": "text", "text": "# A heading
+A paragraph with **bold**, *italics* and [a link](https://…).
+
+- a list
+1. a numbered list" },
+    { "kind": "image", "src": "media/test-picture.svg", "alt": "what it shows", "caption": "…" },        // png jpg webp svg gif, or an https:// link
+    { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "…", "start": 0, "end": 120, "caption": "…" },
+    { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // or "set": "chords-c", "item": 1;
+                                                                         // or "musicxml": "<note>…</note>" (notes, as a set's item) or "media/x.musicxml"
+    { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "caption": "…" },     // "-" for a key with no finger
+    { "kind": "animation", "src": "media/test-c-major.svg", "alt": "…", "caption": "…" },   // gif webp svg png (animated), mp4 webm
+    { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill",
+      "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 }, "about": "…" },   // activity: an id, or written out (§8b)
+    { "kind": "tip", "label": "Note", "text": "…" }                                   // label: "Tip" when left out
+  ] }
+```
+
+**The blocks:**
+- **text**: short paragraphs; `#` and `##` headings, `- ` and `1. ` lists, `**bold**`, `*italics*` (or `_…_`), links
+  `[words](https://…)`. Never HTML: it is read into a small tree and drawn with text only; raw HTML or a link that is not
+  https is refused.
+- **image**: a file in the folder or an https link, with `alt` (needed) and a caption. A picture that cannot load says so.
+- **video**: a YouTube link (watch, youtu.be, embed or shorts link, or the bare id), played in YouTube's privacy-enhanced
+  player (youtube-nocookie.com) from `start` to `end` (seconds) when given, with its title and a "Watch on YouTube"
+  link under it. **Offline** (or when the phone says so) it is a card with the title and the link instead of a blank
+  box, and becomes the player again when back online. **Online but unreachable** (a network that blocks YouTube, a
+  failing connection; V11) the video's picture is asked for beside the player; when that fails or takes over 8 s, the
+  same card. When YouTube itself refuses to play it, its own message shows in the frame and the link is still under it.
+  A lesson must make sense without its videos.
+- **score**: a little playable score: bars of a piece (at most 16; cut out with the clefs, key, time and divisions in
+  force where they start, repeats and endings taken out so it plays once), a set's item (drawn as Simon and Drills draw
+  it), or MusicXML (notes as a set's item takes them, a whole file inline, or a file). Drawn with the app's own renderer
+  (OSMD); **▶ Hear it** plays it on the app's piano at `tempo` (quarter notes a minute; else the score's own, else 80)
+  while OSMD's cursor moves over the notes playing and, with `"keys": true`, the keys light on a small keyboard under it.
+  The keys **follow the notes** (owner, 2026-10-15): only the range in use now and in the next few moments, in whole
+  octaves (two at least), moving when the music moves out of them. The music is drawn to its box: a short line larger
+  (up to the score's biggest size), and with its play bar and keys it fits the room between the page's header and
+  bottom bar, drawn smaller if need be (a phone sideways), so the marker and the lit keys are seen together (V14, V15).
+  MusicXML written in the lesson must be a **whole file** (`<score-partwise>`, with its time signature and bars); a
+  fragment is refused, and so is a bar whose notes run past its time signature, or music with no time signature (V13;
+  checked by the reader for inline music and when drawing a file). This is the **animation of music** built now: the
+  marker moving and the keys lighting as it plays.
+- **keys**: a keyboard diagram (the app's keys) with the notes marked and their fingers (1–5) on them; up to 12 keys.
+- **animation**: an animated picture (GIF, animated WebP or PNG, an SVG with its own animation) or a short video
+  (mp4, webm: muted, looping; with controls instead of moving by itself when the phone asks for less motion). No new
+  library; anything bigger is for the owner to ask for.
+- **step**: a practice step: its title, its activity (an id in `content/activities`, or written out as §8b), what "done"
+  means in words (`doneWhen`), a line `about` it, and where its activity's result can tell, a `target`; Start ▶. The page's
+  bottom bar starts the first step not done. **Steps never lock** (owner, 2026-10-15): every step has its Start.
+  A step's screen carries the step in the address: a reload opens it again from its lesson page, with its activity's
+  choices, and ← still goes to the lesson page (V21).
+- **tip**: a callout (`label`: "Tip" by default, e.g. "Note").
+
+**A step counts as done** (shown in words, never one green tick for all: *target met*, *played*, *opened*; or *tried,
+target not met yet*; *skipped* when a later step was played; review 2026-10-15):
+- with a **target**, when one run played for it meets it, as its screen's result can tell: score `onTime` (0.05–1: a Play
+  along or Rhythm run, or a pass round a loop, with that share of its notes on time and held; needs Play along, Rhythm
+  or Ladder), score `bpm` (a clean pass round the loop at that tempo or faster; needs `bars`), drills `clean` (that many
+  clean cards in one set), simon `chain` (a chain that long played whole without help: Simon's own best), lab
+  `cleanRounds` (accompaniment rounds with every bar right in one run). A target its screen cannot judge (Memorise,
+  Free play) is refused;
+- without a target, when a run of it ended (one log entry: a set, a game, a run, a Memorise session);
+  **Wait for me** ends a run only by going through its bars (round its loop, or to the piece's end); a run that stops
+  part way is a start: the step is *tried* (review 2026-10-15, V10: a whole pass used to log nothing, one note marked the
+  step done);
+- for what keeps no runs (the score in Watch, Free play), when you come back from it: **visited** (V18: it counts toward
+  the lesson's steps, shown without a ✓, since nothing was judged).
+After every step the result is a place of its own over the lesson page (V12: ← and Back from it are the lesson page): it
+shows **this time**'s result (as its screen words it), whether the target was met, the best so far over every attempt
+(kept apart), and the feedback (Hard / OK / Easy and a note, both skippable). Its fixed bottom bar always holds **Again**,
+**Lesson** (back to the lesson page) and the way on, in view at any size (V28): **Next: step n ▶**, or after the
+lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
+from when it was started; a step whose activity could not open marks nothing.
+
+**Checked** (strictly, as activities are): an unknown kind or field, a missing field, raw HTML, a link that is not https,
+a file outside the folder or of the wrong type, a video link that is not YouTube or ends before it starts, a score with
+two sources or more than 16 bars, keys that are not pitches or fingers that are not one a note, a step id used twice in
+a lesson, a written-out activity with a mistake, a target its screen cannot judge (or of another screen, or out of range);
+a lesson id in two rungs, unknown index fields. A lesson that cannot be read is left out and its reason shown on Path.
+Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching.
+
+**Adding a block kind:** its fields in `read.ts` (`BLOCKS` and `readBlock`), its drawing in `blocks.ts` (`DRAW`: the one
+place that maps a kind to its drawing), a case in `tests/path.mjs`, and a line here.
+
 ## 9. Not built yet
 
 The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; history /
 projects (the owner will explain);
-the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; a standalone metronome; generated
+the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; generated
 drill cards; a setup tour and guide (last).

@@ -9,11 +9,12 @@ no longer exists.
 | `scoring.mjs` | `npm run check:scoring` | Play along and Rhythm judging (`src/matching.ts`), including let go early (`src/holds.ts` rules); every count compared, and where named which notes are painted and which presses are wrong (2026-10-14) | 17 (16 judging cases and the pedal-holds block) |
 | `lab-judge.mjs` | `npm run check:lab` | The accompaniment lab's chord judging (`src/lab/judge.ts`), the sentence the learner reads after a red chord (`sayHit`), the Roots step with other chord notes and outside keys, and improvising's notes from the lab's own guides (2026-10-14) | 32 |
 | `activity.mjs` | `npm run check:activity` | Activity files (`src/activity.ts`): every file in `public/content/activities` reads and is in its index; the piece, set or chart each names exists and its bars are inside the piece; what one of each kind reads to; mistakes are refused with their reason (2026-10-14: index, names, read results, four more refusals) | 40 today (the count is printed) |
+| `path.mjs` | `npm run check:path` | The path's content format (`src/lesson/read.ts`, `text.ts`) and when a step counts as done (`src/lesson/result.ts`; owner, 2026-10-15): every rung and lesson in `public/content/path` reads and is in the index; what each names exists (pieces and bars, sets, activities, files); each step's target fits its activity; the test content uses every block kind; every set has a known `kind`; what blocks read to; 24 refusals with their reasons; targets met and not met for each screen, near the line; MusicXML written in a lesson: a whole file whose bars fit their time signature (V13); a set's `play` (re-check V32) | 73 today (the count is printed) |
 | `midi.mjs` | `npm run check:midi` | The MIDI → MusicXML converter (`src/library/midi/`), ported from the old app with its unit tests; parity against the old Python converter's recorded answers (`fixtures/midi/parity/`); bars from every time signature, the file's keys, played files told apart, and where every note lands read by the check's own parser, voices, swing, drums, repeated strikes and lengths (2026-10-14), a band file's parts and picking them, beams, held notes, the pedal, count-ins and a default C major (2026-10-15), a channel that changes instrument and a one-track file's part names (review B7-01/02), releases as a player lets the keys go and the check's staff and length (review M1–M3, B3-03), a played file with the pedal written one voice a hand and a notation export's gate undone (owner's answers A5, A6), rests that show the beat | 205 (+ 6 old cases and 4 parity hand splits not applicable, printed as skipped with the reason) |
 | `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, rests (one voice's rests drawn one after another are one), short rests, rests drawn on another voice's notes, rests hiding the beat, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML (rest symbols printed, not guarded); six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one, or fewer of a catalogue conversion's notes are as the engraving writes them (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages, a page stored as JPEG 2000 (`fixtures/pdf/jpx.pdf`, made by `make-jpx-pdf.py`) and the old fixture through pdf.js's Node build with its JPEG 2000 decoder (fails if its canvas library cannot load); adding and removing a line keeps the other lines' splits (2026-10-14) | 58 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`, and for the three committed MIDI fixtures as the app converts them; not where in the bar, how long, or which staff; every run also changes one note in the app's copy of the first song and must catch it (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song + 3 converted + the caught change; `--corrupt` must fail |
-| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys; a panel opened over what is running pauses it (owner, 2026-10-15, A3: the score's modes, Memorise's passes and test, Simon, Drills, the lab's ⚙; Watch as a control), turning the phone in Wait for me while the piano leads on (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 86 |
+| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys; a panel opened over what is running pauses it (owner, 2026-10-15, A3: the score's modes, Memorise's passes and test, Simon, Drills, the lab's ⚙; Watch as a control), turning the phone in Wait for me while the piano leads on; Home, the tabs, Path and lessons (2026-10-15: where things open and how ← and Back come back, links, a reload, a lesson step tagged and its feedback in the export, steps never locking, Switch, Exercises and Practise as…, the metronome, Settings' theme, a little score playing, the video offline) (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 146 |
 | `wake.mjs` | `npm run check:wake` | The screen wake lock (`src/wake.ts`): a lock granted after you left is let go; one request at a time | 4 |
 | `practice.mjs` | `npm run check:practice` | The Play along judge (`src/practice.ts`) around a mash: none of its keys counted as wrong keys, a right note inside it still counted | 4 |
 | `exercise.mjs` | `npm run check:exercise` | The exercise screen's judges driven with stand-ins (2026-10-15): a timed name-only Drill card holds the key pressed, not the written octave's; Simon's best is the whole chain played in one go, not one finished from the miss; Drills deal a pool like a shuffled deck | 15 |
@@ -208,6 +209,32 @@ no longer exists.
 - Skipped, printed with the reason: the old screen's 7 cases (its own screen is not ported). `PdfDocument.ts`
   (browser pdf.js, Vite worker) and the reader screen are checked in the browser (session scripts), not here.
 
+## path.mjs
+
+- Reads `public/content/path/index.json` and every lesson; the folder and the index agree; pieces and bars, sets,
+  activities (by id, and written out) and files named by blocks exist; each step's target is checked against its
+  activity once read (`checkTarget`); every block kind is used by the test content; every set's `kind` is known.
+- Reads to: a score block's source (a piece's bars, a set's item, a MusicXML file or inline), keys with "-" fingers, an
+  inline step's activity and target, a tip's label; YouTube ids from five link forms (not another site); text with a
+  heading, bold, italics, a link and two kinds of list.
+- Refuses: an unknown kind, a misspelt or missing field, raw HTML, a link that is not https, a file outside the folder
+  or of the wrong type, a video that is not YouTube or ends before it starts, a score with two sources or too long,
+  keys that are not pitches, fingers not one a note or not 1–5, a step id twice, an inline activity with a mistake, a
+  target its screen cannot judge, of another screen, out of range, or onTime in Wait for me; a lesson or index field
+  typo, a lesson in two rungs, a rung id with spaces; a target that does not fit the activity named by id.
+- Done: drills `clean`, simon `chain`, score `onTime` (a run and a loop pass) and `bpm` (a clean pass only), lab
+  `cleanRounds` (a late bar, or a stopped round, is not clean), each met and not met at the line; with a target only
+  when met, without one any run, no run not done; Watch and Free play done on coming back (Wait for me is not).
+- Shown failing (2026-10-15): with `test-chords-and-band.json`'s first block's kind changed to "quiz", and with a set's
+  kind removed, the check fails on those lines.
+
+- MusicXML written in a lesson (review 2026-10-15, V13): two bars of 4/4 and a bar with a chord read; a fragment, an
+  over-full bar (four quarters and a whole note in one 4/4 bar: the old test lesson's example) and a bar with no time
+  signature are refused. The over-full and no-time cases failed before the rule (accepted).
+
+- A set's `play` (re-check V32): none given is Wait for me; a mode, hands and tempo read; an unknown mode, Ladder, an
+  unknown field and a tempo out of range are refused.
+
 ## exercise.mjs
 
 - Drills, name only and timed (a C4 half note at 80): C5 let go after 100 ms is let go early, held 1400 ms is clean;
@@ -252,6 +279,46 @@ your runs, one that opens is (control), and a Simon activity overtaken by openin
 load is not; a mouse pressed on an on-screen key and let go off the keyboard lets it go (score in Wait for me, Free
 play, Simon). Run against the build before these fixes (`--url`), all 7 of these checks failed (the page-error ones
 pass on both).
+
+**Routes changed, not checks (2026-10-15, Home and the tabs):** the app now opens to Home, so the cases reach their
+screens the new way: the library is the Music tab (`library()`), backup and the log's export are in Settings
+(`settingsPage()`), Simon, Drills, the lab and Free play are in Practice (`practice()`), and the cases that played the
+first piece open `?piece=bach-bwv514` (what the app opened before). The catalogue + Add case counts the app's pieces
+(`__pianoDebug.pieces()`) instead of the song list (gone: Music lists them). Two cases needed a timing change: B7-03 waits
+for the held MIDI read as well as the drawing (with nothing drawn before, the two land together), and the
+"unreachable once" library case sets its failing routes before the page loads (Home reads the charts for its recent
+list before Music opens). The A3 panels "Keyboard controls" and "Songs" were removed from its list: neither can open over
+a piece any more (Keyboard controls is in Settings, the song list went).
+
+The block "Home, the tabs, Path and lessons" (2026-10-15): opens to Home; the tabs at the bottom upright and a rail at
+844×390 and 820×1180; Music → a piece (score full height, no tabs) → ← back to Music, and with Android Back, Music →
+Home; a reload on Path stays there; `?piece=` and `?activity=` open over Home and Back/Done is Home; Practice → Simon →
+Done back to Practice; a lesson step from Home: its activity opens tagged with the step, played with the stand-in
+keyboard in Wait for me, ← back to the lesson page with "This time: …", the step marked played, Hard and a note reach the
+exported log with step, lesson and rung; steps never lock (the last step first, done on coming back from Free play, the
+earlier ones "skipped"); Switch… opens another lesson in the page's place and Path's You are here follows; Exercises opens
+a scales set in Drills, Practise as… → Simon (same set, same place), Done back to Exercises; the metronome clicks and
+Done stops it; Settings' theme applies; a little score's ▶ plays and lights its keys; offline, the video block is a card.
+
+The block "The visual review of the new top level" (2026-10-15, `design/2026-10-15-home/visual-review.md`; 26 checks, 18
+of them failed on the build before the fixes, the 8 page-error ones passed): V10 a Wait for me lesson step played
+round its loop is "played through" and done, one note only "tried"; V18/V17/V28/V12 at 320×568 and 844×390, the last
+step of lesson 2 (Free play) is "visited" not "done ✓", the result says the lesson is done and offers the next lesson,
+Again and the way on are in the fixed bar in view, Back from the result is the lesson page; V19 Back with Switch… open
+closes only the sheet; V30 an earlier lesson not started is "Open"; V21 a reload in a lesson step comes back to it with
+its choices (Wait for me, right hand, loop) and ← to the lesson page, a reload in Simon comes back to Simon and ← to
+Practice; V27 Carry on reopens a logged Play along run with its mode, tempo and loop; V11 with every other host refused
+(online), the video block is the card; owner's answers: a MusicXML exercise (Melody 1) opens on the score, and every
+tool's way out is ← at the top left. Layout items (V01–V05, V08, V14–V16, V23, V26, V29, A3 keys) were measured with a
+throwaway script (listed in the session notes), not committed.
+
+The block "The re-check of the fix round" (2026-10-15; 11 checks, 4 of them failed on the build before the fixes):
+V33 every way into a lesson step (the lesson page's Start, Home's Start, the result's Again and Next, Next lesson then
+Start) has the address that a reload turns back into the step with its choices (Wait for me, right hand, looped) and ←
+to the lesson page (Again and Next lost the lesson before); V31 opened straight into a step by its address, before the
+first tap the screen says "Tap anywhere to start" and keys move nothing, after the tap the words go and keys move the
+marker (before: no words); V32 a MusicXML exercise (Melody 1) opens in Wait for me and its row says so (before: Watch).
+V34 (memorised marks on Music's rows at 390 and 320) and V02 (Home's tablet layout) were checked with a throwaway script.
 
 The block "Owner's answer A3" (2026-10-15) opens a panel over each kind of thing that judges your keys and plays keys
 behind it through the stand-in MIDI keyboard. Score, Play along (BWV 514, both hands), once with each panel (Tempo and

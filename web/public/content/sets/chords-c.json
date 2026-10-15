@@ -1,5 +1,5 @@
 {
-  "title": "Test: chords in C",
+  "title": "Test: chords in C", "kind": "chords",
   "order": "pool",
   "items": {
     "1": { "chord": "C" },

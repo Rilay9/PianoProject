@@ -63,6 +63,8 @@ export class Practice {
   loop: () => { a: number; b: number; t1: number } | null = () => null;
   /** Wait for me reached the end of the song by itself. */
   onDone: () => void = () => {};
+  /** Wait for me went round its loop: every note of the loop was played (the run's log counts it a pass). */
+  onLoopRound: () => void = () => {};
 
   // Memorise's waiting pass (owner, 2026-10-12: when timing doesn't count it waits for you, and the pass always
   // finishes): Wait for me over set steps that ends there instead of looping, noting the keys that were not
@@ -348,6 +350,7 @@ export class Practice {
     if (this.pass && this.running === 'wait') { this.running = null; this.expected.clear(); this.onPassEnd(); return; } // a pass ends, it does not go round
     const loop = this.loop();
     if (this.running !== 'wait' || !loop) return;
+    this.onLoopRound();
     this.view.goTo(loop.a);
     this.arrive();
   }

@@ -3,14 +3,13 @@
 // (Watch, Wait for me, Play along, Ladder, Rhythm: practice.ts), loops, the Tempo, Display, songs and info panels,
 // the summary, and editing fingering. Its drawing of the music is lent to Memorise (a Borrower) while that is open.
 
-import { fileOf, load as loadLibrary, midiKey, record, touch } from '../library/store';
+import { fileOf, load as loadLibrary, midiKey, record } from '../library/store';
 import type { BandNote } from '../library/midi/band';
 import type { NoteEvent } from '../sound';
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
 import { addEntry, keyName, Run, setActivity, type Slip } from '../log';
-import { markText, memorisedMarks } from '../memorise';
 import type { KeyEvent } from '../midi';
 import { yours } from '../practice';
 import type { Command } from '../remote';
@@ -92,7 +91,6 @@ export function createScoreScreen(app: App): ScoreScreen {
   const showMessage = (text: string, info = false, action?: { label: string; run: () => void }) => app.showMessage(text, info, action);
   const currentPiece = () => app.currentPiece();
   const settingsDialog = $<HTMLDialogElement>('settings');
-  const songsDialog = $<HTMLDialogElement>('songs');
   const infoDialog = $<HTMLDialogElement>('info');
   const tempoDialog = $<HTMLDialogElement>('tempo');
   const summaryDialog = $<HTMLDialogElement>('summary');
@@ -100,6 +98,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   app.playSettings = () => (borrower ? borrower.settings() : settingsFor(currentPiece().id));
   // Under the music: the notes now and next (a borrower may hide them: Memorise's covered bars).
   view.onStep = (notes) => {
+    trackWait();
     // Upright where touch keys play (Wait for me, Memorise), the keys follow the music two octaves at a time.
     strip.follow([...notes.now.flat(), ...notes.next.flat()].map((p) => p.midi));
     strip.show(borrower ? borrower.stepNotes(notes) : notes);
@@ -183,10 +182,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (presetPiece() !== id) { clearPreset(); setActivity(null); } // another song: an activity (its preset, its log tag) is over
     forgetRun();
     sideFit = 1;
-    app.currentId = id;
-    const url = new URL(location.href);
-    url.searchParams.set('piece', id);
-    history.replaceState(null, '', url);
+    app.currentId = id; // (the address names the piece where it is opened: main.ts, nav.ts)
     picking = 0;
     view.setLoop(null);
     showBars();
@@ -338,7 +334,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     pass = 0;
     const loop = view.looped, continuing = resumable;
     // The practice log (owner, 2026-10-13): a run from here to its stop (carrying on after a pause is the same run).
-    if (s.mode !== 'watch' && !(continuing && logRun)) logRun = { run: new Run(), mode: s.mode, fromStep: view.index, passes: [] };
+    if (s.mode !== 'watch' && !(continuing && logRun)) logRun = { run: new Run(), mode: s.mode, fromStep: view.index, passes: [], steps: 0, rounds: 0, furthest: view.index, at: view.index };
     resumable = false;
     if (s.mode === 'wait') {
       view.songClock = null;
@@ -362,7 +358,9 @@ export function createScoreScreen(app: App): ScoreScreen {
   function forgetRun(): void { endRun(); resumable = false; practice.forgetRun(); }
 
   // ---- the practice log (log.ts): one entry per run --------------------------------------------------------------
-  let logRun: { run: Run; mode: string; fromStep: number; passes: Record<string, unknown>[] } | null = null;
+  /** A run being logged. Wait for me (review 2026-10-15, V10): `steps` your notes the marker moved on from, `rounds`
+   * the times it went round the loop (or reached the piece's end): what says the bars were played through. */
+  let logRun: { run: Run; mode: string; fromStep: number; passes: Record<string, unknown>[]; steps: number; rounds: number; furthest: number; at: number } | null = null;
   const WHAT: Record<string, Slip['what']> = { missed: 'missed', early: 'early', late: 'late', short: 'let go early' };
   /** A run's slips: each note not on time and held (bar, note as written, what), and each key the score did not ask for. */
   function logSlips(r: { slips: { step: number; midi: number; kind: string }[]; extra: { step: number; midi: number }[] }): void {
@@ -385,8 +383,23 @@ export function createScoreScreen(app: App): ScoreScreen {
     const slips = { slips: lr.run.slips, slipCount: lr.run.slipCount };
     if (result) addEntry({ ...base, result: { ...result, ...slips } });
     else if (lr.passes.length) addEntry({ ...base, result: { passes: lr.passes, ...slips } });
-    else if (lr.mode === 'wait' && view.index > lr.fromStep) addEntry({ ...base, result: { fromBar: view.barNumber(lr.fromStep), toBar: view.barNumber(view.index) } });
+    else if (lr.mode === 'wait' && lr.steps > 0) {
+      // Wait for me (review 2026-10-15, V10): what was played, measured by the notes the marker moved on from and the
+      // rounds (a loop gone round, or the piece's end reached), not by where the marker stopped (a loop gone round
+      // ends where it began; one note ends past it).
+      const loop = view.loopSpan();
+      const fromBar = view.barNumber(loop && lr.rounds ? loop.a : lr.fromStep), toBar = view.barNumber(loop && lr.rounds ? loop.b : lr.furthest);
+      addEntry({ ...base, result: { fromBar, toBar, steps: lr.steps, rounds: lr.rounds } });
+    }
   }
+  /** Wait for me: the marker moved (your notes, or the piano leading on); a move back is the loop going round. */
+  function trackWait(): void {
+    const lr = logRun;
+    if (!lr || lr.mode !== 'wait' || borrower || !practice.active) return;
+    if (view.index > lr.at) { lr.steps += view.index - lr.at; lr.furthest = Math.max(lr.furthest, view.index); }
+    lr.at = view.index;
+  }
+  practice.onLoopRound = () => { if (logRun?.mode === 'wait' && !borrower) { trackWait(); logRun.steps += 1; logRun.rounds += 1; logRun.at = view.loopSpan()?.a ?? 0; } };
   let mashedAt = -Infinity;
   const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
   async function startFromKey(e: KeyEvent): Promise<void> {
@@ -661,7 +674,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) $('keyboard').addEventListener(ev, liftKey);
   $('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());
 
-  practice.onDone = () => { endRun(); fillBars(); showBars(); };
+  practice.onDone = () => { if (logRun?.mode === 'wait') { trackWait(); logRun.steps += 1; logRun.rounds += 1; } endRun(); fillBars(); showBars(); };
   practice.onSummary = (r) => {
     if (!r.total) return;
     // The log: the run's counts and slips (owner, 2026-10-13).
@@ -875,27 +888,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     }, 150);
   }
 
-  // Panels: songs, info, display.
-
-  function fillSongs(): void {
-    const list = $<HTMLUListElement>('song-list');
-    const marksNow = memorisedMarks();
-    list.replaceChildren(...app.pieces.map((p) => {
-      const item = document.createElement('li');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = p.id === app.currentId ? 'current' : '';
-      button.innerHTML = `<strong></strong><small></small>`;
-      button.querySelector('strong')!.textContent = p.title;
-      // Memorized marks (the Memorise test, owner 2026-10-13), per hand choice.
-      const marks = Object.entries(marksNow).filter(([k]) => k.startsWith(`${p.id}|`))
-        .map(([k, m]) => `${markText(m)}${k.endsWith('|both') ? '' : ` (${k.split('|')[1]} hand)`}`);
-      button.querySelector('small')!.textContent = [p.composer, ...marks].join(' · ');
-      button.addEventListener('click', () => { songsDialog.close(); touch(p.id); void openSong(p.id); });
-      item.append(button);
-      return item;
-    }));
-  }
+  // Panels: info, display.
 
   function fillInfo(): void {
     const piece = currentPiece();
@@ -971,7 +964,6 @@ export function createScoreScreen(app: App): ScoreScreen {
   $('make-default').addEventListener('click', makeCurrentDefault);
   $('reset-piece').addEventListener('click', () => { resetPiece(currentPiece().id); fillPanel(); void draw(); });
   $('open-settings').addEventListener('click', () => { fillPanel(); settingsDialog.showModal(); });
-  $('open-songs').addEventListener('click', () => { fillSongs(); songsDialog.showModal(); });
   $('open-info').addEventListener('click', () => { fillInfo(); infoDialog.showModal(); });
 
   // The keyboard remote on the score (remote.ts): a mash pauses or stops; the lowest key goes back to the loop's

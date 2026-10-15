@@ -11,6 +11,7 @@ import { forgetPiece } from '../library/forget';
 import { isChartId, isYours, items, loadCharts, pieceOf, readAppFacts, type LibItem } from '../library/items';
 import { addOwn, allRecords, change, fileOf, isSafe, keepSafe, load, record, remove, touch } from '../library/store';
 import { fetchCatalogueFile, loadCatalogue, type CatRow } from '../library/catalogue';
+import { markText, memorisedMarks } from '../memorise';
 
 export interface LibraryDeps {
   openScore(id: string): void;
@@ -24,7 +25,7 @@ export interface LibraryDeps {
   /** A piece was deleted and its saved data removed: screens holding a copy of that data read it again. */
   forgot(id: string): void;
 }
-export type LibraryScreen = Screen & { open(): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown; add(files: File[]): Promise<void> };
+export type LibraryScreen = Screen & { open(): Promise<void>; close(then?: () => void): void; hide(): void; readonly isOpen: boolean; debug(): unknown; add(files: File[]): Promise<void> };
 
 type SortBy = 'opened' | 'added' | 'title' | 'composer' | 'bars' | 'views';
 const SORTS: [SortBy, string][] = [['opened', 'Recently opened'], ['added', 'Recently added'], ['title', 'Title A–Z'], ['composer', 'Composer A–Z'], ['bars', 'Fewest bars first']];
@@ -58,6 +59,12 @@ const barsOf = (i: LibItem) => i.facts?.bars ?? i.chart?.bars ?? null;
 const ICON: Record<Kind, string> = { piano: '♪', melody: '♪', lead: '𝄞', parts: '♫', chart: '', pdf: 'PDF', score: '♪' };
 const PARTS_WARNING = 'It has several parts: the score screen takes the top staff as your right hand and the rest as your left, which may be wrong here (choosing the parts comes later).';
 
+/** A piece's memorized marks (Memorise's test), per hand choice, in Memorise's own words (markText). */
+function marksOf(id: string): string {
+  return Object.entries(memorisedMarks()).filter(([k]) => k.startsWith(`${id}|`))
+    .map(([k, m]) => `${markText(m)}${k.endsWith('|both') ? '' : ` (${k.split('|')[1]} hand)`}`).join(' · ');
+}
+
 export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen {
   const section = $('library'), list = $<HTMLUListElement>('lib-list'), page = $('lib-page'), left = $('lib-left');
   const search = $<HTMLInputElement>('lib-search'), chips = $('lib-chips'), countLine = $('lib-count'), sortButton = $<HTMLButtonElement>('lib-sort');
@@ -89,8 +96,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   // ---- what is listed ---------------------------------------------------------------------------------------------
 
   async function refresh(): Promise<void> {
-    const [charts, cat] = await Promise.all([loadCharts(base), loadCatalogue(base), readAppFacts(app.pieces, (p) => app.xmlFor(p))]);
-    yoursAll = items(app.pieces, charts);
+    const pieces = app.pieces.filter((p) => !p.exerciseOf); // (an exercise's music is in Exercises, not Music)
+    const [charts, cat] = await Promise.all([loadCharts(base), loadCatalogue(base), readAppFacts(pieces, (p) => app.xmlFor(p))]);
+    yoursAll = items(pieces, charts);
     catAll = cat ? cat.rows.map(catItem) : [];
     all = tab === 'yours' ? yoursAll : catAll;
   }
@@ -223,6 +231,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       const title = el('span', 'lib-tt', i.title);
       if (justAdded.has(i.id)) title.append(el('span', 'lib-added', ' · added'));
       tx.append(title, el('span', 'lib-mm', metaOf(i)));
+      // Memorized marks on the row, as the old song list showed them (review re-check 2026-10-15, V34).
+      const marks = i.opens === 'score' ? marksOf(i.id) : '';
+      if (marks) tx.append(el('span', 'lib-memo', `✓ ${marks}`));
       main.append(icon(i), tx);
       main.addEventListener('click', () => (twoPanes.matches ? showPage(i.id) : openItem(i)));
       li.append(main, heart(i));
@@ -442,11 +453,12 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   /** ← on the page: the same as Android Back. */
   function closePage(): void { toList(); render(); }
   /** Back to the list (upright), taking the page's history step off. */
-  function toList(): void { if (pageOpen && pushed > 1) history.back(); else pageOpen = false; }
+  function toList(): void { if (pageOpen && pushed > 0) history.back(); else pageOpen = false; }
 
-  // ---- Android Back (and the browser's): the page back to the list, the list back to the score ------------------
-  // Each step adds a history entry (no address change); leaving by a button first takes them off again, then does
-  // what was asked, so the address the score screen then writes lands on the right entry.
+  // ---- Android Back (and the browser's): the page back to the list --------------------------------------------------
+  // The library is the Music tab (owner, 2026-10-15): the tab's own step is the app's (nav.ts); a piece's page over the
+  // list (upright) adds one more (no address change). Leaving by a button first takes it off again, then does what was
+  // asked, so whatever opens next adds its step on the right entry.
   let pushed = 0, afterBack: (() => void) | null = null;
   function pushStep(): void { history.pushState({ library: ++pushed }, ''); }
   function leave(then: () => void): void {
@@ -459,10 +471,8 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   window.addEventListener('popstate', () => {
     if (afterBack) { const f = afterBack; afterBack = null; f(); return; }
     if (!isOpen || !pushed) return;
-    pushed--;
-    if (pageOpen && pushed >= 1) { pageOpen = false; render(); return; }
     pushed = 0;
-    shut();
+    if (pageOpen) { pageOpen = false; render(); }
   });
   let previewFor = '', previewBox: HTMLElement | null = null;
   function renderPage(): void {
@@ -494,6 +504,8 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     else if (i.opens === 'lab') button('Open in the lab', () => openItem(i), true);
     else button('Open', () => openItem(i), true);
     body.append(buttons);
+    const marks = marksOf(i.id);
+    if (marks) body.append(el('p', 'note lib-memorized', marks));
     if (i.opens === 'pdf') body.append(el('p', 'note', 'A PDF is pages, not notes: it is read a line at a time, turned by your keyboard, a tap or a page-turner pedal; nothing in it is judged.'));
 
     if (i.opens === 'score') {
@@ -713,7 +725,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       forgetPiece(i.id);
       deps.forgot(i.id);
       app.pieces = app.pieces.filter((p) => p.id !== i.id);
-      if (app.currentId === i.id) deps.openScore(app.pieces[0].id); // (the score screen behind no longer shows a deleted piece)
+      if (app.currentId === i.id) app.currentId = ''; // (the score behind the tabs no longer names a deleted piece; it is drawn again when a piece opens)
       justAdded.delete(i.id);
       if (selected === i.id) { selected = null; toList(); }
     });
@@ -904,8 +916,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     isOpen = true;
     section.hidden = false;
     pageOpen = false;
-    pushStep();
-    list.replaceChildren(el('li', 'lib-empty', 'Opening the library…'));
+    if (!all.length) list.replaceChildren(el('li', 'lib-empty', 'Opening the library…'));
     try { await load(); } catch (e) { app.showMessage(`Your added files could not be read: ${e instanceof Error ? e.message : String(e)}`); }
     await refresh();
     if (!isOpen) return;
@@ -919,14 +930,11 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   function shut(): void {
     if (!isOpen) return;
     isOpen = false;
-    // The address names the piece showing (history steps taken off may have brought back an older one).
-    if (app.currentId) { const url = new URL(location.href); url.searchParams.set('piece', app.currentId); history.replaceState(null, '', url); }
     section.hidden = true;
     $('lib-toast').hidden = true;
     if (sheet.open) sheet.close();
     deps.closed();
   }
-  $('lib-done').addEventListener('click', () => close());
   twoPanes.addEventListener('change', () => { if (isOpen) render(); });
 
   return {
@@ -935,7 +943,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     musicRange: () => null,
     resized: () => {},
     get busy() { return false; },
-    open, close: () => close(),
+    open, close: (then?: () => void) => close(then),
+    /** Shut at once (another tab or a page took its place; no history step of its own is left). */
+    hide: () => shut(),
     get isOpen() { return isOpen; },
     debug: () => ({ items: all.map((i) => ({ id: i.id, kind: i.kind, title: i.title, fav: i.fav, tags: i.tags, opened: i.opened, facts: i.facts, hash: i.own?.hash })), shown: shown().map((i) => i.id), selected, pageOpen, twoPanes: twoPanes.matches }),
     add,

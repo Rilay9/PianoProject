@@ -1,0 +1,5 @@
+{
+  "rungs": [
+    { "id": "test-app", "title": "Test: the app's lesson pages", "lessons": ["test-minuet-opening", "test-chords-and-band"] }
+  ]
+}

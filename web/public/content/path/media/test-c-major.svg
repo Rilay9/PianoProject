@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" width="420" height="180" role="img" aria-label="C, E and G lighting one after another, then together">
+  <!-- Test animation (2026-10-15): one octave from C4; C, E and G light in turn, then together, over 4 s, repeating. -->
+  <rect width="280" height="120" fill="#ffffff"/>
+  <g stroke="#9ca3af" stroke-width="1.5">
+    <rect id="c" x="0" y="0" width="40" height="120" fill="#fbfbfc">
+      <animate attributeName="fill" values="#2563eb;#fbfbfc;#fbfbfc;#2563eb;#fbfbfc" keyTimes="0;0.2;0.6;0.75;1" dur="4s" repeatCount="indefinite" calcMode="discrete"/>
+    </rect>
+    <rect x="40" y="0" width="40" height="120" fill="#fbfbfc"/>
+    <rect id="e" x="80" y="0" width="40" height="120" fill="#fbfbfc">
+      <animate attributeName="fill" values="#fbfbfc;#2563eb;#fbfbfc;#2563eb;#fbfbfc" keyTimes="0;0.2;0.4;0.75;1" dur="4s" repeatCount="indefinite" calcMode="discrete"/>
+    </rect>
+    <rect x="120" y="0" width="40" height="120" fill="#fbfbfc"/>
+    <rect id="g" x="160" y="0" width="40" height="120" fill="#fbfbfc">
+      <animate attributeName="fill" values="#fbfbfc;#2563eb;#fbfbfc;#2563eb;#fbfbfc" keyTimes="0;0.4;0.6;0.75;1" dur="4s" repeatCount="indefinite" calcMode="discrete"/>
+    </rect>
+    <rect x="200" y="0" width="40" height="120" fill="#fbfbfc"/>
+    <rect x="240" y="0" width="40" height="120" fill="#fbfbfc"/>
+  </g>
+  <g fill="#23262c">
+    <rect x="28" y="0" width="24" height="74"/><rect x="68" y="0" width="24" height="74"/>
+    <rect x="148" y="0" width="24" height="74"/><rect x="188" y="0" width="24" height="74"/><rect x="228" y="0" width="24" height="74"/>
+  </g>
+  <g font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#4b5563" text-anchor="middle">
+    <text x="20" y="110">C</text><text x="100" y="110">E</text><text x="180" y="110">G</text>
+  </g>
+</svg>
