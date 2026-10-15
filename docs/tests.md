@@ -37,16 +37,20 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   belong to.
 - **Platform paths no script walks.** Android Back (history), keyboard focus (Enter on a focused button),
   offline (files fetched only for some inputs, like pdf.js's decoders, missing from the offline list), turning the
-  phone, a dialog open while keys arrive. Each screen: try Back at every level, Tab plus Enter, offline after
+  phone, a dialog open while keys arrive, a mouse let go off the on-screen keys (2026-10-15: the key stayed down).
+  A stand-in MIDI keyboard for these is in `tests/browser.mjs` (`window.__key`). Each screen: try Back at every level, Tab plus Enter, offline after
   saving, and both orientations.
 - **Extremes of size.** A unit taller than the screen, an empty page, one line, eighty pages, a tablet, a phone
   sideways. Check that nothing is cut off with no way to see it, and that one odd item doesn't change the layout for
   the rest of the visit.
 - **Two coordinate frames, or two clocks.** Positions read in one frame and shown in another (slanted versus
   straightened page). Times judged on the page's clock instead of the keyboard's, or a fixed millisecond window
-  applied to speed-scaled song time. Decide which frame or clock each number lives in.
+  applied to speed-scaled song time. Or two identities for one key: a name-only drill matched a C5 to the written C4
+  and then looked up how long the *C4* was held (2026-10-15). Decide which frame, clock or key each number lives in.
 - **Evidence that doesn't prove the skill.** Notes in a window counted as a chord without being down together;
-  silent rounds counted as played; a stopped half-round counted as a round. Ask what each result is evidence of.
+  silent rounds counted as played; a stopped half-round counted as a round; a Simon chain finished from the miss on
+  saved as a best of the whole chain; a run whose hands changed half way judged and logged as the new hands
+  (2026-10-15). Ask what each result is evidence of.
 - **A check against the code's own intermediate, not the truth.** The MIDI converter's read-back check passed on
   232 of 235 ASAP score files while a pickup put every barline in the wrong place and 32nds were moved, because it
   compares the score with the notes *after* the converter placed them (2026-10-14). Compare with an independent

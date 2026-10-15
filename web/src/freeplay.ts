@@ -36,6 +36,7 @@ export class FreePlay {
       e.preventDefault();
       const midi = Number(key.dataset.midi);
       const id = e.pointerId;
+      try { keyboard.setPointerCapture(id); } catch { /* not a live pointer */ } // (lets go off the keys too: review, 2026-10-15)
       this.touches.set(id, { midi, stop: this.sound.noteNow(midi, 90, () => this.touches.get(id)?.midi === midi) });
       this.pressed(midi);
       this.update();
@@ -49,6 +50,7 @@ export class FreePlay {
     };
     keyboard.addEventListener('pointerup', lift);
     keyboard.addEventListener('pointercancel', lift);
+    keyboard.addEventListener('lostpointercapture', lift);
     keyboard.addEventListener('contextmenu', (e) => e.preventDefault());
     panel.querySelector('#fp-done')!.addEventListener('click', () => this.close());
     panel.querySelector('#fp-down')!.addEventListener('click', () => this.shift(-12));

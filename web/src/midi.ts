@@ -7,6 +7,8 @@ export interface KeyEvent { midi: number; on: boolean; velocity: number; time: n
 export class MidiInput {
   private access: MIDIAccess | null = null;
   readonly down = new Set<number>();
+  // Which inputs hold each key down: with two keyboards on one pitch, one letting go leaves it held (review, 2026-10-15).
+  private holders = new Map<number, Set<string>>();
   private silenceTimer = 0;
   onKey: (e: KeyEvent) => void = () => {};
   /** The sustain pedal (controller 64) went down or up; time: performance.now() ms. */
@@ -26,11 +28,16 @@ export class MidiInput {
   }
 
   private listen(): string[] {
-    const names: string[] = [];
+    const names: string[] = [], connected = new Set<string>();
     this.access?.inputs.forEach((input) => {
-      input.onmidimessage = (m) => this.message(m);
-      if (input.state === 'connected') names.push(input.name ?? 'MIDI keyboard');
+      input.onmidimessage = (m) => this.message(m, input.id);
+      if (input.state === 'connected') { names.push(input.name ?? 'MIDI keyboard'); connected.add(input.id); }
     });
+    // A keyboard unplugged with keys down: they let go now (nothing else will say so).
+    for (const [midi, from] of this.holders) {
+      for (const id of from) if (!connected.has(id)) from.delete(id);
+      if (!from.size) this.let(midi, 0, performance.now());
+    }
     this.onDevices(names);
     return names;
   }
@@ -69,15 +76,30 @@ export class MidiInput {
     this.silenceTimer = window.setTimeout(off, 250);
   }
 
-  private message(m: MIDIMessageEvent): void {
+  private message(m: MIDIMessageEvent, from: string): void {
     const data = m.data;
     if (!data || data.length < 3) return;
     const kind = data[0] & 0xf0, midi = data[1], velocity = data[2];
     // Notes the app sends the keyboard are not filtered out here: keyboards normally do not send back what
     // they are sent, and a filter by key and time also dropped your own notes in unison with the app's.
     // Note on with velocity 0 is the usual way keyboards send a note off.
-    if (kind === 0x90 && velocity > 0) { this.down.add(midi); this.onKey({ midi, on: true, velocity, time: m.timeStamp }); }
-    else if (kind === 0x80 || kind === 0x90) { this.down.delete(midi); this.onKey({ midi, on: false, velocity, time: m.timeStamp }); }
+    if (kind === 0x90 && velocity > 0) {
+      this.holders.set(midi, (this.holders.get(midi) ?? new Set()).add(from));
+      this.down.add(midi);
+      this.onKey({ midi, on: true, velocity, time: m.timeStamp });
+    } else if (kind === 0x80 || kind === 0x90) {
+      const others = this.holders.get(midi);
+      others?.delete(from);
+      if (others?.size) return; // another keyboard still holds this key
+      this.let(midi, velocity, m.timeStamp);
+    }
     else if (kind === 0xb0 && midi === 64) this.onPedal(velocity >= 64, m.timeStamp); // controller 64: down from 64 up
+  }
+
+  /** A key let go (by the last keyboard holding it). */
+  private let(midi: number, velocity: number, time: number): void {
+    this.holders.delete(midi);
+    this.down.delete(midi);
+    this.onKey({ midi, on: false, velocity, time });
   }
 }

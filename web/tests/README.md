@@ -13,9 +13,10 @@ no longer exists.
 | `readability.mjs` | `npm run check:readability` (in `npm run check`) | How cluttered the MIDI converter's scores are (2026-10-15): per score, visible rests, 16th rests, rests drawn on another voice's notes, voices beyond one a staff, ties, tuplets, 32nds, counted from the MusicXML; six catalogue scores (`public/catalogue`) made into MIDI as a notation program exports them and as a player lets the keys go, and the owner's two songs when `PIANO_SONGS` names their folder (never committed); fails when any count rises above the recorded one (`--record` prints new records) | the counting on a hand-built bar + 12 conversions (14 with the songs) |
 | `pdf.mjs` | `npm run check:pdf` | The PDF reader's modules (`src/pdf/`): finding the lines (systems) on a page, reworked 2026-10-14; cuts, page cache, detection order (ported from the old app); six generated PDF pages, a page stored as JPEG 2000 (`fixtures/pdf/jpx.pdf`, made by `make-jpx-pdf.py`) and the old fixture through pdf.js's Node build with its JPEG 2000 decoder (fails if its canvas library cannot load); adding and removing a line keeps the other lines' splits (2026-10-14) | 58 (+ 7 old screen cases printed as skipped, with the reason) |
 | `notes-match.mjs` | `npm run check:notes` | The pitches the score screen draws in each bar (spelled, sorted) are the file's, for every song in `public/scores`, and for the three committed MIDI fixtures as the app converts them; not where in the bar, how long, or which staff; every run also changes one note in the app's copy of the first song and must catch it (builds, serves on :5193, refuses if the port already answers; `PIANO_CHROMIUM` names a browser when Playwright's own is not installed) | one per song + 3 converted + the caught change; `--corrupt` must fail |
-| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 40 |
+| `browser.mjs` | `npm run check:browser` | In the built app at phone size: backups (every file in the zip, a missing file named, an unreadable library refused), a slow PDF open overtaken, the Adjust handles by keyboard, a band file imported and played (the sheet's Band row, the panel's band, each part handed its notes as the song's clock reaches them, none when switched off; a band file with no piano part: the guessed parts, ticking others converts again, the choice kept with the piece and its band played), the first ▶ tapped while the band is still being read (it waits for it; a stop meanwhile is kept), a split placed by hand kept through + line, the lengths the judges are given (staccato, a slur end, a note before a rest) as the score screen decides them, + Add tapped twice, the catalogue asked for again, a Memorise start from a visit that was left; review 2026-10-15 (S2): a restore putting back files lost from records still there, taps while a PDF opens, a deleted PDF's saved state, the two-pane highlight, a score file and a chart unreachable once; with a stand-in MIDI keyboard (2026-10-15): Hands changed mid-run and while paused, a key behind Simon's and Drills' Level panel, an activity whose piece is missing or whose open was overtaken, a mouse let go off the on-screen keys (builds, serves on :5194; `--url` checks a build served elsewhere; `PIANO_CHROMIUM` as for check:notes) | 54 |
 | `wake.mjs` | `npm run check:wake` | The screen wake lock (`src/wake.ts`): a lock granted after you left is let go; one request at a time | 4 |
 | `practice.mjs` | `npm run check:practice` | The Play along judge (`src/practice.ts`) around a mash: none of its keys counted as wrong keys, a right note inside it still counted | 4 |
+| `exercise.mjs` | `npm run check:exercise` | The exercise screen's judges driven with stand-ins (2026-10-15): a timed name-only Drill card holds the key pressed, not the written octave's; Simon's best is the whole chain played in one go, not one finished from the miss | 10 |
 
 `midi.mjs` and `pdf.mjs` run under one small describe / it / expect (`tests/shim.mjs`; it was copied into both, 2026-10-14).
 
@@ -180,6 +181,15 @@ no longer exists.
 - Skipped, printed with the reason: the old screen's 7 cases (its own screen is not ported). `PdfDocument.ts`
   (browser pdf.js, Vite worker) and the reader screen are checked in the browser (session scripts), not here.
 
+## exercise.mjs
+
+- Drills, name only and timed (a C4 half note at 80): C5 let go after 100 ms is let go early, held 1400 ms is clean;
+  the same for C4 (controls); at rung 3 a C5 is a wrong key and the C4 missed. The first fails before 2026-10-15 (the
+  hold was looked up by the written C4, found nothing, and counted as held).
+- Simon, a five-note passage read from the music: chains 1-3 whole are bests 1-3; chain 4 missed at its last item and
+  finished from there (the replay asks for that item only) is not a best of 4 nor the game's longest; chain 5 whole is
+  a best of 5; with "the whole chain again" chain 4 replayed whole is a best of 4. The third fails before 2026-10-15.
+
 ## Browser checks
 
 `browser.mjs` (2026-10-14) keeps the cases from ChatGPT's review of that day (`docs/review-2026-10-14.md`). Each makes
@@ -201,3 +211,12 @@ held back 3 s) must not save the PDF shown before as this one (its page 1 lines 
 PDF must remove its `piano-web.pdf.v1` entry and keep another PDF's; at 844×390 (two panes) the marked row must be
 the piece whose page shows, the first time too; a score file and a chart aborted on the library's first open must be
 there on the second.
+
+The cases of the review of 2026-10-15 (practice, judging and input) play keys through a stand-in for the browser's MIDI
+(`window.__key`): Play along with both hands then R pressed (the run ends with its summary, logged as both); paused by
+silence, R, then carrying on (logged as the right hand with only the new run's notes); a key behind Simon's and
+Drills' Level panel starts nothing (closed, it does); an activity naming a missing piece is said and not logged with
+your runs, one that opens is (control), and a Simon activity overtaken by opening Simon from the menu while its sets
+load is not; a mouse pressed on an on-screen key and let go off the keyboard lets it go (score in Wait for me, Free
+play, Simon). Run against the build before these fixes (`--url`), all 7 of these checks failed (the page-error ones
+pass on both).

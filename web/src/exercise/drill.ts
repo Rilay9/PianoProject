@@ -17,7 +17,7 @@ import { addEntry, Run, setActivity } from '../log';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
-import type { Rung } from './simon';
+import { dialogOpen, type Rung } from './simon';
 
 export interface DrillLevel {
   rung: Rung;
@@ -59,6 +59,8 @@ interface Card {
 }
 /** right: played right (clean, with help, or on a retry); clean: right first time with no help. */
 type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean; helped: boolean; text: string };
+/** A key played on a card: midi is the written note it counts for (name only: any octave), key the key pressed, whose hold is looked up. */
+type Press = PlayedKey & { key: number };
 type State = 'idle' | 'demo' | 'countin' | 'turn' | 'result' | 'done';
 
 export class Drill {
@@ -71,7 +73,7 @@ export class Drill {
   private queue: Item[] = []; // the cards to come this set
   private limit = Infinity; // cards in this set
   private results: CardResult[] = [];
-  private played: PlayedKey[] = [];
+  private played: Press[] = [];
   private helped = false;
   private started = false; // the card's clock is running (after the count-in, or from your first note)
   private pos = 0; // notes only: the step you are on
@@ -461,11 +463,11 @@ export class Drill {
   key(midi: number, down: boolean, time = performance.now()): void {
     if (!this.on || !down) return;
     const songT = () => this.sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time));
-    if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle') void this.begin(); return; }
+    if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle' && !dialogOpen()) void this.begin(); return; }
     if (!this.card) return;
     const c = this.card;
     // A first note a shade before the downbeat (within the on-time tolerance) still counts.
-    if (this.state === 'countin' && songT() > -ON_TIME_MS[this.tolKey()]) { const t = songT(); this.played.push({ midi: this.asWanted(midi, t), t, speed: 1, at: time }); return; }
+    if (this.state === 'countin' && songT() > -ON_TIME_MS[this.tolKey()]) { const t = songT(); this.played.push({ midi: this.asWanted(midi, t), key: midi, t, speed: 1, at: time }); return; }
     if (this.state !== 'turn') return;
     if (!c.timed) { this.noteOnly(midi); return; }
     if (!this.started) {
@@ -474,13 +476,13 @@ export class Drill {
       this.ui.help.hidden = true;
       const t0 = c.steps[0]?.t ?? 0;
       this.sound.play([], this.clicks(), t0, 1, false, true);
-      this.played.push({ midi: this.asWanted(midi, t0), t: t0, speed: 1, at: time });
+      this.played.push({ midi: this.asWanted(midi, t0), key: midi, t: t0, speed: 1, at: time });
       this.status('Play', this.level.metronome ? 'With the clicks' : '');
       this.watchEnd();
       return;
     }
     const t = songT();
-    this.played.push({ midi: this.asWanted(midi, t), t, speed: 1, at: time });
+    this.played.push({ midi: this.asWanted(midi, t), key: midi, t, speed: 1, at: time });
   }
 
   /** Notes only: each step's keys (a chord's all down together); a key not wanted is noted and you carry on. */
@@ -516,7 +518,8 @@ export class Drill {
     let text: string, clean: boolean;
     let wrongKeys: number[];
     if (c.timed) {
-      const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor(p.midi, p.at));
+      // How long the key pressed sounded (name only: not the written note's octave it counts for; review 2026-10-15).
+      const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor((p as Press).key, p.at));
       const r = judge(c.steps.map((s) => ({ t: s.t, keys: s.keys, durs: s.keys.map(() => s.hold) })), this.played, ON_TIME_MS[this.tolKey()], held);
       for (const o of r.offNotes) marks[`${c.steps[o.k].gi}:${o.midi}`] = o.kind === 'missed' ? MISSED : OFF_TIME;
       wrongKeys = r.wrongKeys.map((w) => w.midi);

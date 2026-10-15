@@ -48,8 +48,10 @@ app-wide.
 other staff as the left). A file with other parts or more than two staves is opened with a note saying the hands may
 be wrong. A per-score hand map is to be added when a piece needs one.
 
-**Hands:** L / R / Both / Off. In Watch these are the hands the piano plays; in the other modes the hands *you*
-play (the piano plays the rest; Off = you play everything, piano silent). Tempo: speed and beats per minute, ±5,
+**Hands:** L / R / Both / Off. In Watch these are the hands the piano plays (a change while it plays is heard at
+once); in the other modes the hands *you* play (the piano plays the rest; Off = you play everything, piano silent), and
+a change ends the run there, as a change of mode does: a run going stops with its summary for the hands it was played
+with, a run paused by itself is over; the next ▶ or key starts one with the new hands (review, 2026-10-15). Tempo: speed and beats per minute, ±5,
 tap tempo; metronome (click sound, beats/quarters/eighths, volume); piano through the phone or out to the MIDI
 keyboard. Loop: tap the first and last bar; one bar of count-in clicks each time round (none in Wait for me).
 **Band** (owner, 2026-10-15; a piece added from a MIDI file that has other parts than piano): the file's other parts
@@ -91,7 +93,7 @@ its summary; the parts add up to one summary. *Music while playing* off
 
 **Fit for lessons:** any piece or short exercise score; choose the mode by goal (notes → Wait for me; tempo → Play
 along; speed → Ladder on a loop; rhythm → Rhythm). Judging needs a MIDI keyboard (Web MIDI: Chrome/Android, not
-Safari); Watch needs none.
+Safari; every connected keyboard counts, a key held on either is down, and one unplugged lets its keys go); Watch needs none.
 
 ---
 
@@ -163,7 +165,9 @@ one each round until you slip. `web/src/exercise/simon.ts`.
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
 outlined, names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
 game over / keep going). Pools add a random item each round; passages grow in their own order; a completed passage
-is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs).
+is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
+one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15). While the Level panel is
+open a key does not start a game (as on the score; also Drills).
 
 **Help levels** (shared with Drills): 1 music + sound + keys lit, 2 music + sound, 3 music only, 4 name only,
 5 by ear. **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
@@ -183,7 +187,7 @@ the music.
 scale or chord by name, something to play back by ear), given at once — not from memory. `web/src/exercise/drill.ts`.
 
 **How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
-octave counts; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
+octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
 your first note (by ear: always your first note); the metronome can keep clicking. Cards are judged:
 - **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time and held / let go
   early / early / late / missed, wrong keys; *On time* relaxed / normal / strict);
@@ -616,7 +620,8 @@ at most 40 kept per entry, `slipCount` is all of them. `result` by screen:
 
 An **activity** is how a lesson (or a link) starts a mode: which screen, its content, and preset choices. A file in
 `web/public/content/activities/<id>.json` (listed in its `index.json`), opened with `?activity=<id>`
-(`web/src/activity.ts` reads it; `main.ts` opens it). The **content** decides what is played (the piece and bars, the
+(`web/src/activity.ts` reads it; `main.ts` opens it; its runs are logged with its id only once its screen has opened,
+not when its piece is missing or another screen was opened while it loaded). The **content** decides what is played (the piece and bars, the
 set, the chart and its ladder and style); **presets** are learner choices set for the activity: in force while it
 lasts (until another song, chart or screen, or Done), changeable there, and never saved over the learner's own. A
 mistake in a file (an unknown screen, a misspelt setting, a value out of range, a piece, set, chart or style that is

@@ -18,7 +18,7 @@ import { MidiInput } from './midi';
 import { setUpOffline } from './offline';
 import { autoDelete, entryCount, exportLog, setActivity, setAutoDelete } from './log';
 import { KeyRemote } from './remote';
-import { clearPreset } from './settings';
+import { clearPreset, presetPiece } from './settings';
 import { createExerciseScreen } from './screens/exercise';
 import { createLabScreen } from './screens/lab';
 import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
@@ -279,40 +279,56 @@ async function openActivity(id: string): Promise<void> {
   await launch(a);
 }
 
-/** Opens the activity's screen with its content and presets (in force while it lasts; never saved over yours). */
+/**
+ * Opens the activity's screen with its content and presets (in force while it lasts; never saved over yours). Its runs
+ * are logged with it only once its screen is open and nothing else was opened meanwhile (review, 2026-10-15: a piece
+ * that was not there, or a screen opened over a slow start, had your own runs logged as the activity).
+ */
 async function launch(a: Activity): Promise<void> {
-  try { return await launchScreen(a); } finally { setActivity({ id: a.id, screen: a.screen }); } // its runs are logged with it
+  const opened = await launchScreen(a);
+  if (opened()) setActivity({ id: a.id, screen: a.screen });
 }
-async function launchScreen(a: Activity): Promise<void> {
+/** Opens the screen; then says whether it is the activity's and still showing. */
+async function launchScreen(a: Activity): Promise<() => boolean> {
+  const no = () => false;
   const known = (piece: string) => app.pieces.some((p) => p.id === piece) || (app.showMessage(`${a.title}: there is no piece "${piece}"`), false);
   switch (a.screen) {
-    case 'score':
-      if (known(a.piece)) await scoreScreen.openActivity(a);
-      return;
-    case 'memorise':
-      if (!known(a.piece)) return;
+    case 'score': {
+      if (!known(a.piece)) return no;
+      const n = opening; // (another screen opened meanwhile counts one up; another song ends the preset)
+      await scoreScreen.openActivity(a);
+      return () => n === opening && app.currentId === a.piece && presetPiece() === a.piece;
+    }
+    case 'memorise': {
+      if (!known(a.piece)) return no;
       leaveScore();
       await scoreScreen.openSong(a.piece);
-      wanted();
+      const still = wanted();
       await memoriseScreen.open(a.settings, a.title);
-      return;
+      return () => still() && memoriseScreen.isOpen;
+    }
     case 'simon':
-    case 'drills':
+    case 'drills': {
       leaveScore();
-      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', wanted(), a);
-      return;
-    case 'lab':
+      const still = wanted();
+      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', still, a);
+      return () => still() && exerciseScreen.isOpen;
+    }
+    case 'lab': {
       leaveScore();
-      await labScreen.open(wanted(), a);
-      return;
-    case 'freeplay':
+      const still = wanted();
+      await labScreen.open(still, a);
+      return () => still() && labScreen.isOpen;
+    }
+    case 'freeplay': {
       leaveScore();
-      wanted();
+      const still = wanted();
       void midi.start().catch(() => {});
       app.appSound();
       freePlay.show(midi.down);
       app.stayAwake();
-      return;
+      return () => still() && freePlay.open;
+    }
   }
 }
 

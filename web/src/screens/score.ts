@@ -611,6 +611,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (!key || !touchPlays()) return;
     e.preventDefault();
     const m = Number(key.dataset.midi), id = e.pointerId;
+    try { $('keyboard').setPointerCapture(id); } catch { /* not a live pointer */ } // (lets go off the keys too: review, 2026-10-15)
     touchKeys.set(id, { midi: m, stop: sound.noteNow(m, 90, () => touchKeys.get(id)?.midi === m) });
     midi.down.add(m);
     midi.onKey({ midi: m, on: true, velocity: 90, time: performance.now() });
@@ -624,7 +625,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     midi.down.delete(t.midi);
     midi.onKey({ midi: t.midi, on: false, velocity: 0, time: performance.now() });
   };
-  for (const ev of ['pointerup', 'pointercancel'] as const) $('keyboard').addEventListener(ev, liftKey);
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) $('keyboard').addEventListener(ev, liftKey);
   $('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());
 
   practice.onDone = () => { endRun(); fillBars(); showBars(); };
@@ -658,9 +659,13 @@ export function createScoreScreen(app: App): ScoreScreen {
     summaryDialog.showModal();
   };
 
-  // Hands: L | R | Both | Off in the bottom bar, saved per song; a change while playing is heard at once.
+  // Hands: L | R | Both | Off in the bottom bar, saved per song; a change while playing is heard at once (Watch).
+  // In the modes where you play, a change ends the run there, as a change of mode does (review, 2026-10-15): its
+  // summary and log are for the hands it was played with, never a mix; the next ▶ or key starts one with the new hands.
   for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) {
     b.addEventListener('click', () => {
+      const was = settingsFor(currentPiece().id);
+      if (was.mode !== 'watch' && b.dataset.hands !== was.hands) { if (view.playing || practice.active) stopAll(); forgetRun(); }
       savePieceSetting(currentPiece().id, 'hands', b.dataset.hands as Hands);
       fillBars();
       if (view.playing && sound.playing && !practice.active) startSound(sound.songTime());

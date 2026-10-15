@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability",
+    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability && npm run check:exercise",
     "check:notes": "vite build && node tests/notes-match.mjs",
     "check:browser": "vite build && node tests/browser.mjs",
     "check:scoring": "node tests/scoring.mjs",
@@ -17,7 +17,8 @@
     "check:pdf": "node tests/pdf.mjs",
     "check:readability": "node tests/readability.mjs",
     "check:wake": "node tests/wake.mjs",
-    "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs"
+    "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs",
+    "check:exercise": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/exercise.mjs"
   },
   "dependencies": {
     "@tonejs/midi": "2.0.28",

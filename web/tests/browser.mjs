@@ -8,7 +8,7 @@
 // Not here: the library store's lost update (F03; shown with the store module through the dev server, 0 of 10 before,
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -96,7 +96,7 @@ writeFileSync(ROCK, rockMidi());
 let server = null, exited = false;
 const stop = () => {
   if (!server) return;
-  if (process.platform === 'win32') spawn('taskkill', ['/pid', String(server.pid), '/T', '/F']);
+  if (process.platform === 'win32') spawnSync('taskkill', ['/pid', String(server.pid), '/T', '/F'], { stdio: 'ignore' }); // (waited for: the run exits next, and an unfinished kill left the preview serving, so the next run refused its port; 2026-10-15)
   else try { process.kill(-server.pid, 'SIGTERM'); } catch { /* already gone */ }
 };
 if (urlAt < 0) {
@@ -547,6 +547,149 @@ try {
     ok('library: a score file and a chart unreachable once are read the next time it opens', !first.facts && !first.chart && second.facts && second.chart, `first ${JSON.stringify(first)}, then ${JSON.stringify(second)}`);
     ok('library (unreachable once): no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
+  }
+
+  // Review 2026-10-15 (practice, judging and input). A stand-in MIDI keyboard: window.__key(midi, on) plays a key.
+  {
+    const fakeMidi = () => {
+      const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+      const access = { inputs: new Map([[input.id, input]]), outputs: new Map(), onstatechange: null };
+      Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+      window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+    };
+    async function keysAt(url = BASE, route) {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+      const page = await ctx.newPage();
+      if (route) await route(page);
+      await page.addInitScript(fakeMidi);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(url); await page.waitForTimeout(1500);
+      return { ctx, page, errors };
+    }
+    const tap = async (page, m) => { await page.evaluate((m) => window.__key(m, true), m); await page.waitForTimeout(60); await page.evaluate((m) => window.__key(m, false), m); };
+    const press = (page, sel) => page.evaluate((s) => document.querySelector(s).click(), sel); // (as Enter on a focused button: works on a faded bar)
+    const entries = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries);
+    const playing = (page) => page.evaluate(() => document.getElementById('play').textContent === '⏸');
+
+    // B2-01: Hands changed during a judged run. Played with both hands, then R: the run ends there, its summary and log
+    // for both hands (before: it ran on, logged and judged as the right hand).
+    {
+      const { ctx, page, errors } = await keysAt();
+      await page.mouse.click(200, 400); await page.waitForTimeout(300);
+      await page.selectOption('#q-mode', 'along'); await press(page, '#q-hands button[data-hands="both"]');
+      await press(page, '#play'); await page.waitForTimeout(800);
+      for (let i = 0; i < 6; i++) { await tap(page, 60); await page.waitForTimeout(350); }
+      const during = await playing(page);
+      await press(page, '#q-hands button[data-hands="right"]'); await page.waitForTimeout(300);
+      const after = { playing: await playing(page), summary: await page.evaluate(() => document.getElementById('summary').open) };
+      const e = (await entries(page)).at(-1);
+      ok('Hands mid-run: the run ends there with its summary, logged for the hands it was played with', during && !after.playing && after.summary && e?.settings.hands === 'both',
+        `running before ${during}, after ${JSON.stringify(after)}, logged hands ${e?.settings.hands}`);
+      ok('Hands mid-run: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    {
+      // Paused by itself (no keys), then R, then carrying on: the run is the new hands' only (before: the paused part's
+      // both-hand notes were added into a run logged as the right hand).
+      const { ctx, page, errors } = await keysAt();
+      await page.mouse.click(200, 400); await page.waitForTimeout(300);
+      await page.selectOption('#q-mode', 'along'); await press(page, '#q-hands button[data-hands="both"]');
+      await press(page, '#play');
+      let paused = false;
+      for (let i = 0; i < 40 && !paused; i++) { await page.waitForTimeout(250); paused = /Paused/.test(await message(page)); }
+      await press(page, '#q-hands button[data-hands="right"]'); await page.waitForTimeout(200);
+      const from = await page.evaluate(() => window.__pianoDebug.state().step);
+      await tap(page, await page.evaluate((i) => window.__pianoDebug.struck(i, 'right')[0] ?? 60, from));
+      await page.waitForTimeout(1200);
+      const to = await page.evaluate(() => window.__pianoDebug.state().step);
+      await press(page, '#play'); await page.waitForTimeout(400);
+      const rh = await page.evaluate(([a, b]) => { let n = 0; for (let i = a; i <= b; i++) n += new Set(window.__pianoDebug.struck(i, 'right')).size; return n; }, [from, to]);
+      const last = (await entries(page)).at(-1);
+      ok('Hands while paused: carrying on is a new run of the new hands only', paused && last?.settings.hands === 'right' && last?.result.notes === rh,
+        `paused ${paused}; logged ${last?.settings.hands}, ${last?.result.notes} notes; the right hand has ${rh} from step ${from} to ${to}`);
+      ok('Hands while paused: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // B1-04: a key does not start Simon or a drill set behind the Level panel (as on the score); without it, it does.
+    for (const kind of ['simon', 'drills']) {
+      const { ctx, page, errors } = await keysAt();
+      await page.mouse.click(200, 400); await page.waitForTimeout(300);
+      await more(page); await press(page, `#open-${kind}`); await page.waitForTimeout(1500);
+      await press(page, '#ex-level'); await page.waitForTimeout(200);
+      await tap(page, 60); await page.waitForTimeout(1000);
+      const behind = await page.textContent('#ex-name');
+      await page.evaluate(() => { for (const d of document.querySelectorAll('dialog[open]')) d.close(); });
+      await tap(page, 60); await page.waitForTimeout(1000);
+      const open = await page.textContent('#ex-name');
+      ok(`${kind}: a key behind the Level panel starts nothing; with it closed a key starts`, behind === 'Ready' && open !== 'Ready', `behind "${behind}", closed "${open}"`);
+      ok(`${kind}: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // B1-02: an activity is logged with your runs only once its screen opened. A piece that is not there; a Simon activity
+    // overtaken by opening Simon from the menu while its sets load (before: both logged your own runs as the activity).
+    {
+      const activity = (body) => (p) => p.route('**/content/activities/test-act.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(body) }));
+      const along = async (page) => {
+        await page.mouse.click(200, 400); await page.waitForTimeout(300);
+        await page.selectOption('#q-mode', 'along');
+        await press(page, '#play'); await page.waitForTimeout(800);
+        for (let i = 0; i < 3; i++) { await tap(page, 60); await page.waitForTimeout(300); }
+        await press(page, '#play'); await page.waitForTimeout(400);
+        return (await entries(page)).at(-1);
+      };
+      let { ctx, page, errors } = await keysAt(`${BASE}?activity=test-act`, activity({ title: 'Test', screen: 'score', piece: 'no-such-piece', settings: { mode: 'along' } }));
+      await page.waitForTimeout(1000);
+      const said = await message(page), e1 = await along(page);
+      ok('activity with a missing piece: said, and your runs are not logged as it', /no piece/.test(said) && e1 && e1.activity === undefined, `"${said}"; logged activity ${e1?.activity}`);
+      await ctx.close();
+      ({ ctx, page, errors } = await keysAt(`${BASE}?activity=test-act`, activity({ title: 'Test', screen: 'score', piece: 'bach-bwv514', settings: { mode: 'along' } })));
+      await page.waitForTimeout(1000);
+      const e2 = await along(page);
+      ok('activity (control): one that opens is logged with its runs', e2?.activity === 'test-act', `logged activity ${e2?.activity}`);
+      await ctx.close();
+      let menu = false;
+      ({ ctx, page, errors } = await keysAt(`${BASE}?activity=chords-simon`, (p) => p.route('**/content/sets/index.json', async (r) => { if (!menu) await new Promise((res) => setTimeout(res, 5000)); await r.continue(); })));
+      await page.mouse.click(200, 400);
+      await more(page); menu = true; await press(page, '#open-simon');
+      await page.waitForTimeout(8000);
+      await tap(page, 60); await page.waitForTimeout(6000); // your own game (it plays the chain first)
+      await tap(page, 30); await page.waitForTimeout(300); // a miss
+      await press(page, '#ex-done'); await page.waitForTimeout(300);
+      const e3 = (await entries(page)).at(-1);
+      ok('activity overtaken by opening Simon from the menu: your own game is not logged as it', e3?.screen === 'simon' && e3.set !== 'chords-c' && e3.activity === undefined, `set ${e3?.set}, logged activity ${e3?.activity}`);
+      ok('activities: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // B2-04: a mouse pressed on an on-screen key and let go off the keyboard lets the key go (score in Wait for me, Free play, Simon).
+    {
+      const { ctx, page, errors } = await keysAt();
+      await page.mouse.click(200, 300); await page.waitForTimeout(300);
+      await page.selectOption('#q-mode', 'wait');
+      await page.reload(); await page.waitForTimeout(2000); await page.mouse.click(200, 300); await page.waitForTimeout(300);
+      await page.evaluate(() => { for (const id of ['top-bar', 'bottom-bar']) document.getElementById(id).classList.add('faded'); }); // (the bottom bar sits over the keys)
+      const held = (sel) => page.evaluate((s) => [...document.querySelectorAll(`${s} [data-midi].pressed`)].map((k) => Number(k.dataset.midi)), sel);
+      async function dragOff(sel) {
+        const at = await page.evaluate((s) => { const ks = [...document.querySelectorAll(`${s} [data-midi]`)].filter((k) => k.getBoundingClientRect().width > 0); const r = ks[Math.floor(ks.length / 2)].getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height * 0.8 }; }, sel);
+        await page.mouse.move(at.x, at.y); await page.mouse.down(); await page.waitForTimeout(150);
+        const down = (await held(sel)).length;
+        await page.mouse.move(at.x, 120, { steps: 5 }); await page.mouse.up(); await page.waitForTimeout(300);
+        return { down, after: (await held(sel)).length };
+      }
+      const got = { score: await dragOff('#keyboard') };
+      await more(page); await press(page, '#open-freeplay'); await page.waitForTimeout(800);
+      got.freeplay = await dragOff('#freeplay');
+      await press(page, '#fp-done'); await page.waitForTimeout(300);
+      await more(page); await press(page, '#open-simon'); await page.waitForTimeout(1500);
+      got.simon = await dragOff('#ex-keyboard');
+      ok('on-screen keys: a mouse let go off the keyboard lets the key go (score, Free play, Simon)', Object.values(got).every((g) => g.down === 1 && g.after === 0), JSON.stringify(got));
+      ok('on-screen keys: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
   }
 } finally {
   await browser?.close();

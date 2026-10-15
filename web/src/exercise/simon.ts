@@ -29,6 +29,12 @@ const DEFAULT_LEVEL: SimonLevel = { rung: 1, match: 'same', miss: 'tries', speed
 const KEY = 'piano-web.simon.v1';
 interface Stored { level: SimonLevel; best: Record<string, number>; set?: string }
 
+/**
+ * A dialog (Level, or another panel) is open over the screen: a key does not start anything behind it, as on the score
+ * (review, 2026-10-15: here a key started a game or a set behind the Level panel).
+ */
+export const dialogOpen = (): boolean => typeof document !== 'undefined' && !!document.querySelector?.('dialog[open]');
+
 const TRIES = 3;
 // The set's tempo (its items' own rhythm, or even quarter notes); "speeds up" quickens it a little as the chain
 // grows, like the toy, to at most half as fast again; steady keeps it.
@@ -63,6 +69,7 @@ export class Simon {
   private waitRelease = false;
   private token = 0; // bumps to cancel a showing in progress
   private helpedNow = false; // this chain was given again with Hear again / Show me
+  private wholeNow = false; // this turn asks for the whole chain (not from a miss on): only then can it be a best
   private timers: number[] = [];
 
   /** Your own level, saved; an activity's preset over it (owner, 2026-10-13) is in force while the activity lasts. */
@@ -261,6 +268,7 @@ export class Simon {
   private yourTurn(from = 0): void {
     this.state = 'turn';
     this.pos = from;
+    this.wholeNow = from === 0;
     this.got.clear();
     this.pressed.clear();
     this.hidden = false;
@@ -293,7 +301,7 @@ export class Simon {
   /** A key from either keyboard. */
   key(midi: number, on: boolean): void {
     if (!on) { if (this.waitRelease && this.keys.down.size === 0) this.waitRelease = false; return; }
-    if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { if (!this.waitRelease) void this.begin(); return; }
+    if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { if (!this.waitRelease && !dialogOpen()) void this.begin(); return; }
     if (this.state !== 'turn') return;
     if (!this.hidden) { // your first key: from here it is from memory
       this.hidden = true;
@@ -333,9 +341,12 @@ export class Simon {
     this.state = 'showing';
     this.keys.clearMarks();
     const length = this.chain.length, key = this.bestKey();
-    if (!this.helpedNow && length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
-    if (this.game) { if (this.helpedNow) this.game.helped++; else this.game.longest = Math.max(this.game.longest, length); }
-    this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : '✓';
+    // A best (and the game's longest chain) is the whole chain played in one go, unhelped; carrying on from a miss
+    // finishes the chain as practice, not as the whole of it from memory (review, 2026-10-15).
+    const counts = !this.helpedNow && this.wholeNow;
+    if (counts && length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
+    if (this.game) { if (this.helpedNow) this.game.helped++; else if (counts) this.game.longest = Math.max(this.game.longest, length); }
+    this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : counts ? '✓' : '✓ (from the miss on: not a best)';
     this.ui.status.className = 'ex-status ok';
     this.scoreLine();
     if (this.set.order === 'passage' && length >= this.items.length) {

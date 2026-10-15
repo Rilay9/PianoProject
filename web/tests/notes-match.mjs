@@ -6,7 +6,7 @@
 // usage: npm run check:notes            (builds, serves on :5193, checks every song in public/scores)
 //        node tests/notes-match.mjs --corrupt   (changes one note in the served file: the check must fail)
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 
@@ -27,7 +27,7 @@ const server = spawn(`npx vite preview --port ${PORT} --strictPort`, { shell: tr
 let exited = false;
 server.on('exit', () => { exited = true; });
 const stop = () => {
-  if (process.platform === 'win32') spawn('taskkill', ['/pid', String(server.pid), '/T', '/F']);
+  if (process.platform === 'win32') spawnSync('taskkill', ['/pid', String(server.pid), '/T', '/F'], { stdio: 'ignore' }); // (waited for: the run exits next, and an unfinished kill left the preview serving, so the next run refused its port; 2026-10-15)
   else try { process.kill(-server.pid, 'SIGTERM'); } catch { /* already gone */ }
 };
 
