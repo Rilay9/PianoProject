@@ -32,8 +32,10 @@ import {
   floorDiv,
   frac,
   gt,
+  isZero,
   lt,
   lte,
+  mod,
   mul,
   sub,
   trunc,
@@ -88,12 +90,28 @@ export function notatablePieces(
   length: Frac,
   unit: Frac,
   beat: Frac,
+  /** The bar's length: a note starting on a beat may span beats, but not hide the bar's middle (see below). */
+  barLength?: Frac,
 ): Frac[] {
   const pieces: Frac[] = [];
   let at = startInBar;
   let left = length;
   while (gt(left, ZERO)) {
     let take = left;
+    if (!isNotatable(take) && isZero(mod(at, beat))) {
+      // On a beat: the longest note value of whole beats that fits, as engravers write a held note (and music21
+      // splits one): a note held from the downbeat to a 16th before the barline is a dotted half and a dotted
+      // eighth, not three tied quarters and a dotted eighth (owner's Seize the Day, 2026-10-15). It does not cross
+      // the middle of a bar of an even number of beats unless it starts the bar, so the half-bar stays visible.
+      const beats = trunc(div(left, beat));
+      const middle = barLength && isZero(mod(div(barLength, beat), frac(2))) && gt(div(barLength, beat), frac(2)) ? div(barLength, frac(2)) : null;
+      for (let k = beats; k > 1; k -= 1) {
+        const candidate = mul(beat, frac(k));
+        const end = add(at, candidate);
+        const hidesMiddle = middle !== null && !isZero(at) && lt(at, middle) && gt(end, middle);
+        if (isNotatable(candidate) && !hidesMiddle) { take = candidate; break; }
+      }
+    }
     if (!isNotatable(take)) {
       const room = sub(mul(frac(floorDiv(at, beat) + 1), beat), at);
       if (gt(room, ZERO) && lt(room, take)) take = room;

@@ -75,7 +75,7 @@ export function sliceIntoChords(
     const rightAt = boundaries[i + 1] ?? ZERO;
     const index = bars.indexAt(leftAt);
     const bar = bars.bar(index);
-    const pieces = notatablePieces(sub(leftAt, bar.start), sub(rightAt, leftAt), unitForBar(index), bar.beat);
+    const pieces = notatablePieces(sub(leftAt, bar.start), sub(rightAt, leftAt), unitForBar(index), bar.beat, bar.length);
     let at = leftAt;
     for (const piece of pieces.slice(0, -1)) {
       at = add(at, piece);

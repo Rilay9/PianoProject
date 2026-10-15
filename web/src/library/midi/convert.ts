@@ -111,7 +111,7 @@ import {
  * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
  * the MusicXML it emits.
  */
-export const MIDI_CONVERTER_VERSION = 5; // 2026-10-15: the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
+export const MIDI_CONVERTER_VERSION = 6; // 2026-10-15: held notes in the longest beat-aligned values, eighths and shorter beamed by the beat. 5 (2026-10-15): the piano part is the score, the other parts play as the band (band.ts). 4 (2026-10-14): bars, keys, finer grids; voices; swing only where it is swing, drums left out, repeated strikes kept in place, only lengths the writer draws, two reader fixes
 
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
@@ -279,7 +279,7 @@ function barsFor(
         return;
       }
       const unit = unitForBar(bar);
-      for (const piece of notatablePieces(sub(at, from), sub(until, at), unit, beat)) {
+      for (const piece of notatablePieces(sub(at, from), sub(until, at), unit, beat, barLength)) {
         notes.push(...writerNotes(null, piece, at, staff, unwritable, voice));
         at = add(at, piece);
       }
@@ -293,9 +293,55 @@ function barsFor(
       next += 1;
     }
     rest(to);
-    bars.push(markTuplets(notes));
+    bars.push(markBeams(markTuplets(notes), toNumber(mul(beat, frac(DIVISIONS))), toNumber(mul(barLength, frac(DIVISIONS)))));
   }
   return bars;
+}
+
+const BEAMED = new Set(['eighth', '16th', '32nd', '64th']);
+
+/**
+ * Beams: within each beat, consecutive eighths and shorter are joined, as a score groups them (2026-10-15: every
+ * eighth of the owner's Seize the Day had its own flag, where the published arrangement beams them, and the page read
+ * as a wall of eighth notes). In 2/4 and 4/4 two beats of plain eighths are one group of four, as engravers beam a
+ * half bar. A rest, a longer note or the beat's end breaks a group; chord notes follow the note they sound with.
+ */
+function markBeams(notes: WriterNote[], beat: number, bar: number): WriterNote[] {
+  const groups: { beat: number; notes: WriterNote[]; plainEighths: boolean }[] = [];
+  let at = 0;
+  let open: (typeof groups)[number] | null = null;
+  for (const note of notes) {
+    if (note.chord) continue;
+    const start = at;
+    at += note.duration;
+    const beamable = !note.forward && note.midi !== null && BEAMED.has(note.type);
+    const inBeat = Math.floor(start / beat);
+    if (!beamable || (open && open.beat !== inBeat) || Math.floor((at - 1) / beat) !== inBeat) {
+      open = null;
+      if (!beamable) continue;
+      if (Math.floor((at - 1) / beat) !== inBeat) continue; // crosses the beat: not beamed (a syncopation)
+    }
+    if (!open) { open = { beat: inBeat, notes: [], plainEighths: true }; groups.push(open); }
+    open.notes.push(note);
+    if (note.type !== 'eighth' || note.dotted || note.tuplet) open.plainEighths = false;
+  }
+  // A half bar of plain eighths in 2/4 or 4/4: the two beats' pairs become one group of four.
+  const halfBar = bar / 2;
+  const quarterBeats = beat === DIVISIONS && (bar === 2 * DIVISIONS || bar === 4 * DIVISIONS);
+  const joined: WriterNote[][] = [];
+  for (let i = 0; i < groups.length; i += 1) {
+    const g = groups[i]!, next = groups[i + 1];
+    const startsHalf = (g.beat * beat) % halfBar === 0;
+    if (quarterBeats && next && startsHalf && next.beat === g.beat + 1 && g.plainEighths && next.plainEighths && g.notes.length === 2 && next.notes.length === 2) {
+      joined.push([...g.notes, ...next.notes]);
+      i += 1;
+    } else joined.push(g.notes);
+  }
+  for (const group of joined) {
+    if (group.length < 2) continue;
+    group.forEach((note, i) => { note.beam = i === 0 ? 'begin' : i === group.length - 1 ? 'end' : 'continue'; });
+  }
+  return notes;
 }
 
 const QUARTERS_OF: Record<string, number> = { breve: 8, whole: 4, half: 2, quarter: 1, eighth: 1 / 2, '16th': 1 / 4, '32nd': 1 / 8, '64th': 1 / 16 };

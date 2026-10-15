@@ -218,7 +218,8 @@ export function readMidi(bytes: Uint8Array): MidiFileContents {
         const data = body.subarray(r.at, r.at + size);
         r.at += size;
         if (type === 0x03 && name === null) {
-          name = decoder.decode(data).trim() || null;
+          // Control characters are not part of a name (a notation program wrote "Piano" and a NUL, 2026-10-15).
+          name = decoder.decode(data).replace(/[\u0000-\u001f\u007f]/g, '').trim() || null;
         } else if (type === 0x51 && ticksSoFar < tempoTick && data.length >= 3) {
           const micros = ((data[0] ?? 0) << 16) | ((data[1] ?? 0) << 8) | (data[2] ?? 0);
           if (micros > 0) {

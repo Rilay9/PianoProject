@@ -344,7 +344,10 @@ one); examples to copy written into a chart.
   (a trill, a tremolo) has more strikes than the bar's grid has places: halved until they are apart, never pushed
   later. Two strikes of one key at the same moment or a hair apart (a part doubling another, a near-zero-length
   note before a note) are written as one note, and the sheet says how many; a unison between two kept tracks stays
-  on both staves. Triplets are written with their groups marked, so the "3" is drawn. Notes are paired by MIDI
+  on both staves. Triplets are written with their groups marked, so the "3" is drawn. Eighths and shorter are beamed
+  within the beat, a half bar of plain eighths in 2/4 and 4/4 as one group of four; a note held from a beat is written
+  in the longest whole-beat value that does not hide the bar's middle (a dotted half and a dotted eighth, not tied
+  quarters) (2026-10-15, compared with the published arrangement of the owner's Seize the Day). Notes are paired by MIDI
   channel as well as key, so two hands on two channels holding one key stay two notes. A file whose notes mostly
   miss the grid (played, not written) is said to have guessed bars and rhythms. Each hand is written in up to three
   voices (owner, 2026-10-14): notes struck together that end together are one chord; a melody held over moving notes,

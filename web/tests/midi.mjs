@@ -75,6 +75,10 @@ describe('the MIDI reader, on how exporters order and abbreviate events', () => 
       { delta: 480, bytes: noteOff(60) },
     ])).toEqual(['0-1:60', '1-2:60', '2-3:60']);
   });
+  it('leaves control characters out of a track name ("Piano" and a NUL, as one notation program writes it)', () => {
+    const file = buildMidiTracks([[{ delta: 0, bytes: [0xff, 0x03, 6, ...[...'Piano'].map((c) => c.charCodeAt(0)), 0] }, { delta: 0, bytes: noteOn(60) }, { delta: 480, bytes: noteOff(60) }]], 480, 0);
+    expect(readMidi(file).tracks[0].name).toBe('Piano');
+  });
   it('pairs a release with its own channel: two hands holding one key on two channels', () => {
     expect(read([
       { delta: 0, bytes: [0x90, 60, 64] },
@@ -528,7 +532,17 @@ describe('cutting a length into rhythms', () => {
   });
   it('cuts a long note into heads the writer draws', () => {
     const pieces = notatablePieces(frac(0), frac(16), frac(1, 4), frac(4));
-    expect(pieces.map(fracToString)).toEqual(['4', '12']); // cut at the beat first, then the dotted breve
+    expect(pieces.map(fracToString)).toEqual(['12', '4']); // the longest value of whole beats first
+  });
+  it('writes a note held from a beat with the longest value of whole beats, not tied quarters (Seize the Day, bar 160)', () => {
+    // 4/4, from the downbeat to a 16th before the barline: a dotted half and a dotted eighth (it was 1 + 1 + 1 + 3/4).
+    expect(notatablePieces(frac(0), frac(15, 4), frac(1, 4), frac(1), frac(4)).map(fracToString)).toEqual(['3', '3/4']);
+    // From beat 2 it may not hide the middle of the bar: a quarter to beat 3, then on (as engravers write it).
+    expect(notatablePieces(frac(1), frac(11, 4), frac(1, 4), frac(1), frac(4)).map(fracToString)).toEqual(['1', '1', '3/4']);
+    // 3/4 has no middle to keep: a half and a dotted eighth.
+    expect(notatablePieces(frac(0), frac(11, 4), frac(1, 4), frac(1), frac(3)).map(fracToString)).toEqual(['2', '3/4']);
+    // Off the beat it still cuts at the next beat first, and from beat 2 keeps the middle.
+    expect(notatablePieces(frac(1, 2), frac(13, 4), frac(1, 4), frac(1), frac(4)).map(fracToString)).toEqual(['1/2', '1', '1', '3/4']);
   });
   it('cuts a length between two grids into the fewest heads, longest first (Beethoven Op. 78)', () => {
     // Seven 48ths of a beat (a triplet-32nd onset next to a 64th one) in a bar whose own grid is the 16th.
@@ -804,6 +818,18 @@ describe('importing a MIDI file', () => {
     expect(outside).toBe(0);
     expect((xml.match(/<tuplet type="start"\/>/g) ?? []).length).toBe(4);
     expect((xml.match(/<tuplet type="stop"\/>/g) ?? []).length).toBe(4);
+  });
+  it('beams eighths and shorter within a beat, and a half bar of plain eighths as four (Seize the Day)', () => {
+    // Upper track, 4/4: eight eighths; then two eighths, a quarter, a dotted eighth and a 16th, an eighth rest and an eighth.
+    const up = [];
+    const note = (m, len, gap = 0) => { up.push({ delta: gap, bytes: noteOn(m) }, { delta: len, bytes: noteOff(m) }); };
+    for (let i = 0; i < 8; i += 1) note(72 + (i % 3), 240);
+    note(72, 240); note(74, 240); note(76, 480); note(77, 360); note(79, 120); note(77, 240, 240);
+    const bass = [{ delta: 0, bytes: noteOn(48) }, { delta: 3840, bytes: noteOff(48) }];
+    const { xml } = convertMidi(buildMidiTracks([up, bass]), { title: 'beams' });
+    const upper = (xml.match(/<note>[\s\S]*?<\/note>/g) ?? []).filter((n) => /<staff>1<\/staff>/.test(n) && !n.includes('<rest/>'));
+    const beams = upper.map((n) => /<beam number="1">(\w+)<\/beam>/.exec(n)?.[1] ?? '-');
+    expect(beams).toEqual(['begin', 'continue', 'continue', 'end', 'begin', 'continue', 'continue', 'end', 'begin', 'end', '-', 'begin', 'end', '-']);
   });
   it('says how many strikes it wrote as one note with the strike before', () => {
     // A one-tick strike just before a note of the same key, as score files have before some notes.
