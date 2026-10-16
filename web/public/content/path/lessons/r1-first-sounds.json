@@ -28,18 +28,18 @@
     },
     {
       "kind": "text",
-      "text": "# Find the groups\nTap every group of two black keys you can find, from the left end to the right end. Use the arrows to move higher or lower when the group you want is off the edge. Then do the same with the groups of three, from right to left.\n\nUse whichever finger is comfortable on the screen. Listen to the sound climbing as you go right, and falling as you go left."
+      "text": "# Find the groups\nTap each group of two black keys you can see, from left to right. Then tap › once to move an octave higher and tap the groups of two there too. Now come back down with ‹, past where you started, and do the same one octave lower. That's three places on the keyboard. Then do the same with the groups of three, starting high and working down.\n\nUse whichever finger is comfortable on the screen. Listen to the sound climbing as you go right, and falling as you go left."
     },
     {
       "kind": "step",
       "id": "find-groups",
       "title": "Find the groups",
       "activity": "r1-find-groups",
-      "about": "Every group of two, left to right; then every group of three, right to left."
+      "about": "Groups of two in three places, middle, higher, lower; then groups of three, high to low."
     },
     {
       "kind": "text",
-      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The phone can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video below shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall**, leaning very slightly forward, and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them). Then let your elbows bend and hang.\n\nRest your **feet flat** on the floor."
+      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The phone can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video below shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall**, leaning very slightly forward, and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them; on a portable keyboard, the edge of the case just behind the keys). Then let your elbows bend and hang.\n\nRest your **feet flat** on the floor."
     },
     {
       "kind": "video",
@@ -57,7 +57,7 @@
     },
     {
       "kind": "text",
-      "text": "# Playing a key, and letting it go\nAt a real keyboard, play a key with a **firm fingertip**: the tip keeps its shape and the key goes down. Then **let it go**: the key comes back up by itself and lifts your finger with it. You don't need to pull your finger up, and you don't need to press hard. Keep your wrist loose, as if it were floating.\n\nOn the phone there's no key to push down, so it's simply a light tap with your fingertip, then lifting off.\n\nIf you're at a keyboard now, try travelling on the groups the way pianists first learn to: put your right hand's fingers **2 and 3** on a group of two black keys in the middle, play them, and let your hand float up to the next group of two to the right. Keep going to the top. Then your left hand's **2 and 3**, travelling down to the left. Then the groups of three, with fingers **2, 3 and 4**."
+      "text": "# Playing a key, and letting it go\nAt a real keyboard, play a key with a **firm fingertip**: the tip keeps its shape and the key goes down. Then **let it go**: the key comes back up by itself and lifts your finger with it. You don't need to pull your finger up, and you don't need to press hard. Keep your wrist loose, as if it were floating.\n\nOn the phone there's no key to push down, so it's simply a light tap with your fingertip, then lifting off.\n\nIf you're at a keyboard now, try travelling on the groups the way pianists first learn to: put your right hand's fingers **2 and 3** on a group of two black keys in the middle, play them together, softly, and let your hand float up to the next group of two to the right. Keep going to the top. Then your left hand's **2 and 3**, travelling down to the left. Then the groups of three, with fingers **2, 3 and 4**."
     },
     {
       "kind": "text",
@@ -87,11 +87,11 @@
       "id": "make-a-tune",
       "title": "Make up a tune",
       "activity": "r1-make-a-tune",
-      "about": "Black keys only, any order: nothing is scored."
+      "about": "Make up a tune on the black keys: any groups, high or low, fast or slow. Nothing is scored."
     },
     {
       "kind": "text",
-      "text": "# Check yourself\n- Without looking at this page, tap a group of three black keys high up, then a group of two low down. Did you find them on the first try?\n- Which fingers are 1 and 5? Wiggle them in each hand.\n- At a keyboard or table: make the C shape and drop the apples. Is your wrist loose?"
+      "text": "# Check yourself\n- Without looking at this page, tap a group of three black keys high up, then a group of two low down. Did you find them on the first try?\n- Which fingers are 1 and 5? Wiggle them in each hand. Then 3, then 2.\n- At a keyboard or table: make the C shape and drop the apples. Is your wrist loose?"
     },
     {
       "kind": "text",

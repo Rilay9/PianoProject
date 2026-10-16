@@ -377,7 +377,9 @@ keyboard or by tapping the keys on the screen. With nothing to play on (no MIDI 
 and no keys on the screen: Nothing under the music, help above 1) the Ready screen says "No MIDI keyboard found: choose
 Keyboard under the music (Level) to play on the screen, or plug one in." until a keyboard is seen or the keys are shown
 (F17; owner, 2026-10-15: it said "Cards are judged from a MIDI keyboard; none is connected." with the keys showing too,
-which was false). Simon says the same in the same case (§7d). A set file that could not be read is read again the next time Drills or Simon opens (F20).
+which was false). Simon says the same in the same case (§7d). **A MIDI prompt not answered** (ChatGPT's live review of lesson 1, 2026-10-16): Simon, Drills, Memorise and the lab
+never wait on the browser still asking to allow MIDI (`midi.ts` `startSoon`): after 1.5 s they open as with no keyboard,
+and a keyboard allowed later is heard (it was: lesson 1's copying step never opened, and said nothing). A set file that could not be read is read again the next time Drills or Simon opens (F20).
 
 **How it works:** a card appears at the chosen help level (0 keys, no music: it plays the card with its keys lit and
 no music is drawn, not even with the result, where the keys show the wrong keys red and the missed ones outlined, and
@@ -428,7 +430,10 @@ columns off. Nothing is judged or kept. `web/src/freeplay.ts`. The keys are 42% 
 (a phone on its side: 108 px, so the recent columns keep their room); they had been 108 px everywhere, a style
 overridden by mistake (fixed 2026-10-16). Opened from a lesson step, its activity can choose the
 keys shown (§8b `keys`: e.g. C4–E5 upright, so the black keys are about 30 px wide on a phone); ‹ › then move those
-keys an octave at a time.
+keys an octave at a time. **Opened by a lesson's step** (owner, 2026-10-16, after ChatGPT's live review of lesson 1: the screen said only "Play
+something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows where "Play something"
+was, at reading size, and the three columns start hidden; Show turns them on for that visit only (your own Free play
+keeps its columns, `piano-web.freeplay.v1`). A step's `about` is therefore written as the task to do on that screen.
 
 **Metronome** (owner, 2026-10-15): on its own, Practice → Metronome (`web/src/screens/metronome.ts`): tempo (−5/+5, a
 slider 20–300, tap tempo), beats in a bar (1–7, the first accented), its sound (Wood / Beep / High: the app's click, one
@@ -1539,8 +1544,10 @@ After every step the result is a place of its own over the lesson page (V12: ←
 shows **this time**'s result (as its screen words it), whether the target was met, the best so far over every attempt
 (kept apart), and the feedback (Hard / OK / Easy and a note, both skippable; both cleared again, the feedback entry
 leaves the log: F05). Its fixed bottom bar always holds **Again**,
-**Lesson** (back to the lesson page) and the way on, in view at any size (V28): **Next: step n ▶**, or after the
-lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
+**Lesson** (back to the lesson page) and the way on, in view at any size (V28): **Next ▶**, the lesson page scrolled to
+the part after this step, with the next step's Start below its text (owner, 2026-10-16, after ChatGPT's live review of
+lesson 1: it used to open the next step's screen, skipping the explanation before it; after a lesson's last step with an
+earlier step left, the part leading to that step), or after the lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
 from when it was started (kept for the tab, so a reload inside the step still counts the runs before it: F15); a step
 whose activity could not open marks nothing. Switch… from the result works as from the lesson page: the chosen lesson
 takes the lesson page's place (the result goes with it), and the lesson you are on has no Open (F13).

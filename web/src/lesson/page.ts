@@ -21,7 +21,7 @@ export interface LessonDeps {
   sound: Sound;
   prepare: () => Promise<void>;
   /** Opens the step's activity on its screen (one more place on top); false when it could not open. */
-  launch: (a: Activity, ref: LessonRef) => Promise<boolean>;
+  launch: (a: Activity, ref: LessonRef, task?: string) => Promise<boolean>;
   /** The Switch… sheet, for this lesson. */
   openSwitch: (lessonId: string) => void;
   /** Another lesson in this page's place (the next lesson, or one chosen in Switch…). */
@@ -62,12 +62,17 @@ export function createLessonPage(d: LessonDeps) {
     if (!lesson) { where.textContent = 'Lesson'; body.replaceChildren(el('p', 'note', `There is no lesson "${id}" on the path${data.problems.length ? ` (${data.problems.join('; ')})` : ''}.`)); bar.hidden = true; return; }
     setCurrentLesson(id);
     if (shown && shown.pending.lesson !== id) shown = null;
-    render();
+    // The same lesson drawn again (back from its result, or from a screen opened from it): your place is kept, not the
+    // top again (ChatGPT's live review of lesson 1, 2026-10-16).
+    render(!shown && drawnLesson === id);
     const step = startStep ? stepsOf(lesson).find((s) => s.id === startStep) : undefined;
     if (step) await start(step, resume);
   }
 
-  function render(): void {
+  /** The part to show next drawing (the result's Next: owner, 2026-10-16), applied once the page is drawn. */
+  let goTo: { after?: string; to: string } | null = null;
+  let drawnLesson = ''; // the lesson whose page is drawn (not a result)
+  function render(keepPlace = false): void {
     if (!lesson || !data) return;
     stopMiniScores();
     const place = placeOf(data, lesson.id)!;
@@ -80,8 +85,11 @@ export function createLessonPage(d: LessonDeps) {
     out.push(...drawBlocks(lesson.blocks, ctx));
     const column = el('div', 'les-column');
     column.append(...out, helpLink('path')); // (How this screen works: the lesson page has no ⋯)
+    const was = body.scrollTop;
     body.replaceChildren(column);
-    body.scrollTop = 0;
+    body.scrollTop = keepPlace ? was : 0;
+    drawnLesson = lesson.id;
+    if (goTo) { const g = goTo; requestAnimationFrame(() => { if (goTo === g) { goTo = null; showPart(g.after, g.to); } }); }
     // The bottom bar: the next step not done, or the lesson done (and the next lesson, if there is one).
     if (state.next) {
       const go = button(`Start step ${state.nextNo} ▶`, 'btn main', () => void start(state.next!));
@@ -91,6 +99,24 @@ export function createLessonPage(d: LessonDeps) {
       const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), after = order[at + 1];
       setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : []);
     }
+  }
+
+  /**
+   * The lesson page scrolled to a part: what comes after step `after` (the text before the next step), or, with no
+   * `after`, the text leading to step `to` (from the step before it). Drawn first if the page is not (a result shown).
+   */
+  function showPart(after: string | undefined, to: string): void {
+    const card = (id: string) => body.querySelector<HTMLElement>(`.les-step[data-step="${CSS.escape(id)}"]`);
+    let from: Element | null | undefined;
+    if (after) from = card(after)?.nextElementSibling;
+    else {
+      // the first block after the step before `to` (or the lesson's title when `to` is the first step)
+      let prev = card(to)?.previousElementSibling;
+      while (prev && !prev.classList.contains('les-step') && !prev.classList.contains('les-title')) prev = prev.previousElementSibling;
+      from = prev?.nextElementSibling;
+    }
+    const target = (from ?? card(to)) as HTMLElement | null;
+    if (target) body.scrollTop += target.getBoundingClientRect().top - body.getBoundingClientRect().top - 8;
   }
 
   /** A step: its state in words (target met, played, tried, skipped, up next, to come), what it is, what "done" means, and its Start (never locked). */
@@ -139,7 +165,7 @@ export function createLessonPage(d: LessonDeps) {
     pending = mine;
     keepSince({ lesson: lesson.id, step: b.id, since });
     // (a second Start while this one waits for its piece wins; this one, overtaken, leaves the second's step in place)
-    if (!await d.launch(a, ref) && pending === mine) pending = null;
+    if (!await d.launch(a, ref, b.about) && pending === mine) pending = null; // (about: the step's task, which Free play shows)
   }
 
   /** Back from a step's screen: what happened, the step done if it was, and the feedback taps. */
@@ -217,7 +243,10 @@ export function createLessonPage(d: LessonDeps) {
     const buttons = [button('Again', 'btn', () => void start(b)), button('Lesson', 'btn', () => d.back())];
     buttons[1].setAttribute('aria-label', 'Back to the lesson');
     if (s.lessonDone && s.nextLesson) { const id = s.nextLesson; buttons.push(button('Next lesson ▶', 'btn main', () => d.back(() => d.openLesson(id)))); }
-    else if (nextStep) buttons.push(button(`Next: step ${steps.indexOf(nextStep) + 1} ▶`, 'btn main', () => void start(nextStep)));
+    // Next is the lesson at the next part, not the next step's screen (owner, 2026-10-16, after ChatGPT's live review of
+    // lesson 1: Next skipped the black-key map and the technique sections): the part after this step at the top, the
+    // next step's Start below its text. After the lesson's last step (a step left earlier): that step's own part.
+    else if (nextStep) buttons.push(button('Next ▶', 'btn main', () => { goTo = { after: steps[no] ? b.id : undefined, to: nextStep.id }; d.back(); }));
     setBar('', buttons);
     const column = el('div', 'les-column');
     column.append(card, el('div', 'lbl', 'How was it? (optional)'),

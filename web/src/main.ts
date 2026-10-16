@@ -95,7 +95,7 @@ const libraryScreen = createLibraryScreen(app, {
 const shell = createShell(app, {
   app, sound, library: libraryScreen,
   prepare: async () => { await sound.prepare(); app.appSound(); sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null; },
-  launch: async (a, ref) => launch(a, ref),
+  launch: async (a, ref, task) => launch(a, ref, task),
   openPiece: (id, bars, again) => void openPiece(id, bars, again),
   openMemorise: (id) => void openMemorise(id),
   openExercise: (kind, set) => void openExercise(kind, set),
@@ -209,11 +209,11 @@ async function openLab(chart?: string): Promise<void> {
   if (still() && labScreen.isOpen) enter({ name: 'lab', params: { tool: 'lab', ...(chart ? { chart } : {}) }, leave: () => labScreen.close() });
 }
 /** keys: an activity's chosen keys (2026-10-16). */
-function openFreePlay(keys?: ChosenKeys): void {
+function openFreePlay(keys?: ChosenKeys, lesson?: { task?: string }): void {
   wanted();
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   app.appSound();
-  freePlay.show(midi.down, keys);
+  freePlay.show(midi.down, keys, lesson);
   app.stayAwake();
   enter({ name: 'freeplay', params: { tool: 'freeplay' }, leave: () => freePlay.close() });
 }
@@ -523,10 +523,10 @@ async function openActivity(id: string): Promise<void> {
  * screen is open and nothing else was opened meanwhile (review, 2026-10-15: a piece that was not there, or a screen
  * opened over a slow start, had your own runs logged as the activity). Says whether it opened.
  */
-async function launch(a: Activity, lesson?: LessonRef): Promise<boolean> {
+async function launch(a: Activity, lesson?: LessonRef, task?: string): Promise<boolean> {
   // (the screen's address names the step: a reload opens it again, V21; passed along, not kept in a variable another
   // launch could change while this one waits for its piece)
-  const opened = await launchScreen(a, lesson?.step);
+  const opened = await launchScreen(a, lesson?.step, task);
   if (!opened()) return false;
   setActivity({ id: a.id, screen: a.screen, ...(lesson ? { lesson } : {}) });
   // A catalogue piece added for it (owner, 2026-10-15): said once its screen shows, after what the screen says (the
@@ -536,7 +536,7 @@ async function launch(a: Activity, lesson?: LessonRef): Promise<boolean> {
   return true;
 }
 /** Opens the screen and puts it on top; then says whether it is the activity's and still showing. */
-async function launchScreen(a: Activity, step?: string): Promise<() => boolean> {
+async function launchScreen(a: Activity, step?: string, task?: string): Promise<() => boolean> {
   const no = () => false;
   /** The address of the activity's screen: its own, and the lesson step it was opened for (if any). */
   const withStep = (params: Record<string, string>): Record<string, string> => (step ? { ...params, step } : params);
@@ -582,7 +582,7 @@ async function launchScreen(a: Activity, step?: string): Promise<() => boolean> 
       return () => still() && labScreen.isOpen;
     }
     case 'freeplay': {
-      openFreePlay(a.keys);
+      openFreePlay(a.keys, step ? { task } : undefined); // (a lesson's step: its task on screen, the columns hidden)
       if (step) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step })}`);
       const still = () => freePlay.open;
       return still;

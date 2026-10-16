@@ -61,25 +61,38 @@ export class FreePlay {
     panel.querySelector('#fp-up')!.addEventListener('click', () => this.shift(12));
     const dialog = document.getElementById('fp-show-dialog') as HTMLDialogElement;
     panel.querySelector('#fp-show')!.addEventListener('click', () => {
-      const on = shownColumns();
+      const on = this.columnsOn();
       for (const box of dialog.querySelectorAll<HTMLInputElement>('input[name="fp-col"]')) box.checked = on[box.value as Column];
       dialog.showModal();
     });
     dialog.addEventListener('change', (e) => {
       const box = e.target as HTMLInputElement;
-      saveColumns({ ...shownColumns(), [box.value]: box.checked });
+      if (this.lessonColumns) this.lessonColumns = { ...this.lessonColumns, [box.value]: box.checked }; // (this visit only)
+      else saveColumns({ ...shownColumns(), [box.value]: box.checked });
       this.showColumns();
     });
   }
 
+  /**
+   * Opened by a lesson's step (owner, 2026-10-16, after ChatGPT's live review of lesson 1): the step's task where "Play
+   * something" was, and the columns hidden (chord and interval names a first lesson hasn't taught); Show turns them on
+   * for this visit, leaving your own choice for Free play as it was.
+   */
+  private task = '';
+  private lessonColumns: Record<Column, boolean> | null = null;
+  private columnsOn(): Record<Column, boolean> { return this.lessonColumns ?? shownColumns(); }
+
   private showColumns(): void {
-    const on = shownColumns();
+    const on = this.columnsOn();
     for (const col of this.panel.querySelectorAll<HTMLElement>('.fp-col')) col.hidden = !on[col.dataset.col as Column];
   }
 
-  /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. */
-  show(down: Set<number>, keys?: ChosenKeys): void {
+  /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. lesson: opened by a
+   * lesson's step, with its task (above). */
+  show(down: Set<number>, keys?: ChosenKeys, lesson?: { task?: string }): void {
     this.open = true;
+    this.task = lesson?.task ?? '';
+    this.lessonColumns = lesson ? { chords: false, notes: false, intervals: false } : null;
     this.chosen = keys ?? null;
     this.moved = 0;
     this.midiDown = new Set(down);
@@ -186,7 +199,9 @@ export class FreePlay {
     // (final review 2026-10-15, F16: C3 + E5 was a plain "major 3rd", C4 + C5 nothing).
     const two = [...down].sort((a, b) => a - b);
     const big = two.length === 2 ? intervalName(two[0], two[1], chord) : chord;
-    this.panel.querySelector('#fp-chord')!.textContent = big || (down.size ? '' : 'Play something');
+    const idle = !big && !down.size, chordLine = this.panel.querySelector('#fp-chord')!;
+    chordLine.textContent = big || (down.size ? '' : this.task || 'Play something');
+    chordLine.classList.toggle('fp-task', idle && !!this.task);
     this.panel.querySelector('#fp-notes')!.textContent = names;
     if (!down.size) this.lastChord = '';
     this.renderRecent();

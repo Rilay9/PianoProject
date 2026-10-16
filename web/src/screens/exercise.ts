@@ -127,7 +127,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   }
   /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
   async function show(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
-    inputs = await midi.start().catch(() => [] as string[]);
+    inputs = await midi.startSoon().catch(() => [] as string[]); // (a keyboard allowed later is heard: onDevices above)
     // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
     sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
     // Read when first opened, and again while any set could not be read (a passing failure is not kept as the answer:

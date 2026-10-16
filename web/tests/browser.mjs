@@ -581,6 +581,9 @@ try {
       const page = await ctx.newPage();
       if (route) await route(page);
       await page.addInitScript(fakeMidi);
+      // (these cases are about the test lesson: since lesson 1 shipped, Home's Up next is the path's first real lesson,
+      // so a fresh tab is put on the test lesson, as a learner who had chosen it would be; 2026-10-16)
+      await page.addInitScript(() => { if (!localStorage.getItem('piano-web.path.v1')) localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-minuet-opening', done: {}, tried: {} })); });
       const errors = [];
       page.on('pageerror', (e) => errors.push(String(e)));
       page.on('dialog', (d) => d.accept());
@@ -734,6 +737,9 @@ try {
       const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       await page.addInitScript(fakeMidi);
+      // (these cases are about the test lesson: since lesson 1 shipped, Home's Up next is the path's first real lesson,
+      // so a fresh tab is put on the test lesson, as a learner who had chosen it would be; 2026-10-16)
+      await page.addInitScript(() => { if (!localStorage.getItem('piano-web.path.v1')) localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-minuet-opening', done: {}, tried: {} })); });
       const errors = [];
       page.on('pageerror', (e) => errors.push(String(e)));
       page.on('dialog', (d) => d.accept());
@@ -1004,6 +1010,9 @@ try {
       const ctx = await browser.newContext({ viewport, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       await page.addInitScript(fakeMidi);
+      // (these cases are about the test lesson: since lesson 1 shipped, Home's Up next is the path's first real lesson,
+      // so a fresh tab is put on the test lesson, as a learner who had chosen it would be; 2026-10-16)
+      await page.addInitScript(() => { if (!localStorage.getItem('piano-web.path.v1')) localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-minuet-opening', done: {}, tried: {} })); });
       const errors = [];
       page.on('pageerror', (e) => errors.push(String(e)));
       page.on('dialog', (d) => d.accept());
@@ -1201,6 +1210,9 @@ try {
       const ctx = await browser.newContext({ viewport, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       await page.addInitScript(fakeMidi);
+      // (these cases are about the test lesson: since lesson 1 shipped, Home's Up next is the path's first real lesson,
+      // so a fresh tab is put on the test lesson, as a learner who had chosen it would be; 2026-10-16)
+      await page.addInitScript(() => { if (!localStorage.getItem('piano-web.path.v1')) localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-minuet-opening', done: {}, tried: {} })); });
       if (init) await page.addInitScript(init);
       const errors = [];
       page.on('pageerror', (e) => errors.push(String(e)));
@@ -1252,7 +1264,7 @@ try {
     for (const vp of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
       const { ctx, page, errors } = await open(`${BASE}?page=lesson&lesson=test-chords-and-band`, vp);
       // (steps 1 and 2 done before, so Free play is the last one to do)
-      await page.evaluate(() => { localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } } }, tried: {} })); });
+      await page.evaluate(() => { localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, 'r1-first-sounds': Object.fromEntries(['first-sounds', 'find-groups', 'copy', 'make-a-tune'].map((k) => [k, { at: new Date().toISOString(), how: 'opened' }])) }, tried: {} })); });
       await page.reload(); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       await click(page, '#fp-done'); await page.waitForTimeout(600);
@@ -1367,6 +1379,9 @@ try {
       const ctx = await browser.newContext({ viewport, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       await page.addInitScript(fakeMidi);
+      // (these cases are about the test lesson: since lesson 1 shipped, Home's Up next is the path's first real lesson,
+      // so a fresh tab is put on the test lesson, as a learner who had chosen it would be; 2026-10-16)
+      await page.addInitScript(() => { if (!localStorage.getItem('piano-web.path.v1')) localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-minuet-opening', done: {}, tried: {} })); });
       const errors = [];
       page.on('pageerror', (e) => errors.push(String(e)));
       page.on('dialog', (d) => d.accept());
@@ -1411,10 +1426,18 @@ try {
       await page.goto(`${BASE}?page=lesson&lesson=test-minuet-opening`); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="wait-rh"] .btn').click(); await page.waitForTimeout(2500);
       await click(page, '#score-back'); await page.waitForTimeout(600);
-      await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(2500);
+      // (owner, 2026-10-16: Next is the lesson page at the part after step 1, the next step's Start below it; then Start)
+      await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1500);
+      const part = await page.evaluate(() => {
+        const body = document.getElementById('lesson-body'), card = body.querySelector('.les-step[data-step="wait-rh"]');
+        const after = card?.nextElementSibling, top = body.getBoundingClientRect().top;
+        return { view: !document.getElementById('lesson-body').closest('[hidden]'), url: location.search, scrolled: body.scrollTop, afterTop: after ? Math.round(after.getBoundingClientRect().top - top) : null, afterText: after?.textContent?.slice(0, 60) };
+      });
+      ok('result Next: the lesson page, at the part after the step (its top within 40 px of the page top), not the next step’s screen', part.view && !/step=/.test(part.url) && part.scrolled > 0 && part.afterTop !== null && part.afterTop >= 0 && part.afterTop < 40, JSON.stringify(part));
+      await page.locator('.les-step[data-step="melody-cards"] .btn').click(); await page.waitForTimeout(2500);
       await reloadCheck('result Next');
       // Next lesson (lesson 1 all done but its last step), then that lesson's Start
-      await page.evaluate(() => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } } }, tried: {} })));
+      await page.evaluate(() => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, 'r1-first-sounds': Object.fromEntries(['first-sounds', 'find-groups', 'copy', 'make-a-tune'].map((k) => [k, { at: new Date().toISOString(), how: 'opened' }])) }, tried: {} })));
       await page.goto(`${BASE}?page=lesson&lesson=test-chords-and-band`); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       await click(page, '#fp-done'); await page.waitForTimeout(600);
@@ -1424,7 +1447,7 @@ try {
       const step1 = (g) => g && /page=lesson/.test(g.url) && /lesson=test-minuet-opening/.test(g.url) && /step=wait-rh/.test(g.url) && g.screen === 'score' && g.c?.mode === 'wait' && g.c?.hands === 'right' && g.c?.loop === 'true' && g.back === 'v-lesson';
       for (const name of ['lesson page Start', 'Home Start', 'result Again', 'Next lesson, then Start']) ok(`V33 ${name}: a reload is the step with its choices, ← the lesson page`, step1(got[name]), JSON.stringify(got[name]));
       const n = got['result Next'];
-      ok('V33 result Next: a reload is step 2 (the melody cards), ← the lesson page', n && /page=lesson/.test(n.url) && /step=melody-cards/.test(n.url) && n.screen === 'exercise' && n.back === 'v-lesson', JSON.stringify(n));
+      ok('V33 result Next, then step 2’s Start: a reload is step 2 (the melody cards), ← the lesson page', n && /page=lesson/.test(n.url) && /step=melody-cards/.test(n.url) && n.screen === 'exercise' && n.back === 'v-lesson', JSON.stringify(n));
       ok('V33: no page errors', errors.length === 0, errors.join(' | '));
       await ctx.close();
     }
@@ -3225,8 +3248,8 @@ try {
         });
         const home = await homeText(page), path = await pathText(page);
         const saved = await page.evaluate(() => localStorage.getItem('piano-web.path.v1'));
-        ok('test rungs, the learner whose saved lesson is a hidden test lesson: Home’s Up next is the first real lesson', /Check: a real lesson/.test(home) && !/Test:/.test(home), home.slice(0, 200).replace(/\n/g, ' / '));
-        ok('test rungs, the learner: Path shows the real rung only', /Check: a real rung/.test(path) && !/Test:/.test(path), path.slice(0, 200).replace(/\n/g, ' / '));
+        ok('test rungs, the learner whose saved lesson is a hidden test lesson: Home’s Up next is the first real lesson (the path’s own first since lesson 1 shipped: First sounds)', /First sounds/.test(home) && !/Test:/.test(home), home.slice(0, 200).replace(/\n/g, ' / '));
+        ok('test rungs, the learner: Path shows the real rungs only', /Playing before reading/.test(path) && /Check: a real rung/.test(path) && !/Test:/.test(path), path.slice(0, 200).replace(/\n/g, ' / '));
         ok('test rungs, the learner: their saved progress stays as it was', saved === SAVED, saved ?? 'gone');
         ok('test rungs, the learner with a real rung: no page errors', errors.length === 0, errors.join(' | '));
         await ctx.close();
@@ -3234,11 +3257,66 @@ try {
       {
         const { ctx, page, errors } = await l1Tab({ width: 360, height: 780 });
         const path = await pathText(page);
-        ok('test rungs, the checks: Path shows the test rung and its lessons as before', /Test: the app’s lesson pages|Test: the app's lesson pages/.test(path) && /Test: the Minuet/.test(path), path.slice(0, 240).replace(/\n/g, ' / '));
+        ok('test rungs, the checks: Path shows the test rung and its lessons as before', /Test: the app’s lesson pages|Test: the app's lesson pages/.test(path) && /Test: the Minuet/.test(path), path.slice(-300).replace(/\n/g, ' / '));
         ok('test rungs, the checks: no page errors', errors.length === 0, errors.join(' | '));
         await ctx.close();
       }
     }
+  }
+
+  // ---- A MIDI prompt nobody answers (ChatGPT's live review of lesson 1, 2026-10-16) ------------------------------------
+  // The browser asks to allow MIDI; until it is answered requestMIDIAccess neither resolves nor fails. Simon and Drills
+  // waited on it and never opened, with no word (lesson 1's copying step, and Practice → Simon). Now they open after a
+  // moment, and a keyboard allowed later is still heard. Here the request is held, then answered with one keyboard.
+  {
+    const ctx = await learnerContext({ viewport: { width: 1363, height: 936 }, serviceWorkers: 'block' });
+    await ctx.addInitScript(() => {
+      const input = { id: 'late', name: 'Late keyboard', state: 'connected', onmidimessage: null };
+      window.__midiInput = input;
+      navigator.requestMIDIAccess = () => new Promise((resolve) => { window.__answerMidi = () => resolve({ inputs: new Map([['late', input]]), outputs: new Map(), onstatechange: null }); });
+    });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    const at = await page.evaluate(() => { const b = [...document.querySelectorAll('.les-step button')].find((x) => x.closest('.les-step').textContent.includes('Copy what you see')); if (!b) return null; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
+    if (at) { await page.mouse.click(at[0], at[1]); await page.waitForTimeout(3000); }
+    const simonOpen = await page.evaluate(() => !document.getElementById('exercise').hidden && document.querySelector('#exercise .ex-name')?.textContent === 'Ready');
+    ok('MIDI prompt unanswered: lesson 1’s copying step opens Simon (Ready) all the same', !!at && simonOpen, at ? `exercise hidden: ${await page.evaluate(() => document.getElementById('exercise').hidden)}` : 'no Start button');
+    await page.evaluate(() => window.__answerMidi?.()); await page.waitForTimeout(500);
+    await page.evaluate(() => window.__midiInput.onmidimessage?.({ data: new Uint8Array([0x90, 61, 100]), timeStamp: performance.now() })); await page.waitForTimeout(800);
+    const after = await page.evaluate(() => document.querySelector('#exercise .ex-name')?.textContent ?? '');
+    ok('MIDI prompt unanswered: allowed later, the keyboard is heard (its key starts the game)', after !== 'Ready', `name now "${after}"`);
+    await page.goto(`${BASE}?tool=drill`); await page.waitForTimeout(3500);
+    ok('MIDI prompt unanswered: Drills opens from its address', await page.evaluate(() => !document.getElementById('exercise').hidden && /Drills/.test(document.getElementById('ex-kind').textContent)), '');
+    ok('MIDI prompt unanswered: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+
+  // ---- Free play opened by a lesson step (owner, 2026-10-16, after ChatGPT's live review of lesson 1) ------------------
+  // The step's task where "Play something" was, the chord / notes / interval columns hidden; Show turns one on for this
+  // visit only (your own Free play keeps its columns); Free play from Practice is as before. Lesson 1's shipped content.
+  {
+    const ctx = await learnerContext({ viewport: { width: 360, height: 780 }, hasTouch: true, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    const look = () => page.evaluate(() => ({ line: document.getElementById('fp-chord').textContent, task: document.getElementById('fp-chord').classList.contains('fp-task'),
+      cols: [...document.querySelectorAll('#freeplay .fp-col')].filter((c) => !c.hidden).map((c) => c.dataset.col) }));
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="find-groups"] .btn').click(); await page.waitForTimeout(1500);
+    const first = await look();
+    ok('lesson Free play: the step\'s task shows where "Play something" was', /Groups of two in three places/.test(first.line) && first.task, JSON.stringify(first));
+    ok('lesson Free play: the chord, notes and interval columns start hidden', first.cols.length === 0, JSON.stringify(first.cols));
+    await page.evaluate(() => document.getElementById('fp-show').click()); await page.waitForTimeout(300);
+    await page.evaluate(() => { const box = document.querySelector('#fp-show-dialog input[value="intervals"]'); box.checked = true; box.dispatchEvent(new Event('change', { bubbles: true })); document.getElementById('fp-show-dialog').close(); });
+    await page.waitForTimeout(200);
+    const shownNow = await look();
+    ok('lesson Free play: Show turns a column on for this visit', shownNow.cols.join() === 'intervals', JSON.stringify(shownNow.cols));
+    ok('lesson Free play: your own column choice is left as it was', await page.evaluate(() => localStorage.getItem('piano-web.freeplay.v1')) === null, '');
+    await page.goto(`${BASE}?tool=freeplay`); await page.waitForTimeout(1500);
+    const own = await look();
+    ok('Free play from Practice: "Play something" and all three columns, as before', own.line === 'Play something' && !own.task && own.cols.length === 3, JSON.stringify(own));
+    ok('lesson Free play: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
   }
 } finally {
   await browser?.close();

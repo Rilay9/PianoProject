@@ -17,14 +17,26 @@ export class MidiInput {
 
   static get supported(): boolean { return typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator; }
 
+  private asking: Promise<MIDIAccess> | null = null;
   /** Asks the browser for MIDI (it may ask you to allow it) and starts listening. */
   async start(): Promise<string[]> {
     if (!MidiInput.supported) throw new Error('This browser has no MIDI support (Safari does not; Chrome does).');
     if (!this.access) {
-      this.access = await navigator.requestMIDIAccess();
+      // One request at a time: a second start while the browser is still asking waits on the same answer.
+      this.asking ??= navigator.requestMIDIAccess();
+      try { this.access = await this.asking; } catch (cause) { this.asking = null; throw cause; }
       this.access.onstatechange = () => this.listen();
     }
     return this.listen();
+  }
+
+  /**
+   * start(), for screens that open with or without a keyboard: it never waits on a browser still asking you to allow
+   * MIDI (a prompt not answered left Simon unopened, with no word: ChatGPT's live review of lesson 1, 2026-10-16).
+   * After `ms` it answers "no keyboards"; the request carries on, and onDevices says when it is answered.
+   */
+  startSoon(ms = 1500): Promise<string[]> {
+    return Promise.race([this.start(), new Promise<string[]>((done) => window.setTimeout(() => done([]), ms))]);
   }
 
   private listen(): string[] {

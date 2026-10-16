@@ -93,6 +93,14 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   in the middle disappears (a thin line silently dropped shifted every later line's splits). Or an edit to one item
   that quietly redoes the others: + line found every line's split again, losing the ones placed by hand
   (2026-10-14). After changing one item, check the others are as the learner left them.
+- **A permission prompt nobody answers.** Checks either allow MIDI or have no MIDI; a real browser can leave the
+  prompt unanswered, and `requestMIDIAccess` then never resolves nor fails. Simon and Drills awaited it and never opened,
+  with no word (ChatGPT's live review of lesson 1, 2026-10-16; its cloud browser did exactly this). Wherever the app
+  awaits a permission or a device, check the third case: asked and never answered (a stub that returns a promise that
+  never settles), and answered later.
+- **The main buttons' path skips what the page teaches.** A result's Next went straight to the next activity, past the
+  explanation and picture before it (lesson 1, 2026-10-16). Follow the most prominent button at each step, as a learner
+  would, and check what they actually get to read.
 
 ## Running checks
 

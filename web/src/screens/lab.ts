@@ -261,7 +261,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     starting = true;
     startButtons();
     feedback('Getting the band ready…');
-    await midi.start().catch(() => {});
+    await midi.startSoon().catch(() => {}); // (never waits on an unanswered MIDI prompt; a keyboard allowed later plays in)
     sound.keyboard = null; // the band plays on the phone
     await prepareBand();
     if (mine !== session || !isOpen) return; // stopped, closed or changed while it got ready

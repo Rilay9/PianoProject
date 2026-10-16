@@ -64,7 +64,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     try {
       const onScreen = memorise.look(currentDevice()).under === 'keyboard'
         ? 'Play on the keys below.' : 'Play on a MIDI keyboard, or show the keyboard in Settings.';
-      memoProblem = await midi.start().then((names) => (names.length ? '' : `No MIDI keyboard is connected. ${onScreen}`),
+      memoProblem = await midi.startSoon().then((names) => (names.length ? '' : `No MIDI keyboard is connected. ${onScreen}`),
         () => `This browser has no MIDI. ${onScreen}`);
       const s = memoSettings();
       sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
@@ -76,7 +76,9 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     then();
     fillMemo();
   }
-  midi.onDevices = (names) => { if (names.length && memoProblem) { memoProblem = ''; fillMemo(); } };
+  // Chained, not replaced: the exercise screen listens too (its keyboard list comes from here once MIDI is allowed late).
+  const devicesBefore = midi.onDevices;
+  midi.onDevices = (names) => { devicesBefore(names); if (names.length && memoProblem) { memoProblem = ''; fillMemo(); } };
 
   /** A key on the Memorise screen (nothing playing): starts it, starts your pass, or goes again after a slip. */
   function memoKey(e: KeyEvent): void {
