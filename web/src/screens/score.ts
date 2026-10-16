@@ -118,8 +118,10 @@ export function createScoreScreen(app: App): ScoreScreen {
   async function draw(keep = false): Promise<void> {
     const request = ++drawRequest; // a newer draw (another song picked while this one downloads) wins
     const piece = currentPiece();
+    document.body.classList.remove('draw-failed'); // (the bars come back to be measured; a failure hides them again)
     showMessage('');
     fillBars();
+    view.title = piece.title;
     try {
       const xml = await app.xmlFor(piece);
       if (request !== drawRequest) return;
@@ -150,7 +152,10 @@ export function createScoreScreen(app: App): ScoreScreen {
       borrower?.afterShow();
       void loadBand(piece).then(() => { if (request === drawRequest) fillTempo(); });
     } catch (cause) {
-      showMessage(`Could not load ${piece.title}: ${cause instanceof Error ? cause.message : String(cause)}`);
+      const why = cause instanceof Error ? cause.message : String(cause);
+      // (its file could not be read: the music of the piece before is not left under this title, P01)
+      if (request === drawRequest) view.fail(`“${piece.title}” could not be opened: ${why}`);
+      showMessage(`Could not load ${piece.title}: ${why}`);
     }
     fillBars(); // the tempo shown comes from the song
   }
@@ -998,6 +1003,7 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   return {
     key(e: KeyEvent): void {
+      if (view.failed) return; // (a piece that could not be drawn: nothing to start or judge, P14)
       borrower?.keySeen(e);
       // Wait for me starting from a key: the rest of a chord, pressed while it starts, counts for the first notes as
       // the key that started it does (owner, 2026-10-15: F3 and F5 together started it with F3 alone).

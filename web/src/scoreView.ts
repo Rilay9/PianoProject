@@ -56,5 +56,9 @@ export function osmdOptions(s: ScoreSettings, layout: 'page' | 'strip'): IOSMDOp
     newSystemFromXML: s.lines !== 'auto',
     newSystemFromNewPageInXML: s.lines === 'file',
     renderSingleHorizontalStaffline: layout === 'strip',
+    // Every bar drawn as its own bar (2026-10-15): OSMD by default draws bars of rests in a row as one multi-bar rest,
+    // which leaves the bars it swallowed with no drawing; the marker and the lines follow the music bar by bar, and
+    // the page layout failed on such a file ("reading 'ParentMusicSystem'": 3 of the 40 most viewed PDMX piano files).
+    autoGenerateMultipleRestMeasuresFromRestMeasures: false,
   };
 }

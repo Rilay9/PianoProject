@@ -201,7 +201,8 @@
     <input id="lib-file" type="file" multiple hidden>
     <div class="lib-body">
       <div id="lib-left" class="lib-left">
-        <div id="lib-tabs" class="lib-tabs" role="tablist" hidden><button id="lib-tab-yours" type="button" role="tab">Yours <small></small></button><button id="lib-tab-catalogue" type="button" role="tab">Catalogue <small></small></button></div>
+        <div id="lib-tabs" class="lib-tabs" role="tablist" hidden><button id="lib-tab-yours" type="button" role="tab">Yours <small></small></button><button id="lib-tab-catalogue" type="button" role="tab">Catalogue <small></small></button><button id="lib-tab-full" type="button" role="tab">Full PDMX <small></small></button></div>
+        <div id="lib-full-setup" class="lib-setup" hidden></div>
         <input id="lib-search" class="lib-search" type="search" placeholder="Search titles, composers, tags" aria-label="Search the library" autocomplete="off">
         <div id="lib-chips" class="lib-chips"></div>
         <div class="lib-countline"><span id="lib-count"></span><button id="lib-sort" type="button" class="lib-link" aria-haspopup="dialog"></button></div>
@@ -689,7 +690,8 @@
             <button id="backup" type="button" class="set-row"><span class="set-name">Back up<small>Settings, progress and your library, in one file</small></span><span class="set-go">›</span></button>
             <button id="restore" type="button" class="set-row"><span class="set-name">Restore from a backup…<small>Adds what this phone lacks; what it has stays</small></span><span class="set-go">›</span></button>
             <input id="restore-file" type="file" accept=".zip,.json,application/zip,application/json,application/octet-stream" hidden>
-            <div class="set-row"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
+            <div class="set-row stack"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
+            <div id="set-full" class="set-row" hidden><span class="set-name">Full PDMX set<small id="set-full-size"></small><small id="set-full-cleanup" class="set-warn" hidden></small></span><button id="set-full-remove" type="button" class="btn danger">Remove</button></div>
           </div>
           <p class="note">A piece's own choices (size, tempo, hands, fingering) stay on its screen. The Tempo panel inside a piece changes the same piano and click settings.</p>
         </div>

@@ -168,6 +168,18 @@ Reset this song touch only these. The playing choices (tempo, mode, hands, metro
 Ladder step) are one per song whichever way the phone is held; theme, volumes, click sound and piano output are
 app-wide.
 
+**A piece that can't be drawn or read** (review 2026-10-15, P01): whatever way it was opened (Music, Memorise, its
+address, a lesson or activity), the drawing of the piece before is cleared and the screen says "“…” could not be drawn:
+<reason>" (or "could not be opened" when its file can't be had), with ← Back; it was a toast over the previous piece's
+music before. Nothing to start is offered then (re-check P14): the score's bottom bar and Memorise's panel are hidden,
+the keys lit from the piece before are cleared, keys played start nothing, and "Tap anywhere to start" does not show.
+Bars of rests in a row are drawn bar by bar (OSMD's multi-bar rests are switched off): the page layout
+failed on the bars a multi-bar rest swallowed ("reading 'ParentMusicSystem'"), in our code (`follow.ts` chunkRanges),
+and the marker follows the music bar by bar anyway. OSMD itself fails on a glissando whose end is on another line
+("reading 'HasEndLine'"): that drawing is made without glissando lines, and a note says so (sideways, the one line draws
+them). Measured on the real PDMX set, upright at 390 px (the 300 most viewed piano files and 100 lead sheets not hidden
+by their flags): 19 and 5 failed before, 0 and 0 after.
+
 **Score files:** solo piano, right hand on the top staff (the app takes the top staff as the right hand and every
 other staff as the left). A file with other parts or more than two staves is opened with a note saying the hands may
 be wrong. A per-score hand map is to be added when a piece needs one.
@@ -667,9 +679,10 @@ one); examples to copy written into a chart.
      app's drawing with the file, never the file with a printed edition. The notes have to be read against an
      independent source (a published edition or a scan of one, bar by bar), and `status` says what was compared, with
      what, and how far ("bars 1–16 read against …; the rest not verified"); anything not read is said as not verified.
-- **Full PDMX set (PC side; owner, 2026-10-15; mockup `web/mockups/pdmx-full.html`; the phone side is not built yet).**
+- **Full PDMX set (PC side; owner, 2026-10-15; mockup `web/mockups/pdmx-full.html`; the phone side is the next bullet).**
   The whole set as a third tab, set up as piano + lead sheets + melodies or everything. Built on the PC by
-  `web/tools/catalogue/scan.py` then `full_set.py` (`rows`, `zips`, `index`, `verify`); outputs stay outside the repo
+  `web/tools/catalogue/scan.py` then `full_set.py` (`rows`, `zips`, `index`, `verify`, and `sample`: a small set made the
+  same way for the browser checks, 300 files a kind, in `catalogue-work/full-sample/`); outputs stay outside the repo
   (`catalogue-work/full/`). Facts are scan.py's reading of the notes, the same as the app's `facts.ts` (5,990 random
   files read by both: every field agreed). From PDMX.csv only what the catalogue takes (the upload's title when the file
   has none, the uploader's composer if it matches the table, views, licence); never its genre, difficulty, tags,
@@ -694,7 +707,8 @@ one); examples to copy written into a chart.
     - *one staff has no notes* (piano): 161. Looked: 12/12 right, mostly a melody written on a piano template; a
       staff with 1-3 notes is not caught (3 of 6 such looked one-handed).
     - *no title*: neither the file nor the upload has a title other than a placeholder ("Untitled score", "Title",
-      "#"). 108. Looked: 11/12 right (one had its title in an untyped text box scan.py doesn't read). "Gan ainm" and
+      "#"), or the title has no letter or digit in any script ("-", "------------": re-check 2026-10-15, P15; `retitle`
+      worked the flags out again: 48 more, 156 in all). Was 108. Looked: 11/12 right (one had its title in an untyped text box scan.py doesn't read). "Gan ainm" and
       "No name" are folk tunes' real names, not flagged.
     - *the title says test, draft or unfinished*: 370. Looked: 11/12 test uploads, 1 an unfinished composition.
     - Tried and dropped: *more than 10 notes at once* (half were Debussy, Ravel and other real pieces with spread
@@ -723,6 +737,83 @@ one); examples to copy written into a chart.
     own copy. No Zip64: at most 65,535 files a zip (the zip format's own limit without that extension), files shared
     evenly, so 3 + 2 zips of 265 MB and 600 MB; a copy that fails restarts one zip. Checked: 50 random files read
     back by offset match their SHA-256 (a shifted offset fails), and every entry's CRC is good.
+  - **The piece list travels inside the zips** (owner, 2026-10-15: nothing downloaded, nothing big in the repo). After
+    its .mxl files each zip holds `pdmx-zip.json` (which zip it is, its set, the build: the start of rows.jsonl's
+    SHA-256, every zip of the build, the kinds and counts (files, pieces, and pieces shown: those with a file not
+    hidden), the flags' words and `hide`, the flags the app hides: `HIDE` in full_set.py) and `index-<kind>.json` for each kind it
+    holds (its own rows, the same fields as the lists beside the zips). Written after the scores, so no offset moves;
+    `index` writes them again in place (the old ones cut off). 9.4-9.5 MB of lists in each pdmx-a zip, 5.0-5.1 MB in
+    each pdmx-b. `verify` also checks that the lists inside agree row for row with the lists beside them (a changed
+    row fails it), each row sits in the zip that holds it and the lists follow every score file: on the full set
+    (2026-10-15) 200 of 200 files read back by offset, 253,391 rows agree, build `226325fa84ee`; Python's CRC test
+    found no bad entry in pdmx-a1 and pdmx-b2 after the lists were added.
+- **Full PDMX set (phone side; owner, 2026-10-15; `library/full.ts`, `screens/full-setup.ts`, the tab in
+  `screens/library.ts`).** The third tab, Full PDMX, is always there (the tabs show now even without a catalogue).
+  - **Setup**, offered on the tab while the set isn't on this phone: the steps, one a line (Claude makes the zips on
+    the PC, copy them to the phone, pick them here once), two choices (piano, lead sheets and melodies: the pdmx-a zips, about
+    0.8 GB; everything, with band and ensemble scores: + the pdmx-b zips, about 2.0 GB), why the app keeps its own copy,
+    and Pick the zip files…; in a browser tab only, before copying (owner, 2026-10-15): "Your browser may delete this
+    copy when the phone runs low on space. Installing the app keeps it." A picked file is known by its own
+    `pdmx-zip.json`, not its name; a file that isn't one of
+    the set's zips, is from another making of the set than the zips already copied, isn't part of the choice, was
+    picked twice or is already copied is said and not copied. Then `navigator.storage.persist()` is asked and
+    `estimate()` checked: if the zips need more than the browser lets the app use, it says so with both sizes ("Not
+    enough room on this phone: … Nothing was copied.") and copies nothing. Each zip is streamed into the app's storage
+    with its own progress bar; one that fails is not kept and the others carry on ("pick it again to copy just that
+    one"); picking again copies only what is missing, also after the page was closed mid-copy (the setup says what is
+    copied and what is still to copy). The progress comes first, under the title, so it is in view sideways too; sizes
+    are said in GB, MB, KB or bytes. The phone stays awake while copying. The several parts can be added later:
+    **Add several parts…** in the Kind sheet (and at the end of the list). A set zip picked with Music's own + Add is
+    said: "This is a Full PDMX zip: use Full PDMX → Pick the zip files…".
+  - **Storage:** the origin private file system (OPFS), folder `pdmx-full`: each zip as it came, and `state.json` (each
+    copied zip's manifest and where its lists are). Why: a picked file can't be opened again later on Chrome for
+    Android (caniuse: the File System Access API not supported there; MDN's compatibility data lists
+    `showOpenFilePicker` from Chrome Android 132: copying works either way); OPFS `createWritable()` exists on Chrome
+    for Android since 109 (MDN browser-compat-data), takes the picked File as a stream (constant memory, progress as it
+    goes) and keeps nothing until the copy is closed, so a broken copy leaves nothing half-written; a file is read back
+    with `getFile().slice(offset, offset + bytes)`. OPFS shares the origin's quota with IndexedDB and goes when the
+    site's data is cleared (MDN, Origin private file system); Chrome lets an origin use up to 60% of the disk and grants
+    `persist()` silently by engagement, installation or a bookmark (web.dev, Storage for the web; Persistent storage).
+    It is the learner's explicit copy, so it works offline in a browser tab and the installed app alike (§7's saving
+    for offline is installed-app only); it is not in the backup (copy the zips again), and pieces added from it are.
+    Settings' Full PDMX row says its size and what is on the phone, and, while the browser does not keep the app's
+    storage safe (`persisted()`), the same line as the setup's. There is no line under the list (the list has the room).
+  - **The list:** each copied zip's own lists, one a kind, read when that kind is first shown (one small object a
+    file over the list's array; search words made while the page is idle). Same search, chips and sort as the
+    catalogue. Opens on **piano, most viewed first**; the Kind chip offers lead sheets, melodies, several parts (only
+    with the pdmx-b zips), and none chosen is every kind. Uploads of one piece fold into one row ("n versions", the
+    list's `group`). Flags: *most bars empty*, *under 4 bars of music*, *most bars longer than the time signature* and
+    *the title says test, draft or unfinished* are **hidden** (the set's `hide`); the count line says "267 pieces · 24
+    hidden files ›" (owner, 2026-10-15: a link, not a chip; files counted among what the other filters and the search
+    leave), and the link opens a sheet with each flag and its number of files, to show them ("… · 6 flagged files shown,
+    18 hidden ›"). *One staff has no notes* and *notes outside the piano* (and any hidden one shown) are **labelled on
+    the row** in those words; a file with no title (or one of punctuation only) is listed as "No title" (not labelled
+    again), and comes last in Title A–Z, which sorts a title from its first letter or digit (",,EUGENIE''" under E). The tab's number is the pieces the list shows with every kind and nothing filtered (the set's shown
+    counts); every number has its thousands separated. The chips stay on one line (at 320 px too), so at least four
+    rows of the list show sideways and at 320×568. The tab shown and its search are kept through a reload (this browser
+    tab's session), so ← from a piece opened from it comes back to it. While you type, the search runs a few
+    milliseconds at a time, giving way to your keys; a newer search stops an older one.
+  - **A piece's page** (as the mockup, with **+ Add** and **Open** under the title as on the other pages, P09): title,
+    composer, "from the full PDMX set", the buttons, the first bars drawn small (from the copied zip; in the dark theme
+    the drawing is inverted, not its box, so it reads, here and on Yours' pages), the facts from the list (kind, key, time, bars, range, MuseScore views, the licence of the
+    transcription), what was found in the file (its flags), "Not picked or checked: this is a MuseScore user's
+    upload…", the several-parts warning for several parts, and its versions (most viewed first, each with its labels;
+    a tap shows that version). Warnings and labels use one amber that reads in both themes.
+  - **Open** plays it on the score screen without adding it: it joins the app's pieces for the visit with where its
+    file is in the zip (Music's Yours doesn't list it); its choices are kept by its id `u-<id>`, the id it keeps when
+    added; a reload, Home's recent list and Carry on find it again in the set. **+ Add** is the catalogue's
+    `addFromCatalogue` with the file read from the zip: the same id, record, origin "catalogue", PDMX source and
+    licence. A piece in both the catalogue and the full set is one piece (added from either, both show it added).
+  - **Remove:** Settings → Your data → Full PDMX set says how big it is and what is on the phone, and Remove (asked
+    first) deletes the folder; pieces added from it stay in your library. (Settings' "Saved for offline" puts its long
+    value under its name, so it reads at 320 px.)
+  - **Measured** (2026-10-15, headless Chromium on the PC with the real pdmx-a zips, a persistent profile; a phone is
+    UNKNOWN): the copy of 0.82 GB took 3.1 s (the PC's disk) and the storage used went from 0 to 825 MB (estimate;
+    quota 10.7 GB there); the tab opened on piano (23,150 files) in 152-165 ms, 317-508 ms with the CPU slowed 4×;
+    every kind read (187,423 files) 281 ms, 1.1 s at 4×; a search over piano 10-14 ms, 105-153 ms at 4×; over every
+    kind 42-63 ms, 174-530 ms at 4× (the first search the slowest), with no
+    task over 50 ms while typing at 4× (one of 57 ms when the search is cleared); a page's first bars 0.6 s; JS heap
+    111-141 MB with every kind read.
 - **Storage:** IndexedDB `piano-library` (store `items`: one record per item, yours with everything about it, the
   app's own with only your favourite, tags and last opened; store `files`: what you added). The first add asks the
   browser to keep it safe from clean-up (`navigator.storage.persist()`); the foot line says whether it is. Added
@@ -887,6 +978,7 @@ placeholders for checking the app, not lesson content.
   New set; the lab: Start or Again). Where any octave counts (the lab while the band plays, Drills by name, Simon in
   any octave) the music uses every key, so the edges are notes there; a mash still stops.
 - Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them). A diminished 7th is named from its bass (Cdim7).
+- The full PDMX set (§5c) is the learner's own copy in the app's storage: offline in a tab too, not in the backup.
 - Offline (owner, 2026-10-15: only for the installed app): installed (Chrome ⋮ → Install app / Add to Home screen),
   the app saves everything (app, scores, sets and the files they point to, lessons and their files, the catalogue,
   piano samples and band sounds) the first time it opens; someone visiting the page in a browser tab downloads nothing

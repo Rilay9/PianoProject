@@ -14,6 +14,7 @@ import { UnderStrip } from './strip';
 import { keepAwake } from './wake';
 import { xmlOfFile } from './library/files';
 import { fileOf } from './library/store';
+import { fileOfRef, type FullRef } from './library/full';
 
 export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 export const base = import.meta.env.BASE_URL;
@@ -37,6 +38,8 @@ export interface Piece {
   allOfSet?: boolean;
   /** How it opens on the score (its set's `play`; Wait for me when the set names none). */
   play?: { mode: string; hands?: string; tempo?: number };
+  /** A piece of the full PDMX set opened without adding it (owner, 2026-10-15): its file in the copied zip. */
+  full?: FullRef;
 }
 
 export interface KeyRange { lo: number; hi: number }
@@ -105,7 +108,8 @@ export class App {
     const cached = this.xmlCache.get(piece.id);
     if (cached) return cached;
     if (piece.id.startsWith('u-')) { // a file you added: kept in the library on this phone
-      const blob = await fileOf(piece.id);
+      // (or a full-set piece opened without adding it: read from its zip; once added, the library's copy)
+      const blob = (await fileOf(piece.id)) ?? (piece.full ? await fileOfRef(piece.full) : undefined);
       if (!blob) throw new Error(`${piece.title} is no longer in the library`);
       const xml = await xmlOfFile(blob);
       this.xmlCache.set(piece.id, xml);

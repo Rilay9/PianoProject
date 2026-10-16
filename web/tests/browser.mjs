@@ -9,7 +9,7 @@
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
 
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -390,11 +390,12 @@ try {
     let failing = true;
     await page.route('**/catalogue/index.json', async (route) => { if (failing) await route.abort('internetdisconnected'); else await route.continue(); });
     await library(page); await page.waitForTimeout(800);
-    const first = await page.locator('#lib-tabs').isVisible();
+    // (2026-10-15: the tabs always show, for the full PDMX set's tab; the Catalogue tab is the one that shows only with a catalogue)
+    const first = await page.locator('#lib-tab-catalogue').isVisible();
     failing = false;
     await page.evaluate(() => history.back()); await page.waitForTimeout(800);
     await library(page); await page.waitForTimeout(800);
-    const second = await page.locator('#lib-tabs').isVisible();
+    const second = await page.locator('#lib-tab-catalogue').isVisible();
     ok('catalogue: unreachable once, then the library opened again shows it', !first && second, `first ${first}, then ${second}`);
     await ctx.close();
   }
@@ -1693,6 +1694,452 @@ try {
       ok('catalogue step, file unreachable: no page errors', errors.length === 0, errors.join(' | '));
       await ctx.close();
     }
+  }
+  // ---- A piece that can't be drawn (review of the full set, 2026-10-15, P01) ---------------------------------------
+  // The previous piece's music must never stay under the new title: on every way a piece opens, a file that can't be
+  // read or drawn clears the drawing, and the screen itself says so with a way back. And the cause found upright: OSMD
+  // drew bars of rests in a row as one multi-bar rest, leaving the others with no drawing, and the page layout failed
+  // on them ("reading 'ParentMusicSystem'": 19 of the 300 most viewed PDMX piano files). A plain phone tab, taps by position.
+  {
+    const ctxs = [];
+    const plain = async (init, viewport = { width: 390, height: 844 }) => {
+      const ctx = await browser.newContext({ viewport, serviceWorkers: 'block' });
+      ctxs.push(ctx);
+      const page = await ctx.newPage();
+      if (init) await init(page);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(BASE); await page.waitForTimeout(1500);
+      return { ctx, page, errors };
+    };
+    const at = async (page, selector, nth = 0) => {
+      const el = page.locator(selector).nth(nth);
+      await el.scrollIntoViewIfNeeded({ timeout: 5000 });
+      const box = await el.boundingBox();
+      if (!box) throw new Error(`${selector} is not shown`);
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    };
+    /** What a failed draw still offers (P14): the controls that start something, shown; keys lit from the music. */
+    const offered = (page) => page.evaluate(() => {
+      const shown = (id) => { const e = document.getElementById(id); return !!e && !e.hidden && e.getClientRects().length > 0 && getComputedStyle(e).display !== 'none'; };
+      return { bottomBar: shown('bottom-bar'), play: shown('play'), memoPanel: shown('memo-panel'), memoGo: shown('memo-go'), lit: document.querySelectorAll('#keyboard .now-r, #keyboard .now-l, #keyboard .next-r, #keyboard .next-l').length };
+    });
+    const screen = (page) => page.evaluate(() => ({
+      svgs: document.querySelectorAll('#score svg').length, failed: document.querySelector('#score .draw-failed')?.textContent ?? '',
+      title: document.getElementById('song-title')?.textContent ?? '', showing: window.__pianoDebug.showing(), notes: window.__pianoDebug.notes(),
+    }));
+    try {
+      // The file of one of the app's pieces unreachable, then unreadable, each opened after another piece was drawn.
+      // (unreachable from the start: Music reads every piece's file for its facts, and the app keeps what it read)
+      let mode = 'abort';
+      const { page, errors } = await plain((p) => p.route('**/scores/mozart-k2.musicxml', (route) => (mode === 'abort' ? route.abort('internetdisconnected')
+        : mode === 'garbage' ? route.fulfill({ contentType: 'application/xml', body: 'this is not MusicXML' }) : route.continue())));
+      await page.mouse.click(200, 20); await page.waitForTimeout(200);
+      await library(page);
+      await at(page, '#lib-list li[data-id="bach-bwv514"] .lib-row'); await page.waitForTimeout(2500);
+      const first = await screen(page);
+      await at(page, '#score-back'); await page.waitForTimeout(800);
+      await at(page, '#lib-list li[data-id="mozart-k2"] .lib-row'); await page.waitForTimeout(2500);
+      const unreachable = await screen(page);
+      ok('a piece whose file can’t be had: the piece before is not left on screen; the screen says so', first.svgs > 0 && first.notes > 0 && unreachable.svgs === 0 && /could not be opened/.test(unreachable.failed), JSON.stringify({ first, unreachable }));
+      await at(page, unreachable.failed ? '#score .draw-failed .btn' : '#score-back'); await page.waitForTimeout(800); // (the old build had no Back of its own: ← then)
+      ok('… and its Back (tapped where it shows) goes back to Music', !!unreachable.failed && await page.evaluate(() => window.__pianoDebug.showing()) === 'library', await page.evaluate(() => window.__pianoDebug.showing()));
+      await at(page, '#lib-list li[data-id="bach-bwv514"] .lib-row'); await page.waitForTimeout(2500);
+      await at(page, '#score-back'); await page.waitForTimeout(800);
+      mode = 'garbage';
+      await at(page, '#lib-list li[data-id="mozart-k2"] .lib-row'); await page.waitForTimeout(2500);
+      const unreadable = await screen(page);
+      const onScore = await offered(page);
+      ok('… and the score offers nothing to start (no ▶ or mode bar) and no keys lit from before (P14)', !onScore.bottomBar && !onScore.play && onScore.lit === 0, JSON.stringify(onScore));
+      ok('a piece that can’t be drawn, opened from Music after another: no music of the other under its title; said on the screen', unreadable.svgs === 0 && /could not be drawn/.test(unreadable.failed) && unreadable.failed.includes(unreadable.title || '“'), JSON.stringify(unreadable));
+      // Memorise, after the other piece was drawn again.
+      await at(page, '#score-back'); await page.waitForTimeout(800);
+      await at(page, '#lib-list li[data-id="bach-bwv514"] .lib-row'); await page.waitForTimeout(2500);
+      await at(page, '#score-back'); await page.waitForTimeout(800);
+      await at(page, '#lib-list li[data-id="mozart-k2"] .lib-more'); await page.waitForTimeout(800);
+      await at(page, '#lib-page .lib-buttons .btn', 1); await page.waitForTimeout(2500); // Memorise
+      const memo = await screen(page);
+      const onMemo = await offered(page);
+      ok('… and Memorise offers nothing to start (no panel, ▶ Start or Hear) and no keys lit from before (P14)', !onMemo.memoPanel && !onMemo.memoGo && onMemo.lit === 0, JSON.stringify(onMemo));
+      ok('the same piece opened in Memorise: no music of the other; said on the screen', memo.svgs === 0 && /could not be drawn/.test(memo.failed), JSON.stringify(memo));
+      // A reload straight into it (its address).
+      await page.goto(`${BASE}?piece=mozart-k2`); await page.waitForTimeout(2500);
+      const reload = await screen(page);
+      ok('the same piece opened by its address: said on the screen, with a way back', /could not be drawn/.test(reload.failed) && reload.svgs === 0, JSON.stringify(reload));
+      ok('a piece that can’t be drawn: no page errors', errors.length === 0, errors.join(' | '));
+
+      // The cause: bars of rests in a row in both staves (OSMD drew them as one multi-bar rest) drawn upright.
+      const bar = (n, notes) => `<measure number="${n}">${n === 1 ? '<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef></attributes>' : ''}${notes
+        ? `<note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><type>whole</type><staff>1</staff></note><backup><duration>4</duration></backup><note><pitch><step>C</step><octave>3</octave></pitch><duration>4</duration><voice>5</voice><type>whole</type><staff>2</staff></note>`
+        : '<note><rest measure="yes"/><duration>4</duration><voice>1</voice><staff>1</staff></note><backup><duration>4</duration></backup><note><rest measure="yes"/><duration>4</duration><voice>5</voice><staff>2</staff></note>'}</measure>`;
+      const xml = `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="3.1"><work><work-title>Rests between</work-title></work><part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list><part id="P1">${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => bar(n, n <= 2 || n >= 7)).join('')}</part></score-partwise>`;
+      const RESTS = join(tmp, 'rests between.musicxml');
+      writeFileSync(RESTS, xml);
+      const two = await plain();
+      await two.page.mouse.click(200, 20); await two.page.waitForTimeout(200);
+      await library(two.page);
+      const [chooser] = await Promise.all([two.page.waitForEvent('filechooser'), at(two.page, '#lib-add')]);
+      await chooser.setFiles(RESTS); await two.page.waitForTimeout(1500);
+      await at(two.page, '#lib-toast .lib-toast-open'); await two.page.waitForTimeout(2500);
+      const rests = await screen(two.page);
+      const bars = await two.page.evaluate(() => [...new Set(window.__pianoDebug.timeline().map((s) => s[4]))].length);
+      ok('a piece with bars of rests in a row in both staves draws upright, every bar its own (P01 cause)', rests.svgs > 0 && rests.notes === 8 && !rests.failed && bars === 8, JSON.stringify({ ...rests, bars }));
+      ok('rests between: no page errors', two.errors.length === 0, two.errors.join(' | '));
+    } catch (e) {
+      ok('a piece that can’t be drawn (P01): the block ran', false, `stopped: ${String(e).split(/\r?\n/)[0]}`);
+    } finally {
+      for (const c of ctxs) await c.close().catch(() => {});
+    }
+  }
+
+  // ---- The full PDMX set on the phone (owner, 2026-10-15; mockup web/mockups/pdmx-full.html) -----------------------
+  // Uses the small sample set full_set.py's `sample` command makes (300 files a kind, zips named and split as the real
+  // ones), outside the repo; never the real 2 GB. A plain phone tab: no MIDI permission, the zips picked through the
+  // setup's own button (the file chooser opened by a tap where the button shows).
+  const SAMPLE = process.env.PIANO_PDMX_SAMPLE ?? here('../../../catalogue-work/full-sample/');
+  if (!existsSync(join(SAMPLE, 'pdmx-a1.zip'))) {
+    console.log(`skip the full PDMX set block: no sample set at ${SAMPLE} (make it: python -I web/tools/catalogue/full_set.py sample <full set dir> <sample dir>, or name it in PIANO_PDMX_SAMPLE)`);
+  } else {
+    const zipsOf = (...names) => names.map((n) => join(SAMPLE, `pdmx-${n}.zip`));
+    const sizeOf = (n) => statSync(join(SAMPLE, `pdmx-${n}.zip`)).size;
+    const listOf = (kind) => { const l = JSON.parse(readFileSync(join(SAMPLE, `index-${kind}.json`), 'utf8')); const c = Object.fromEntries(l.fields.map((n, i) => [n, i])); return { ...l, c, flagsOf: (r) => (r[c.flags] || '').split(' ').filter(Boolean) }; };
+    const HIDING = ['empty', 'short', 'overfull', 'test'];
+    /** A plain phone tab (no permissions granted), the offline cache blocked unless asked for. */
+    async function phone({ sw = false, init, viewport = { width: 390, height: 844 } } = {}) {
+      const ctx = await browser.newContext({ viewport, serviceWorkers: sw ? 'allow' : 'block' });
+      open.push(ctx);
+      const page = await ctx.newPage();
+      if (init) await page.addInitScript(init);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(BASE); await page.waitForTimeout(1500);
+      return { ctx, page, errors };
+    }
+    /** A tap where the element shows (the mouse at its middle: whatever lies on top would take it, docs/tests.md). */
+    async function tap(page, selector, nth = 0) {
+      const el = page.locator(selector).nth(nth);
+      await el.scrollIntoViewIfNeeded({ timeout: 5000 });
+      const box = await el.boundingBox();
+      if (!box) throw new Error(`${selector} is not shown`);
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    }
+    const fullTab = async (page) => { await library(page); await tap(page, '#lib-tab-full'); await page.waitForTimeout(600); };
+    /** Picks zips as a learner does: the setup's button tapped, then the files chosen in the chooser it opens. */
+    async function pickZips(page, files) {
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser', { timeout: 5000 }), tap(page, '#lib-full-setup .btn.main')]);
+      await chooser.setFiles(files);
+    }
+    const until = async (page, fn, arg, ms = 20000) => { for (let t = 0; t < ms; t += 250) { if (await page.evaluate(fn, arg)) return true; await page.waitForTimeout(250); } return false; };
+    const listed = (page) => until(page, () => { const d = window.__pianoDebug.library(); return d.tab === 'full' && !d.setup && !d.reading && d.listed > 0; });
+    /** The copied zips in the app's storage (OPFS), by name: size and when written. */
+    const opfs = (page) => page.evaluate(async () => {
+      try {
+        const d = await (await navigator.storage.getDirectory()).getDirectoryHandle('pdmx-full');
+        const out = {};
+        for await (const [n, h] of d.entries()) { const f = await h.getFile(); out[n] = { size: f.size, at: f.lastModified }; }
+        return out;
+      } catch { return null; }
+    });
+    const lib = (page) => page.evaluate(() => window.__pianoDebug.library());
+    /** The library's records (IndexedDB piano-library): id → whether a file is kept, its origin, source, licence. */
+    const records = (page) => page.evaluate(() => new Promise((resolve) => {
+      const r = indexedDB.open('piano-library');
+      r.onsuccess = () => { const all = r.result.transaction('items').objectStore('items').getAll(); all.onsuccess = () => resolve(Object.fromEntries(all.result.map((x) => [x.id, x.own ? { origin: x.own.origin, source: x.own.source, licence: x.own.licence, title: x.own.title } : null]))); };
+      r.onerror = () => resolve({});
+    }));
+    const setupText = (page) => page.evaluate(() => { const s = document.getElementById('lib-full-setup'); return s.hidden ? '' : s.innerText; });
+    /** Runs one case; a step that throws (a control not there, say: the build before the full set) fails it, and the run goes on. */
+    const open = [];
+    async function guard(name, run) {
+      try { await run(); } catch (e) { ok(`full set: ${name}`, false, `stopped: ${String(e).split(/\r?\n/)[0]}`); }
+      for (const c of open.splice(0)) await c.close().catch(() => {});
+    }
+
+    // Setup, the default view, flags, search, Open, + Add and Remove, in one phone's visit.
+    await guard('setup, the default view, search, Open, + Add and Remove', async () => {
+      const { ctx, page, errors } = await phone();
+      await fullTab(page);
+      const before = await setupText(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3'));
+      const shown = await listed(page);
+      const files = await opfs(page);
+      const want = { 'pdmx-a1.zip': sizeOf('a1'), 'pdmx-a2.zip': sizeOf('a2'), 'pdmx-a3.zip': sizeOf('a3') };
+      const rows = await page.locator('#lib-list .lib-item').count();
+      ok('full set: before setup, the tab offers it (the two choices and Pick the zip files…)', /Piano, lead sheets and melodies/.test(before) && /Everything/.test(before) && /Pick the zip files/.test(before), before.slice(0, 120));
+      ok('full set: setup copies the three pdmx-a zips whole into the app’s storage, and the tab lists rows', shown && Object.entries(want).every(([n, s]) => files?.[n]?.size === s) && rows > 0, JSON.stringify({ files, want, rows }));
+
+      // Default: piano, most viewed first; the broken and junk ones hidden, the chip says how many; labels on rows.
+      const piano = listOf('piano');
+      const hiding = piano.rows.filter((r) => piano.flagsOf(r).some((x) => HIDING.includes(x)));
+      let d = await lib(page);
+      const views = d.shown.map((r) => r.views);
+      const link = await page.locator('.lib-countline .lib-hidden').innerText();
+      const chipTexts = await page.evaluate(() => [...document.querySelectorAll('#lib-chips .lib-chip')].map((c) => c.textContent).join(' | '));
+      ok('full set: opens on piano, most viewed first, none of the hidden flags shown', d.kinds.join() === 'piano' && d.shown.every((r) => r.kind === 'piano') && views.every((v, i) => i === 0 || v <= views[i - 1])
+        && d.shown.every((r) => !r.flags.some((x) => HIDING.includes(x))) && d.shownCount === piano.rows.length - hiding.length, JSON.stringify({ kinds: d.kinds, shownCount: d.shownCount, files: piano.rows.length, hiding: hiding.length, first: d.shown.slice(0, 3) }));
+      ok('full set: the count line says how many files are hidden, as a link (owner, 2026-10-15: not a chip)', d.hidden === hiding.length && link === `${hiding.length} hidden files ›` && !/hidden/.test(chipTexts), `${link}; chips: ${chipTexts}; ${d.hidden} of ${hiding.length}`);
+      // One count (P12): the tab's number is the list's with every kind and nothing filtered; thousands separated.
+      await page.evaluate(() => document.querySelector('#lib-chips .lib-chip.on .lib-chip-x').click()); await listed(page); await page.waitForTimeout(500);
+      const every = await page.evaluate(() => ({ badge: document.querySelector('#lib-tab-full small').textContent, count: document.querySelector('.lib-countline').textContent }));
+      ok('full set: the tab’s number is the number of pieces the list shows with every kind (P12)', every.count.startsWith(`${every.badge} pieces`), JSON.stringify(every));
+      // Title A–Z (P11): files with no title last.
+      await tap(page, '#lib-sort'); await page.waitForTimeout(300);
+      await tap(page, '#lib-sheet .lib-opt', 1); await page.waitForTimeout(800); // (Title A–Z)
+      const az = await lib(page);
+      const order = await page.evaluate(() => {
+        const has = (t) => /[\p{L}\p{N}]/u.test(t), key = (t) => t.replace(/^[^\p{L}\p{N}]+/u, ''), c = new Intl.Collator().compare;
+        const t = window.__pianoDebug.library().shown.map((r) => r.title).filter(has);
+        return { first: t.slice(0, 4), sorted: t.every((x, n) => n === 0 || c(key(t[n - 1]), key(x)) <= 0), shown: [...document.querySelectorAll('#lib-list .lib-tt')].slice(0, 6).map((x) => x.textContent) };
+      });
+      ok('full set: Title A–Z sorts from the first letter or digit (leading punctuation skipped) and opens on a real title (P15)', order.sorted && order.shown.length > 0 && order.shown.every((x) => /[\p{L}\p{N}]/u.test(x) && x !== 'No title'), JSON.stringify(order));
+      const noWord = ['piano', 'lead', 'melody', 'parts'].flatMap((k) => { const l = listOf(k); return l.rows.filter((r) => !/[\p{L}\p{N}]/u.test(r[l.c.title] ?? '')).map((r) => [r[l.c.title], l.flagsOf(r)]); });
+      ok('full set: every title with no letter or digit is flagged "no title" by full_set.py (P15)', noWord.every(([, f]) => f.includes('notitle')), JSON.stringify(noWord.filter(([, f]) => !f.includes('notitle')).slice(0, 5)));
+      ok('full set: Title A–Z puts files with no title last (P11)', az.firstUntitled > 0 && az.lastTitled < az.firstUntitled && az.untitled > 0, JSON.stringify({ firstUntitled: az.firstUntitled, lastTitled: az.lastTitled, untitled: az.untitled }));
+      await tap(page, '#lib-sort'); await page.waitForTimeout(300);
+      await tap(page, '#lib-sheet .lib-opt', 0); await page.waitForTimeout(500); // (back to most viewed)
+      await tap(page, '#lib-chips .lib-chip'); await page.waitForTimeout(300);
+      await tap(page, '#lib-sheet .lib-opt', 0); await page.waitForTimeout(200); // (piano again)
+      await tap(page, '#lib-sheet-show'); await listed(page); await page.waitForTimeout(400);
+      // A row with a labelled flag (one staff empty, notes outside the piano, no title): found by searching its title.
+      const legend = piano.flags;
+      const labelled = piano.rows.find((r) => { const f = piano.flagsOf(r); return f.some((x) => ['hand', 'range'].includes(x)) && !f.some((x) => HIDING.includes(x)) && r[piano.c.title]; });
+      await tap(page, '#lib-search');
+      await page.keyboard.type(labelled[piano.c.title]); await page.waitForTimeout(700);
+      const label = await page.evaluate((id) => { const rows = [...document.querySelectorAll('#lib-list .lib-item')]; return rows.map((li) => li.querySelector('.lib-flags')?.textContent ?? '').join(' | '); }, labelled[piano.c.id]);
+      const words = piano.flagsOf(labelled).filter((x) => ['hand', 'range', 'notitle'].includes(x)).map((x) => legend[x]);
+      ok('full set: a row is labelled with its flags in the list’s words', words.length > 0 && words.every((w) => label.includes(w)), `${labelled[piano.c.title]}: ${label} (want ${words.join(', ')})`);
+      await page.fill('#lib-search', ''); await page.waitForTimeout(500);
+      // Show one hidden flag: those files come back, labelled.
+      await tap(page, '.lib-countline .lib-hidden'); await page.waitForTimeout(300);
+      await tap(page, '#lib-sheet .lib-opt'); await page.waitForTimeout(400); // (the first: most bars empty)
+      await tap(page, '#lib-sheet-show'); await page.waitForTimeout(400);
+      d = await lib(page);
+      const empties = piano.rows.filter((r) => { const f = piano.flagsOf(r); return f.includes('empty') && !f.some((x) => x !== 'empty' && HIDING.includes(x)); }).length;
+      const emptyLabel = await page.evaluate((w) => [...document.querySelectorAll('#lib-list .lib-flags')].some((x) => x.textContent.includes(w)), legend.empty);
+      const shownLine = await page.evaluate(() => document.querySelector('.lib-countline').textContent);
+      ok('full set: the link’s sheet shows a hidden flag’s files again, labelled', d.shownCount === piano.rows.length - hiding.length + empties && (empties === 0 || emptyLabel), JSON.stringify({ shownCount: d.shownCount, empties, emptyLabel }));
+      ok('full set: the count line counts the flagged files shown and still hidden in files (P05)', new RegExp(`${empties} flagged files? shown, ${hiding.length - empties} hidden ›`).test(shownLine), shownLine);
+      await tap(page, '.lib-countline .lib-hidden'); await page.waitForTimeout(300);
+      await tap(page, '#lib-sheet-clear'); await tap(page, '#lib-sheet-show'); await page.waitForTimeout(400); // (hidden again)
+
+      // Search: every row shown has each word at the start of a word of its title or composer, and the piece sought is there.
+      const groupSize = (g) => piano.rows.filter((r) => r[piano.c.group] === g).length;
+      // (a piece not in the catalogue: its + Add can only have read the copied zip)
+      const catalogue = JSON.parse(readFileSync(here('../public/catalogue/index.json'), 'utf8'));
+      const inCatalogue = new Set(catalogue.rows.map((r) => r[catalogue.fields.indexOf('id')]));
+      const target = piano.rows.find((r) => !piano.flagsOf(r).some((x) => HIDING.includes(x)) && /^[a-z]{5,}/i.test(r[piano.c.title]) && groupSize(r[piano.c.group]) === 1 && !inCatalogue.has(r[piano.c.id]));
+      const both = piano.rows.find((r) => !piano.flagsOf(r).some((x) => HIDING.includes(x)) && inCatalogue.has(r[piano.c.id]) && groupSize(r[piano.c.group]) === 1);
+      const word = target[piano.c.title].slice(0, 5).toLowerCase();
+      await tap(page, '#lib-search');
+      await page.keyboard.type(word); await page.waitForTimeout(700);
+      d = await lib(page);
+      const fold = (s) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+      const hit = (r) => fold(`${r.title} ${r.composer}`).split(/[^\p{L}\p{N}]+/u).some((w) => w.startsWith(word));
+      const id = `u-${target[piano.c.id]}`;
+      const expect = piano.rows.filter((r) => !piano.flagsOf(r).some((x) => HIDING.includes(x)) && hit({ title: r[piano.c.title], composer: r[piano.c.composer] ?? '' })).length;
+      ok('full set: search finds the piece, and exactly the rows whose title or composer has a word starting so', d.shown.some((r) => r.id === id) && d.shown.every(hit) && d.shownCount === expect && expect < piano.rows.length,
+        `“${word}”: ${d.shownCount} rows (expected ${expect}); ${JSON.stringify(d.shown.slice(0, 4).map((r) => r.title))}`);
+
+      // Open plays it without adding it; its choices are kept by its id.
+      await tap(page, `#lib-list li[data-id="${id}"] .lib-row`); await page.waitForTimeout(1500);
+      const pageText = await page.evaluate(() => document.getElementById('lib-page').innerText);
+      ok('full set: a row’s page has the facts, the first bars drawn, the plain note, + Add and Open', /Not picked or checked/.test(pageText) && /Views/.test(pageText) && /\+ Add/.test(pageText) && /Open/.test(pageText)
+        && await page.evaluate(() => !!document.querySelector('#lib-page .lib-preview svg')), pageText.slice(0, 200));
+      await tap(page, '#lib-page .lib-buttons .btn', 1); await page.waitForTimeout(2500); // Open
+      const opened = await page.evaluate(() => ({ showing: window.__pianoDebug.showing(), notes: window.__pianoDebug.notes() }));
+      await page.mouse.click(5, 5); await page.waitForTimeout(200);
+      await tap(page, '#play');
+      let playing = false;
+      for (let i = 0; i < 24 && !playing; i++) { await page.waitForTimeout(250); playing = await page.evaluate(() => window.__pianoDebug.sound().playing); }
+      await tap(page, '#play'); await page.waitForTimeout(300);
+      await page.evaluate(() => document.getElementById('tempo').showModal()); await page.waitForTimeout(200);
+      await tap(page, '#t-up'); await page.waitForTimeout(200);
+      await page.evaluate(() => document.getElementById('tempo').close());
+      const saved = await page.evaluate((id) => JSON.parse(localStorage.getItem('piano-web.songs.v1') ?? '{}')[id]?.speed, id); // (a song's tempo: songs.v1, by piece id)
+      let recs = await records(page);
+      ok('full set: Open plays it on the score screen without adding it to your library', opened.showing === 'score' && opened.notes > 0 && playing && !recs[id], JSON.stringify({ opened, playing, record: recs[id] }));
+      ok('full set: its choices (a tempo changed) are kept by its id', saved > 1, `${id}: speed ${saved}`);
+      await page.reload(); await page.waitForTimeout(3000);
+      const back = await page.evaluate(() => ({ showing: window.__pianoDebug.showing(), notes: window.__pianoDebug.notes(), url: location.search }));
+      ok('full set: a reload comes back to the piece opened from the full set', back.showing === 'score' && back.notes > 0 && back.url.includes(id), JSON.stringify(back));
+      await page.mouse.click(5, 300); await page.waitForTimeout(200); // (the first tap: Tap anywhere to start)
+      await tap(page, '#score-back'); await page.waitForTimeout(1200);
+      const after = await page.evaluate(() => ({ showing: window.__pianoDebug.showing(), tab: window.__pianoDebug.library().tab, search: document.getElementById('lib-search').value }));
+      ok('full set: after that reload, ← comes back to Full PDMX with its search (P07)', after.showing === 'library' && after.tab === 'full' && after.search === word, JSON.stringify(after));
+
+      // + Add, tapped twice: added once, in Yours, with the catalogue's record and provenance.
+      await fullTab(page);
+      await listed(page);
+      await page.fill('#lib-search', word); await page.waitForTimeout(700);
+      const add = `#lib-list li[data-id="${id}"] .lib-addcat`;
+      await tap(page, add); await page.waitForTimeout(80);
+      await tap(page, add).catch(() => {}); await page.waitForTimeout(2000);
+      recs = await records(page);
+      const ownIds = Object.entries(recs).filter(([, v]) => v).map(([k]) => k);
+      const button = await page.locator(add).innerText();
+      await tap(page, '#lib-tab-yours'); await page.waitForTimeout(600);
+      const yours = (await lib(page)).items.map((x) => x.id);
+      ok('full set: + Add tapped twice adds it once, with the catalogue’s record (origin, PDMX source, licence)', ownIds.length === 1 && ownIds[0] === id && recs[id].origin === 'catalogue' && /PDMX/.test(recs[id].source) && recs[id].licence === target[piano.c.licence] && /Added/.test(button),
+        JSON.stringify({ ownIds, rec: recs[id], button }));
+      ok('full set: the added piece is in Yours, under the same id', yours.includes(id), id);
+      // A piece in both the catalogue and the full set is one piece: added from the full set, the catalogue has it too.
+      const bothId = `u-${both[piano.c.id]}`;
+      await tap(page, '#lib-tab-full'); await page.waitForTimeout(500);
+      await page.fill('#lib-search', both[piano.c.title]); await page.waitForTimeout(700);
+      await tap(page, `#lib-list li[data-id="${bothId}"] .lib-addcat`); await page.waitForTimeout(2000);
+      await tap(page, '#lib-tab-catalogue'); await page.waitForTimeout(500);
+      await page.fill('#lib-search', both[piano.c.title]); await page.waitForTimeout(700);
+      const inCat = await page.evaluate((id) => document.querySelector(`#lib-list li[data-id="${id}"] .lib-addcat`)?.textContent ?? 'not listed', bothId);
+      ok('full set: a piece in both the catalogue and the full set is one piece (added from the full set, the catalogue shows it added)', /Added/.test(inCat), `${both[piano.c.title]} (${bothId}): ${inCat}`);
+
+      // Remove (Settings → Saved for offline): its size said; gone from storage; the tab offers setup again; the added piece stays.
+      await settingsPage(page); await page.waitForTimeout(500);
+      const size = await page.evaluate(async () => ({ shown: !document.getElementById('set-full').hidden, text: document.getElementById('set-full-size').textContent, cleanup: document.getElementById('set-full-cleanup').hidden ? '' : document.getElementById('set-full-cleanup').textContent, persisted: await navigator.storage.persisted() }));
+      ok('full set: Settings says the browser may delete the copy, while its storage is not kept safe (owner, 2026-10-15)', !size.persisted && /may delete this copy when the phone runs low on space\. Installing the app keeps it\./.test(size.cleanup), JSON.stringify(size));
+      await tap(page, '#set-full-remove'); await page.waitForTimeout(800);
+      const gone = await opfs(page);
+      await fullTab(page);
+      const again = await setupText(page);
+      await tap(page, '#lib-tab-yours'); await page.waitForTimeout(500);
+      const kept = (await lib(page)).items.some((x) => x.id === id);
+      ok('full set: Settings says how big it is (MB) and Remove takes it off the phone', size.shown && /MB|GB/.test(size.text) && gone === null, JSON.stringify({ size, gone }));
+      ok('full set: after Remove the tab offers setup again, and the piece added from it stays in Yours', /Pick the zip files/.test(again) && kept, again.slice(0, 80));
+      ok('full set (setup, view, search, Open, Add, Remove): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // Not enough room (estimate mocked): said plainly, nothing copied.
+    await guard('not enough room', async () => {
+      const { ctx, page, errors } = await phone({ init: () => { navigator.storage.estimate = async () => ({ quota: 4_000_000, usage: 3_000_000 }); } });
+      await fullTab(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3')); await page.waitForTimeout(2000);
+      const text = await setupText(page), files = await opfs(page);
+      const zips = Object.keys(files ?? {}).filter((n) => n.endsWith('.zip') && files[n].size > 0);
+      ok('full set: not enough room is said and nothing is copied', /Not enough room/.test(text) && /Nothing was copied/.test(text) && zips.length === 0, JSON.stringify({ text: text.slice(-200), files }));
+      ok('full set (no room): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // Music's own + Add given a zip of the set (P06): said plainly, nothing added.
+    await guard('a set zip through + Add', async () => {
+      const { ctx, page, errors } = await phone();
+      await library(page);
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser', { timeout: 5000 }), tap(page, '#lib-add')]);
+      await chooser.setFiles(zipsOf('a1')); await page.waitForTimeout(2000);
+      const said = await page.evaluate(() => (document.getElementById('lib-added').open ? document.getElementById('lib-added').innerText : document.getElementById('lib-toast').innerText));
+      ok('full set: a set zip picked with Music’s + Add says to use Full PDMX → Pick the zip files…, nothing added (P06)', /This is a Full PDMX zip: use Full PDMX → Pick the zip files…/.test(said) && Object.values(await records(page)).filter(Boolean).length === 0, said.slice(0, 200));
+      ok('full set (+ Add a set zip): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+    // The clean-up risk before copying, in a browser tab only (owner, 2026-10-15); the installed app's setup says nothing of it.
+    await guard('the clean-up line', async () => {
+      const tabSetup = await phone();
+      await fullTab(tabSetup.page);
+      const inTab = await setupText(tabSetup.page);
+      await tabSetup.ctx.close();
+      const appSetup = await phone({ init: () => { window.__pianoInstalled = true; } });
+      await fullTab(appSetup.page);
+      const inApp = await setupText(appSetup.page);
+      const LINE = 'Your browser may delete this copy when the phone runs low on space. Installing the app keeps it.';
+      ok('full set: in a browser tab the setup says the browser may delete the copy, and not that it was kept safe; the installed app’s does not say it', inTab.includes(LINE) && !/asked to be kept safe/.test(inTab) && !inApp.includes(LINE) && /Pick the zip files/.test(inApp), JSON.stringify({ inTab: inTab.slice(0, 600), inApp: inApp.slice(0, 80) }));
+      await appSetup.ctx.close();
+    });
+
+    // Files the setup refuses (docs/tests.md: test the refusals): not one of the set's zips, and a several-parts zip
+    // picked for piano + lead sheets + melodies. Each said; nothing copied.
+    await guard('refusals', async () => {
+      const { ctx, page, errors } = await phone();
+      await fullTab(page);
+      await pickZips(page, [SCORE, ...zipsOf('b1')]); await page.waitForTimeout(1500);
+      const text = await setupText(page), files = await opfs(page);
+      const zips = Object.keys(files ?? {}).filter((n) => n.endsWith('.zip') && files[n].size > 0);
+      ok('full set: a small file’s size is in KB, not "1 MB" (P03)', /mozart-k2\.musicxml · \d+ KB · not copied/.test(text) && !/1 MB/.test(text), text.slice(-300));
+      ok('full set: a file that is not one of the set’s zips, and a several-parts zip not chosen, are each said and not copied', /“mozart-k2\.musicxml” is not one of the full PDMX set’s zip files\./.test(text) && /pdmx-b1\.zip holds several-part scores, which you didn’t choose/.test(text) && /Nothing to copy/.test(text) && zips.length === 0,
+        JSON.stringify({ text: text.slice(-300), files }));
+      ok('full set (refusals): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // A copy that fails part way: the others copied, that one left uncopied; picked again, only it is copied.
+    await guard('a copy interrupted', async () => {
+      const { ctx, page, errors } = await phone({ init: () => { window.__pianoCopyHold = (name, done) => { if (name === 'pdmx-a2.zip' && done > 100000 && !window.__failedOnce) { window.__failedOnce = true; throw new Error('the copy was interrupted'); } }; } });
+      await fullTab(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3')); await page.waitForTimeout(3000);
+      const text = await setupText(page), files = await opfs(page);
+      ok('full set, a copy interrupted: said, the setup stays, the other two zips copied whole, the broken one not kept', /could not be copied/.test(text) && /Still to copy: pdmx-a2\.zip/.test(text)
+        && files?.['pdmx-a1.zip']?.size === sizeOf('a1') && files?.['pdmx-a3.zip']?.size === sizeOf('a3') && (files?.['pdmx-a2.zip']?.size ?? 0) !== sizeOf('a2'), JSON.stringify({ text: text.slice(-260), files }));
+      await page.waitForTimeout(50);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3'));
+      const shown = await listed(page);
+      const after = await opfs(page);
+      ok('full set, resumed: picking all three again copies only the one that failed (the others untouched), then lists', shown && after['pdmx-a2.zip'].size === sizeOf('a2') && after['pdmx-a1.zip'].at === files['pdmx-a1.zip'].at && after['pdmx-a3.zip'].at === files['pdmx-a3.zip'].at,
+        JSON.stringify({ before: files, after }));
+      ok('full set (interrupted copy): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+    // The page closed in the middle of a copy (held there), then opened again: the zip copied before is kept, the rest asked for.
+    await guard('closed mid-copy', async () => {
+      const { ctx, page, errors } = await phone({ init: () => { window.__pianoCopyHold = (name, done) => { if (name === 'pdmx-a2.zip' && done > 100000 && !sessionStorage.getItem('held')) { sessionStorage.setItem('held', '1'); return new Promise(() => {}); } }; } });
+      await fullTab(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3'));
+      const holding = await until(page, () => sessionStorage.getItem('held') === '1', null, 10000);
+      await page.reload(); await page.waitForTimeout(1500);
+      await fullTab(page);
+      const text = await setupText(page);
+      ok('full set, closed mid-copy: on opening again the first zip is kept and the other two are asked for', holding && /Copied: pdmx-a1\.zip/.test(text) && /Still to copy: pdmx-a2\.zip, pdmx-a3\.zip/.test(text), text.slice(-220));
+      await pickZips(page, zipsOf('a2', 'a3'));
+      const shown = await listed(page);
+      ok('full set, closed mid-copy: the two picked again are copied and the tab lists rows', shown, '');
+      ok('full set (closed mid-copy): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // Offline after setup, in a browser tab (the offline cache allowed, the app not installed), the network cut.
+    await guard('offline', async () => {
+      const { ctx, page, errors } = await phone({ sw: true });
+      await page.reload(); await page.waitForTimeout(2000); // (the second load goes through the service worker, which keeps what the page fetches)
+      await fullTab(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3'));
+      await listed(page);
+      await tap(page, '#lib-list .lib-row'); await page.waitForTimeout(2000); // (online once: the page's drawing code fetched)
+      await ctx.setOffline(true);
+      await page.reload(); await page.waitForTimeout(2500);
+      await fullTab(page);
+      const shown = await listed(page);
+      await tap(page, '#lib-list .lib-row'); await page.waitForTimeout(2500);
+      const drawn = await page.evaluate(() => !!document.querySelector('#lib-page .lib-preview svg'));
+      await tap(page, '#lib-page .lib-buttons .btn', 1); await page.waitForTimeout(3000);
+      const opened = await page.evaluate(() => ({ online: navigator.onLine, showing: window.__pianoDebug.showing(), notes: window.__pianoDebug.notes() }));
+      ok('full set offline (a tab, network cut after setup): the tab lists rows, a page draws its first bars, Open draws the score', shown && drawn && !opened.online && opened.showing === 'score' && opened.notes > 0, JSON.stringify({ shown, drawn, opened }));
+      ok('full set (offline): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // Everything (pdmx-b added later): the Kind chip offers several parts, and their page has the usual warning.
+    await guard('several parts', async () => {
+      const { ctx, page, errors } = await phone();
+      await fullTab(page);
+      await pickZips(page, zipsOf('a1', 'a2', 'a3')); await listed(page);
+      await tap(page, '#lib-chips .lib-chip'); await page.waitForTimeout(300); // (the Kind sheet offers to add them)
+      const kindsBefore = await page.evaluate(() => document.getElementById('lib-sheet').innerText);
+      await tap(page, '#lib-sheet .lib-addparts'); await page.waitForTimeout(300);
+      const adding = await setupText(page);
+      await pickZips(page, zipsOf('b1', 'b2')); await listed(page);
+      await tap(page, '#lib-chips .lib-chip'); await page.waitForTimeout(300);
+      const options = await page.evaluate(() => [...document.querySelectorAll('#lib-sheet .lib-opt')].map((b) => b.textContent));
+      await tap(page, '#lib-sheet .lib-opt.on'); await page.waitForTimeout(100); // piano off
+      await tap(page, '#lib-sheet .lib-opt', 3); await page.waitForTimeout(100); // several parts on
+      await tap(page, '#lib-sheet-show'); await page.waitForTimeout(1500);
+      const d = await lib(page);
+      await tap(page, '#lib-list .lib-row'); await page.waitForTimeout(1500);
+      const warn = await page.evaluate(() => document.getElementById('lib-page').innerText);
+      ok('full set: several parts added later (Add several parts… in the Kind sheet): the Kind chip offers them and lists only them', /Add several parts/.test(kindsBefore) && /several-part/.test(adding) && options.includes('several parts') && d.kinds.join() === 'parts' && d.shown.length > 0 && d.shown.every((r) => r.kind === 'parts'), JSON.stringify({ options, kinds: d.kinds, n: d.shownCount }));
+      ok('full set: a several-part piece’s page has the warning (the top staff as the right hand)', /takes the top staff as your right hand/.test(warn), warn.slice(0, 200));
+      ok('full set (several parts): no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
   }
 } finally {
   await browser?.close();

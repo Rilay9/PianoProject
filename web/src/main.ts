@@ -22,8 +22,10 @@ import { autoDelete, entryCount, exportLog, setActivity, setAutoDelete, type Les
 import * as nav from './nav';
 import { KeyRemote } from './remote';
 import { clearPreset, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
-import { touch } from './library/store';
+import { isSafe, touch } from './library/store';
+import { CLEANUP } from './screens/full-setup';
 import { addedLine, ensurePiece, takeAdded } from './library/catalogue';
+import { bytesOnPhone as fullBytes, findRow, gb, kindsOn as fullKindsOn, loadState as loadFullState, refOf, removeSet as removeFullSet } from './library/full';
 import { musicExercises } from './lesson/path';
 import type { ScorePreset } from './activity';
 import { createMetronomeScreen } from './screens/metronome';
@@ -38,6 +40,7 @@ import type { Piece } from './app';
 
 const app = new App();
 const { view, sound, midi } = app;
+view.onFailBack = () => nav.back(); // (a piece that can't be drawn: its screen's own way back, P01)
 
 // A message over the tabs (saving for offline, say) gets its own room: the tab's page ends above it (review 2026-10-15,
 // V04), instead of the message covering its last rows.
@@ -154,6 +157,7 @@ const memorisePlace = (id: string): nav.Place => ({ name: 'memorise', params: { 
 /** A piece on the score screen (bars: looped; again: Carry on's mode, tempo and hands, in force for this visit). */
 async function openPiece(id: string, bars?: [number, number], again: Again = {}): Promise<void> {
   if (!app.pieces.some((p) => p.id === id)) await musicExercises(app).catch(() => []); // (an exercise's music: its set read first)
+  if (!app.pieces.some((p) => p.id === id) && id.startsWith('u-')) await fullPiece(id); // (a full-set piece opened without adding it: a reload, Carry on)
   if (!app.pieces.some((p) => p.id === id)) { app.showMessage(`There is no piece "${id}" any more.`); return; }
   wanted();
   clearPreset();
@@ -166,7 +170,15 @@ async function openPiece(id: string, bars?: [number, number], again: Again = {})
   if (bars || Object.keys(settings).length) await scoreScreen.openActivity({ title: '', piece: id, bars, settings }); // (as an activity's preset: never saved over yours)
   else await scoreScreen.openSong(id);
 }
+/** A full-set piece not in your library, found in the copied set (owner, 2026-10-15: Open plays it without adding it). */
+async function fullPiece(id: string): Promise<void> {
+  try {
+    const r = await findRow(id);
+    if (r && !app.pieces.some((p) => p.id === id)) app.pieces.push({ id, title: r.title || 'No title', composer: r.composer, file: r.file, full: refOf(r) });
+  } catch { /* not on this phone: "there is no piece" */ }
+}
 async function openMemorise(id: string): Promise<void> {
+  if (!app.pieces.some((p) => p.id === id) && id.startsWith('u-')) await fullPiece(id);
   if (!app.pieces.some((p) => p.id === id)) { app.showMessage(`There is no piece "${id}" any more.`); return; }
   wanted();
   clearPreset();
@@ -318,7 +330,27 @@ function fillSettings(): void {
   $<HTMLInputElement>('log-autodelete').checked = autoDelete();
   logCount();
   $('set-offline').textContent = offlineState();
+  void fillFull();
 }
+/** The full PDMX set on this phone (owner, 2026-10-15): its size, and Remove. Not in the backup. */
+async function fillFull(): Promise<void> {
+  const [s, bytes] = await Promise.all([loadFullState().catch(() => null), fullBytes().catch(() => 0)]);
+  const row = $('set-full');
+  row.hidden = !bytes && !s;
+  const kinds = fullKindsOn(s);
+  $('set-full-size').textContent = `${gb(bytes)}${kinds.length ? ` · ${kinds.includes('parts') ? 'everything' : 'piano, lead sheets, melodies'}` : ' · not all copied yet'} · not in the backup`;
+  // While the browser does not keep the app's storage safe (owner, 2026-10-15): the same line as the setup's.
+  const safe = await isSafe();
+  const warn = $('set-full-cleanup');
+  warn.hidden = safe;
+  warn.textContent = CLEANUP;
+}
+$('set-full-remove').addEventListener('click', async () => {
+  if (!confirm('Remove the full PDMX set from this phone? Pieces you added from it stay in your library. To have it again, pick the zips again.')) return;
+  try { await removeFullSet(); app.pieces = app.pieces.filter((p) => !p.full); app.showMessage('Removed the full PDMX set from this phone.', true); }
+  catch (cause) { app.showMessage(`Could not remove the full set: ${cause instanceof Error ? cause.message : String(cause)}`); }
+  void fillFull();
+});
 /** What this device has saved for offline (offline.ts keeps the list's count with its fingerprint). */
 function offlineState(): string {
   if (!('serviceWorker' in navigator) || !('caches' in window)) return 'Not offered by this browser';

@@ -4,7 +4,8 @@
 // count, labelled as exactly that; never PDMX's genre, difficulty, tags or ratings. Uploads of one piece fold into a
 // group. A piece's id is "u-" + the start of its file's SHA-256, the same id the file gets when added by hand.
 // Lessons and activities may name a catalogue piece by that id (owner, 2026-10-15): `ensurePiece` adds it to your
-// library first, by the same `addFromCatalogue` the library's + Add uses.
+// library first, by the same `addFromCatalogue` the library's + Add uses. The full PDMX set's + Add (library/full.ts)
+// adds by it too, with the file read from the copied zip: the same id, record and provenance.
 
 import type { App, Piece } from '../app';
 import type { Facts, Kind } from './facts';
@@ -80,14 +81,16 @@ export const isAdding = (id: string): boolean => adding.has(id);
  * catalogue piece is added: the library's + Add, a lesson's step or score block, an activity (owner, 2026-10-15). Two
  * adds of one piece at once (a double tap, two opens) share one: the file is fetched and kept once.
  */
-export function addFromCatalogue(app: App, base: string, row: CatRow): Promise<void> {
+export function addFromCatalogue(app: App, base: string, row: CatRow, file: () => Promise<File> = () => fetchCatalogueFile(base, row)): Promise<void> {
   const under = adding.get(row.id);
   if (under) return under;
   const run = (async () => {
     await load();
-    const p = await prepare(await fetchCatalogueFile(base, row));
+    const p = await prepare(await file());
     if (p.id !== row.id) throw new Error('its file is not the one the catalogue lists');
     await addOwn(p.id, { ...p.own, origin: 'catalogue', title: row.title, composer: row.composer, source: 'PDMX (an upload to MuseScore)', licence: row.licence || undefined }, p.blob);
+    // (a piece opened from the full set without adding it is replaced by the library's: its file is now yours)
+    app.pieces = app.pieces.filter((x) => x.id !== p.id || !x.full);
     if (!app.pieces.some((x) => x.id === p.id)) app.pieces.push(pieceOf(p.id, { ...p.own, title: row.title, composer: row.composer }));
   })().finally(() => { adding.delete(row.id); });
   adding.set(row.id, run);

@@ -22,6 +22,7 @@
   --mark-edge: #2563eb;
   --paper: #ffffff;
   --music-filter: none;
+  --warn-fg: #92400e; /* a warning's words (amber on light) */
   --loop: rgba(234, 179, 8, 0.2);
   --cover: #e5e7eb; /* Memorise: a covered bar */
   --cover-fg: #6b7280;
@@ -51,6 +52,7 @@
     color-scheme: dark;
     --paper: #16181c;
     --music-filter: invert(0.92) hue-rotate(180deg);
+    --warn-fg: #fcd34d; /* (dark: a light amber, readable on the dark rows, P10) */
     --cover: #2d3036;
     --cover-fg: #9aa0a8;
   }
@@ -74,6 +76,7 @@
   color-scheme: dark;
   --paper: #16181c;
   --music-filter: invert(0.92) hue-rotate(180deg);
+    --warn-fg: #fcd34d; /* (dark: a light amber, readable on the dark rows, P10) */
   --cover: #2d3036;
   --cover-fg: #9aa0a8;
 }
@@ -502,7 +505,9 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .lib-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .lib-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .lib-buttons .danger { color: var(--msg-bad); }
-.lib-preview { min-height: 60px; max-height: 150px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); filter: var(--music-filter); }
+.lib-preview { min-height: 60px; max-height: 150px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+/* (the drawing inverted in the dark theme, as on the score; inverting the box too turned its dark paper light grey, P10) */
+.lib-preview svg { filter: var(--music-filter); }
 .lib-label { font-size: 12px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 .lib-facts { display: grid; grid-template-columns: auto 1fr; gap: 3px 14px; margin: 0; font-size: 15px; }
 .lib-facts dt { color: var(--muted); }
@@ -520,7 +525,7 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .lib-tag-input { font: inherit; font-size: 14px; padding: 4px 10px; border: 1px solid var(--accent); border-radius: 14px; background: var(--bg); color: inherit; min-width: 0; width: 12em; }
 .lib-from { font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
 .lib-from a { color: var(--accent); }
-.lib-warn { font-size: 13px; color: #92400e; background: color-mix(in srgb, #f59e0b 14%, var(--bg)); border-radius: 8px; padding: 6px 10px; }
+.lib-warn { font-size: 13px; color: var(--warn-fg); background: color-mix(in srgb, #f59e0b 14%, var(--bg)); border-radius: 8px; padding: 6px 10px; }
 .lib-none { padding: 24px 16px; }
 .lib-toast { position: absolute; left: 12px; right: 12px; bottom: max(44px, calc(env(safe-area-inset-bottom) + 36px)); display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 8px 8px 14px; border-radius: 10px; background: #111827; color: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); }
 .lib-toast-open { font: inherit; font-weight: 600; border: 0; background: none; color: #93c5fd; padding: 6px 10px; }
@@ -559,6 +564,26 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .lib-item.ver .lib-tt { font-weight: 400; font-size: 14px; }
 .ver-ic { visibility: hidden; width: 20px; }
 .lib-more-rows { padding: 12px; text-align: center; list-style: none; }
+/* The full PDMX set (owner, 2026-10-15): its labels, its setup, a piece's versions */
+.lib-flags { font-size: 12px; color: var(--warn-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lib-setup { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+.lib-setup[hidden], .lib-countline[hidden], .lib-search[hidden], .lib-chips[hidden], .lib-list[hidden], .lib-foot[hidden] { display: none; }
+.lib-setup .note { margin: 0; }
+.lib-choice { display: flex; flex-direction: column; gap: 2px; text-align: left; font: inherit; padding: 9px 12px; border: 1px solid var(--btn-line); border-radius: 10px; background: var(--bg); color: inherit; }
+.lib-choice span { font-size: 13px; color: var(--muted); }
+.lib-choice.on { border-color: var(--accent); background: var(--current-bg); }
+.lib-copies { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.lib-copy { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lib-copy small { color: var(--muted); }
+.lib-copy.failed small { color: var(--msg-bad); }
+.lib-bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.lib-bar i { display: block; height: 100%; background: var(--accent); }
+.lib-vers { display: flex; flex-direction: column; gap: 4px; }
+.lib-ver { display: flex; flex-direction: column; text-align: left; font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: none; color: inherit; }
+.lib-ver small { color: var(--muted); font-size: 12px; }
+.lib-ver.on { border-color: var(--accent); background: var(--current-bg); }
+.lib-foot .lib-link { padding: 0; font-size: inherit; }
+#set-full-remove { color: var(--msg-bad); }
 /* The MIDI sheet: Swap hands and the tempo. */
 .lib-midi-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
 .lib-midi-fix input { width: 5em; font: inherit; padding: 4px 8px; margin-left: 4px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--bg); color: inherit; }
@@ -873,3 +898,42 @@ body.in-shell.shell-no-tabs .message { bottom: calc(8px + env(safe-area-inset-bo
   .home-grid > .h-today .today .btn.main { font-size: 18px; padding: 12px 26px; }
   .home-grid > .h-lesson .step { min-height: 60px; }
 }
+
+/* A piece that could not be drawn (review 2026-10-15, P01): said on the screen, with a way back; nothing of the piece before. */
+.draw-failed { margin: 24px 16px; padding: 14px 16px; border-radius: 10px; background: var(--panel-bg); color: var(--fg); display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.draw-failed p { margin: 0; font-size: 16px; line-height: 1.4; }
+.draw-failed .btn { min-height: 44px; }
+
+/* Settings: a row whose value is long (Saved for offline in a tab) puts the value under its name (P08, 320 px). */
+.set-row.stack { flex-direction: column; align-items: flex-start; gap: 2px; }
+.set-row.stack .set-val { text-align: left; }
+.set-row small.set-warn { color: var(--warn-fg); }
+/* The full set's setup: its steps one a line (P13). */
+.lib-steps { margin: 0; padding-left: 22px; font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+
+/* Music at 320 px and small targets (review 2026-10-15, P13): the tabs stay one line; the chips, links and + Add take a
+   fingertip (44 px) without growing (the room above and below them is theirs); no text under 12 px. */
+.lib-tabs button { white-space: nowrap; }
+@media (max-width: 360px) { .lib-tabs button { font-size: 14px; } .lib-tabs small { font-size: 12px; } }
+.lib-chip, .lib-link, .lib-addcat { position: relative; }
+.lib-chip::after, .lib-link::after, .lib-addcat::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+.lib-copy small { font-size: 12px; }
+/* P02: at least four rows of the list sideways and at 320 px: the chips on one line at 320 (a little less padding), and
+   sideways the tabs, search and count line a little tighter. */
+@media (max-width: 360px) { .lib-chip { padding: 4px 9px; } .lib-chips { gap: 5px; } }
+@media (orientation: landscape) and (max-height: 599px) {
+  .lib-tabs button { padding: 5px 0; }
+  .lib-search { padding: 3px 10px; margin-top: 4px; }
+  .lib-chips { padding: 5px 12px 3px; }
+  .lib-countline { padding-bottom: 3px; }
+  .lib-countline .lib-link { padding: 2px 0; }
+  .lib-tt, .lib-mm { line-height: 1.25; }
+}
+/* The hidden files' link beside the count; the tabs a fingertip tall upright (P13). */
+.lib-countline { flex-wrap: wrap; row-gap: 0; } /* (a long link, flagged files shown, puts the sort on a line of its own rather than cutting the count) */
+.lib-countline > #lib-count { flex: none; }
+.lib-countline .lib-hidden { flex: none; margin-right: auto; padding: 4px 0 4px 4px; font-size: 13px; white-space: nowrap; }
+.lib-countline .lib-hidden[hidden] { display: none; }
+@media not ((orientation: landscape) and (max-height: 599px)) { .lib-tabs button { min-height: 44px; } }
+/* A piece that could not be drawn offers nothing to start (P14): only its message and ← Back. */
+body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !important; }

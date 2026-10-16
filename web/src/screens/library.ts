@@ -11,6 +11,8 @@ import { forgetPiece } from '../library/forget';
 import { isChartId, isYours, items, loadCharts, pieceOf, readAppFacts, type LibItem } from '../library/items';
 import { addOwn, allRecords, change, fileOf, isSafe, keepSafe, load, record, remove, touch } from '../library/store';
 import { addFromCatalogue, isAdding, loadCatalogue, type CatRow } from '../library/catalogue';
+import { HIDDEN_FLAGS, LABEL_FLAGS, fileOfRef, makeWordsWith, readZip, hasSet, kindsOn, loadState, onChange, refOf, rowsOf, type FullRow, type State as FullState } from '../library/full';
+import { createFullSetup } from './full-setup';
 import { markText, memorisedMarks } from '../memorise';
 
 export interface LibraryDeps {
@@ -32,9 +34,14 @@ const SORTS: [SortBy, string][] = [['opened', 'Recently opened'], ['added', 'Rec
 // The catalogue: nothing there has been opened, so its own first sort is MuseScore's view count (a count, not a judgement).
 const CAT_SORTS: [SortBy, string][] = [['views', 'Most viewed on MuseScore'], ['title', 'Title A–Z'], ['composer', 'Composer A–Z'], ['bars', 'Fewest bars first']];
 const PAGE = 100; // rows drawn at a time (Show more adds the next)
-type Tab = 'yours' | 'catalogue';
+/** The sort's name on its button (the sheet has the long one). */
+const SHORT: Record<SortBy, string> = { opened: 'Recently opened', added: 'Recently added', title: 'Title', composer: 'Composer', bars: 'Fewest bars', views: 'Most viewed' };
+type Tab = 'yours' | 'catalogue' | 'full';
+const TABS: Tab[] = ['yours', 'catalogue', 'full'];
 const PREFS = 'piano-web.library.v1';
-type Filter = 'kind' | 'key' | 'time' | 'bars' | 'tags';
+type Filter = 'kind' | 'key' | 'time' | 'bars' | 'tags' | 'flags';
+/** The plain note on a full-set piece (owner, 2026-10-15). */
+const UNCHECKED = 'Not picked or checked: this is a MuseScore user’s upload. The catalogue’s pieces were chosen by reading their notes; these weren’t.';
 
 const norm = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 const words = (s: string) => norm(s).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
@@ -54,10 +61,25 @@ function keyGroup(fifths: number | null | undefined): string | null {
   return n >= 4 ? `4${s}+` : `${n}${s}`;
 }
 const KEY_ORDER = ['no ♯/♭', '1♯', '2♯', '3♯', '4♯+', '1♭', '2♭', '3♭', '4♭+'];
+/** Search words of an item, made once (the full set's 187,000 rows are searched at every pause in typing). */
+const hayOf = (i: LibItem) => (i.hay ??= ` ${words([i.title, i.composer, ...i.tags].join(' ')).join(' ')}`);
+makeWordsWith((r) => { hayOf(r as unknown as LibItem); });
+const flagsOf = (i: LibItem) => i.flags ?? [];
+/** A title with a letter or a digit in some script (P15: "-" or "------------" is no title). */
+const hasTitle = (t: string) => /[\p{L}\p{N}]/u.test(t);
+/** What a title sorts by: from its first letter or digit (",,EUGENIE''" under E); "" when it has none. */
+const sortTitle = (t: string) => t.replace(/^[^\p{L}\p{N}]+/u, '');
+/** localeCompare's order, with one collator made once (sorting 187,000 rows by title called localeCompare millions of times). */
+const collate = new Intl.Collator().compare;
+/** The lowest and highest of a long list (Math.min(...list) overflows the stack past ~100,000 items). */
+function span(list: number[]): [number, number] { let lo = Infinity, hi = -Infinity; for (const v of list) { if (v < lo) lo = v; if (v > hi) hi = v; } return [lo, hi]; }
 const timeOf = (i: LibItem) => i.facts?.time ?? i.chart?.time ?? null;
 const barsOf = (i: LibItem) => i.facts?.bars ?? i.chart?.bars ?? null;
 const ICON: Record<Kind, string> = { piano: '♪', melody: '♪', lead: '𝄞', parts: '♫', chart: '', pdf: 'PDF', score: '♪' };
 const PARTS_WARNING = 'It has several parts: the score screen takes the top staff as your right hand and the rest as your left, which may be wrong here (choosing the parts comes later).';
+
+/** A full-set row as a plain catalogue row (its fields are getters over the list's array, which a spread would lose). */
+const catRowOf = (r: CatRow): CatRow => ({ id: r.id, file: r.file, title: r.title, composer: r.composer, facts: r.facts, views: r.views, group: r.group, licence: r.licence, bytes: r.bytes });
 
 /** A piece's memorized marks (Memorise's test), per hand choice, in Memorise's own words (markText). */
 function marksOf(id: string): string {
@@ -79,29 +101,73 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   let pageOpen = false; // upright: the page covers the list
   const justAdded = new Set<string>(); // this visit: marked in the list
   // Each tab keeps its own filters and sort.
-  const newFilters = () => ({ fav: false, kinds: new Set<Kind>(), keys: new Set<string>(), times: new Set<string>(), bars: null as [number, number] | null, tags: new Set<string>() });
+  // (flags: the full set's hidden flags shown on request)
+  const newFilters = () => ({ fav: false, kinds: new Set<Kind>(), keys: new Set<string>(), times: new Set<string>(), bars: null as [number, number] | null, tags: new Set<string>(), flags: new Set<string>() });
   let tab: Tab = 'yours';
-  const filters: Record<Tab, ReturnType<typeof newFilters>> = { yours: newFilters(), catalogue: newFilters() };
+  /** The full set's hidden files, a link beside the count (owner, 2026-10-15). */
+  const hiddenLink = el('button', 'lib-link lib-hidden');
+  hiddenLink.type = 'button';
+  hiddenLink.hidden = true;
+  hiddenLink.setAttribute('aria-haspopup', 'dialog');
+  hiddenLink.addEventListener('click', () => openSheet('flags'));
+  countLine.after(hiddenLink);
+  // The tab shown and its search, kept through a reload (P07: a piece opened from Full PDMX, reloaded, then ←, came
+  // back to Yours). In this browser tab only (sessionStorage), so a new visit opens as before.
+  const SESSION = 'piano-web.library-tab';
+  let restored: { tab?: Tab; search?: string } = {};
+  try { restored = JSON.parse(sessionStorage.getItem(SESSION) ?? '{}') as typeof restored; } catch { /* none */ }
+  const keepTab = () => { try { sessionStorage.setItem(SESSION, JSON.stringify({ tab, search: search.value })); } catch { /* this visit only */ } };
+  const filters: Record<Tab, ReturnType<typeof newFilters>> = { yours: newFilters(), catalogue: newFilters(), full: newFilters() };
+  filters.full.kinds.add('piano'); // the full set opens on piano, most viewed first (owner, 2026-10-15)
   let f = filters.yours;
-  const sorts: Record<Tab, SortBy> = { yours: 'opened', catalogue: 'views' };
+  const sorts: Record<Tab, SortBy> = { yours: 'opened', catalogue: 'views', full: 'views' };
   try { const p = JSON.parse(localStorage.getItem(PREFS) ?? '{}') as { sort?: SortBy }; if (SORTS.some(([s]) => s === p.sort)) sorts.yours = p.sort!; } catch { /* the default */ }
   let sortBy: SortBy = sorts.yours;
-  const sortsNow = () => (tab === 'catalogue' ? CAT_SORTS : SORTS);
+  const sortsNow = () => (tab === 'yours' ? SORTS : CAT_SORTS);
   const savePrefs = () => { sorts[tab] = sortBy; try { localStorage.setItem(PREFS, JSON.stringify({ sort: sorts.yours })); } catch { /* this visit only */ } };
-  let yoursAll: LibItem[] = [], catAll: LibItem[] = [];
-  const searches: Record<Tab, string> = { yours: '', catalogue: '' };
+  let yoursAll: LibItem[] = [], catAll: LibItem[] = [], fullAll: LibItem[] = [];
+  const searches: Record<Tab, string> = { yours: '', catalogue: '', full: '' };
   const expanded = new Set<number>(); // catalogue groups opened to show their versions
   let limit = PAGE, lastQuery = '';
+  // The full PDMX set (library/full.ts): what is on this phone, the kinds read into fullAll, and its setup.
+  let fullState: FullState | null = null, fullKinds = '', fullReading = false, fullAsk = 0;
+  // (copied: the list once the pdmx-a zips are all here; adding the several parts, back to the list once they are too)
+  const fullSetup = createFullSetup(app, { done: () => { void refresh().then(() => { if (hasSet(fullState, 'pdmx-b')) setupWanted = false; fullKinds = ''; all = listOf(tab); render(); }); } });
+  let setupWanted = false; // the setup shown over a set already there (adding the several parts)
+  onChange(() => { fullKinds = ''; if (isOpen) void refresh().then(render); });
+  const listOf = (t: Tab) => (t === 'yours' ? yoursAll : t === 'catalogue' ? catAll : fullAll);
 
   // ---- what is listed ---------------------------------------------------------------------------------------------
 
   async function refresh(): Promise<void> {
-    const pieces = app.pieces.filter((p) => !p.exerciseOf); // (an exercise's music is in Exercises, not Music)
-    const [charts, cat] = await Promise.all([loadCharts(base), loadCatalogue(base), readAppFacts(pieces, (p) => app.xmlFor(p))]);
+    const pieces = app.pieces.filter((p) => !p.exerciseOf && !p.full); // (an exercise's music is in Exercises, not Music; a full-set piece opened is not yours)
+    const [charts, cat] = await Promise.all([loadCharts(base), loadCatalogue(base), readAppFacts(pieces, (p) => app.xmlFor(p)), refreshFull()]);
     yoursAll = items(pieces, charts);
     catAll = cat ? cat.rows.map(catItem) : [];
-    all = tab === 'yours' ? yoursAll : catAll;
+    all = listOf(tab);
   }
+  /** The full set's state, and its rows of the kinds the Kind chip asks for (read when first wanted). */
+  async function refreshFull(): Promise<void> {
+    try {
+      fullState = await loadState().catch(() => null);
+      if (tab !== 'full') return;
+      const on = kindsOn(fullState);
+      const want = (filters.full.kinds.size ? [...filters.full.kinds] : on).filter((k) => on.includes(k));
+      const key = want.join();
+      if (key === fullKinds) return;
+      fullReading = true;
+      const n = ++fullAsk;
+      const lists = await Promise.all(want.map((k) => rowsOf(k)));
+      if (n !== fullAsk) return; // (another kind chosen meanwhile: its read wins)
+      fullAll = lists.length === 1 ? lists[0] : lists.flat();
+      fullKinds = key;
+    } catch (e) {
+      fullAll = [];
+      app.showMessage(`The full set’s list could not be read: ${e instanceof Error ? e.message : String(e)}`);
+    } finally { fullReading = false; }
+  }
+  /** The tab shows the setup (nothing usable copied yet, or the learner asked to add the several parts). */
+  const showingSetup = () => tab === 'full' && (setupWanted || !hasSet(fullState, 'pdmx-a'));
   function catItem(row: CatRow): LibItem {
     return { id: row.id, kind: row.facts.kind, title: row.title, composer: row.composer, origin: 'catalogue', facts: row.facts, fav: false, tags: [], opens: 'score', cat: row };
   }
@@ -115,43 +181,124 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     tab = t;
     f = filters[t];
     sortBy = sorts[t];
-    all = t === 'yours' ? yoursAll : catAll;
+    all = listOf(t);
     selected = null;
+    setupWanted = false;
     render();
     list.scrollTop = 0;
+    keepTab();
+    if (t === 'full') void refresh().then(() => { if (tab === 'full') { all = listOf('full'); render(); } }); // (its list is read when first shown)
   }
-  $('lib-tab-yours').addEventListener('click', () => switchTab('yours'));
-  $('lib-tab-catalogue').addEventListener('click', () => switchTab('catalogue'));
+  for (const t of TABS) $(`lib-tab-${t}`).addEventListener('click', () => switchTab(t));
+  /** A full-set file hidden by its flags (owner, 2026-10-15: broken and junk ones, until the chip shows them). */
+  /** The flags hidden until asked for (owner, 2026-10-15): as the set's own list says, else the four decided. */
+  const hideFlags = () => Object.values(fullState?.zips ?? {})[0]?.hide ?? HIDDEN_FLAGS;
+  const hiddenBy = (i: LibItem) => { const x = flagsOf(i); return x.length > 0 && x.some((y) => hideFlags().includes(y) && !f.flags.has(y)); };
   function matches(i: LibItem, without?: Filter): boolean {
+    if (without !== 'flags' && i.flags && hiddenBy(i)) return false;
     if (f.fav && !i.fav) return false;
     if (without !== 'kind' && f.kinds.size && !f.kinds.has(i.kind)) return false;
     if (without !== 'key' && f.keys.size && !f.keys.has(keyGroup(i.facts?.fifths) ?? '')) return false;
     if (without !== 'time' && f.times.size && !f.times.has(timeOf(i) ?? '')) return false;
     if (without !== 'bars' && f.bars) { const b = barsOf(i); if (b === null || b < f.bars[0] || b > f.bars[1]) return false; }
     if (without !== 'tags' && f.tags.size && !i.tags.some((t) => f.tags.has(t))) return false;
-    const q = words(search.value);
+    const q = queryNow();
     if (q.length) {
-      const have = words([i.title, i.composer, ...i.tags].join(' '));
-      if (!q.every((w) => have.some((h) => h.startsWith(w)))) return false;
+      const have = hayOf(i);
+      for (const w of q) if (!have.includes(w)) return false; // (each word the start of a word: " word")
     }
     return true;
   }
-  function sorted(list: LibItem[]): LibItem[] {
-    const byTitle = (a: LibItem, b: LibItem) => a.title.localeCompare(b.title);
+  /** The search's words, made again only when the search changes (matches() runs for every row). */
+  let query: string[] = [], queryFor = '';
+  const queryNow = () => { if (search.value !== queryFor) { queryFor = search.value; query = words(queryFor).map((w) => ` ${w}`); } return query; };
+  /** The list in sort order, kept until the list or the sort changes (sorting 187,000 rows at every key was the cost). */
+  let order: { of: LibItem[]; by: SortBy; list: LibItem[] } | null = null;
+  function inOrder(): LibItem[] {
+    if (order?.of !== all || order.by !== sortBy) order = { of: all, by: sortBy, list: sorted(all, false) };
+    return order.list;
+  }
+  function sorted(list: LibItem[], newOnTop = true): LibItem[] {
+    // (no title, or one of punctuation only: last, P11/P15; leading punctuation skipped: ",,EUGENIE''" under E)
+    const keys = new Map<LibItem, string>();
+    const keyOf = (i: LibItem) => { let k = keys.get(i); if (k === undefined) { k = sortTitle(i.title); keys.set(i, k); } return k; };
+    const byTitle = (a: LibItem, b: LibItem) => { const x = keyOf(a), y = keyOf(b); return (x ? 0 : 1) - (y ? 0 : 1) || collate(x, y); };
     const newer = (a?: string, b?: string) => (b ?? '').localeCompare(a ?? '');
     const cmp: Record<SortBy, (a: LibItem, b: LibItem) => number> = {
       // Never opened: after, newest added first, then the app's own by title.
       opened: (a, b) => newer(a.opened, b.opened) || newer(a.added, b.added) || byTitle(a, b),
       added: (a, b) => newer(a.added, b.added) || byTitle(a, b),
       title: byTitle,
-      composer: (a, b) => (a.composer ? 0 : 1) - (b.composer ? 0 : 1) || a.composer.localeCompare(b.composer) || byTitle(a, b),
+      composer: (a, b) => (a.composer ? 0 : 1) - (b.composer ? 0 : 1) || collate(a.composer, b.composer) || byTitle(a, b),
       bars: (a, b) => (barsOf(a) ?? Infinity) - (barsOf(b) ?? Infinity) || byTitle(a, b),
       views: (a, b) => (b.cat?.views ?? 0) - (a.cat?.views ?? 0) || byTitle(a, b),
     };
+    // The full set by views (its first view, 187,000 rows): the counts read once into an array and sorted by number;
+    // equal counts keep the list's order (by title they cost seconds on a slowed phone, measured).
+    if (!newOnTop && sortBy === 'views' && list.length > 20000) {
+      const v = new Float64Array(list.length);
+      for (let n = 0; n < list.length; n++) v[n] = list[n].cat?.views ?? 0;
+      const at = new Uint32Array(list.length);
+      for (let n = 0; n < at.length; n++) at[n] = n;
+      at.sort((a, b) => v[b] - v[a] || a - b);
+      return Array.from(at, (n) => list[n]);
+    }
     // What you just added stays on top this visit, whatever the sort (your sort is not changed).
-    return [...list].sort((a, b) => Number(justAdded.has(b.id)) - Number(justAdded.has(a.id)) || cmp[sortBy](a, b));
+    return [...list].sort((a, b) => (newOnTop ? Number(justAdded.has(b.id)) - Number(justAdded.has(a.id)) : 0) || cmp[sortBy](a, b));
   }
-  const shown = () => sorted(all.filter((i) => matches(i)));
+  /**
+   * What the list shows, in order: the sorted list filtered (filtering keeps the order), what you just added on top;
+   * and, for the full set, how many files its flags hide (by flag) among those the other filters leave.
+   */
+  type Entry = { item: LibItem; versions: number; version: boolean };
+  let last: { key: string; of: LibItem[]; list: LibItem[]; hidden: number; flagged: number; entries?: Entry[] } | null = null;
+  /** A file of the full set with a hiding flag (shown only because the learner asked). */
+  const hideable = (i: LibItem) => { const x = flagsOf(i); return x.length > 0 && x.some((y) => hideFlags().includes(y)); };
+  const keyNow = () => `${tab}|${search.value}|${activeNames().join()}|${[...f.flags].join()}|${sortBy}|${[...justAdded].join()}`;
+  function filterNow(): { list: LibItem[]; hidden: number; flagged: number } {
+    const key = keyNow();
+    if (last && last.key === key && last.of === all && order?.of === all) return last;
+    const out: LibItem[] = [], top: LibItem[] = [];
+    let hidden = 0, flagged = 0;
+    for (const i of inOrder()) {
+      if (i.flags && hiddenBy(i)) { if (matches(i, 'flags')) hidden++; continue; }
+      if (!matches(i)) continue;
+      if (i.flags && f.flags.size && hideable(i)) flagged++;
+      (justAdded.size && justAdded.has(i.id) ? top : out).push(i);
+    }
+    last = { key, of: all, list: top.length ? [...top, ...out] : out, hidden, flagged };
+    return last;
+  }
+  /**
+   * The same for the full set while you type (owner's brief, 2026-10-15: typing stays responsive): its 187,000 rows
+   * filtered a few milliseconds at a time, giving way to your keys between; a newer search stops an older one. Its
+   * versions are folded as it goes. The list is then drawn from what it found (filterNow finds it ready).
+   */
+  let filtering = 0;
+  const giveWay = () => new Promise<void>((resolve) => { const c = new MessageChannel(); c.port1.onmessage = () => resolve(); c.port2.postMessage(0); });
+  async function filterSoon(): Promise<boolean> {
+    const run = ++filtering, key = keyNow(), of = all;
+    if (last && last.key === key && last.of === of && order?.of === of) return true;
+    const rows = inOrder(), out: LibItem[] = [], count = new Map<number, number>(), firsts: LibItem[] = [];
+    let hidden = 0, flagged = 0, n = 0;
+    while (n < rows.length) {
+      const until = performance.now() + 8;
+      for (; n < rows.length && (n % 256 !== 0 || performance.now() < until); n++) {
+        const i = rows[n];
+        if (i.flags && hiddenBy(i)) { if (matches(i, 'flags')) hidden++; continue; }
+        if (!matches(i)) continue;
+        if (f.flags.size && hideable(i)) flagged++;
+        out.push(i);
+        const g = i.cat!.group, c = count.get(g);
+        if (c === undefined) { count.set(g, 1); firsts.push(i); } else count.set(g, c + 1);
+      }
+      if (n < rows.length) { await giveWay(); if (run !== filtering || keyNow() !== key || all !== of) return false; }
+    }
+    if (justAdded.size && out.some((i) => justAdded.has(i.id))) return true; // (rare: render() draws it the plain way)
+    last = { key, of, list: out, hidden, flagged, entries: firsts.map((i) => ({ item: i, versions: count.get(i.cat!.group)!, version: false })) };
+    return true;
+  }
+  const shown = () => filterNow().list;
 
   // ---- the list ---------------------------------------------------------------------------------------------------
 
@@ -176,17 +323,33 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   }
   /** The catalogue's uploads of one piece fold under the first shown (a group opened shows them all). */
   function fold(rows: LibItem[]): { item: LibItem; versions: number; version: boolean }[] {
+    if (tab === 'full') {
+      // (the full set: the first of each group, with its count; no arrays a group: 187,000 rows)
+      const count = new Map<number, number>();
+      for (const i of rows) { const g = i.cat!.group; count.set(g, (count.get(g) ?? 0) + 1); }
+      const seen = new Set<number>(), out: { item: LibItem; versions: number; version: boolean }[] = [];
+      for (const i of rows) { const g = i.cat!.group; if (seen.has(g)) continue; seen.add(g); out.push({ item: i, versions: count.get(g)!, version: false }); }
+      return out;
+    }
     const byGroup = new Map<number, LibItem[]>();
-    for (const i of rows) { const g = i.cat!.group; byGroup.set(g, [...(byGroup.get(g) ?? []), i]); }
+    for (const i of rows) { const g = i.cat!.group, had = byGroup.get(g); if (had) had.push(i); else byGroup.set(g, [i]); } // (pushed: 141,000 melodies)
     const out: { item: LibItem; versions: number; version: boolean }[] = [];
     for (const i of rows) {
       const g = byGroup.get(i.cat!.group)!;
       if (g[0] !== i) continue;
       out.push({ item: i, versions: g.length, version: false });
-      if (expanded.has(i.cat!.group)) for (const v of g.slice(1)) out.push({ item: v, versions: g.length, version: true });
+      // (the full set lists a piece's versions on its page, owner 2026-10-15; the catalogue opens them in the list)
+      if (tab === 'catalogue' && expanded.has(i.cat!.group)) for (const v of g.slice(1)) out.push({ item: v, versions: g.length, version: true });
     }
     return out;
   }
+  /** The full set's labels on a row (owner, 2026-10-15): its flags in the list's own words. */
+  function flagWords(i: LibItem, which = LABEL_FLAGS): string[] {
+    const legend = Object.values(fullState?.zips ?? {})[0]?.flags ?? {};
+    // (no title: the row's title says it already, P11)
+    return flagsOf(i).filter((x) => (which.includes(x) || hideFlags().includes(x)) && !(x === 'notitle' && !hasTitle(i.title))).map((x) => legend[x] ?? x);
+  }
+  const titleOf = (i: LibItem) => (i.flags && !hasTitle(i.title) ? 'No title' : i.title || 'Untitled');
   function addButton(i: LibItem): HTMLButtonElement {
     const got = inYours(i);
     const b = el('button', `lib-addcat${got ? ' got' : ''}`, got ? 'Added ✓' : '+ Add');
@@ -200,20 +363,25 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     const query = `${tab}|${search.value}|${activeNames().join()}|${sortBy}`;
     if (query !== lastQuery) { limit = PAGE; lastQuery = query; } // a new search or filter starts from the top
     const filtered = shown();
-    const entries = tab === 'catalogue' ? fold(filtered) : filtered.map((item) => ({ item, versions: 1, version: false }));
+    const entries = tab === 'full' && last?.list === filtered && last.entries ? last.entries : tab !== 'yours' ? fold(filtered) : filtered.map((item) => ({ item, versions: 1, version: false }));
     const rows = entries.slice(0, limit);
+    const rowsDone: HTMLElement[] = [];
     list.replaceChildren(...rows.map(({ item: i, versions, version }) => {
       if (i.cat) {
         const li = el('li', `lib-item${version ? ' ver' : ''}${twoPanes.matches && i.id === selected ? ' sel' : ''}`);
+        li.dataset.id = i.id;
         const main = el('button', 'lib-row');
         main.type = 'button';
         const tx = el('span', 'lib-tx');
-        tx.append(el('span', 'lib-tt', version ? `${KIND_NAMES[i.kind]} · ${keyText(i.facts!)} · ${i.facts!.bars} bars` : i.title),
-          el('span', 'lib-mm', version ? `${i.cat.views.toLocaleString()} views on MuseScore` : metaOf(i)));
+        const full = !!i.flags;
+        tx.append(el('span', 'lib-tt', version ? `${KIND_NAMES[i.kind]} · ${keyText(i.facts!)} · ${i.facts!.bars} bars` : titleOf(i)),
+          el('span', 'lib-mm', version ? `${i.cat.views.toLocaleString()} views on MuseScore` : `${metaOf(i)}${full && versions > 1 ? ` · ${versions} versions` : ''}`));
+        const labels = full ? flagWords(i) : [];
+        if (labels.length) tx.append(el('span', 'lib-flags', labels.join(' · ')));
         main.append(version ? el('span', 'lib-ic ver-ic') : icon(i), tx);
         main.addEventListener('click', () => showPage(i.id));
         li.append(main);
-        if (!version && versions > 1) {
+        if (!version && versions > 1 && !full) {
           const open = expanded.has(i.cat.group);
           const t = el('button', 'lib-versions', `${versions} versions ${open ? '▴' : '▾'}`);
           t.type = 'button';
@@ -225,6 +393,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
         return li;
       }
       const li = el('li', `lib-item${justAdded.has(i.id) ? ' new' : ''}${twoPanes.matches && i.id === selected ? ' sel' : ''}`);
+      li.dataset.id = i.id;
       const main = el('button', 'lib-row');
       main.type = 'button';
       const tx = el('span', 'lib-tx');
@@ -246,6 +415,15 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       }
       return li;
     }));
+    if (tab === 'full' && !hasSet(fullState, 'pdmx-b') && entries.length <= limit) {
+      // The several parts, to add later (owner, 2026-10-15): at the end of the list, out of the way (P02).
+      const li = el('li', 'lib-more-rows');
+      const b = el('button', 'lib-link', 'Add several parts (band and ensemble scores)…');
+      b.type = 'button';
+      b.addEventListener('click', () => { setupWanted = true; render(); });
+      li.append(b);
+      rowsDone.push(li);
+    }
     if (entries.length > limit) {
       const li = el('li', 'lib-more-rows');
       const more = el('button', 'btn', `Show more (${(entries.length - limit).toLocaleString()} more)`);
@@ -254,9 +432,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       li.append(more);
       list.append(li);
     }
+    list.append(...rowsDone);
     if (!rows.length) {
       const why = activeNames();
-      const li = el('li', 'lib-empty', all.length ? `Nothing matches${why.length || search.value ? `: ${[search.value && `“${search.value}”`, ...why].filter(Boolean).join(', ')}` : ''}.` : 'The library is empty.');
+      const li = el('li', 'lib-empty', tab === 'full' && fullReading ? 'Reading the list…' : all.length ? `Nothing matches${why.length || search.value ? `: ${[search.value && `“${search.value}”`, ...why].filter(Boolean).join(', ')}` : ''}.` : tab === 'full' ? (fullReading ? 'Reading the list…' : 'Nothing listed.') : 'The library is empty.');
       if (why.length || search.value) {
         const clear = el('button', 'btn', 'Clear');
         clear.type = 'button';
@@ -267,18 +446,41 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     }
     // The catalogue lists a piece once with its versions folded under it (as its tab counts it): counted the same way
     // (2026-10-15: the line said 1,826 scores, every version, beside a tab of 1,631 and a list of one row a piece).
-    const pieces = (items: LibItem[]) => (tab === 'catalogue' ? new Set(items.map((i) => i.cat?.group ?? i.id)).size : items.length);
-    const n = pieces(filtered), of = pieces(all), names = activeNames(), unit = tab === 'catalogue' ? 'pieces' : 'items';
-    countLine.textContent = n === of && !search.value ? `${of.toLocaleString()} ${of === 1 ? unit.slice(0, -1) : unit}` : `${n.toLocaleString()} of ${of.toLocaleString()}${names.length ? ` · ${names.join(' · ')}` : ''}`;
-    sortButton.textContent = `Sort: ${sortsNow().find(([s]) => s === sortBy)![1]} ▾`;
-    // The tabs (only when there is a catalogue).
-    const tabs = $('lib-tabs');
-    tabs.hidden = !catAll.length;
-    for (const t of ['yours', 'catalogue'] as Tab[]) {
+    const groups = (items: LibItem[]) => { const s = new Set<number | string>(); for (const i of items) s.add(i.cat?.group ?? i.id); return s.size; };
+    const pieces = (items: LibItem[]) => (tab !== 'yours' ? groups(items) : items.length);
+    const names = activeNames(), unit = tab !== 'yours' ? 'pieces' : 'items';
+    if (tab === 'full') {
+      // (full set: the pieces shown, then its hidden files as a link to the sheet that shows them: owner, 2026-10-15,
+      // "a link in the count line, not a chip"; counted in files, as the sheet counts them, P05)
+      const n = entries.length, { hidden, flagged } = filterNow();
+      countLine.textContent = `${n.toLocaleString()} ${n === 1 ? 'piece' : 'pieces'}${hidden || flagged ? ' ·' : ''}`;
+      // (beside the count, not inside it: the count's line cuts off what overflows, and the link takes a whole fingertip, P13)
+      hiddenLink.hidden = !(hidden || flagged);
+      hiddenLink.textContent = flagged
+        ? `${flagged.toLocaleString()} flagged ${flagged === 1 ? 'file' : 'files'} shown${hidden ? `, ${hidden.toLocaleString()} hidden` : ''} ›`
+        : `${hidden.toLocaleString()} hidden ${hidden === 1 ? 'file' : 'files'} ›`;
+    } else {
+      hiddenLink.hidden = true;
+      const n = pieces(filtered), of = pieces(all);
+      countLine.textContent = n === of && !search.value ? `${of.toLocaleString()} ${of === 1 ? unit.slice(0, -1) : unit}` : `${n.toLocaleString()} of ${of.toLocaleString()}${names.length ? ` · ${names.join(' · ')}` : ''}`;
+    }
+    sortButton.textContent = `Sort: ${SHORT[sortBy]} ▾`; // (short, so the count beside it fits at 320 px, P13)
+    renderTabs();
+  }
+  /** Yours / Catalogue / Full PDMX, each with its count (the full set: pieces of the kinds on this phone). */
+  let catPieces = -1, catPiecesOf: LibItem[] | null = null;
+  function renderTabs(): void {
+    if (catPiecesOf !== catAll) { catPiecesOf = catAll; catPieces = new Set(catAll.map((i) => i.cat!.group)).size; }
+    const any = fullState && Object.values(fullState.zips)[0];
+    // (the pieces the list shows with every kind and nothing filtered: hidden files left out, as the list leaves them, P12)
+    const fullCount = any ? kindsOn(fullState).reduce((s, k) => s + (any.counts[k]?.shown ?? any.counts[k]?.pieces ?? 0), 0) : 0;
+    $('lib-tabs').hidden = false; // (the full set's tab is always there: its setup is offered on it)
+    $('lib-tab-catalogue').hidden = !catAll.length;
+    for (const t of TABS) {
       const b = $(`lib-tab-${t}`);
       b.classList.toggle('on', t === tab);
       b.setAttribute('aria-selected', String(t === tab));
-      b.querySelector('small')!.textContent = (t === 'yours' ? yoursAll.length : new Set(catAll.map((i) => i.cat!.group)).size).toLocaleString();
+      b.querySelector('small')!.textContent = t === 'yours' ? yoursAll.length.toLocaleString() : t === 'catalogue' ? catPieces.toLocaleString() : fullCount ? fullCount.toLocaleString() : '';
     }
   }
   function activeNames(): string[] {
@@ -316,12 +518,16 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     if (tab === 'yours' && all.some((i) => i.tags.length)) out.push(chip(one(f.tags, 'Tags'), f.tags.size > 0, () => openSheet('tags'), () => f.tags.clear()));
     chips.replaceChildren(...out);
   }
-  function clearFilters(): void { f.fav = false; f.kinds.clear(); f.keys.clear(); f.times.clear(); f.bars = null; f.tags.clear(); }
+  function clearFilters(): void { f.fav = false; f.kinds.clear(); f.keys.clear(); f.times.clear(); f.bars = null; f.tags.clear(); f.flags.clear(); if (tab === 'full') f.kinds.add('piano'); }
 
   function renderFoot(): void {
+    const foot = $('lib-foot');
+    // (the full set: no line here, so the list has the room, P02; its size, what is on the phone and the clean-up
+    // risk are in Settings, and Add several parts… ends the list)
+    foot.hidden = tab === 'full';
+    if (tab === 'full') return;
     const mine = allRecords().filter((r) => r.own);
     const size = mine.reduce((s, r) => s + (r.own?.file.size ?? 0), 0);
-    const foot = $('lib-foot');
     if (!mine.length) { foot.textContent = 'Add your own scores and PDFs with + Add.'; return; }
     foot.textContent = `Your files: ${mine.length} · ${mb(size)}`;
     void isSafe().then((safe) => { foot.textContent = `Your files: ${mine.length} · ${mb(size)} · ${safe ? 'kept safe from clean-up' : 'not kept safe yet: install the app to keep them'}`; });
@@ -329,6 +535,23 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
 
   function render(): void {
     const twin = twoPanes.matches;
+    // The full set: its setup until it is on the phone; a kind chosen that is not read yet is read, then drawn again.
+    const setup = showingSetup();
+    for (const id of ['lib-search', 'lib-chips', 'lib-list', 'lib-foot']) $(id).hidden = setup || (id === 'lib-foot' && tab === 'full');
+    (countLine.parentElement as HTMLElement).hidden = setup;
+    $('lib-full-setup').hidden = !setup;
+    if (setup) {
+      renderTabs();
+      fullSetup.show($('lib-full-setup'), fullState, setupWanted ? () => { setupWanted = false; render(); } : undefined);
+      section.classList.toggle('two', false);
+      left.hidden = false;
+      page.hidden = true;
+      return;
+    }
+    if (tab === 'full' && !fullReading) {
+      const on = kindsOn(fullState), want = (f.kinds.size ? [...f.kinds] : on).filter((k) => on.includes(k)).join();
+      if (want !== fullKinds) { fullReading = true; void refreshFull().then(() => { if (tab === 'full' && isOpen) { all = listOf('full'); render(); } }); }
+    }
     // The piece whose page shows is chosen before the list is drawn, so its row is the one marked (review 2026-10-15:
     // the first time, no row was).
     if (twin && (!selected || !all.some((i) => i.id === selected))) selected = shown()[0]?.id ?? null;
@@ -385,7 +608,27 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       sheetBody.replaceChildren(box);
       return;
     }
-    if (which === 'kind') {
+    if (which === 'kind' && tab === 'full') {
+      // The kinds on this phone (several parts only with the pdmx-b zips), read when chosen; none chosen is all.
+      sheetTitle.textContent = 'Kind';
+      const on = kindsOn(fullState);
+      sheetBody.replaceChildren(el('p', 'note', on.includes('parts') ? 'None chosen shows every kind.' : 'None chosen shows every kind. Several-part scores (band and ensemble) come with the pdmx-b zips.'),
+        toggles(on.map((k) => [k, KIND_NAMES[k] === 'lead sheet' ? 'lead sheets' : KIND_NAMES[k] === 'melody' ? 'melodies' : KIND_NAMES[k]]), f.kinds));
+      if (!on.includes('parts')) {
+        // (where several parts would be chosen: the way to add them, P02 moved it out of the line under the list)
+        const b = el('button', 'btn lib-addparts', 'Add several parts…');
+        b.type = 'button';
+        b.addEventListener('click', () => { sheet.close(); setupWanted = true; render(); });
+        sheetBody.append(b);
+      }
+    } else if (which === 'flags') {
+      sheetTitle.textContent = 'Hidden files';
+      const legend = Object.values(fullState?.zips ?? {})[0]?.flags ?? {};
+      const counts = new Map<string, number>();
+      for (const i of pool) for (const x of flagsOf(i)) if (hideFlags().includes(x)) counts.set(x, (counts.get(x) ?? 0) + 1);
+      sheetBody.replaceChildren(el('p', 'note', 'Files the PC found broken or junk are hidden. Tap one to show those files too, labelled. The numbers are files.'),
+        toggles(hideFlags().map((x) => [x, `${legend[x] ?? x} (${(counts.get(x) ?? 0).toLocaleString()})`]), f.flags));
+    } else if (which === 'kind') {
       sheetTitle.textContent = 'Kind';
       const kinds = (Object.keys(KIND_NAMES) as Kind[]).filter((k) => pool.some((i) => i.kind === k) || f.kinds.has(k));
       sheetBody.replaceChildren(toggles(kinds.map((k) => [k, KIND_NAMES[k]]), f.kinds));
@@ -404,7 +647,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     } else {
       sheetTitle.textContent = 'Bars (as printed)';
       const counts = all.map(barsOf).filter((b): b is number => b !== null);
-      const lo = Math.min(...counts), hi = Math.max(...counts);
+      const [lo, hi] = span(counts);
       if (!counts.length || lo === hi) { sheetBody.replaceChildren(el('p', 'note', counts.length ? `Everything here has ${lo} bars.` : 'Nothing here has bars to count.')); }
       else {
         const [a, b] = f.bars ?? [lo, hi];
@@ -429,16 +672,20 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     }
     showCount();
   }
-  function showCount(): void { const n = shown().length; sheetShow.textContent = `Show ${n}`; }
+  function showCount(): void { const n = shown().length; sheetShow.textContent = `Show ${n.toLocaleString()}`; }
   $('lib-sheet-clear').addEventListener('click', () => {
-    if (sheetFor === 'kind') f.kinds.clear(); else if (sheetFor === 'key') f.keys.clear(); else if (sheetFor === 'time') f.times.clear(); else if (sheetFor === 'tags') f.tags.clear(); else if (sheetFor === 'bars') f.bars = null;
+    if (sheetFor === 'kind') f.kinds.clear(); else if (sheetFor === 'flags') f.flags.clear(); else if (sheetFor === 'key') f.keys.clear(); else if (sheetFor === 'time') f.times.clear(); else if (sheetFor === 'tags') f.tags.clear(); else if (sheetFor === 'bars') f.bars = null;
     fillSheet();
     render();
   });
   sheet.addEventListener('close', () => { sheetFor = null; });
   sortButton.addEventListener('click', () => openSheet('sort'));
   let typing = 0;
-  search.addEventListener('input', () => { clearTimeout(typing); typing = window.setTimeout(render, 120); });
+  search.addEventListener('input', () => {
+    keepTab();
+    clearTimeout(typing);
+    typing = window.setTimeout(() => { if (tab === 'full') void filterSoon().then((ready) => { if (ready && isOpen) render(); }); else render(); }, 120);
+  });
 
   // ---- a piece's page -----------------------------------------------------------------------------------------------
 
@@ -479,7 +726,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     let i = all.find((x) => x.id === selected);
     if (!i) { page.replaceChildren(el('p', 'note lib-none', all.length ? 'Choose something on the left.' : '')); return; }
     if (i.cat && inYours(i)) i = yoursAll.find((x) => x.id === i!.id) ?? i; // in your library: its page there
-    if (i.cat && !inYours(i)) { renderCatPage(i); return; }
+    if (i.cat && !inYours(i)) { if (i.flags) renderFullPage(i as unknown as FullRow); else renderCatPage(i); return; }
     const out: HTMLElement[] = [];
     if (!twoPanes.matches) {
       const head = el('div', 'fp-head lib-page-head');
@@ -543,9 +790,9 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     const from = el('div', 'lib-from');
     if (i.origin === 'app') {
       from.append(el('div', '', i.kind === 'chart' ? 'The app’s own chord chart.' : `The app’s own${i.source ? `, from ${i.source}` : ''}.`));
-      if (i.licence) {
+      if (i.licenceOf) {
         const line = el('div', '', 'Licence of this transcription: ');
-        line.append(i.licence.url ? Object.assign(el('a', '', i.licence.name), { href: i.licence.url, target: '_blank', rel: 'noopener' }) : i.licence.name);
+        line.append(i.licenceOf.url ? Object.assign(el('a', '', i.licenceOf.name), { href: i.licenceOf.url, target: '_blank', rel: 'noopener' }) : i.licenceOf.name);
         from.append(line);
       }
     } else if (i.own) {
@@ -611,13 +858,97 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     page.replaceChildren(...out);
   }
 
+  /**
+   * A full-set piece not yet in your library (owner, 2026-10-15; mockup web/mockups/pdmx-full.html): what the PC read
+   * from its notes, its first bars, the plain note that nobody picked or checked it, + Add and Open (plays it without
+   * adding it), and its versions (the uploads folded into its row).
+   */
+  function renderFullPage(r: FullRow): void {
+    const i = r as unknown as LibItem;
+    const out: HTMLElement[] = [];
+    if (!twoPanes.matches) {
+      const head = el('div', 'fp-head lib-page-head');
+      const back = el('button', 'btn', '←');
+      back.type = 'button';
+      back.setAttribute('aria-label', 'Back to the list');
+      back.addEventListener('click', closePage);
+      head.append(back, el('span', 'title', titleOf(i)));
+      out.push(head);
+    }
+    const body = el('div', 'lib-page-body');
+    const name = el('div');
+    name.append(el('div', 'lib-title', titleOf(i)), el('div', 'lib-meta', [r.composer, 'from the full PDMX set'].filter(Boolean).join(' · ')));
+    body.append(name);
+    // + Add and Open under the title, as on the other pages (P09)
+    const buttons = el('div', 'lib-buttons');
+    const add = el('button', 'btn main', '+ Add');
+    add.type = 'button';
+    add.addEventListener('click', () => void addCatalogueItem(i, add));
+    const open = el('button', 'btn', 'Open');
+    open.type = 'button';
+    open.addEventListener('click', () => openFull(r));
+    buttons.append(add, open);
+    body.append(buttons);
+    if (previewFor !== r.id || !previewBox) {
+      previewBox = el('div', 'lib-preview');
+      previewBox.setAttribute('aria-hidden', 'true');
+      const box = previewBox;
+      previewFor = r.id;
+      void fileOfRef(refOf(r)).then((file) => xmlOfFile(file)).then((xml) => { if (previewFor === r.id) return drawXml(xml, box); })
+        .catch(() => { box.textContent = 'The first bars could not be drawn.'; });
+    }
+    body.append(previewBox);
+    const facts = el('dl', 'lib-facts');
+    const fact = (k: string, v: string, small = '') => { if (!v) return; const dd = el('dd', '', v); if (small) dd.append(el('small', '', ` ${small}`)); facts.append(el('dt', '', k), dd); };
+    fact('Kind', r.kind === 'piano' ? 'piano (one part, two staves)' : r.kind === 'lead' ? 'lead sheet: a melody with chord symbols' : r.kind === 'melody' ? 'melody, one staff' : 'several parts');
+    fact('Key', `${keyText(r, true)}${r.keyChanges ? ', changing later' : ''}`);
+    fact('Time', r.time ? `${r.time}${r.timeChanges ? ', changing later' : ''}` : '');
+    fact('Bars', `${r.bars}`, 'as printed');
+    if (r.low !== null && r.high !== null) fact('Range', `${noteName(r.low)} – ${noteName(r.high)}`);
+    fact('Views', r.views.toLocaleString(), 'on MuseScore');
+    fact('Licence', r.licence, 'the transcription');
+    body.append(facts);
+    const labels = flagWords(i);
+    if (labels.length) body.append(el('div', 'lib-warn', `Found in the file: ${labels.join('; ')}.`));
+    body.append(el('div', 'lib-warn', UNCHECKED));
+    if (r.kind === 'parts') body.append(el('div', 'lib-warn', PARTS_WARNING));
+    // Its versions: the uploads folded into its row (the flagged ones too, labelled), most viewed first.
+    const versions = all.filter((x) => x.cat?.group === r.group);
+    if (versions.length > 1) {
+      body.append(el('div', 'lib-label', `${versions.length} versions`));
+      const box = el('div', 'lib-vers');
+      for (const v of sorted(versions, false)) {
+        const b = el('button', `lib-ver${v.id === r.id ? ' on' : ''}`);
+        b.type = 'button';
+        const words = flagWords(v);
+        b.append(el('span', '', `${titleOf(v)} · ${keyText(v.facts!)} · ${v.facts!.time ?? ''} · ${v.facts!.bars} bars`), el('small', '', `${v.cat!.views.toLocaleString()} views${words.length ? ` · ${words.join(' · ')}` : ''}${inYours(v) ? ' · in Yours' : ''}`));
+        b.setAttribute('aria-current', String(v.id === r.id));
+        b.addEventListener('click', () => { selected = v.id; render(); page.scrollTop = 0; });
+        box.append(b);
+      }
+      body.append(box);
+    }
+    out.push(body);
+    page.replaceChildren(...out);
+  }
+  /** Open (owner, 2026-10-15): plays a full-set piece on the score screen without adding it to your library; its
+   * choices are kept by its id, the one it keeps when added. */
+  function openFull(r: FullRow): void {
+    if (!app.pieces.some((p) => p.id === r.id)) app.pieces.push({ id: r.id, title: titleOf(r as unknown as LibItem), composer: r.composer, file: r.file, full: refOf(r) });
+    touch(r.id);
+    close(() => deps.openScore(r.id));
+  }
+
   /** Adds a catalogue piece (library/catalogue.ts addFromCatalogue, the one way a catalogue piece is added: a lesson or an
-   * activity naming one adds it the same way). A second tap while the first is under way does nothing. */
+   * activity naming one adds it the same way). A second tap while the first is under way does nothing. A full-set
+   * piece is added by the same code, its file read from the copied zip (owner, 2026-10-15: same id, record and
+   * provenance as the catalogue's + Add). */
   async function addCatalogueItem(i: LibItem, button?: HTMLButtonElement): Promise<void> {
     if (!i.cat || inYours(i) || isAdding(i.id)) return;
     if (button) button.disabled = true;
     try {
-      await addFromCatalogue(app, base, i.cat);
+      const row = i.cat;
+      await addFromCatalogue(app, base, i.flags ? { ...catRowOf(row), title: titleOf(i) } : row, i.flags ? () => fileOfRef(refOf(row as FullRow)) : undefined);
       justAdded.add(i.id);
       void keepSafe().then(() => renderFoot());
       await refresh();
@@ -772,6 +1103,8 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     for (const file of files) {
       try {
         await load();
+        // A zip of the full PDMX set picked here (P06): said plainly, not "no MusicXML in it".
+        if (await readZip(file).then(() => true, () => false)) throw new Error('This is a Full PDMX zip: use Full PDMX → Pick the zip files… to put the set on this phone.');
         const p: Prepared = await prepare(file, checkMidi);
         // The same file (by its contents) is never added twice, even one that replaced another piece's file.
         const had = allRecords().find((r) => r.own?.hash === p.own.hash);
@@ -910,6 +1243,12 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     section.hidden = false;
     pageOpen = false;
     if (!all.length) list.replaceChildren(el('li', 'lib-empty', 'Opening the library…'));
+    if (restored.tab && TABS.includes(restored.tab) && restored.tab !== tab) {
+      // (a reload: the tab and search it had, P07)
+      searches[restored.tab] = restored.search ?? '';
+      tab = restored.tab; f = filters[tab]; sortBy = sorts[tab]; search.value = searches[tab];
+    }
+    restored = {};
     try { await load(); } catch (e) { app.showMessage(`Your added files could not be read: ${e instanceof Error ? e.message : String(e)}`); }
     await refresh();
     if (!isOpen) return;
@@ -930,17 +1269,26 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
   }
   twoPanes.addEventListener('change', () => { if (isOpen) render(); });
 
+  /** For checks (P11): where the first file with no title and the last with one are in the list. */
+  function untitledAt(): { firstUntitled: number; lastTitled: number; untitled: number } {
+    const l = shown();
+    let firstUntitled = -1, lastTitled = -1, untitled = 0;
+    l.forEach((i, n) => { if (hasTitle(i.title)) lastTitled = n; else { untitled++; if (firstUntitled < 0) firstUntitled = n; } });
+    return { firstUntitled, lastTitled, untitled };
+  }
   return {
     key: () => {}, // nothing here is played
     command: () => {},
     musicRange: () => null,
     resized: () => {},
-    get busy() { return false; },
+    get busy() { return fullSetup.copying; }, // (copying the full set: the phone stays awake)
     open, close: (then?: () => void) => close(then),
     /** Shut at once (another tab or a page took its place; no history step of its own is left). */
     hide: () => shut(),
     get isOpen() { return isOpen; },
-    debug: () => ({ items: all.map((i) => ({ id: i.id, kind: i.kind, title: i.title, fav: i.fav, tags: i.tags, opened: i.opened, facts: i.facts, hash: i.own?.hash })), shown: shown().map((i) => i.id), selected, pageOpen, twoPanes: twoPanes.matches }),
+    debug: () => (tab === 'full'
+      ? { tab, setup: showingSetup(), reading: fullReading, kinds: [...f.kinds], listed: all.length, ...untitledAt(), shown: shown().slice(0, 300).map((i) => ({ id: i.id, kind: i.kind, title: i.title, composer: i.composer, views: i.cat?.views, flags: i.flags, group: i.cat?.group })), shownCount: shown().length, hidden: filterNow().hidden, selected, pageOpen, twoPanes: twoPanes.matches }
+      : { tab, items: all.map((i) => ({ id: i.id, kind: i.kind, title: i.title, fav: i.fav, tags: i.tags, opened: i.opened, facts: i.facts, hash: i.own?.hash })), shown: shown().map((i) => i.id), selected, pageOpen, twoPanes: twoPanes.matches }),
     add,
   };
 }

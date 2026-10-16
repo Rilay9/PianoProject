@@ -14,7 +14,7 @@ export interface LibItem {
   kind: Kind;
   title: string;
   composer: string;
-  origin: 'app' | 'yours' | 'catalogue';
+  origin: 'app' | 'yours' | 'catalogue' | 'full';
   /** Read from a score's notes (null: a chart or a PDF, or a score that could not be read). */
   facts: Facts | null;
   chart?: { time: string; tempo: number; style: string; bars: number; chords: string[] };
@@ -25,12 +25,16 @@ export interface LibItem {
   own?: Own;
   /** The app's own: where it came from and its state, as the song list says. */
   source?: string;
-  licence?: { name: string; url?: string };
+  licenceOf?: { name: string; url?: string };
   status?: string;
   /** Where it opens. */
   opens: 'score' | 'lab' | 'pdf';
-  /** A catalogue row (the Catalogue tab). */
+  /** A catalogue row (the Catalogue tab, and the full set's rows). */
   cat?: CatRow;
+  /** The full set's flags (library/full.ts). */
+  flags?: string[];
+  /** Search words (title, composer, tags), made when first searched. */
+  hay?: string;
 }
 
 export const chartId = (id: string) => `chart:${id}`;
@@ -78,7 +82,7 @@ export function items(pieces: Piece[], chartList: Chart[]): LibItem[] {
     list.push({
       id: p.id, kind: facts?.kind ?? 'score', title: p.title, composer: p.composer, origin: 'app', facts, opens: 'score', ...mine(p.id),
       source: p.source?.dataset ? `${p.source.dataset}${p.source.uploadTitle ? `, uploaded as “${p.source.uploadTitle}”` : ''}` : undefined,
-      licence: p.license ? { name: p.license, url: p.licenseUrl } : undefined, status: p.status,
+      licenceOf: p.license ? { name: p.license, url: p.licenseUrl } : undefined, status: p.status,
     });
   }
   for (const c of chartList) {
@@ -93,7 +97,7 @@ export function items(pieces: Piece[], chartList: Chart[]): LibItem[] {
     if (!o) continue;
     list.push({
       id: r.id, kind: o.kind, title: o.title, composer: o.composer, origin: o.origin, facts: o.facts, added: o.added, own: o,
-      opens: o.kind === 'pdf' ? 'pdf' : 'score', ...mine(r.id), source: o.source, licence: o.licence ? { name: o.licence } : undefined,
+      opens: o.kind === 'pdf' ? 'pdf' : 'score', ...mine(r.id), source: o.source, licenceOf: o.licence ? { name: o.licence } : undefined,
     });
   }
   return list;

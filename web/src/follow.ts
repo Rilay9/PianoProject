@@ -177,7 +177,19 @@ export class FollowView {
       const margin = (this.host.clientWidth * SIDE_MARGIN_SHARE) / (UNIT * this.zoom);
       o.EngravingRules.PageLeftMargin = margin;
       o.EngravingRules.PageRightMargin = margin;
-      o.render();
+      // OSMD fails to draw a glissando whose other end is on another line or outside the bars being drawn ("reading
+      // 'HasEndLine'": 1 of the 300 most viewed PDMX piano files, upright). Then the drawing is made without glissando
+      // lines, and the learner is told (the one line, sideways, draws them).
+      let noSlides = false;
+      const render = () => {
+        try { o.render(); } catch (e) {
+          if (!o.EngravingRules.RenderGlissandi) throw e;
+          o.EngravingRules.RenderGlissandi = false;
+          noSlides = true;
+          o.render();
+        }
+      };
+      render();
       const raw = this.playOrder(o);
       this.measures = o.Sheet.SourceMeasures.map((sm) => ({
         beats: sm.ActiveTimeSignature?.Numerator ?? 4,
@@ -209,11 +221,11 @@ export class FollowView {
           // A full-width line, as on the page; the song's last line as drawn; in Memorise none (owner: the bar at its own width).
           rules.StretchLastSystemLine = s.mode !== 'memorise' && i < ranges.length - 1;
           rules.RenderSingleHorizontalStaffline = false;
-          o.render();
+          render();
           if (s.lines !== 'auto' && o.GraphicSheet.MusicPages[0].MusicSystems.length > 1) {
             rules.RenderSingleHorizontalStaffline = true; // never wrap: one line, shrunk to fit in fill()
             rules.StretchLastSystemLine = false; // otherwise the one line is stretched to OSMD's maximum width
-            o.render();
+            render();
           }
           const svg = this.source.querySelector('svg')!.cloneNode(true) as SVGSVGElement;
           const systems = o.GraphicSheet.MusicPages[0].MusicSystems;
@@ -242,6 +254,7 @@ export class FollowView {
         });
         this.source.replaceChildren(); // each slot has its own copy now
       }
+      if (noSlides) this.onNotice('Some glissando lines in this score could not be drawn this way up and are left out; held sideways they are drawn.');
       // Loudness from the written dynamics: the last dynamic before a note, or along a crescendo / diminuendo a
       // ramp to the next written dynamic after it ends. Each hand follows the dynamics written on its own
       // staff; until a staff has one of its own, it follows the other's (so dynamics written once apply to both).
@@ -297,14 +310,61 @@ export class FollowView {
         });
       });
       this.build(s.slots);
+      document.body.classList.remove('draw-failed');
       ready();
       this.current = keepTs === undefined ? 0 : this.nearestStep(keepTs);
       this.update();
     } catch (cause) {
       if (generation !== this.generation) return;
-      this.onError(cause instanceof Error ? cause.message : String(cause));
+      const why = cause instanceof Error ? cause.message : String(cause);
+      this.fail(`“${this.title}” could not be drawn: ${why}`);
+      this.onError(why);
     }
   }
+
+  /** The piece being drawn, for what is said if it can't be. */
+  title = '';
+  /** The way back offered when a piece can't be drawn (main.ts: the same as ←). */
+  onFailBack: () => void = () => {};
+  /**
+   * A piece that could not be drawn or read (review 2026-10-15, P01): the previous piece's music is never left on
+   * screen under the new title. Everything drawn is cleared, and the screen itself says what happened, with a way back.
+   */
+  fail(text: string): void {
+    ++this.generation; // (a draw still under way for the old piece is dropped)
+    this.pause();
+    this.steps = [];
+    this.chunks = [];
+    this.occ = [];
+    this.measures = [];
+    this.slots = [];
+    this.scroller = null;
+    this.colored = [];
+    this.current = 0;
+    this.endT = 0;
+    this.source.replaceChildren();
+    this.host.classList.remove('strip');
+    const box = document.createElement('div');
+    box.className = 'draw-failed';
+    box.setAttribute('role', 'alert');
+    const p = document.createElement('p');
+    p.textContent = text;
+    const back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'btn';
+    back.textContent = '← Back';
+    back.addEventListener('click', () => this.onFailBack());
+    box.append(p, back);
+    this.host.replaceChildren(box);
+    // Nothing of the piece before is offered either (review re-check, P14): its lit keys and names cleared, and the
+    // controls that start something (the score's bottom bar, Memorise's panel) hidden while this shows (style.css).
+    this.onStep({ now: [], next: [], fileChord: '' });
+    document.body.classList.add('draw-failed');
+    const tap = document.getElementById('tap-to-start'); // ("Tap anywhere to start": there is nothing to start)
+    if (tap) tap.hidden = true;
+  }
+  /** Whether what is on screen is a failure (checks, and the score's controls). */
+  get failed(): boolean { return document.body.classList.contains('draw-failed'); }
 
   private px(v: number): number { return v * UNIT * this.zoom; }
 
@@ -406,7 +466,9 @@ export class FollowView {
       const boxes = systems.map((sys) => this.systemBox(sys));
       const firstOf = systems.map(() => -1);
       o.GraphicSheet.MeasureList.forEach((staves, i) => {
-        const k = systems.indexOf(staves.find(Boolean)!.ParentMusicSystem);
+        const gm = staves.find(Boolean);
+        if (!gm) return; // (a bar drawn inside another: none is drawn alone now, but never fail on one)
+        const k = systems.indexOf(gm.ParentMusicSystem);
         if (k >= 0 && firstOf[k] < 0) firstOf[k] = i;
       });
       let from = 0;
