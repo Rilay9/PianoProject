@@ -6,6 +6,8 @@
     { "kind": "tip", "text": "Test tip: tap **Hear it** before you play a step's bars." },
     { "kind": "step", "id": "wait-rh", "title": "Right hand, bars 1–4", "activity": "k2-wait-right", "doneWhen": "you have played through them once (nothing is marked in Wait for me)" },
     { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "Piano Lessons for Beginners: Part 4 - What About the Left Hand? (MangoldProject)", "start": 0, "end": 120, "caption": "Test: any public music lesson, to show the video block (the first two minutes)." },
-    { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill", "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 } }
+    { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill", "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 } },
+    { "kind": "video", "size": "row", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "Test: the same lesson video, from 2:00", "start": 120, "caption": "Test: a reference video as a row (tap to play it here)." },
+    { "kind": "video", "size": "row", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "Test: the same lesson video, from 4:00", "start": 240 }
   ]
 }

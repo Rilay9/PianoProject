@@ -19,6 +19,8 @@ Path lists the rungs and their lessons. Tap a lesson to open its page.
 
 A lesson page holds text, pictures, videos, little scores (▶ Hear it plays one) and practice steps. Each step has **Start ▶** (**Again ▶** once done); no step is locked. The bar at the bottom starts the first step not done.
 
+Videos to watch for more are listed at the end of a lesson, under **Videos**: tap one to play it there, and **✕ Close** folds it back. Offline, each shows a link to watch it later.
+
 After a step you see how it went this time and, after earlier tries, your best so far. **Hard**, **OK** or **Easy** and a note are up to you. The bottom bar has Again, Lesson and the way on.
 
 **Switch…** picks another lesson. Back or ← takes you back the way you came.

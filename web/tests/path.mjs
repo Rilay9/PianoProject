@@ -82,6 +82,11 @@ const chordBar = XML(`<measure number="1">${ATTR}${N('C', 4, 'whole')}<note><cho
 ok('reads to: a MusicXML file / a whole file inline (two bars of 4/4; a chord takes no extra time)', same(one({ kind: 'score', musicxml: 'media/a.musicxml' }).source, { file: 'media/a.musicxml' }) && 'musicxml' in one({ kind: 'score', musicxml: twoBars }).source && 'musicxml' in one({ kind: 'score', musicxml: chordBar }).source);
 ok('reads to: keys with fingers ("-" for none)', same(one({ kind: 'keys', notes: 'C4 E4 G4', fingers: '1 - 5' }).fingers, [1, null, 5]));
 ok('reads to: an inline step activity, its target', (() => { const s = one({ kind: 'step', id: 'a', title: 'A', activity: { screen: 'drills', set: 's' }, target: { clean: 3 } }); return s.activity.screen === 'drills' && s.target.clean === 3; })());
+{
+  let row, full, msg = '';
+  try { row = one({ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v', size: 'row' }); full = one({ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v' }); } catch (e) { msg = e.message; }
+  ok('reads to: a video as a row ("size": "row"); left out, the full player', row?.size === 'row' && full && full.size === undefined, msg || JSON.stringify({ row, full }));
+}
 ok('reads to: a tip with its own label, default "Tip"', one({ kind: 'tip', label: 'Note', text: 'x' }).label === 'Note' && one({ kind: 'tip', text: 'x' }).label === 'Tip');
 ok('youtube ids: watch, youtu.be, embed, shorts, bare; not another site', youtubeId('https://www.youtube.com/watch?v=ZD_sAWAlWq0&t=5') === 'ZD_sAWAlWq0' && youtubeId('https://youtu.be/ZD_sAWAlWq0') === 'ZD_sAWAlWq0'
   && youtubeId('https://www.youtube-nocookie.com/embed/ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('https://youtube.com/shorts/ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('https://vimeo.com/123') === null);
@@ -99,6 +104,7 @@ const refused = [
   ['a picture that is not a picture', L([{ kind: 'image', src: 'media/a.pdf', alt: 'a' }]), /not a kind of file/],
   ['a video that is not YouTube', L([{ kind: 'video', youtube: 'https://vimeo.com/1', title: 'v' }]), /not a YouTube video link/],
   ['a video that ends before it starts', L([{ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v', start: 30, end: 10 }]), /is not after start/],
+  ['a video size that is not "row"', L([{ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v', size: 'small' }]), /size "small" should be "row"/],
   ['a score with two sources', L([{ kind: 'score', piece: 'p', set: 's', bars: '1-2' }]), /one of piece/],
   ['a score excerpt too long', L([{ kind: 'score', piece: 'p', bars: '1-40' }]), /16 bars at most/],
   ['inline MusicXML that is a fragment (no bars or time signature)', L([{ kind: 'score', musicxml: N('C', 1, 'quarter') }]), /give a whole MusicXML file/],

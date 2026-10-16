@@ -49,7 +49,7 @@ otherwise.
 | Exercise sets | in (Claude) | `web/public/content/sets/` | §6 | `exercise/items.ts` | check:content, check:path (kinds) |
 | Chord charts and styles | in (Claude) | `web/public/content/lab/` | §5b | `lab/music.ts`, `screens/lab.ts` | check:content, check:lab |
 | Activities | in (Claude) | `web/public/content/activities/` | §8b | `activity.ts` | check:activity |
-| The path: rungs, lessons, blocks, media | in (Claude) | `web/public/content/path/` | §8c | `lesson/read.ts`, `text.ts` | check:path |
+| The path: rungs, lessons, blocks, media | in (Claude) | `web/public/content/path/` | §8c | `lesson/read.ts`, `text.ts` | check:path; check:browser (how blocks draw: the video offline and unreachable, video rows) |
 | The catalogue index | in (built by `web/tools/catalogue/`) | `web/public/catalogue/index.json`, `catalogue/*.mxl` | §5c (Catalogue) | `library/catalogue.ts` | check:content |
 | How the app works (the help text) | in (Claude) | `web/src/help/help.md` | §7d | `help/read.ts` | check:content |
 | Addresses (links, reload) | in | `?piece=`, `?activity=`, `tab`, `page`, `lesson`, `step`, `tool`… | §7c | `main.ts` start, `nav.ts`, `screens/shell.ts` | check:browser (routes) |
@@ -1420,6 +1420,7 @@ next lesson with steps to do.
     { "kind": "text", "text": "# A heading\nA paragraph with **bold**, *italics* and [a link](https://…).\n\n- a list\n1. a numbered list" },
     { "kind": "image", "src": "media/test-picture.svg", "alt": "what it shows", "caption": "…" },        // png jpg webp svg gif, or an https:// link
     { "kind": "video", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "…", "start": 0, "end": 120, "caption": "…" },
+    { "kind": "video", "size": "row", "youtube": "…", "title": "…", "caption": "…" },   // a reference video: a compact row (end of the lesson)
     { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // piece: or a catalogue piece, "u-<catalogue id>"; or "set": "chords-c", "item": 1;
                                                                          // or "musicxml": a whole file written out, "<score-partwise …>…</score-partwise>", or "media/x.musicxml"
     { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "caption": "…" },     // "-" for a key with no finger
@@ -1442,6 +1443,19 @@ next lesson with steps to do.
   failing connection; V11) the video's picture is asked for beside the player; when that fails or takes over 8 s, the
   same card. When YouTube itself refuses to play it, its own message shows in the frame and the link is still under it.
   A lesson must make sense without its videos.
+  **Rows** (`"size": "row"`; owner, 2026-10-16: "all lessons should have relevant YouTube videos on the bottom. No need to
+  show them full size unless they're more than reference"): a reference video is one compact line: YouTube's still
+  (`i.ytimg.com/vi/<id>/mqdefault.jpg`) with a ▶ on it, the title, and the caption if any (the title on up to two lines,
+  or one line each with a caption; the whole of both in the row's tooltip). The whole row is the tap target. A tap plays it
+  in place: the row becomes the same privacy-enhanced player (from `start` to `end`, asked to start at once), with its
+  title, caption, "Watch on YouTube" and **✕ Close**, which turns it back into a row; the player is scrolled into view.
+  One row plays at a time: opening another closes the first (a full-size player is not stopped by it). Offline, and online
+  with YouTube unreachable (the still fails to load or takes over 8 s; the player's own probe as above once opened), the
+  row stays one compact row of the same height, without the still: its title, a short note ("Needs the internet to play
+  here." or "YouTube can’t be reached from here.") and "Watch on YouTube ↗"; the playable row again when back online. Consecutive rows sit
+  together as one list; when the lesson's blocks **end** with rows, that list is under one plain heading, **Videos**.
+  The page never reorders blocks: putting reference videos at the end is the lesson's job. Leave `size` out for a video
+  that is part of the lesson (the full player).
 - **score**: a little playable score: bars of a piece (at most 16; cut out with the clefs, key, time and divisions in
   force where they start, repeats and endings taken out so it plays once; the piece may be a catalogue piece named
   `"u-<catalogue id>"`, added to your library when the page draws it if it is not there yet, as a step adds it), a set's item (drawn as Simon and Drills draw
@@ -1507,7 +1521,7 @@ path, a step's once in its lesson. Text fields are non-empty text.
 | `lessons/<id>.json` | `title`, `blocks` (at least one) | — | |
 | `text` | `text` | — | the small text format above; `\n` between lines, a blank line between paragraphs; only `#` and `##` |
 | `image` | `src`, `alt` | `caption` | a `.png .jpg .jpeg .webp .svg .gif` file in the folder (no `..`, no leading `/`), or any `https://` link |
-| `video` | `youtube`, `title` | `start`, `end`, `caption` | a watch / youtu.be / embed / shorts / live link or the bare 11-character id; `start`, `end` whole seconds from 0, `end` after `start` |
+| `video` | `youtube`, `title` | `start`, `end`, `caption`, `size` | a watch / youtu.be / embed / shorts / live link or the bare 11-character id; `start`, `end` whole seconds from 0, `end` after `start`; `size` only `"row"` (a compact row; left out, the full player) |
 | `score` | one of `piece` (with `bars`), `set` (with `item`), `musicxml` | `tempo`, `keys`, `caption` | `bars` "a-b" or "a", at most 16 bars (needed with a piece); `item` a whole number from 1 (one the set has: check:path); `musicxml` a whole file written out (`<score-partwise>`, a time signature, no bar over-full) or a `.musicxml` / `.xml` file in the folder; `tempo` 20–300 quarter notes a minute; `keys` true / false (default false) |
 | `keys` | `notes` | `fingers`, `caption` | 1–12 pitches like `C4 F#3 Bb4` (capital letter, one-digit octave); `fingers` one per note, 1–5 or `-` |
 | `animation` | `src`, `alt` | `caption` | as `image`, also `.mp4 .webm` |
@@ -1518,7 +1532,7 @@ path, a step's once in its lesson. Text fields are non-empty text.
 drills `clean` (whole, 1–100); simon `chain` (whole, 1–100); lab `cleanRounds` (whole, 1–40; not a lead activity).
 
 **Checked** (strictly, as activities are): an unknown kind or field, a missing field, raw HTML, a link that is not https,
-a file outside the folder or of the wrong type, a video link that is not YouTube or ends before it starts, a score with
+a file outside the folder or of the wrong type, a video link that is not YouTube or ends before it starts, a video `size` other than `"row"`, a score with
 two sources or more than 16 bars, keys that are not pitches or fingers that are not one a note, a step id used twice in
 a lesson, a written-out activity with a mistake, a target its screen cannot judge (or of another screen, or out of range);
 a lesson id in two rungs, unknown index fields. A lesson that cannot be read is left out and its reason shown on Path.
@@ -1532,6 +1546,8 @@ lesson leans on into the app's own scores, with its notes checked, is Claude's p
 The test rung's "Test: a piece from the catalogue" (`test-catalogue-piece`) has one step naming the catalogue's
 "Mary Had A Little Lamb" (`u-de5f6a78874c`: CC0, piano on two staves, 8 bars, chosen as a short piano piece): a
 placeholder for the checks, saying nothing about the music.
+The test lesson "Test: the Minuet's opening" ends with two video rows (the same public video as its full-size video,
+from 2:00 and from 4:00): placeholders for the row checks.
 
 **Adding a block kind:** its fields in `read.ts` (`BLOCKS` and `readBlock`), its drawing in `blocks.ts` (`DRAW`: the one
 place that maps a kind to its drawing), a case in `tests/path.mjs`, and a line here.

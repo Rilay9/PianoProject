@@ -8,7 +8,7 @@ import { button, el } from '../ui';
 import type { Activity } from '../activity';
 import { entries, putEntry, removeEntry, type LessonRef, type LogEntry } from '../log';
 import type { Sound } from '../sound';
-import { drawBlock } from './blocks';
+import { drawBlocks } from './blocks';
 import { helpLink } from '../help/page';
 import { stopMiniScores } from './miniscore';
 import { activityOf, describe, lessonOrder, lessonState, loadPath, nextTodo, placeOf, stepStates, stepsOf, type PathData, type StepBlock } from './path';
@@ -77,7 +77,7 @@ export function createLessonPage(d: LessonDeps) {
     const states = stepStates(lesson);
     const ctx = { app: d.app, sound: d.sound, prepare: d.prepare, step: (b: StepBlock) => stepCard(b, steps.indexOf(b) + 1, states.get(b.id)!) };
     const out: HTMLElement[] = [el('h2', 'les-title', lesson.title)];
-    for (const b of lesson.blocks) out.push(drawBlock(b, ctx));
+    out.push(...drawBlocks(lesson.blocks, ctx));
     const column = el('div', 'les-column');
     column.append(...out, helpLink('path')); // (How this screen works: the lesson page has no ⋯)
     body.replaceChildren(column);

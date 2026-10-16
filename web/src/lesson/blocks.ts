@@ -5,7 +5,7 @@
 
 import { base, type App } from '../app';
 import { addedLine, ensurePiece, takeAdded } from '../library/catalogue';
-import { el } from '../ui';
+import { button, el } from '../ui';
 import { itemsXml } from '../exercise/notation';
 import { readSet } from '../exercise/items';
 import type { Sound } from '../sound';
@@ -53,51 +53,157 @@ function figure(child: HTMLElement, caption?: string, cls = ''): HTMLElement {
   return f;
 }
 
-/** A video: YouTube's privacy-enhanced player, from the start (and to the end) given; offline, a card with its link. */
-function drawVideo(b: Extract<Block, { kind: 'video' }>): HTMLElement {
-  const id = youtubeId(b.youtube)!;
-  const watch = `https://www.youtube.com/watch?v=${id}${b.start ? `&t=${b.start}s` : ''}`;
-  const box = el('div', 'les-video');
-  const link = () => { const a = el('a', 'les-video-link', 'Watch on YouTube ↗'); a.href = watch; a.target = '_blank'; a.rel = 'noopener'; return a; };
-  const card = (why: string) => {
-    const c = el('div', 'les-video-off');
-    c.append(el('b', '', b.title), el('span', '', why), link());
-    box.replaceChildren(c);
-  };
-  let tries = 0;
-  const draw = () => {
-    if (!navigator.onLine) { card('The video needs the internet: it plays here when you are online.'); return; }
-    // Online but YouTube unreachable (a network that blocks it, a failing connection: review 2026-10-15, V11): an iframe
-    // never says it failed, so the video's picture is asked for beside it; when that fails or takes over 8 s, the card.
-    const mine = ++tries;
-    const probe = new Image();
-    const failed = () => { if (mine === tries && box.isConnected) card('The video could not be reached from here (YouTube may be blocked or the connection slow). The link opens it.'); };
-    const timer = window.setTimeout(failed, 8000);
-    probe.onload = () => clearTimeout(timer);
-    probe.onerror = () => { clearTimeout(timer); failed(); };
-    probe.src = `https://i.ytimg.com/vi/${id}/default.jpg`;
-    const frame = el('iframe');
-    const q = new URLSearchParams({ rel: '0', modestbranding: '1', playsinline: '1' });
-    if (b.start) q.set('start', String(b.start));
-    if (b.end) q.set('end', String(b.end));
-    frame.src = `https://www.youtube-nocookie.com/embed/${id}?${q}`;
-    frame.title = b.title;
-    frame.loading = 'lazy';
-    frame.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-    frame.referrerPolicy = 'strict-origin-when-cross-origin';
-    frame.allowFullscreen = true;
-    const under = el('div', 'les-video-under');
-    under.append(el('span', '', b.title), link());
-    box.replaceChildren(el('div', 'les-video-frame'), under);
-    box.firstElementChild!.append(frame);
-  };
-  draw();
-  // Online again (or gone): drawn again, so a card becomes the player and the player a card.
+type VideoBlock = Extract<Block, { kind: 'video' }>;
+const OFFLINE = 'The video needs the internet: it plays here when you are online.';
+const UNREACHABLE = 'The video could not be reached from here (YouTube may be blocked or the connection slow). The link opens it.';
+
+function watchLink(b: VideoBlock, id: string): HTMLAnchorElement {
+  const a = el('a', 'les-video-link', 'Watch on YouTube ↗');
+  a.href = `https://www.youtube.com/watch?v=${id}${b.start ? `&t=${b.start}s` : ''}`;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  return a;
+}
+/** Offline or unreachable: the title, why, and the link (never a blank box). */
+function offCard(b: VideoBlock, id: string, why: string): HTMLElement {
+  const c = el('div', 'les-video-off');
+  c.append(el('b', '', b.title), el('span', '', why), watchLink(b, id));
+  return c;
+}
+/**
+ * Online but YouTube unreachable (a network that blocks it, a failing connection: review 2026-10-15, V11): an iframe
+ * never says it failed, so the video's picture is asked for beside it; failed() when that fails or takes over 8 s.
+ */
+function probe(id: string, failed: () => void): void {
+  const img = new Image();
+  const timer = window.setTimeout(failed, 8000);
+  img.onload = () => clearTimeout(timer);
+  img.onerror = () => { clearTimeout(timer); failed(); };
+  img.src = `https://i.ytimg.com/vi/${id}/default.jpg`;
+}
+/** YouTube's privacy-enhanced player, from the start (and to the end) given, in a 16:9 box. */
+function playerFrame(b: VideoBlock, id: string, autoplay: boolean): HTMLElement {
+  const frame = el('iframe');
+  const q = new URLSearchParams({ rel: '0', modestbranding: '1', playsinline: '1' });
+  if (autoplay) q.set('autoplay', '1');
+  if (b.start) q.set('start', String(b.start));
+  if (b.end) q.set('end', String(b.end));
+  frame.src = `https://www.youtube-nocookie.com/embed/${id}?${q}`;
+  frame.title = b.title;
+  frame.loading = 'lazy';
+  frame.allow = `accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen${autoplay ? '; autoplay' : ''}`;
+  frame.referrerPolicy = 'strict-origin-when-cross-origin';
+  frame.allowFullscreen = true;
+  const box = el('div', 'les-video-frame');
+  box.append(frame);
+  return box;
+}
+/** Online again (or gone): drawn again, so a card becomes the video and the video a card. */
+function onNetwork(box: HTMLElement, draw: () => void): void {
   const again = () => { if (box.isConnected) draw(); else { removeEventListener('online', again); removeEventListener('offline', again); } };
   addEventListener('online', again);
   addEventListener('offline', again);
+}
+
+/** A video: YouTube's privacy-enhanced player, from the start (and to the end) given; offline, a card with its link. */
+function drawVideo(b: VideoBlock): HTMLElement {
+  if (b.size === 'row') return drawVideoRow(b);
+  const id = youtubeId(b.youtube)!;
+  const box = el('div', 'les-video');
+  let tries = 0;
+  const draw = () => {
+    if (!navigator.onLine) { box.replaceChildren(offCard(b, id, OFFLINE)); return; }
+    const mine = ++tries;
+    probe(id, () => { if (mine === tries && box.isConnected) box.replaceChildren(offCard(b, id, UNREACHABLE)); });
+    const under = el('div', 'les-video-under');
+    under.append(el('span', '', b.title), watchLink(b, id));
+    box.replaceChildren(playerFrame(b, id, false), under);
+  };
+  draw();
+  onNetwork(box, draw);
   return figure(box, b.caption, 'les-video-fig');
 }
+
+/** A row's short notes, offline and unreachable (the link beside them opens the video). */
+const ROW_OFFLINE = 'Needs the internet to play here.';
+const ROW_UNREACHABLE = 'YouTube can’t be reached from here.';
+
+/** The row playing now: opening another closes it (one at a time). */
+let openRow: { row: HTMLElement; close: () => void } | null = null;
+
+/**
+ * A reference video as one compact row (owner, 2026-10-16: "No need to show them full size unless they're more than
+ * reference"): its still, title and caption, and ▶. A tap plays it in place (the row becomes the player, with ✕ Close
+ * back to the row); offline or unreachable, the same card as the full block.
+ */
+function drawVideoRow(b: VideoBlock): HTMLElement {
+  const id = youtubeId(b.youtube)!;
+  const row = el('div', 'les-vrow');
+  let tries = 0;
+  // Offline or unreachable, the row stays one row (coordinator, 2026-10-16: reference videos stay small): its title, a
+  // short note and the link, no still.
+  const card = (why: string) => {
+    if (openRow === me) openRow = null;
+    row.classList.remove('open');
+    const off = el('div', 'les-vrow-off');
+    const words = el('span', 'les-vrow-words');
+    words.append(el('span', 'les-vrow-title', b.title), el('span', 'les-vrow-cap', why));
+    off.title = b.title;
+    off.append(words, watchLink(b, id));
+    row.replaceChildren(off);
+  };
+  const unreachable = (mine: number) => () => { if (mine === tries && row.isConnected) card(ROW_UNREACHABLE); };
+  const closed = () => {
+    if (openRow === me) openRow = null;
+    if (!navigator.onLine) { card(ROW_OFFLINE); return; }
+    const mine = ++tries;
+    const open = el('button', 'les-vrow-open');
+    open.type = 'button';
+    open.setAttribute('aria-label', `Play: ${b.title}`);
+    // (the still is the row's own check that YouTube can be reached, as the full block's probe is)
+    const still = el('img');
+    still.alt = '';
+    still.decoding = 'async';
+    const timer = window.setTimeout(unreachable(mine), 8000);
+    still.onload = () => clearTimeout(timer);
+    still.onerror = () => { clearTimeout(timer); unreachable(mine)(); };
+    still.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+    const thumb = el('span', 'les-vrow-thumb');
+    thumb.append(still, el('span', 'les-vrow-play', '▶'));
+    const words = el('span', 'les-vrow-words');
+    words.append(el('span', 'les-vrow-title', b.title));
+    if (b.caption) { words.classList.add('with-cap'); words.append(el('span', 'les-vrow-cap', b.caption)); }
+    open.title = b.caption ? `${b.title}: ${b.caption}` : b.title; // (the whole title and caption, where a line cuts them short)
+    open.append(thumb, words);
+    open.addEventListener('click', play);
+    row.classList.remove('open');
+    row.replaceChildren(open);
+  };
+  const play = () => {
+    if (!navigator.onLine) { card(ROW_OFFLINE); return; }
+    if (openRow && openRow !== me) openRow.close();
+    openRow = me;
+    const mine = ++tries;
+    probe(id, unreachable(mine));
+    const under = el('div', 'les-video-under les-vrow-under');
+    const words = el('span', 'les-vrow-words');
+    words.append(el('span', 'les-vrow-title', b.title));
+    if (b.caption) words.append(el('span', 'les-vrow-cap', b.caption));
+    const acts = el('div', 'les-vrow-acts');
+    acts.append(watchLink(b, id), button('✕ Close', 'btn les-vrow-close', closed));
+    under.append(words, acts);
+    row.classList.add('open');
+    const frame = playerFrame(b, id, true);
+    row.replaceChildren(frame, under);
+    frame.scrollIntoView({ block: 'nearest' }); // (a row near the bottom bar opens with its player in view)
+  };
+  const me = { row, close: closed };
+  closed();
+  onNetwork(row, closed);
+  row.dataset.size = 'row';
+  return row;
+}
+const isRow = (b: Block) => b.kind === 'video' && b.size === 'row';
 
 /** The MusicXML a score block draws. */
 async function scoreXml(src: ScoreSource, app: App): Promise<string> {
@@ -216,4 +322,31 @@ export function drawBlock(b: Block, ctx: DrawContext): HTMLElement {
   const e = (DRAW[b.kind] as (b: Block, ctx: DrawContext) => HTMLElement)(b, ctx);
   e.dataset.block = b.kind;
   return e;
+}
+
+/**
+ * A lesson's blocks in the content's order (never reordered). Consecutive row videos sit together as one list; when the
+ * lesson ends with row videos, that list is under one plain heading, "Videos" (owner, 2026-10-16: videos at the bottom,
+ * compact unless more than reference; putting them at the end is the content's job).
+ */
+export function drawBlocks(blocks: Block[], ctx: DrawContext): HTMLElement[] {
+  let tail = blocks.length;
+  while (tail > 0 && isRow(blocks[tail - 1])) tail--;
+  const out: HTMLElement[] = [];
+  for (let i = 0; i < blocks.length;) {
+    if (!isRow(blocks[i])) { out.push(drawBlock(blocks[i++], ctx)); continue; }
+    const list = el('div', 'les-vrows');
+    list.setAttribute('role', 'list');
+    if (i === tail) {
+      const section = el('section', 'les-videos');
+      section.append(el('h3', 'les-videos-h', 'Videos'), list);
+      out.push(section);
+    } else out.push(list);
+    for (; i < blocks.length && isRow(blocks[i]); i++) {
+      const r = drawBlock(blocks[i], ctx);
+      r.setAttribute('role', 'listitem');
+      list.append(r);
+    }
+  }
+  return out;
 }

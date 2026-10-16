@@ -23,7 +23,8 @@ export interface Target { onTime?: number; bpm?: number; clean?: number; chain?:
 export type Block =
   | { kind: 'text'; text: TextBlock[] }
   | { kind: 'image'; src: string; alt: string; caption?: string }
-  | { kind: 'video'; youtube: string; title: string; start?: number; end?: number; caption?: string }
+  /** size "row": a compact line in a list of reference videos, played in place when tapped; left out, the full player. */
+  | { kind: 'video'; youtube: string; title: string; start?: number; end?: number; caption?: string; size?: 'row' }
   | { kind: 'score'; source: ScoreSource; tempo?: number; keys: boolean; caption?: string }
   | { kind: 'keys'; notes: string[]; fingers?: (number | null)[]; caption?: string }
   | { kind: 'animation'; src: string; alt: string; caption?: string }
@@ -45,7 +46,7 @@ export interface Lesson { id: string; title: string; blocks: Block[] }
 const BLOCKS: Record<Block['kind'], { need: string[]; may: string[] }> = {
   text: { need: ['text'], may: [] },
   image: { need: ['src', 'alt'], may: ['caption'] },
-  video: { need: ['youtube', 'title'], may: ['start', 'end', 'caption'] },
+  video: { need: ['youtube', 'title'], may: ['start', 'end', 'caption', 'size'] },
   score: { need: [], may: ['piece', 'bars', 'set', 'item', 'musicxml', 'tempo', 'keys', 'caption'] },
   keys: { need: ['notes'], may: ['fingers', 'caption'] },
   animation: { need: ['src', 'alt'], may: ['caption'] },
@@ -151,7 +152,9 @@ function readBlock(b: unknown, i: number, lessonId: string, ids: Set<string>): B
       if (!youtubeId(link)) throw new Error(`${where}.youtube "${link}" is not a YouTube video link`);
       const start = seconds(b.start, `${where}.start`), end = seconds(b.end, `${where}.end`);
       if (start !== undefined && end !== undefined && end <= start) throw new Error(`${where}: end ${end} is not after start ${start}`);
-      return { kind: 'video', youtube: link, title: str(b.title, `${where}.title`), start, end, caption };
+      // A reference video is a row (owner, 2026-10-16: "No need to show them full size unless they're more than reference").
+      if (b.size !== undefined && b.size !== 'row') throw new Error(`${where}.size ${JSON.stringify(b.size)} should be "row" (a compact line in the lesson's list of videos), or left out for the full player`);
+      return { kind: 'video', youtube: link, title: str(b.title, `${where}.title`), start, end, caption, ...(b.size === 'row' ? { size: 'row' as const } : {}) };
     }
     case 'score': {
       const given = ['piece', 'set', 'musicxml'].filter((k) => b[k] !== undefined);

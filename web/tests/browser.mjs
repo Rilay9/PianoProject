@@ -2911,6 +2911,93 @@ try {
     }
   }
   // ---- end of teaching the app --------------------------------------------------------------------------------------
+  // ---- Reference videos as rows (owner, 2026-10-16: "all lessons should have relevant YouTube videos on the bottom. No
+  // need to show them full size unless they're more than reference") -------------------------------------------------
+  // The test lesson ends with two "size": "row" videos. A plain phone tab (touch, no MIDI permission), taps by position
+  // (the touchscreen at the place: whatever lies on top takes it). YouTube's still and player are answered here (a tiny
+  // picture, an empty page), so the checks need no network; "unreachable" aborts them. Run against the build with only
+  // the reader's new field (rows drawn as full players): each case failed there; this build: all pass.
+  {
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+    async function rowsTab({ reach = true } = {}) {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
+      await ctx.route((url) => /(^|\.)ytimg\.com$|youtube-nocookie\.com$/.test(url.hostname), (r) => (!reach ? r.abort()
+        : /ytimg/.test(r.request().url()) ? r.fulfill({ contentType: 'image/png', body: PNG }) : r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>player</title>' })));
+      const page = await ctx.newPage();
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      await page.goto(`${BASE}?page=lesson&lesson=test-minuet-opening`); await page.waitForTimeout(2000);
+      if (await page.evaluate(() => !document.getElementById('tap-to-start')?.hidden)) { await page.touchscreen.tap(195, 300); await page.waitForTimeout(300); }
+      return { ctx, page, errors };
+    }
+    /** A tap where the element shows (scrolled into view first). */
+    async function tapAt(page, selector) {
+      const loc = page.locator(selector).first();
+      try { await loc.scrollIntoViewIfNeeded({ timeout: 3000 }); } catch { console.log(`  (not shown: ${selector})`); return; }
+      const box = await loc.boundingBox();
+      if (!box) { console.log(`  (no box: ${selector})`); return; }
+      await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2); await page.waitForTimeout(500);
+    }
+    const ROW = '.les-videos [data-block="video"][data-size="row"]';
+    /** Each row: drawn as a row, playing (its iframe's host and start), or the card. */
+    const rows = (page) => page.evaluate((sel) => [...document.querySelectorAll(sel)].map((r) => {
+      const f = r.querySelector('iframe'), u = f ? new URL(f.src) : null;
+      return { row: !!r.querySelector('.les-vrow-open'), playing: u ? `${u.hostname} start=${u.searchParams.get('start')}` : '', card: !!r.querySelector('.les-vrow-off'), big: !!r.querySelector('.les-video-off'),
+        link: r.querySelector('.les-vrow-off a')?.href ?? '', title: r.querySelector('.les-vrow-off .les-vrow-title')?.textContent ?? '', note: r.querySelector('.les-vrow-off .les-vrow-cap')?.textContent ?? '',
+        img: !!r.querySelector('img'), h: Math.round(r.getBoundingClientRect().height) };
+    }), ROW);
+
+    // Drawn as rows under one heading, at the lesson's end; a tap opens one in place, ✕ Close closes it, opening the other closes the first.
+    {
+      const { ctx, page, errors } = await rowsTab();
+      const shape = await page.evaluate(() => {
+        const col = document.querySelector('.les-column'), sec = document.querySelector('.les-videos');
+        const blocks = [...col.children].filter((c) => c.matches('[data-block], .les-videos, .les-vrows'));
+        return { heading: sec?.querySelector('h3')?.textContent ?? '', last: blocks.at(-1) === sec, inList: sec?.querySelectorAll('.les-vrows > [data-size="row"]').length ?? 0,
+          full: !!document.querySelector('.les-column > [data-block="video"] iframe') };
+      });
+      const r0 = await rows(page);
+      ok('video rows: the lesson\'s two row videos are drawn as rows under one heading "Videos", at its end (the full video above stays a player)',
+        shape.heading === 'Videos' && shape.last && shape.inList === 2 && r0.length === 2 && r0.every((r) => r.row && !r.playing && r.h >= 44 && r.h <= 110) && shape.full, JSON.stringify({ shape, r0 }));
+      await tapAt(page, `${ROW} >> nth=0`);
+      const r1 = await rows(page);
+      ok('video rows: a tap on a row plays it in place (the privacy-enhanced player, from its start); the other stays a row',
+        r1[0]?.playing === 'www.youtube-nocookie.com start=120' && r1[1]?.row && !r1[1].playing, JSON.stringify(r1));
+      await tapAt(page, `${ROW} >> nth=0 >> .les-vrow-close`);
+      const r2 = await rows(page);
+      ok('video rows: ✕ Close turns it back into a row', r2.length === 2 && r2.every((r) => r.row && !r.playing), JSON.stringify(r2));
+      await tapAt(page, `${ROW} >> nth=0`);
+      await tapAt(page, `${ROW} >> nth=1`);
+      const r3 = await rows(page);
+      ok('video rows: opening the other closes the first (one plays at a time)', r3[0]?.row && !r3[0].playing && r3[1]?.playing === 'www.youtube-nocookie.com start=240', JSON.stringify(r3));
+      ok('video rows: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Offline, and online with YouTube unreachable: each row is the full block's title-and-link card.
+    {
+      const { ctx, page, errors } = await rowsTab();
+      await ctx.setOffline(true);
+      await page.evaluate(() => window.dispatchEvent(new Event('offline'))); await page.waitForTimeout(500);
+      const off = await rows(page);
+      // (compact, as a row is: one line's height, no still; coordinator 2026-10-16: a 150–200 px card per row broke "small")
+      const compact = (r) => r.card && !r.big && !r.row && !r.playing && !r.img && r.h >= 44 && r.h <= 90 && /youtube\.com\/watch\?v=ZD_sAWAlWq0/.test(r.link);
+      ok('video rows offline: each row stays one compact row (about a row’s height, no still): its title, a short note, its link', off.length === 2 && off.every(compact) && /internet/.test(off[0].note) && off[0].title === 'Test: the same lesson video, from 2:00', JSON.stringify(off));
+      await ctx.setOffline(false);
+      await page.evaluate(() => window.dispatchEvent(new Event('online'))); await page.waitForTimeout(800);
+      const back = await rows(page);
+      ok('video rows: online again, rows again', back.length === 2 && back.every((r) => r.row && !r.card), JSON.stringify(back));
+      ok('video rows offline: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+      const un = await rowsTab({ reach: false });
+      await un.page.waitForTimeout(1500);
+      const blocked = await rows(un.page);
+      ok('video rows, YouTube unreachable: each row stays one compact row with its title, a note and its link', blocked.length === 2 && blocked.every((r) => r.card && !r.big && !r.row && !r.img && r.h >= 44 && r.h <= 90 && /reached/.test(r.note) && /watch\?v=ZD_sAWAlWq0/.test(r.link)), JSON.stringify(blocked));
+      ok('video rows unreachable: no page errors', un.errors.length === 0, un.errors.join(' | '));
+      await un.ctx.close();
+    }
+  }
+  // ---- end of video rows ------------------------------------------------------------------------------------------------
 } finally {
   await browser?.close();
   stop();
