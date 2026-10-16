@@ -227,7 +227,9 @@ Starting: ▶, or just play your first note (any key on a rest; any key in Rhyth
 octaves that follow the music (keys wide enough to tap; owner, 2026-10-13); in the timed modes they only show.
 Following, every key wanted now is always on the keys (starting on a C when the notes allow, otherwise at the lowest
 note wanted, so F3 and F5 together show F3 to F5), the coming notes too where they fit; only notes wanted now further
-apart than two octaves widen it (owner, 2026-10-15: F5 was off the keys). Wait for me with the keys showing starts
+apart than two octaves widen it (owner, 2026-10-15: F5 was off the keys). A score activity's `keys` (§8b; 2026-10-16)
+replace this in Wait for me, on the kinds of screen it names: those keys with every key your hands play in the run's
+bars, fixed for the run. Wait for me with the keys showing starts
 without a MIDI keyboard (no MIDI in the browser, not allowed, or still being asked) and says to play on the keys below;
 the timed modes still need one: with none connected, or MIDI not allowed, ▶ in Play along, Rhythm or Ladder starts
 nothing and says "No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the
@@ -343,8 +345,16 @@ open keys count nothing and start nothing (owner, 2026-10-15; also Drills): your
 a chain being given when it opens (played, shown, or again after a miss) stops and is given again from its start when
 it closes. A level changed there starts afresh.
 
-**Help levels** (shared with Drills): 1 music + sound + keys lit, 2 music + sound, 3 music only, 4 name only,
-5 by ear. **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
+**Help levels** (shared with Drills): 0 keys + sound, no music; 1 music + sound + keys lit, 2 music + sound, 3 music
+only, 4 name only, 5 by ear. **0, "keys, no music"** (2026-10-16, for lessons before the staff is taught, Faber's
+order): the chain is heard and its keys light as it plays, with no staff or notation at any point (given, your turn,
+after a miss, Hear again); your turn lights where to start, as at 1. It is numbered 0, before 1, rather than renumbering
+the ladder: saved levels, bests (kept per rung) and the practice log's `settings.rung` keep 1–5 meaning what they meant.
+With *Nothing* under the music the keyboard still shows at 0 and 1 (the lit keys are the help). **No note names at 0**
+(decided 2026-10-16 from lesson 1's plan, which teaches none yet): a miss says "Not that one: the right key is outlined"
+(the wrong key red, the right one outlined), carrying on from a miss says "From where you missed", the chain's dots are
+plain dots, and the keys have no octave labels (C4, C5); rungs 1–5 name as before. The practice log still records the
+notes by name (it is for Claude). **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
 it has notes: C4 and C5 are two keys). **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
 the new item (you always play it all). Display: size A−/A+ (fixed size, building from the left; long chains wrap and
@@ -369,7 +379,10 @@ Keyboard under the music (Level) to play on the screen, or plug one in." until a
 (F17; owner, 2026-10-15: it said "Cards are judged from a MIDI keyboard; none is connected." with the keys showing too,
 which was false). Simon says the same in the same case (§7d). A set file that could not be read is read again the next time Drills or Simon opens (F20).
 
-**How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
+**How it works:** a card appears at the chosen help level (0 keys, no music: it plays the card with its keys lit and
+no music is drawn, not even with the result, where the keys show the wrong keys red and the missed ones outlined, and
+no note name is shown: a card's slips are counted ("2 notes early"), the set's results are numbered without names, and
+the keys have no octave labels; 1–2: it plays the card first; 4: the name only, and any
 octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
 your first note (by ear: always your first note); the metronome can keep clicking. Cards are judged:
 - **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time and held / let go
@@ -411,7 +424,11 @@ interval they make (two keys named as the Intervals column names them: an octave
 octaves"; final review F16); below, three columns of what you played lately (newest on top): chords held together (three
 or more notes that make a named chord), notes (keys pressed together on one line), intervals (note to next, with
 direction, and two notes held together; wider than an octave it says so: "major 3rd + 2 octaves"). *Show* turns
-columns off. Nothing is judged or kept. `web/src/freeplay.ts`.
+columns off. Nothing is judged or kept. `web/src/freeplay.ts`. The keys are 42% of the screen's height, at most 360 px
+(a phone on its side: 108 px, so the recent columns keep their room); they had been 108 px everywhere, a style
+overridden by mistake (fixed 2026-10-16). Opened from a lesson step, its activity can choose the
+keys shown (§8b `keys`: e.g. C4–E5 upright, so the black keys are about 30 px wide on a phone); ‹ › then move those
+keys an octave at a time.
 
 **Metronome** (owner, 2026-10-15): on its own, Practice → Metronome (`web/src/screens/metronome.ts`): tempo (−5/+5, a
 slider 20–300, tap tempo), beats in a bar (1–7, the first accented), its sound (Wood / Beep / High: the app's click, one
@@ -1005,7 +1022,7 @@ placeholders for checking the app, not lesson content.
   Memorise = Peek (held elsewhere: the same as a tap); highest = start / next / carry on (Drills: Start, Next, Skip,
   New set; the lab: Start or Again). Where any octave counts (the lab while the band plays, Drills by name, Simon in
   any octave) the music uses every key, so the edges are notes there; a mash still stops.
-- Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them). A diminished 7th is named from its bass (Cdim7).
+- Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them), or the keys a lesson step's activity chose (§8b `keys`, 2026-10-16). A diminished 7th is named from its bass (Cdim7).
 - The full PDMX set (§5c) is the learner's own copy in the app's storage: offline in a tab too, not in the backup.
 - Offline (owner, 2026-10-15: only for the installed app): installed (Chrome ⋮ → Install app / Add to Home screen),
   the app saves everything (app, scores, sets and the files they point to, lessons and their files, the catalogue,
@@ -1219,7 +1236,7 @@ of each kind, in the order they were played:
   loop).
 - memorise: `hands`, `bpm`, `chunk` (2 / 4 / 8), `adds` (bar / chunk), `learnedAfter` (1–3 clean passes), `inTime`
   (true: timed passes).
-- simon: `rung` (help level 1–5, §3), `match` (same / octave / inversion), `miss` (tries / over / endless), `speed`
+- simon: `rung` (help level 0–5, §3; 0 from 2026-10-16), `match` (same / octave / inversion), `miss` (tries / over / endless), `speed`
   (up / steady).
 - drills: `rung`, `onTime` (relaxed / normal / strict / notes), `cards` (the set's size; 0 = until you stop), `start`
   (clicks / first), `bpm` (the set's tempo, quarter notes a minute).
@@ -1357,11 +1374,28 @@ not there) is refused with the reason; nothing is guessed. Examples marked "Test
 { "title": "…", "screen": "lab", "chart": "blues-c",
   "preset": { "role": "accomp", "step": "roots", "style": "shuffle", "dropouts": "off", "parts": { "drums": true, "bass": true, "chords": true, "click": false },
               "steps": { "accompaniment": ["roots", "beat1"] }, "cleanForNext": 2 } }
-{ "title": "…", "screen": "freeplay" }
+{ "title": "…", "screen": "freeplay", "keys": "C4-E5" }                                         // keys: below
+{ "title": "…", "screen": "simon", "set": "…", "level": { "rung": 0 }, "keys": { "phone-upright": "C4-B4", "phone-sideways": "C3-B5" } }
 ```
 
+**`keys`: the keys the on-screen keyboard shows** (owner, 2026-10-16: "what keys are visible and how wide they are per
+screen to make playing easier"; free play, simon, drills, and score in Wait for me). A range, lowest and highest key
+both shown, `"C4-E5"` (a letter, `#` or `b`, an octave digit), for every kind of screen; or per kind of screen,
+`{ "phone-upright": …, "phone-sideways": …, "tablet": … }`, any of them, a screen left out keeping its own keys (as
+`currentDevice()` tells them apart: a tablet is 600 px or more both ways). The keys fill the width, so fewer keys are
+wider; with chosen keys a black key is at least 30 px wide where the white keys allow (up to 0.85 of a white key; the
+screen's own keys keep 0.6). **The music always fits:** Simon and Drills grow the range to hold every note of the set,
+the score's Wait for me fixes it when the run is set up: the range with every key your hands play in the bars of the
+run (the loop, else the whole piece), so it never changes while you play (decided 2026-10-16; K. 2's right hand, bars
+1–4, with C5–B5 shows E4–B5 from the start; it changes only when the bars, the hands or the kind of screen change), each end moved out to the next white key: a key the step asks for is never hidden. Free play shows the
+range and **‹ ›** move it an octave at a time from there (a MIDI key outside it moves it by octaves until it shows).
+In force while the activity lasts: your own set chosen, another piece, or ← and the screen's own keys are back (a
+score activity's keys only in Wait for me, as its keys are only played there). Refused: a range not so written, off
+the piano (A0–C8), not going from lower to higher, starting or ending on a black key; a screen name that is not one of
+the three; an empty `{}`; `keys` on Memorise or the lab; on a score whose `settings.mode` is not `wait`.
+
 Every field but `screen` and its content (`piece`, `set`, `chart`) may be left out; a field not listed for its screen
-is refused. **The file** (2026-10-15): its id is its file name without `.json`, letters, digits, `-` and `_` (what
+is refused (`keys`: free play, simon, drills, score). **The file** (2026-10-15): its id is its file name without `.json`, letters, digits, `-` and `_` (what
 `?activity=` and a step's `activity` name); `index.json` is a list of the file names, used to save them for offline and
 by the check (the app opens an activity by its id, so one missing from the index still opens online but is not saved for
 offline; check:activity requires every file listed). `title` is text, shown as the activity opens (and in a message that it cannot);
@@ -1379,9 +1413,9 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
 - memorise: `hands` both / right / left; `tempo` 20–300; `chunk` 2 / 4 / 8; `adds` bar / chunk; `learnedAfter` 1 / 2 / 3;
   `carryFrom` bar / start; `before` new / all / nothing; `next` auto / tap; `timing` true / false; `join` ask / previous /
   all / none; `metronome` true / false; `onTime` relaxed / normal / strict. (Not yet: some bars only.)
-- drills: `rung` 1–5 (1 music + sound + keys lit … 4 name only, 5 by ear); `start` clicks / first; `metronome` true /
+- drills: `rung` 0–5 (0 keys + sound, no music; 1 music + sound + keys lit … 4 name only, 5 by ear: §3); `start` clicks / first; `metronome` true /
   false; `onTime` relaxed / normal / strict / notes; `cards` a whole number 0 (until you stop)–100.
-- simon: `rung` 1–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
+- simon: `rung` 0–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
   from-miss; `onNew` all / new.
 - lab: `role` accomp / lead; `step` roots / beat1 / style / own (accompaniment) or root / tones / scale / answer / free
   (lead), which also sets the role; `style` a style's id; `dropouts` off / drums / band; `parts` drums / bass / chords /
@@ -1411,8 +1445,8 @@ next lesson with steps to do.
 **Files** (`web/public/content/path/`; a lesson's files are relative to this folder; all saved for offline):
 
 ```json
-// index.json: the rungs in order, each with its lessons' ids (each id once in the whole path)
-{ "rungs": [ { "id": "test-app", "title": "Test: the app's lesson pages", "lessons": ["test-minuet-opening", "test-catalogue-piece", "test-chords-and-band"] } ] }
+// index.json: the rungs in order, each with its lessons' ids (each id once in the whole path); "test": true for a test rung (below)
+{ "rungs": [ { "id": "test-app", "title": "Test: the app's lesson pages", "test": true, "lessons": ["test-minuet-opening", "test-catalogue-piece", "test-chords-and-band"] } ] }
 
 // lessons/<id>.json: a title and its blocks, in the order the page shows them
 { "title": "Test: the Minuet's opening, right hand",
@@ -1517,7 +1551,7 @@ path, a step's once in its lesson. Text fields are non-empty text.
 
 | File / block | Needed | May have | Values |
 |---|---|---|---|
-| `index.json` | `rungs`: [{ `id`, `title`, `lessons`: [lesson ids] }] | — | a rung may list no lessons yet; a lesson file listed nowhere is never shown (check:path requires every file listed) |
+| `index.json` | `rungs`: [{ `id`, `title`, `lessons`: [lesson ids] }] | a rung's `test` | a rung may list no lessons yet; a lesson file listed nowhere is never shown (check:path requires every file listed); `test` true / false (default false) |
 | `lessons/<id>.json` | `title`, `blocks` (at least one) | — | |
 | `text` | `text` | — | the small text format above; `\n` between lines, a blank line between paragraphs; only `#` and `##` |
 | `image` | `src`, `alt` | `caption` | a `.png .jpg .jpeg .webp .svg .gif` file in the folder (no `..`, no leading `/`), or any `https://` link |
@@ -1541,7 +1575,14 @@ its `u-` id in `catalogue/index.json`) with its bars inside it (`tests/named-pie
 chart a step names, and a score block's set item in its set: the reader itself takes any item number (one the set lacks
 is said only when the page draws the block: "the set … has no item n") and any set or chart name (said only when the
 step is started).
-Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching. **Promoting** a catalogue piece a
+Lessons and rungs titled "Test:" are placeholders for checking the app, not teaching. **Test rungs out of the learner's
+way** (2026-10-16): a rung marked `"test": true` is left out of the path the learner sees (Path, Home, Switch…, a lesson
+page or step opened by its address says there is no such lesson), and its lessons are not fetched; the checks see it
+as before, because `tests/browser.mjs` sets `window.__pianoTestContent = true` before the app starts in every context
+it makes (`lesson/path.ts` `showTestContent`, `lesson/read.ts` `shownIndex`), and `check:path` reads the files
+directly. A learner whose saved lesson (`current` in `piano-web.path.v1`) is a hidden one is placed as with none chosen:
+the first lesson with steps to do, so the first real lesson for a new learner; the saved progress is not touched, so
+the flag set again shows it as it was. check:path requires every "Test:" rung to be marked. **Promoting** a catalogue piece a
 lesson leans on into the app's own scores, with its notes checked, is Claude's procedure in §5c.
 The test rung's "Test: a piece from the catalogue" (`test-catalogue-piece`) has one step naming the catalogue's
 "Mary Had A Little Lamb" (`u-de5f6a78874c`: CC0, piano on two staves, 8 bars, chosen as a short piano piece): a

@@ -1,7 +1,9 @@
 // The exercise screen's keyboard: keys you press on the MIDI keyboard or the screen, lit keys (help), and a
 // wrong key in red with the wanted ones outlined. Shared by Simon and the drills. Screen keys sound on the phone.
 
+import { keysToShow, type ChosenKeys } from '../activity';
 import { holds } from '../holds';
+import { currentDevice } from '../settings';
 import type { Sound } from '../sound';
 import { UnderStrip } from '../strip';
 
@@ -43,8 +45,34 @@ export class ExerciseKeys {
 
   /** The keys the set's music uses (an edge key of the keyboard in it is a note, not a command). */
   span: { lo: number; hi: number } | null = null;
-  /** The keys to draw: whole octaves around these notes (at least two). */
-  setRange(midis: number[]): void { this.strip.setSong(midis); this.span = midis.length ? { lo: Math.min(...midis), hi: Math.max(...midis) } : null; }
+  /** The keys an activity chose (per kind of screen), while it lasts; null: the screen's own. */
+  private chosen: ChosenKeys | null = null;
+  private notes: number[] = [];
+  private drawn = '';
+  choose(keys: ChosenKeys | null | undefined): void { this.chosen = keys ?? null; }
+  /**
+   * The keys to draw: the activity's chosen range for this screen, grown only to hold every note of the set (2026-10-16);
+   * otherwise whole octaves around these notes (at least two).
+   */
+  setRange(midis: number[]): void {
+    this.notes = midis;
+    const r = keysToShow(this.chosen, currentDevice(), midis);
+    if (r) this.strip.showRange(r.lo, r.hi); else this.strip.setSong(midis);
+    this.drawn = r ? `${r.lo}-${r.hi}` : '';
+    this.span = midis.length ? { lo: Math.min(...midis), hi: Math.max(...midis) } : null;
+  }
+  /** The octave labels on the keys (off at "keys, no music": no note names); drawn again if it changes. */
+  setNames(on: boolean): void {
+    if (this.strip.names === on) return;
+    this.strip.names = on;
+    this.setRange(this.notes);
+  }
+  /** Turned (or resized into another kind of screen): its own chosen keys, if they differ (the marks go with the old keys). */
+  resized(): void {
+    if (!this.chosen && !this.drawn) return;
+    const r = keysToShow(this.chosen, currentDevice(), this.notes);
+    if ((r ? `${r.lo}-${r.hi}` : '') !== this.drawn) this.setRange(this.notes);
+  }
 
   /** A key on the MIDI keyboard. */
   midiKey(midi: number, on: boolean, down: Set<number>, time = performance.now()): void {

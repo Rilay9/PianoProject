@@ -69,8 +69,9 @@ It plays a bar, then covers it, and you play it from memory. Your first note sta
 A memory game. The app gives you a chain (notes, chords, intervals…), and you play the whole chain back. Each round it grows by one, until your misses run out.
 
 - Press **Start**, or play any key.
-- A miss names what was due and what you played (the wrong key shows red on the keys). It costs a try, the game, or nothing, as Level says.
-- **Level:** how much help (1 music, sound and keys lit … 5 by ear), what must match, what a miss costs, the speed. Opening it pauses the game.
+- A miss names what was due and what you played (the wrong key shows red on the keys; at help 0 it shows them on the keys only). It costs a try, the game, or nothing, as Level says.
+- **Level:** how much help (0 keys and sound, with no music … 5 by ear), what must match, what a miss costs, the speed. Opening it pauses the game.
+- **0 Keys + sound, no music** is for before you read music: you hear each item and see its keys light up, and no notes are written or named anywhere. Copy what you see and hear. A miss shows the wrong key in red and the right one outlined. From 1 on, the music is shown too.
 - You can play on the keys on the screen or on a MIDI keyboard. With *Nothing* under the music (help 2 to 5), play on a MIDI keyboard.
 - **Simon ▾** switches to Drills, with the same set.
 
@@ -83,6 +84,7 @@ Flashcards. Each card is one short thing to play at once: music to read, a name,
 - At the end: each card's result, the misses again, or a new set.
 - Play on a MIDI keyboard, or tap the keys on the screen (Level → Under the music: Keyboard). With neither, Ready says so.
 - **Level:** help, how a card starts, the metronome, On time, cards per set, tempo. Opening it pauses the card.
+- **Help 0, Keys + sound, no music:** each card is played to you with its keys lit, and no music is written, even after the card: the keys show what was wrong (red) and what was missed (outlined).
 - **Drills ▾** switches to Simon, with the same set.
 
 # The accompaniment lab {#lab}

@@ -14,7 +14,7 @@ import { MidiInput, type KeyEvent } from '../midi';
 import { yours } from '../practice';
 import type { Command } from '../remote';
 import type { StepNotes } from '../follow';
-import type { ScorePreset } from '../activity';
+import { keysToShow, type ChosenKeys, type ScorePreset } from '../activity';
 import { TIPS, tipDue, tipShown, tipUsed } from '../hints';
 import {
   clearPreset, currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, presetPiece, resetPiece, savePieceSetting, setPreset, settingsFor,
@@ -81,7 +81,7 @@ export type ScoreScreen = Screen & {
   draw(keep?: boolean): Promise<void>;
   openSong(id: string): Promise<void>;
   /** A score activity (activity.ts): the piece with its preset playing choices (for the activity only) and bars looped. */
-  openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset }): Promise<void>;
+  openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset; keys?: ChosenKeys }): Promise<void>;
   /** Memorise (or another) takes the drawing; null: back to the score. */
   lend(b: Borrower | null): void;
   /** Stops whatever runs (the score's own, or the borrower's). quiet: leaving the piece, the run logged with no summary shown. */
@@ -111,6 +111,8 @@ export function createScoreScreen(app: App): ScoreScreen {
   const tempoDialog = $<HTMLDialogElement>('tempo');
   const summaryDialog = $<HTMLDialogElement>('summary');
   let borrower: Borrower | null = null;
+  /** A score activity's chosen keys (activity.ts), for its piece while its preset lasts. */
+  let activityKeys: { piece: string; keys: ChosenKeys } | null = null;
   app.playSettings = () => (borrower ? borrower.settings() : settingsFor(currentPiece().id));
   // Under the music: the notes now and next (a borrower may hide them: Memorise's covered bars).
   view.onStep = (notes) => {
@@ -221,7 +223,9 @@ export function createScoreScreen(app: App): ScoreScreen {
     await draw();
   }
 
-  async function openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset }): Promise<void> {
+  async function openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset; keys?: ChosenKeys }): Promise<void> {
+    activityKeys = a.keys ? { piece: a.piece, keys: a.keys } : null; // (first: the piece is drawn with them)
+    chosenFor = null;
     const { tempo, ...choices } = a.settings;
     setPreset(a.piece, choices); // first, so it is drawn with them
     await openSong(a.piece);
@@ -752,6 +756,23 @@ export function createScoreScreen(app: App): ScoreScreen {
   const touchKeys = new Map<number, { midi: number; stop: Promise<() => void> }>();
   const touchPlays = () => !!borrower || settingsFor(currentPiece().id).mode === 'wait';
   strip.narrow = () => currentDevice() === 'phone-upright' && touchPlays(); // (owner, 2026-10-13: wide enough to tap)
+  // An activity's chosen keys (2026-10-16) while it lasts (its preset still in force on its piece), in Wait for me: the
+  // range, with every key your hands play in the bars of the run (the loop, else the piece), fixed for the run (decided
+  // 2026-10-16 from lesson 1's plan: the keys never change width while you play).
+  let chosenFor: { key: string; range: ReturnType<typeof keysToShow> } | null = null;
+  strip.chosen = () => {
+    if (!activityKeys || borrower || presetPiece() !== activityKeys.piece || currentPiece()?.id !== activityKeys.piece) return null;
+    const s = settingsFor(activityKeys.piece);
+    if (s.mode !== 'wait') return null;
+    const device = currentDevice(), hand = yours(s), loop = view.looped, a = loop ? loop.a : 0, b = loop ? loop.b : view.stepCount - 1;
+    const key = `${activityKeys.piece}|${device}|${hand}|${a}-${b}|${view.stepCount}`;
+    if (chosenFor?.key !== key) {
+      const needed: number[] = [];
+      for (let i = a; i <= b; i++) needed.push(...view.struckAt(i, hand));
+      chosenFor = { key, range: keysToShow(activityKeys.keys, device, needed) };
+    }
+    return chosenFor.range;
+  };
   $('keyboard').addEventListener('pointerdown', (e) => {
     const key = (e.target as HTMLElement).closest<HTMLElement>('[data-midi]');
     if (!key || !touchPlays()) return;

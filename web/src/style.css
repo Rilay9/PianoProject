@@ -162,7 +162,11 @@ body.keys-play .bar.bottom { bottom: var(--under-h, 0px); padding-bottom: 6px; }
 }
 .fp-shift { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 4px; color: var(--muted); font-size: 14px; }
 .fp-shift .btn { min-width: 44px; }
-.fp-keyboard { height: 42vh; touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
+/* Tall keys, easy to tap (.keyboard.fp-keyboard: the strip's own 108 px, set later in this file, had overridden this;
+   fixed 2026-10-16, lesson 1). At most 360 px, so a tablet's keys are not half the screen (496 px at 820×1180); a phone
+   on its side keeps 108 px, so the recent columns keep their room (owner, 2026-10-12; 42vh left them 53 px). */
+.keyboard.fp-keyboard { height: min(42vh, 360px); touch-action: none; padding-bottom: env(safe-area-inset-bottom); }
+@media (max-height: 500px) { .keyboard.fp-keyboard { height: 108px; } }
 .exercise { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
 .exercise .fp-head select { flex: 1; min-width: 0; font: inherit; padding: 4px 6px; border: 1px solid var(--btn-line); border-radius: 8px; background: var(--btn-bg); color: inherit; }
 .ex-kind { font-weight: 700; white-space: nowrap; }

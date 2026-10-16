@@ -105,5 +105,48 @@ for (const [name, file, want] of refused) {
   const bare = named.problem('de5f6a78874c');
   ok('refused: a catalogue id without its "u-"', /is not a piece; the catalogue piece is named "u-de5f6a78874c"/.test(bare), bare || 'accepted');
 }
+// Lesson 1 (2026-10-16): the "keys, no music" help rung (0: heard, its keys lit, no staff), named by Simon and Drills
+// activities; and the keys an activity chooses for the on-screen keyboard, one range or per kind of screen.
+{
+  const simon0 = (() => { try { return readActivity('t', { screen: 'simon', set: 's', level: { rung: 0 } }); } catch (e) { return e.message; } })();
+  const drills0 = (() => { try { return readActivity('t', { screen: 'drills', set: 's', level: { rung: 0 } }); } catch (e) { return e.message; } })();
+  ok('help rung 0 ("keys, no music"): a Simon and a Drills activity name it and it reads as 0', simon0?.level?.rung === 0 && drills0?.level?.rung === 0, JSON.stringify([simon0, drills0]));
+  ok('help rungs 1–5 still read as themselves (saved levels and logs keep their meaning)', [1, 2, 3, 4, 5].every((r) => readActivity('t', { screen: 'simon', set: 's', level: { rung: r } }).level.rung === r));
+  const all = { 'phone-upright': { lo: 60, hi: 76 }, 'phone-sideways': { lo: 60, hi: 76 }, tablet: { lo: 60, hi: 76 } };
+  const fp = (() => { try { return readActivity('t', { screen: 'freeplay', keys: 'C4-E5' }).keys; } catch (e) { return e.message; } })();
+  ok('keys: one range ("C4-E5") is that range on every kind of screen', same(fp, all), JSON.stringify(fp));
+  const per = (() => { try { return readActivity('t', { screen: 'simon', set: 's', level: { rung: 0 }, keys: { 'phone-upright': 'C4-B4', tablet: 'C3-B5' } }).keys; } catch (e) { return e.message; } })();
+  ok('keys: per kind of screen, only those given (the others keep the screen’s own keys)', same(per, { 'phone-upright': { lo: 60, hi: 71 }, tablet: { lo: 48, hi: 83 } }), JSON.stringify(per));
+  const sc = (() => { try { return readActivity('t', { screen: 'score', piece: 'x', settings: { mode: 'wait' }, keys: 'A3-C5' }).keys; } catch (e) { return e.message; } })();
+  const dr = (() => { try { return readActivity('t', { screen: 'drills', set: 's', keys: 'F3-G4' }).keys; } catch (e) { return e.message; } })();
+  ok('keys: a score (Wait for me) and a Drills activity take them too', sc?.tablet?.lo === 57 && sc?.tablet?.hi === 72 && dr?.['phone-upright']?.lo === 53, JSON.stringify([sc, dr]));
+  const { keysToShow } = await import('../src/activity.ts');
+  const lesson1 = { 'phone-upright': { lo: 60, hi: 71 } };
+  ok('keys shown: C4–B4 with the black keys of that octave is exactly C4–B4', same(keysToShow(lesson1, 'phone-upright', [61, 63, 66, 68, 70]), { lo: 60, hi: 71 }));
+  ok('keys shown: grown only as far as a note outside them, to the next white key (C♯5 → up to D5)', same(keysToShow(lesson1, 'phone-upright', [61, 73]), { lo: 60, hi: 74 }), JSON.stringify(keysToShow(lesson1, 'phone-upright', [61, 73])));
+  ok('keys shown: grown downwards too (A♯3 → from A3)', same(keysToShow(lesson1, 'phone-upright', [58, 64]), { lo: 57, hi: 71 }));
+  ok('keys shown: none chosen for this screen, none (the screen’s own keys)', keysToShow(lesson1, 'tablet', [61]) === null && keysToShow(null, 'phone-upright', [61]) === null);
+  for (const [name, raw, want] of [
+    ['help rung 6', { screen: 'simon', set: 's', level: { rung: 6 } }, /level.rung is 6/],
+    ['help rung -1', { screen: 'drills', set: 's', level: { rung: -1 } }, /level.rung is -1/],
+    ['help rung "keys" (a word, not the number 0)', { screen: 'simon', set: 's', level: { rung: 'keys' } }, /level.rung is "keys"/],
+    ['keys not a range', { screen: 'freeplay', keys: 'C4' }, /should be a range of keys like "C4-E5"/],
+    ['keys with a note that is not one', { screen: 'freeplay', keys: 'H4-C5' }, /should be a range of keys/],
+    ['keys high to low', { screen: 'freeplay', keys: 'E5-C4' }, /from lower to higher/],
+    ['keys of one key', { screen: 'freeplay', keys: 'C4-C4' }, /from lower to higher/],
+    ['keys off the piano', { screen: 'freeplay', keys: 'C0-C4' }, /off the piano's keys/],
+    ['keys ending on a black key', { screen: 'freeplay', keys: 'C4-C#5' }, /black key/],
+    ['keys for a screen that is not one', { screen: 'freeplay', keys: { phone: 'C4-E5' } }, /keys has "phone"/],
+    ['keys for a screen with a bad range', { screen: 'simon', set: 's', keys: { tablet: 'C4-E' } }, /keys.tablet is "C4-E"/],
+    ['keys empty', { screen: 'freeplay', keys: {} }, /keys is empty/],
+    ['keys a number', { screen: 'freeplay', keys: 5 }, /keys should be a range/],
+    ['keys on Memorise (not offered)', { screen: 'memorise', piece: 'x', keys: 'C4-E5' }, /"keys" is not a field of a memorise activity/],
+    ['keys on the lab (not offered)', { screen: 'lab', chart: 'c', keys: 'C4-E5' }, /"keys" is not a field of a lab activity/],
+    ['keys on a score in a mode whose keys do not play', { screen: 'score', piece: 'x', settings: { mode: 'along' }, keys: 'C4-E5' }, /keys are for Wait for me/],
+  ]) {
+    try { readActivity('t', raw); ok(`refused: ${name}`, false, 'it was accepted'); }
+    catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }
+  }
+}
 console.log(failed ? `${failed} of ${ran} failed` : `all ${ran} passed`); // (a count: an empty index or a dropped case shows)
 process.exit(failed ? 1 : 0);

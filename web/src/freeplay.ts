@@ -2,11 +2,13 @@
 // lights up and is named with the chord or interval it makes; nothing is judged or kept. The screen's keys
 // sound on the phone (a MIDI keyboard makes its own sound). Two octaves at a time on a phone (owner, 2026-10-12:
 // keys wide enough to tap), three on a tablet, from C3; moved an octave with ‹ ›, and moving by themselves to show a
-// MIDI key played outside them.
+// MIDI key played outside them. A lesson step can choose the keys instead (2026-10-16: an activity's "keys", per kind of
+// screen, so fewer and wider keys can be tapped): that range, moved an octave at a time with ‹ › from there.
 // Below that, what you played lately (owner, 2026-10-12), newest on top, each column can be turned off (Show):
 // chords held together (three or more notes that make a named chord), the notes (keys pressed together on one
 // line), and intervals (from each single note to the next, and two notes held together). Cleared on opening.
 
+import type { ChosenKeys } from './activity';
 import type { KeyEvent } from './midi';
 import type { Sound } from './sound';
 import { currentDevice } from './settings';
@@ -18,6 +20,8 @@ const TABLET_SPAN = 36; // three octaves: keys about 40 px wide on a tablet (all
 export class FreePlay {
   private readonly strip: UnderStrip;
   private from = 48; // the lowest key shown (C3), span() keys on
+  private chosen: ChosenKeys | null = null; // an activity's keys, while it lasts
+  private moved = 0; // octaves moved with ‹ › (or by a MIDI key) from the chosen keys
   private midiDown = new Set<number>();
   private touches = new Map<number, { midi: number; stop: Promise<() => void> }>(); // pointer id -> key
   open = false;
@@ -73,8 +77,11 @@ export class FreePlay {
     for (const col of this.panel.querySelectorAll<HTMLElement>('.fp-col')) col.hidden = !on[col.dataset.col as Column];
   }
 
-  show(down: Set<number>): void {
+  /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. */
+  show(down: Set<number>, keys?: ChosenKeys): void {
     this.open = true;
+    this.chosen = keys ?? null;
+    this.moved = 0;
     this.midiDown = new Set(down);
     this.panel.hidden = false;
     this.drawKeys();
@@ -96,7 +103,11 @@ export class FreePlay {
   /** A key on the MIDI keyboard. */
   key(e: KeyEvent, down: Set<number>): void {
     this.midiDown = new Set(down);
-    if (e.on && (e.midi < this.from || e.midi > this.from + this.span())) {
+    const r = this.range();
+    if (r && e.on && (e.midi < r.lo || e.midi > r.hi)) { // (chosen keys: moved by octaves until the key shows)
+      this.moved += e.midi < r.lo ? -Math.ceil((r.lo - e.midi) / 12) : Math.ceil((e.midi - r.hi) / 12);
+      this.drawKeys();
+    } else if (!r && e.on && (e.midi < this.from || e.midi > this.from + this.span())) {
       this.from = Math.max(12, Math.min(108 - this.span(), e.midi - (e.midi % 12) - (e.midi < this.from ? 0 : 12)));
       this.drawKeys();
     }
@@ -107,8 +118,26 @@ export class FreePlay {
   private phone(): boolean { return currentDevice() !== 'tablet'; }
   /** How many keys show: two octaves on a phone, three on a tablet, moved with ‹ › (or by a MIDI key outside them). */
   private span(): number { return this.phone() ? PHONE_SPAN : TABLET_SPAN; }
-  /** The keys: `span()` keys from `from`. */
+  /** The chosen keys on this screen, moved by `moved` octaves (kept on the piano); null when none were chosen for it. */
+  private range(): { lo: number; hi: number } | null {
+    const r = this.chosen?.[currentDevice()];
+    if (!r) return null;
+    while (r.lo + this.moved * 12 < 21) this.moved++;
+    while (r.hi + this.moved * 12 > 108) this.moved--;
+    return { lo: r.lo + this.moved * 12, hi: r.hi + this.moved * 12 };
+  }
+  /** The keys: the chosen ones, or `span()` keys from `from`. */
   private drawKeys(): void {
+    const r = this.range();
+    if (r) {
+      this.strip.showRange(r.lo, r.hi);
+      (this.panel.querySelector('#fp-shift') as HTMLElement).hidden = false;
+      this.panel.querySelector('#fp-range')!.textContent = `${keyName(r.lo)}–${keyName(r.hi)}`;
+      (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = r.lo - 12 < 21;
+      (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = r.hi + 12 > 108;
+      this.strip.setPressed(this.down());
+      return;
+    }
     this.from = Math.max(12, Math.min(108 - this.span(), this.from)); // (turned from a phone's two octaves to a tablet's three)
     this.strip.setSong([this.from, this.from + this.span() - 1]);
     (this.panel.querySelector('#fp-shift') as HTMLElement).hidden = false;
@@ -118,7 +147,7 @@ export class FreePlay {
     (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = this.from + this.span() >= 108;
     this.strip.setPressed(this.down());
   }
-  private shift(by: number): void { this.from = Math.max(12, Math.min(108 - this.span(), this.from + by)); this.drawKeys(); }
+  private shift(by: number): void { if (this.range()) { this.moved += by / 12; this.drawKeys(); return; } this.from = Math.max(12, Math.min(108 - this.span(), this.from + by)); this.drawKeys(); }
   /** The phone turned (a tablet shows them all). */
   resized(): void { if (this.open) this.drawKeys(); }
 
@@ -195,6 +224,10 @@ export class FreePlay {
     fill('fp-intervals', intervals);
   }
 }
+
+const NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+/** A white key's name with its octave (C4, E5): the ends of chosen keys. */
+const keyName = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
 
 const TOGETHER_MS = 80; // keys pressed this close (all still down) are one line: a hand's chord lands within a few tens of ms, and a quick melody's notes are further apart
 const KEEP = 30; // more than any screen shows; older ones scroll off

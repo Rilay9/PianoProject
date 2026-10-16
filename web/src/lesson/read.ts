@@ -14,7 +14,8 @@
 import { readActivity, type Activity } from '../activity.ts'; // (with .ts: the checks run this file in Node)
 import { readText, type TextBlock } from './text.ts';
 
-export interface Rung { id: string; title: string; lessons: string[] }
+/** test: a rung of placeholder lessons for the checks, hidden from the learner (lesson/path.ts; 2026-10-16). */
+export interface Rung { id: string; title: string; lessons: string[]; test?: boolean }
 export interface PathIndex { rungs: Rung[] }
 
 /** What a step's run must show for the step to count as done, where its activity's result can tell (docs §8c). */
@@ -267,7 +268,8 @@ export function readIndex(f: unknown): PathIndex {
   const rungs = f.rungs.map((r, i): Rung => {
     const where = `rung ${i + 1}`;
     if (!isObj(r)) throw new Error(`${where} should be an object`);
-    for (const k of Object.keys(r)) if (!['id', 'title', 'lessons'].includes(k)) throw new Error(`${where} has "${k}", which is not one of id, title, lessons`);
+    for (const k of Object.keys(r)) if (!['id', 'title', 'lessons', 'test'].includes(k)) throw new Error(`${where} has "${k}", which is not one of id, title, lessons, test`);
+    if (r.test !== undefined && typeof r.test !== 'boolean') throw new Error(`${where}.test is ${JSON.stringify(r.test)}; it should be true or false`);
     const id = str(r.id, `${where}.id`);
     if (!ID.test(id)) throw new Error(`${where}.id "${id}" should be lower-case letters, digits and -`);
     if (seen.has(id)) throw new Error(`${where}.id "${id}" is used twice`);
@@ -278,7 +280,12 @@ export function readIndex(f: unknown): PathIndex {
       if (lessons.has(l)) throw new Error(`${where}.lessons: "${l}" is in the path twice`);
       lessons.add(l);
     }
-    return { id, title: str(r.title, `${where}.title`), lessons: r.lessons as string[] };
+    return { id, title: str(r.title, `${where}.title`), lessons: r.lessons as string[], ...(r.test ? { test: true } : {}) };
   });
   return { rungs };
+}
+
+/** The rungs a learner sees: test rungs (placeholders for the checks) only when asked for (lesson/path.ts; 2026-10-16). */
+export function shownIndex(index: PathIndex, withTests: boolean): PathIndex {
+  return withTests ? index : { rungs: index.rungs.filter((r) => !r.test) };
 }

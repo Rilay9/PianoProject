@@ -4,7 +4,8 @@
 // Run: npm run check:path.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { readActivity } from '../src/activity.ts';
-import { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } from '../src/lesson/read.ts';
+import * as read from '../src/lesson/read.ts';
+const { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } = read;
 import { readText } from '../src/lesson/text.ts';
 import { meets, outcome } from '../src/lesson/result.ts';
 import { readPlay } from '../src/exercise/items.ts';
@@ -135,6 +136,22 @@ for (const [name, f, want] of [
   let msg = '';
   try { readIndex(f); } catch (e) { msg = e.message; }
   ok(`refused: ${name}`, want.test(msg), msg || 'it was accepted');
+}
+// Test rungs out of the learner's way (2026-10-16): a rung marked "test": true is hidden from the learner's Path and Home
+// (lesson/path.ts loadPath: shownIndex), and shown when the checks ask (window.__pianoTestContent). The shipped test rung
+// is marked, so the learner never sees it, and the checks still read it here as before.
+{
+  const raw = JSON.parse(readFileSync(pub('content/path/index.json'), 'utf8'));
+  ok('the shipped index: every rung titled "Test:" is marked "test": true (hidden from the learner)', raw.rungs.every((r) => !/^Test:/.test(r.title) || r.test === true), JSON.stringify(raw.rungs.map((r) => [r.id, r.test])));
+  ok('the shipped index: the checks still read the test rung and its three lessons', same(index.rungs.find((r) => r.id === 'test-app')?.lessons, ['test-minuet-opening', 'test-catalogue-piece', 'test-chords-and-band']), JSON.stringify(index.rungs));
+  const shownIndex = read.shownIndex;
+  const two = typeof shownIndex === 'function' ? readIndex({ rungs: [{ id: 'test-app', title: 'Test: x', test: true, lessons: ['t1'] }, { id: 'first', title: 'Playing before reading', lessons: ['l1'] }] }) : null;
+  ok('learner: a test rung is hidden, a real rung shown', !!two && same(shownIndex(two, false).rungs.map((r) => r.id), ['first']), two ? JSON.stringify(shownIndex(two, false)) : 'no shownIndex in lesson/read.ts');
+  ok('checks: with test content asked for, both rungs as written', !!two && same(shownIndex(two, true).rungs.map((r) => r.id), ['test-app', 'first']));
+  ok('the shipped index as a learner sees it: no rungs yet (the test rung hidden; lesson 1 is added separately)', typeof shownIndex === 'function' && shownIndex(index, false).rungs.length === 0);
+  let msg = '';
+  try { readIndex({ rungs: [{ id: 'a', title: 'A', test: 'yes', lessons: [] }] }); } catch (e) { msg = e.message; }
+  ok('refused: a rung’s "test" that is not true or false', /rung 1.test is "yes"; it should be true or false/.test(msg), msg || 'it was accepted');
 }
 // A catalogue piece named by its "u-" id (owner, 2026-10-15): a score block and a step's activity read with it; the content
 // check finds it in the catalogue index with its bars inside, and refuses a u- id that is not there or bars past the end.

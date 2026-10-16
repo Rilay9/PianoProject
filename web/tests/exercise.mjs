@@ -39,7 +39,7 @@ const failures = [];
 const check = (name, ok, detail = '') => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : ` — ${detail}`}`); if (!ok) failures.push(name); };
 const el = () => ({ textContent: '', className: '', hidden: false, innerHTML: '', value: '', addEventListener() {}, replaceChildren() {}, prepend() {}, after() {} });
 const parts = () => Object.fromEntries(['set', 'left', 'mid', 'right', 'name', 'chain', 'status', 'sub', 'start', 'hear', 'help', 'after', 'again', 'next', 'misses', 'fresh', 'finish'].map((k) => [k, el()]));
-const keysStub = () => ({ onKey: null, down: new Set(), setRange() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, release() {} });
+const keysStub = () => ({ onKey: null, down: new Set(), setRange() {}, choose() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, release() {} });
 const notation = { show: async () => {}, clear() {} };
 const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare: async () => {} };
 
@@ -196,6 +196,53 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
   check('Simon, another set chosen part way: logged as set A with the step’s tag', game?.set === 'set-a' && game.title === 'Set A' && game.activity === 'step-simon' && game.lesson?.step === 's1', fmt(game));
   check('Simon: a miss logged with its item’s number', JSON.stringify(game?.result.misses?.map((m) => m.n)) === '[2]', fmt(game));
   s.close();
+  setActivity(null);
+}
+
+// ---- "Keys, no music" (help rung 0; lesson 1, 2026-10-16) ------------------------------------------------------------
+// Before the staff is taught: the item is heard and its keys light, and no staff is drawn at any point (given, your turn,
+// a miss, Hear again; a drill card's result too). Simon on the black keys of one octave, chain 3 played back.
+{
+  const { setActivity } = await import('../src/log.ts');
+  const black = [['C#4', 61], ['D#4', 63], ['F#4', 66], ['G#4', 68], ['A#4', 70]];
+  const set = { id: 't-black', title: 'test', order: 'pool', tempo: 80, items: black.map(([n], i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
+  const seen = { drawn: 0, lit: [], played: 0 };
+  const watchNotation = { show: async () => { seen.drawn++; }, clear() {} };
+  const watchKeys = { ...keysStub(), light(ms) { if (ms.length) seen.lit.push(...ms); } };
+  const watchSound = { ...sound, play(events) { if (events.length) seen.played++; } };
+  store.clear();
+  const s = new Simon(parts(), watchKeys, watchNotation, watchSound);
+  s.open([set], { set: 't-black', level: { rung: 0, match: 'same', miss: 'endless', speed: 'steady', onMiss: 'all', onNew: 'all' } });
+  const tap = async (m) => { s.key(m, true); s.key(m, false); await settle(); };
+  await tap(61); // starts the game
+  const wait = async (ms) => { for (let t = 0; t < ms; t += 250) await pass(250); }; // (timers set during a pass run in the next)
+  for (let n = 1; n <= 3; n++) { await wait(5000); for (const g of s.expected()) await tap(g[0]); }
+  const best = s.best[s.bestKey()] ?? 0;
+  await wait(6000);
+  await tap(s.expected()[0][0] === 72 ? 73 : 72); // a miss (C5, not in the set)
+  await wait(4000);
+  await s['hearAgain']();
+  await wait(4000);
+  check('keys, no music (Simon): chain 3 played back, a best of 3', best >= 3, `best ${best}`);
+  check('keys, no music (Simon): heard (the chain played each round) and its keys lit, all black keys of the set', seen.played >= 3 && seen.lit.length >= 3 && seen.lit.every((m) => black.some(([, k]) => k === m)), JSON.stringify(seen));
+  check('keys, no music (Simon): no staff drawn at any point (given, your turn, a miss, Hear again)', seen.drawn === 0, `drawn ${seen.drawn} times`);
+  s.close();
+  setActivity(null);
+
+  const d0 = { drawn: 0, lit: [], played: 0 };
+  const d = new Drill(parts(), { ...keysStub(), light(ms) { if (ms.length) d0.lit.push(...ms); } }, { show: async () => { d0.drawn++; }, clear() {} }, { ...sound, play(events) { if (events.length) d0.played++; } });
+  d.open([set], { set: 't-black', level: { rung: 0, start: 'first', onTime: 'notes', metronome: false, cards: 10 } });
+  d.key(61, true, 1); await settle(); // starts the set
+  await wait(3000); // the card is played to you, its key lit, then your turn
+  const want = d.debug().steps[0]?.keys[0];
+  d.key(want, true, 2); await settle(); // right
+  await wait(3000); // the next card
+  const want2 = d.debug().steps[0]?.keys[0];
+  d.key(want2 === 72 ? 73 : 72, true, 3); await settle(); // wrong, then Skip
+  d.skip(); await settle();
+  check('keys, no music (Drills): the card is heard and its key lit', d0.played >= 1 && d0.lit.includes(want), JSON.stringify(d0));
+  check('keys, no music (Drills): no staff drawn, not even with the result', d0.drawn === 0, `drawn ${d0.drawn} times`);
+  d.close();
   setActivity(null);
 }
 

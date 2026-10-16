@@ -10,6 +10,7 @@ import { ExerciseKeys } from '../exercise/keys';
 import { ExerciseNotation } from '../exercise/notation';
 import { Simon, type Rung, type SimonLevel } from '../exercise/simon';
 import { activityOf } from '../log';
+import type { ChosenKeys } from '../activity';
 import type { KeyEvent } from '../midi';
 import * as nav from '../nav';
 import type { Command } from '../remote';
@@ -17,12 +18,15 @@ import { currentDevice, settingsFor } from '../settings';
 
 export type ExerciseScreen = Screen & {
   /** activity: a set with a preset level (activity.ts), in force while it is open. */
-  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: { set: string; level: object; title?: string }): Promise<void>;
+  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
   debug(): { simon: number[][]; drill: ReturnType<Drill['debug']> };
 };
+
+/** An activity's set, its preset level and (2026-10-16) the keys it chose for each kind of screen. */
+type ExerciseActivity = { set: string; level: object; title?: string; keys?: ChosenKeys };
 
 export function createExerciseScreen(app: App, closed: () => void): ExerciseScreen {
   const { sound, midi } = app;
@@ -77,9 +81,10 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     const card = exerciseKind === 'drill';
     exerciseNotation.setMode(card ? 'card' : 'build');
     if (card) exerciseNotation.setShare(d.card); else exerciseNotation.setZoom(d.zoom);
-    // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
+    // Help 0 and 1 light the keys, so the keyboard stays for them even when set to Nothing.
     const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
-    $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung !== 1);
+    $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung > 1);
+    exerciseKeys.setNames(rung !== 0); // (no octave labels at "keys, no music": no note names yet)
     if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine();
     // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
     const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, cardMost()] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
@@ -114,14 +119,14 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   let setProblems = '';
   /** The way and the activity the screen was opened with (a lesson step's set at its level), for Practise as… to come
    * back to (final review 2026-10-15, F22: back in the step's way, its level had gone while its tag stayed). */
-  type Opened = { kind: 'simon' | 'drill'; activity?: { set: string; level: object; title?: string } };
+  type Opened = { kind: 'simon' | 'drill'; activity?: ExerciseActivity };
   let opened: Opened | null = null;
-  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: { set: string; level: object; title?: string }): Promise<void> {
+  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
     opened = { kind, activity };
     await show(kind, stillWanted, activity);
   }
   /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
-  async function show(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: { set: string; level: object; title?: string }): Promise<void> {
+  async function show(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
     inputs = await midi.start().catch(() => [] as string[]);
     // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
     sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
@@ -150,6 +155,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     $('ex-after').hidden = true;
     $('exercise').hidden = false;
     fillExerciseDisplay();
+    exerciseKeys.choose(activity?.keys); // (the activity's keys while it lasts; your own set, or none, the screen's own)
     if (kind === 'drill') drill.open(sets, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(sets, activity as { set: string; level: Partial<SimonLevel> } | undefined);
     fillExerciseDisplay(); // (again with the level just opened: an activity's help rung decides whether the keys show)
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
@@ -244,7 +250,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     // The keys the music uses (the remote's edge keys outside them are commands); any octave counting: all of them.
     musicRange: (): KeyRange | null => ((exerciseKind === 'drill' ? drill.anyOctaveNow : simon.anyOctaveNow) ? { lo: 0, hi: 127 } : exerciseKeys.span),
     // Turning the phone can change the kind of screen, and each has its own look.
-    resized: () => { if (isOpen()) fillExerciseDisplay(); },
+    resized: () => { if (isOpen()) { exerciseKeys.resized(); fillExerciseDisplay(); } },
     // A panel (Level) over the game or the card: it pauses, and carries on when it closes (owner, 2026-10-15).
     panel: (open: boolean) => { if (exerciseKind === 'drill') drill.panel(open); else simon.panel(open); },
     get busy() { return isOpen(); },

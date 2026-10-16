@@ -8,12 +8,18 @@ import { loadSets, readPlay, type ItemSet, type Play } from '../exercise/items';
 import { loadCharts } from '../library/items';
 import { loadCatalogue } from '../library/catalogue';
 import { currentLesson, doneSteps, stepWords, triedSteps } from './progress';
-import { readIndex, readLesson, type Block, type Lesson, type PathIndex, type Rung } from './read';
+import { readIndex, readLesson, shownIndex, type Block, type Lesson, type PathIndex, type Rung } from './read';
 
 export type StepBlock = Extract<Block, { kind: 'step' }>;
 export interface PathData { index: PathIndex; lessons: Map<string, Lesson>; problems: string[] }
 
 export const PATH_DIR = `${base}content/path/`;
+
+/**
+ * Test rungs ("test": true in the index: placeholder lessons the checks depend on) are hidden from the learner's Path,
+ * Home and Switch… (2026-10-16); the checks set `window.__pianoTestContent = true` before the app starts to see them.
+ */
+export const showTestContent = (): boolean => typeof window !== 'undefined' && (window as unknown as { __pianoTestContent?: unknown }).__pianoTestContent === true;
 
 let kept: PathData | null = null;
 /** The rungs and lessons (kept once every file was read; a fetch that failed is tried again next time). */
@@ -28,6 +34,7 @@ export async function loadPath(): Promise<PathData> {
     let json: unknown = null;
     try { json = r.ok ? JSON.parse(await r.text()) : null; } catch { json = null; }
     if (json) index = readIndex(json);
+    index = shownIndex(index, showTestContent()); // (a hidden rung's lessons are not even fetched)
   } catch (e) {
     if (e instanceof TypeError) missed = true; // (the network)
     else problems.push(`The path's index: ${e instanceof Error ? e.message : String(e)}`);
@@ -154,7 +161,7 @@ export function musicExercises(app: App): Promise<Piece[]> {
 
 const MODES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me', along: 'Play along', ladder: 'Ladder', rhythm: 'Rhythm' };
 const HANDS: Record<string, string> = { right: 'right hand', left: 'left hand', both: 'both hands', off: 'you play both' };
-const RUNGS = ['', 'music, sound and keys lit', 'music and sound', 'music only', 'name only', 'by ear'];
+const RUNGS = ['keys and sound, no music', 'music, sound and keys lit', 'music and sound', 'music only', 'name only', 'by ear'];
 
 /** The step's activity in a few words: the tool, what it plays, the choices that matter ("Wait for me · right hand · bars 1–4"). */
 export async function describe(a: Activity, app: App): Promise<string> {
@@ -169,8 +176,8 @@ export async function describe(a: Activity, app: App): Promise<string> {
       return [s.mode ? MODES[s.mode] : 'Score', piece(a.piece), a.bars ? `bars ${a.bars[0]}–${a.bars[1]}` : '', s.hands ? HANDS[s.hands] : '', s.tempo ? `♩ ${s.tempo}` : ''].filter(Boolean).join(' · ');
     }
     case 'memorise': return ['Memorise', piece(a.piece), a.settings.hands ? HANDS[a.settings.hands] : '', a.settings.chunk ? `${a.settings.chunk} bars at a time` : ''].filter(Boolean).join(' · ');
-    case 'drills': return ['Drills', await setTitle(a.set), a.level.cards ? `${a.level.cards} cards` : '', a.level.rung ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
-    case 'simon': return ['Simon', await setTitle(a.set), a.level.rung ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
+    case 'drills': return ['Drills', await setTitle(a.set), a.level.cards ? `${a.level.cards} cards` : '', a.level.rung !== undefined ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
+    case 'simon': return ['Simon', await setTitle(a.set), a.level.rung !== undefined ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
     case 'lab': {
       const chart = (await loadCharts(base).catch(() => [])).find((c) => c.id === a.chart)?.title.replace(/^Test:\s*/, '') ?? a.chart;
       return ['Accompaniment lab', chart, a.preset.role === 'lead' ? 'lead' : a.preset.role === 'accomp' ? 'accompaniment' : ''].filter(Boolean).join(' · ');

@@ -9,7 +9,7 @@
 // open it from where it is reached with `enter()` (its place on the stack), and describe it in docs/app-features.md.
 
 import './style.css';
-import { readActivity, type Activity } from './activity';
+import { readActivity, type Activity, type ChosenKeys } from './activity';
 import { backupContents, makeBackup, restoreBackup } from './backup';
 import { readScore } from './library/facts';
 import { $, App, type Screen } from './app';
@@ -208,11 +208,12 @@ async function openLab(chart?: string): Promise<void> {
   await labScreen.open(still, undefined, chart);
   if (still() && labScreen.isOpen) enter({ name: 'lab', params: { tool: 'lab', ...(chart ? { chart } : {}) }, leave: () => labScreen.close() });
 }
-function openFreePlay(): void {
+/** keys: an activity's chosen keys (2026-10-16). */
+function openFreePlay(keys?: ChosenKeys): void {
   wanted();
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   app.appSound();
-  freePlay.show(midi.down);
+  freePlay.show(midi.down, keys);
   app.stayAwake();
   enter({ name: 'freeplay', params: { tool: 'freeplay' }, leave: () => freePlay.close() });
 }
@@ -581,7 +582,7 @@ async function launchScreen(a: Activity, step?: string): Promise<() => boolean> 
       return () => still() && labScreen.isOpen;
     }
     case 'freeplay': {
-      openFreePlay();
+      openFreePlay(a.keys);
       if (step) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step })}`);
       const still = () => freePlay.open;
       return still;

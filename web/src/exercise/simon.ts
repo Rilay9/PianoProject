@@ -1,7 +1,8 @@
 // Simon (owner, 2026-10-11/12): a memory game for small units (notes, intervals, chords, scales, arpeggios). The
 // app gives a chain of items and you play it back from memory; each round the chain grows by one (a random item
 // from a pool, or the next bit of a short passage) until you slip. Memorising pieces is the score's Memorise mode.
-// On the shared exercise screen, with the same help ladder (owner): 1 music + sound + keys lit, 2 music + sound, 3 music, 4 name only, 5 by ear.
+// On the shared exercise screen, with the same help ladder (owner): 1 music + sound + keys lit, 2 music + sound, 3 music, 4 name only, 5 by ear;
+// and 0, keys + sound with no music at all, for lessons before the staff is taught (owner, 2026-10-16: Faber's order).
 // What was shown (music, lit keys, names) stays up until your first key, then it goes.
 // Options (owner): on a miss, play back the whole chain or from the miss on (and carry on from there); on a new
 // item, play back the whole chain or only the new one (you still play the whole chain).
@@ -12,7 +13,16 @@ import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
 import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../log';
 
-export type Rung = 1 | 2 | 3 | 4 | 5;
+/**
+ * The help rung: 1 music + sound + keys lit … 5 by ear (the numbers saved levels, bests and logs have always used), and
+ * 0 "keys, no music": heard, with its keys lit, and no staff (2026-10-16). 0 sits before 1 rather than renumbering the
+ * ladder, so a saved 1–5 still means what it meant.
+ */
+export type Rung = 0 | 1 | 2 | 3 | 4 | 5;
+/** What each rung gives: the music on a staff (1–3), the keys lit (0–1), the sound (0–2, 5). */
+export const withMusic = (r: Rung): boolean => r >= 1 && r <= 3;
+export const keysLit = (r: Rung): boolean => r <= 1;
+export const withSound = (r: Rung): boolean => r <= 2 || r === 5;
 export interface SimonLevel {
   rung: Rung;
   /** same: the very keys; octave: the notes in any octave (a chord keeping its bass); inversion: any octave and order. */
@@ -162,7 +172,7 @@ export class Simon {
   private chooseSet(id: string, remember = true): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
-    if (remember) { this.mySet = this.set.id; if (this.on) setActivity(null); } // (your own choice: an activity is over)
+    if (remember) { this.mySet = this.set.id; if (this.on) setActivity(null); this.keys.choose(null); } // (your own choice: an activity, and its keys, are over)
     this.makeItems();
     this.keys.setRange(this.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.save();
@@ -244,9 +254,9 @@ export class Simon {
     else if (turnFrom === 0) this.helpedNow = false;
     this.keys.clearMarks();
     this.ui.status.className = 'ex-status';
-    const rung = help ? 1 : this.level.rung;
-    const withNotation = rung <= 3;
-    const withSound = rung === 1 || rung === 2 || rung === 5;
+    const rung: Rung = help ? (this.level.rung === 0 ? 0 : 1) : this.level.rung; // (help at "keys, no music" stays without music)
+    const withNotation = withMusic(rung);
+    const sounds = withSound(rung);
     this.ui.name.textContent = '';
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
@@ -255,7 +265,7 @@ export class Simon {
     if (token !== this.token) return;
     if (rung === 3) { this.yourTurn(turnFrom); return; } // reading: the chain is there to read; no playing it first
     this.ui.status.textContent = rung === 4 ? 'Remember…' : 'Listen…';
-    // Item by item: it sounds (rungs 1, 2, 5), is lit on the staff (1, 2), its keys lit (1), its name shown (4).
+    // Item by item: it sounds (rungs 0, 1, 2, 5), is lit on the staff (1, 2), its keys lit (0, 1), its name shown (4).
     const beat = this.beatMs();
     const events: NoteEvent[] = [];
     const steps: { at: number; item: number; keys: number[] }[] = [];
@@ -271,12 +281,12 @@ export class Simon {
       });
       if (this.set.order !== 'passage') t += ITEM_GAP_MS; // a passage runs on in its own rhythm
     }
-    if (withSound) this.sound.play(events, [], 0, 1);
+    if (sounds) this.sound.play(events, [], 0, 1);
     let lastItem = -1;
     for (const step of steps) {
       this.later(step.at, () => {
         if (token !== this.token) return;
-        if (rung === 1) this.keys.light(step.keys);
+        if (keysLit(rung)) this.keys.light(step.keys);
         if (withNotation && step.item !== lastItem) void this.drawChain([step.item]);
         lastItem = step.item;
         if (rung === 4) { this.ui.name.textContent = this.chain[step.item].name; this.ui.name.className = 'ex-name big'; }
@@ -297,8 +307,8 @@ export class Simon {
     this.hidden = false;
     this.keys.clearMarks();
     const rung = this.level.rung;
-    if (rung <= 3) void this.drawChain([]); else this.notation.clear();
-    if (rung === 1) this.keys.light(this.flat[from]?.keys ?? []); // where to start
+    if (withMusic(rung)) void this.drawChain([]); else this.notation.clear();
+    if (keysLit(rung)) this.keys.light(this.flat[from]?.keys ?? []); // where to start
     if (rung === 4) {
       this.ui.name.textContent = this.chain.map((it) => it.name).join(' · ');
       this.ui.name.className = 'ex-name big';
@@ -309,7 +319,8 @@ export class Simon {
     this.ui.status.className = 'ex-status';
     this.ui.hear.textContent = rung === 3 || rung === 4 ? 'Show me' : 'Hear again';
     this.ui.hear.hidden = false;
-    this.ui.sub.textContent = from > 0 ? `From ${this.chain[this.flat[from].item].name}` : '';
+    // (at "keys, no music" no note names anywhere: lesson 1 teaches none yet; 2026-10-16)
+    this.ui.sub.textContent = from > 0 ? (rung === 0 ? 'From where you missed' : `From ${this.chain[this.flat[from].item].name}`) : '';
     this.ui.chain.replaceChildren();
   }
 
@@ -317,7 +328,7 @@ export class Simon {
   private progress(): void {
     const done = this.flat[this.pos]?.item ?? this.chain.length;
     this.ui.chain.replaceChildren(...this.chain.map((it, i) =>
-      Object.assign(document.createElement('span'), { className: `chip${i < done ? ' done' : i === done ? ' now' : ''}`, textContent: i < done ? it.short : '·' })));
+      Object.assign(document.createElement('span'), { className: `chip${i < done ? ' done' : i === done ? ' now' : ''}`, textContent: i < done ? (this.level.rung === 0 ? '•' : it.short) : '·' })));
     this.ui.sub.textContent = '';
   }
 
@@ -393,17 +404,19 @@ export class Simon {
   private missed(midi: number): void {
     const group = this.flat[this.pos], item = this.chain[group.item];
     this.state = 'miss';
-    if (this.level.rung <= 3) void this.drawChain([group.item]); // the music back, the missed item lit
+    if (withMusic(this.level.rung)) void this.drawChain([group.item]); // the music back, the missed item lit
     this.keys.light([]);
     this.keys.wrong([midi]);
     this.keys.want(group.keys);
     // What was wanted: a chord or one note by name; within a longer item (an arpeggio, a bar), the notes due next.
     const played = item.groups.filter((g) => g.length);
     const next = played[this.flat.slice(0, this.pos + 1).filter((g) => g.item === group.item).length - 1] ?? [];
-    this.ui.status.textContent = `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}`;
+    // At "keys, no music" no names: the keys say it (the wrong key red, the right one outlined; 2026-10-16).
+    const names = this.level.rung !== 0;
+    this.ui.status.textContent = names ? `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}` : 'Not that one: the right key is outlined';
     if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, n: item.n, wanted: next.map(shown).join(' '), played: shown(noteName(midi)) });
     this.ui.status.className = 'ex-status bad';
-    this.ui.sub.textContent = played.length > 1 ? `In ${item.name}.` : group.keys.length > 1 ? `${item.name}.` : '';
+    this.ui.sub.textContent = !names ? '' : played.length > 1 ? `In ${item.name}.` : group.keys.length > 1 ? `${item.name}.` : '';
     if (this.level.miss === 'tries') this.tries--;
     this.scoreLine();
     if (this.level.miss === 'over' || (this.level.miss === 'tries' && this.tries <= 0)) {

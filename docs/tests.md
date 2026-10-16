@@ -68,7 +68,9 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   the checks dispatched pointer events at the key itself; on the phone the bottom bar lay over the keys and took the
   taps (one even pressed A+), and Wait for me never started without MIDI permission, which the checks always granted
   (owner, 2026-10-15). Tap by position (the mouse at the place, or the event sent to `elementFromPoint`), and run at
-  least one case with the permissions a plain phone tab has.
+  least one case with the permissions a plain phone tab has. And a tap at a key's exact centre hits even a key too narrow
+  for a finger (14 px black keys passed that way): tap where a finger lands, off centre too (lesson 1, 2026-10-16: ±12 px
+  for keys meant to be about 30 px wide).
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals. Check the nested objects and the value types too, not only the top-level
   keys: a set's `"octave": "five"` hung the app, `"together": "false"` read as together, a chart's `improvise: { scales }`

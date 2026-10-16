@@ -106,6 +106,16 @@ export class UnderStrip {
    * be played by touch, so they are wide enough to tap); otherwise the song's whole range.
    */
   narrow: () => boolean = () => false;
+  /**
+   * The keys an activity chose for this screen (2026-10-16: a lesson step's keys, so fewer, wider keys can be tapped),
+   * where the keys play (the score: Wait for me); null: the strip's own keys. The caller gives them already holding
+   * every key to be played (the score: the bars and hands of the run), so they never change during a run.
+   */
+  chosen: () => { lo: number; hi: number } | null = () => null;
+  private chosenOn = false; // the keys drawn are the chosen ones
+  private wide = false; // chosen keys: the black keys wider, to be tapped (below)
+  /** The octave labels (C4, C5) on the white keys; off where no note names are shown ("keys, no music"). */
+  names = true;
 
   constructor(private readonly host: HTMLElement, private readonly keyboard: HTMLElement, private readonly line: HTMLElement) {}
 
@@ -125,7 +135,27 @@ export class UnderStrip {
     this.song = keyRange(midis);
     this.window = null;
     this.span = FOLLOW_SPAN;
+    this.chosenOn = this.wide = false;
+    const c = this.chosen();
+    if (c) { this.useChosen(c); return; }
     if (this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN) this.window = this.song.from;
+    this.build();
+  }
+
+  /** Exactly these keys, lowest to highest (a range an activity chose, already grown to hold its music). */
+  showRange(lo: number, hi: number): void {
+    this.song = { from: lo, to: hi };
+    this.window = null;
+    this.span = FOLLOW_SPAN;
+    this.chosenOn = false;
+    this.wide = true;
+    this.build();
+  }
+
+  private useChosen(c: { lo: number; hi: number }): void {
+    this.window = c.lo;
+    this.span = c.hi - c.lo;
+    this.chosenOn = this.wide = true;
     this.build();
   }
 
@@ -136,6 +166,19 @@ export class UnderStrip {
    * the keys (narrower, all tappable). The keys move only when what is wanted leaves them.
    */
   follow(now: number[], next: number[] = []): void {
+    const c = this.chosen();
+    if (c) {
+      // Fixed: only drawn again when the range itself changed (other bars, hands or screen), never by the notes.
+      if (!this.chosenOn || c.lo !== this.window || c.hi - c.lo !== this.span) { this.useChosen(c); if (this.lastNotes) this.show(this.lastNotes); }
+      return;
+    }
+    if (this.chosenOn) { // (no longer chosen: Wait for me left, say) back to the strip's own keys
+      this.chosenOn = this.wide = false;
+      this.window = null;
+      this.span = FOLLOW_SPAN;
+      this.build();
+      if (this.lastNotes) this.show(this.lastNotes);
+    }
     const narrow = this.narrow() && this.song.to - this.song.from > FOLLOW_SPAN;
     if (!narrow) { if (this.window !== null) { this.window = null; this.span = FOLLOW_SPAN; this.build(); } return; }
     const need = now.length ? now : next;
@@ -173,7 +216,7 @@ export class UnderStrip {
         key.style.left = `calc(${(w / whiteCount) * 100}% - var(--black-w) / 2)`;
       } else {
         key.className = 'key white';
-        if (m % 12 === 0) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
+        if (m % 12 === 0 && this.names) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
         w++;
       }
       key.dataset.midi = String(m);
@@ -181,8 +224,11 @@ export class UnderStrip {
       this.keys.set(m, key);
     }
     this.keyboard.replaceChildren(whites);
-    // Black keys about 0.6 of a white key wide (the old app's 16 px on 26 px), whatever the range.
-    this.keyboard.style.setProperty('--black-w', `${60 / whiteCount}%`);
+    // Black keys about 0.6 of a white key wide (the old app's 16 px on 26 px), whatever the range. Chosen keys (a lesson
+    // step's, to be tapped: 2026-10-16) make them at least 30 px where the white keys allow, up to 0.85 of a white key:
+    // C4–E5 upright on a 360 px phone has white keys about 36 px, whose 0.6 is 21 px; the lesson plan asks for about 30
+    // px, and 0.85 still leaves a white key's top showing between two black keys.
+    this.keyboard.style.setProperty('--black-w', this.wide ? `max(${60 / whiteCount}%, min(30px, ${85 / whiteCount}%))` : `${60 / whiteCount}%`);
     this.setPressed(this.down);
   }
 
