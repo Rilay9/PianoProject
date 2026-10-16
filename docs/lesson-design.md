@@ -309,6 +309,12 @@ cards clean in one full set" at a stated help level, "a chain of 6 without help"
 A step with no measurable result (Free play, Watch) is *visited*, and the lesson says so; it is never presented as
 proof of a skill (§8c already words results this way).
 
+**Score the core skill only.** A lesson has one or two scored targets, on its main new skill. Material met for
+the first time is tried without a target and comes back for review, with a target, in a later lesson; extras are
+optional and unscored. Combine two new skills in one task (rhythm *and* which keys) only once each holds on its own
+(ChatGPT's review of lesson 2, 2026-10-16: six scored sets in a second lesson was the same overload as lesson 1's
+first plan).
+
 **Keep assisted and independent success apart.** A card or chain done with help, or right only on a retry, is
 practice, not a clean result; the app already keeps them apart (Drills: "right on a retry", helped cards not clean;
 Simon: a helped chain is "not a best", §3, §4). Lesson text and targets use the same distinction: the target sits
@@ -388,6 +394,11 @@ what's missing in the plan, and add capability only when this lesson needs it (`
   certifies itself.
 - **Every teaching claim has its source** (§0), and every technique instruction quotes or follows a method's own
   page. If a sentence in a lesson can't be traced, it is cut, narrowed, or marked UNKNOWN in the plan.
+- **Scope every musical statement to what is taught**, so nothing has to be unlearned: "in the 4/4 music we're
+  playing today, a quarter note gets one beat" (in 2/2 the half note does); "for now we keep the beat steady" (music
+  can speed up or slow down on purpose). An absolute is written only when it is always true.
+- **An instruction borrowed from acoustic practice must work on the app's input**: "let your tap cover the click"
+  needs a tap that sounds. Check what the app does before writing it.
 - **Free images and drawings are checked too**: a hand with the thumb on the wrong side, a black key in the wrong
   place, or a flat hand labelled "round" teaches a wrong thing.
 
@@ -395,12 +406,16 @@ what's missing in the plan, and add capability only when this lesson needs it (`
 
 ## 9. Checklist: run it on every lesson before the owner sees it
 
+Fix every fault the checklist finds before the owner or a reviewer sees the plan; a known fault is not an "open
+question" to hand on (owner, 2026-10-16: "You shouldn't be making the same mistakes. Be better.").
+
 1. **Outcome**: does the lesson say, at the top, what the learner can do by the end, as an action?
 2. **Order**: does its place follow a method's own order (read on the publisher's pages), or is a departure stated
    with its reason?
 3. **Prerequisites**: is each one taught in an earlier lesson, and are new names taught before the task that uses
    them?
-4. **Load**: one or two new ideas and one new physical skill at most, with most of the time spent practising?
+4. **Load**: one or two new ideas and one new physical skill at most, with most of the time spent practising? One
+   or two scored targets, on the core skill; new extras unscored?
 5. **Review**: does it open by using the last lesson's skill, and bring back an older one? (Not for the very first
    lesson.)
 6. **Sequence**: why → model (hear or see) → guided → independent → check → a little play, or a stated reason for
