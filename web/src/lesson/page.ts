@@ -70,7 +70,7 @@ export function createLessonPage(d: LessonDeps) {
   }
 
   /** The part to show next drawing (the result's Next: owner, 2026-10-16), applied once the page is drawn. */
-  let goTo: { after?: string; to: string } | null = null;
+  let goTo: { after?: string; to: string; card?: boolean } | null = null;
   let drawnLesson = ''; // the lesson whose page is drawn (not a result)
   function render(keepPlace = false): void {
     if (!lesson || !data) return;
@@ -89,14 +89,15 @@ export function createLessonPage(d: LessonDeps) {
     body.replaceChildren(column);
     body.scrollTop = keepPlace ? was : 0;
     drawnLesson = lesson.id;
-    if (goTo) { const g = goTo; requestAnimationFrame(() => { if (goTo === g) { goTo = null; showPart(g.after, g.to); } }); }
+    if (goTo) { const g = goTo; requestAnimationFrame(() => { if (goTo === g) { goTo = null; showPart(g.after, g.to, g.card); } }); }
     // The bottom bar: the next step not done, or the lesson done (and the next lesson, if there is one).
     if (state.next) {
       const go = button(`Start step ${state.nextNo} ▶`, 'btn main', () => void start(state.next!));
       go.id = 'lesson-next';
       setBar(`${state.done} of ${state.total} steps done`, [go]);
     } else {
-      const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), after = order[at + 1];
+      // The next lesson with steps to do (as the result's Next lesson was: wrapping round), else the next in order.
+      const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), todo = nextTodo(data, lesson.id), after = todo ? { lesson: todo } : order[at + 1];
       setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : []);
     }
   }
@@ -105,8 +106,10 @@ export function createLessonPage(d: LessonDeps) {
    * The lesson page scrolled to a part: what comes after step `after` (the text before the next step), or, with no
    * `after`, the text leading to step `to` (from the step before it). Drawn first if the page is not (a result shown).
    */
-  function showPart(after: string | undefined, to: string): void {
+  function showPart(after: string | undefined, to: string, atCard = false): void {
     const card = (id: string) => body.querySelector<HTMLElement>(`.les-step[data-step="${CSS.escape(id)}"]`);
+    // Back from a step's result (Lesson, ←): that step's card, a third of the way down, its text just above it.
+    if (atCard) { const c = card(to); if (c) body.scrollTop += c.getBoundingClientRect().top - body.getBoundingClientRect().top - body.clientHeight / 3; return; }
     let from: Element | null | undefined;
     if (after) from = card(after)?.nextElementSibling;
     else {
@@ -200,7 +203,7 @@ export function createLessonPage(d: LessonDeps) {
     // The step's state in honest words (review 2026-10-15, V18: a step with nothing to judge is "visited", not ✓).
     const state = s.pending.target
       ? (s.out.met ? `Target met${b.doneWhen ? ` (${b.doneWhen})` : ''}: step done ✓` : `Target${b.doneWhen ? ` (${b.doneWhen})` : ''} not met this time${done ? '; the step was done before' : ''}. You can try again or move on.`)
-      : s.out.met ? 'Played through: step done ✓ (it has no target to meet)'
+      : s.out.met ? (s.pending.activity.screen === 'score' ? 'Played through: step done ✓ (it has no target to meet)' : 'Played through: step done ✓ (not scored: the whole set played is what counts)')
       : s.out.runs ? `Not through yet: the step is tried, not done${done ? ' (it was done before)' : ''}. You can try again or move on.`
       : s.out.done ? 'Visited: nothing here is judged or kept' : 'Nothing was played, so nothing is marked. You can try again or move on.';
     card.append(el('div', 's', state));
@@ -242,7 +245,9 @@ export function createLessonPage(d: LessonDeps) {
     const nextStep = steps[no] ?? (firstLeft && firstLeft.id !== b.id ? firstLeft : undefined);
     const buttons = [button('Again', 'btn', () => void start(b)), button('Lesson', 'btn', () => d.back())];
     buttons[1].setAttribute('aria-label', 'Back to the lesson');
-    if (s.lessonDone && s.nextLesson) { const id = s.nextLesson; buttons.push(button('Next lesson ▶', 'btn main', () => d.back(() => d.openLesson(id)))); }
+    // The lesson's last step done: Next is the rest of this lesson first (Check yourself, If this happens), whose bottom
+    // bar then offers the next lesson (the review ledger, 2026-10-16, A3: Next lesson skipped them).
+    if (s.lessonDone) buttons.push(button('Next ▶', 'btn main', () => { goTo = { after: b.id, to: b.id }; d.back(); }));
     // Next is the lesson at the next part, not the next step's screen (owner, 2026-10-16, after ChatGPT's live review of
     // lesson 1: Next skipped the black-key map and the technique sections): the part after this step at the top, the
     // next step's Start below its text. After the lesson's last step (a step left earlier): that step's own part.
@@ -264,7 +269,7 @@ export function createLessonPage(d: LessonDeps) {
     /** Leaving the page: what plays stops, the result shown goes. */
     leave(): void { stopMiniScores(); shown = null; drawn++; },
     /** The result's place was taken off (←, Back): the lesson page again. */
-    closeResult(): void { shown = null; render(); },
+    closeResult(): void { if (shown && !goTo) goTo = { to: shown.pending.step, card: true }; shown = null; render(); }, // (Lesson or ←: back at the step's card, not the top: ChatGPT's review, A4)
     get lessonId() { return lesson?.id ?? ''; },
   };
 }

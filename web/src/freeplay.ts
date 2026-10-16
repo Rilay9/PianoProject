@@ -19,7 +19,7 @@ const TABLET_SPAN = 36; // three octaves: keys about 40 px wide on a tablet (all
 
 export class FreePlay {
   private readonly strip: UnderStrip;
-  private from = 48; // the lowest key shown (C3), span() keys on
+  private from = FROM_START; // the lowest key shown (C3), span() keys on
   private chosen: ChosenKeys | null = null; // an activity's keys, while it lasts
   private moved = 0; // octaves moved with ‹ › (or by a MIDI key) from the chosen keys
   private midiDown = new Set<number>();
@@ -103,6 +103,9 @@ export class FreePlay {
     this.lessonColumns = lesson && 'task' in lesson ? { chords: false, notes: false, intervals: false } : null; // (opened by a lesson's step)
     this.chosen = keys ?? null;
     this.moved = 0;
+    // A lesson's step opens in the middle (C3 up), not where you last left Free play: its task may say "higher, then
+    // lower" (ChatGPT's review, 2026-10-16, F5: left at the bottom, Find the groups opened with ‹ already off).
+    if (lesson && 'task' in lesson) this.from = FROM_START;
     this.midiDown = new Set(down);
     this.panel.hidden = false;
     this.drawKeys();
@@ -252,6 +255,7 @@ const NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A�
 const keyName = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
 
 const TOGETHER_MS = 80; // keys pressed this close (all still down) are one line: a hand's chord lands within a few tens of ms, and a quick melody's notes are further apart
+const FROM_START = 48; // C3: the keys start there (two octaves on a phone, three on a tablet)
 const KEEP = 30; // more than any screen shows; older ones scroll off
 
 /**

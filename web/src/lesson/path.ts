@@ -78,7 +78,7 @@ export function stepStates(l: Lesson): Map<string, { mark: string; words: string
   const next = lessonState(l).next;
   steps.forEach((s, i) => {
     const later = steps.slice(i + 1).some((x) => done[x.id] || tried[x.id]);
-    const w = stepWords(done[s.id], tried[s.id], later);
+    const w = stepWords(done[s.id], tried[s.id], later, !!s.target);
     out.set(s.id, s === next && !tried[s.id] ? { mark: '▶', words: later ? 'skipped: up next' : 'up next', cls: 'next' } : { ...w, cls: `${w.cls}${s === next ? ' next' : ''}`.trim(), at: done[s.id]?.at ?? tried[s.id] });
   });
   return out;

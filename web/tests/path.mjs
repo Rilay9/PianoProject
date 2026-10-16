@@ -7,7 +7,7 @@ import { readActivity } from '../src/activity.ts';
 import * as read from '../src/lesson/read.ts';
 const { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } = read;
 import { readText } from '../src/lesson/text.ts';
-import { meets, outcome } from '../src/lesson/result.ts';
+import { meets, outcome, playedAsSet } from '../src/lesson/result.ts';
 import { readPlay } from '../src/exercise/items.ts';
 import { namedPieces } from './named-pieces.mjs';
 
@@ -222,7 +222,32 @@ ok('lab cleanRounds 1: rounds of a looped bar (bars "1-1" on the entry), all ok,
   !meets(E('lab', { rounds: [{ bars: '1:ok' }, { bars: '1:ok' }, { bars: '1:ok' }] }, { bars: '1-1' }), { cleanRounds: 1 })
   && meets(E('lab', { rounds: [{ bars: '1:ok 2:ok' }] }), { cleanRounds: 1 }));
 ok('done: with a target only when met; without one, any run; no run: not done', outcome([E('drills', { clean: 2, of: 5 })], drills, { clean: 4 }, true).done === false
-  && outcome([E('drills', { clean: 2, of: 5 })], drills, undefined, true).done === true && outcome([], drills, undefined, true).done === false);
+  && outcome([E('drills', { clean: 2, of: 5, ended: 'set done' })], drills, undefined, true).done === true && outcome([], drills, undefined, true).done === false);
+// Owner, 2026-10-16: a Drills step with no target (an introduction) is done when its whole set is played through, any
+// result (one card "how do they learn anything from that?"); a set left part way is tried, not played through (F6).
+ok('done without a target: a Drills set played through (0 clean) is done; one left after a card is not',
+  outcome([E('drills', { clean: 0, of: 5, ended: 'set done' })], drills, undefined, true).done === true
+  && outcome([E('drills', { clean: 0, of: 1, ended: 'left' })], drills, undefined, true).done === false);
+// Owner, 2026-10-16 (after the same review, F2): a target counts only runs played as the step sets them: its set, its help
+// level or a harder one, its number of cards, its timing or a stricter one; tempo free. Others are practice, said so.
+{
+  const step = { id: 'r', title: 'r', screen: 'drills', set: 'rh', level: { rung: 3, cards: 5, onTime: 'relaxed' } };
+  const run = (settings, set = 'rh') => E('drills', { clean: 5, of: 5, ended: 'set done', missesAgain: false }, { set, settings });
+  const as = { rung: 3, cards: 5, onTime: 'relaxed', bpm: 72 };
+  const cases = [
+    ['as set', run(as), true, ''], ['stricter timing, another tempo', run({ ...as, onTime: 'strict', bpm: 60 }), true, ''],
+    ['another set', run(as, 'other'), false, 'another set'], ['an easier help level (music and sound)', run({ ...as, rung: 2 }), false, 'another help level'],
+    ['more cards', run({ ...as, cards: 10 }), false, 'another number of cards'], ['notes only', run({ ...as, onTime: 'notes' }), false, 'more lenient timing'],
+  ];
+  for (const [what, e, met, why] of cases) {
+    const o = outcome([e], step, { clean: 4 }, true);
+    ok(`a target counts runs played as the step sets them: ${what} → ${met ? 'met' : `not met (${why})`}`, o.met === met && (met || o.line.includes(`played with ${why}: practice`)) && playedAsSet(e, step) === why, JSON.stringify({ o, why: playedAsSet(e, step) }));
+  }
+  const simonStep = { id: 's', title: 's', screen: 'simon', set: 'bk', level: { rung: 0, match: 'same' } };
+  const sRun = (rung) => E('simon', { longestChain: 3, ended: 'goal' }, { set: 'bk', settings: { rung, match: 'same' } });
+  ok('a Simon step at keys-and-sound (0): a chain of 3 at 0 or by ear (5) counts; with music shown (1) is another help level',
+    outcome([sRun(0)], simonStep, { chain: 3 }, true).met && outcome([sRun(5)], simonStep, { chain: 3 }, true).met && !outcome([sRun(1)], simonStep, { chain: 3 }, true).met);
+}
 // Owner, 2026-10-15 (Q5): a score step with no target counts only a run in the step's own mode that reached the end
 // of its bars (Wait for me: round its loop; the timed modes: a pass round the loop, or the piece's last note).
 {

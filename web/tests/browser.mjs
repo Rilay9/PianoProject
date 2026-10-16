@@ -201,9 +201,20 @@ try {
       const D = window.__pianoDebug;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       let d = null;
-      for (let i = 0; i < 1500; i++) { d = D.drill(); if ((d.state === 'countin' && d.now < -300) || (d.state === 'turn' && !d.started)) break; await sleep(10); }
-      if (!(d.state === 'countin' || d.state === 'turn')) return { error: `never your turn: ${d.state}` };
       const r = document.getElementById('ex-pad').getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      // Music only, counted in: the card waits to be read (owner, 2026-10-16); still waiting after 1.2 s, a tap counts it in.
+      let readWaited = null;
+      for (let i = 0; i < 1500; i++) {
+        d = D.drill();
+        if (d.state === 'read' && readWaited === null) {
+          await sleep(1200); readWaited = D.drill().state === 'read';
+          for (const type of ['pointerdown', 'pointerup']) document.elementFromPoint(x, y).dispatchEvent(new PointerEvent(type, { pointerId: 19, bubbles: true, cancelable: true, clientX: x, clientY: y, pointerType: 'touch', isPrimary: true }));
+          continue;
+        }
+        if ((d.state === 'countin' && d.now < -300) || (d.state === 'turn' && !d.started)) break;
+        await sleep(10);
+      }
+      if (!(d.state === 'countin' || d.state === 'turn')) return { error: `never your turn: ${d.state}` };
       const zero = performance.now() - d.now; // performance.now() when the card's clock reads 0
       const fire = (type, id) => { const el = document.elementFromPoint(x, y); el.dispatchEvent(new PointerEvent(type, { pointerId: id, bubbles: true, cancelable: true, clientX: x, clientY: y, pointerType: 'touch', isPrimary: true })); return el.closest('#ex-pad') ? 'pad' : el.id || el.tagName; };
       const hit = [], sounded = [];
@@ -218,7 +229,7 @@ try {
       })));
       let status = '';
       for (let i = 0; i < 300; i++) { status = document.getElementById('ex-status').textContent; if (/✓|Not quite/.test(status)) break; await sleep(20); }
-      return { hit, sounded, notes: d.steps.length, heardDelay: d.heardDelay, status, sub: document.getElementById('ex-sub').textContent };
+      return { hit, sounded, readWaited, notes: d.steps.length, heardDelay: d.heardDelay, status, sub: document.getElementById('ex-sub').textContent };
     }, { shiftIndex, shiftMs, after });
     /** Staff lines in the drawn card: horizontal strokes across most of it, by height (one line: 1). */
     const staffLines = (page) => page.evaluate(() => {
@@ -248,6 +259,7 @@ try {
       await page.touchscreen.tap(...await centre(page, 'ex-start'));
       const clean = await tapCard(page);
       ok('rhythm, rung 3 (read): a card tapped by position on the beat, holding the halves, comes out clean', !clean.error && clean.hit.every((h) => h === 'pad') && /✓ Clean/.test(clean.status), JSON.stringify(clean));
+      ok('rhythm, rung 3 (read): the card waits to be read (still waiting after 1.2 s), and a tap on the pad starts its count-in (not a note)', clean.readWaited === true && clean.notes === clean.hit.length, JSON.stringify({ readWaited: clean.readWaited, notes: clean.notes, taps: clean.hit.length }));
       ok('rhythm: every tap on the pad scheduled its tap sound at once (ms from pointerdown to the sound asked for)', clean.sounded?.length === clean.notes && clean.sounded.every((x) => x !== null && x >= 0 && x < 20), JSON.stringify(clean.sounded));
       await page.waitForTimeout(200);
       const lines = await staffLines(page);
@@ -1197,6 +1209,8 @@ try {
         `${card.length} notes; behind the panel "${behind}"; after closing ${JSON.stringify(after)}`);
       await page.selectOption('#ex-set', 'scales-up'); await wait(page, 300);
       await chord(page, [60]);
+      // (music only with a count-in: the card waits to be read, and a key counts it in: owner, 2026-10-16)
+      if (await until(page, async () => (await d()).state === 'read', 3000)) await chord(page, [60]);
       const running = await until(page, async () => { const x = await d(); return x.state === 'turn' && x.started; }, 10000);
       await press(page, '#ex-level'); await wait(page, 150);
       const t = await d();
@@ -1550,7 +1564,8 @@ try {
       const after = await where(page);
       const tag = `${vp.width}×${vp.height}`;
       ok(`V18 ${tag}: a step with nothing to judge is "visited" (and counts), not "done ✓"`, state?.how === 'opened' && /visited/i.test(text) && !/done ✓/.test(text), `"${text}" ${JSON.stringify(state)}`);
-      ok(`V17 ${tag}: the lesson's last step says the lesson is done and offers the next lesson`, /lesson done/i.test(text) && inView.some((t) => /Next lesson/.test(t)), `"${text}"; in view ${JSON.stringify(inView)}`);
+      // (2026-10-16, the review ledger A3: Next is the rest of this lesson first, whose bar then offers the next lesson)
+      ok(`V17 ${tag}: the lesson's last step says the lesson is done, and Next is in view`, /lesson done/i.test(text) && inView.some((t) => /^Next/.test(t)), `"${text}"; in view ${JSON.stringify(inView)}`);
       ok(`V28 ${tag}: Again and the way on are in view without scrolling`, inView.some((t) => /Again/.test(t)) && inView.some((t) => /Next/.test(t)), JSON.stringify(inView));
       ok(`V12 ${tag}: Back from the result is the lesson page`, after.view === 'v-lesson' && after.nav.join() === 'lesson' && !(await page.evaluate(() => !!document.querySelector('.les-result'))), JSON.stringify(after));
       ok(`after-step ${tag}: no page errors`, errors.length === 0, errors.join(' | '));
@@ -1717,6 +1732,7 @@ try {
       await page.goto(`${BASE}?page=lesson&lesson=test-chords-and-band`); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       await click(page, '#fp-done'); await page.waitForTimeout(600);
+      await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1500); // (the rest of the lesson first: A3)
       await page.locator('#lesson-bar button', { hasText: 'Next lesson' }).click(); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="wait-rh"] .btn').click(); await page.waitForTimeout(2500);
       await reloadCheck('Next lesson, then Start');
@@ -3636,6 +3652,59 @@ try {
     const end = await play();
     ok('lesson 1 Simon: copied to a chain of 3, the game ends: "You did it"', /You did it: a pattern of 3/.test(end.status), JSON.stringify(end));
     ok('lesson steps after the reviews: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+  // ChatGPT's review of lessons 1 and 2 (2026-10-16): F5, a lesson's Free play opens in the middle, not where Free play was
+  // left (at ChatGPT's own window size, where lesson 1's keys are not chosen); F4, a card's missed notes grey with a key.
+  {
+    const ctx = await learnerContext({ viewport: { width: 1363, height: 936 }, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="first-sounds"] .btn').click(); await page.waitForTimeout(1500);
+    for (let i = 0; i < 8; i++) { if (await page.evaluate(() => document.getElementById('fp-down').disabled)) break; await page.evaluate(() => document.getElementById('fp-down').click()); await page.waitForTimeout(150); }
+    const bottom = await page.evaluate(() => document.getElementById('fp-down').disabled);
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="find-groups"] .btn').click(); await page.waitForTimeout(1500);
+    const next = await page.evaluate(() => ({ down: !document.getElementById('fp-down').disabled, up: !document.getElementById('fp-up').disabled }));
+    ok('F5: left at the bottom of Free play, the next lesson step opens in the middle (both ‹ and › free)', bottom && next.down && next.up, JSON.stringify({ bottom, next }));
+    // a reading card with nothing played: its notes grey (not green), and the key under it says so
+    await page.goto(`${BASE}?page=lesson&lesson=r1-the-beat`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="read-then-tap"] .btn').click(); await page.waitForTimeout(2000);
+    if (await page.evaluate(() => !document.getElementById('ex-calib')?.hidden)) await page.evaluate(() => document.getElementById('ex-calib-no').click());
+    await page.evaluate(() => document.getElementById('ex-start').click()); await page.waitForTimeout(1500);
+    const reading = await page.evaluate(() => ({ state: window.__pianoDebug.drill().state, status: document.getElementById('ex-status').textContent, staff: !!document.querySelector('#ex-notation svg') }));
+    await page.evaluate(() => document.getElementById('ex-start').click()); // Count in
+    let res = null;
+    for (let i = 0; i < 120; i++) { res = await page.evaluate(() => ({ status: document.getElementById('ex-status').textContent, legend: document.getElementById('ex-legend').hidden ? '' : document.getElementById('ex-legend').textContent, grey: document.querySelectorAll('#ex-notation svg [fill="#6b7280"]').length, green: document.querySelectorAll('#ex-notation svg [fill="#16a34a"]').length })); if (/Not quite|✓/.test(res.status)) break; await page.waitForTimeout(250); }
+    ok('F1: a reading card is shown and waits ("Read it", the staff drawn) until Count in', reading.state === 'read' && /Read it/.test(reading.status) && reading.staff, JSON.stringify(reading));
+    ok('F4: a card with nothing played: its notes grey, none green, and the key under it says "grey: missed"', res.grey > 0 && res.green === 0 && /grey: missed/.test(res.legend), JSON.stringify(res));
+    ok('F1/F4/F5: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  }
+  // The review ledger (2026-10-16): A4, Lesson from a step's result comes back at that step's card, not the page's top; A3,
+  // after the lesson's last step, Next is the rest of the lesson (Check yourself) with Next lesson in its bar.
+  {
+    const ctx = await learnerContext({ viewport: { width: 360, height: 780 }, hasTouch: true, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    const cardTop = (id) => page.evaluate((id) => { const c = document.querySelector(`.les-step[data-step="${id}"]`); return c ? Math.round(c.getBoundingClientRect().top) : null; }, id);
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="find-groups"] .btn').click(); await page.waitForTimeout(1200);
+    await page.evaluate(() => document.getElementById('fp-done').click()); await page.waitForTimeout(800);
+    await page.locator('#lesson-bar button', { hasText: 'Lesson' }).click(); await page.waitForTimeout(1200);
+    const back = { top: await cardTop('find-groups'), scrolled: await page.evaluate(() => document.getElementById('lesson-body').scrollTop) };
+    ok('A4: Lesson from a step’s result: the lesson page at that step’s card (in view), not the top', back.scrolled > 0 && back.top !== null && back.top > 0 && back.top < 700, JSON.stringify(back));
+    // the last step, with the others done: Next goes to the rest of the lesson, whose bar offers the next lesson
+    await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-first-sounds', done: { 'r1-first-sounds': { 'first-sounds': { at, how: 'opened' }, 'find-groups': { at, how: 'opened' }, copy: { at, how: 'target' } } }, tried: {} })); });
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="make-a-tune"] .btn').click(); await page.waitForTimeout(1200);
+    await page.evaluate(() => document.getElementById('fp-done').click()); await page.waitForTimeout(800);
+    const done = await page.evaluate(() => document.getElementById('lesson-body').innerText);
+    await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1200);
+    const rest = await page.evaluate(() => { const h = [...document.querySelectorAll('#lesson-body h1, #lesson-body h2, #lesson-body h3')].find((x) => /Check yourself/.test(x.textContent)); const top = h ? Math.round(h.getBoundingClientRect().top - document.getElementById('lesson-body').getBoundingClientRect().top) : null; return { top, bar: [...document.querySelectorAll('#lesson-bar button')].map((b) => b.textContent.trim()) }; });
+    ok('A3: after the lesson’s last step, Next shows the rest of the lesson (Check yourself near the top) and its bar offers Next lesson', /Lesson done/.test(done) && rest.top !== null && rest.top >= 0 && rest.top < 120 && rest.bar.some((t) => /Next lesson/.test(t)), JSON.stringify(rest));
+    ok('A3/A4: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
   }

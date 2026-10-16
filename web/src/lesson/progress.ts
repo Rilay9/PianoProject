@@ -46,10 +46,11 @@ export function currentLesson(): string | undefined { return read().current; }
 export function setCurrentLesson(id: string): void { const s = read(); s.current = id; write(s); }
 
 /** A step's state in words: done (and how), tried, skipped (a later step was played, this one not), next, or to come. */
-export function stepWords(d: Done | undefined, tried: string | undefined, skipped: boolean): { mark: string; words: string; cls: string } {
+export function stepWords(d: Done | undefined, tried: string | undefined, skipped: boolean, hasTarget = true): { mark: string; words: string; cls: string } {
   // (review 2026-10-15, V18: a step with nothing to judge, Free play or Watch, is "visited": it counts, without a ✓)
   if (d) return d.how === 'opened' ? { mark: '•', cls: 'done visited', words: 'visited' } : { mark: '✓', cls: 'done', words: d.how === 'target' ? 'target met' : 'played through' };
-  if (tried) return { mark: '◐', cls: 'tried', words: 'tried, target not met yet' };
+  // (a step with no target is "not through yet", not "target not met": the review ledger, 2026-10-16, C18)
+  if (tried) return { mark: '◐', cls: 'tried', words: hasTarget ? 'tried, target not met yet' : 'tried, not through yet' };
   if (skipped) return { mark: '–', cls: 'skipped', words: 'skipped' };
   return { mark: '○', cls: '', words: 'to come' };
 }

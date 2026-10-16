@@ -43,7 +43,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   // Drills (owner, 2026-10-12): flashcards on the same screen, from the same sets.
   const drill = new Drill({
     set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
-    status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
+    status: $('ex-status'), sub: $('ex-sub'), legend: $('ex-legend'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
     after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
     finish: $<HTMLButtonElement>('ex-finish'),
   }, exerciseKeys, exerciseNotation, sound, pad);
@@ -57,6 +57,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   // hidden (owner, 2026-10-15).
   drill.noKeyboard = () => !inputs.length && $('ex-keyboard').classList.contains('off') && $('ex-pad').hidden === true;
   simon.noKeys = drill.noKeyboard;
+  drill.hasKeyboard = () => inputs.length > 0;
   const devicesBefore = midi.onDevices;
   midi.onDevices = (names) => {
     devicesBefore(names);
@@ -247,7 +248,8 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   }
   drillDialog.addEventListener('change', (e) => {
     const r = e.target as HTMLInputElement;
-    if (r.name === 'd-rung') drill.setLevel({ rung: Number(r.value) as Rung });
+    // (another help level: the step's task, written for its own level, goes: ChatGPT's review, 2026-10-16)
+    if (r.name === 'd-rung') { $('ex-task').hidden = true; drill.setLevel({ rung: Number(r.value) as Rung }); }
     else if (r.name === 'd-start') drill.setLevel({ start: r.value as DrillLevel['start'] });
     else if (r.name === 'd-metronome') drill.setLevel({ metronome: r.value === 'on' });
     else if (r.name === 'd-onTime') drill.setLevel({ onTime: r.value as DrillLevel['onTime'] });
@@ -270,7 +272,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   });
   levelDialog.addEventListener('change', (e) => {
     const r = e.target as HTMLInputElement;
-    if (r.name === 'ex-rung') simon.setLevel({ rung: Number(r.value) as Rung });
+    if (r.name === 'ex-rung') { $('ex-task').hidden = true; simon.setLevel({ rung: Number(r.value) as Rung }); }
     else if (r.name === 'ex-match') simon.setLevel({ match: r.value as SimonLevel['match'] });
     else if (r.name === 'ex-miss') simon.setLevel({ miss: r.value as SimonLevel['miss'] });
     else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });

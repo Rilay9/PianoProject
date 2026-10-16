@@ -54,7 +54,8 @@ const RESULT_SETTLE_MS = 800; // a key or tap this soon after a card's result is
 const CLEAN_NEXT_MS = 1200; // a clean card's ✓ on show before the next card
 const HINT_MS = 8000; // notes only: nothing played this long, and the next notes light (owner, 2026-10-13: longer than 3 s, so a slow reader can still read)
 const DEMO_GAP_MS = 600; // after it plays the card, before your turn
-const MISSED = '#16a34a', OFF_TIME = '#d97706';
+// Missed notes grey, not green (owner, 2026-10-16, after ChatGPT's review: green read as right), with a one-line key.
+const MISSED = '#6b7280', OFF_TIME = '#d97706';
 // (Ready, with nothing to play on: no MIDI keyboard and no keys on the screen, whose taps play cards too; owner,
 // 2026-10-15: the earlier "Cards are judged from a MIDI keyboard" was false. Simon says the same: exercise/simon.ts.)
 export const NO_KEYBOARD = NO_KEYS;
@@ -68,6 +69,8 @@ export interface DrillParts {
   after: HTMLElement; again: HTMLButtonElement; next: HTMLButtonElement; misses: HTMLButtonElement; fresh: HTMLButtonElement;
   /** Endless sets: ends the set and shows the results. */
   finish: HTMLButtonElement;
+  /** The one-line key to a card's marks (grey missed, orange early / late / let go early). */
+  legend?: HTMLElement;
 }
 
 /** A card ready to play: its notes in order with when they are due (ms from the card's start) and how long they last. */
@@ -89,7 +92,7 @@ type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean
 type Press = PlayedKey & { key: number };
 /** The key that started the set or the next card (owner, 2026-10-16): the card's first note when the card waits for one. */
 type StartKey = { midi: number; time: number; input: TapInput };
-type State = 'idle' | 'demo' | 'countin' | 'turn' | 'result' | 'done';
+type State = 'idle' | 'demo' | 'read' | 'countin' | 'turn' | 'result' | 'done';
 
 export class Drill {
   private sets: ItemSet[] = [];
@@ -123,6 +126,10 @@ export class Drill {
   keysShown: () => boolean = () => true;
   /** Nothing to play on: no MIDI keyboard connected and no keys on the screen (Ready says so: F17; owner, 2026-10-15). */
   noKeyboard: () => boolean = () => false;
+  /** A MIDI keyboard is connected: the lines say its keys start and go on too (owner, 2026-10-16: hands stay on the keys). */
+  hasKeyboard: () => boolean = () => false;
+  /** What starts or goes on, in the words for what is on hand: the pad, a key, both. */
+  private go(): string { return this.rhythmNow ? (this.hasKeyboard() ? 'tap the pad, play a key' : 'tap the pad') : 'play a key'; }
   /** Ready's line again (a keyboard came, or the keys were shown or hidden). */
   readyLine(): void {
     if (!this.on || this.state !== 'idle') return;
@@ -134,7 +141,7 @@ export class Drill {
 
   constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound, private readonly pad: PadLight | null = null) {
     this.stored = this.read();
-    ui.start.addEventListener('click', () => { if (this.on) void this.begin(); });
+    ui.start.addEventListener('click', () => { if (!this.on) return; if (this.state === 'read') { this.countIn(); return; } void this.begin(); });
     ui.help.addEventListener('click', () => { if (this.on) this.help(); });
     ui.set.addEventListener('change', () => { if (this.on) this.chooseSet(ui.set.value); });
     ui.again.addEventListener('click', () => { if (this.on && this.card) { this.retrying = true; void this.playCard(this.card.item); } });
@@ -232,11 +239,12 @@ export class Drill {
     this.results = [];
     this.keys.clearMarks();
     this.notation.clear();
+    this.legend('');
     this.ui.name.textContent = 'Ready';
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
     const best = this.stored.best[this.bestKey()];
-    this.status(this.noKeyboard() ? NO_KEYBOARD : '', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · ${this.rhythmNow ? 'tap the pad or press Start' : 'press Start or play a key'}`, this.noKeyboard() ? 'bad' : '');
+    this.status(this.noKeyboard() ? NO_KEYBOARD : '', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · ${this.go()} or press Start`, this.noKeyboard() ? 'bad' : '');
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = false;
     this.ui.help.hidden = true;
@@ -305,10 +313,11 @@ export class Drill {
     const key = this.bestKey(), best = this.stored.best[key];
     // Bests from full sets only (docs §4): not a set stopped early (a mash, Finish) or endless, nor the misses again.
     const full = !this.redo && Number.isFinite(this.limit) && of >= this.limit;
-    const newBest = full && (!best || clean > best.clean);
+    const newBest = full && clean > 0 && (!best || clean > best.clean); // (0 clean is no best to cheer: ChatGPT's review, 2026-10-16)
     this.logSet(true, full);
     if (newBest) { this.stored.best[key] = { clean, of }; this.save(); }
     this.notation.clear();
+    this.legend('');
     this.keys.clearMarks();
     this.ui.name.textContent = '';
     this.ui.chain.replaceChildren(...this.results.map((r, i) => Object.assign(document.createElement('div'), {
@@ -374,6 +383,7 @@ export class Drill {
     this.keys.clearMarks();
     this.ui.after.hidden = true;
     this.ui.chain.replaceChildren();
+    this.legend('');
     this.state = 'demo'; // the counter counts this card from now; keys wait until it is your turn (turn() or the demo below)
     this.scoreLine();
     await this.drawCard(withMusic(rung));
@@ -383,7 +393,24 @@ export class Drill {
     this.ui.help.hidden = false;
     this.ui.help.textContent = rung === 4 ? 'Show me' : 'Hear it';
     if (rung <= 2 || rung === 5) { this.demo(rung === 5 ? 'Then play it back' : ''); return; } // (a key that brought it started the demo)
+    // Music only, counted in: the card waits to be read at your own pace; a key, a tap or Start begins its count-in (owner,
+    // 2026-10-16, after ChatGPT's review of lesson 2: the count-in started at once, about 3 s to read two bars).
+    if (rung === 3 && card.timed && this.level.start !== 'first') { this.showToRead(); return; }
     this.turn(first);
+  }
+
+  /** The card shown, waiting: read it, then a key (not a note), a tap or Start counts it in. */
+  private showToRead(): void {
+    this.state = 'read';
+    this.scoreLine();
+    this.status('Read it', `Count it through, then ${this.go()} or press Count in`);
+    this.ui.start.textContent = 'Count in';
+    this.ui.start.hidden = false;
+  }
+  private countIn(): void {
+    if (this.state !== 'read') return;
+    this.ui.start.hidden = true;
+    this.turn();
   }
 
   /** It plays the card to you, then it is your turn. */
@@ -433,7 +460,8 @@ export class Drill {
 
   /** Show me (name only: the music) or Hear it (the card played), noted as help; never once the card's clock runs. */
   private help(): void {
-    if (!this.card || !(this.state === 'turn' || this.state === 'demo' || this.state === 'countin') || this.started) return;
+    if (!this.card || !(this.state === 'turn' || this.state === 'demo' || this.state === 'countin' || this.state === 'read') || this.started) return;
+    this.ui.start.hidden = true; // (from reading: the card is played, then its count-in)
     this.helped = true;
     if (this.level.rung === 4) { void this.drawCard(true); return; }
     // During the count-in: it stops, the card is played, then the count-in starts again.
@@ -588,6 +616,7 @@ export class Drill {
     if (!this.on || !down) return;
     const songT = () => this.sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time)) - this.lag(input);
     if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle' && !dialogOpen()) void this.begin(undefined, { midi, time, input }); return; }
+    if (this.state === 'read') { if (!dialogOpen()) this.countIn(); return; } // (the key starts the count-in; it is not a note)
     // A card's result: the key goes on to the next card (and is its first note, if it waits for one): never swallowed.
     // (not in the first moment of the result: a finger still tapping the card's last beat would skip what it says)
     if (this.state === 'result') { if (!dialogOpen() && this.card && time - this.resultAt >= RESULT_SETTLE_MS && (this.ui.after.hidden || !this.ui.next.hidden)) this.nextCard({ midi, time, input }); return; }
@@ -677,6 +706,8 @@ export class Drill {
     else this.results.push(result);
     // The music (also for name and ear cards: now you see what it was); at "keys, no music" none: the keys say it.
     void this.drawCard(this.level.rung !== 0, marks);
+    const kinds = new Set(Object.values(marks));
+    this.legend(this.level.rung === 0 ? '' : [kinds.has(MISSED) ? 'grey: missed' : '', kinds.has(OFF_TIME) ? 'orange: early, late or let go early' : ''].filter(Boolean).join(' · '));
     this.ui.name.textContent = this.level.rung >= 4 && !c.rhythm ? c.item.name : ''; // (a rhythm card's name is its pattern written short: for the log)
     this.ui.name.className = 'ex-name small';
     this.keys.light([]);
@@ -689,7 +720,7 @@ export class Drill {
       this.later(CLEAN_NEXT_MS, () => { if (this.card === card && this.state === 'result') this.nextCard(); });
       return;
     }
-    this.status('Not quite', `${text} · ${c.rhythm ? 'a tap' : 'a key'} goes on to the next card`, 'bad');
+    this.status('Not quite', `${text} · ${this.rhythmNow ? (this.hasKeyboard() ? 'a tap or a key' : 'a tap') : 'a key'} goes on to the next card`, 'bad');
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = false;
     this.ui.next.textContent = 'Next';
@@ -708,10 +739,11 @@ export class Drill {
     }
     if (c === 'low') {
       if (this.state === 'result' && !this.ui.after.hidden && this.card) { this.retrying = true; void this.playCard(this.card.item); }
-      else if (this.state === 'turn' || this.state === 'demo' || this.state === 'countin') this.help();
+      else if (this.state === 'turn' || this.state === 'demo' || this.state === 'countin' || this.state === 'read') this.help();
       return;
     }
     if (this.state === 'idle' || this.state === 'done') void this.begin();
+    else if (this.state === 'read') this.countIn();
     else if (this.state === 'result' && !this.ui.after.hidden) this.nextCard();
     else if (this.state === 'turn' && !this.card?.timed) this.skip();
   }
@@ -723,6 +755,7 @@ export class Drill {
     return true;
   }
 
+  private legend(text: string): void { if (this.ui.legend) { this.ui.legend.textContent = text; this.ui.legend.hidden = !text; } }
   private status(text: string, sub: string, kind: '' | 'ok' | 'bad' = ''): void {
     this.ui.status.textContent = text;
     this.ui.status.className = `ex-status${kind ? ` ${kind}` : ''}`;
@@ -731,7 +764,7 @@ export class Drill {
 
   private scoreLine(): void {
     const n = this.limit < Infinity ? this.limit : this.level.cards;
-    const at = this.results.length + (this.state === 'demo' || this.state === 'countin' || this.state === 'turn' ? 1 : 0);
+    const at = this.results.length + (this.state === 'demo' || this.state === 'read' || this.state === 'countin' || this.state === 'turn' ? 1 : 0);
     this.ui.left.innerHTML = n ? `Card <b>${at}</b> of ${n}` : `Card <b>${at}</b>`;
     this.ui.mid.innerHTML = `<b>${this.results.filter((r) => r.clean).length}</b> clean`;
     const names = this.rhythmNow ? PAD_RUNG_NAMES : RUNG_NAMES;

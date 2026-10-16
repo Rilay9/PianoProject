@@ -145,6 +145,8 @@ body.keys-play .bar.bottom { bottom: var(--under-h, 0px); padding-bottom: 6px; }
 .fp-head { display: flex; align-items: center; gap: 8px; padding: max(8px, env(safe-area-inset-top)) 16px 8px; background: var(--bar-bg); color: var(--bar-fg); border-bottom: 1px solid var(--bar-line); }
 .fp-chord { margin: 12px 16px 4px; text-align: center; font-size: 2.4rem; font-weight: 700; min-height: 1.3em; }
 /* A lesson step's task where "Play something" was (2026-10-16): a sentence, so reading size, not a chord name's. */
+.ex-legend { margin: 2px 0 0; font-size: 0.85rem; color: var(--muted); }
+.ex-legend[hidden] { display: none; }
 .ex-task { margin: 6px 12px 0; text-align: center; font-size: 0.95rem; font-weight: 600; line-height: 1.35; }
 .ex-task[hidden] { display: none; }
 .fp-task { margin: 12px auto 0; padding: 0 16px; text-align: center; font-size: 1.05rem; font-weight: 600; line-height: 1.35; max-width: 34em; }

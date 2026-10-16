@@ -399,7 +399,13 @@ no music is drawn, not even with the result, where the keys show the wrong keys 
 no note name is shown: a card's slips are counted ("2 notes early"), the set's results are numbered without names, and
 the keys have no octave labels; 1–2: it plays the card first; 4: the name only, and any
 octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
-your first note (by ear: always your first note); the metronome can keep clicking. Cards are judged:
+your first note (by ear: always your first note); the metronome can keep clicking. **At music only (3) with a count-in,
+the card is shown and waits** (owner, 2026-10-16, after ChatGPT's review of lesson 2: it counted in at once, about 3 s
+to read two bars): "Read it", then a key, a pad tap or *Count in* starts the count-in (that key is not a note); *Hear it*
+there plays the card first (help). After a card, missed notes are **grey** and early, late or let-go-early notes orange,
+with a one-line key under the card ("grey: missed · orange: early, late or let go early"; owner, 2026-10-16: green read
+as right). A set with no clean card is never called a new best. With a MIDI keyboard connected the lines say a key
+starts and goes on too ("tap the pad, play a key or press Start"; owner, 2026-10-16: hands stay on the keys). Cards are judged:
 - **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time and held / let go
   early / early / late / missed, wrong keys; *On time* relaxed / normal / strict);
 - **without** (notes, chords, intervals): as the set says — the right notes in order, or steady beats of a given
@@ -495,7 +501,10 @@ keys shown (§8b `keys`: e.g. C4–E5 upright, so the black keys are about 30 px
 keys an octave at a time. **Opened by a lesson's step** (owner, 2026-10-16, after ChatGPT's live review of lesson 1: the screen said only "Play
 something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows on its own line above,
 kept in view while keys are held, and the three columns start hidden; Show turns them on for that visit only (your own
-Free play keeps its columns, `piano-web.freeplay.v1`). An activity's `names: false` hides note names (§8b). Simon and
+Free play keeps its columns, `piano-web.freeplay.v1`), and it opens in the middle (from C3), not where you last left Free play
+(ChatGPT's review, F5: left at the bottom, a step asking for higher and lower opened with ‹ off). An activity's `names:
+false` hides note names (§8b). The task line on Simon and Drills goes when you change the help level (it is written
+for the step's own). Simon and
 Drills opened by a step show its `about` above the music too, until another set is chosen (owner, 2026-10-16). A step's
 `about` is therefore written as the task to do on that screen.
 
@@ -1627,8 +1636,13 @@ target not met yet*; *skipped* when a later step was played; review 2026-10-15):
   or endless; owner, 2026-10-15), simon `chain` (a chain that long played whole without help: Simon's own best), lab
   `cleanRounds` (accompaniment rounds with every bar right in one run, over the whole chart: a run that looped bars is
   practice and never counts, as the lab says; final review F07). A target its screen cannot judge (Memorise, Free play)
-  is refused;
-- without a target, when a run of it ended (one log entry: a set, a game, a Memorise session). A **score** step counts
+  is refused. **A run counts toward a target only when played as the step sets it** (owner, 2026-10-16, after ChatGPT's
+  review of lessons 1 and 2, F2; `result.ts` `playedAsSet`): Drills and Simon steps need the step's set, its help level or
+  a harder one (from 0, also 5; from 1, also 2–3; from 2, also 3; else the same), Drills its number of cards and its
+  timing or a stricter one (tempo free), Simon `match: same` when the step says same. Other runs stay in the log as
+  practice; the result says "played with another help level: practice, not counted for the target";
+- without a target, when a run of it ended (one log entry: a set, a game, a Memorise session; a Drills set only when
+  played through, not left part way; a Simon game that ran its course, not one left: ChatGPT's review, F6). A **score** step counts
   only a run in the step's own mode (when its activity names one) that reached the end of its bars (owner, 2026-10-15):
   Wait for me round its loop, or to the piece's end (V10); Play along, Rhythm or Ladder a pass round its loop, or the
   piece's last note reached (`reachedEnd`, §7b). A run that stops part way, or one in another mode (a Play along run
@@ -1642,7 +1656,10 @@ leaves the log: F05). Its fixed bottom bar always holds **Again**,
 **Lesson** (back to the lesson page) and the way on, in view at any size (V28): **Next ▶**, the lesson page scrolled to
 the part after this step, with the next step's Start below its text (owner, 2026-10-16, after ChatGPT's live review of
 lesson 1: it used to open the next step's screen, skipping the explanation before it; after a lesson's last step with an
-earlier step left, the part leading to that step), or after the lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
+earlier step left, the part leading to that step); when the step finished the lesson, Next is the rest of this lesson
+(Check yourself, If this happens), whose bottom bar then offers **Next lesson ▶**: the next lesson with steps to do,
+wrapping round to the start of the path, else the next in order (the review ledger, 2026-10-16, A3).
+**Lesson** (and ←) comes back at the step just played, its card in view, not the page's top (A4). Before 2026-10-16, after the lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
 from when it was started (kept for the tab, so a reload inside the step still counts the runs before it: F15); a step
 whose activity could not open marks nothing. Switch… from the result works as from the lesson page: the chosen lesson
 takes the lesson page's place (the result goes with it), and the lesson you are on has no Open (F13).

@@ -42,11 +42,37 @@ export function meets(e: LogEntry, t: Target): boolean {
 }
 
 /**
+ * Was this run played as the step sets it? '' if so, else why not, in a few words (owner, 2026-10-16, after ChatGPT's
+ * review of lessons 1 and 2: a step's target counts only runs played with the step's set, its help level or a harder
+ * one, its number of cards, and its timing or a stricter one; tempo is free). Other runs stay in the log as practice.
+ * Harder help levels: from 0 (keys and sound) by ear (5); from 1 or 2, less help on the same music (up to 3, music only).
+ */
+const HARDER: Record<number, number[]> = { 0: [0, 5], 1: [1, 2, 3], 2: [2, 3], 3: [3], 4: [4], 5: [5] };
+const STRICT = ['relaxed', 'normal', 'strict'];
+export function playedAsSet(e: LogEntry, a: Activity): string {
+  if (a.screen !== 'drills' && a.screen !== 'simon') return '';
+  if (e.set !== a.set) return 'another set';
+  const s = (e.settings ?? {}) as Record<string, unknown>, lv = a.level as Record<string, unknown>;
+  if (typeof lv.rung === 'number' && !HARDER[lv.rung]?.includes(num(s.rung))) return 'another help level';
+  if (a.screen === 'drills') {
+    if (typeof lv.cards === 'number' && s.cards !== lv.cards) return 'another number of cards';
+    const want = lv.onTime, got = s.onTime;
+    if (typeof want === 'string' && want !== 'notes' && !(typeof got === 'string' && STRICT.indexOf(got) >= STRICT.indexOf(want))) return 'more lenient timing';
+  }
+  if (a.screen === 'simon' && lv.match === 'same' && s.match !== undefined && s.match !== 'same') return 'any octave allowed';
+  return '';
+}
+
+/**
  * A run that ended, for a step with no target. A score run (owner, 2026-10-15, Q5) only in the step's own mode (when it
  * names one) and through to the end of its bars: Wait for me round its loop or to the piece's end (a Wait for me entry
  * from before `rounds` was logged counts); the timed modes a pass round the loop, or the piece's last note reached.
  */
 export function ended(e: LogEntry, a?: Activity): boolean {
+  // A Drills step with no target (an introduction) is done when its whole set is played through, any result: real
+  // practice, no pass mark (owner, 2026-10-16: one card "how do they learn anything from that?"); a set left part way is
+  // tried (ChatGPT's review, F6: "left" had been called "played through"). A Simon game logs only once something was played.
+  if (e.screen === 'drills') return e.result.ended === 'set done';
   if (e.screen !== 'score') return true;
   const mode = a?.screen === 'score' ? a.settings.mode : undefined;
   if (mode && e.mode !== mode) return false;
@@ -102,9 +128,12 @@ export function outcome(runs: LogEntry[], a: Activity, target: Target | undefine
     const done = returned && keepsNoRuns(a);
     return { runs: 0, done, met: false, line: done ? (a.screen === 'freeplay' ? 'Free play: visited' : 'Watched') : 'Nothing played' };
   }
-  const met = target ? runs.some((e) => meets(e, target)) : runs.some((e) => ended(e, a));
+  const met = target ? runs.some((e) => meets(e, target) && !playedAsSet(e, a)) : runs.some((e) => ended(e, a));
   const last = runLine(runs[runs.length - 1]);
-  return { runs: runs.length, done: met, met, line: runs.length > 1 ? `${last} · ${runs.length} runs` : last };
+  // A run that would have met the target with other settings: said, as practice (not counted).
+  const other = target && !met ? runs.map((e) => (meets(e, target) ? playedAsSet(e, a) : '')).find(Boolean) : '';
+  const line = runs.length > 1 ? `${last} · ${runs.length} runs` : last;
+  return { runs: runs.length, done: met, met, line: other ? `${line} · played with ${other}: practice, not counted for the target` : line };
 }
 
 /** The best of a step's runs so far, in its screen's words (the most clean cards, the longest chain, the best share on
