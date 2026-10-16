@@ -19,6 +19,11 @@ say when only part of it could be read. Where sources disagree, say so. Where no
 the line as teaching judgment. The first lesson-1 plan broke this rule: it took a method's order from a retailer's
 listing and got it wrong.
 
+What that means in practice (ChatGPT's review, 2026-10-16): **teaching-method claims need a reliable pedagogical
+source; facts about a particular piece, the keyboard's layout or the app's behaviour are verified against the actual
+score, the instrument or the code.** Research citations live in the lesson plan and its notes, not in the lesson:
+the text the learner reads is natural prose.
+
 The sources behind this guide, with what each supports and how much of each was read, are listed in
 `design/2026-10-16-lesson1/guide-notes.md` (outside the repo). Lines marked **Judgment** are mine, reasoned from the
 sources but not stated by them.
@@ -53,8 +58,9 @@ sitting and adjust.
 
 **A clear outcome, as what the learner can then do.** Explicit teaching states the learning intentions and success
 criteria and makes them visible to the learner ([CESE 2017][cese], p. 2, quoting Hattie 2009). Write it at the top of the
-lesson as an action: "By the end you can find every group of three black keys, high and low, with your eyes closed
-after the first one" rather than "Black keys". The step targets (§6) test the same action.
+lesson as an action: "By the end you can find every group of three black keys, high and low, without hints" rather
+than "Black keys". (On a real keyboard a lesson might add "with your eyes closed after the first one"; on a screen
+that isn't a fair test.) The step targets (§6) test the same action.
 
 **Prerequisites.** How hard new material is depends on what the learner already knows ([CESE 2017][cese], p. 4).
 Teach the names and parts before the task that uses them: learners understand a presentation better when they already
@@ -97,7 +103,9 @@ Flashcards][faber-flash]).
 ## 2. The teaching sequence inside a lesson
 
 Put together from the sources, a lesson has this shape: **review → why → model → guided try → independent try → check
-and reflect → a little play**. No single source states the whole sequence; each part's support is beside it:
+and reflect → a little play**. This is a teaching pattern, not seven mandatory blocks: combine stages when that is
+natural, and let exploration come earlier when it helps the learner discover the idea (Faber's experience-first
+order, below). No single source states the whole sequence; each part's support is beside it:
 
 1. **Review** what this lesson builds on (§1; [Rosenshine][rosenshine] 1).
 2. **Why it matters**, in a sentence or two, in the learner's terms. A "meaningful rationale" for a task, with support
@@ -182,9 +190,10 @@ adult at the piano.
   the learner, "let's") were learned from better than formal ones in short English lessons; the effect is less
   certain in other languages and in long lessons, and "too much personalization may not be always beneficial"
   ([Brom et al. 2017][brom], summarising Ginns et al. 2013 and Mayer 2009). Warm and direct, not chummy.
-- **Explain why.** A meaningful rationale helps a learner adopt a task ([Ryan & Deci 2000][ryan-deci]). Every
-  instruction carries its reason: "Sit on the front half of the bench, so you can lean left and right as your hands
-  travel."
+- **Explain why.** A meaningful rationale helps a learner adopt a task ([Ryan & Deci 2000][ryan-deci]). Explain
+  the purpose of important instructions, especially when the reason isn't obvious: "Sit on the front half of the
+  bench, so you can lean left and right as your hands travel." Don't interrupt straightforward practice directions
+  with explanations they don't need.
 - **Explain fully; length is not the enemy, clutter is.** The most effective teachers gave longer, clearer
   explanations with many examples; the less effective "gave much shorter presentations and explanations" and then had
   to re-explain ([Rosenshine 2012][rosenshine], principles 2, 5; "Give clear and detailed instructions and
@@ -204,8 +213,9 @@ adult at the piano.
   at first helps performance ([2021][wulf]). The same research group's critics found the related autonomy effects on
   motor learning small or absent after correcting for publication bias ([McKay et al. 2022][mckay-self]; [St. Germain
   et al.][stgermain]); a re-analysis of the expectancy studies exists but I did not read it. **Judgment**: encourage with true,
-  specific statements ("Your fingertips stayed curved on all three groups"), never with praise the result doesn't
-  earn, and never by claiming ease ("this is easy").
+  specific statements the app can stand behind ("You played all five notes correctly without help"), never with
+  praise the result doesn't earn, never by claiming ease ("this is easy"), and never about what the app can't observe
+  (posture, hand shape, tension: §7).
 - **Say what to do when it goes wrong.** Good teachers anticipate errors and warn about them ([Rosenshine
   2012][rosenshine], p. 18). Each lesson has a short "If this happens" part: the common mistake, why it happens, the
   fix. Mistakes are normal information, said plainly.
@@ -276,7 +286,9 @@ correct. For lesson 1 the free images found were mostly not good enough (`design
 - **CC-BY** needs the author, the licence and a link shown where the picture is used (the image block's caption);
   **CC-BY-SA** also requires a changed version to carry the same licence. Use them only when nothing CC0 or our own
   drawing will do. Never NC or ND.
-- A photograph of a painting is fine when the painting is public domain (Commons says so on the page).
+- For a photograph of a public-domain artwork, check that the particular reproduction is reusable (its own licence
+  on its file page): faithful copies of flat works are often treated differently from creative photographs, and the
+  rules vary by country.
 - If the page can't be read (a bot check, a login), the licence is unverified: don't use the file.
 - **Record it beside the file**: in `web/public/content/path/media/`, one entry per file with the file page URL, the
   author, the licence as the page states it, the date checked, and what was changed (crop, resize). Credit CC0 and
@@ -346,7 +358,9 @@ plan says which keys it needs and checks they fit what each screen shows: phone 
 What's known now: Wait for me plays on the screen's keys upright (two octaves that follow the music) and sideways only
 when the keys are shown in Display (off by default); Free play shows two octaves on a phone and three on a tablet; Simon and Drills take the screen's keys when
 "Keyboard" is under the music (their visible range per screen: check in the app, not stated in app-features). Keep
-early material inside one or two octaves and say in the step which keys to use. The owner suggested a step could
+early material inside one or two octaves and say in the step which keys to use. **A visible range is not
+necessarily playable**: check that the keys a step needs are large enough to tap reliably at each screen size, and
+that notes meant to sound together register when tapped together. The owner suggested a step could
 carry which keys are visible and how wide they are; that is a capability to add when a lesson needs it.
 
 **What the screen can't do, and how a lesson handles it.** Glass has no key travel, weight or loudness, and a tap
@@ -387,7 +401,8 @@ what's missing in the plan, and add capability only when this lesson needs it (`
 3. **Prerequisites**: is each one taught in an earlier lesson, and are new names taught before the task that uses
    them?
 4. **Load**: one or two new ideas and one new physical skill at most, with most of the time spent practising?
-5. **Review**: does it open by using the last lesson's skill, and bring back an older one?
+5. **Review**: does it open by using the last lesson's skill, and bring back an older one? (Not for the very first
+   lesson.)
 6. **Sequence**: why → model (hear or see) → guided → independent → check → a little play, or a stated reason for
    another shape?
 7. **Physical**: is there a posture / hand / fingertip / release point, shown in a picture or animation, phrased as
@@ -402,7 +417,8 @@ what's missing in the plan, and add capability only when this lesson needs it (`
 12. **Modes**: is each block or mode chosen for the teaching moment, and is every gap stated rather than worked
     around?
 13. **Screen**: if the rung must be playable without a MIDI keyboard, does every step play on the app's keys at every
-    screen size (phone upright, phone sideways, tablet), with the keys it needs visible?
+    screen size (phone upright, phone sideways, tablet), with the keys it needs visible, large enough to tap
+    reliably, and notes meant together registering when tapped together?
 14. **Truth**: every note, finger and key name checked against the notation and the keyboard; every teaching claim
     linked to a source that was read; anything unverified marked UNKNOWN?
 15. **Videos**: relevant videos at the bottom (reference size unless central), and the lesson complete without them?
