@@ -43,9 +43,9 @@ const MODE_NAMES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me'
 /** How each kind of exercise opens with one tap (owner, 2026-10-15: a default per kind, "Practise as…" to change):
  * flashcards (Drills) for things to play on sight, by name or by ear; Simon for a progression to build from memory. */
 export const DEFAULT_WAY: Record<ExerciseKind | 'other', 'drill' | 'simon'> = {
-  scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', other: 'drill',
+  scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', other: 'drill',
 };
-const KIND_NAMES: Record<ExerciseKind | 'other', string> = { scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', other: 'Other' };
+const KIND_NAMES: Record<ExerciseKind | 'other', string> = { scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', other: 'Other' };
 
 /** Something practised or opened lately, and how to carry on with it. */
 interface Recent { key: string; title: string; what: string; at: string; icon: IconName; open: () => void }
@@ -361,6 +361,8 @@ export function createShell(app: App, d: ShellDeps) {
     if (n !== exN) return;
     const rows: Row[] = got.sets.filter((s) => !music.some((p) => p.exerciseOf === s.id && p.allOfSet)).map((s) => {
       const way = DEFAULT_WAY[s.kind ?? 'other'];
+      // A rhythm set (2026-10-16): tapped on the pad in Drills only (Simon has no rhythm); generated ones are new patterns.
+      if (s.kind === 'rhythm') return { kind: s.kind, title: s.title, id: s.id, how: `${s.generate ? 'rhythm patterns made from its note values' : `${s.items.length} rhythm ${s.items.length === 1 ? 'pattern' : 'patterns'}`} · tap them in Drills`, open: () => d.openExercise('drill', s.id) };
       return { kind: s.kind ?? 'other', title: s.title, id: s.id, how: `${s.items.length} ${s.order === 'passage' ? 'in order' : s.items.length === 1 ? 'item' : 'items'} · cards: opens in ${way === 'drill' ? 'Drills' : 'Simon'} (also ${way === 'drill' ? 'Simon' : 'Drills'})`, open: () => d.openExercise(way, s.id) };
     });
     // An exercise that is MusicXML (a set's item given as a file) is music: it opens straight on the score (owner, 2026-10-15).

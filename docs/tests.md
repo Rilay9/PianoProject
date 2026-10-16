@@ -71,6 +71,12 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   least one case with the permissions a plain phone tab has. And a tap at a key's exact centre hits even a key too narrow
   for a finger (14 px black keys passed that way): tap where a finger lands, off centre too (lesson 1, 2026-10-16: ±12 px
   for keys meant to be about 30 px wide).
+- **The key that starts something, swallowed.** A tap that starts a run must also count as its first note wherever the
+  run is waiting for one: Wait for me on the screen's keys (fixed 2026-10-15) and then Drills (owner, 2026-10-16: "Make
+  sure to start on the first tap. You made that mistake last time") both dropped it, and the checks started every run
+  with Start or a separate key. Check a run started by a single positioned tap and count that tap in its result (one tap
+  fewer than the notes leaves the last missed, not the first); and a tap on a result or a Ready screen does what the
+  screen says.
 - **Readers that accept more than they handle.** Content files with typos or unsupported features loaded silently.
   Refuse with the reason; test the refusals. Check the nested objects and the value types too, not only the top-level
   keys: a set's `"octave": "five"` hung the app, `"together": "false"` read as together, a chart's `improvise: { scales }`

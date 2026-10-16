@@ -145,6 +145,7 @@ export function musicExercises(app: App): Promise<Piece[]> {
     for (const f of list) {
       const set = (await (await fetch(dir + f)).json()) as { title?: string; kind?: string; play?: unknown; items?: Record<string, { musicxml?: string; name?: string }> };
       let play: Play = { mode: 'wait' };
+      if (set.kind === 'rhythm') continue; // (a rhythm set's MusicXML patterns are cards tapped in Drills, not music for the score)
       try { if (set.play !== undefined) play = readPlay(set.play); } catch { continue; } // (a set whose play cannot be read: Exercises lists the reason)
       const items = Object.entries(set.items ?? {});
       const files = items.filter(([, it]) => typeof it.musicxml === 'string' && /\.(musicxml|xml)$/i.test(it.musicxml.trim()));

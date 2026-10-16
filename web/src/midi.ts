@@ -2,7 +2,7 @@
 // to play through its own speakers (Web MIDI: Chrome and Android, not Safari). Every connected input is
 // listened to, including ones plugged in later.
 
-export interface KeyEvent { midi: number; on: boolean; velocity: number; time: number } // time: performance.now() ms
+export interface KeyEvent { midi: number; on: boolean; velocity: number; time: number; source?: 'screen' } // time: performance.now() ms; source: a key on the screen (the score's strip), not the MIDI keyboard
 
 export class MidiInput {
   private access: MIDIAccess | null = null;

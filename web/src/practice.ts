@@ -245,7 +245,12 @@ export class Practice {
     if (!this.running) return;
     if (this.running === 'along') {
       if (!e.on) return;
-      const s = this.settings(), speed = s.speed, t = this.view.songNow() - (performance.now() - e.time) * speed;
+      // Judged against the clock as heard (2026-10-16): the phone's sound reaches the ear heardDelayMs after the clock,
+      // and you play with what you hear (nothing heard from the phone, the marker on its own clock, or the piano on the
+      // MIDI keyboard: no delay). A timing calibration for the way you play (screen or MIDI keys) is used if kept.
+      // Memorise's timed passes are judged here too.
+      const lag = this.view.songClock ? this.sound.heardDelayMs('piano', e.source === 'screen' ? 'screen' : 'midi') : 0;
+      const s = this.settings(), speed = s.speed, t = this.view.songNow() - (performance.now() - e.time + lag) * speed;
       this.played.push({ midi: e.midi, t, speed, at: e.time });
       this.lastPress = e.time;
       this.lastPressSong = t;

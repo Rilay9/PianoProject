@@ -11,6 +11,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { Chord, Interval, Note, Scale } from 'tonal';
 import { EXERCISE_KINDS, readSet } from '../src/exercise/items.ts';
+import { readRhythmSpec } from '../src/exercise/rhythm.ts';
 import { readChart, readStyle } from '../src/lab/music.ts';
 import { soundOf } from '../src/library/midi/band.ts';
 import { BUNDLED_PARTS } from '../src/sound.ts';
@@ -123,6 +124,15 @@ function setProblems(f, fileThere, bars) {
       }
     }
   }
+  // Rhythm sets (2026-10-16): "generate" (checked by the app's own reader of it, which refuses with the reason) or
+  // MusicXML items; "generate" on any other kind, and the fields a rhythm set has no use for, refused.
+  if (f.kind === 'rhythm') {
+    if (f.generate !== undefined) { try { readRhythmSpec(f.generate); } catch (e) { out.push(e.message); } }
+    if ((f.generate === undefined) === (f.items === undefined)) out.push('a rhythm set gives either "generate" or MusicXML "items"');
+    if (isObj(f.items)) for (const [k, it] of Object.entries(f.items)) if (isObj(it) && it.musicxml === undefined) out.push(`item "${k}": a rhythm set's items are MusicXML patterns ("musicxml")`);
+    for (const k of ['from', 'rhythm', 'play']) if (f[k] !== undefined) out.push(`a rhythm set has no "${k}"`);
+    if (f.generate !== undefined && f.order !== undefined) out.push('a generated rhythm set is always a pool: leave "order" out');
+  } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm")');
   if (f.from !== undefined) {
     if (!isObj(f.from)) out.push('from should be an object { score, bars, staff }');
     else {
@@ -169,6 +179,16 @@ const scoreBars = (id) => { const p = namedPieces().barsOf(id); return p && !id.
     ok(`reader refuses a chord octave of ${JSON.stringify(octave)} with its reason, and returns`, r.error === undefined && r.status === 0 && /^REFUSED item 1: octave .* should be a whole number 0 to 7/.test(said), r.error ? `${r.error.code} (it never returned)` : said || r.stderr);
   }
   refuses('an option of another kind (octave on notes)', bad({ items: { 1: { notes: 'C4', octave: 5 } } }), /"octave" is not an option of a notes item/);
+  // Rhythm sets (2026-10-16).
+  const rhythm = (generate) => bad({ kind: 'rhythm', generate });
+  refuses('rhythm: an unknown note value', rhythm({ values: ['quarter', 'sixteenth'], meter: '4/4', bars: 2 }), /"sixteenth" is not one of/);
+  refuses('rhythm: a whole in 3/4', rhythm({ values: ['quarter', 'whole'], meter: '3/4', bars: 2 }), /whole \(4 beats\) does not fit a bar of 3\/4/);
+  refuses('rhythm: a feature not in its values', rhythm({ values: ['quarter', 'half'], meter: '4/4', bars: 2, feature: 'whole' }), /feature "whole" should be one of its values/);
+  refuses('rhythm: bars 0', rhythm({ values: ['quarter'], meter: '4/4', bars: 0 }), /bars 0 should be a whole number 1 to 4/);
+  refuses('rhythm: bars 5', rhythm({ values: ['quarter'], meter: '4/4', bars: 5 }), /bars 5 should be a whole number 1 to 4/);
+  refuses('rhythm: "generate" on a set of another kind', bad({ kind: 'chords', generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /"generate" is for rhythm sets/);
+  refuses('rhythm: a notes item in a rhythm set', bad({ kind: 'rhythm', items: { 1: { notes: 'C4' } } }), /items are MusicXML patterns/);
+  refuses('rhythm: "rhythm" on a rhythm set', bad({ kind: 'rhythm', rhythm: 1, generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /a rhythm set has no "rhythm"/);
   refuses('together as text', bad({ items: { 1: { interval: 'M3', together: 'false' } } }), /together should be true or false/);
   refuses('arpeggio as text', bad({ items: { 1: { chord: 'C', arpeggio: 'yes' } } }), /arpeggio should be true or false/);
   refuses('no items', bad({ items: {} }), /items is empty/);

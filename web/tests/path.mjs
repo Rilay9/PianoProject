@@ -28,8 +28,19 @@ const acts = JSON.parse(readFileSync(pub('content/activities/index.json'), 'utf8
 const kindsUsed = new Set();
 const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).charts;
 /** A step's set or chart: listed in its index (''), else why not. */
-const contentProblem = (a) => ('set' in a ? (sets.includes(`${a.set}.json`) ? '' : `no set "${a.set}" in content/sets/index.json`)
+/** A rhythm set (2026-10-16) played where it cannot be: Simon (it has no rhythm), or Drills at rung 4 or "notes only" (the
+ * screen plays these as rung 3 and normal timing; a step asking for them is a mistake). '' when fine. */
+const rhythmMisuse = (a) => {
+  if (!('set' in a) || !sets.includes(`${a.set}.json`)) return '';
+  if (JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')).kind !== 'rhythm') return '';
+  if (a.screen === 'simon') return `set "${a.set}" is a rhythm set: Drills only (Simon has no rhythm)`;
+  if (a.level?.rung === 4) return `set "${a.set}" is a rhythm set: no rung 4 (name only)`;
+  if (a.level?.onTime === 'notes') return `set "${a.set}" is a rhythm set: no "notes only"`;
+  return '';
+};
+const contentProblem = (a) => ('set' in a ? (sets.includes(`${a.set}.json`) ? rhythmMisuse(a) : `no set "${a.set}" in content/sets/index.json`)
   : charts.includes(`charts/${a.chart}.json`) ? '' : `no chart "${a.chart}" in content/lab/index.json`);
+ok("a step's rhythm set in Simon is refused (2026-10-16), in Drills at rung 3 is fine", /Drills only/.test(contentProblem({ screen: 'simon', set: 'rhythm-whole', level: {} })) && contentProblem({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }) === '', contentProblem({ screen: 'simon', set: 'rhythm-whole', level: {} }));
 /** A score block's set item: one the set has (''), else why not. A passage from a score (from) has one item a moment: not counted here. */
 function itemProblem(set, n) {
   const f = JSON.parse(readFileSync(pub(`content/sets/${set}.json`), 'utf8'));
@@ -65,7 +76,7 @@ ok('the test content uses every block kind', BLOCK_KINDS.every((k) => kindsUsed.
 // The sets' kinds (Exercises lists by them): a kind is optional (none: listed under "Other"), and one given is known.
 for (const f of sets) {
   const k = JSON.parse(readFileSync(pub(`content/sets/${f}`), 'utf8')).kind;
-  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies'].includes(k), String(k));
+  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm'].includes(k), String(k));
 }
 
 // ---- what a lesson reads to --------------------------------------------------------------------------------------

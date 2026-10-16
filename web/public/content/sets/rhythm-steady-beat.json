@@ -1,0 +1,6 @@
+{
+  "title": "Steady beat",
+  "kind": "rhythm",
+  "tempo": 72,
+  "generate": { "values": ["quarter"], "meter": "4/4", "bars": 2 }
+}

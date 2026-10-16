@@ -2,6 +2,7 @@
 // wrong key in red with the wanted ones outlined. Shared by Simon and the drills. Screen keys sound on the phone.
 
 import { keysToShow, type ChosenKeys } from '../activity';
+import type { TapInput } from '../calibration';
 import { holds } from '../holds';
 import { currentDevice } from '../settings';
 import type { Sound } from '../sound';
@@ -11,8 +12,8 @@ export class ExerciseKeys {
   private readonly strip: UnderStrip;
   private touches = new Map<number, { midi: number; stop: Promise<() => void> }>();
   private midiDown = new Set<number>();
-  /** A key went down (true) or up, from either keyboard; time: when (performance.now() ms; the keyboard's own time). */
-  onKey: (midi: number, on: boolean, time: number) => void = () => {};
+  /** A key went down (true) or up, from either keyboard; time: when (performance.now() ms; the keyboard's own time); input: which. */
+  onKey: (midi: number, on: boolean, time: number, input: TapInput) => void = () => {};
 
   constructor(keyboard: HTMLElement, private readonly sound: Sound) {
     this.strip = new UnderStrip(keyboard, keyboard, document.createElement('div'));
@@ -26,7 +27,7 @@ export class ExerciseKeys {
       this.touches.set(id, { midi, stop: this.sound.noteNow(midi, 90, () => this.touches.get(id)?.midi === midi) });
       this.pressedChanged();
       holds.key(midi, true, e.timeStamp); // (MIDI keys are recorded in main.ts)
-      this.onKey(midi, true, e.timeStamp);
+      this.onKey(midi, true, e.timeStamp, 'screen');
     });
     const lift = (e: PointerEvent) => {
       const t = this.touches.get(e.pointerId);
@@ -35,7 +36,7 @@ export class ExerciseKeys {
       void t.stop.then((stop) => stop());
       this.pressedChanged();
       holds.key(t.midi, false, e.timeStamp);
-      this.onKey(t.midi, false, e.timeStamp);
+      this.onKey(t.midi, false, e.timeStamp, 'screen');
     };
     keyboard.addEventListener('pointerup', lift);
     keyboard.addEventListener('pointercancel', lift);
@@ -78,7 +79,7 @@ export class ExerciseKeys {
   midiKey(midi: number, on: boolean, down: Set<number>, time = performance.now()): void {
     this.midiDown = new Set(down);
     this.pressedChanged();
-    this.onKey(midi, on, time);
+    this.onKey(midi, on, time, 'midi');
   }
 
   /** Every key held now, on either keyboard. */

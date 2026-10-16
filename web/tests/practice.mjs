@@ -35,5 +35,32 @@ for (const start of [1020, 1060, 1130]) {
 const kept = run(1010, true);
 check('a right note played inside the burst’s quarter second still counts as played on time', kept?.onTime === 9 && kept?.wrong === 0, `onTime ${kept?.onTime}, wrong ${kept?.wrong}`);
 
+// Judged against the clock as heard (2026-10-16): with the phone's sound playing (the view on the sound's clock), a press
+// is taken as heardDelayMs earlier. Taps 120 ms after each note's clock time are on time when the sound is heard 120 ms
+// late; with the piano on the MIDI keyboard (0 ms) they are late, and taps at the clock times are on time as before. A
+// press from the screen's keys asks for the screen's delay (a timing check is kept per way of playing).
+function heard(lag, offset, source) {
+  let now = 0, index = 0;
+  const asked = [];
+  const view = {
+    get index() { return index; }, get stepCount() { return 8; }, playing: true, songClock: () => now,
+    stepT: (i) => i * 500, struckAt: (i) => (i < 8 ? [60] : []), durationsAt: () => [0], gracesAt: () => [],
+    loopRange: (a, b) => ({ a, b }), songNow: () => now, goTo: (i) => { index = i; }, pause() {}, play() {}, set onReached(_) {},
+  };
+  const p = new Practice(view, { stop() {}, heardDelayMs: (part, input) => { asked.push(`${part}/${input}`); return lag; } }, {}, () => ({ mode: 'along', hands: 'both', speed: 1, onTime: 'normal' }));
+  let summary = null;
+  p.onSummary = (s) => { summary = s; };
+  p.startAlong();
+  for (let i = 0; i < 8; i++) { now = i * 500 + offset; index = i; p.key({ midi: 60, on: true, time: performance.now(), ...(source ? { source } : {}) }); }
+  index = 8;
+  p.suspend(); // (as the score's stop does: this part scored)
+  p.finishRun();
+  return { onTime: summary?.onTime, late: summary?.late, asked: [...new Set(asked)] };
+}
+const h1 = heard(120, 120), h2 = heard(0, 120), h3 = heard(0, 0), h4 = heard(120, 120, 'screen');
+check('heard 120 ms late: presses 120 ms after the clock are all on time', h1.onTime === 8, JSON.stringify(h1));
+check('the piano on the MIDI keyboard (0 ms): the same presses are late; presses at the clock on time', h2.late === 8 && h3.onTime === 8, JSON.stringify({ h2, h3 }));
+check('a MIDI key asks for the MIDI keyboard\'s delay, a screen key for the screen\'s', JSON.stringify(h1.asked) === '["piano/midi"]' && JSON.stringify(h4.asked) === '["piano/screen"]' && h4.onTime === 8, JSON.stringify({ h1: h1.asked, h4: h4.asked }));
+
 console.log(failures.length ? `${failures.length} failed` : 'all passed');
 process.exit(failures.length ? 1 : 0);

@@ -11,15 +11,31 @@
 //   right notes in order, or steady beats (items.ts). "On time: notes only" judges every card on notes alone.
 // - A clean card moves on by itself; one with slips waits for Again or Next (owner). Help (Hear it / Show me)
 //   is noted. Then the set's results, with "the misses again".
+// - Rhythm sets (owner, 2026-10-16; exercise/rhythm.ts): cards of rhythm alone, tapped on one pad (pad.ts) or any key:
+//   any key or tap counts as the note due (judgeRhythm: one tap a note, extra taps counted, holds as written), drawn on
+//   a one-line staff; help 0 hear it with the pad lit and no music, 1 music + sound + pad lit, 2 music + sound, 3 music
+//   (read), 5 by ear (echo); no rung 4 (no name to give) and no "notes only" (rhythm is the point). No note names.
+// - Times are judged against the clock as heard (2026-10-16): the clicks you play with reach the ear the phone's output
+//   latency after the clock (sound.ts heardDelayMs), and the lights while it plays a card follow the sound as heard too.
+// - No key or tap is swallowed (owner, 2026-10-16: "Make sure to start on the first tap"): on Ready, or on a card's
+//   result, a key starts the set or goes on to the next card, and when that card waits for your first note (no demo, no
+//   count-in) the same key is its first note, the clock running from when it was pressed. Where a demo or a count-in
+//   comes first, the key starts that ("Listen…", "Count-in…").
 
 import type { Sound, Beat, NoteEvent } from '../sound';
+import type { TapInput } from '../calibration';
 import { holds, HOLD_SHARE, phraseEndLength } from '../holds';
-import { judge, type PlayedKey } from '../matching';
+import { judge, judgeRhythm, type PlayedKey } from '../matching';
 import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../log';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
 import { dialogOpen, keysLit, NO_KEYS, withMusic, type Rung } from './simon';
+
+/** What lights while a rhythm card is played to you (the pad). */
+export interface PadLight { light(on: boolean): void }
+/** How long the pad stays lit for a note it plays: most of its length, so two notes in a row are two flashes. */
+const PAD_LIT_SHARE = 0.85;
 
 export interface DrillLevel {
   rung: Rung;
@@ -34,6 +50,7 @@ export const ON_TIME_MS = { relaxed: 200, normal: 100, strict: 50 } as const; //
 const KEY = 'piano-web.drills.v1';
 interface Stored { level: DrillLevel; tempo: Record<string, number>; best: Record<string, { clean: number; of: number }>; set?: string }
 
+const RESULT_SETTLE_MS = 800; // a key or tap this soon after a card's result is not taken as "go on" (2026-10-16)
 const CLEAN_NEXT_MS = 1200; // a clean card's ✓ on show before the next card
 const HINT_MS = 8000; // notes only: nothing played this long, and the next notes light (owner, 2026-10-13: longer than 3 s, so a slow reader can still read)
 const DEMO_GAP_MS = 600; // after it plays the card, before your turn
@@ -59,6 +76,8 @@ interface Card {
   /** hold: how long its notes are to be held (ms; 0: not judged: steady beats, or marked staccato). */
   steps: { t: number; dur: number; keys: number[]; gi: number; hold: number }[];
   timed: boolean;
+  /** A rhythm set's card: tapped, any key counting (judgeRhythm), drawn on a one-line staff. */
+  rhythm: boolean;
   end: number; // ms: when the last note's written length is over
   beatMs: number; barBeats: number; // the metre's beat, for the count-in and the clicks
 }
@@ -66,6 +85,8 @@ interface Card {
 type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean; helped: boolean; text: string };
 /** A key played on a card: midi is the written note it counts for (name only: any octave), key the key pressed, whose hold is looked up. */
 type Press = PlayedKey & { key: number };
+/** The key that started the set or the next card (owner, 2026-10-16): the card's first note when the card waits for one. */
+type StartKey = { midi: number; time: number; input: TapInput };
 type State = 'idle' | 'demo' | 'countin' | 'turn' | 'result' | 'done';
 
 export class Drill {
@@ -92,7 +113,10 @@ export class Drill {
   private request = 0; // bumps when the set, level or screen changes: a start still getting the sound ready is dropped
   private redo = false; // "the misses again": not a set of its own, so never a best
   private passageAt = 0; // a passage: the next item to give (Again replays a card without moving this on)
+  private resultAt = 0; // performance.now() when the card's result came
   private retrying = false; // Again: this card's try replaces its result (owner, 2026-10-12), the set still N cards
+  private hears = false; // this try is played with clicks you hear (count-in or metronome): times judged as heard (heardDelayMs)
+  private lightTicker = 0;
   /** Whether the keys are on screen (a hint names the notes when they are not). */
   keysShown: () => boolean = () => true;
   /** Nothing to play on: no MIDI keyboard connected and no keys on the screen (Ready says so: F17; owner, 2026-10-15). */
@@ -106,7 +130,7 @@ export class Drill {
     this.ui.status.className = none ? 'ex-status bad' : 'ex-status';
   }
 
-  constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
+  constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound, private readonly pad: PadLight | null = null) {
     this.stored = this.read();
     ui.start.addEventListener('click', () => { if (this.on) void this.begin(); });
     ui.help.addEventListener('click', () => { if (this.on) this.help(); });
@@ -119,21 +143,32 @@ export class Drill {
   }
 
   get levelNow(): DrillLevel { return { ...this.level }; }
-  /** Your turn at name only (any octave counts): every key is music (the keyboard's edge keys are notes, not commands). */
-  get anyOctaveNow(): boolean { return this.on && (this.state === 'turn' || this.state === 'countin') && this.level.rung === 4; }
+  /** The set on screen is a rhythm set (the pad instead of the keys, no rung 4, no Simon). */
+  get rhythmNow(): boolean { return this.set?.kind === 'rhythm'; }
+  /** Your turn at name only (any octave counts), or a rhythm card (any key is a tap): every key is music (the keyboard's edge keys are notes, not commands). */
+  get anyOctaveNow(): boolean { return this.on && (this.state === 'turn' || this.state === 'countin') && (this.level.rung === 4 || this.rhythmNow); }
   /** An activity's preset level (owner, 2026-10-13): in force while it lasts, never saved over yours. */
   private preset: Partial<DrillLevel> = {};
-  private get level(): DrillLevel { return { ...this.stored.level, ...this.preset }; }
-  /** For checks: where it is and the card's notes (ms from its start). */
-  debug(): { state: State; timed: boolean; started: boolean; steps: { t: number; keys: number[]; hold: number }[]; now: number } {
-    return { state: this.state, timed: !!this.card?.timed, started: this.started, steps: this.card?.steps.map((x) => ({ t: x.t, keys: x.keys, hold: x.hold })) ?? [], now: this.sound.songTime() };
+  /** The level in force. A rhythm set has no name to give and is about timing: a rung 4 chosen elsewhere is played as 3
+   * (music only), and "notes only" as normal. */
+  private get level(): DrillLevel {
+    const l = { ...this.stored.level, ...this.preset };
+    if (this.rhythmNow) { if (l.rung === 4) l.rung = 3; if (l.onTime === 'notes') l.onTime = 'normal'; }
+    return l;
+  }
+  /** For checks: where it is, the card's notes (ms from its start) and how late the sound is heard (ms; tap at now + that to be on time). */
+  debug(): { state: State; timed: boolean; started: boolean; rhythm: boolean; steps: { t: number; dur: number; keys: number[]; hold: number }[]; now: number; heardDelay: number } {
+    return { state: this.state, timed: !!this.card?.timed, started: this.started, rhythm: !!this.card?.rhythm, steps: this.card?.steps.map((x) => ({ t: x.t, dur: x.dur, keys: x.keys, hold: x.hold })) ?? [], now: this.sound.songTime(), heardDelay: this.lag('screen') };
+  }
+  /** ms taken off a key's time: how late the clicks you play with reach you, for this way of playing (calibrated or the browser's figure); none when nothing is heard. */
+  private lag(input: TapInput): number { return this.hears ? this.sound.heardDelayMs('clicks', input) : 0;
   }
   get tempo(): number { return this.stored.tempo[this.set?.id] ?? this.set?.tempo ?? 80; }
 
   /** Opens with these sets: the last one chosen, or an activity's set with its preset level (yours untouched). */
   open(sets: ItemSet[], activity?: { set: string; level: Partial<DrillLevel> }): void {
     this.on = true;
-    this.keys.onKey = (midi, down, time) => this.key(midi, down, time);
+    this.keys.onKey = (midi, down, time, input) => this.key(midi, down, time, input);
     this.sets = sets;
     this.preset = { ...activity?.level };
     this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
@@ -141,7 +176,7 @@ export class Drill {
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.logSet(false); this.request++; this.stopAll(); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
+  close(): void { this.logSet(false); this.request++; this.stopAll(); this.pad?.light(false); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
   /** The set being played, and what it is played as (its set, level, tempo and activity, kept from its start: final
@@ -199,7 +234,7 @@ export class Drill {
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
     const best = this.stored.best[this.bestKey()];
-    this.status(this.noKeyboard() ? NO_KEYBOARD : '', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · press Start`, this.noKeyboard() ? 'bad' : '');
+    this.status(this.noKeyboard() ? NO_KEYBOARD : '', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · ${this.rhythmNow ? 'tap the pad or press Start' : 'press Start or play a key'}`, this.noKeyboard() ? 'bad' : '');
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = false;
     this.ui.help.hidden = true;
@@ -208,14 +243,14 @@ export class Drill {
     this.scoreLine();
   }
 
-  private cardsLabel(): string { const n = this.level.cards; return n ? `${n} cards` : 'Cards until you press Finish'; }
+  private cardsLabel(): string { const n = this.level.cards; return n ? `${n} ${n === 1 ? 'card' : 'cards'}` : 'Cards until you press Finish'; }
   /** Bests per set and level (owner, 2026-10-12): the help rung and how timing is judged. */
   /** A best is per set, level and set size (10 cards is not compared with 5). */
   private bestKey(): string { return `${this.set.id}|${this.level.rung}|${this.level.onTime}|${this.level.cards}`; }
 
   // ---- a set -----------------------------------------------------------------------------------------
 
-  private async begin(items?: Item[]): Promise<void> {
+  private async begin(items?: Item[], first?: StartKey): Promise<void> {
     if (!this.set.items.length) return;
     const request = ++this.request;
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
@@ -230,14 +265,14 @@ export class Drill {
     this.queue = items ? [...items] : [];
     this.limit = items ? items.length : this.level.cards || Infinity; // the misses again: just those
     this.ui.start.hidden = true;
-    this.nextCard();
+    this.nextCard(first);
   }
 
   /**
    * The next card: from the misses being redone, the next of a passage, or a pool dealt like a shuffled deck (owner,
    * 2026-10-15): every item once before any comes again, then shuffled again, never the same card twice running.
    */
-  private nextCard(): void {
+  private nextCard(first?: StartKey): void {
     this.retrying = false;
     if (this.results.length >= this.limit) { this.setDone(); return; }
     let item: Item;
@@ -247,7 +282,7 @@ export class Drill {
       if (!this.deck.length) this.deck = shuffled(this.set.items, this.last);
       item = this.deck.shift()!;
     }
-    void this.playCard(item);
+    void this.playCard(item, first);
   }
 
   private missesAgain(): void {
@@ -275,7 +310,7 @@ export class Drill {
     this.keys.clearMarks();
     this.ui.name.textContent = '';
     this.ui.chain.replaceChildren(...this.results.map((r, i) => Object.assign(document.createElement('div'), {
-      className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: this.level.rung === 0 ? `${i + 1}. ${r.text}` : `${i + 1}. ${r.item.name}: ${r.text}`, // (no names at "keys, no music")
+      className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: this.level.rung === 0 || this.rhythmNow ? `${i + 1}. ${r.text}` : `${i + 1}. ${r.item.name}: ${r.text}`, // (no names at "keys, no music", nor for rhythm cards)
     })));
     const was = this.stored.best[key];
     this.status(`Set done: ${clean} of ${of} clean`, !full ? (this.redo ? '' : Number.isFinite(this.limit) ? 'Stopped early: not counted for a best' : 'Until you stop: no best kept') : newBest ? 'A new best at this level' : was ? `Best at this level: ${was.clean} of ${was.of}` : '');
@@ -297,7 +332,8 @@ export class Drill {
     const quarterMs = 60000 / this.tempo;
     const steady = typeof set.rhythm === 'number' ? set.rhythm : null;
     const written = !!item.beats;
-    const timed = lvl.onTime !== 'notes' && (written || steady !== null);
+    const rhythm = set.kind === 'rhythm';
+    const timed = rhythm || (lvl.onTime !== 'notes' && (written || steady !== null));
     const beats = item.beats ?? item.groups.map(() => steady ?? 1);
     // Drawn with the rhythm it is judged by; steady beats get bars of the metre so they read as music.
     let shownItem: Item = { ...item, beats };
@@ -318,10 +354,11 @@ export class Drill {
       if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? (beforeRest ? phraseEndLength(dur) : dur) : 0 });
       t += dur;
     });
-    return { item, shown: shownItem, passage, meter: passage ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
+    return { item, shown: shownItem, passage, meter: passage || rhythm ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, rhythm, end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
   }
 
-  private async playCard(item: Item): Promise<void> {
+  /** first: the key that brought this card (Ready, or a result): its first note when it waits for one (no demo first). */
+  private async playCard(item: Item, first?: StartKey): Promise<void> {
     this.stopAll();
     this.last = item;
     const card = this.card = this.makeCard(item);
@@ -343,8 +380,8 @@ export class Drill {
     this.ui.name.textContent = rung === 4 ? item.name : rung === 5 ? '🔊' : '';
     this.ui.help.hidden = false;
     this.ui.help.textContent = rung === 4 ? 'Show me' : 'Hear it';
-    if (rung <= 2 || rung === 5) { this.demo(rung === 5 ? 'Then play it back' : ''); return; }
-    this.turn();
+    if (rung <= 2 || rung === 5) { this.demo(rung === 5 ? 'Then play it back' : ''); return; } // (a key that brought it started the demo)
+    this.turn(first);
   }
 
   /** It plays the card to you, then it is your turn. */
@@ -360,17 +397,36 @@ export class Drill {
   private drawCard(withMusic: boolean, marks: Record<string, string> = {}): Promise<void> {
     const c = this.card!;
     if (!withMusic) { this.notation.clear(); return Promise.resolve(); }
-    return this.notation.show([c.shown], [], c.passage, c.meter, c.fifths, marks);
+    return this.notation.show([c.shown], [], c.passage, c.meter, c.fifths, marks, c.rhythm);
   }
 
-  /** Plays the card at its tempo (lighting its keys as they sound, at rungs 0 and 1); returns how long it lasts. */
+  /**
+   * Plays the card at its tempo; returns how long it lasts. At rungs 0 and 1 its keys light as they sound (a rhythm
+   * card: the pad, each note most of its length, so a half note is a long light and two quarters two flashes). The
+   * lights follow the sound as heard (the clock less heardDelayMs; 2026-10-16), so the eye sees them with the ear.
+   */
   private hear(light: boolean): number {
     const c = this.card!;
     const events: NoteEvent[] = c.steps.flatMap((s) => s.keys.map((midi) => ({ t: s.t, midi, dur: s.dur * 0.9, vel: 80 })));
     this.sound.play(events, [], 0, 1);
-    if (light) for (const s of c.steps) this.later(s.t, () => this.keys.light(s.keys));
-    this.later(c.end, () => this.keys.light([]));
+    clearInterval(this.lightTicker);
+    if (!light) return c.end;
+    const delay = this.sound.heardDelayMs();
+    let last = '';
+    this.lightTicker = window.setInterval(() => {
+      if (this.card !== c) { clearInterval(this.lightTicker); return; }
+      const heard = this.sound.songTime() - delay;
+      if (heard >= c.end) { clearInterval(this.lightTicker); this.lights([]); last = ''; return; }
+      const now = c.rhythm ? c.steps.find((s) => heard >= s.t && heard < s.t + PAD_LIT_SHARE * s.dur) : [...c.steps].reverse().find((s) => heard >= s.t);
+      const key = now ? `${now.t}` : '';
+      if (key !== last) { last = key; this.lights(now?.keys ?? []); }
+    }, 15);
     return c.end;
+  }
+  /** The keys lit, or (a rhythm card) the pad lit when any are. */
+  private lights(keys: number[]): void {
+    if (this.card?.rhythm) this.pad?.light(keys.length > 0);
+    else this.keys.light(keys);
   }
 
   /** Show me (name only: the music) or Hear it (the card played), noted as help; never once the card's clock runs. */
@@ -417,9 +473,11 @@ export class Drill {
   }
 
   /** Your turn: after a bar of clicks, or waiting for your first note (by ear always), or notes only (no clock). */
-  private turn(): void {
+  /** first: a key already played for this card (it brought the card): its first note, if the card waits for one. */
+  private turn(first?: StartKey): void {
     if (!this.card || !this.on) return;
     const c = this.card, lvl = this.level;
+    const playFirst = () => { if (first && this.card === c && this.state === 'turn') this.key(first.midi, true, first.time, first.input); };
     if (!c.timed) {
       this.state = 'turn';
       this.scoreLine();
@@ -430,17 +488,22 @@ export class Drill {
       this.ui.again.hidden = this.ui.misses.hidden = this.ui.fresh.hidden = true;
       this.ui.next.hidden = false;
       this.ui.next.textContent = 'Skip';
+      playFirst();
       return;
     }
     if (lvl.start === 'first' || lvl.rung === 5) {
       this.state = 'turn';
+      this.hears = lvl.metronome; // (nothing heard to play with: no delay taken off)
       this.scoreLine();
-      this.status('Your turn', 'Your first note starts it; the rhythm is judged from there');
+      this.status('Your turn', c.rhythm ? 'Your first tap starts it; the rhythm is judged from there' : 'Your first note starts it; the rhythm is judged from there');
       this.lightNext();
+      playFirst();
       return;
     }
-    // A bar of count-in clicks, then the card's clock runs from 0 (the clicks carry on if the metronome is on).
+    // A bar of count-in clicks, then the card's clock runs from 0 (the clicks carry on if the metronome is on). You play
+    // with the clicks, which reach your ear heardDelayMs after the clock: played times are judged as heard.
     this.state = 'countin';
+    this.hears = true;
     this.scoreLine();
     const countIn: Beat[] = Array.from({ length: c.barBeats }, (_, k) => ({ t: (k - c.barBeats) * c.beatMs, accent: k === 0 }));
     this.sound.play([], [...countIn, ...this.clicks()], -c.barBeats * c.beatMs - 30, 1);
@@ -518,11 +581,14 @@ export class Drill {
     return midi;
   }
 
-  /** time: when the key went down (performance.now(); the keyboard's own time), so a busy page never makes it late. */
-  key(midi: number, down: boolean, time = performance.now()): void {
+  /** time: when the key went down (performance.now(); the keyboard's own time), so a busy page never makes it late; input: screen or MIDI keyboard (their delays differ). */
+  key(midi: number, down: boolean, time = performance.now(), input: TapInput = 'midi'): void {
     if (!this.on || !down) return;
-    const songT = () => this.sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time));
-    if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle' && !dialogOpen()) void this.begin(); return; }
+    const songT = () => this.sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time)) - this.lag(input);
+    if (this.state === 'idle' || this.state === 'done') { if (this.state === 'idle' && !dialogOpen()) void this.begin(undefined, { midi, time, input }); return; }
+    // A card's result: the key goes on to the next card (and is its first note, if it waits for one): never swallowed.
+    // (not in the first moment of the result: a finger still tapping the card's last beat would skip what it says)
+    if (this.state === 'result') { if (!dialogOpen() && this.card && time - this.resultAt >= RESULT_SETTLE_MS && (this.ui.after.hidden || !this.ui.next.hidden)) this.nextCard({ midi, time, input }); return; }
     if (!this.card) return;
     const c = this.card;
     // A first note a shade before the downbeat (within the on-time tolerance) still counts.
@@ -533,8 +599,9 @@ export class Drill {
       // Your first note starts the card's clock: it counts as played on time; the clicks run from it.
       this.started = true;
       this.ui.help.hidden = true;
-      const t0 = c.steps[0]?.t ?? 0;
-      this.sound.play([], this.clicks(), t0, 1, false, true);
+      // The clock runs from when the key went down (a key that brought the card arrives a moment after it was pressed).
+      const t0 = c.steps[0]?.t ?? 0, since = Math.min(1000, Math.max(0, performance.now() - time));
+      this.sound.play([], this.clicks(), t0 + since, 1, false, true);
       this.played.push({ midi: this.asWanted(midi, t0), key: midi, t: t0, speed: 1, at: time });
       this.status('Play', this.level.metronome ? 'With the clicks' : '');
       this.watchEnd();
@@ -571,6 +638,7 @@ export class Drill {
     const c = this.card!;
     this.stopSound();
     this.state = 'result';
+    this.resultAt = performance.now();
     this.ui.help.hidden = true;
     this.ui.after.hidden = true; // (a notes-only card's Skip)
     const marks: Record<string, string> = {};
@@ -579,15 +647,17 @@ export class Drill {
     if (c.timed) {
       // How long the key pressed sounded (name only: not the written note's octave it counts for; review 2026-10-15).
       const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor((p as Press).key, p.at));
-      const r = judge(c.steps.map((s) => ({ t: s.t, keys: s.keys, durs: s.keys.map(() => s.hold) })), this.played, ON_TIME_MS[this.tolKey()], held);
-      for (const o of r.offNotes) marks[`${c.steps[o.k].gi}:${o.midi}`] = o.kind === 'missed' ? MISSED : OFF_TIME;
-      wrongKeys = r.wrongKeys.map((w) => w.midi);
+      const steps = c.steps.map((s) => ({ t: s.t, keys: s.keys, durs: s.keys.map(() => s.hold) }));
+      // A rhythm card: any key or tap is the note due, one tap a note (taps together are one), extra taps counted.
+      const r = c.rhythm ? judgeRhythm(steps, this.played, ON_TIME_MS[this.tolKey()], held) : judge(steps, this.played, ON_TIME_MS[this.tolKey()], held);
+      for (const o of r.offNotes) marks[`${c.steps[o.k].gi}:${c.rhythm ? c.steps[o.k].keys[0] : o.midi}`] = o.kind === 'missed' ? MISSED : OFF_TIME;
+      wrongKeys = c.rhythm ? [] : r.wrongKeys.map((w) => w.midi);
       clean = r.onTime === r.total && !r.wrong;
       const say = (kind: string) => r.offNotes.filter((o) => o.kind === kind).map((o) => shown(noteName(o.midi, c, o.k)));
-      // (at "keys, no music" how many, not which by name: the keys show which; 2026-10-16)
-      const named = this.level.rung !== 0;
+      // (at "keys, no music" how many, not which by name: the keys show which; 2026-10-16; a rhythm card never names)
+      const named = this.level.rung !== 0 && !c.rhythm;
       const parts = [['early', say('early')], ['late', say('late')], ['let go early', say('short')], ['missed', say('missed')]].filter(([, l]) => l.length).map(([kind, l]) => `${named ? (l as string[]).join(' ') : `${l.length} ${l.length === 1 ? 'note' : 'notes'}`} ${kind}`);
-      if (r.wrong) parts.push(`${r.wrong} wrong ${r.wrong === 1 ? 'key' : 'keys'}`);
+      if (r.wrong) parts.push(c.rhythm ? `${r.wrong} extra ${r.wrong === 1 ? 'tap' : 'taps'}` : `${r.wrong} wrong ${r.wrong === 1 ? 'key' : 'keys'}`);
       text = clean ? 'clean' : `${r.onTime} of ${r.total} on time and held · ${parts.join(' · ')}`;
     } else {
       wrongKeys = this.wrong;
@@ -605,7 +675,7 @@ export class Drill {
     else this.results.push(result);
     // The music (also for name and ear cards: now you see what it was); at "keys, no music" none: the keys say it.
     void this.drawCard(this.level.rung !== 0, marks);
-    this.ui.name.textContent = this.level.rung >= 4 ? c.item.name : '';
+    this.ui.name.textContent = this.level.rung >= 4 && !c.rhythm ? c.item.name : ''; // (a rhythm card's name is its pattern written short: for the log)
     this.ui.name.className = 'ex-name small';
     this.keys.light([]);
     this.keys.wrong([...new Set(wrongKeys)]);
@@ -617,7 +687,7 @@ export class Drill {
       this.later(CLEAN_NEXT_MS, () => { if (this.card === card && this.state === 'result') this.nextCard(); });
       return;
     }
-    this.status('Not quite', text, 'bad');
+    this.status('Not quite', `${text} · ${c.rhythm ? 'a tap' : 'a key'} goes on to the next card`, 'bad');
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = false;
     this.ui.next.textContent = 'Next';
@@ -668,7 +738,7 @@ export class Drill {
   }
 
   private later(ms: number, f: () => void): void { this.timers.push(window.setTimeout(f, Math.max(0, ms))); }
-  private stopSound(): void { clearInterval(this.ticker); clearTimeout(this.hintTimer); this.sound.stop(); }
+  private stopSound(): void { clearInterval(this.ticker); clearInterval(this.lightTicker); clearTimeout(this.hintTimer); this.sound.stop(); this.pad?.light(false); }
   private stopAll(): void {
     for (const t of this.timers) clearTimeout(t);
     this.timers = [];

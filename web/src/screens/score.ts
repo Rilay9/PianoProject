@@ -781,7 +781,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     try { $('keyboard').setPointerCapture(id); } catch { /* not a live pointer */ } // (lets go off the keys too: review, 2026-10-15)
     touchKeys.set(id, { midi: m, stop: sound.noteNow(m, 90, () => touchKeys.get(id)?.midi === m) });
     midi.down.add(m);
-    midi.onKey({ midi: m, on: true, velocity: 90, time: performance.now() });
+    midi.onKey({ midi: m, on: true, velocity: 90, time: performance.now(), source: 'screen' });
   });
   const liftKey = (e: PointerEvent) => {
     const t = touchKeys.get(e.pointerId);
@@ -790,7 +790,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     void t.stop.then((stop) => stop());
     if ([...touchKeys.values()].some((x) => x.midi === t.midi)) return;
     midi.down.delete(t.midi);
-    midi.onKey({ midi: t.midi, on: false, velocity: 0, time: performance.now() });
+    midi.onKey({ midi: t.midi, on: false, velocity: 0, time: performance.now(), source: 'screen' });
   };
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) $('keyboard').addEventListener(ev, liftKey);
   $('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());

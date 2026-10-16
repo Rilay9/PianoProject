@@ -6,5 +6,8 @@
   "cadence-c.json",
   "melodies-c.json",
   "scales-up.json",
-  "black-keys-middle.json"
+  "black-keys-middle.json",
+  "rhythm-steady-beat.json",
+  "rhythm-quarter-half.json",
+  "rhythm-whole.json"
 ]

@@ -31,6 +31,7 @@ import type { ScorePreset } from './activity';
 import { createMetronomeScreen } from './screens/metronome';
 import { createShell } from './screens/shell';
 import { createExerciseScreen } from './screens/exercise';
+import { createCalibration } from './screens/calibrate';
 import { createLabScreen } from './screens/lab';
 import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
 import { createPdfScreen } from './screens/pdf';
@@ -63,7 +64,9 @@ let offlineNews = '';
 const scoreScreen = createScoreScreen(app);
 const memoriseScreen = createMemoriseScreen(app, scoreScreen);
 // Every screen's own Done (or ←) takes its place off the stack (nav.ts), as Android Back does.
-const exerciseScreen = createExerciseScreen(app, () => nav.closedItself('exercise'));
+// The timing check (owner, 2026-10-16): a panel over any screen, from Settings or a rhythm set's first visit.
+const calibration = createCalibration(app);
+const exerciseScreen = createExerciseScreen(app, () => nav.closedItself('exercise'), () => calibration.open());
 // Free play: just the keys, named.
 const freePlay = new FreePlay($('freeplay'), sound);
 freePlay.onClose = () => { app.stayAwake(); nav.closedItself('freeplay'); };
@@ -239,6 +242,7 @@ remote.onCommand = (c) => { if (!app.dialogOpen()) showing().command(c); };
 midi.onKey = (e) => {
   holds.key(e.midi, e.on, e.time); // how long each note sounds (every key, the score's touch keys too)
   app.strip.setPressed(midi.down);
+  if (calibration.key(e)) return; // (the timing check open: its taps, nothing else)
   if (remote.take(e)) return;
   if (e.on && app.dialogOpen() && showing().panel) return; // a panel is open: keys don't count (letting go still does)
   showing().key(e);
@@ -336,6 +340,7 @@ $<HTMLInputElement>('log-autodelete').addEventListener('change', (e) => { setAut
 // ---- Settings (⚙ on Home; owner, 2026-10-15): app-wide only, in the app's own stores (settings.ts piano-web.app.v1,
 // the remote, the log, the backup). The Tempo panel inside a piece changes the same piano and click settings.
 function fillSettings(): void {
+  calibration.fill();
   const s = settingsFor('');
   for (const b of document.querySelectorAll<HTMLButtonElement>('#v-settings [data-out]')) b.setAttribute('aria-pressed', String(b.dataset.out === s.pianoOut));
   for (const b of document.querySelectorAll<HTMLButtonElement>('#v-settings [data-click]')) b.setAttribute('aria-pressed', String(b.dataset.click === s.click));
@@ -611,7 +616,7 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()), started: { ...sound.started } }),
-  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, lab: () => labScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
+  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, pad: () => exerciseScreen.debug().pad, calibration: () => calibration.debug(), lab: () => labScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
   readScore: (xml: string, name?: string) => readScore(xml, name),
   pieces: () => app.pieces.map((p) => ({ id: p.id, title: p.title })),
   nav: () => nav.places().map((p) => p.name), shell: () => ({ showing: shell.showing, tab: shell.tab, view: [...document.querySelectorAll<HTMLElement>('#shell .view')].find((v) => !v.hidden)?.id ?? null }),

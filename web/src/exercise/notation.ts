@@ -3,6 +3,8 @@
 // included; bar lines where the music they came from had them, otherwise each item its own bar (a passage
 // with no bars of its own: bars of four). One staff, treble or bass for the range, or both staves split at
 // middle C when it spans them. A highlighted item is drawn blue.
+// A rhythm card (owner, 2026-10-16) is drawn on a one-line rhythm staff instead (rhythmXml): a percussion clef, its time
+// signature and bar lines, notes with no pitch on the line, eighth pairs beamed, rests.
 
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { midiOf, type Item } from './items';
@@ -91,6 +93,48 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
 }
 
 /**
+ * A rhythm card on a one-line staff (owner, 2026-10-16): the percussion clef, the time signature (when the item has
+ * one), bar lines where its bars are, every note on the line (unpitched, E4 on a one-line staff, stems up), an eighth
+ * pair within a beat beamed, rests as written; lengths the notation has no one value for are tied, as itemsXml does.
+ * marks: "group:midi" -> colour, as itemsXml (a rhythm card's notes all have the one pitch they sound on).
+ */
+export function rhythmXml(item: Item, marks: Record<string, string> = {}): string {
+  const meter = item.meter;
+  const groups = item.groups.map((g, gi) => ({ g, gi, beats: item.beats?.[gi] ?? 1, bar: item.bars?.[gi] ?? 0 }));
+  const bars: (typeof groups)[] = [];
+  for (const x of groups) { if (!bars.length || bars.at(-1)![0].bar !== x.bar) bars.push([]); bars.at(-1)!.push(x); }
+  const unpitched = '<unpitched><display-step>E</display-step><display-octave>4</display-octave></unpitched>';
+  const measures = bars.map((bar, n) => {
+    const time = meter ? `<time><beats>${meter.beats}</beats><beat-type>${meter.beatType}</beat-type></time>` : '';
+    const attrs = n === 0 ? `<attributes><divisions>${DIVISIONS}</divisions><key print-object="no"><fifths>0</fifths></key>${time}<clef><sign>percussion</sign></clef><staff-details><staff-lines>1</staff-lines></staff-details></attributes>` : '';
+    let at = 0; // quarter notes from the bar's start
+    const body = bar.map((x, i) => {
+      const parts = values(x.beats);
+      const start = at;
+      at += x.beats;
+      // An eighth on a beat with the next eighth after it in the same beat: the two beamed.
+      const eighth = parts.length === 1 && parts[0].type === 'eighth' && !parts[0].dot && x.g.length > 0;
+      const next = bar[i + 1], prev = bar[i - 1];
+      const begins = eighth && Math.abs(start - Math.round(start)) < 1e-6 && next?.g.length && next.beats === 0.5;
+      const ends = eighth && Math.abs(start - 0.5 - Math.floor(start)) < 1e-6 && prev?.g.length && prev.beats === 0.5;
+      return parts.map((v, k) => {
+        const tail = `<duration>${Math.round(v.beats * DIVISIONS)}</duration>`;
+        const type = `<voice>1</voice><type>${v.type}</type>${v.dot ? '<dot/>' : ''}`;
+        if (!x.g.length) return `<note><rest/>${tail}${type}</note>`;
+        const first = k === 0, last = k === parts.length - 1;
+        const c = marks[`${x.gi}:${midiOf(x.g[0])}`] ?? null;
+        const ties = parts.length > 1 ? `${first ? '' : '<tie type="stop"/>'}${last ? '' : '<tie type="start"/>'}` : '';
+        const tied = parts.length > 1 ? `<notations>${first ? '' : '<tied type="stop"/>'}${last ? '' : '<tied type="start"/>'}</notations>` : '';
+        const beam = begins ? '<beam number="1">begin</beam>' : ends ? '<beam number="1">end</beam>' : '';
+        return `<note${c ? ` color="${c}"` : ''}>${unpitched}${tail}${ties}${type}<stem>up</stem>${c ? `<notehead color="${c}">normal</notehead>` : ''}${beam}${tied}</note>`;
+      }).join('');
+    }).join('');
+    return `<measure number="${n + 1}">${attrs}${body}</measure>`;
+  }).join('');
+  return `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="3.1"><part-list><score-part id="P1"><part-name print-object="no">x</part-name></score-part></part-list><part id="P1">${measures}</part></score-partwise>`;
+}
+
+/**
  * Draws exercise notation into a box; each show() replaces what was there. The music keeps one size (the chosen
  * one) and builds from the left: a chain longer than the room wraps onto more lines, and when the lines are taller
  * than the room the box scrolls, keeping the item being given in view (owner, 2026-10-12: fixed size, wrap and
@@ -132,12 +176,13 @@ export class ExerciseNotation {
     });
   }
 
-  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): Promise<void> {
+  /** rhythm: the first item as a rhythm card on a one-line staff (rhythmXml). */
+  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false): Promise<void> {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
     this.onShown(true);
-    await this.osmd.load(itemsXml(items, lit, passage, meter, fifths, marks));
+    await this.osmd.load(rhythm ? rhythmXml({ ...items[0], meter: meter ?? items[0].meter }, marks) : itemsXml(items, lit, passage, meter, fifths, marks));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.loaded = true;
     this.draw();

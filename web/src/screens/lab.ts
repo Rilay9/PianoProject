@@ -668,9 +668,10 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   // Keys: from the MIDI keyboard and the screen's keys, timed on the band's clock at the moment the key moved (the
   // keyboard's own time, not when the page got round to it). A key's release is kept: a chord is its notes held together.
-  keys.onKey = (m, on, time) => {
+  keys.onKey = (m, on, time, input) => {
     if (!running || pausedRound !== null) return;
-    const songT = sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time)) * speed();
+    // (judged against the band as heard: it always plays on the phone, whose sound reaches the ear heardDelayMs late; 2026-10-16)
+    const songT = sound.songTime() - (Math.min(1000, Math.max(0, performance.now() - time)) + sound.heardDelayMs('clicks', input)) * speed();
     if (!on) { const p = held.get(m); if (p) { p.off = songT - p.round * roundMs(); held.delete(m); } return; }
     let { round } = where(songT);
     // A shade before the next round (or the count-in's end) is the next round's first chord, played a little early.

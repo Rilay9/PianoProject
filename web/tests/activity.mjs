@@ -19,6 +19,16 @@ ok('every activity file in the folder is in index.json, and every listed one is 
 // the app's scores or, by its "u-" id, a catalogue piece (owner, 2026-10-15; tests/named-pieces.mjs).
 const named = namedPieces();
 const sets = JSON.parse(readFileSync(pub('content/sets/index.json'), 'utf8'));
+/** A rhythm set (2026-10-16) played where it cannot be: Simon (it has no rhythm), or Drills at rung 4 or "notes only" (the
+ * screen plays these as rung 3 and normal timing; a step asking for them is a mistake). '' when fine. */
+const rhythmMisuse = (a) => {
+  if (!('set' in a) || !sets.includes(`${a.set}.json`)) return '';
+  if (JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')).kind !== 'rhythm') return '';
+  if (a.screen === 'simon') return `set "${a.set}" is a rhythm set: Drills only (Simon has no rhythm)`;
+  if (a.level?.rung === 4) return `set "${a.set}" is a rhythm set: no rung 4 (name only)`;
+  if (a.level?.onTime === 'notes') return `set "${a.set}" is a rhythm set: no "notes only"`;
+  return '';
+};
 const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).charts;
 const read = {};
 // (2026-10-15, interfaces review) What the reader lets through: a title that is not text is replaced by the id
@@ -43,8 +53,16 @@ for (const f of index) {
     if (named.barsOf(a.piece) && a.bars) ok(`${f}: bars ${a.bars.join('-')} are inside the piece`, !named.problem(a.piece, a.bars), named.problem(a.piece, a.bars));
   }
   if ('set' in a) ok(`${f}: its set "${a.set}" is in the sets`, sets.includes(`${a.set}.json`), `sets: ${sets.join(', ')}`);
+  if ('set' in a) ok(`${f}: a rhythm set only in Drills, not at rung 4 or notes only`, !rhythmMisuse(a), rhythmMisuse(a));
   if ('chart' in a) ok(`${f}: its chart "${a.chart}" is in the Lab`, charts.includes(`charts/${a.chart}.json`), `charts: ${charts.join(', ')}`);
 }
+
+for (const [what, a, want] of [
+  ['a rhythm set in Simon', { screen: 'simon', set: 'rhythm-quarter-half', level: {} }, /Drills only/],
+  ['a rhythm set at rung 4', { screen: 'drills', set: 'rhythm-quarter-half', level: { rung: 4 } }, /no rung 4/],
+  ['a rhythm set judged on notes only', { screen: 'drills', set: 'rhythm-whole', level: { onTime: 'notes' } }, /no "notes only"/],
+]) ok(`refused by the content check: ${what}`, want.test(rhythmMisuse(a)), rhythmMisuse(a) || 'accepted');
+ok('a rhythm set in Drills at rung 3 is fine', rhythmMisuse({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }) === '', rhythmMisuse({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }));
 
 // A2: what an activity reads to, one of each kind that carries more than a name (not only that it does not throw).
 const same = (got, want) => JSON.stringify(got) === JSON.stringify(want);

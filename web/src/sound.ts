@@ -5,6 +5,7 @@
 import { DrumMachine, Soundfont, SplendidGrandPiano } from 'smplr';
 import type { MidiInput } from './midi';
 import type { Click } from './settings';
+import { calibrationFor, type TapInput } from './calibration.ts'; // (with .ts: the checks run this file in Node)
 
 /**
  * A note to play: when (ms of the song at speed 1), which key, for how long (ms at speed 1), how hard (1-127), and on
@@ -125,10 +126,30 @@ export class Sound {
 
   setClick(click: Click): void { this.click = click; }
 
-  /** Where the song is now, in ms at speed 1: the marker's clock while sound plays. */
+  /** Where the song is now, in ms at speed 1: the marker's clock while sound plays (what is heard lags it: heardDelayMs). */
   songTime(): number {
     if (!this.ctx) return this.anchorT;
     return this.anchorT + (this.ctx.currentTime - this.anchorCtx) * 1000 * this.speed;
+  }
+
+  /**
+   * How long after the clock (songTime) the phone's sound reaches the ear, in real ms: the audio output's latency,
+   * `baseLatency + outputLatency` (2026-10-16; Chrome Android has outputLatency from 102; a Bluetooth headset adds a
+   * lot). A learner plays with what they hear, so a judge compares played times with the clock as heard: songTime minus
+   * this (times the speed). Each part counts when the browser gives it; neither given: 0. part: what the learner times
+   * against: 'piano' is 0 when the piano plays on the MIDI keyboard (no phone delay); 'clicks' (and the band) always
+   * sound on the phone. input: how the note was played (screen taps or a MIDI keyboard): a timing calibration kept for it
+   * on this device (calibration.ts, owner 2026-10-16) is used instead of the browser's figure, which it already holds.
+   */
+  heardDelayMs(part: 'piano' | 'clicks' = 'piano', input?: TapInput): number {
+    if (part === 'piano' && this.keyboard) return 0;
+    const kept = input ? calibrationFor(input) : null;
+    if (kept) return kept.ms;
+    const c = this.ctx as (AudioContext & { outputLatency?: number }) | null;
+    if (!c) return 0;
+    const base = typeof c.baseLatency === 'number' && Number.isFinite(c.baseLatency) ? c.baseLatency : 0;
+    const out = typeof c.outputLatency === 'number' && Number.isFinite(c.outputLatency) ? c.outputLatency : 0;
+    return Math.min(1000, Math.max(0, (base + out) * 1000)); // (never more than a second: a figure past that is not believed)
   }
 
   /**
@@ -218,6 +239,36 @@ export class Sound {
     }
     if (this.voices.length > 200) this.voices = this.voices.filter((v) => v.end > ctx.currentTime);
     if (this.clicks.length > 50) this.clicks = this.clicks.slice(-20);
+  }
+
+  /** For checks: the last tap sound, when it was asked for (performance.now() ms) and when it was set to start (the same clock). */
+  lastTap: { asked: number; starts: number } | null = null;
+  /**
+   * The rhythm pad's tap (2026-10-16, ChatGPT's review of lesson 2: a tap must sound, so it can cover the click): a short
+   * low knock, the woodblock's burst of noise through a much lower and wider band (600 Hz, against the clicks' 1600 and
+   * 2400 Hz, or the beep's and sine's tones), so it is never mistaken for the metronome. Played at once, on the clicks'
+   * path (their volume). Returns false when the sound is not started yet (a tap before the first tap's start: silent).
+   */
+  tapNow(): boolean {
+    const ctx = this.ctx;
+    if (!ctx || ctx.state !== 'running') { void this.prepare(false).catch(() => {}); return false; }
+    const when = ctx.currentTime, gain = ctx.createGain();
+    gain.connect(this.clickGain!);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 600;
+    filter.Q.value = 3;
+    const noise = ctx.createBufferSource();
+    noise.buffer = this.noiseBuffer();
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.gain.setValueAtTime(1.6, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.06);
+    noise.start(when);
+    noise.stop(when + 0.06);
+    noise.onended = () => gain.disconnect();
+    this.lastTap = { asked: performance.now(), starts: performance.now() + (when - ctx.currentTime) * 1000 };
+    return true;
   }
 
   // The three click sounds are the old app's: a woodblock (a burst of noise through a narrow band-pass, which

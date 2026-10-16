@@ -1,0 +1,6 @@
+{
+  "title": "Quarter and half notes",
+  "kind": "rhythm",
+  "tempo": 72,
+  "generate": { "values": ["quarter", "half"], "meter": "4/4", "bars": 2, "feature": "half" }
+}

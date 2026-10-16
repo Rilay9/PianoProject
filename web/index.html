@@ -159,6 +159,9 @@
       <button id="ex-finish" type="button" class="btn" hidden>Finish</button>
     </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
+    <!-- A rhythm set: one big pad to tap, in place of the keys (owner, 2026-10-16; exercise/pad.ts). -->
+    <div id="ex-calib" class="ex-calib" hidden><span>Check your tap timing on this phone (a few clicks to tap along with)?</span><button id="ex-calib-go" type="button" class="btn main">Calibrate</button><button id="ex-calib-no" type="button" class="btn">Not now</button></div>
+    <div id="ex-pad" class="ex-pad" aria-label="Rhythm pad: tap for each note, hold for long notes" hidden><span>Tap · hold for long notes</span></div>
   </section>
 
   <!-- The accompaniment lab (screens/lab.ts): Lead or Accompaniment, a step, then the beat, the chord now and next,
@@ -347,13 +350,25 @@
       </fieldset>
       <div class="row"><span>Tempo</span><button id="d-slower" type="button" class="btn">−5</button><output id="d-bpm"></output><button id="d-faster" type="button" class="btn">+5</button></div>
       <h3>Display</h3>
-      <fieldset class="row"><legend>Under the music</legend>
+      <fieldset id="d-under-set" class="row"><legend>Under the music</legend>
         <label><input type="radio" name="d-under" value="keyboard"> Keyboard</label>
         <label><input type="radio" name="d-under" value="nothing"> Nothing</label>
       </fieldset>
-      <p class="note">A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app's.</p>
+      <p id="d-note" class="note">A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app's.</p>
       <p class="help-row"><button type="button" class="lnk" data-help="drills">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
+
+  <!-- The timing check (owner, 2026-10-16; screens/calibrate.ts). -->
+  <dialog id="calib-dialog" aria-labelledby="calib-title">
+    <form method="dialog">
+      <h2 id="calib-title">Timing check</h2>
+      <p class="note">On some phones and headphones the sound, or a tap, arrives a little late, so a tap on time can be called late. This measures it: the app plays a few clicks and you tap on each one. It is kept for this phone, separately for screen taps and a MIDI keyboard.</p>
+      <div id="calib-pad" class="ex-pad calib-pad" aria-label="Tap pad for the timing check"><span>Tap here</span></div>
+      <p id="calib-status" class="ex-status"></p>
+      <p id="calib-sub" class="note"></p>
+      <div class="actions"><button type="button" id="calib-start" class="btn">Start</button><button value="close">Done</button></div>
     </form>
   </dialog>
 
@@ -365,6 +380,7 @@
         <button type="button" data-as="drill">Drills<small>flashcards: each item a card to play, judged as it is played</small></button>
         <button type="button" data-as="simon">Simon<small>a chain that grows by one each round, played from memory</small></button>
       </div>
+      <p id="ex-as-rhythm" class="note" hidden>A rhythm set is practised in Drills: Simon has no rhythm.</p>
       <div class="actions"><button value="close">Close</button></div>
     </form>
   </dialog>
@@ -686,6 +702,7 @@
             <div class="set-row"><span class="set-name">Piano plays through<small id="set-out-note" hidden></small></span><span class="seg" role="group" aria-label="Piano plays through"><button type="button" data-out="phone">Phone</button><button type="button" data-out="keyboard">Keyboard</button></span></div>
             <label class="set-row"><span class="set-name">Piano volume</span><input id="set-piano-vol" type="range" min="0" max="100" step="5"></label>
             <label class="set-row"><span class="set-name">Click volume</span><input id="set-click-vol" type="range" min="0" max="100" step="5"></label>
+            <div class="set-row"><span class="set-name">Tap timing<small id="set-calib-val"></small></span><button id="set-calib-run" type="button" class="btn">Check</button><button id="set-calib-reset" type="button" class="btn">Reset</button></div>
             <div class="set-row"><span class="set-name">Click sound</span><span class="seg" role="group" aria-label="Click sound"><button type="button" data-click="wood">Wood</button><button type="button" data-click="beep">Beep</button><button type="button" data-click="high">High</button></span></div>
           </div>
           <p class="set-sec">Keyboard</p>

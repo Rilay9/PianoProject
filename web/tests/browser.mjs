@@ -4,6 +4,7 @@
 //
 // usage: npm run check:browser              (builds, serves on :5194, runs every case)
 //        node tests/browser.mjs --url http://localhost:5196/PianoProject/   (a build served elsewhere: no build, no server)
+//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills)
 // PIANO_CHROMIUM names a Chromium when Playwright's own build is not installed (a cloud session: /opt/pw-browsers/chromium).
 // Not here: the library store's lost update (F03; shown with the store module through the dev server, 0 of 10 before,
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
@@ -16,6 +17,9 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const urlAt = process.argv.indexOf('--url');
+// --only rhythm: just that section (2026-10-16); the others run when no --only is given.
+const onlyAt = process.argv.indexOf('--only');
+const only = onlyAt > 0 ? process.argv[onlyAt + 1] : null;
 const PORT = 5194;
 const BASE = urlAt > 0 ? process.argv[urlAt + 1] : `http://localhost:${PORT}/PianoProject/`;
 const here = (p) => fileURLToPath(new URL(p, import.meta.url));
@@ -162,6 +166,276 @@ try {
     return { names, said: await message(page) };
   }
 
+  // ---- Rhythm sets in Drills (owner, 2026-10-16): the pad, the one-line staff, tapping in time ------------------------
+  // A plain phone tab (touch, no MIDI permission), taps by position: pointer events sent to what lies at the pad's centre
+  // (document.elementFromPoint), timed in the page from the app's own schedule (debug: the card's steps, the clock now and
+  // the delay it takes off for what is heard), each held most of its length. `--only rhythm` runs this section alone.
+  // RHYTHM_SHOTS names a folder for the screenshots (none taken without it).
+  if (!only || only === 'rhythm') {
+    const SHOTS = process.env.RHYTHM_SHOTS;
+    const shot = async (page, name) => { if (SHOTS) await page.screenshot({ path: join(SHOTS, `${name}.png`) }); };
+    const RH_ACTS = {
+      'check-rh-read': { title: 'Check: read and tap', screen: 'drills', set: 'rhythm-quarter-half', level: { rung: 3, start: 'clicks', metronome: true, onTime: 'normal', cards: 1 } },
+      'check-rh-echo': { title: 'Check: hear it, pad lit', screen: 'drills', set: 'rhythm-steady-beat', level: { rung: 0, start: 'clicks', metronome: true, onTime: 'normal', cards: 1 } },
+      'check-rh-first': { title: 'Check: the first tap', screen: 'drills', set: 'rhythm-quarter-half', level: { rung: 3, start: 'first', metronome: false, onTime: 'normal', cards: 2 } },
+      'check-rh-keys': { title: 'Check: a set of notes', screen: 'drills', set: 'five-notes-c', level: { rung: 3, start: 'first', onTime: 'notes', cards: 1 } },
+    };
+    async function rhTab(viewport, init) {
+      const ctx = await browser.newContext({ viewport, hasTouch: true, serviceWorkers: 'block' });
+      await ctx.route(/\/content\/activities\/check-rh-[a-z]+\.json$/, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(RH_ACTS[r.request().url().match(/(check-rh-[a-z]+)\.json$/)[1]]) }));
+      const page = await ctx.newPage();
+      if (init) await page.addInitScript(init);
+      const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+      return { ctx, page, errors };
+    }
+    const startTap = async (page) => { if (await page.evaluate(() => !document.getElementById('tap-to-start')?.hidden)) { await page.touchscreen.tap(Math.round(page.viewportSize().width / 2), 60); await page.waitForTimeout(300); } };
+    const centre = (page, id) => page.evaluate((id) => { const r = document.getElementById(id).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }, id);
+    const padBox = (page) => page.evaluate(() => {
+      const p = document.getElementById('ex-pad'), r = p.getBoundingClientRect(), k = document.getElementById('ex-keyboard').getBoundingClientRect();
+      const at = (x, y) => document.elementFromPoint(x, y)?.closest('#ex-pad') === p;
+      const pts = [[0.5, 0.5], [0.1, 0.2], [0.9, 0.8], [0.5, 0.95]].map(([fx, fy]) => at(r.left + fx * r.width, r.top + fy * r.height));
+      return { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), bottom: Math.round(r.bottom), shown: !p.hidden && r.height > 0, onTop: pts.every(Boolean), keys: Math.round(k.height), vw: innerWidth, vh: innerHeight };
+    });
+    /** Taps the card in the page by position at the app's own times (+ shift ms on one note), each held 90% of its room. */
+    const tapCard = (page, shiftIndex = -1, shiftMs = 0, after = null) => page.evaluate(async ({ shiftIndex, shiftMs, after }) => {
+      const D = window.__pianoDebug;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      let d = null;
+      for (let i = 0; i < 1500; i++) { d = D.drill(); if ((d.state === 'countin' && d.now < -300) || (d.state === 'turn' && !d.started)) break; await sleep(10); }
+      if (!(d.state === 'countin' || d.state === 'turn')) return { error: `never your turn: ${d.state}` };
+      const r = document.getElementById('ex-pad').getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      const zero = performance.now() - d.now; // performance.now() when the card's clock reads 0
+      const fire = (type, id) => { const el = document.elementFromPoint(x, y); el.dispatchEvent(new PointerEvent(type, { pointerId: id, bubbles: true, cancelable: true, clientX: x, clientY: y, pointerType: 'touch', isPrimary: true })); return el.closest('#ex-pad') ? 'pad' : el.id || el.tagName; };
+      const hit = [], sounded = [];
+      await Promise.all(d.steps.map((s, i) => new Promise((done) => {
+        const at = zero + s.t + (after ?? d.heardDelay) + (i === shiftIndex ? shiftMs : 0); // (after: a fixed delay instead of the app's)
+        const room = (d.steps[i + 1]?.t ?? s.t + s.dur) - s.t;
+        setTimeout(() => {
+          hit.push(fire('pointerdown', 20 + i));
+          const p = D.pad(); sounded.push(p && p.sounded !== null ? Math.round((p.sounded - p.down) * 10) / 10 : null);
+          setTimeout(() => { fire('pointerup', 20 + i); done(); }, Math.min(s.dur, room) * 0.9);
+        }, at - performance.now());
+      })));
+      let status = '';
+      for (let i = 0; i < 300; i++) { status = document.getElementById('ex-status').textContent; if (/✓|Not quite/.test(status)) break; await sleep(20); }
+      return { hit, sounded, notes: d.steps.length, heardDelay: d.heardDelay, status, sub: document.getElementById('ex-sub').textContent };
+    }, { shiftIndex, shiftMs, after });
+    /** Staff lines in the drawn card: horizontal strokes across most of it, by height (one line: 1). */
+    const staffLines = (page) => page.evaluate(() => {
+      const svg = document.querySelector('#ex-notation svg');
+      if (!svg) return -1;
+      const ys = [...svg.querySelectorAll('path, rect, line')].map((p) => p.getBBox()).filter((b) => b.height < 2 && b.width > 100).map((b) => Math.round(b.y));
+      return new Set(ys).size;
+    });
+    const NAME = /[A-G][♯♭#b]?\d|\b[A-G][♯♭]/;
+
+    // Upright 360×780: the pad, the keyboard gone, Level and Practise as…, a card read and tapped on the beat (clean),
+    // its one-line staff, then a card with one note a quarter of a second late (marked late).
+    {
+      const { ctx, page, errors } = await rhTab({ width: 360, height: 780 });
+      await page.goto(`${BASE}?activity=check-rh-read`); await page.waitForTimeout(2000);
+      await startTap(page);
+      const box = await padBox(page);
+      ok(`rhythm, 360×780: the pad shown, full width, about as tall as Free play's keys (min(42vh, 360px) = ${Math.round(Math.min(0.42 * 780, 360))}), on top where a finger lands; no keyboard`, box.shown && box.w >= 340 && Math.abs(box.h - Math.min(0.42 * 780, 360)) <= 4 && box.onTop && box.keys === 0 && box.bottom <= box.vh, JSON.stringify(box));
+      await page.touchscreen.tap(...await centre(page, 'ex-level')); await page.waitForTimeout(300);
+      const level = await page.evaluate(() => ({ rung4: document.querySelector('#drill-dialog input[name="d-rung"][value="4"]').parentElement.hidden, notes: document.querySelector('#drill-dialog input[name="d-onTime"][value="notes"]').parentElement.hidden, rung0: document.querySelector('#drill-dialog input[name="d-rung"][value="0"]').parentElement.textContent.trim() }));
+      ok('rhythm: the Level panel offers no rung 4 and no "notes only", and says the pad', level.rung4 && level.notes && /pad/.test(level.rung0), JSON.stringify(level));
+      await page.keyboard.press('Escape'); await page.waitForTimeout(300);
+      await page.touchscreen.tap(...await centre(page, 'ex-kind')); await page.waitForTimeout(300);
+      const as = await page.evaluate(() => ({ simon: document.querySelector('#ex-as-dialog [data-as="simon"]').hidden, drills: document.querySelector('#ex-as-dialog [data-as="drill"]').hidden, why: !document.getElementById('ex-as-rhythm').hidden }));
+      ok('rhythm: Practise as… offers no Simon for a rhythm set (Drills only, and says why)', as.simon && !as.drills && as.why, JSON.stringify(as));
+      await page.keyboard.press('Escape'); await page.waitForTimeout(300);
+      await page.touchscreen.tap(...await centre(page, 'ex-start'));
+      const clean = await tapCard(page);
+      ok('rhythm, rung 3 (read): a card tapped by position on the beat, holding the halves, comes out clean', !clean.error && clean.hit.every((h) => h === 'pad') && /✓ Clean/.test(clean.status), JSON.stringify(clean));
+      ok('rhythm: every tap on the pad scheduled its tap sound at once (ms from pointerdown to the sound asked for)', clean.sounded?.length === clean.notes && clean.sounded.every((x) => x !== null && x >= 0 && x < 20), JSON.stringify(clean.sounded));
+      await page.waitForTimeout(200);
+      const lines = await staffLines(page);
+      ok('rhythm: the card is drawn on a one-line staff (one staff line in the SVG)', lines === 1, `${lines} lines`);
+      await shot(page, 'r-360x780-clean');
+      await ctx.close();
+      // A card with its second note tapped 250 ms late (On time normal: ±100 ms).
+      const late = await rhTab({ width: 360, height: 780 });
+      await late.page.goto(`${BASE}?activity=check-rh-read`); await late.page.waitForTimeout(2000);
+      await startTap(late.page);
+      await late.page.touchscreen.tap(...await centre(late.page, 'ex-start'));
+      const r = await tapCard(late.page, 1, 250);
+      await late.page.waitForTimeout(600);
+      const marks = await late.page.evaluate(() => [...document.querySelectorAll('#ex-notation svg [fill="#d97706"], #ex-notation svg [fill="#16a34a"]')].length);
+      const lines2 = await staffLines(late.page);
+      ok('rhythm: one note tapped a quarter second late is marked late ("1 note late", amber on the card), no note names', /Not quite/.test(r.status) && /1 note late/.test(r.sub) && !NAME.test(r.sub) && marks > 0 && lines2 === 1, JSON.stringify({ ...r, marks, lines2 }));
+      await shot(late.page, 'r-360x780-result-late');
+      ok('rhythm upright: no page errors', errors.length === 0 && late.errors.length === 0, [...errors, ...late.errors].join(' | '));
+      await late.ctx.close();
+    }
+
+    // The first tap (owner, 2026-10-16: "Make sure to start on the first tap"): on Ready at rung 3, starting on your first
+    // note, one tap on the pad by position starts the set and is the card's first note; the others tapped but the last
+    // leave exactly one missed, the last. Then a tap on the result goes on to the next card (as the result says) and is
+    // that card's first note.
+    {
+      const { ctx, page, errors } = await rhTab({ width: 360, height: 780 });
+      await page.goto(`${BASE}?activity=check-rh-first`); await page.waitForTimeout(2000);
+      await startTap(page);
+      const ready = await page.evaluate(() => window.__pianoDebug.drill().state);
+      const r = await page.evaluate(async () => {
+        const D = window.__pianoDebug, sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+        const p = document.getElementById('ex-pad').getBoundingClientRect(), x = p.left + p.width / 2, y = p.top + p.height / 2;
+        const fire = (type, id) => { const ev = new PointerEvent(type, { pointerId: id, bubbles: true, cancelable: true, clientX: x, clientY: y, pointerType: 'touch', isPrimary: true }); document.elementFromPoint(x, y).dispatchEvent(ev); return ev.timeStamp; };
+        const T = fire('pointerdown', 40);
+        let d = null;
+        for (let i = 0; i < 300; i++) { d = D.drill(); if (d.state === 'turn' && d.started) break; await sleep(10); }
+        const firstHold = Math.min(d.steps[0].dur, d.steps[1].t) * 0.9;
+        setTimeout(() => fire('pointerup', 40), T + firstHold - performance.now());
+        const startedWith = { state: d.state, started: d.started, notes: d.steps.length };
+        // The others but the last, at the card's times from that first tap (its clock runs from it).
+        await Promise.all(d.steps.slice(1, -1).map((s, k) => new Promise((done) => {
+          const i = k + 1, room = d.steps[i + 1].t - s.t;
+          setTimeout(() => { fire('pointerdown', 41 + i); setTimeout(() => { fire('pointerup', 41 + i); done(); }, Math.min(s.dur, room) * 0.9); }, T + s.t - performance.now());
+        })));
+        let status = '';
+        for (let i = 0; i < 400; i++) { status = document.getElementById('ex-status').textContent; if (/✓|Not quite/.test(status)) break; await sleep(20); }
+        const sub = document.getElementById('ex-sub').textContent;
+        const missedAt = [...document.querySelectorAll('#ex-notation svg [fill="#16a34a"]')].length;
+        // A tap at once on the result (a finger still on the last beat) does not skip it (0.8 s settle, 2026-10-16) ...
+        fire('pointerdown', 89); await sleep(60); fire('pointerup', 89); await sleep(100);
+        const early = { state: D.drill().state, card: document.getElementById('ex-left').textContent };
+        // ... a tap after it: the next card, this tap its first note.
+        await sleep(800);
+        fire('pointerdown', 90); await sleep(60); fire('pointerup', 90);
+        let next = null;
+        for (let i = 0; i < 200; i++) { next = D.drill(); if (next.state === 'turn' && next.started) break; await sleep(10); }
+        return { startedWith, status, sub, missedAt, early, next: { state: next.state, started: next.started }, card: document.getElementById('ex-left').textContent };
+      });
+      ok('rhythm, the first tap: on Ready one tap by position starts the set and the card\'s clock (rung 3, starting on your first note)', ready === 'idle' && r.startedWith.state === 'turn' && r.startedWith.started, JSON.stringify({ ready, ...r.startedWith }));
+      ok('rhythm, the first tap: all notes but the last tapped from there: exactly one missed, the last ("1 note missed"), and the result says a tap goes on', /Not quite/.test(r.status) && /of \d+ on time and held · 1 note missed · a tap goes on to the next card$/.test(r.sub) && new RegExp(`^${r.startedWith.notes - 1} of ${r.startedWith.notes}`).test(r.sub), JSON.stringify(r));
+      ok('rhythm, the first tap: a tap at once on the result does not skip it (the result stays on card 1)', r.early.state === 'result' && /Card 1/.test(r.early.card), JSON.stringify(r.early));
+      ok('rhythm, the first tap: a tap on the result goes on to the next card (card 2), its clock started by that tap', r.next.state === 'turn' && r.next.started && /Card 2/.test(r.card), JSON.stringify(r));
+      await shot(page, 'r-360x780-first-tap-next');
+      ok('rhythm first tap: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Timing calibration (owner, 2026-10-16): taps that always come 180 ms after the clock (a slow phone or headset) are
+    // late by the browser's own figure; after a timing check tapped the same way, by position on its pad, a card tapped
+    // 180 ms after the clock comes out clean. The check is offered once, on a rhythm set's first visit.
+    {
+      const SHIFT = 180;
+      const before = await rhTab({ width: 360, height: 780 });
+      await before.page.goto(`${BASE}?activity=check-rh-read`); await before.page.waitForTimeout(2000);
+      await startTap(before.page);
+      await before.page.touchscreen.tap(...await centre(before.page, 'ex-start'));
+      const late = await tapCard(before.page, -1, 0, SHIFT);
+      ok(`calibration: with none kept, a card tapped ${SHIFT} ms after the clock is late (the browser's figure is ${late.heardDelay} ms)`, /Not quite/.test(late.status) && /late/.test(late.sub), JSON.stringify(late));
+      await before.ctx.close();
+      const { ctx, page, errors } = await rhTab({ width: 360, height: 780 });
+      await page.goto(`${BASE}?activity=check-rh-read`); await page.waitForTimeout(2000);
+      await startTap(page);
+      const offer = await page.evaluate(() => !document.getElementById('ex-calib').hidden);
+      await shot(page, 'r-360x780-calibrate-offer');
+      await page.touchscreen.tap(...await centre(page, 'ex-calib-go')); await page.waitForTimeout(400);
+      const open = await page.evaluate(() => document.getElementById('calib-dialog').open);
+      await page.touchscreen.tap(...await centre(page, 'calib-pad')); // (the starting tap: starts the clicks, not measured)
+      const said = await page.evaluate(async (shift) => {
+        const D = window.__pianoDebug, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        let c = null;
+        for (let i = 0; i < 300; i++) { c = D.calibration(); if (c.state === 'running') break; await sleep(10); }
+        const p = document.getElementById('calib-pad').getBoundingClientRect(), x = p.left + p.width / 2, y = p.top + p.height / 2;
+        const fire = (type, id) => document.elementFromPoint(x, y).dispatchEvent(new PointerEvent(type, { pointerId: id, bubbles: true, cancelable: true, clientX: x, clientY: y, pointerType: 'touch', isPrimary: true }));
+        const zero = performance.now() - c.now;
+        await Promise.all(c.clicks.map((t, k) => new Promise((done) => setTimeout(() => { fire('pointerdown', 60 + k); setTimeout(() => { fire('pointerup', 60 + k); done(); }, 120); }, zero + t + shift - performance.now()))));
+        for (let i = 0; i < 300; i++) { c = D.calibration(); if (c.state === 'done') break; await sleep(10); }
+        return { state: c.state, said: c.said, taps: c.taps.length, kept: JSON.parse(localStorage.getItem('piano-web.calibration.v1') ?? '{}').screen ?? null };
+      }, SHIFT);
+      await shot(page, 'r-360x780-calibrate-result');
+      ok(`calibration by position: offered on the first visit; taps ${SHIFT} ms after each click kept as about ${SHIFT} ms for screen taps`, offer && open && said.state === 'done' && said.kept && Math.abs(said.kept.ms - SHIFT) <= 15, JSON.stringify(said));
+      await page.keyboard.press('Escape'); await page.waitForTimeout(400);
+      await page.touchscreen.tap(...await centre(page, 'ex-start'));
+      const clean = await tapCard(page, -1, 0, SHIFT);
+      ok(`calibration: then a card tapped ${SHIFT} ms after the clock comes out clean (the kept delay used instead of the browser's)`, /✓ Clean/.test(clean.status) && clean.heardDelay === said.kept?.ms, JSON.stringify(clean));
+      const offerAgain = await page.evaluate(() => document.getElementById('ex-calib').hidden);
+      ok('calibration: the offer is not made again', offerAgain);
+      ok('calibration: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Rung 0 (hear it, pad lit, no music): the steady-beat card's eight quarters light the pad eight times as they play, no
+    // staff while it plays.
+    {
+      const { ctx, page, errors } = await rhTab({ width: 360, height: 780 });
+      await page.goto(`${BASE}?activity=check-rh-echo`); await page.waitForTimeout(2000);
+      await startTap(page);
+      await page.touchscreen.tap(...await centre(page, 'ex-start'));
+      const seen = await page.evaluate(async () => {
+        const pad = document.getElementById('ex-pad'), out = { flashes: 0, staff: 0, states: new Set() };
+        let was = false;
+        for (let i = 0; i < 700; i++) {
+          const d = window.__pianoDebug.drill();
+          out.states.add(d.state);
+          const lit = pad.classList.contains('lit');
+          if (lit && !was) out.flashes++;
+          was = lit;
+          out.staff = Math.max(out.staff, document.querySelectorAll('#ex-notation svg').length);
+          if (d.state === 'countin' || (d.state === 'turn' && d.started)) break;
+          await new Promise((r) => setTimeout(r, 10));
+        }
+        return { flashes: out.flashes, staff: out.staff, states: [...out.states] };
+      });
+      const steps = (await page.evaluate(() => window.__pianoDebug.drill().steps.length));
+      ok('rhythm, rung 0: the pad lights once for each note as the card is played (8 quarters, 8 flashes), and no staff is drawn', seen.flashes === steps && steps === 8 && seen.staff === 0, JSON.stringify({ ...seen, steps }));
+      await shot(page, 'r-360x780-rung0');
+      ok('rhythm rung 0: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Sideways 844×390 and a tablet 820×1180: the pad shown, on top, a tap on it counted (pressed and sounded); the card
+    // tapped by position comes out clean there too.
+    for (const viewport of [{ width: 844, height: 390 }, { width: 820, height: 1180 }]) {
+      const { ctx, page, errors } = await rhTab(viewport);
+      await page.goto(`${BASE}?activity=check-rh-read`); await page.waitForTimeout(2000);
+      await startTap(page);
+      const box = await padBox(page);
+      const [x, y] = await centre(page, 'ex-pad');
+      await page.mouse.move(x, y); await page.mouse.down(); await page.waitForTimeout(80);
+      const pressed = await page.evaluate(() => ({ pressed: document.getElementById('ex-pad').classList.contains('pressed'), tap: window.__pianoDebug.pad(), state: window.__pianoDebug.drill().state }));
+      await page.mouse.up(); await page.waitForTimeout(300);
+      ok(`rhythm, ${viewport.width}×${viewport.height}: the pad shown (${box.w}×${box.h}), on top where a finger lands, inside the screen, no keyboard; a tap on it presses and sounds`, box.shown && box.onTop && box.keys === 0 && box.bottom <= box.vh && box.h >= 100 && pressed.pressed && pressed.tap?.sounded != null, JSON.stringify({ box, pressed }));
+      // (that tap started the set from Ready: its first card is on its way)
+      const r = await tapCard(page);
+      ok(`rhythm, ${viewport.width}×${viewport.height}: a card tapped by position on the beat comes out clean`, /✓ Clean/.test(r.status), JSON.stringify(r));
+      await page.waitForTimeout(300);
+      await shot(page, `r-${viewport.width}x${viewport.height}`);
+      ok(`rhythm ${viewport.width}: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // For the report (coordinator, 2026-10-16): what the on-screen keys do when tapped in Drills today. Every audio
+    // source the page starts is counted; a key of a set of notes tapped by position.
+    {
+      const { ctx, page, errors } = await rhTab({ width: 360, height: 780 }, () => {
+        window.__started = 0;
+        for (const C of [AudioScheduledSourceNode, AudioBufferSourceNode, OscillatorNode, ConstantSourceNode]) {
+          if (!Object.prototype.hasOwnProperty.call(C.prototype, 'start')) continue;
+          const real = C.prototype.start;
+          C.prototype.start = function (...a) { window.__started++; return real.apply(this, a); };
+        }
+      });
+      await page.goto(`${BASE}?activity=check-rh-keys`); await page.waitForTimeout(2000);
+      await startTap(page);
+      await page.waitForTimeout(500);
+      const key = await page.evaluate(() => { const k = document.querySelector('#ex-keyboard .key.white[data-midi="64"]'); const r = k.getBoundingClientRect(); return [r.left + r.width / 2, r.bottom - 12]; });
+      const tapKey = async () => { const n = await page.evaluate(() => window.__started); await page.mouse.move(...key); await page.mouse.down(); await page.waitForTimeout(400); await page.mouse.up(); await page.waitForTimeout(300); return (await page.evaluate(() => window.__started)) - n; };
+      // The first key loads the piano's samples (it is silent: let go before they came); later keys sound.
+      const first = await tapKey();
+      await page.waitForTimeout(4000);
+      const second = await tapKey();
+      ok('Drills (a set of notes): an on-screen key tapped by position sounds the piano (the first key of the visit fetches its samples: it sounds only if still held when they arrive)', second > 0, `audio sources started by the first key ${first}, by a key 4 s later ${second}`);
+      ok('Drills keys: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+  }
+  // ---- end of rhythm sets -------------------------------------------------------------------------------------------
+  if (!only) {
   // F01: a backup holds every file; a missing file is named; an unreadable library is refused.
   {
     const { ctx, page, errors } = await fresh();
@@ -908,7 +1182,7 @@ try {
       await practice(page, 'Drills'); await wait(page, 1500);
       const d = () => page.evaluate(() => window.__pianoDebug.drill());
       await page.selectOption('#ex-set', 'five-notes-c'); await wait(page, 300);
-      await chord(page, [60]);
+      await press(page, '#ex-start'); // (Start: a key on Ready is now the card's first note too, owner 2026-10-16: checked in the rhythm section)
       await until(page, async () => (await d()).state === 'turn');
       const card = (await d()).steps.map((s) => s.keys);
       await press(page, '#ex-level'); await wait(page, 150);
@@ -3257,7 +3531,7 @@ try {
       {
         const { ctx, page, errors } = await l1Tab({ width: 360, height: 780 });
         const path = await pathText(page);
-        ok('test rungs, the checks: Path shows the test rung and its lessons as before', /Test: the app’s lesson pages|Test: the app's lesson pages/.test(path) && /Test: the Minuet/.test(path), path.slice(-300).replace(/\n/g, ' / '));
+        ok('test rungs, the checks: Path shows the test rung (its lessons folded, as a rung not being played is)', /Test: the app’s lesson pages|Test: the app's lesson pages/.test(path), path.slice(-300).replace(/\n/g, ' / '));
         ok('test rungs, the checks: no page errors', errors.length === 0, errors.join(' | '));
         await ctx.close();
       }
@@ -3318,6 +3592,7 @@ try {
     ok('lesson Free play: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
+  } // (end of the sections run when no --only is given)
 } finally {
   await browser?.close();
   stop();

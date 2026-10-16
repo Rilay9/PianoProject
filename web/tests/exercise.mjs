@@ -41,7 +41,7 @@ const el = () => ({ textContent: '', className: '', hidden: false, innerHTML: ''
 const parts = () => Object.fromEntries(['set', 'left', 'mid', 'right', 'name', 'chain', 'status', 'sub', 'start', 'hear', 'help', 'after', 'again', 'next', 'misses', 'fresh', 'finish'].map((k) => [k, el()]));
 const keysStub = () => ({ onKey: null, down: new Set(), setRange() {}, choose() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, release() {} });
 const notation = { show: async () => {}, clear() {} };
-const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare: async () => {} };
+const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play() {}, stop() {}, prepare: async () => {} };
 
 // ---- Drills: name only, timed ---------------------------------------------------------------------------------------
 // One card: C4 as a half note at 80 bpm (1500 ms; held ¾ of it: 1125 ms). Your first note starts the card's clock.
@@ -52,8 +52,7 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
     const ui = parts(), d = new Drill(ui, keysStub(), notation, sound);
     d.open([set]);
     d.setLevel({ rung, start: 'first', onTime: 'normal', metronome: false, cards: 10 });
-    d.key(60, true, at); // (the idle screen: any key starts the set)
-    await settle();
+    await d.begin(); // (Start: a key on Ready would also be the card's first note, checked below)
     at += 10000;
     holds.key(pressed, true, at);
     d.key(pressed, true, at);
@@ -123,8 +122,7 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
     d.open([set]);
     d.setLevel({ rung: 3, start: 'first', onTime: 'notes', metronome: false, cards });
     for (let k = 0; k < sets; k++) {
-      if (k === 0) d.key(60, true, 1); // (Ready: any key starts a set)
-      else await d.begin(); // (the set's end: New set)
+      await d.begin(); // (Start, and at the set's end New set)
       await settle();
       const one = [];
       while (d.state === 'turn' && one.length < (cards || 300)) { one.push(d.card.item.name); d.skip(); d.nextCard(); await settle(); }
@@ -244,6 +242,263 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
   check('keys, no music (Drills): no staff drawn, not even with the result', d0.drawn === 0, `drawn ${d0.drawn} times`);
   d.close();
   setActivity(null);
+}
+
+// ---- Rhythm sets (owner, 2026-10-16): generated cards, dealt and judged -------------------------------------------------
+// The generator's cards are checked by a reader of their own here (not the generator's code): each card read back from
+// the item Drills plays (its groups, lengths and bars) into note values, every bar adding up to its metre, only the
+// set's values, the feature in every card, a note first; 500 cards of each shipped set and of hand-made specs, dealt by
+// Drills as it deals any pool (no card twice running). Then a card judged as tapped: on time, early, late, missed,
+// extra taps, a half and a whole let go early, any key counting, and no note name in what it says.
+{
+  const { readFileSync } = await import('node:fs');
+  const { readSet } = await import('../src/exercise/items.ts');
+  const { cardItem } = await import('../src/exercise/rhythm.ts');
+  const { PAD_KEY } = await import('../src/exercise/pad.ts');
+  const METER_BEATS = { '4/4': 4, '3/4': 3, '2/4': 2 };
+  /** A card read back into its note values, bar by bar, or the reason it is not a good card. */
+  function readBack(item, meterBeats) {
+    const bars = [];
+    for (let i = 0; i < item.groups.length; i++) {
+      const g = item.groups[i], b = item.beats[i], bar = item.bars[i];
+      (bars[bar] ??= { values: [], sum: 0 });
+      const at = bars[bar].sum;
+      let v;
+      if (!g.length) v = { 1: 'quarter-rest', 2: 'half-rest', 4: 'whole-rest' }[b];
+      else if (b === 0.5) {
+        const next = item.groups[i + 1], nb = item.beats[i + 1];
+        if (!(next?.length && nb === 0.5 && item.bars[i + 1] === bar && Number.isInteger(at))) return { bad: `an eighth at beat ${at + 1} of bar ${bar + 1} is not the first of a pair on a beat` };
+        v = 'eighths';
+        i++;
+        bars[bar].sum += 0.5;
+      } else v = { 1: 'quarter', 2: 'half', 3: 'dotted-half', 4: 'whole' }[b];
+      if (!v) return { bad: `a ${g.length ? 'note' : 'rest'} of ${b} beats` };
+      if (at + (v === 'eighths' ? 1 : b) > meterBeats + 1e-9) return { bad: `${v} at beat ${at + 1} of bar ${bar + 1} is longer than what is left of the bar` };
+      bars[bar].values.push(v);
+      bars[bar].sum += b;
+    }
+    const off = bars.findIndex((x) => !x || Math.abs(x.sum - meterBeats) > 1e-9);
+    if (off >= 0) return { bad: `bar ${off + 1} adds up to ${bars[off]?.sum ?? 0}, not ${meterBeats}` };
+    return { bars: bars.map((x) => x.values) };
+  }
+  function cardProblem(item, spec) {
+    const r = readBack(item, METER_BEATS[spec.meter]);
+    if (r.bad) return r.bad;
+    if (r.bars.length !== spec.bars) return `${r.bars.length} bars, not ${spec.bars}`;
+    const all = r.bars.flat();
+    const odd = all.find((v) => !spec.values.includes(v));
+    if (odd) return `${odd} is not one of the set's values`;
+    if (spec.feature && !all.includes(spec.feature)) return `no ${spec.feature} (the feature)`;
+    if (all[0].endsWith('-rest')) return 'it starts with a rest';
+    if (item.meter?.beats !== METER_BEATS[spec.meter]) return `its metre is ${JSON.stringify(item.meter)}`;
+    return '';
+  }
+  /** 500 cards dealt by Drills from the set's pool, as a learner gets them (endless set, each card skipped). */
+  async function deal500(set) {
+    store.clear();
+    const d = new Drill(parts(), keysStub(), notation, sound), cards = [];
+    d.open([set]);
+    d.setLevel({ rung: 3, start: 'first', onTime: 'normal', metronome: false, cards: 0 });
+    await d.begin();
+    while (d.state === 'turn' && cards.length < 500) { cards.push(d.card.item); d.skip(); d.nextCard(); await settle(); }
+    d.close();
+    return cards;
+  }
+  const shipped = JSON.parse(readFileSync(new URL('../public/content/sets/index.json', import.meta.url), 'utf8')).filter((f) => f.startsWith('rhythm-'));
+  const specs = shipped.map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(new URL(`../public/content/sets/${f}`, import.meta.url), 'utf8'))]);
+  specs.push(
+    ['hand: eighths and rests in 3/4, 4 bars', { title: 't', kind: 'rhythm', generate: { values: ['quarter', 'eighths', 'half', 'dotted-half', 'quarter-rest', 'half-rest'], meter: '3/4', bars: 4, feature: 'eighths' } }],
+    ['hand: 2/4, half rest the feature, 2 bars', { title: 't', kind: 'rhythm', generate: { values: ['quarter', 'half', 'half-rest'], meter: '2/4', bars: 2, feature: 'half-rest' } }],
+    ['hand: every value in 4/4, 1 bar, whole rest not possible as a feature', { title: 't', kind: 'rhythm', generate: { values: ['whole', 'half', 'quarter', 'eighths', 'dotted-half', 'quarter-rest', 'half-rest', 'whole-rest'], meter: '4/4', bars: 1, feature: 'dotted-half' } }],
+    ['hand: whole rest the feature, 4/4, 2 bars', { title: 't', kind: 'rhythm', generate: { values: ['quarter', 'whole-rest'], meter: '4/4', bars: 2, feature: 'whole-rest' } }],
+  );
+  const samples = [];
+  for (const [name, file] of specs) {
+    const set = await readSet(name, file, 'file:///x/', async () => '', async () => '');
+    const spec = file.generate;
+    const cards = await deal500(set);
+    const bad = cards.map((c) => [c, cardProblem(c, spec)]).find(([, p]) => p);
+    const twice = cards.findIndex((c, i) => i > 0 && c.name === cards[i - 1].name);
+    const distinct = new Set(cards.map((c) => c.name)).size;
+    check(`rhythm ${name}: 500 cards dealt, every bar adds up, only its values, ${spec.feature ? `${spec.feature} in every card, ` : ''}a note first`, cards.length === 500 && !bad, bad ? `${bad[1]}: ${bad[0].name}` : `${cards.length} cards`);
+    check(`rhythm ${name}: never the same card twice running (${distinct} different in the pool)`, set.items.length === 1 ? distinct === 1 : twice < 0, twice >= 0 ? `card ${twice}: ${cards[twice].name}` : `${distinct} different`);
+    samples.push(`${name} (${set.items.length} in the pool):\n${cards.slice(0, 5).map((c) => `    ${c.name}`).join('\n')}`);
+  }
+  console.log(`     five cards of each, as dealt:\n  ${samples.join('\n  ')}`);
+  const steady = await readSet('s', { title: 't', kind: 'rhythm', generate: { values: ['quarter'], meter: '4/4', bars: 2 } }, 'file:///x/', async () => '', async () => '');
+  check('rhythm: quarters alone give the one steady-beat card', steady.items.length === 1 && steady.items[0].name === 'quarter quarter quarter quarter | quarter quarter quarter quarter', steady.items.map((i) => i.name).join(' / '));
+  // The checker itself, on cards it must refuse (a bar short, a rest first, an eighth off the beat, a value not allowed).
+  const fool = [
+    ['a bar a beat short', { groups: [['C5'], ['C5'], ['C5']], beats: [1, 1, 1], bars: [0, 0, 0], meter: { beats: 4, beatType: 4 } }, { values: ['quarter'], meter: '4/4', bars: 1 }],
+    ['a rest first', { groups: [[], ['C5'], ['C5'], ['C5']], beats: [1, 1, 1, 1], bars: [0, 0, 0, 0], meter: { beats: 4, beatType: 4 } }, { values: ['quarter', 'quarter-rest'], meter: '4/4', bars: 1 }],
+    ['an eighth pair off the beat', { groups: [['C5'], ['C5'], ['C5'], ['C5'], ['C5']], beats: [0.5, 1, 0.5, 1, 1], bars: [0, 0, 0, 0, 0], meter: { beats: 4, beatType: 4 } }, { values: ['quarter', 'eighths'], meter: '4/4', bars: 1 }],
+    ['a half where only quarters are allowed', { groups: [['C5'], ['C5']], beats: [2, 2], bars: [0, 0], meter: { beats: 4, beatType: 4 } }, { values: ['quarter'], meter: '4/4', bars: 1 }],
+    ['no feature', { groups: [['C5'], ['C5'], ['C5'], ['C5']], beats: [1, 1, 1, 1], bars: [0, 0, 0, 0], meter: { beats: 4, beatType: 4 } }, { values: ['quarter', 'half'], meter: '4/4', bars: 1, feature: 'half' }],
+  ];
+  const missed = fool.filter(([, item, spec]) => !cardProblem(item, spec)).map(([n]) => n);
+  check('rhythm: the card reader refuses a bar a beat short, a rest first, eighths off the beat, a value not allowed, no feature', missed.length === 0, `let through: ${missed.join(', ')}`);
+  // Refusals, with their reasons (the app's reader: a set that cannot be read is listed with its reason, never loaded).
+  const refused = async (generate, extra = {}) => { try { await readSet('t', { title: 't', kind: 'rhythm', ...extra, ...(generate ? { generate } : {}) }, 'file:///x/', async () => '', async () => ''); return 'ACCEPTED'; } catch (e) { return e.message; } };
+  for (const [what, gen, want, extra] of [
+    ['an unknown value', { values: ['quarter', 'sixteenth'], meter: '4/4', bars: 2 }, /"sixteenth" is not one of whole, half, quarter, eighths/],
+    ['a whole in 3/4', { values: ['quarter', 'whole'], meter: '3/4', bars: 2 }, /whole \(4 beats\) does not fit a bar of 3\/4/],
+    ['a dotted half in 2/4', { values: ['quarter', 'dotted-half'], meter: '2/4', bars: 2 }, /dotted-half \(3 beats\) does not fit a bar of 2\/4/],
+    ['a feature not in the values', { values: ['quarter', 'half'], meter: '4/4', bars: 2, feature: 'whole' }, /feature "whole" should be one of its values/],
+    ['bars 0', { values: ['quarter'], meter: '4/4', bars: 0 }, /bars 0 should be a whole number 1 to 4/],
+    ['bars 5', { values: ['quarter'], meter: '4/4', bars: 5 }, /bars 5 should be a whole number 1 to 4/],
+    ['a metre not offered', { values: ['quarter'], meter: '6/8', bars: 2 }, /meter "6\/8" should be one of 4\/4, 3\/4, 2\/4/],
+    ['a misspelt field', { values: ['quarter'], meter: '4/4', bars: 2, featured: 'quarter' }, /generate has "featured"/],
+    ['rests only', { values: ['quarter-rest'], meter: '4/4', bars: 2 }, /only rests/],
+    ['halves alone in 3/4 (a bar cannot be filled)', { values: ['half'], meter: '3/4', bars: 1 }, /cannot fill a bar of 3\/4/],
+    ['a whole rest as the feature of a 1-bar card (it starts with a note)', { values: ['quarter', 'whole-rest'], meter: '4/4', bars: 1, feature: 'whole-rest' }, /feature whole-rest cannot be placed in 1 bar/],
+    ['generate on a set that is not rhythm', { values: ['quarter'], meter: '4/4', bars: 2 }, /"generate" is for rhythm sets/, { kind: 'melodies' }],
+    ['a rhythm set with notes items', null, /a rhythm set's items are MusicXML patterns/, { items: { 1: { notes: 'C4' } } }],
+    ['a rhythm set with neither', null, /should give either "generate" or "items"/],
+  ]) {
+    const said = await refused(gen, extra);
+    check(`rhythm refuses ${what}, with its reason`, want.test(said), said);
+  }
+
+  // Judging a card as tapped: quarter quarter half | whole at 72 (a quarter 833 ms). The first tap starts the card's
+  // clock (on time by definition); the others at the clock's times as given. Holds: every tap held to the next unless
+  // said; a tap is any key (the pad, or MIDI keys 60, 61, 99).
+  const item = cardItem(1, [['quarter', 'quarter', 'half'], ['whole']], '4/4');
+  const set = { id: 't-rhythm', title: 'test', kind: 'rhythm', order: 'pool', tempo: 72, items: [item] };
+  let clock = 0;
+  const clockSound = { ...sound, songTime: () => clock };
+  async function tapCard(taps, { lag = 0, metronome = false } = {}) {
+    store.clear();
+    const s = { ...clockSound, heardDelayMs: () => lag };
+    const d = new Drill(parts(), keysStub(), notation, s);
+    d.open([set]);
+    d.setLevel({ rung: 3, start: 'first', onTime: 'normal', metronome, cards: 10 });
+    await d.begin(); // (Start)
+    const base = 1e9 + Math.random() * 1e8; // (the taps' own times: later than now, so none is taken as arriving late)
+    for (const [t, held, key = PAD_KEY] of taps) {
+      clock = t;
+      holds.key(key, true, base + t);
+      d.key(key, true, base + t);
+      holds.key(key, false, base + t + held);
+    }
+    const steps = d.debug().steps;
+    d.finish();
+    const r = d.results.at(-1);
+    d.close();
+    return { text: r?.text ?? '(no result)', steps };
+  }
+  const Q = 60000 / 72;
+  const onBeat = [[0, Q - 20], [Q, Q - 20], [2 * Q, 2 * Q - 20], [4 * Q, 4 * Q - 20]];
+  const NAME = /[A-G][♯♭#b]?\d|\b[A-G][♯♭]/;
+  const results = [];
+  const judged = async (what, taps, want, opts) => { const r = await tapCard(taps, opts); results.push(r.text); check(`rhythm judged: ${what}`, want.test(r.text), r.text); return r; };
+  const first = await judged('every tap on time and held: clean', onBeat, /^clean$/);
+  check('rhythm judged: the card\'s steps are its four notes at 0, 833, 1667, 3333 ms, their lengths to hold 833, 833, 1667, 3333 (¾ of each asked)', JSON.stringify(first.steps.map((s) => [Math.round(s.t), Math.round(s.hold)])) === JSON.stringify([[0, 833], [833, 833], [1667, 1667], [3333, 3333]]), JSON.stringify(first.steps));
+  await judged('the second tap 150 ms late: 1 note late', [onBeat[0], [Q + 150, Q - 170], onBeat[2], onBeat[3]], /3 of 4 on time and held · 1 note late$/);
+  await judged('the third tap 150 ms early: 1 note early', [onBeat[0], onBeat[1], [2 * Q - 150, 2 * Q], onBeat[3]], /1 note early$/);
+  await judged('the whole note not tapped: 1 note missed', onBeat.slice(0, 3), /1 note missed$/);
+  await judged('an extra tap between beats: 1 extra tap', [onBeat[0], [Q / 2, 100, 62], onBeat[1], onBeat[2], onBeat[3]], /^4 of 4 on time and held · 1 extra tap$/);
+  await judged('the half let go after 600 ms: 1 note let go early', [onBeat[0], onBeat[1], [2 * Q, 600], onBeat[3]], /1 note let go early$/);
+  await judged('the whole let go after 1000 ms: 1 note let go early', [onBeat[0], onBeat[1], onBeat[2], [4 * Q, 1000]], /1 note let go early$/);
+  await judged('the half held 1300 ms (more than ¾ of 1667): clean', [onBeat[0], onBeat[1], [2 * Q, 1300], onBeat[3]], /^clean$/);
+  await judged('any MIDI key counts (60, 61, 99 and the pad): clean', [[0, Q - 20, 60], [Q, Q - 20, 61], [2 * Q, 2 * Q - 20, 99], [4 * Q, 4 * Q - 20]], /^clean$/);
+  check('rhythm judged: no note name in anything it said', results.every((t) => !NAME.test(t)) && !results.some((t) => /wrong key/.test(t)), results.join(' | '));
+
+  // The first tap (owner, 2026-10-16: "Make sure to start on the first tap"): on Ready, at rung 3 starting on your first
+  // note, the tap that starts the set is the card's first note, on time, the clock running from it; tapping the other
+  // notes but the last leaves just the last missed. Then a tap on the result goes on to the next card, as its first note.
+  {
+    store.clear();
+    const d = new Drill(parts(), keysStub(), notation, clockSound);
+    d.open([set]);
+    d.setLevel({ rung: 3, start: 'first', onTime: 'normal', metronome: false, cards: 10 });
+    const base = 2e9;
+    clock = 0;
+    holds.key(PAD_KEY, true, base); d.key(PAD_KEY, true, base); holds.key(PAD_KEY, false, base + Q - 20); // (on Ready)
+    await settle();
+    const started = { state: d.state, started: d.started, played: d.played.length };
+    for (const [t, h] of onBeat.slice(1, 3)) { clock = t; holds.key(PAD_KEY, true, base + t); d.key(PAD_KEY, true, base + t); holds.key(PAD_KEY, false, base + t + h); }
+    d.finish();
+    const text = d.results.at(-1)?.text ?? '';
+    const missedMark = d.debug().steps.length;
+    check("the first tap: on Ready it starts the set and is the card's first note (the clock running)", started.state === 'turn' && started.started && started.played === 1, JSON.stringify(started));
+    check('the first tap: the next two notes tapped, the last not: exactly one missed (the last)', /^3 of 4 on time and held · 1 note missed$/.test(text), text);
+    const before = d.results.length, cardBefore = d.card;
+    clock = 0;
+    d.key(PAD_KEY, true, base + 20000); await settle();
+    check('the first tap: a tap on the result goes on to the next card and is its first note', d.card !== cardBefore && d.state === 'turn' && d.started && d.played.length === 1 && d.results.length === before, JSON.stringify({ state: d.state, started: d.started, played: d.played.length, steps: missedMark }));
+    d.close();
+  }
+
+  // The clock as heard (2026-10-16): the clicks reach the ear 120 ms after the clock (a stand-in latency). Taps with what
+  // is heard come 120 ms after the clock's beat: on time with the metronome (the clicks are heard), late without the
+  // delay taken off.
+  const heard = onBeat.map(([t, h], i) => [i ? t + 120 : t, h]);
+  await judged('heard 120 ms late, metronome on: taps at the clock + 120 ms are on time', heard, /^clean$/, { lag: 120, metronome: true });
+  await judged('the same taps with no delay (nothing heard late): 3 notes late', heard, /3 notes late$/, { lag: 0, metronome: true });
+  await judged('metronome off (nothing heard to play with): no delay taken off, taps at the clock on time', onBeat, /^clean$/, { lag: 120, metronome: false });
+}
+
+// ---- The clock as heard (sound.ts heardDelayMs, 2026-10-16) -------------------------------------------------------------
+{
+  const { Sound } = await import('../src/sound.ts');
+  const s = new Sound();
+  const none = s.heardDelayMs();
+  s.ctx = { baseLatency: 0.01, outputLatency: 0.05, currentTime: 0 };
+  const phone = [s.heardDelayMs(), s.heardDelayMs('clicks')];
+  s.keyboard = {};
+  const keyboard = [s.heardDelayMs(), s.heardDelayMs('clicks')];
+  s.keyboard = null;
+  s.ctx = { currentTime: 0 };
+  const missing = s.heardDelayMs();
+  s.ctx = { baseLatency: 0.01, currentTime: 0 };
+  const baseOnly = s.heardDelayMs();
+  check('heardDelayMs: no sound yet 0; base 10 + output 50 ms = 60 for the piano and the clicks on the phone', none === 0 && phone.every((x) => Math.abs(x - 60) < 1e-9), JSON.stringify({ none, phone }));
+  check('heardDelayMs: the piano on the MIDI keyboard 0, the clicks (always on the phone) still 60', keyboard[0] === 0 && Math.abs(keyboard[1] - 60) < 1e-9, JSON.stringify(keyboard));
+  check('heardDelayMs: neither latency given 0; only baseLatency given counts it (10)', missing === 0 && Math.abs(baseOnly - 10) < 1e-9, JSON.stringify({ missing, baseOnly }));
+}
+
+// ---- Timing calibration (owner, 2026-10-16; src/calibration.ts) ------------------------------------------------------------
+// The run's rule (8 clicks at 80, the first two left out, the median of the taps' delays; too few or too spread taps, or
+// a result outside -100…+400 ms, refused) and which delay a judge then takes off.
+{
+  const { judgeCalibration, saveCalibration, resetCalibration, calibrationFor, TRY_AGAIN } = await import('../src/calibration.ts');
+  const { Sound } = await import('../src/sound.ts');
+  const clicks = Array.from({ length: 8 }, (_, k) => k * 750);
+  const run = (offsets) => judgeCalibration(clicks, offsets.map((o, k) => (o === null ? null : clicks[k] + o)).filter((x) => x !== null));
+  const steady = run([90, 95, 80, 85, 78, 82, 88, 79]);
+  check('calibration: taps 78–88 ms after the clicks: the median of the six counted (80, 85, 78, 82, 88, 79 → 81)', steady.ok && steady.ms === 81 && steady.taps === 6 && !steady.large, JSON.stringify(steady));
+  const firstTwo = run([400, -140, 80, 85, 78, 82, 88, 79]);
+  check('calibration: the first two clicks left out (taps there far off change nothing)', firstTwo.ok && firstTwo.ms === 81, JSON.stringify(firstTwo));
+  const stray = run([80, 80, 80, 85, 75, 90, 70, 250]);
+  check('calibration: one stray tap among six is allowed (median 82.5 → 83)', stray.ok && stray.ms === 83, JSON.stringify(stray));
+  const few = run([80, 80, 80, 85, null, null, null, 70]);
+  check('calibration refuses too few taps (3 of 6), saying try again', !few.ok && few.reason.startsWith(TRY_AGAIN), JSON.stringify(few));
+  const spread = run([0, 0, 0, 200, 50, 150, 100, 20]);
+  check('calibration refuses taps spread too widely (0 to 200 ms), saying try again', !spread.ok && spread.reason.startsWith(TRY_AGAIN) && /apart/.test(spread.reason), JSON.stringify(spread));
+  const late = run([450, 450, 450, 455, 445, 450, 452, 448]);
+  check('calibration refuses a median above +400 ms', !late.ok && /outside/.test(late.reason), JSON.stringify(late));
+  const early = run([-120, -120, -120, -125, -115, -120, -118, -122]);
+  check('calibration refuses a median below -100 ms', !early.ok && /outside/.test(early.reason), JSON.stringify(early));
+  const big = run([200, 200, 200, 205, 195, 200, 210, 190]);
+  check('calibration: 200 ms is kept, marked large (beyond ±150: run it again)', big.ok && big.ms === 200 && big.large, JSON.stringify(big));
+  const extra = judgeCalibration(clicks, [...clicks.map((c) => c + 80), ...clicks.map((c) => c + 300)]);
+  check('calibration: a second tap on a click is extra, the first counts', extra.ok && extra.ms === 80, JSON.stringify(extra));
+  // Which delay applies: the browser's figure (60 ms here) unless a calibration is kept for the way of playing.
+  store.clear();
+  const snd = new Sound();
+  snd.ctx = { baseLatency: 0.01, outputLatency: 0.05, currentTime: 0 };
+  const none = [snd.heardDelayMs('clicks', 'screen'), snd.heardDelayMs('clicks', 'midi'), snd.heardDelayMs('clicks')];
+  saveCalibration('screen', { ms: 150, at: '2026-10-16T00:00:00Z', taps: 6 });
+  const kept = [snd.heardDelayMs('clicks', 'screen'), snd.heardDelayMs('clicks', 'midi'), snd.heardDelayMs('clicks'), snd.heardDelayMs('piano', 'screen')];
+  snd.keyboard = {};
+  const keyboard = [snd.heardDelayMs('piano', 'screen'), snd.heardDelayMs('clicks', 'screen')];
+  snd.keyboard = null;
+  resetCalibration('screen');
+  const after = [snd.heardDelayMs('clicks', 'screen'), calibrationFor('screen')];
+  check('calibration applies: none kept, the browser\'s 60 ms for both ways of playing', none.every((x) => Math.abs(x - 60) < 1e-9), JSON.stringify(none));
+  check('calibration applies: 150 kept for screen taps is used for screen taps only (MIDI keys and no input: 60)', kept[0] === 150 && Math.abs(kept[1] - 60) < 1e-9 && Math.abs(kept[2] - 60) < 1e-9 && kept[3] === 150, JSON.stringify(kept));
+  check('calibration applies: the piano on the MIDI keyboard: 0 (no phone sound), the clicks still the kept 150', keyboard[0] === 0 && keyboard[1] === 150, JSON.stringify(keyboard));
+  check('calibration applies: reset, back to the browser\'s figure', Math.abs(after[0] - 60) < 1e-9 && after[1] === null, JSON.stringify(after));
 }
 
 console.log(failures.length ? `${failures.length} failed` : 'all passed');

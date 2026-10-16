@@ -95,7 +95,7 @@ scrolling and honest states.
 - **Sizes** (review 2026-10-15): text 13 px and up on these screens; ⚙, ← and the segment buttons 44 px; a message (the
   first visit's "Saving for offline…") has its own room above the tabs instead of covering the last rows (V04).
 - **Exercises:** every exercise by its `kind` (chips to filter: All, Scales, Five-finger patterns, Arpeggios, Chords,
-  Intervals, Cadences, Melodies, Other for a set with none; they wrap), under the one name it has everywhere (the set's
+  Intervals, Cadences, Melodies, Rhythm, Other for a set with none; they wrap), under the one name it has everywhere (the set's
   title, "Test:" kept; V06). **Exercises that are MusicXML are music and open straight on the score** (owner,
   2026-10-15): each item of a set given as a MusicXML file (the melodies set's three) is listed as its own exercise and
   opens on the score screen in a way where you play: **Wait for me**, unless its set's `play` names another (§6; re-check
@@ -104,11 +104,14 @@ scrolling and honest states.
   is listed only as these. So is a short score whose `scores/index.json` entry has a `kind` (none yet; an unknown kind is
   listed as a problem). **A set of cards opens with one tap in its kind's default way** (owner, 2026-10-15): Drills for
   scales, five-finger patterns, arpeggios, chords and intervals (flashcards to play on sight, by name or by ear); Simon
-  for cadences (a progression built up in order from memory). Inside, **Practise as…** (the "Drills▾" / "Simon▾" button
+  for cadences (a progression built up in order from memory). A **rhythm** set (2026-10-16, §4) opens in Drills only, its
+  row saying "rhythm patterns made from its note values · tap them in Drills" (Simon has no rhythm: it is not offered
+  there, nor in Practise as…). Inside, **Practise as…** (the "Drills▾" / "Simon▾" button
   on the exercise screen) switches the same set to the other way. ← comes back to Exercises. On a tablet the kinds are
   two columns (V02).
 - **Settings** (⚙ on Home; app-wide only): piano plays through (phone / MIDI keyboard; said when there is none to play
-  through), piano and click volume, click sound, Keyboard controls (§7), theme, export practice log (with its count)
+  through), piano and click volume, **tap timing** (owner, 2026-10-16: what the timing check kept for screen taps and
+  for a MIDI keyboard, *Check* to run it, *Reset* to forget both; §1 "Timing as heard"), click sound, Keyboard controls (§7), theme, export practice log (with its count)
   and "delete entries older than a month", back up, restore, what is saved for offline, and Help (How the app works, Show
   tips again: §7d). The same stores as before
   (`piano-web.app.v1`, the remote, the log, the backup); the Tempo panel inside a piece keeps its piano-out and volume
@@ -219,7 +222,16 @@ sounds until it lifts, or until struck again; owner, 2026-10-13: what you hear i
 Notes marked staccato, staccatissimo or spiccato are meant short and never asked to be held. A note at a phrase end
 (a written rest follows it in its voice, or it ends a slur) needs only half its length. In Rhythm a tap is never asked
 to be held past the next tap. Holding longer is not marked (legato overlaps are normal). A note already early or late
-is marked for that alone. **Grace notes** are played by the piano just before their note, and never judged: playing
+is marked for that alone. **Timing as heard** (2026-10-16; `sound.ts` `heardDelayMs`, `calibration.ts`): the app's sound
+reaches your ear a little after its clock (the phone's audio output latency, `baseLatency + outputLatency` as the browser
+reports it: Chrome on Android gives it from version 102; far more with Bluetooth), and you play with what you hear, so
+every timed judge takes that delay off your played times: Play along, Ladder and Rhythm (when the phone's piano or clicks
+are playing; nothing when the piano plays on the MIDI keyboard or nothing sounds), Memorise's timed passes (the same
+judge), Drills' timed cards (the clicks you play with, count-in or metronome; none when nothing sounds after your first
+note) and the lab's chords (its band is always on the phone). A **timing check** kept for the way you play (screen taps
+or a MIDI keyboard; §4) is used instead of the browser's figure, which it already holds. What is lit while Drills plays a
+card follows the sound as heard too; the score's marker and Simon's lit keys follow the clock (the marker is a reading
+aid that moves on its own; Simon's lights say which key, not when). **Grace notes** are played by the piano just before their note, and never judged: playing
 one is welcome and never a wrong key (owner, 2026-10-13).
 
 Starting: ▶, or just play your first note (any key on a rest; any key in Rhythm and Wait for me). In Wait for me
@@ -361,7 +373,8 @@ the new item (you always play it all). Display: size A−/A+ (fixed size, buildi
 scroll; on a phone sideways one line that scrolls sideways, the dots in the bottom bar), keyboard or nothing under
 the music.
 
-**Content:** item sets (§6). Small units only; passages from pieces belong in Memorise.
+**Content:** item sets (§6). Small units only; passages from pieces belong in Memorise. Rhythm sets (§4) are never
+offered in Simon (it has no rhythm): its set menu leaves them out, and a link or step naming one in Simon says so.
 
 ---
 
@@ -413,9 +426,58 @@ being played to you is played again; a count-in starts again; a card whose clock
 (count-in or first note, as set; what was played before is dropped, and it is not a retry or help); a clean card's move
 to the next waits for the close. A level, tempo or set changed there starts afresh.
 
+**The first tap** (owner, 2026-10-16: "Make sure to start on the first tap"): no key or tap is swallowed. On Ready a key
+(or a pad tap) starts the set (the line says so: "press Start or play a key", "tap the pad or press Start"); on a card's
+result it goes on to the next card (a card with slips says "a key goes on to the next card" after its result; a clean
+one moves on by itself, or at once with a key; a key in the first 0.8 s of a result is not taken as going on, so a
+finger still on the card's last beat never skips what it says). When that card waits for your first note (no demo first, no count-in:
+rung 3 or 4 starting on your first note, or a notes-only card) the same key is its first note, on time, the card's clock
+running from the moment it was pressed. Where the card is played to you first (rungs 0–2, 5) or a count-in comes first,
+the key starts that ("Listen…", "Count-in…"). At the end of a set (*Set done*) keys do nothing: *New set* or *the
+misses again*.
+
+**Rhythm sets** (owner, 2026-10-16, decided with options: inside Drills, one big pad, a one-line rhythm staff, echo and
+read, patterns generated from the values taught; `exercise/rhythm.ts`, `pad.ts`): cards of rhythm alone, a set of kind
+`rhythm` (§6).
+- **The pad:** the keys under the music are replaced by one large pad across the width (upright as tall as Free play's
+  keys, `min(42vh, 360px)`: 328 px at 360×780, 360 px on a tablet at 820×1180; sideways 30% of the height, 117 px at
+  844×390), "Tap · hold for long notes". A tap is a note; keeping the finger down holds it, so a half or whole note means
+  holding the pad. It lights orange while pressed and blue when the app plays a note (rungs 0 and 1: each note most of
+  its length, so two quarters are two flashes and a half a long one). A second finger down while one is held is a new
+  tap; letting go, a cancelled pointer or a finger slid off the pad lets go. **A tap sounds** at once (ChatGPT's review of
+  lesson 2, passed on by the owner: so a tap on the beat covers the click): a short low knock (noise through a 600 Hz
+  band, on the clicks' volume; never the metronome's click); measured in the browser check, the sound is started within
+  1 ms of the tap's pointerdown, then reaches the ear after the output latency. A panel open: a tap counts nothing and
+  makes no sound. Any MIDI key counts the same as a tap (and sounds as itself); the keyboard's edge keys are taps too while
+  a card is yours (not commands). The pad is always shown for a rhythm set (no Keyboard / Nothing choice).
+- **The staff:** one line (percussion clef, the time signature, bar lines, unpitched notes on the line with stems up,
+  eighth pairs beamed, rests), the result's marks coloured on it as on any card. It sounds on one pitch (C5); no note is
+  ever named ("2 notes late", "1 note let go early", "1 extra tap").
+- **Judging:** any key or tap is the note due, one tap a note (taps within 30 ms are one), timed as written-rhythm cards
+  (on time / early / late / missed, *On time* relaxed / normal / strict) and held as everywhere (¾ of the length, a note
+  before a rest half; never past the next note); taps with no note are *extra taps*, never "wrong keys". Every card is
+  timed ("notes only" is played as normal; not offered).
+- **Help levels:** 0 hear it, the pad lit as it plays, no music (echo with lights; the result without music either);
+  1 music + sound + pad lit; 2 music + sound; 3 music only (read it); 5 by ear (echo: hear it, tap it back, the music
+  with the result). No rung 4 (a rhythm has no name to give): a rung 4 chosen elsewhere is played as 3. The Level panel
+  words them so and hides 4 and "notes only".
+- Cards are dealt as any pool (a shuffled deck, never twice running; *the misses again* are those very patterns). The
+  results list numbers the cards without names; the practice log names each card by its pattern ("quarter half quarter |
+  whole").
+- **The timing check** (owner, 2026-10-16, decided with options; `calibration.ts`, `screens/calibrate.ts`): offered once,
+  the first time a rhythm set opens (a line above the pad, *Calibrate* / *Not now*, not shown again either way, nor when
+  one is kept), and in Settings. A panel with its own pad: the tap that starts it starts the clicks (it is not measured:
+  no clicks yet), then 8 clicks at 80 a minute; you tap on each (pad or a MIDI key). Each tap belongs to the click it
+  follows by −150 to +600 ms (a click's first tap; later ones are extra); the first two clicks are left out; the median
+  of the rest is kept, for this device and this way of playing (screen taps / MIDI keyboard, by the run's first tap).
+  Refused, with "Try again: tap steadily with the clicks" and why: fewer than 4 of the 6 counted clicks tapped, or taps
+  spread more than 120 ms (after leaving out the one farthest from the median), or a median outside −100…+400 ms. Kept
+  beyond ±150 ms with "That is large: run it again to be sure". Used instead of the browser's figure wherever timing is
+  judged (§1 "Timing as heard"), for that way of playing; the piano on the MIDI keyboard still takes nothing off.
+
 **Content:** item sets (§6), one item per card; for sight-reading give MusicXML items with real rhythm; for
-name or scale cards give `notes`/`chord` items with a `name`, and `rhythm` in the set if timing should count.
-Fresh generated cards (new music each time) are planned as another source of items, not built.
+name or scale cards give `notes`/`chord` items with a `name`, and `rhythm` in the set if timing should count. A rhythm
+set gives `generate` (fresh patterns from its note values) or MusicXML patterns.
 
 ---
 
@@ -928,7 +990,7 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 
 ```json
 { "title": "Chords in C", "kind": "chords",           // kind: Exercises lists it by this (§0); one of scales, five-finger,
-                                                        //   arpeggios, chords, intervals, cadences, melodies (or none: "Other")
+                                                        //   arpeggios, chords, intervals, cadences, melodies, rhythm (or none: "Other")
   "order": "pool",                                      // pool: random items (Drills: a shuffled deck); passage: in order
   "tempo": 80,                                          // quarter notes a minute (default 80)
   "rhythm": "notes",                                    // Drills: items without written rhythm judged on notes only,
@@ -944,6 +1006,31 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 
 (The `//` notes are for explanation only: a real set file is plain JSON.)
 
+**A rhythm set** (owner, 2026-10-16; §4; `exercise/rhythm.ts`): `"kind": "rhythm"` and `generate` instead of `items`:
+
+```json
+{ "title": "Quarter and half notes", "kind": "rhythm", "tempo": 72,
+  "generate": { "values": ["quarter", "half"], "meter": "4/4", "bars": 2, "feature": "half" } }
+```
+
+`values`: the note values taught so far, from `whole`, `half`, `quarter`, `eighths` (a beamed pair on one beat),
+`dotted-half`, `quarter-rest`, `half-rest`, `whole-rest`, each once, at least one a note; `meter` `4/4`, `3/4` or `2/4`
+(a quarter-note beat); `bars` a whole number 1–4; `feature` (optional) one of `values`, in every card (the value just
+taught). Each card is `bars` bars of `meter`: every bar adds up exactly, no value longer than what is left of its bar,
+eighth pairs only on a beat, the card starts with a note (not a rest). The set's cards are a pool of up to 24 different
+patterns made when the set is read (every pattern the values allow, when there are fewer: quarter and half in two bars
+of 4/4 with a half in each card make 24; adding the whole as the feature, 11; quarters alone, the one steady-beat card).
+Values are chosen evenly at each place, among those that still let the bar be filled. Refused with the reason: an unknown
+value, one listed twice, rests only, a value that cannot fit the metre (a whole in 3/4 or 2/4, a dotted half in 2/4, a
+whole rest in 3/4: a whole rest is 4 beats here), values that cannot fill a bar starting with a note (halves alone in
+3/4), a feature not in `values` or that no card can hold (a whole rest in a one-bar card, which starts with a note), a
+`meter` or `bars` out of range, a misspelt field; `generate` on a set of another kind; `order` with `generate`. A rhythm
+set may give MusicXML `items` instead (written patterns, read as any MusicXML item; their pitches are not judged and they
+sound on one pitch; named "Pattern n" unless they have a `name`); any other item is refused, and so are `from`, `rhythm`
+and `play` on a rhythm set. Its MusicXML files are not listed as music to open on the score. Lesson 2's sets:
+`rhythm-steady-beat` (quarters, 4/4, 2 bars, ♩ 72), `rhythm-quarter-half` (quarter, half; feature half),
+`rhythm-whole` (quarter, half, whole; feature whole).
+
 Or a passage cut from a score: `{ "title": …, "from": { "score": "mozart-k2", "bars": "1-4", "staff": 1 } }`
 (`bars` are the printed bar numbers, default "1-4"; `staff` default 1; an unknown score id is reported, never
 replaced by another score). A passage becomes one item per moment with notes (a rest goes with the item before it);
@@ -954,7 +1041,7 @@ replaced by another score). A passage becomes one item per moment with notes (a 
 (§8b), limited to `mode` (watch / wait / along / rhythm; not Ladder, which needs a loop of bars), `hands` (both / right /
 left / off) and `tempo` (20–300); for that visit, never saved over yours. None given: Wait for me.
 
-**Checked:** a set gives either `items` or `from`, a `title`, `kind` one of the seven above (an unknown kind is refused), `play` as above (an unknown mode or field is refused), `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
+**Checked:** a set gives either `items` or `from` (a rhythm set: `generate` or MusicXML `items`), a `title`, `kind` one of the eight above (an unknown kind is refused), `play` as above (an unknown mode or field is refused), `order` pool / passage, `tempo` 20–300, `rhythm` "notes" or a
 length; an item gives exactly one of `notes`, `chord`, `interval`, `musicxml`, and a field that is no item field at all
 is refused with the reason. A lower-case pitch (`c4`) is read as C4. A passage's `bars` must be like "5-8" and hold
 notes on its staff. **The reader is laxer than the format** (reader findings of 2026-10-15, `exercise/items.ts`): it
@@ -970,7 +1057,8 @@ are read in the browser, and the check only finds their files).
 | Set field | Type | Needed | Default, range |
 |---|---|---|---|
 | `title` | text | yes | the one name it has everywhere ("Test:" marks a placeholder) |
-| `kind` | scales, five-finger, arpeggios, chords, intervals, cadences, melodies | no | none: listed under Other |
+| `kind` | scales, five-finger, arpeggios, chords, intervals, cadences, melodies, rhythm | no | none: listed under Other |
+| `generate` | `{ values, meter, bars, feature }` (above) | a rhythm set: this or `items` | rhythm sets only; `feature` optional |
 | `items` | `{ "1": item, "2": item, … }`: numbered from 1, at least one | this or `from` | |
 | `from` | `{ "score": <id in scores/index.json>, "bars": "5-8", "staff": 1 }` | this or `items` | `bars` "1-4" (printed bar numbers; one bar "5" too), `staff` 1 (a whole number) |
 | `order` | pool / passage | no | pool; `from` is always a passage |
@@ -1419,7 +1507,9 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
   `carryFrom` bar / start; `before` new / all / nothing; `next` auto / tap; `timing` true / false; `join` ask / previous /
   all / none; `metronome` true / false; `onTime` relaxed / normal / strict. (Not yet: some bars only.)
 - drills: `rung` 0–5 (0 keys + sound, no music; 1 music + sound + keys lit … 4 name only, 5 by ear: §3); `start` clicks / first; `metronome` true /
-  false; `onTime` relaxed / normal / strict / notes; `cards` a whole number 0 (until you stop)–100.
+  false; `onTime` relaxed / normal / strict / notes; `cards` a whole number 0 (until you stop)–100. A rhythm set (§4) has
+  no rung 4 and no `notes` (played as 3 and normal), and is never a simon activity's set: check:activity and check:path
+  refuse those.
 - simon: `rung` 0–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
   from-miss; `onNew` all / new.
 - lab: `role` accomp / lead; `step` roots / beat1 / style / own (accompaniment) or root / tones / scale / answer / free
@@ -1605,4 +1695,4 @@ place that maps a kind to its drawing), a case in `tests/path.mjs`, and a line h
 The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; generated
-drill cards. A setup tour: not wanted (owner, 2026-10-15: hints at the moment and a help page instead, §7d).
+drill cards of notes (rhythm cards are generated: §4, §6). A setup tour: not wanted (owner, 2026-10-15: hints at the moment and a help page instead, §7d).

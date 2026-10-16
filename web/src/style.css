@@ -222,10 +222,23 @@ body.keys-play .bar.bottom { bottom: var(--under-h, 0px); padding-bottom: 6px; }
 .ex-notation:not(.off) ~ .ex-chain:not(:empty) { margin-bottom: var(--ex-overlay-h, 0px); }
 .ex-tools { display: flex; justify-content: center; gap: 8px; min-height: 40px; padding: 4px; }
 .ex-keyboard { touch-action: none; padding-bottom: env(safe-area-inset-bottom); } /* as tall as every keyboard strip (.keyboard: 108px) */
+/* A rhythm set's pad (owner, 2026-10-16): one big pad across the width, as tall as Free play's keys upright; it lights
+   blue when the app plays a note (rungs 0 and 1) and orange while pressed, as the keys do. */
+.ex-pad { flex: none; height: min(42vh, 360px); margin: 0 8px calc(8px + env(safe-area-inset-bottom)); border: 2px solid var(--btn-line); border-radius: 16px; background: var(--btn-bg); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 15px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.ex-pad[hidden] { display: none; }
+.calib-pad { height: 160px; margin: 12px 0; }
+/* The once-only offer of the timing check above the pad (owner, 2026-10-16). */
+.ex-calib { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 12px; font-size: 14px; color: var(--fg); }
+.ex-calib[hidden] { display: none; }
+.ex-calib span { flex: 1 1 100%; } /* the question on its own line, its two buttons together under it (a narrow phone wrapped Not now alone) */
+.ex-pad span { pointer-events: none; }
+.ex-pad.lit { background: #2563eb; border-color: #2563eb; color: #fff; }
+.ex-pad.pressed { background: #f59e0b; border-color: #f59e0b; color: #111; }
 /* A phone on its side (owner): a smaller keyboard, and the music at the top of its room so the floating panel
    mostly covers the space under it rather than the music. */
 @media (orientation: landscape) and (max-height: 599px) {
   .keyboard.ex-keyboard { height: 20vh; }
+  .ex-pad { height: 30vh; margin-bottom: calc(4px + env(safe-area-inset-bottom)); } /* sideways: the music keeps the height above it */
   /* Sideways (owner, 2026-10-12): what it says, its buttons and the size/Hear tools are one bar above the keys (at
      the bottom without them), so the music has all the height above it; main.ts moves the tools into the bar. */
   .ex-notation ~ .ex-overlay, .ex-notation:not(.off) ~ .ex-overlay {
