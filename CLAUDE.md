@@ -24,6 +24,8 @@ Don't infer hand from staff, moving bass from repeated notes, scale from broken 
 
 Curriculum is not bulk data production: build selected material as the learner needs it, with coherent prerequisites, practical teaching, feedback and transfer. A correct score is not necessarily a good lesson.
 
+Read `docs/lesson-design.md` before planning or writing any lesson, and run its checklist on every lesson before the owner sees it: teaching first, the app's modes second, every teaching claim from a source that was opened and read.
+
 ## Finish real learner-facing work
 
 Judge a change against the whole journey: find → understand → start → play → accurate, helpful feedback → retry → save → revisit. For visual work inspect the rendered states on phone portrait, landscape and tablet. For timing, input, playback, persistence and progress, test realistic transitions, interruptions and recovery. For feedback and export, check that the exported record carries what the next lesson needs. A green test is not pedagogical, musical or UX quality.
