@@ -84,7 +84,8 @@ scrolling and honest states.
   opened from Music: its title, mode, bars if a loop, how it went, when); the line "No lesson yet: pick something from
   Music or Exercises." with both; the recent list (without the Carry on item again). With nothing practised: Music and
   Exercises as ways in. **Carry on** (and a recent row) reopens a score run as it was played (V27): its loop, mode, tempo
-  and hands, for that visit (an activity's preset: never saved over your own).
+  and hands, for that visit (an activity's preset: never saved over your own). A piece of yours since deleted is not
+  offered (F19).
 - **Practice:** Exercises, Drills, Simon, Accompaniment lab, Free play, Metronome, each with its icon, one line on what it
   is and the last thing done there (Drills, Simon, the lab); two columns of cards on a tablet (V02).
 - **Icons** (owner, 2026-10-15: one consistent line-icon set; `web/src/icons.ts`): simple outline drawings as inline SVG,
@@ -226,7 +227,15 @@ Following, every key wanted now is always on the keys (starting on a C when the 
 note wanted, so F3 and F5 together show F3 to F5), the coming notes too where they fit; only notes wanted now further
 apart than two octaves widen it (owner, 2026-10-15: F5 was off the keys). Wait for me with the keys showing starts
 without a MIDI keyboard (no MIDI in the browser, not allowed, or still being asked) and says to play on the keys below;
-the timed modes still need one. The rest of a chord pressed while a run starts counts for the first notes, as the key
+the timed modes still need one: with none connected, or MIDI not allowed, ▶ in Play along, Rhythm or Ladder starts
+nothing and says "No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the
+screen." (final review F17; the browser's own permission sentence is never shown). On a phone held sideways the keys
+are off, so Wait for me with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s
+keys, or plug one in." and starts nothing (owner, 2026-10-15). Choosing another mode ends a bar pick under way (Loop's
+or Ladder's), as Cancel does. Leaving the piece (← or Back) during a Play along, Rhythm or Ladder run ends it quietly:
+it is logged, and no summary opens over where you land (owner, 2026-10-15, F04); Loop tapped during a run stops it with
+its summary and log first (F02). The warning that a file has more parts or staves than two hands is said only for the
+piece opened. The rest of a chord pressed while a run starts counts for the first notes, as the key
 that started it does. With the keys showing in Wait for me, the bottom bar sits above them, never over them. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
 score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses; Wait for me waits at your
@@ -252,7 +261,9 @@ moving on so the learner just plays and takes in the corrections. `web/src/memor
 
 **Reached:** on a piece's score, ⋯ → *Memorise this piece* (← goes back to the score), or Music → a piece's page →
 Memorise (← goes back to Music). It uses the score's drawing of the
-piece, nothing else of the score screen.
+piece, nothing else of the score screen. Back while its piece is still loading leaves it shut (F08); an exercise's
+music (`ex-…`) opens in it after a reload or Carry on too (F18). Before ▶, its opening line follows its Settings as they
+change (F21).
 
 **How it works:**
 1. The piece is split into chunks of N bars (2 / 4 / 8). Within a chunk bars are added one at a time (or the whole
@@ -346,6 +357,9 @@ scale or chord by name, something to play back by ear), given at once — not fr
 
 **Reached:** Practice → Drills, an exercise in Exercises (most kinds open here, §0), a lesson's step, a link. The
 header's **Drills▾** is *Practise as…*: the same set in Simon (owner, 2026-10-15). ← at the top left goes back where it was opened.
+Back from Simon to Drills in a lesson step's set, the step's own level comes back (F22). With no MIDI keyboard
+connected (or MIDI not allowed) the Ready screen says "Cards are judged from a MIDI keyboard; none is connected." until
+one is seen (F17). A set file that could not be read is read again the next time Drills or Simon opens (F20).
 
 **How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
 octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
@@ -385,7 +399,8 @@ Fresh generated cards (new music each time) are planned as another source of ite
 ## 5. Free play (Practice → Free play; ← at the top left goes back)
 
 **For:** playing anything and seeing what it is. The keys you play light up and are named, with the chord or
-interval they make; below, three columns of what you played lately (newest on top): chords held together (three
+interval they make (two keys named as the Intervals column names them: an octave is "octave", C3 + E5 "major 3rd + 2
+octaves"; final review F16); below, three columns of what you played lately (newest on top): chords held together (three
 or more notes that make a named chord), notes (keys pressed together on one line), intervals (note to next, with
 direction, and two notes held together; wider than an octave it says so: "major 3rd + 2 octaves"). *Show* turns
 columns off. Nothing is judged or kept. `web/src/freeplay.ts`.
@@ -536,15 +551,18 @@ one); examples to copy written into a chart.
   the file and date); the scores list's status line ("notes not verified…"); a warning for several parts (the score
   screen takes the top staff as the right hand; choosing the parts comes later) and for a transposing first part.
   Yours: Rename (library and score), Replace file… (a corrected file: the piece keeps its id, so its Memorise data,
-  choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering), Export file (as
+  choices and fingering stay; a score only by a score, a PDF by a PDF; it says to check fingering; a MIDI piece's band
+  is read again from the new file, F09), Export file (as
   added, under its own name; a piece made from a MIDI file exports the MusicXML the app made, `<name>.musicxml`: the
   MIDI file itself leaves the phone only in a backup), Delete (asks; also removes that piece's playing choices, look, fingering and Memorise data:
   `library/forget.ts`, and Memorise reads its store again so it can't write them back; a PDF's saved place and
-  lines go too, 2026-10-15, so the same PDF added again starts fresh). A PDF opens in the PDF reader (§5d).
+  lines go too, 2026-10-15, so the same PDF added again starts fresh; a deleted piece leaves Home's recent list, the
+  log keeping its runs, and an old link to it says it is no longer in your library by its title, F19). A PDF opens in
+  the PDF reader (§5d), whose address names it (`tool=pdf&piece=…`): a reload comes back to it (F12).
 - **Adding** (+ Add; several files at once): MusicXML and MXL (title and composer from inside the file), PDF (kept
   as is). Recognised by contents, not name (UTF-16 MusicXML too); up to 64 MB a file (any kind), and 16 MB of
   MusicXML once an MXL is unzipped; the same file again (by its contents, even one that replaced another's) is "already in your library";
-  anything else gets one sentence; a file with several parts is added with the warning. One file: a toast with Open; several: a list of what happened to each. What was just
+  anything else gets one sentence; a file with several parts is added with the warning. One file: a toast with Open (in two panes it lies over the list only, never over the piece's page: F14); several: a list of what happened to each. What was just
   added is on top, marked, with search and filters cleared, for this visit (your sort is kept). **Shared from
   another app** (Share → Piano, Android, the installed app only: the manifest's `share_target`): the service worker
   takes the POST to `./share-target`, keeps the files in the cache `piano-shared` and opens the app with
@@ -912,8 +930,10 @@ is refused with the reason. A lower-case pitch (`c4`) is read as C4. A passage's
 notes on its staff. **The reader is laxer than the format** (reader findings of 2026-10-15, `exercise/items.ts`): it
 takes an option of another kind (`octave` on a `notes` item, ignored), options of the wrong type (`"together": "false"`
 reads as together, `"arpeggio": "yes"` as true), an empty `items`, items not numbered 1, 2, …, and any field in `from`
-(`"bar": "5-8"` is ignored and bars 1–4 are read); and **a chord's `octave` that is not a whole number (`"five"`, 4.5,
-or 10) hangs the app** when the sets load. `npm run check:content` refuses all of these in the shipped sets, and reads
+(`"bar": "5-8"` is ignored and bars 1–4 are read). A chord's `octave` that is not a whole number 0 to 7 (`"five"`, 4.5,
+10, -1) is refused by the reader itself with its reason ("item 1: octave "five" should be a whole number 0 to 7"; it used
+to hang the app: interfaces review F1, fixed 2026-10-15), and a chord whose notes would go past the keyboard is refused
+too. `npm run check:content` refuses all of these in the shipped sets, and reads
 every set without MusicXML with the app's own reader (MusicXML items and passages need the browser's DOMParser: they
 are read in the browser, and the check only finds their files).
 
@@ -931,7 +951,7 @@ are read in the browser, and the check only finds their files).
 | Item | Its options (besides `name` and `short`, both text) |
 |---|---|
 | `notes`: pitches, spaces = together, commas = one after another | none |
-| `chord`: a chord symbol Tonal reads | `octave` a whole number (default 4; the check takes 0–7, a piano's octaves for the root), `arpeggio` true / false (default false) |
+| `chord`: a chord symbol Tonal reads | `octave` a whole number 0–7 (default 4; a piano's octaves for the root; the reader refuses anything else), `arpeggio` true / false (default false) |
 | `interval`: a Tonal interval name | `root` a pitch (default C4), `together` true / false (default true) |
 | `musicxml`: MusicXML written out (a fragment or a whole file), or a `.musicxml` / `.xml` file beside the set | none; any other text is read as MusicXML (an `.mxl` name has no notes) |
 
@@ -1013,9 +1033,11 @@ placeholders for checking the app, not lesson content.
   not starting `piano-web.`, and `piano-web.offline.v1`, are skipped. Merging, key by key: a key this phone lacks is
   added as it is; one it has is merged as JSON, object by object, this phone's value winning wherever both have one; a
   list of entries each with an `at` time (the practice log's runs) keeps every entry from both, once, in time order; any
-  other list is this phone's whole (so Memorise's learned bars of one piece and hands are this phone's when it has any,
-  not the two joined); a value that is not JSON stays this phone's. The `version` is not read: a backup of a later
-  format is merged as version 2 (a reader finding of 2026-10-15).
+  other list is this phone's whole, except Memorise's learned bars: the bars of one piece and hands learned on either
+  phone are joined, every one of them learned (owner, 2026-10-15); a value that is not JSON stays this phone's. The
+  `version` is read first: a backup made by a newer app (version above 2) is refused before anything is merged ("This
+  backup was made by a newer version of the app (backup version N; this one reads up to 2). Reload the app online to
+  update it, then restore again."); 1, 2 or none (the older `.json` backups) restore as above.
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
@@ -1144,9 +1166,10 @@ of each kind, in the order they were played:
 `F♯5`, or a key by its sharp name, `C♯4`; middle C = C4):
 - score, Play along and Rhythm (no loop): `notes` (the notes, or in Rhythm the taps, due in the part played), `onTime`
   (on time and held), `early`, `late`, `missed`, `letGoEarly`, `wrongKeys` (keys the score did not have), `toleranceMs`
-  (the on-time window, ± ms of real time: 200 / 100 / 50), `weakBars` (the weakest bars, "a-b", offered as a loop).
-  Not logged: which bars the run covered (a reader finding, 2026-10-15: a run stopped after two bars and a whole run
-  differ only in `notes`).
+  (the on-time window, ± ms of real time: 200 / 100 / 50), `weakBars` (the weakest bars, "a-b", offered as a loop),
+  `fromBar`, `toBar` (the bars the run went through: where it started to the furthest the marker reached; interfaces
+  review F9, 2026-10-15), `reachedEnd` (true: the marker reached the piece's last note; what a lesson step with no
+  target counts, §8c). Entries from before 2026-10-15 have none of the last three.
 - score, Ladder and any loop: `passes` [{ `pass` (1, 2, …), `notes`, `onTime`, `early`, `late`, `missed`,
   `letGoEarly`, `wrongKeys`, `clean` (every note on time and held, no wrong key), `bpm` (that pass's tempo) }].
 - score, Wait for me: `fromBar`, `toBar` (the bars played through: the loop's when it went round), `steps` (the notes
@@ -1159,10 +1182,14 @@ of each kind, in the order they were played:
   `toPractise` (bars), `stuck` (bars) }]; `mark` (text, when the piece is memorized: "Memorized: notes + rhythm at ♩ 96 ·
   13 Oct 2026").
 - simon: `longestChain` (the longest chain played whole without help), `ended` (over / all played / stopped),
-  `helpedChains`, `misses` (at most 40) [{ `item` (its name), `wanted` (its notes), `played` (the key) }].
+  `helpedChains`, `misses` (at most 40) [{ `item` (its name), `n` (its number in the set: items sharing a name told
+  apart; from 2026-10-15), `wanted` (its notes), `played` (the key) }]. A game is logged as it was played: its set,
+  level and activity are the ones it started with, even when another set or level was chosen to end it.
 - drills: `clean`, `of` (cards played), `ended` (set done / stopped early / left), `missesAgain` (true: this set was
-  "the misses again"), `cards` [{ `item` (its name), `clean`, `right` (right in the end, a retry too), `retried`,
-  `helped`, `result` (the card's line as shown) }].
+  "the misses again"), `cards` [{ `item` (its name), `n` (its number in the set, from 2026-10-15), `clean`, `right`
+  (right in the end, a retry too), `retried`, `helped`, `result` (the card's line as shown) }]. A set is logged as it
+  was played: its set, level, tempo and activity (a lesson step's tag) are the ones it started with, even when another
+  set, level or tempo was chosen part way (final review F06, 2026-10-15).
 - lab: `rounds` (at most 200) [{ `round` (1, 2, …), `step`, `stoppedInBar` (when ■ came in it; the round does not
   count), and for accompaniment `bars` ("1:ok 2:late 3:miss …", each bar's mark: ok / late / miss), or for lead `notes`,
   `fromGuide` (of them, from the lit keys), `barsPlayedIn`, `changes` (chord changes), `playedAtChanges`, `landedOnChord`
@@ -1184,8 +1211,9 @@ shown as "This time".
 
 **What the next lesson can read from it** (checked on the sample above, 2026-10-15): the piece, set or chart; the bars
 (a loop's, Wait for me's, Memorise's, the lab's, and each slip's); the mode and hands; the tempo; the result and each
-slip; the lesson step and the learner's feedback. Not there: which bars a Play along or Rhythm run without a loop covered
-(above), and an item's number in a set (Simon and Drills give its name).
+slip; the lesson step and the learner's feedback; the bars a Play along or Rhythm run without a loop went through, and
+whether it reached the end; an item's number in a set (Simon's misses, Drills' cards). All three from 2026-10-15
+(interfaces review F9, F10); older entries lack them.
 
 ## 7c. Addresses: links and reload (2026-10-15)
 
@@ -1198,10 +1226,10 @@ as you move (so a reload comes back, §0), and a link may use it. Read once, at 
 | `page` | settings / exercises / lesson (with `lesson`) | that page over the tab |
 | `lesson` | a lesson id (§8c) | with `page=lesson`: its page, and it becomes the lesson you are on |
 | `step` | a step id of that lesson | with `page=lesson&lesson=…`: the lesson page starts that step, with its activity's choices |
-| `piece` | a piece id (§1; `u-…` a library piece) | the score screen; with `tool=memorise`, Memorise |
+| `piece` | a piece id (§1; `u-…` a library piece) | the score screen; with `tool=memorise`, Memorise; with `tool=pdf`, that PDF in the reader |
 | `bars` | "a-b" (both numbers) | with `piece`: those printed bars looped |
 | `mode`, `bpm`, `hands` | as an activity's score settings (§8b): watch / wait / along / ladder (needs `bars`) / rhythm; 20–300; both / right / left / off | with `piece`: for this visit, never saved over yours (Carry on's way back into a run) |
-| `tool` | memorise / drill / simon / lab / freeplay / metronome | that tool over the tab |
+| `tool` | memorise / drill / simon / lab / freeplay / metronome / pdf (with `piece`: the PDF reader, F12) | that tool over the tab; Practise as… changes `tool` (and the set menu `set`) as you switch (F11) |
 | `set` | a set id (§6) | with `tool=drill` or `simon`: that set |
 | `chart` | a chart id (§5b) | with `tool=lab`: that chart |
 | `activity` | an activity id (§8b; letters, digits, `-`, `_`) | that activity, over whatever the rest opened; its choices for that visit |
@@ -1383,21 +1411,27 @@ target not met yet*; *skipped* when a later step was played; review 2026-10-15):
 - with a **target**, when one run played for it meets it, as its screen's result can tell: score `onTime` (0.05–1: a Play
   along or Rhythm run, or a pass round a loop, with that share of its notes on time and held; needs Play along, Rhythm
   or Ladder), score `bpm` (a clean pass round the loop at that tempo or faster; needs `bars`), drills `clean` (that many
-  clean cards in one set), simon `chain` (a chain that long played whole without help: Simon's own best), lab
-  `cleanRounds` (accompaniment rounds with every bar right in one run). A target its screen cannot judge (Memorise,
-  Free play) is refused;
-- without a target, when a run of it ended (one log entry: a set, a game, a run, a Memorise session);
-  **Wait for me** ends a run only by going through its bars (round its loop, or to the piece's end); a run that stops
-  part way is a start: the step is *tried* (review 2026-10-15, V10: a whole pass used to log nothing, one note marked the
-  step done);
+  clean cards in one **full** set, as Drills' own best: not "the misses again", nor a set stopped early, left part way
+  or endless; owner, 2026-10-15), simon `chain` (a chain that long played whole without help: Simon's own best), lab
+  `cleanRounds` (accompaniment rounds with every bar right in one run, over the whole chart: a run that looped bars is
+  practice and never counts, as the lab says; final review F07). A target its screen cannot judge (Memorise, Free play)
+  is refused;
+- without a target, when a run of it ended (one log entry: a set, a game, a Memorise session). A **score** step counts
+  only a run in the step's own mode (when its activity names one) that reached the end of its bars (owner, 2026-10-15):
+  Wait for me round its loop, or to the piece's end (V10); Play along, Rhythm or Ladder a pass round its loop, or the
+  piece's last note reached (`reachedEnd`, §7b). A run that stops part way, or one in another mode (a Play along run
+  stopped after two notes, in a Wait for me step), is a start: the step is *tried*;
 - for what keeps no runs (the score in Watch, Free play), when you come back from it: **visited** (V18: it counts toward
   the lesson's steps, shown without a ✓, since nothing was judged).
 After every step the result is a place of its own over the lesson page (V12: ← and Back from it are the lesson page): it
 shows **this time**'s result (as its screen words it), whether the target was met, the best so far over every attempt
-(kept apart), and the feedback (Hard / OK / Easy and a note, both skippable). Its fixed bottom bar always holds **Again**,
+(kept apart), and the feedback (Hard / OK / Easy and a note, both skippable; both cleared again, the feedback entry
+leaves the log: F05). Its fixed bottom bar always holds **Again**,
 **Lesson** (back to the lesson page) and the way on, in view at any size (V28): **Next: step n ▶**, or after the
 lesson's last step **Next lesson ▶**, with the card saying "Lesson done: all n steps. Next: …" (V17). A step's runs are found by the step's tag in the log (§7b),
-from when it was started; a step whose activity could not open marks nothing.
+from when it was started (kept for the tab, so a reload inside the step still counts the runs before it: F15); a step
+whose activity could not open marks nothing. Switch… from the result works as from the lesson page: the chosen lesson
+takes the lesson page's place (the result goes with it), and the lesson you are on has no Open (F13).
 
 **Every field, exactly** (`lesson/read.ts` `BLOCKS`; 2026-10-15). Ids (a rung's, a lesson's, a step's) are lower-case
 letters, digits and `-`, starting with a letter or digit; a rung's id once in the index, a lesson's once in the whole

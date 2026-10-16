@@ -10,7 +10,7 @@ import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
 import { addEntry, keyName, Run, setActivity, type Slip } from '../log';
-import type { KeyEvent } from '../midi';
+import { MidiInput, type KeyEvent } from '../midi';
 import { yours } from '../practice';
 import type { Command } from '../remote';
 import type { StepNotes } from '../follow';
@@ -70,14 +70,16 @@ export type ScoreScreen = Screen & {
   openActivity(a: { title: string; piece: string; bars?: [number, number]; settings: ScorePreset }): Promise<void>;
   /** Memorise (or another) takes the drawing; null: back to the score. */
   lend(b: Borrower | null): void;
-  /** Stops whatever runs (the score's own, or the borrower's). */
-  stopAll(): void;
+  /** Stops whatever runs (the score's own, or the borrower's). quiet: leaving the piece, the run logged with no summary shown. */
+  stopAll(quiet?: boolean): void;
   /** A run that paused by itself is over (another screen opened). */
   forgetRun(): void;
   fillBars(): void;
   showBars(): void;
   /** Edit fingering: on, with fingering shown. */
   editFingering(): void;
+  /** Edit fingering ended (leaving the piece: final review 2026-10-15, F01). */
+  endFingering(): void;
   /** The Tempo panel, at the metronome. */
   openMetronome(): void;
   /** The light or dark theme (app-wide) applied. */
@@ -99,6 +101,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   // Under the music: the notes now and next (a borrower may hide them: Memorise's covered bars).
   view.onStep = (notes) => {
     trackWait();
+    if (logRun && !borrower && practice.active && (logRun.mode === 'along' || logRun.mode === 'rhythm')) logRun.furthest = Math.max(logRun.furthest, view.index); // (F9)
     // Upright where touch keys play (Wait for me, Memorise), the keys follow the music two octaves at a time.
     strip.follow(notes.now.flat().map((p) => p.midi), notes.next.flat().map((p) => p.midi));
     strip.show(borrower ? borrower.stepNotes(notes) : notes);
@@ -163,7 +166,9 @@ export function createScoreScreen(app: App): ScoreScreen {
   /** The app takes the top staff as the right hand and the rest as the left (solo piano): said once if a file has other parts. */
   const warned = new Set<string>();
   function warnAboutHands(piece: Piece, xml: string): void {
-    if (warned.has(piece.id)) return;
+    // Only for a piece opened (the score draws the first piece behind the tabs on a resize before any is: the warning
+    // showed on Home, Music, Practice and Path for a piece never opened; tour 2026-10-15).
+    if (app.currentId !== piece.id || warned.has(piece.id)) return;
     warned.add(piece.id);
     const doc = new DOMParser().parseFromString(xml, 'application/xml');
     const parts = doc.querySelectorAll('part-list > score-part').length;
@@ -187,6 +192,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     starting = false;
     if (presetPiece() !== id) { clearPreset(); setActivity(null); } // another song: an activity (its preset, its log tag) is over
     forgetRun();
+    if (marking) setMarking(false); // (another piece: editing the last one's fingering is over, F01)
     sideFit = 1;
     app.currentId = id; // (the address names the piece where it is opened: main.ts, nav.ts)
     picking = 0;
@@ -311,6 +317,8 @@ export function createScoreScreen(app: App): ScoreScreen {
   // A start waits for MIDI permission and the piano's samples; another song, mode or hands, a stop, or another screen
   // in the meantime drops it (ChatGPT's review, 2026-10-13), rather than starting what is no longer chosen.
   let startRequest = 0;
+  const NO_KEYBOARD = 'No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the screen.';
+  const NO_KEYBOARD_SIDEWAYS = 'No MIDI keyboard found. Turn the phone upright to play on the screen’s keys, or plug one in.';
   const startShape = () => { const s = settingsFor(currentPiece().id); return `${currentPiece().id}|${s.mode}|${s.hands}|${!!borrower}`; };
   async function play(fromKey?: number, fromAt?: number): Promise<void> {
     if (starting) return;
@@ -331,7 +339,23 @@ export function createScoreScreen(app: App): ScoreScreen {
       const touchOnly = s.mode === 'wait' && !$('keyboard').hidden && s.pianoOut !== 'keyboard'; // (the keys are showing)
       if (touchOnly) void midi.start().then((names) => names.length ? undefined : 'No MIDI keyboard is connected', () => 'No MIDI keyboard here')
         .then((why) => { if (why && request === startRequest && !app.messageText) showMessage(`${why}: play on the keys below.`, true); });
-      else if (s.mode !== 'watch' || s.pianoOut === 'keyboard') await midi.start();
+      else if (s.mode !== 'watch' || s.pianoOut === 'keyboard') {
+        // In plain words, never the browser's own (final review 2026-10-15, F17): the timed modes listen to a keyboard,
+        // so with none (none connected, or MIDI not allowed) they say so and do not start a run that then "pauses".
+        // Wait for me on a phone held sideways, where the keys under the music are off (owner, 2026-10-15): with no
+        // keyboard there is nothing to play on, so it says where to play (the keys are not shown sideways).
+        const sidewaysWait = s.mode === 'wait' && currentDevice() === 'phone-sideways' && $('keyboard').hidden;
+        let names: string[] = [];
+        try { names = await midi.start(); } catch (cause) {
+          if (!MidiInput.supported) throw cause; // (the app's own sentence: this browser has no MIDI)
+          if (sidewaysWait) throw new Error(NO_KEYBOARD_SIDEWAYS);
+          if (judged(s.mode)) throw new Error(NO_KEYBOARD);
+          if (s.mode === 'wait') throw new Error('MIDI is not allowed on this page, so a keyboard cannot be heard. Allow it in the browser’s settings for this site.');
+          // (Watch through the keyboard: the piano plays on the phone, said below)
+        }
+        if (judged(s.mode) && !names.length) throw new Error(NO_KEYBOARD);
+        if (sidewaysWait && !names.length) throw new Error(NO_KEYBOARD_SIDEWAYS);
+      }
       // The piano part goes to the keyboard when chosen and one is connected that can play; otherwise the phone.
       sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
       if (s.pianoOut === 'keyboard' && !sound.keyboard) showMessage('No MIDI keyboard to play through: the piano plays on the phone.');
@@ -402,7 +426,11 @@ export function createScoreScreen(app: App): ScoreScreen {
     const piece = currentPiece();
     const base = { at: lr.run.at, seconds: lr.run.seconds, screen: 'score' as const, mode: lr.mode, piece: piece.id, title: piece.title, settings: logSettings() };
     const slips = { slips: lr.run.slips, slipCount: lr.run.slipCount };
-    if (result) addEntry({ ...base, result: { ...result, ...slips } });
+    // Play along and Rhythm with no loop: the bars the run went through, from where it started to the furthest the marker
+    // reached (interfaces review 2026-10-15, F9: a run stopped after two bars and a whole run differed only in notes).
+    // reachedEnd: it went to the piece's last note (owner, 2026-10-15, Q5: a step with no target counts such a run).
+    const span = result && lr.mode !== 'wait' && !view.loopSpan() ? { fromBar: view.barNumber(lr.fromStep), toBar: view.barNumber(Math.max(lr.furthest, lr.fromStep)), reachedEnd: lr.furthest >= view.stepCount - 1 } : {};
+    if (result) addEntry({ ...base, result: { ...result, ...span, ...slips } });
     else if (lr.passes.length) addEntry({ ...base, result: { passes: lr.passes, ...slips } });
     else if (lr.mode === 'wait' && lr.steps > 0) {
       // Wait for me (review 2026-10-15, V10): what was played, measured by the notes the marker moved on from and the
@@ -458,12 +486,15 @@ export function createScoreScreen(app: App): ScoreScreen {
   // The piece whose band is read, or being read, and that read: ▶ waits for it (review 2026-10-15, B7-03: a ▶ tapped
   // while it was still being read played the first run without the band). It never fails; a read that could not be
   // done is forgotten, so the next draw or ▶ tries again.
-  let bandRead: { id: string; done: Promise<void> } | null = null;
+  // Its file's fingerprint too: Replace file… keeps the id, and the new file's band (or none) is read (final review
+  // 2026-10-15, F09: the old band played until a reload).
+  let bandRead: { id: string; file: string; done: Promise<void> } | null = null;
   const bandFailed = new Set<string>(); // sounds that would not load (fetched online, and offline): left out
   function loadBand(piece: Piece): Promise<void> {
-    if (bandRead?.id === piece.id) return bandRead.done;
+    const file = record(piece.id)?.own?.hash ?? '';
+    if (bandRead?.id === piece.id && bandRead.file === file) return bandRead.done;
     band = null;
-    const read = { id: piece.id, done: Promise.resolve() };
+    const read = { id: piece.id, file, done: Promise.resolve() };
     const forget = () => { if (bandRead === read) bandRead = null; };
     read.done = (async () => {
       if (!piece.id.startsWith('u-')) return;
@@ -551,6 +582,9 @@ export function createScoreScreen(app: App): ScoreScreen {
     showBars();
   }
   $('q-loop').addEventListener('click', () => {
+    // A run going stops first (its summary and log), then is forgotten, as a change of mode does (final review
+    // 2026-10-15, F02: forgotten first, the summary showed and the run was never logged).
+    if (view.playing || practice.active) stopAll();
     forgetRun();
     if (picking) { picking = 0; view.setLoop(null); showMessage(''); fillBars(); return; }
     if (view.looped) { if (view.playing || practice.active) stopAll(); view.setLoop(null); showMessage(''); fillBars(); return; }
@@ -602,13 +636,18 @@ export function createScoreScreen(app: App): ScoreScreen {
   };
 
   /** Stops whatever is running: playing, waiting for your keys, or playing along (which then shows the summary). */
-  function stopAll(): void {
+  // Leaving the piece (owner, 2026-10-15, F04): the run ends quietly, logged, with no summary over where you land.
+  let quiet = false;
+  function stopAll(leaving = false): void {
     startRequest++; // a start still getting ready is dropped
     starting = false;
     if (borrower) { borrower.stop(); return; }
-    if (view.playing) view.pause();
-    else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
-    if (!resumable) endRun(); // (a run paused by itself is not over: it carries on, or See how it went ends it)
+    quiet = leaving;
+    try {
+      if (view.playing) view.pause();
+      else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
+      if (!resumable) endRun(); // (a run paused by itself is not over: it carries on, or See how it went ends it)
+    } finally { quiet = false; }
   }
   view.onStop = () => {
     sound.stop();
@@ -662,6 +701,9 @@ export function createScoreScreen(app: App): ScoreScreen {
   $<HTMLSelectElement>('q-mode').addEventListener('change', (e) => {
     if (view.playing || practice.active) stopAll();
     forgetRun();
+    // Picking bars (Ladder's, or Loop's) ends with another mode, as Cancel ends it: otherwise the tap meant to stop the
+    // next run set a loop's start (tour 2026-10-15).
+    if (picking) { picking = 0; view.setLoop(null); showMessage(''); }
     savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
     fillBars();
     if (settingsFor(currentPiece().id).mode === 'ladder' && !view.looped) startPicking('Ladder: tap the first bar to practise');
@@ -723,7 +765,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       });
       return b;
     }));
-    summaryDialog.showModal();
+    if (!quiet) summaryDialog.showModal();
   };
 
   // Hands: L | R | Both | Off in the bottom bar, saved per song; a change while playing is heard at once (Watch).
@@ -1037,6 +1079,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (!settingsFor(currentPiece().id).fingering) change('fingering', true);
       setMarking(true);
     },
+    endFingering(): void { if (marking) setMarking(false); },
     openMetronome(): void {
       fillTempo();
       tempoDialog.showModal();

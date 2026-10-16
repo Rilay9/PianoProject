@@ -18,11 +18,11 @@ import { holds } from './holds';
 import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
 import { installed, setUpOffline } from './offline';
-import { autoDelete, entryCount, exportLog, setActivity, setAutoDelete, type LessonRef } from './log';
+import { autoDelete, entries, entryCount, exportLog, setActivity, setAutoDelete, type LessonRef } from './log';
 import * as nav from './nav';
 import { KeyRemote } from './remote';
 import { clearPreset, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
-import { isSafe, touch } from './library/store';
+import { isSafe, load as loadLibrary, record as libraryRecord, touch } from './library/store';
 import { CLEANUP } from './screens/full-setup';
 import { addedLine, ensurePiece, takeAdded } from './library/catalogue';
 import { bytesOnPhone as fullBytes, findRow, gb, kindsOn as fullKindsOn, loadState as loadFullState, refOf, removeSet as removeFullSet } from './library/full';
@@ -119,7 +119,8 @@ function showing(): Screen {
 /** Leaving the score (← or Back): what plays stops (a run is logged), a run paused by itself is over, and so is a score activity's preset. */
 function leaveScore(): void {
   moreDialog.close();
-  scoreScreen.stopAll();
+  scoreScreen.endFingering(); // (F01: editing fingering ends with the piece)
+  scoreScreen.stopAll(true); // (quietly: the run logged, no summary over the tab you go to; owner, 2026-10-15, F04)
   scoreScreen.forgetRun();
   clearPreset();
   setActivity(null);
@@ -154,11 +155,16 @@ type Again = { mode?: string; bpm?: number; hands?: string };
 const scorePlace = (id: string, bars?: [number, number], again: Again = {}): nav.Place => ({ name: 'score', leave: leaveScore,
   params: { piece: id, ...(bars ? { bars: `${bars[0]}-${bars[1]}` } : {}), ...Object.fromEntries(Object.entries(again).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)])) } });
 const memorisePlace = (id: string): nav.Place => ({ name: 'memorise', params: { piece: id, tool: 'memorise' }, leave: () => memoriseScreen.close() });
+/** A piece no longer there, said by its title where the log knows it (one of yours deleted), never by its internal id (F19). */
+function noPiece(id: string): string {
+  const title = entries().filter((e) => e.piece === id).pop()?.title;
+  return title ? `“${title}” is no longer in your library.` : id.startsWith('u-') ? 'That piece is no longer in your library.' : `There is no piece "${id}" any more.`;
+}
 /** A piece on the score screen (bars: looped; again: Carry on's mode, tempo and hands, in force for this visit). */
 async function openPiece(id: string, bars?: [number, number], again: Again = {}): Promise<void> {
   if (!app.pieces.some((p) => p.id === id)) await musicExercises(app).catch(() => []); // (an exercise's music: its set read first)
   if (!app.pieces.some((p) => p.id === id) && id.startsWith('u-')) await fullPiece(id); // (a full-set piece opened without adding it: a reload, Carry on)
-  if (!app.pieces.some((p) => p.id === id)) { app.showMessage(`There is no piece "${id}" any more.`); return; }
+  if (!app.pieces.some((p) => p.id === id)) { app.showMessage(noPiece(id)); return; }
   wanted();
   clearPreset();
   touch(id);
@@ -178,12 +184,15 @@ async function fullPiece(id: string): Promise<void> {
   } catch { /* not on this phone: "there is no piece" */ }
 }
 async function openMemorise(id: string): Promise<void> {
+  if (!app.pieces.some((p) => p.id === id)) await musicExercises(app).catch(() => []); // (an exercise's music: its set read first, as openPiece does; F18)
   if (!app.pieces.some((p) => p.id === id) && id.startsWith('u-')) await fullPiece(id);
-  if (!app.pieces.some((p) => p.id === id)) { app.showMessage(`There is no piece "${id}" any more.`); return; }
-  wanted();
+  if (!app.pieces.some((p) => p.id === id)) { app.showMessage(noPiece(id)); return; }
+  const still = wanted();
   clearPreset();
   enter(memorisePlace(id));
+  const place = nav.top();
   await scoreScreen.openSong(id);
+  if (!still() || nav.top() !== place) return; // (Back, or another screen, while its piece loaded: it stays shut, F08)
   await memoriseScreen.open();
 }
 async function openExercise(kind: 'simon' | 'drill', set?: string): Promise<void> {
@@ -205,6 +214,12 @@ function openFreePlay(): void {
   enter({ name: 'freeplay', params: { tool: 'freeplay' }, leave: () => freePlay.close() });
 }
 function openPdf(id: string, title: string): void { wanted(); void pdfScreen.open(id, title); }
+/** A reload inside the PDF reader (its address: tool=pdf&piece=…; F12): the PDF again, over the tab it was opened from. */
+async function reopenPdf(id: string): Promise<void> {
+  await loadLibrary().catch(() => {});
+  const own = libraryRecord(id)?.own;
+  if (own?.kind === 'pdf') openPdf(id, own.title); else app.showMessage('That PDF is no longer in your library.');
+}
 
 $('score-back').addEventListener('click', () => nav.back());
 // Memorise's Done: back where it was opened from (the score, or the tab).
@@ -447,6 +462,7 @@ async function start(): Promise<void> {
   else if (tool === 'lab') await openLab(chart);
   else if (tool === 'freeplay') openFreePlay();
   else if (tool === 'metronome') { wanted(); metronome.open(); enter({ name: 'metronome', params: { tool: 'metronome' }, leave: () => metronome.close() }); }
+  else if (tool === 'pdf' && wantedPiece) await reopenPdf(wantedPiece);
   else if (wantedPiece) await openPiece(wantedPiece, bars ? [Number(bars[1]), Number(bars[2])] : undefined, again);
   if (activityId) await openActivity(activityId);
   else await takeShare(params.has('shared'));
@@ -527,7 +543,9 @@ async function launchScreen(a: Activity, step?: string): Promise<() => boolean> 
       clearPreset();
       const place = memorisePlace(a.piece);
       enter({ ...place, params: withStep(place.params!) });
+      const mine = nav.top();
       await scoreScreen.openSong(a.piece);
+      if (!still() || nav.top() !== mine) return no; // (Back while its piece loaded: it stays shut, F08)
       await memoriseScreen.open(a.settings, a.title);
       return () => still() && memoriseScreen.isOpen;
     }

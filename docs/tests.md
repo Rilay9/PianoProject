@@ -74,6 +74,12 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   keys: a set's `"octave": "five"` hung the app, `"together": "false"` read as together, a chart's `improvise: { scales }`
   was ignored, and no check read the sets, the lab's files or the song list at all (interfaces review, 2026-10-15:
   `tests/content.mjs`). Every content folder needs a check that reads each shipped file with the app's own reader.
+- **A record written from the state at its end, not its start.** A Drills set left by choosing another set was logged
+  under the new set, level and (ended) lesson tag, because the log read them when it wrote (final review 2026-10-15,
+  F06). Keep with a run what it is played as when it starts; check by changing each of them part way.
+- **The reviewer's device, not a lookalike.** The "has 2 parts" warning on Home showed only in a context with
+  `isMobile` (as the tour ran), whose first layout fires a resize; the same check at the same size without it passed on
+  the broken build (2026-10-15). Run a reported case the way it was reported before calling it fixed or unreproduced.
 - **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in
   between files one item's data under another's (a PDF opening saved the previous PDF's lines under its own name, review
   2026-10-15). Switch the name and its data together, and keep saves off in between.

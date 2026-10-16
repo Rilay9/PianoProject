@@ -10,7 +10,7 @@ import type { Sound, NoteEvent } from '../sound';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
-import { addEntry, Run, setActivity } from '../log';
+import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../log';
 
 export type Rung = 1 | 2 | 3 | 4 | 5;
 export interface SimonLevel {
@@ -116,16 +116,18 @@ export class Simon {
   close(): void { this.endGame('stopped'); this.stopAll(); this.on = false; this.interrupted = false; this.keys.release(); }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per game -------------------------------------------
-  private game: { run: Run; longest: number; helped: number; misses: { item: string; wanted: string; played: string }[] } | null = null;
+  // (set, level and tag: what the game is played as, kept from its start; final review 2026-10-15, F06: another set or
+  // level chosen part way logged the game under the new one)
+  private game: { run: Run; set: ItemSet; level: SimonLevel; tag: ActivityTag; longest: number; helped: number; misses: { item: string; n: number; wanted: string; played: string }[] } | null = null;
   private endGame(ended: 'over' | 'all played' | 'stopped'): void {
     const g = this.game;
     this.game = null;
     if (!g || (!g.longest && !g.misses.length)) return;
     addEntry({
-      at: g.run.at, seconds: g.run.seconds, screen: 'simon', set: this.set.id, title: this.set.title,
-      settings: { rung: this.level.rung, match: this.level.match, miss: this.level.miss, speed: this.level.speed },
+      at: g.run.at, seconds: g.run.seconds, screen: 'simon', set: g.set.id, title: g.set.title,
+      settings: { rung: g.level.rung, match: g.level.match, miss: g.level.miss, speed: g.level.speed },
       result: { longestChain: g.longest, ended, helpedChains: g.helped, misses: g.misses },
-    });
+    }, g.tag);
   }
 
   /** A level change: an activity's preset choice changes for the activity; the rest are yours, saved. */
@@ -188,7 +190,7 @@ export class Simon {
     this.chain = [];
     this.tries = TRIES;
     this.endGame('stopped');
-    this.game = { run: new Run(), longest: 0, helped: 0, misses: [] };
+    this.game = { run: new Run(), set: this.set, level: { ...this.level }, tag: activityTag('simon'), longest: 0, helped: 0, misses: [] };
     this.ui.start.hidden = true;
     this.grow();
     await this.showChain(0);
@@ -385,7 +387,7 @@ export class Simon {
     const played = item.groups.filter((g) => g.length);
     const next = played[this.flat.slice(0, this.pos + 1).filter((g) => g.item === group.item).length - 1] ?? [];
     this.ui.status.textContent = `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}`;
-    if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, wanted: next.map(shown).join(' '), played: shown(noteName(midi)) });
+    if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, n: item.n, wanted: next.map(shown).join(' '), played: shown(noteName(midi)) });
     this.ui.status.className = 'ex-status bad';
     this.ui.sub.textContent = played.length > 1 ? `In ${item.name}.` : group.keys.length > 1 ? `${item.name}.` : '';
     if (this.level.miss === 'tries') this.tries--;

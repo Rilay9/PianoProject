@@ -260,6 +260,8 @@ export class Memorise {
     this.savePlace();
     // Mid-turn: back to the start of your turn, so a pass is never judged half one way and half the other.
     if (judging && ['hear', 'ready', 'turn', 'review'].includes(this.phase)) { this.halt(); this.ready(this.scope()[0]); return; }
+    // Not started: the opening line says what ▶ will now do (final review 2026-10-15, F21: it kept the old choice's words).
+    if (!this.active) { this.preview(); return; }
     this.d.changed();
   }
 

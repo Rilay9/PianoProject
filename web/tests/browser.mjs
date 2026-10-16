@@ -2141,6 +2141,465 @@ try {
       await ctx.close();
     });
   }
+  // ---- Fix round of the final reviews (2026-10-15; design/2026-10-15-final-review/fixes.md) -------------------------
+  // Each case was run against the build before the fixes (7aba56a3, served elsewhere, --url) and failed there, then
+  // passed here. Taps go by position (Playwright's click lands at the element's place and fails if something else lies
+  // on top), in a plain phone tab: touch, no MIDI permission; where a keyboard is the point, the stand-in MIDI keyboard
+  // (window.__key) with one input, or with none (MIDI allowed, no keyboard connected).
+  {
+    const fakeKeys = (n) => {
+      const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+      const access = { inputs: new Map(n ? [[input.id, input]] : []), outputs: new Map(), onstatechange: null };
+      Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+      window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+    };
+    /** A phone tab at url: keys undefined, no MIDI permission (a plain tab); a number, the stand-in keyboard with that many inputs. */
+    async function phone(url, { keys, viewport = { width: 390, height: 844 }, route, mobile = false } = {}) {
+      const ctx = await browser.newContext({ viewport, hasTouch: true, isMobile: mobile, serviceWorkers: 'block' });
+      const page = await ctx.newPage();
+      if (keys !== undefined) await page.addInitScript(fakeKeys, keys);
+      if (route) await route(page);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(url); await page.waitForTimeout(1800);
+      return { ctx, page, errors };
+    }
+    const wait = (page, ms) => page.waitForTimeout(ms);
+    const tapOn = async (page, sel, hasText) => { await page.locator(sel, hasText ? { hasText } : {}).first().click({ timeout: 8000 }); await wait(page, 400); };
+    const scoreReady = (page) => page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    /** The first tap (opened straight into a screen, nothing has been tapped: V31), on the music. */
+    const firstTap = async (page) => { await page.mouse.click(195, 330); await wait(page, 400); };
+    /** The score's bars back, if they faded (a tap on the music brings them). */
+    const barsUp = async (page) => { if (await page.evaluate(() => document.getElementById('top-bar').classList.contains('faded'))) { await page.mouse.click(195, 330); await wait(page, 300); } };
+    const where = (page) => page.evaluate(() => ({ nav: window.__pianoDebug.nav(), ...window.__pianoDebug.shell(), screen: window.__pianoDebug.showing(), url: location.search }));
+    const said = (page) => page.evaluate(() => document.getElementById('message')?.textContent ?? '');
+    const back = async (page) => { await page.evaluate(() => history.back()); await wait(page, 900); };
+    const log = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries);
+    const chord = async (page, keys, ms = 80) => { await page.evaluate((ks) => { for (const k of ks) window.__key(k, true); }, keys); await wait(page, ms); await page.evaluate((ks) => { for (const k of ks) window.__key(k, false); }, keys); };
+    const NO_KEYS = 'No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the screen.';
+
+    // F15: a step's run logged, then a reload (a phone reopening the tab), then ←: the run counts for the step.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?page=lesson&lesson=test-minuet-opening`, { keys: 1 });
+      await tapOn(page, '.les-step[data-step="wait-rh"] .btn'); await scoreReady(page); await wait(page, 1500);
+      // Wait for me round bars 1–4, right hand: its notes played until the marker goes round the loop.
+      let went = false, last = await page.evaluate(() => window.__pianoDebug.state().step);
+      for (let i = 0; i < 90 && !went; i++) {
+        const keys = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step, 'right'));
+        if (keys.length) await chord(page, keys);
+        await wait(page, 300);
+        const now = await page.evaluate(() => window.__pianoDebug.state().step);
+        if (now < last) went = true;
+        last = now;
+      }
+      await page.mouse.click(195, 330); await wait(page, 800); // a tap on the music: ■
+      const logged = (await log(page)).filter((e) => e.lesson?.step === 'wait-rh');
+      await page.reload(); await wait(page, 3500);
+      const reopened = await where(page);
+      await back(page); await wait(page, 600);
+      const result = await page.evaluate(() => ({ h: document.querySelector('#lesson-body .les-result .h')?.textContent ?? '', s: [...document.querySelectorAll('#lesson-body .les-result .s')].map((e) => e.textContent).join(' | '),
+        done: !!JSON.parse(localStorage.getItem('piano-web.path.v1') ?? '{}').done?.['test-minuet-opening']?.['wait-rh'] }));
+      ok('F15: the run went round bars 1–4 and was logged with the step before the reload', went && logged.length === 1 && logged[0].result.rounds >= 1, JSON.stringify(logged.map((e) => e.result)));
+      ok('F15: reloaded into the step, then ←: the run before the reload counts (played through, step done)', reopened.screen === 'score' && /Played through/.test(result.h) && result.done, `${JSON.stringify(reopened)}; ${JSON.stringify(result)}`);
+      ok('F15: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F08: a reload into Memorise with its score slow to arrive (held 4 s), and Back before it arrives: Memorise stays shut.
+    {
+      const hold = async (page) => page.route('**/scores/chopin-op28-4.musicxml', async (route) => { await new Promise((r) => setTimeout(r, 4000)); await route.continue(); });
+      const { ctx, page, errors } = await phone(`${BASE}?tab=music&piece=chopin-op28-4&tool=memorise`, { route: hold });
+      await back(page); // (1.8 s in: the file is still held)
+      await wait(page, 5000);
+      const w = await where(page), memo = await page.evaluate(() => document.body.classList.contains('memorising') || !document.getElementById('memo-head').hidden);
+      ok('F08: Back while Memorise loads its piece: the Music tab shows and Memorise stays shut', w.screen !== 'memorise' && !memo && w.tab === 'music' && !w.nav.includes('memorise'), `${JSON.stringify(w)}; memorise shown ${memo}`);
+      ok('F08: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F01: Edit fingering, then Back without Done, then another piece from Music: it opens with its play controls.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`);
+      await scoreReady(page); await firstTap(page); await barsUp(page);
+      await tapOn(page, '#open-more'); await tapOn(page, '#edit-marks');
+      const editing = await page.evaluate(() => !document.getElementById('marks-bar').hidden);
+      await back(page);
+      await tapOn(page, '#tabs [data-tab="music"]'); await wait(page, 1000);
+      await tapOn(page, '.lib-row', 'Chorale'); await wait(page, 2500);
+      const st = await page.evaluate(() => ({ title: document.getElementById('song-title').textContent, marks: !document.getElementById('marks-bar').hidden, bottom: !document.getElementById('bottom-bar').hidden }));
+      ok('F01: fingering mode ends with the piece: the next piece shows its play controls, not "Tap a note, then a finger"', editing && /Chorale/.test(st.title) && !st.marks && st.bottom, `editing first ${editing}; ${JSON.stringify(st)}`);
+      ok('F01: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F9 (interfaces) and F02: two Play along runs with the stand-in keyboard. The first, stopped by a tap on the music,
+    // logs the bars it went through; the second, ended by Loop while it runs (the bars are away while it plays: Loop is
+    // reached as a focused button's Enter would, by its click), shows its summary and is logged too.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { keys: 1 });
+      await scoreReady(page); await firstTap(page);
+      await page.selectOption('#q-mode', 'along'); await wait(page, 400);
+      const run = async (ms) => {
+        await barsUp(page); await tapOn(page, '#play');
+        for (let t = 0; t < ms; t += 250) { const keys = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step)); if (keys.length) await chord(page, keys, 60); await wait(page, 190); }
+      };
+      await run(5000);
+      await page.mouse.click(195, 330); await wait(page, 1000); // ■ by a tap on the music
+      const first = (await log(page)).filter((e) => e.screen === 'score');
+      await page.evaluate(() => document.getElementById('summary').close()); await wait(page, 300);
+      await run(2500);
+      await page.evaluate(() => document.getElementById('q-loop').click()); await wait(page, 1000);
+      const summary = await page.evaluate(() => document.getElementById('summary').open);
+      const second = (await log(page)).filter((e) => e.screen === 'score');
+      const r = first[0]?.result ?? {};
+      ok('F9: a Play along run with no loop logs the bars it went through (from bar 1 to the bar reached)', first.length === 1 && r.fromBar === 1 && r.toBar >= 2 && r.notes > 0, JSON.stringify({ fromBar: r.fromBar, toBar: r.toBar, notes: r.notes }));
+      ok('F02: Loop tapped during a Play along run: the summary shows and the run is logged', summary && second.length === 2 && second[1].mode === 'along' && second[1].result.notes > 0, `summary ${summary}; ${second.length} entries`);
+      ok('F9/F02: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F09: a MIDI piece with a band, its file replaced by one with no band: the band goes (no reload).
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=music`);
+      const addMidi = async () => { await page.waitForSelector('#lib-midi[open]', { timeout: 20000 }); await page.waitForFunction(() => /Check/.test(document.getElementById('lib-midi-facts')?.textContent ?? ''), null, { timeout: 20000 }); await tapOn(page, '#lib-midi button[value="add"]'); await wait(page, 1500); };
+      const bandParts = () => page.evaluate(() => { document.getElementById('tempo').showModal(); const r = { shown: !document.getElementById('t-band-set').hidden, parts: document.getElementById('t-band-parts').textContent }; document.getElementById('tempo').close(); return r; });
+      await page.setInputFiles('#lib-file', BAND); await addMidi();
+      await tapOn(page, '.lib-row', 'little band'); await scoreReady(page); await wait(page, 1500);
+      const before = await bandParts();
+      await back(page); await wait(page, 600);
+      await page.locator('#lib-list li', { hasText: 'little band' }).first().locator('.lib-more').click(); await wait(page, 600);
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.locator('#lib-page button', { hasText: 'Replace file' }).first().click()]);
+      await chooser.setFiles(MIDI); await addMidi();
+      await tapOn(page, '#lib-page .btn.main', 'Open'); await scoreReady(page); await wait(page, 2000);
+      const after = await bandParts();
+      ok('F09: after Replace file… with a MIDI file with no band, the piece has no band', before.shown && /Bass/.test(before.parts) && !after.shown && after.parts === '', `before ${JSON.stringify(before)}; after ${JSON.stringify(after)}`);
+      ok('F09: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F18: Memorise on an exercise score (Melody 1), then a reload: Memorise again, not "no piece".
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=practice&page=exercises`);
+      await wait(page, 1000);
+      await tapOn(page, '#exercises-body .li', 'Melody 1'); await scoreReady(page); await wait(page, 1200);
+      await barsUp(page); await tapOn(page, '#open-more'); await tapOn(page, '#open-memorise'); await wait(page, 2000);
+      const opened = await where(page);
+      await page.reload(); await wait(page, 4000);
+      const w = await where(page), m = await said(page);
+      ok('F18: Memorise on an exercise score comes back after a reload', opened.screen === 'memorise' && w.screen === 'memorise' && !/no piece/.test(m), `${JSON.stringify(opened)} → ${JSON.stringify(w)}; "${m}"`);
+      ok('F18: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F22 and F11: a lesson step's Drills (5 cards), Practise as… Simon and back: the step's 5 cards again, and the
+    // address names the way on screen; and from Practice, Practise as… Simon then a reload: Simon.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?page=lesson&lesson=test-minuet-opening`, { keys: 1 });
+      await tapOn(page, '.les-step[data-step="melody-cards"] .btn'); await wait(page, 3000);
+      const now = () => page.evaluate(() => ({ cards: document.getElementById('ex-left').textContent, kind: document.getElementById('ex-kind').textContent, url: location.search }));
+      const a = await now();
+      await tapOn(page, '#ex-kind'); await tapOn(page, '#ex-as-dialog [data-as="simon"]'); await wait(page, 1500);
+      const b = await now();
+      await tapOn(page, '#ex-kind'); await tapOn(page, '#ex-as-dialog [data-as="drill"]'); await wait(page, 1500);
+      const c = await now();
+      ok('F22: a step’s Drills, Practise as… Simon and back to Drills: the step’s level again (5 cards, not your 10)', /of 5/.test(a.cards) && /Simon/.test(b.kind) && /Drills/.test(c.kind) && /of 5/.test(c.cards), `${a.cards} → ${b.kind} → ${c.kind} ${c.cards}`);
+      ok('F11: Practise as… changes the address with the way on screen', /tool=drill/.test(a.url) && /tool=simon/.test(b.url) && /tool=drill/.test(c.url), `${a.url} → ${b.url} → ${c.url}`);
+      ok('F22/F11: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=practice`, { keys: 1 });
+      await tapOn(page, '[data-practice="Drills"]'); await wait(page, 2500);
+      await tapOn(page, '#ex-kind'); await tapOn(page, '#ex-as-dialog [data-as="simon"]'); await wait(page, 1500);
+      await page.reload(); await wait(page, 3500);
+      const kind = await page.evaluate(() => document.getElementById('ex-kind').textContent), w = await where(page);
+      ok('F11: Practise as… Simon, then a reload: Simon again', w.screen === 'exercise' && /Simon/.test(kind), `${kind} ${JSON.stringify(w)}`);
+      ok('F11 reload: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F05 and F13 on a step's result (lesson 3's Free play step, the quickest to play).
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?page=lesson&lesson=test-chords-and-band`);
+      await tapOn(page, '.les-step[data-step="free"] .btn'); await wait(page, 1000);
+      await tapOn(page, '#fp-done'); await wait(page, 1000);
+      const feedback = async () => (await log(page)).filter((e) => e.screen === 'lesson' && e.lesson?.step === 'free').map((e) => e.result.feedback);
+      await tapOn(page, '.fb-b[data-v="hard"]'); const hard = await feedback();
+      await tapOn(page, '.fb-b[data-v="hard"]'); const unHard = await feedback();
+      await page.locator('.fb-note').fill('abc'); await wait(page, 300); const note = await feedback();
+      await page.locator('.fb-note').fill(''); await wait(page, 300); const noNote = await feedback();
+      ok('F05: feedback cleared tap by tap leaves nothing in the log (Hard, Hard off; a note, then deleted)', JSON.stringify(hard) === '[{"effort":"hard"}]' && unHard.length === 0 && JSON.stringify(note) === '[{"note":"abc"}]' && noNote.length === 0,
+        `${JSON.stringify(hard)} → ${JSON.stringify(unHard)}; ${JSON.stringify(note)} → ${JSON.stringify(noNote)}`);
+      // F13: Switch… on the result, then lesson 1: it takes the lesson page's place; Back goes to where that was opened from.
+      const stackBefore = (await where(page)).nav;
+      await tapOn(page, '#lesson-switch'); await wait(page, 600);
+      const rows = await page.evaluate(() => [...document.querySelectorAll('#switch-body .li')].map((li) => ({ t: li.querySelector('.tt')?.textContent ?? '', b: li.querySelector('button')?.textContent ?? '' })));
+      const here = rows.find((r) => /chords, then the band/.test(r.t));
+      await tapOn(page, '#switch-body .li button', /^(Open|Revisit|Skip ahead)$/); // (lesson 1's: the first offered)
+      await wait(page, 1500);
+      const chosen = await where(page);
+      await back(page);
+      const after = await where(page);
+      ok('F13: the sheet offers no "Open" for the lesson the result belongs to', !!here && here.b === '', JSON.stringify(rows));
+      ok('F13: the chosen lesson takes the lesson page’s place, and Back goes to where that page was opened from', JSON.stringify(stackBefore) === '["lesson","result"]' && JSON.stringify(chosen.nav) === '["lesson"]' && /lesson=test-minuet-opening/.test(chosen.url) && after.nav.length === 0,
+        `before ${JSON.stringify(stackBefore)}; chosen ${JSON.stringify(chosen)}; Back ${JSON.stringify(after)}`);
+      ok('F05/F13: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F16: Free play's big name for two keys: C3 + E5 is "major 3rd + 2 octaves" (as the column below), C4 + C5 "octave".
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=practice`, { keys: 1 });
+      await tapOn(page, '[data-practice="Free play"]'); await wait(page, 800);
+      const big = async (keys) => { await page.evaluate((ks) => { for (const k of ks) window.__key(k, true); }, keys); await wait(page, 200); const t = await page.evaluate(() => document.getElementById('fp-chord').textContent); await page.evaluate((ks) => { for (const k of ks) window.__key(k, false); }, keys); await wait(page, 200); return t; };
+      const tenth = await big([48, 76]), octave = await big([60, 72]), third = await big([60, 64]);
+      ok('F16: two keys named as the Intervals column names them: C3+E5 "major 3rd + 2 octaves", C4+C5 "octave", C4+E4 "major 3rd"', tenth === 'major 3rd + 2 octaves' && octave === 'octave' && third === 'major 3rd', `"${tenth}", "${octave}", "${third}"`);
+      ok('F16: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F20: a set file that can't be had the first time Drills opens is there the next time.
+    {
+      let failing = true;
+      const flaky = (page) => page.route('**/content/sets/chords-c.json', async (route) => { if (failing) await route.abort('internetdisconnected'); else await route.continue(); });
+      const { ctx, page, errors } = await phone(`${BASE}?tab=practice`, { keys: 1, route: flaky });
+      const sets = () => page.evaluate(() => [...document.querySelectorAll('#ex-set option')].map((o) => o.value));
+      await tapOn(page, '[data-practice="Drills"]'); await wait(page, 3000);
+      const first = await sets();
+      failing = false;
+      await back(page);
+      await tapOn(page, '[data-practice="Drills"]'); await wait(page, 3000);
+      const second = await sets();
+      ok('F20: a set that failed to load once is read again the next time Drills opens', !first.includes('chords-c') && first.length > 0 && second.includes('chords-c'), `first ${first}; second ${second}`);
+      ok('F20: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F17: no MIDI keyboard. A plain phone tab (MIDI never allowed) and one with MIDI allowed and none connected: Play
+    // along and Rhythm say so plainly and start nothing; the browser's own sentence never shows. Drills' Ready says it.
+    {
+      const tries = {};
+      for (const [name, keys] of [['not allowed', undefined], ['none connected', 0]]) {
+        const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { keys });
+        await scoreReady(page); await firstTap(page);
+        for (const mode of ['along', 'rhythm']) {
+          await page.selectOption('#q-mode', mode); await wait(page, 400);
+          await barsUp(page); await tapOn(page, '#play'); await wait(page, 4500);
+          tries[`${name} ${mode}`] = { said: await said(page), button: await page.evaluate(() => document.getElementById('play').textContent) };
+        }
+        if (errors.length) tries[`${name} errors`] = errors;
+        await ctx.close();
+      }
+      ok('F17: Play along and Rhythm with no keyboard (not allowed, or none connected) say so plainly and start nothing', Object.entries(tries).every(([k, v]) => !/errors/.test(k) && v.said === NO_KEYS && v.button === '▶'), JSON.stringify(tries));
+      const ready = {};
+      for (const [name, keys] of [['not allowed', undefined], ['none connected', 0], ['a keyboard', 1]]) {
+        const { ctx, page } = await phone(`${BASE}?tab=practice`, { keys });
+        await tapOn(page, '[data-practice="Drills"]'); await wait(page, 2500);
+        ready[name] = await page.evaluate(() => document.getElementById('ex-status').textContent);
+        await ctx.close();
+      }
+      const line = 'Cards are judged from a MIDI keyboard; none is connected.';
+      ok('F17: Drills’ Ready with no keyboard says cards are judged from one (and not with one)', ready['not allowed'] === line && ready['none connected'] === line && ready['a keyboard'] !== line, JSON.stringify(ready));
+    }
+
+    // F12: the PDF reader has an address: a reload comes back to the PDF; Back from it is the Music tab.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=music`);
+      await page.setInputFiles('#lib-file', SHAPES); await wait(page, 2500);
+      await tapOn(page, '.lib-row', 'three shapes'); await wait(page, 4000);
+      const open = await where(page);
+      await page.reload(); await wait(page, 5000);
+      const again = await where(page), title = await page.evaluate(() => document.getElementById('pdf-title').textContent);
+      await back(page); await wait(page, 500);
+      const after = await where(page);
+      ok('F12: a reload while reading a PDF comes back to it; Back is then the Music tab', open.screen === 'pdf' && /tool=pdf/.test(open.url) && again.screen === 'pdf' && /three shapes/.test(title) && after.tab === 'music' && !/tool=pdf/.test(after.url) && after.screen !== 'pdf',
+        `${JSON.stringify(open)} → reload ${JSON.stringify(again)} "${title}" → Back ${JSON.stringify(after)}`);
+      ok('F12: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F14: sideways, just after + Add, the "Added" toast does not lie over the piece's page: Rename takes the tap.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=music`, { viewport: { width: 844, height: 390 } });
+      await page.setInputFiles('#lib-file', SCORE); await wait(page, 1500);
+      const toast = await page.evaluate(() => !document.getElementById('lib-toast').hidden);
+      const row = await page.evaluate(() => { const r = [...document.querySelectorAll('.lib-row')].find((x) => /added/.test(x.textContent)); if (!r) return null; const b = r.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; });
+      if (row) { await page.mouse.click(row.x, row.y); await wait(page, 600); }
+      const hit = await page.evaluate(() => {
+        const b = [...document.querySelectorAll('#lib-page button')].find((x) => /Rename/.test(x.textContent)); if (!b) return { found: false };
+        // (the page scrolled so that Rename stands at the toast's height, where the review's tap went)
+        const t = document.getElementById('lib-toast').getBoundingClientRect(), r0 = b.getBoundingClientRect();
+        document.getElementById('lib-page').scrollTop += (r0.top + r0.height / 2) - (t.top + t.height / 2);
+        const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, top = document.elementFromPoint(x, y);
+          return { found: true, onTop: top === b || b.contains(top) ? 'Rename' : `${top?.tagName}#${top?.id}.${top?.className}`, x, y, toastY: Math.round(t.top), toast: !document.getElementById('lib-toast').hidden };
+      });
+      if (hit.found) { await page.mouse.click(hit.x, hit.y); await wait(page, 500); }
+      const dialog = await page.evaluate(() => !!document.querySelector('dialog[open]'));
+      ok('F14: sideways with the "Added" toast showing, a tap on the piece’s Rename reaches it', toast && hit.found && hit.toast && hit.onTop === 'Rename' && dialog, `toast at first ${toast}; ${JSON.stringify(hit)}; dialog ${dialog}`);
+      ok('F14: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F19: a piece practised, then deleted: it leaves Home's recent list, and its old address never shows its id.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=music`);
+      const OWN = join(tmp, 'fix round piece.musicxml');
+      writeFileSync(OWN, readFileSync(SCORE, 'utf8').replace('MENUETT No. 1 mit TRIO', 'Fix round piece'));
+      await page.setInputFiles('#lib-file', OWN); await wait(page, 2000);
+      const piece = await page.evaluate(() => window.__pianoDebug.pieces().find((p) => p.id.startsWith('u-')));
+      await page.evaluate((p) => { const s = JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}'); s.entries = s.entries ?? []; s.entries.push({ at: new Date().toISOString(), seconds: 30, screen: 'score', mode: 'wait', piece: p.id, title: p.title, settings: { mode: 'wait' }, result: { fromBar: 1, toBar: 2, steps: 4, rounds: 0 } }); localStorage.setItem('piano-web.log.v1', JSON.stringify(s)); }, piece);
+      const home = () => page.evaluate(() => document.getElementById('home-body').textContent);
+      await tapOn(page, '#tabs [data-tab="home"]'); await wait(page, 1200);
+      const listed = (await home()).includes(piece.title);
+      await tapOn(page, '#tabs [data-tab="music"]'); await wait(page, 1000);
+      await page.locator('#lib-list li', { hasText: piece.title }).first().locator('.lib-more').click(); await wait(page, 600);
+      await tapOn(page, '#lib-page button.danger', 'Delete'); await wait(page, 1500);
+      await back(page); await tapOn(page, '#tabs [data-tab="home"]'); await wait(page, 1200);
+      const still = (await home()).includes(piece.title);
+      await page.goto(`${BASE}?piece=${piece.id}`); await wait(page, 2500);
+      const m = await said(page);
+      ok('F19: a deleted piece leaves Home’s recent list', listed && !still, `listed before ${listed}; after delete ${still} (${piece.title})`);
+      ok('F19: its old address says it is gone without its internal id', !m.includes(piece.id) && /no longer/.test(m), `"${m}"`);
+      ok('F19: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F21: Memorise's opening line follows its Settings: "nothing" before your turn and the whole chunk.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2&tool=memorise`);
+      await scoreReady(page); await firstTap(page); await wait(page, 800);
+      const sub = () => page.evaluate(() => document.getElementById('memo-sub').textContent);
+      const first = await sub();
+      if (await page.evaluate(() => document.getElementById('memo-head').classList.contains('faded'))) { await page.mouse.click(195, 330); await wait(page, 300); }
+      await tapOn(page, '#memo-settings');
+      await page.locator('input[name="m-before"][value="nothing"]').check(); await wait(page, 300);
+      await page.locator('input[name="m-adds"][value="chunk"]').check(); await wait(page, 300);
+      await page.keyboard.press('Escape'); await wait(page, 500);
+      const then = await sub();
+      ok('F21: Memorise’s opening line follows a Settings change (nothing before your turn)', /It plays bar 1/.test(first) && then === 'They hide and you play them from memory', `"${first}" → "${then}"`);
+      ok('F21: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Tour: BWV 514's "has 2 parts" belongs where the piece opens, not on Home and the tabs (the piece never opened).
+    // As the tour ran it: a phone (isMobile), whose first layout's resize drew the first piece behind the tabs.
+    {
+      // Every text the message line shows is kept (a later layout clears the line, so a look at the end can miss it).
+      const record = (page) => page.addInitScript(() => {
+        window.__said = [];
+        new MutationObserver(() => { const t = document.getElementById('message')?.textContent; if (t && window.__said.at(-1) !== t) window.__said.push(t); }).observe(document, { subtree: true, childList: true, characterData: true });
+      });
+      const { ctx, page, errors } = await phone(BASE, { mobile: true, route: record });
+      await wait(page, 1000);
+      // (and a resize once the app is up, as a phone's address bar or keyboard gives: whether the first layout's own
+      // resize comes before or after the song list arrives varies run to run)
+      await page.setViewportSize({ width: 390, height: 800 }); await wait(page, 1200);
+      await page.setViewportSize({ width: 390, height: 844 }); await wait(page, 1200);
+      let home = await said(page);
+      for (const t of ['music', 'practice', 'path', 'home']) { await tapOn(page, `#tabs [data-tab="${t}"]`); await wait(page, 800); }
+      home = (await page.evaluate(() => window.__said)).join(' | ');
+      await ctx.close();
+      // Where it opens it is said (a plain context: the phone emulation's own resize just after opening lays the music out
+      // again, and a layout clears the message line, as it did before this round).
+      const plain = await phone(`${BASE}?piece=bach-bwv514`);
+      await scoreReady(plain.page); await wait(plain.page, 1500);
+      const opened = await said(plain.page);
+      errors.push(...plain.errors);
+      await plain.ctx.close();
+      ok('tour: the "has 2 parts" warning is not said on Home or the tabs for a piece never opened, and is where it opens', !/has 2 parts/.test(home) && /has 2 parts/.test(opened), `Home "${home}"; opened "${opened}"`);
+      ok('tour warning: no page errors', errors.length === 0, errors.join(' | '));
+    }
+
+    // Tour: bar picking started by Ladder ends with a change to Play along: ▶ then a tap on the music stops, and sets no loop.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { keys: 1 });
+      await scoreReady(page); await firstTap(page);
+      await page.selectOption('#q-mode', 'ladder'); await wait(page, 500);
+      const picking = await said(page);
+      await page.selectOption('#q-mode', 'along'); await wait(page, 500);
+      await barsUp(page); await tapOn(page, '#play'); await wait(page, 2000);
+      await page.mouse.click(195, 330); await wait(page, 800);
+      const st = await page.evaluate(() => ({ loop: document.getElementById('q-loop').textContent, pressed: document.getElementById('q-loop').getAttribute('aria-pressed'), msg: document.getElementById('message').textContent }));
+      ok('tour: Ladder’s bar picking ends with another mode; the stop tap sets no loop', /Ladder: tap the first bar/.test(picking) && st.loop === 'Loop' && st.pressed === 'false' && !/From bar/.test(st.msg), `"${picking}"; ${JSON.stringify(st)}`);
+      ok('tour picking: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // F6 (interfaces): a backup from a newer app (version 99) is refused with a plain reason, and nothing is merged.
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      await tapOn(page, '#home-settings'); await wait(page, 400);
+      const future = { app: 'piano-web', version: 99, saved: new Date().toISOString(), data: { 'piano-web.future.v1': '"from the future"' }, library: [] };
+      await page.setInputFiles('#restore-file', { name: 'piano-backup-future.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(future)) });
+      await wait(page, 2500);
+      const st = await page.evaluate(() => ({ msg: document.getElementById('message')?.textContent ?? '', merged: localStorage.getItem('piano-web.future.v1') }));
+      ok('F6: a backup from a newer version of the app is refused, saying so, and nothing of it is merged', /newer version of the app/.test(st.msg) && st.merged === null, JSON.stringify(st));
+      ok('F6: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    // F04 (owner, 2026-10-15): Android Back during a Play along run leaves quietly: the run is logged, and no summary
+    // opens over the tab you land on.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { keys: 1 });
+      await scoreReady(page); await firstTap(page);
+      await page.selectOption('#q-mode', 'along'); await wait(page, 400);
+      await barsUp(page); await tapOn(page, '#play');
+      for (let t = 0; t < 2500; t += 250) { const keys = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step)); if (keys.length) await chord(page, keys, 60); await wait(page, 190); }
+      await back(page); await wait(page, 600);
+      const st = { ...(await where(page)), summary: await page.evaluate(() => document.getElementById('summary').open), runs: (await log(page)).filter((e) => e.screen === 'score').length };
+      ok('F04: Back during a Play along run: Home, no summary over it, and the run logged', st.screen === 'shell' && st.view === 'v-home' && !st.summary && st.runs === 1, JSON.stringify(st));
+      ok('F04: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Q5 (owner, 2026-10-15), the score's side: a Play along run that reaches the piece's last note says so in the log
+    // (`reachedEnd`), which is what a score step with no target counts; Melody 1, played to its end.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?tab=practice&page=exercises`, { keys: 1 });
+      await wait(page, 1000);
+      await tapOn(page, '#exercises-body .li', 'Melody 1'); await scoreReady(page); await wait(page, 1200);
+      await page.selectOption('#q-mode', 'along'); await wait(page, 400);
+      await barsUp(page); await tapOn(page, '#play');
+      for (let t = 0; t < 30000; t += 250) {
+        if ((await log(page)).some((e) => e.screen === 'score')) break;
+        const keys = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step)); if (keys.length) await chord(page, keys, 60); await wait(page, 190);
+      }
+      const e = (await log(page)).filter((x) => x.screen === 'score').pop();
+      ok('Q5: a Play along run played to the piece\u2019s end is logged as reaching it', e?.result.reachedEnd === true, JSON.stringify(e?.result && { fromBar: e.result.fromBar, toBar: e.result.toBar, reachedEnd: e.result.reachedEnd }));
+      ok('Q5 run: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Wait for me with the phone sideways and no MIDI keyboard (owner, 2026-10-15): one plain line, and no keys shown.
+    {
+      const got = {};
+      for (const [name, keys] of [['not allowed', undefined], ['none connected', 0]]) {
+        const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { keys, viewport: { width: 844, height: 390 } });
+        await scoreReady(page); await firstTap(page);
+        await page.selectOption('#q-mode', 'wait'); await wait(page, 400);
+        await barsUp(page); await tapOn(page, '#play'); await wait(page, 2500);
+        got[name] = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden), errors: errors.length };
+        await ctx.close();
+      }
+      ok('Wait for me sideways, no keyboard: "No MIDI keyboard found. Turn the phone upright to play on the screen\u2019s keys, or plug one in." and no keys', Object.values(got).every((g) => /^No MIDI keyboard found\. Turn the phone upright to play on the screen[’']s keys, or plug one in\.$/.test(g.said) && !g.keys && !g.errors), JSON.stringify(got));
+    }
+
+    // Restore (owner, 2026-10-15): Memorise's learned bars of one piece and hands on both phones are joined.
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      await page.evaluate(() => localStorage.setItem('piano-web.memorise.v1', JSON.stringify({ learned: { 'mozart-k2|right': [0, 1] } })));
+      await tapOn(page, '#home-settings'); await wait(page, 400);
+      const theirs = { app: 'piano-web', version: 2, saved: new Date().toISOString(), data: { 'piano-web.memorise.v1': JSON.stringify({ learned: { 'mozart-k2|right': [1, 2, 3], 'chopin-op28-4|both': [0] } }) }, library: [] };
+      await page.setInputFiles('#restore-file', { name: 'piano-backup-other.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(theirs)) });
+      await wait(page, 4000); // (restoring reloads the app)
+      const learned = await page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.memorise.v1') ?? '{}').learned);
+      ok('restore: Memorise bars learned on either phone for the same piece and hands are all learned', JSON.stringify(learned?.['mozart-k2|right']) === '[0,1,2,3]' && JSON.stringify(learned?.['chopin-op28-4|both']) === '[0]', JSON.stringify(learned));
+      ok('restore join: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+  }
+  // ---- end of the fix round -----------------------------------------------------------------------------------------
 } finally {
   await browser?.close();
   stop();

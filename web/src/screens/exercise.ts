@@ -4,12 +4,14 @@
 
 import { $, base, type App, type Screen, type KeyRange } from '../app';
 import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, CARD_MIN as EX_CARD_MIN, type ExerciseDisplay } from '../exercise/display';
-import { Drill, type DrillLevel } from '../exercise/drill';
+import { Drill, NO_KEYBOARD, type DrillLevel } from '../exercise/drill';
 import { loadSets, type ItemSet } from '../exercise/items';
 import { ExerciseKeys } from '../exercise/keys';
 import { ExerciseNotation } from '../exercise/notation';
 import { Simon, type Rung, type SimonLevel } from '../exercise/simon';
+import { activityOf } from '../log';
 import type { KeyEvent } from '../midi';
+import * as nav from '../nav';
 import type { Command } from '../remote';
 import { currentDevice, settingsFor } from '../settings';
 
@@ -38,6 +40,15 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     finish: $<HTMLButtonElement>('ex-finish'),
   }, exerciseKeys, exerciseNotation, sound);
   drill.keysShown = () => !$('ex-keyboard').classList.contains('off');
+  // The MIDI keyboards connected (none: Drills' Ready says cards are judged from one, until one is seen: F17).
+  let inputs: string[] = [];
+  drill.noKeyboard = () => !inputs.length;
+  const devicesBefore = midi.onDevices;
+  midi.onDevices = (names) => {
+    devicesBefore(names);
+    inputs = names;
+    if (names.length && isOpen() && $('ex-status').textContent === NO_KEYBOARD) { $('ex-status').textContent = ''; $('ex-status').className = 'ex-status'; }
+  };
   // No music on screen (Ready, a name, by ear, the results): nothing for A−/A+ to size, so they go.
   exerciseNotation.onShown = (on) => $('exercise').classList.toggle('no-music', !on);
   let exerciseKind: 'simon' | 'drill' = 'simon';
@@ -96,12 +107,22 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   let sets: ItemSet[] | null = null;
   const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
   let setProblems = '';
-  /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
+  /** The way and the activity the screen was opened with (a lesson step's set at its level), for Practise as… to come
+   * back to (final review 2026-10-15, F22: back in the step's way, its level had gone while its tag stayed). */
+  type Opened = { kind: 'simon' | 'drill'; activity?: { set: string; level: object; title?: string } };
+  let opened: Opened | null = null;
   async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: { set: string; level: object; title?: string }): Promise<void> {
-    await midi.start().catch(() => {});
+    opened = { kind, activity };
+    await show(kind, stillWanted, activity);
+  }
+  /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
+  async function show(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: { set: string; level: object; title?: string }): Promise<void> {
+    inputs = await midi.start().catch(() => [] as string[]);
     // The piano part (Simon and Drills play the items) goes where the app-wide choice says, as on the score.
     sound.keyboard = settingsFor('').pianoOut === 'keyboard' && midi.canPlay ? midi : null;
-    if (!sets) {
+    // Read when first opened, and again while any set could not be read (a passing failure is not kept as the answer:
+    // final review 2026-10-15, F20).
+    if (!sets || setProblems) {
       try {
         const loaded = await loadSets(base, async (id) => {
           const piece = app.pieces.find((p) => p.id === id);
@@ -126,7 +147,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     fillExerciseDisplay();
     if (kind === 'drill') drill.open(sets, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(sets, activity as { set: string; level: Partial<SimonLevel> } | undefined);
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
-    else if (activity?.title) { $('ex-status').textContent = activity.title; $('ex-status').className = 'ex-status'; } // the activity's own words
+    else if (activity?.title && !(kind === 'drill' && !inputs.length)) { $('ex-status').textContent = activity.title; $('ex-status').className = 'ex-status'; } // the activity's own words (with no keyboard, that is said instead: F17)
     app.stayAwake();
   }
   function close(): void {
@@ -144,14 +165,24 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) b.setAttribute('aria-current', String(b.dataset.as === exerciseKind));
     asDialog.showModal();
   });
-  for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) b.addEventListener('click', () => {
+  for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) b.addEventListener('click', async () => {
     asDialog.close();
     const kind = b.dataset.as as 'simon' | 'drill', set = $<HTMLSelectElement>('ex-set').value;
     if (kind === exerciseKind) return;
     simon.close();
     drill.close();
-    void open(kind, () => true, set ? { set, level: {} } : undefined);
+    // Back to the way an activity (a lesson step) opened it, its set still on and the activity still in force: its own
+    // level again (F22). Otherwise the set at your own level.
+    const act = opened?.activity, own = !!act && opened!.kind === kind && act.set === set && activityOf(kind === 'drill' ? 'drills' : 'simon') !== undefined;
+    await show(kind, () => true, own ? act : set ? { set, level: {} } : undefined);
+    if (isOpen()) placeAddress({ tool: kind, ...(set ? { set } : {}) });
   });
+  /** The address names the way and set on screen, so a reload comes back to them (final review 2026-10-15, F11). */
+  function placeAddress(params: Record<string, string>): void {
+    const t = nav.top();
+    if (t?.name === 'exercise') nav.replaceTop({ ...t, params: { ...t.params, ...params } });
+  }
+  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { if (isOpen()) placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); });
 
   const drillDialog = $<HTMLDialogElement>('drill-dialog');
   function fillDrillDialog(): void {

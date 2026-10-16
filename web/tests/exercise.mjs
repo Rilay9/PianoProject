@@ -150,5 +150,54 @@ const sound = { keyboard: null, songTime: () => 0, play() {}, stop() {}, prepare
   check('a new set never starts with the card the last one ended on', across < 0, `set ${across}`);
 }
 
+// ---- The log: a set or game left part way (final review 2026-10-15, F06; interfaces review F10) -------------------------
+// Played as a lesson step's activity, then another set chosen from the menu (which ends the activity) or the level
+// changed: the part played is logged as what it was played as (its set, title, level and the step's tag), and each item
+// with its number in the set, so two items sharing a name can be told apart.
+{
+  const { setActivity } = await import('../src/log.ts');
+  const lesson = { rung: 'r1', lesson: 'l1', step: 's1' };
+  const A = { id: 'set-a', title: 'Set A', order: 'passage', tempo: 80, items: ['C4', 'D4'].map((n, i) => ({ n: i + 1, name: 'same name', short: n, groups: [[n]] })) };
+  const B = { id: 'set-b', title: 'Set B', order: 'passage', tempo: 80, items: [{ n: 1, name: 'E4', short: 'E4', groups: [['E4']] }] };
+  const log = () => JSON.parse(store.get('piano-web.log.v1') ?? '{"entries":[]}').entries;
+  const fmt = (e) => JSON.stringify(e && { set: e.set, title: e.title, settings: e.settings, activity: e.activity, lesson: e.lesson, n: (e.result.cards ?? e.result.misses ?? []).map((c) => c.n) });
+  // Drills: the step's set at its level (5 cards), two cards played (skipped), then set B chosen from the menu.
+  store.clear();
+  const d = new Drill(parts(), keysStub(), notation, sound);
+  d.open([A, B], { set: 'set-a', level: { rung: 3, start: 'first', onTime: 'notes', metronome: false, cards: 5 } });
+  setActivity({ id: 'step-drill', screen: 'drills', lesson });
+  d.key(60, true, 1); await settle();
+  for (let k = 0; k < 2; k++) { d.skip(); d.nextCard(); await settle(); }
+  d.chooseSet('set-b'); // (as the set menu does: your own choice, which ends the activity)
+  const left = log().at(-1);
+  check('Drills, another set chosen part way: logged as set A at the step’s level, with the step’s tag', left?.set === 'set-a' && left.title === 'Set A' && left.settings.cards === 5
+    && left.activity === 'step-drill' && left.lesson?.step === 's1', fmt(left));
+  check('Drills: each card logged with its item number', JSON.stringify(left?.result.cards.map((c) => c.n)) === '[1,2]', fmt(left));
+  // Your own set B: a card played, then the level changed: logged at the level it was played at.
+  const before = d.levelNow.rung;
+  d.key(64, true, 2); await settle();
+  d.skip(); await settle();
+  d.setLevel({ rung: before === 2 ? 3 : 2 });
+  const level = log().at(-1);
+  check('Drills, the level changed part way: logged at the level played (and untagged: no activity then)', level?.set === 'set-b' && level.settings.rung === before && level.activity === undefined, fmt(level));
+  d.close();
+  setActivity(null);
+  // Simon: the step's set, chain 1 played, a wrong key in chain 2, then set B chosen.
+  store.clear();
+  const s = new Simon(parts(), keysStub(), notation, sound);
+  s.open([A, B], { set: 'set-a', level: { rung: 3, match: 'same', miss: 'tries', speed: 'steady', onMiss: 'all', onNew: 'all' } });
+  setActivity({ id: 'step-simon', screen: 'simon', lesson });
+  const tap = async (m) => { s.key(m, true); s.key(m, false); await settle(); };
+  await tap(60); await settle(); // starts: chain 1
+  await tap(60); await pass(1000); // chain 1 right; chain 2 given
+  await tap(60); await tap(71); // chain 2: C4 right, then a wrong key for item 2
+  s.chooseSet('set-b');
+  const game = log().at(-1);
+  check('Simon, another set chosen part way: logged as set A with the step’s tag', game?.set === 'set-a' && game.title === 'Set A' && game.activity === 'step-simon' && game.lesson?.step === 's1', fmt(game));
+  check('Simon: a miss logged with its item’s number', JSON.stringify(game?.result.misses?.map((m) => m.n)) === '[2]', fmt(game));
+  s.close();
+  setActivity(null);
+}
+
 console.log(failures.length ? `${failures.length} failed` : 'all passed');
 process.exit(failures.length ? 1 : 0);

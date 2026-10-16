@@ -1046,6 +1046,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
     if (!confirm(`Delete “${i.title}” from the library? Its file goes, and so do its saved place, Memorise marks and fingering.`)) return;
     await saved(async () => {
       await remove(i.id);
+      app.forgetXml(i.id); // (its file added again later draws that file, not this one: F09)
       forgetPiece(i.id);
       deps.forgot(i.id);
       app.pieces = app.pieces.filter((p) => p.id !== i.id);

@@ -121,9 +121,10 @@ export function createShell(app: App, d: ShellDeps) {
     else if (view === 'settings') d.fillSettings();
     else if (view === 'exercises') void renderExercises();
     else if (view === 'lesson') {
-      const first = startFirst;
+      const first = startFirst, resume = resumeFirst;
       startFirst = undefined;
-      if (lessonPage.pending) lessonPage.returned(); else void lessonPage.show(page!.lesson!, first);
+      resumeFirst = false;
+      if (lessonPage.pending) lessonPage.returned(); else void lessonPage.show(page!.lesson!, first, resume);
     }
   }
   /** A screen opened over the shell. */
@@ -151,7 +152,9 @@ export function createShell(app: App, d: ShellDeps) {
 
   async function recent(limit = 6): Promise<Recent[]> {
     const out = new Map<string, Recent>();
-    const log = entries().filter((e) => e.screen !== 'lesson').slice().reverse();
+    // (a piece of yours deleted since is not offered to carry on; the log keeps its runs: final review 2026-10-15, F19)
+    const gone = (id?: string) => !!id && id.startsWith('u-') && !app.pieces.some((p) => p.id === id);
+    const log = entries().filter((e) => e.screen !== 'lesson' && !gone(e.piece)).slice().reverse();
     for (const e of log) {
       const key = e.screen === 'score' || e.screen === 'memorise' ? `${e.screen}:${e.piece}` : e.screen === 'lab' ? `chart:${e.chart}` : `${e.screen}:${e.set}`;
       if (out.has(key)) continue;
@@ -295,6 +298,7 @@ export function createShell(app: App, d: ShellDeps) {
 
   /** A step started from Home or the Path: its lesson page opens first, so you come back to it (and its feedback). */
   let startFirst: string | undefined;
+  let resumeFirst = false; // (startFirst came from a reload inside the step: F15)
   function startStep(lessonId: string, stepId: string): void {
     startFirst = stepId;
     openLesson(lessonId);
@@ -484,7 +488,7 @@ export function createShell(app: App, d: ShellDeps) {
       if (!l) return;
       const st = lessonState(l), here = id === at?.lesson.id;
       const ahead = order.findIndex((x) => x.lesson.id === id) > order.findIndex((x) => x.lesson.id === at?.lesson.id);
-      const onIt = here && below()?.name === 'lesson' && below()?.lesson === id; // (this lesson's own page: no button to open it)
+      const onIt = here && pageOnTop()?.name === 'lesson' && pageOnTop()?.lesson === id; // (this lesson's own page, or its step's result: no button to open it; F13)
       const li = el('div', 'li');
       const tx = el('span', 'tx');
       tx.append(el('span', 'tt', `${i + 1} · ${l.title}`), el('span', 'mm', [here ? 'you are here' : '', !st.next ? `all ${st.total} steps done` : `${st.done} of ${st.total} steps done`].filter(Boolean).join(' · ')));
@@ -513,7 +517,9 @@ export function createShell(app: App, d: ShellDeps) {
   }
   sheet.addEventListener('close', () => nav.closedItself('sheet'));
   function choose(id: string): void {
-    nav.back(() => openLesson(id));
+    // From a step's result, the result goes too (it shows in the lesson page's place), so the chosen lesson takes the
+    // lesson page's place as from the page itself (final review 2026-10-15, F13: it was stacked over the result).
+    nav.back(() => { if (nav.top()?.name === 'result') nav.back(() => openLesson(id)); else openLesson(id); });
   }
 
   const screen: Screen = { key: () => {}, command: () => {}, musicRange: () => null, resized: () => {}, get busy() { return false; } };
@@ -525,7 +531,7 @@ export function createShell(app: App, d: ShellDeps) {
     /** Start up on this tab (the address said it), with a page over it. */
     startAt(t: Tab, page?: PageName, lesson?: string, step?: string): void {
       if (t !== 'home') { nav.push(tabPlace(t)); tab = t; }
-      if (step) startFirst = step; // (a reload inside a lesson's step: the lesson page opens it again, V21)
+      if (step) { startFirst = step; resumeFirst = true; } // (a reload inside a lesson's step: the lesson page opens it again, V21, its runs since it started counting: F15)
       if (page === 'lesson' && lesson) { setCurrentLesson(lesson); nav.push({ name: 'lesson', lesson, params: { ...(t !== 'home' ? { tab: t } : {}), page, lesson }, leave: () => lessonPage.leave() }); }
       else if (page) nav.push({ name: page, params: { ...(t !== 'home' ? { tab: t } : {}), page }, leave: () => {} });
       show();

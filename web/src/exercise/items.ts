@@ -92,7 +92,9 @@ function chordGroups(symbol: string, octave: number): string[] {
   const out: string[] = [];
   for (const pc of Chord.get(symbol).notes) {
     let p = `${pc}${octave}`;
-    while (out.length && midiOf(p) <= midiOf(out.at(-1)!)) p = Note.transpose(p, '8P');
+    // (a note past the keyboard has no key: refused, never stacked for ever; interfaces review 2026-10-15, F1)
+    while (out.length && Note.midi(p) !== null && Note.midi(p)! <= midiOf(out.at(-1)!)) p = Note.transpose(p, '8P');
+    if (Note.midi(p) === null) throw new Error(`${symbol} in octave ${octave} goes past the keyboard`);
     out.push(p);
   }
   return out;
@@ -234,6 +236,8 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
     name = namesOf(groups);
     short = groups.length === 1 && groups[0].length === 1 ? letters(groups[0][0]) : String(n);
   } else if (src.chord) {
+    // A whole number 0 to 7 (anything else hung the app: interfaces review 2026-10-15, F1).
+    if (src.octave !== undefined && !(Number.isInteger(src.octave) && src.octave >= 0 && src.octave <= 7)) throw new Error(`item ${n}: octave ${JSON.stringify(src.octave)} should be a whole number 0 to 7`);
     const stack = chordGroups(src.chord, src.octave ?? 4);
     groups = src.arpeggio ? stack.map((p) => [p]) : [stack];
     name = chordName(src.chord) + (src.arpeggio ? ' arpeggio' : '');

@@ -153,7 +153,11 @@ export class FreePlay {
     const down = this.down();
     this.strip.setPressed(down);
     const { chord, names } = keysChord([...down]);
-    this.panel.querySelector('#fp-chord')!.textContent = chord || (down.size ? '' : 'Play something');
+    // Two keys: named as the Intervals column names them, wider than an octave with its octaves, and an octave named
+    // (final review 2026-10-15, F16: C3 + E5 was a plain "major 3rd", C4 + C5 nothing).
+    const two = [...down].sort((a, b) => a - b);
+    const big = two.length === 2 ? intervalName(two[0], two[1], chord) : chord;
+    this.panel.querySelector('#fp-chord')!.textContent = big || (down.size ? '' : 'Play something');
     this.panel.querySelector('#fp-notes')!.textContent = names;
     if (!down.size) this.lastChord = '';
     this.renderRecent();

@@ -543,6 +543,8 @@ label.row input[type="range"] { flex: 1; min-width: 160px; }
 .lib-added-list li.bad small { color: var(--msg-bad); }
 /* Sideways and tablets: the list and the page side by side. */
 .library.two .lib-left { flex: 0 0 52%; border-right: 1px solid var(--line); }
+/* The "Added" toast over the list only, so the piece's page beside it keeps its buttons (final review 2026-10-15, F14). */
+.library.two .lib-toast { right: calc(48% + 12px); }
 @media (orientation: landscape) and (max-height: 599px) {
   .library .fp-head { padding-top: 4px; padding-bottom: 4px; }
   .lib-search { margin-top: 6px; padding: 5px 10px; }

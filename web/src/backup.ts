@@ -10,6 +10,7 @@ const PREFIX = 'piano-web.';
 const NOT_BACKED_UP = ['piano-web.offline.v1']; // what this device has saved for offline: true of this device only
 export const backedUp = (key: string) => key.startsWith(PREFIX) && !NOT_BACKED_UP.includes(key);
 
+const BACKUP_VERSION = 2; // the backup format this app writes and reads
 interface Manifest { app: 'piano-web'; version: 2; saved: string; data: Record<string, string>; library: Stored[] }
 
 // ---- what goes in -----------------------------------------------------------------------------------------------
@@ -78,6 +79,10 @@ export async function restoreBackup(file: File): Promise<{ files: number }> {
     try { manifest = JSON.parse(await file.text()); } catch { throw new Error('This is not a backup from this app.'); }
   }
   if (manifest.app !== 'piano-web' || !manifest.data || typeof manifest.data !== 'object') throw new Error('This is not a backup from this app.');
+  // A backup from a newer app may hold what this one would merge wrongly: refused, nothing changed (interfaces review
+  // 2026-10-15, F6: its version was never read). Older ones (1, or none: the .json backups) read as before.
+  const version = (manifest as { version?: unknown }).version;
+  if (typeof version === 'number' && version > BACKUP_VERSION) throw new Error(`This backup was made by a newer version of the app (backup version ${version}; this one reads up to ${BACKUP_VERSION}). Reload the app online to update it, then restore again.`);
 
   // Settings and progress: this phone's values stay; the backup fills in what is missing.
   for (const [key, value] of Object.entries(manifest.data)) {
@@ -85,7 +90,11 @@ export async function restoreBackup(file: File): Promise<{ files: number }> {
     const theirs = typeof value === 'string' ? value : JSON.stringify(value); // (a hand-edited backup may hold objects)
     const mine = localStorage.getItem(key);
     if (mine === null) { localStorage.setItem(key, theirs); continue; }
-    try { localStorage.setItem(key, JSON.stringify(merge(JSON.parse(mine), JSON.parse(theirs)))); } catch { /* not JSON: this phone's stays */ }
+    try {
+      const a = JSON.parse(mine), b = JSON.parse(theirs), out = merge(a, b);
+      if (key === 'piano-web.memorise.v1') joinLearned(out, a, b);
+      localStorage.setItem(key, JSON.stringify(out));
+    } catch { /* not JSON: this phone's stays */ }
   }
 
   // The library: records merged, files this phone lacks put back: a piece it doesn't have, and a file lost from a
@@ -122,6 +131,19 @@ export async function restoreBackup(file: File): Promise<{ files: number }> {
     await putAll(out, files);
   }
   return { files: added };
+}
+
+/**
+ * Memorise's learned bars of one piece and hands, learned on both phones: joined (owner, 2026-10-15): a bar learned on
+ * either counts as learned. (Otherwise this phone's list, when it had one, was kept whole and the other's dropped.)
+ */
+function joinLearned(out: unknown, mine: unknown, theirs: unknown): void {
+  const learned = (x: unknown) => (x && typeof x === 'object' && (x as { learned?: unknown }).learned && typeof (x as { learned: unknown }).learned === 'object' ? (x as { learned: Record<string, unknown> }).learned : {});
+  const into = learned(out), a = learned(mine), b = learned(theirs);
+  for (const k of Object.keys(into)) {
+    const bars = [a[k], b[k]].filter(Array.isArray).flat().filter((n): n is number => Number.isInteger(n));
+    if (Array.isArray(a[k]) && Array.isArray(b[k])) into[k] = [...new Set(bars)].sort((x, y) => x - y);
+  }
 }
 
 /** This phone's value wins; the backup's fills in what is missing, object by object. Lists of runs (the practice

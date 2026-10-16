@@ -170,15 +170,40 @@ for (const [name, v, want] of [
 // ---- when a step counts as done ----------------------------------------------------------------------------------
 const E = (screen, result, extra = {}) => ({ at: '2026-10-15T10:00:00Z', seconds: 60, screen, title: 't', settings: {}, result, ...extra });
 const drills = { id: 'd', title: 'd', screen: 'drills', set: 's', level: {} };
-ok('drills clean 4: a set with 4 clean meets it; 3 does not', meets(E('drills', { clean: 4, of: 5 }), { clean: 4 }) && !meets(E('drills', { clean: 3, of: 5 }), { clean: 4 }));
+ok('drills clean 4: a full set with 4 clean meets it; 3 does not', meets(E('drills', { clean: 4, of: 5, ended: 'set done', missesAgain: false }), { clean: 4 }) && !meets(E('drills', { clean: 3, of: 5, ended: 'set done', missesAgain: false }), { clean: 4 }));
+// Owner, 2026-10-15 (F10): full sets only, as Drills' own best: "the misses again" (4 of 4 clean) and a set stopped
+// early or left part way do not meet it.
+ok('drills clean 4: the misses again (4 of 4 clean), a set stopped early and one left part way do not meet it',
+  !meets(E('drills', { clean: 4, of: 4, ended: 'set done', missesAgain: true }), { clean: 4 }) && !meets(E('drills', { clean: 4, of: 4, ended: 'stopped early', missesAgain: false }), { clean: 4 })
+  && !meets(E('drills', { clean: 4, of: 4, ended: 'left', missesAgain: false }), { clean: 4 }));
 ok('simon chain 3: longest 3 meets it; 2 does not', meets(E('simon', { longestChain: 3 }), { chain: 3 }) && !meets(E('simon', { longestChain: 2 }), { chain: 3 }));
 ok('score onTime 0.9: 37 of 41 (0.902) meets; 36 of 41 does not; a loop pass counts', meets(E('score', { notes: 41, onTime: 37 }), { onTime: 0.9 }) && !meets(E('score', { notes: 41, onTime: 36 }), { onTime: 0.9 })
   && meets(E('score', { passes: [{ notes: 10, onTime: 5 }, { notes: 10, onTime: 9 }] }), { onTime: 0.9 }));
 ok('score bpm 96: a clean pass at 96 meets; a messy one at 100 does not', meets(E('score', { passes: [{ clean: true, bpm: 96 }] }), { bpm: 96 }) && !meets(E('score', { passes: [{ clean: false, bpm: 100 }, { clean: true, bpm: 90 }] }), { bpm: 96 }));
 ok('lab cleanRounds 1: a round of all ok meets; one late bar, or a stopped round, does not', meets(E('lab', { rounds: [{ bars: '1:ok 2:ok' }] }), { cleanRounds: 1 })
   && !meets(E('lab', { rounds: [{ bars: '1:ok 2:late' }] }), { cleanRounds: 1 }) && !meets(E('lab', { rounds: [{ bars: '1:ok', stoppedInBar: 2 }] }), { cleanRounds: 1 }));
+// Final review 2026-10-15, F07: a lab run that looped bars logs rounds of just those bars (`bars` on the entry); a loop
+// is practice (the lab says so), so its rounds never meet a lesson's cleanRounds, however clean.
+ok('lab cleanRounds 1: rounds of a looped bar (bars "1-1" on the entry), all ok, do not meet it; the same rounds over the chart do',
+  !meets(E('lab', { rounds: [{ bars: '1:ok' }, { bars: '1:ok' }, { bars: '1:ok' }] }, { bars: '1-1' }), { cleanRounds: 1 })
+  && meets(E('lab', { rounds: [{ bars: '1:ok 2:ok' }] }), { cleanRounds: 1 }));
 ok('done: with a target only when met; without one, any run; no run: not done', outcome([E('drills', { clean: 2, of: 5 })], drills, { clean: 4 }, true).done === false
   && outcome([E('drills', { clean: 2, of: 5 })], drills, undefined, true).done === true && outcome([], drills, undefined, true).done === false);
+// Owner, 2026-10-15 (Q5): a score step with no target counts only a run in the step's own mode that reached the end
+// of its bars (Wait for me: round its loop; the timed modes: a pass round the loop, or the piece's last note).
+{
+  const waitStep = { id: 'w', title: 'w', screen: 'score', piece: 'p', bars: [1, 4], settings: { mode: 'wait' } };
+  const alongStep = { id: 'a', title: 'a', screen: 'score', piece: 'p', settings: { mode: 'along' } };
+  const done = (entries, a) => outcome(entries, a, undefined, true).done;
+  const S = (mode, result) => E('score', result, { mode });
+  ok('Q5: a Wait for me step: a Play along run stopped after two notes does not mark it done; one round its bars does',
+    !done([S('along', { notes: 2, onTime: 2, fromBar: 1, toBar: 1, reachedEnd: false })], waitStep) && done([S('wait', { fromBar: 1, toBar: 4, steps: 15, rounds: 1 })], waitStep));
+  ok('Q5: a Wait for me step: a Play along run to the piece’s end (another mode) does not mark it done; a Wait for me run not through does not either',
+    !done([S('along', { notes: 40, onTime: 30, fromBar: 1, toBar: 20, reachedEnd: true })], waitStep) && !done([S('wait', { fromBar: 1, toBar: 2, steps: 5, rounds: 0 })], waitStep));
+  ok('Q5: a Play along step: stopped part way, no; to the last note, or a pass round its loop, yes',
+    !done([S('along', { notes: 10, onTime: 9, fromBar: 1, toBar: 3, reachedEnd: false })], alongStep) && done([S('along', { notes: 40, onTime: 30, fromBar: 1, toBar: 20, reachedEnd: true })], alongStep)
+    && done([S('along', { passes: [{ pass: 1, notes: 8, onTime: 6, clean: false }] })], alongStep));
+}
 ok('done: Watch and Free play keep no runs, so coming back is done', outcome([], { id: 'w', title: 'w', screen: 'score', piece: 'p', settings: { mode: 'watch' } }, undefined, true).done
   && outcome([], { id: 'f', title: 'f', screen: 'freeplay' }, undefined, true).done && !outcome([], { id: 's', title: 's', screen: 'score', piece: 'p', settings: { mode: 'wait' } }, undefined, true).done);
 

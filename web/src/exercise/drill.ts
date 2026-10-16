@@ -13,7 +13,7 @@
 import type { Sound, Beat, NoteEvent } from '../sound';
 import { holds, HOLD_SHARE, phraseEndLength } from '../holds';
 import { judge, type PlayedKey } from '../matching';
-import { addEntry, Run, setActivity } from '../log';
+import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../log';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
@@ -36,6 +36,7 @@ const CLEAN_NEXT_MS = 1200; // a clean card's ✓ on show before the next card
 const HINT_MS = 8000; // notes only: nothing played this long, and the next notes light (owner, 2026-10-13: longer than 3 s, so a slow reader can still read)
 const DEMO_GAP_MS = 600; // after it plays the card, before your turn
 const MISSED = '#16a34a', OFF_TIME = '#d97706';
+export const NO_KEYBOARD = 'Cards are judged from a MIDI keyboard; none is connected.';
 const RUNG_NAMES: Record<Rung, string> = { 1: 'Music, sound, keys', 2: 'Music + sound', 3: 'Music only', 4: 'Name only', 5: 'By ear' };
 
 export interface DrillParts {
@@ -90,6 +91,8 @@ export class Drill {
   private retrying = false; // Again: this card's try replaces its result (owner, 2026-10-12), the set still N cards
   /** Whether the keys are on screen (a hint names the notes when they are not). */
   keysShown: () => boolean = () => true;
+  /** No MIDI keyboard connected (the Ready screen says so: final review 2026-10-15, F17). */
+  noKeyboard: () => boolean = () => false;
 
   constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
     this.stored = this.read();
@@ -129,24 +132,29 @@ export class Drill {
   close(): void { this.logSet(false); this.request++; this.stopAll(); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
-  private run: Run | null = null;
+  /** The set being played, and what it is played as (its set, level, tempo and activity, kept from its start: final
+   * review 2026-10-15, F06: another set or level chosen part way logged the part played under the new one). */
+  private run: { run: Run; set: ItemSet; level: DrillLevel; tempo: number; tag: ActivityTag } | null = null;
   private logSet(done: boolean, full = false): void {
-    const run = this.run;
+    const r0 = this.run;
     this.run = null;
-    if (!run || !this.results.length) return;
+    if (!r0 || !this.results.length) return;
+    const { run, set, level } = r0;
     const clean = this.results.filter((r) => r.clean).length;
     addEntry({
-      at: run.at, seconds: run.seconds, screen: 'drills', set: this.set.id, title: this.set.title,
-      settings: { rung: this.level.rung, onTime: this.level.onTime, cards: this.level.cards, start: this.level.start, bpm: this.tempo },
+      at: run.at, seconds: run.seconds, screen: 'drills', set: set.id, title: set.title,
+      settings: { rung: level.rung, onTime: level.onTime, cards: level.cards, start: level.start, bpm: r0.tempo },
       result: {
         clean, of: this.results.length, ended: done ? (full ? 'set done' : 'stopped early') : 'left', missesAgain: this.redo,
-        cards: this.results.map((r) => ({ item: r.item.name, clean: r.clean, right: r.right, retried: r.retried, helped: r.helped, result: r.text })),
+        // n: the item's number in its set (interfaces review F10: items sharing a name can be told apart)
+        cards: this.results.map((r) => ({ item: r.item.name, n: r.item.n, clean: r.clean, right: r.right, retried: r.retried, helped: r.helped, result: r.text })),
       },
-    });
+    }, r0.tag);
   }
 
   /** A level change: an activity's preset choice changes for the activity; the rest are yours, saved. */
   setLevel(level: Partial<DrillLevel>): void {
+    this.logSet(false); // (the part played, at the level it was played at)
     for (const [k, v] of Object.entries(level)) {
       if (k in this.preset) (this.preset as Record<string, unknown>)[k] = v;
       else (this.stored.level as unknown as Record<string, unknown>)[k] = v;
@@ -154,10 +162,11 @@ export class Drill {
     this.save();
     this.reset();
   }
-  setTempo(bpm: number): void { this.stored.tempo[this.set.id] = Math.max(20, Math.round(bpm)); this.save(); this.reset(); }
+  setTempo(bpm: number): void { this.logSet(false); this.stored.tempo[this.set.id] = Math.max(20, Math.round(bpm)); this.save(); this.reset(); }
 
   /** remember: the set you chose (not an activity's), opened next time. */
   private chooseSet(id: string, remember = true): void {
+    this.logSet(false); // (the part played is logged as the set it was played as, before anything changes)
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
     if (remember) { this.stored.set = this.set.id; this.save(); setActivity(null); } // (your own choice: an activity is over)
@@ -178,7 +187,7 @@ export class Drill {
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
     const best = this.stored.best[this.bestKey()];
-    this.status('', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · press Start`);
+    this.status(this.noKeyboard() ? NO_KEYBOARD : '', `${this.cardsLabel()}${best ? ` · best ${best.clean} of ${best.of} clean` : ''} · press Start`, this.noKeyboard() ? 'bad' : '');
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = false;
     this.ui.help.hidden = true;
@@ -200,7 +209,7 @@ export class Drill {
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
     if (!this.on || request !== this.request) return; // closed, or another set or level chosen, while it got ready
     this.logSet(false); // a set left part way (Again, another set) is logged as it was
-    this.run = new Run();
+    this.run = { run: new Run(), set: this.set, level: this.level, tempo: this.tempo, tag: activityTag('drills') };
     this.results = [];
     this.redo = !!items;
     this.passageAt = 0;

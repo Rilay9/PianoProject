@@ -7,6 +7,7 @@
 // octave that is not a whole number) hanging the app. The reader bugs themselves are listed in
 // design/2026-10-15-final-review/interfaces.md; when a reader is fixed, its rule here can go.
 // Each rule is also run on a bad case of its own, which it must refuse (the "refuses:" lines). Run: npm run check:content.
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { Chord, Interval, Note, Scale } from 'tonal';
 import { EXERCISE_KINDS, readSet } from '../src/exercise/items.ts';
@@ -156,6 +157,16 @@ const scoreBars = (id) => { const p = namedPieces().barsOf(id); return p && !id.
   }
   const bad = (f) => setProblems({ title: 't', ...f }, () => true, scoreBars);
   refuses('a chord octave that is not a whole number (it hangs the app)', bad({ items: { 1: { chord: 'C', octave: 'five' } } }), /octave "five" should be a whole number/);
+  // The app's own reader (interfaces review F1, fixed 2026-10-15): a chord octave that is not a whole number 0 to 7 is
+  // refused with its reason. Run in a child process with a time limit, since the bug was a loop that never ended.
+  for (const octave of ['five', 4.5, 10, -1]) {
+    const code = `import { readSet } from ${JSON.stringify(new URL('../src/exercise/items.ts', import.meta.url).href)};
+      try { await readSet('t', { title: 't', items: { 1: { chord: 'C', octave: ${JSON.stringify(octave)} } } }, 'file:///x/', async () => '', async () => ''); console.log('ACCEPTED'); }
+      catch (e) { console.log('REFUSED ' + e.message); }`;
+    const r = spawnSync(process.execPath, ['--no-warnings', '--input-type=module', '-e', code], { timeout: 8000, encoding: 'utf8' });
+    const said = (r.stdout ?? '').trim();
+    ok(`reader refuses a chord octave of ${JSON.stringify(octave)} with its reason, and returns`, r.error === undefined && r.status === 0 && /^REFUSED item 1: octave .* should be a whole number 0 to 7/.test(said), r.error ? `${r.error.code} (it never returned)` : said || r.stderr);
+  }
   refuses('an option of another kind (octave on notes)', bad({ items: { 1: { notes: 'C4', octave: 5 } } }), /"octave" is not an option of a notes item/);
   refuses('together as text', bad({ items: { 1: { interval: 'M3', together: 'false' } } }), /together should be true or false/);
   refuses('arpeggio as text', bad({ items: { 1: { chord: 'C', arpeggio: 'yes' } } }), /arpeggio should be true or false/);

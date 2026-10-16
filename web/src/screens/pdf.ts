@@ -469,7 +469,15 @@ export function createPdfScreen(app: App, closed: () => void): PdfScreen {
 
   async function open(pieceId: string, title: string): Promise<void> {
     const n = ++opening;
-    if (!isOpen) { steps = 0; afterBack = null; pushStep(); } // (Back closes the reader)
+    // (Back closes the reader.) Its step has an address naming the PDF, so a reload comes back to it (final review
+    // 2026-10-15, F12; main.ts reads tool=pdf); Back to the step under it restores that one's address.
+    if (!isOpen) {
+      steps = 0; afterBack = null;
+      const url = new URL(location.href);
+      url.searchParams.set('tool', 'pdf');
+      url.searchParams.set('piece', pieceId);
+      history.pushState({ pdf: ++steps }, '', url.pathname + url.search);
+    }
     isOpen = true;
     // Nothing of the PDF shown before is turned, or saved under any name, while this one is read (review 2026-10-15:
     // the id was this one's at once and the lines the old one's, so a tap while it opened saved the old PDF's lines as

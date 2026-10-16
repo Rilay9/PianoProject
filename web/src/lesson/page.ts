@@ -6,7 +6,7 @@
 import { $, type App } from '../app';
 import { button, el } from '../ui';
 import type { Activity } from '../activity';
-import { entries, putEntry, type LessonRef, type LogEntry } from '../log';
+import { entries, putEntry, removeEntry, type LessonRef, type LogEntry } from '../log';
 import type { Sound } from '../sound';
 import { drawBlock } from './blocks';
 import { stopMiniScores } from './miniscore';
@@ -51,8 +51,9 @@ export function createLessonPage(d: LessonDeps) {
   let pending: Pending | null = null, shown: Shown | null = null;
   let drawn = 0; // each drawing's number: an older one finishing late leaves the page alone
 
-  /** Shows the lesson; startStep: then starts that step at once (Start ▶ on Home: you come back here after it). */
-  async function show(id: string, startStep?: string): Promise<void> {
+  /** Shows the lesson; startStep: then starts that step at once (Start ▶ on Home: you come back here after it); resume:
+   * the step was open when the page reloaded (its runs since it was first started still count). */
+  async function show(id: string, startStep?: string, resume = false): Promise<void> {
     const n = ++drawn;
     data = await loadPath();
     if (n !== drawn) return;
@@ -62,7 +63,7 @@ export function createLessonPage(d: LessonDeps) {
     if (shown && shown.pending.lesson !== id) shown = null;
     render();
     const step = startStep ? stepsOf(lesson).find((s) => s.id === startStep) : undefined;
-    if (step) await start(step);
+    if (step) await start(step, resume);
   }
 
   function render(): void {
@@ -110,8 +111,18 @@ export function createLessonPage(d: LessonDeps) {
     return card;
   }
 
-  /** Opens the step's activity; its runs are tagged with the step until you come back. */
-  async function start(b: StepBlock): Promise<void> {
+  /**
+   * When the step being played was started, kept for this tab (sessionStorage) so a reload into the step counts its runs
+   * from then, not from the reload (final review 2026-10-15, F15: runs logged before a reload were lost to the step).
+   */
+  const SINCE = 'piano-web.step-since';
+  const keptSince = (lessonId: string, stepId: string): string | undefined => {
+    try { const k = JSON.parse(sessionStorage.getItem(SINCE) ?? 'null') as { lesson?: string; step?: string; since?: string } | null; return k?.lesson === lessonId && k.step === stepId && typeof k.since === 'string' ? k.since : undefined; } catch { return undefined; }
+  };
+  const keepSince = (k: { lesson: string; step: string; since: string } | null) => { try { if (k) sessionStorage.setItem(SINCE, JSON.stringify(k)); else sessionStorage.removeItem(SINCE); } catch { /* no storage: a reload counts from itself */ } };
+
+  /** Opens the step's activity; its runs are tagged with the step until you come back. resume: reopened by a reload. */
+  async function start(b: StepBlock, resume = false): Promise<void> {
     if (!lesson || !data) return;
     let a: Activity, target: Target | undefined;
     try { a = await activityOf(b); target = checkTarget(b, a); } catch (e) {
@@ -122,8 +133,10 @@ export function createLessonPage(d: LessonDeps) {
     const ref: LessonRef = { rung: place.rung.id, lesson: lesson.id, step: b.id };
     shown = null;
     stopMiniScores();
-    const mine = { lesson: lesson.id, step: b.id, ref, since: new Date(Date.now() - 1000).toISOString(), activity: a, target };
+    const since = (resume ? keptSince(lesson.id, b.id) : undefined) ?? new Date(Date.now() - 1000).toISOString();
+    const mine = { lesson: lesson.id, step: b.id, ref, since, activity: a, target };
     pending = mine;
+    keepSince({ lesson: lesson.id, step: b.id, since });
     // (a second Start while this one waits for its piece wins; this one, overtaken, leaves the second's step in place)
     if (!await d.launch(a, ref) && pending === mine) pending = null;
   }
@@ -132,6 +145,7 @@ export function createLessonPage(d: LessonDeps) {
   function returned(): void {
     const p = pending;
     pending = null;
+    keepSince(null);
     if (!p || !lesson || p.lesson !== lesson.id) { render(); return; }
     const runs = entries().filter((e) => e.screen !== 'lesson' && e.lesson?.lesson === p.lesson && e.lesson.step === p.step && e.at >= p.since);
     const out = outcome(runs, p.activity, p.target, true);
@@ -172,7 +186,7 @@ export function createLessonPage(d: LessonDeps) {
     // Feedback (owner, 2026-10-15: after every step): taps that go to the practice log with the step.
     const save = () => {
       const f = s.feedback;
-      if (f.effort === undefined && !f.note) return;
+      if (f.effort === undefined && !f.note) { removeEntry({ at: s.at, screen: 'lesson', lesson: s.pending.ref }); return; } // (cleared: the log follows, F05)
       const e: LogEntry = { at: s.at, seconds: 0, screen: 'lesson', title: b.title, activity: s.pending.activity.id, lesson: s.pending.ref, settings: {},
         result: { feedback: { ...(f.effort ? { effort: f.effort } : {}), ...(f.note ? { note: f.note } : {}) }, done: s.out.done, runs: s.out.runs, line: s.out.line } };
       putEntry(e);

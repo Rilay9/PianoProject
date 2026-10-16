@@ -55,22 +55,39 @@ function prune(s: Stored): void {
 let activity: { id: string; screen: string; lesson?: LessonRef } | null = null;
 export function setActivity(a: { id: string; screen: string; lesson?: LessonRef } | null): void { activity = a; }
 export function activityOf(screen: string): string | undefined { return activity?.screen === screen ? activity.id : undefined; }
+/** The activity in force for this screen now, to be kept with a run as it starts (null: none). */
+export type ActivityTag = { id: string; screen: string; lesson?: LessonRef } | null;
+export function activityTag(screen: string): ActivityTag { return activity?.screen === screen ? { ...activity } : null; }
 
-/** Adds a run (nothing is added for a run with nothing in it: the caller decides). */
-export function addEntry(e: LogEntry): void {
+/**
+ * Adds a run (nothing is added for a run with nothing in it: the caller decides). tag: the activity the run was played
+ * with, kept from its start (final review 2026-10-15, F06: a set left by choosing another was logged after the choice
+ * had ended the activity); left out, the activity in force now.
+ */
+export function addEntry(e: LogEntry, tag?: ActivityTag): void {
   const s = read();
-  const a = activity?.screen === e.screen ? activity : null;
+  const t = tag === undefined ? activity : tag;
+  const a = t?.screen === e.screen ? t : null;
   s.entries.push({ ...e, ...(e.activity === undefined && a ? { activity: a.id } : {}), ...(e.lesson === undefined && a?.lesson ? { lesson: a.lesson } : {}) });
   prune(s);
   write(s);
 }
 
+const sameEntry = (x: LogEntry, e: Pick<LogEntry, 'at' | 'screen' | 'lesson'>) => x.at === e.at && x.screen === e.screen && x.lesson?.step === e.lesson?.step && x.lesson?.lesson === e.lesson?.lesson;
 /** Adds or replaces the entry with the same time, screen and lesson step (a step's feedback, changed tap by tap). */
 export function putEntry(e: LogEntry): void {
   const s = read();
-  const i = s.entries.findIndex((x) => x.at === e.at && x.screen === e.screen && x.lesson?.step === e.lesson?.step && x.lesson?.lesson === e.lesson?.lesson);
+  const i = s.entries.findIndex((x) => sameEntry(x, e));
   if (i >= 0) s.entries[i] = e; else s.entries.push(e);
   prune(s);
+  write(s);
+}
+/** Removes that entry (a step's feedback cleared tap by tap: final review 2026-10-15, F05). */
+export function removeEntry(e: Pick<LogEntry, 'at' | 'screen' | 'lesson'>): void {
+  const s = read();
+  const i = s.entries.findIndex((x) => sameEntry(x, e));
+  if (i < 0) return;
+  s.entries.splice(i, 1);
   write(s);
 }
 

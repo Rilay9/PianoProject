@@ -6,8 +6,10 @@
 //       drills clean:  that many clean cards in one set
 //       simon  chain:  a chain that long, played whole in one go without help (Simon's own "best")
 //       lab    cleanRounds: that many accompaniment rounds with every bar right, in one run
-//   - without a target, when a run of it ended (one log entry: a set, a game, a run, a Memorise session); Wait for me
-//     ends a run only by going through: round its loop, or to the piece's end (review 2026-10-15, V10);
+//   - without a target, when a run of it ended (one log entry: a set, a game, a Memorise session); a score step's run
+//     counts only in the step's own mode and when it reached the end of its bars (owner, 2026-10-15, Q5): Wait for me
+//     round its loop or to the piece's end (V10), Play along, Rhythm or Ladder a pass round its loop or to the piece's
+//     last note (`reachedEnd`); a Play along run stopped after two notes does not mark a Wait for me step done;
 //   - a step whose screen keeps no runs (the score in Watch, Free play), when you come back from it: "visited".
 
 import type { LogEntry } from '../log';
@@ -26,18 +28,31 @@ export function meets(e: LogEntry, t: Target): boolean {
     if (!runs.some((p) => num(p.notes) > 0 && num(p.onTime) / num(p.notes) >= t.onTime! - 1e-9)) return false;
   }
   if (t.bpm !== undefined && !((r.passes as Pass[] | undefined) ?? []).some((p) => p.clean && num(p.bpm) >= t.bpm!)) return false;
-  if (t.clean !== undefined && num(r.clean) < t.clean) return false;
+  // Full sets only, as Drills' own best (owner, 2026-10-15, F10): not "the misses again", nor a set left or stopped early.
+  if (t.clean !== undefined && (num(r.clean) < t.clean || r.missesAgain === true || r.ended !== 'set done')) return false;
   if (t.chain !== undefined && num(r.longestChain) < t.chain) return false;
   if (t.cleanRounds !== undefined) {
+    // A lab run that looped bars logs rounds of just those bars (`bars` on the entry): a loop is practice, as the lab
+    // itself says, so only rounds over the whole chart count (final review 2026-10-15, F07).
+    if (e.screen === 'lab' && e.bars) return false;
     const clean = ((r.rounds as Round[] | undefined) ?? []).filter((x) => x.stoppedInBar === undefined && typeof x.bars === 'string' && x.bars.trim() !== '' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok')));
     if (clean.length < t.cleanRounds) return false;
   }
   return true;
 }
 
-/** A run that ended (a Wait for me run only once it went through its bars; one from before that rule counts). */
-export function ended(e: LogEntry): boolean {
-  return !(e.screen === 'score' && e.mode === 'wait') || e.result.rounds === undefined || num(e.result.rounds) >= 1;
+/**
+ * A run that ended, for a step with no target. A score run (owner, 2026-10-15, Q5) only in the step's own mode (when it
+ * names one) and through to the end of its bars: Wait for me round its loop or to the piece's end (a Wait for me entry
+ * from before `rounds` was logged counts); the timed modes a pass round the loop, or the piece's last note reached.
+ */
+export function ended(e: LogEntry, a?: Activity): boolean {
+  if (e.screen !== 'score') return true;
+  const mode = a?.screen === 'score' ? a.settings.mode : undefined;
+  if (mode && e.mode !== mode) return false;
+  const r = e.result;
+  if (e.mode === 'wait') return r.rounds === undefined || num(r.rounds) >= 1;
+  return (Array.isArray(r.passes) && r.passes.length > 0) || r.reachedEnd === true;
 }
 /** "bars 1–4" that never breaks after its dash. */
 const range = (a: unknown, b: unknown) => (String(a) === String(b) ? `bar ${String(a)}` : `bars ${String(a)}–⁠${String(b)}`);
@@ -57,7 +72,8 @@ export function runLine(e: LogEntry): string {
     case 'lab': {
       const rounds = (r.rounds as Round[] | undefined) ?? [];
       const clean = rounds.filter((x) => typeof x.bars === 'string' && x.bars.trim() !== '' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok'))).length;
-      return r.roundsPlayed !== undefined ? `${num(r.roundsPlayed)} rounds played` : `${rounds.length} round${rounds.length === 1 ? '' : 's'}, ${clean} with every bar right`;
+      const loop = e.bars ? ` (looping ${range(e.bars.split('-')[0], e.bars.split('-')[1] ?? e.bars.split('-')[0])}: practice)` : '';
+      return r.roundsPlayed !== undefined ? `${num(r.roundsPlayed)} rounds played${loop}` : `${rounds.length} round${rounds.length === 1 ? '' : 's'}, ${clean} with every bar right${loop}`;
     }
     case 'memorise': {
       const passes = (r.passes as { clean?: boolean }[] | undefined) ?? [];
@@ -86,7 +102,7 @@ export function outcome(runs: LogEntry[], a: Activity, target: Target | undefine
     const done = returned && keepsNoRuns(a);
     return { runs: 0, done, met: false, line: done ? (a.screen === 'freeplay' ? 'Free play: visited' : 'Watched') : 'Nothing played' };
   }
-  const met = target ? runs.some((e) => meets(e, target)) : runs.some(ended);
+  const met = target ? runs.some((e) => meets(e, target)) : runs.some((e) => ended(e, a));
   const last = runLine(runs[runs.length - 1]);
   return { runs: runs.length, done: met, met, line: runs.length > 1 ? `${last} · ${runs.length} runs` : last };
 }
@@ -99,7 +115,7 @@ export function bestLine(runs: LogEntry[]): string {
     const r = e.result;
     if (e.screen === 'drills') return num(r.clean);
     if (e.screen === 'simon') return num(r.longestChain);
-    if (e.screen === 'lab') return ((r.rounds as Round[] | undefined) ?? []).filter((x) => typeof x.bars === 'string' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok'))).length;
+    if (e.screen === 'lab') return e.bars ? 0 : ((r.rounds as Round[] | undefined) ?? []).filter((x) => typeof x.bars === 'string' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok'))).length;
     if (e.screen === 'score') {
       const runs: Pass[] = [...(num(r.notes) ? [{ notes: num(r.notes), onTime: num(r.onTime) }] : []), ...((r.passes as Pass[] | undefined) ?? [])];
       return Math.max(0, ...runs.map((p) => num(p.onTime) / Math.max(1, num(p.notes))));
