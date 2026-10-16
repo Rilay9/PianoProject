@@ -1,1 +1,10 @@
-["five-notes-c.json", "intervals-c.json", "chords-c.json", "arpeggios-c.json", "cadence-c.json", "melodies-c.json", "scales-up.json"]
+[
+  "five-notes-c.json",
+  "intervals-c.json",
+  "chords-c.json",
+  "arpeggios-c.json",
+  "cadence-c.json",
+  "melodies-c.json",
+  "scales-up.json",
+  "black-keys-middle.json"
+]

@@ -62,10 +62,10 @@ for (const id of ids) {
   }
 }
 ok('the test content uses every block kind', BLOCK_KINDS.every((k) => kindsUsed.has(k)), `missing: ${BLOCK_KINDS.filter((k) => !kindsUsed.has(k))}`);
-// The sets' kinds (Exercises lists by them): each a known kind.
+// The sets' kinds (Exercises lists by them): a kind is optional (none: listed under "Other"), and one given is known.
 for (const f of sets) {
   const k = JSON.parse(readFileSync(pub(`content/sets/${f}`), 'utf8')).kind;
-  ok(`set ${f} has a known kind (${k})`, ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies'].includes(k), String(k));
+  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies'].includes(k), String(k));
 }
 
 // ---- what a lesson reads to --------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ for (const [name, f, want] of [
   const two = typeof shownIndex === 'function' ? readIndex({ rungs: [{ id: 'test-app', title: 'Test: x', test: true, lessons: ['t1'] }, { id: 'first', title: 'Playing before reading', lessons: ['l1'] }] }) : null;
   ok('learner: a test rung is hidden, a real rung shown', !!two && same(shownIndex(two, false).rungs.map((r) => r.id), ['first']), two ? JSON.stringify(shownIndex(two, false)) : 'no shownIndex in lesson/read.ts');
   ok('checks: with test content asked for, both rungs as written', !!two && same(shownIndex(two, true).rungs.map((r) => r.id), ['test-app', 'first']));
-  ok('the shipped index as a learner sees it: no rungs yet (the test rung hidden; lesson 1 is added separately)', typeof shownIndex === 'function' && shownIndex(index, false).rungs.length === 0);
+  ok('the shipped index as a learner sees it: rung 1 first, the test rung hidden', typeof shownIndex === 'function' && shownIndex(index, false).rungs[0]?.id === 'r1' && !shownIndex(index, false).rungs.some((r) => r.test), typeof shownIndex === 'function' ? JSON.stringify(shownIndex(index, false).rungs.map((r) => r.id)) : '');
   let msg = '';
   try { readIndex({ rungs: [{ id: 'a', title: 'A', test: 'yes', lessons: [] }] }); } catch (e) { msg = e.message; }
   ok('refused: a rung’s "test" that is not true or false', /rung 1.test is "yes"; it should be true or false/.test(msg), msg || 'it was accepted');

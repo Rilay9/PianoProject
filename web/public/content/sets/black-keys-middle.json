@@ -1,0 +1,31 @@
+{
+  "title": "Black keys around middle C",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "C#4",
+      "name": "first of the two",
+      "short": "2a"
+    },
+    "2": {
+      "notes": "D#4",
+      "name": "second of the two",
+      "short": "2b"
+    },
+    "3": {
+      "notes": "F#4",
+      "name": "first of the three",
+      "short": "3a"
+    },
+    "4": {
+      "notes": "G#4",
+      "name": "middle of the three",
+      "short": "3b"
+    },
+    "5": {
+      "notes": "A#4",
+      "name": "last of the three",
+      "short": "3c"
+    }
+  }
+}
