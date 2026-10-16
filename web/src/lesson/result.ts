@@ -73,6 +73,7 @@ export function ended(e: LogEntry, a?: Activity): boolean {
   // practice, no pass mark (owner, 2026-10-16: one card "how do they learn anything from that?"); a set left part way is
   // tried (ChatGPT's review, F6: "left" had been called "played through"). A Simon game logs only once something was played.
   if (e.screen === 'drills') return e.result.ended === 'set done';
+  if (e.screen === 'simon') return e.result.ended !== 'stopped'; // (game over, all played or its goal: through; left part way: tried)
   if (e.screen !== 'score') return true;
   const mode = a?.screen === 'score' ? a.settings.mode : undefined;
   if (mode && e.mode !== mode) return false;

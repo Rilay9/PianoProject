@@ -228,6 +228,9 @@ ok('done: with a target only when met; without one, any run; no run: not done', 
 ok('done without a target: a Drills set played through (0 clean) is done; one left after a card is not',
   outcome([E('drills', { clean: 0, of: 5, ended: 'set done' })], drills, undefined, true).done === true
   && outcome([E('drills', { clean: 0, of: 1, ended: 'left' })], drills, undefined, true).done === false);
+ok('done without a target: a Simon game left part way is tried; one that ran its course (over, its goal) is played through',
+  outcome([E('simon', { longestChain: 2, ended: 'stopped' })], { id: 's', title: 's', screen: 'simon', set: 's', level: {} }, undefined, true).done === false
+  && outcome([E('simon', { longestChain: 3, ended: 'goal' })], { id: 's', title: 's', screen: 'simon', set: 's', level: {} }, undefined, true).done === true);
 // Owner, 2026-10-16 (after the same review, F2): a target counts only runs played as the step sets them: its set, its help
 // level or a harder one, its number of cards, its timing or a stricter one; tempo free. Others are practice, said so.
 {
