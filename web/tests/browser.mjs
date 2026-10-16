@@ -2393,14 +2393,17 @@ try {
       }
       ok('F17: Play along and Rhythm with no keyboard (not allowed, or none connected) say so plainly and start nothing', Object.entries(tries).every(([k, v]) => !/errors/.test(k) && v.said === NO_KEYS && v.button === '▶'), JSON.stringify(tries));
       const ready = {};
-      for (const [name, keys] of [['not allowed', undefined], ['none connected', 0], ['a keyboard', 1]]) {
-        const { ctx, page } = await phone(`${BASE}?tab=practice`, { keys });
+      // (owner, 2026-10-15: the screen's keys play cards too, so it is said only with no keyboard and no keys shown: Nothing
+      // under the music, help 3)
+      const hide = () => { localStorage.setItem('piano-web.exercise-display.v1', JSON.stringify({ 'phone-upright': { under: 'nothing' } })); localStorage.setItem('piano-web.drills.v1', JSON.stringify({ level: { rung: 3 } })); };
+      for (const [name, keys, init] of [['no keys shown, MIDI not allowed', undefined, hide], ['no keys shown, none connected', 0, hide], ['keys shown, no keyboard', undefined, undefined], ['no keys shown, a keyboard', 1, hide]]) {
+        const { ctx, page } = await phone(`${BASE}?tab=practice`, { keys, route: init ? (p) => p.addInitScript(init) : undefined });
         await tapOn(page, '[data-practice="Drills"]'); await wait(page, 2500);
         ready[name] = await page.evaluate(() => document.getElementById('ex-status').textContent);
         await ctx.close();
       }
-      const line = 'Cards are judged from a MIDI keyboard; none is connected.';
-      ok('F17: Drills’ Ready with no keyboard says cards are judged from one (and not with one)', ready['not allowed'] === line && ready['none connected'] === line && ready['a keyboard'] !== line, JSON.stringify(ready));
+      const line = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+      ok('F17: Drills’ Ready says there is nothing to play on only with no keyboard and no keys on the screen (not with the keys shown, nor with a keyboard)', ready['no keys shown, MIDI not allowed'] === line && ready['no keys shown, none connected'] === line && ready['keys shown, no keyboard'] === '' && ready['no keys shown, a keyboard'] === '', JSON.stringify(ready));
     }
 
     // F12: the PDF reader has an address: a reload comes back to the PDF; Back from it is the Music tab.
@@ -2600,6 +2603,314 @@ try {
     }
   }
   // ---- end of the fix round -----------------------------------------------------------------------------------------
+  // ---- Teaching the app (owner, 2026-10-15; docs/inputs/2026-10-15.md, design/2026-10-15-final-review/onboarding.md) --
+  // The four hints, the install card on Home, How the app works, and the first message kept through a phone's first
+  // layout. A plain phone tab (touch, no MIDI permission) with taps by position, unless a keyboard is the point (the
+  // stand-in, window.__key). Run against the build before (52e5a51a, --url): each case failed there (the page-error
+  // lines aside); this build: all pass.
+  {
+    const fakeKeys = (n) => {
+      const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+      const access = { inputs: new Map(n ? [[input.id, input]] : []), outputs: new Map(), onstatechange: null };
+      Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+      window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+    };
+    async function phone(url, { keys, viewport = { width: 390, height: 844 }, mobile = false, init } = {}) {
+      const ctx = await browser.newContext({ viewport, hasTouch: true, isMobile: mobile, serviceWorkers: 'block', acceptDownloads: true });
+      const page = await ctx.newPage();
+      if (keys !== undefined) await page.addInitScript(fakeKeys, keys);
+      if (init) await page.addInitScript(init);
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('dialog', (d) => d.accept());
+      await page.goto(url); await page.waitForTimeout(1800);
+      return { ctx, page, errors };
+    }
+    const wait = (page, ms) => page.waitForTimeout(ms);
+    // (a control that is not there, as on the build before: the step is skipped and the case's own check fails, so the
+    // run carries on to the next case)
+    const tapOn = async (page, sel, hasText) => { try { await page.locator(sel, hasText ? { hasText } : {}).first().click({ timeout: 8000 }); } catch { console.log(`  (not tapped: ${sel}${hasText ? ` "${hasText}"` : ''})`); } await wait(page, 400); };
+    const scoreReady = (page) => page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 });
+    const firstTap = async (page) => { await page.mouse.click(195, 330); await wait(page, 400); };
+    const barsUp = async (page) => { if (await page.evaluate(() => document.getElementById('top-bar').classList.contains('faded'))) { await page.mouse.click(195, 330); await wait(page, 300); } };
+    const said = (page) => page.evaluate(() => { const m = document.getElementById('message'); return m && !m.hidden ? m.textContent : ''; });
+    const back = async (page) => { await page.evaluate(() => history.back()); await wait(page, 900); };
+    const hints = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.hints.v1') ?? 'null'));
+    const running = (page) => page.evaluate(() => document.getElementById('play').getAttribute('aria-label') === 'Stop');
+    const TIP = 'Tap the music to stop and get the controls back.';
+    /** A piece opened, its first tap, then ▶ tapped where it shows: what the message line says once the bars faded. */
+    async function run(page, url = `${BASE}?piece=mozart-k2`) {
+      await page.goto(url); await scoreReady(page); await wait(page, 600); await firstTap(page); await barsUp(page);
+      await tapOn(page, '#play'); await wait(page, 1200);
+      return { said: await said(page), running: await running(page), faded: await page.evaluate(() => document.getElementById('bottom-bar').classList.contains('faded')) };
+    }
+
+    // Hint #2: the tip as the bars fade; a tap on the music (on the tip itself: it takes no tap) stops the run, and then it
+    // is done for good; it comes back only with Settings → Show tips again.
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      const r1 = await run(page);
+      const box = await page.evaluate(() => { const r = document.getElementById('message').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+      await page.mouse.click(box.x, box.y); await wait(page, 600); // (a tap where the tip is: the music under it takes it)
+      const after = { running: await running(page), said: await said(page), bars: await page.evaluate(() => !document.getElementById('bottom-bar').classList.contains('faded')), store: await hints(page) };
+      const r2 = await run(page);
+      await page.mouse.click(195, 330); await wait(page, 500);
+      await page.goto(`${BASE}?page=settings`); await wait(page, 1200);
+      await tapOn(page, '#set-tips'); await wait(page, 300);
+      const reset = { note: await page.evaluate(() => document.getElementById('set-tips-note')?.textContent ?? ''), store: await hints(page) };
+      const r3 = await run(page);
+      ok('hint #2: a run starts, the bars fade and the line says "Tap the music to stop and get the controls back."', r1.running && r1.faded && r1.said === TIP, JSON.stringify(r1));
+      ok('hint #2: a tap where the tip shows stops the run and brings the bars back; the tip goes and is stored as used', !after.running && after.bars && after.said === '' && !!after.store?.tips?.['tap-to-stop']?.done && after.store.tips['tap-to-stop'].since === '2026-10-15', JSON.stringify(after));
+      ok('hint #2: once used, the next run says nothing', r1.said === TIP && r2.running && r2.said === '', JSON.stringify({ first: r1.said, next: r2 }));
+      ok('Settings → Show tips again: the tip shows again on the next run', /show again/.test(reset.note) && !reset.store?.tips && r3.said === TIP, `${JSON.stringify(reset)}; ${JSON.stringify(r3)}`);
+      ok('hint #2 tap: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Hint #2's other end: shown on 3 runs (each stopped without tapping the music: Back), then never on the 4th.
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      const got = [];
+      for (let i = 0; i < 4; i++) { got.push((await run(page)).said); await back(page); }
+      ok('hint #2: shown on the first 3 runs only (stopped by Back, never by a tap), not on the 4th', got.slice(0, 3).every((s) => s === TIP) && got[3] === '', JSON.stringify(got));
+      ok('hint #2 runs: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // After an update only tips new in it show, once (owner): a tip already used stays used; the same tip made newer
+    // (as an update that brings or changes it: window.__pianoHintSince) shows, and once used is done again.
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      const first = await run(page); await page.mouse.click(195, 330); await wait(page, 500); // (used: done at its version)
+      const seen = await run(page); await page.mouse.click(195, 330); await wait(page, 500);
+      await page.addInitScript(() => { window.__pianoHintSince = { 'tap-to-stop': '2099-01-01' }; });
+      const updated = await run(page); await page.mouse.click(195, 330); await wait(page, 500);
+      const store = await hints(page);
+      const again = await run(page);
+      ok('after an update: a tip shown and used is not shown again', first.said === TIP && seen.running && seen.said === '', JSON.stringify({ first, seen }));
+      ok('after an update: the tip new in it (a newer version) shows; used, it is stored at the new version and shown no more', updated.said === TIP && store?.tips?.['tap-to-stop']?.since === '2099-01-01' && !!store.tips['tap-to-stop'].done && again.said === '', `${JSON.stringify(updated)}; ${JSON.stringify(store)}; ${JSON.stringify(again)}`);
+      ok('after an update: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Hint #4: what each mode is for, said every time one is picked.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`);
+      await scoreReady(page); await firstTap(page); await barsUp(page);
+      const got = {};
+      for (const m of ['wait', 'along', 'rhythm', 'watch', 'wait', 'ladder']) { await page.selectOption('#q-mode', m); await wait(page, 400); got[m] = await said(page); }
+      const want = { wait: 'Wait for me: it waits for your notes; no clock.', along: 'Play along: at tempo; the piano plays the hand you don’t; a summary at the end.', rhythm: 'Rhythm: any key counts: play the rhythm only.', watch: 'Watch: the app plays it; follow the marker.', ladder: 'Ladder: tap the first bar to practise. It goes round that loop; each clean pass a little faster, a messy one slower.' };
+      ok('hint #4: picking a mode says what it is for (Watch, Wait for me, Play along, Rhythm; Ladder with no loop asks for its bars too)', Object.entries(want).every(([k, v]) => got[k] === v), JSON.stringify(got));
+      ok('hint #4: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // Hint #3: the hands label, Piano: in Watch and You: in the others, at the hands and inside the screen with every
+    // control of the bar, at 390×844, 320×568, 844×390 and 820×1180.
+    {
+      const got = {};
+      let errs = 0;
+      for (const [w, h] of [[390, 844], [320, 568], [844, 390], [820, 1180]]) {
+        const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`, { viewport: { width: w, height: h } });
+        await scoreReady(page); await page.mouse.click(w / 2, h / 2); await wait(page, 400);
+        if (await page.evaluate(() => document.getElementById('top-bar').classList.contains('faded'))) { await page.mouse.click(w / 2, h / 2); await wait(page, 300); }
+        await page.selectOption('#q-mode', 'watch'); await wait(page, 300);
+        const look = () => page.evaluate(() => {
+          const l = document.getElementById('q-hands-label'), r = l?.getBoundingClientRect(), hands = document.getElementById('q-hands').getBoundingClientRect();
+          const inside = [...document.querySelectorAll('#bottom-bar button, #bottom-bar select, #bottom-bar output')].every((e) => { const b = e.getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth && b.top >= 0 && b.bottom <= innerHeight; });
+          return { text: l?.textContent ?? '', shown: !!r && r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && Math.abs(r.left - hands.left) < 60, inside, barH: Math.round(document.getElementById('bottom-bar').getBoundingClientRect().height) };
+        });
+        const watch = await look();
+        await page.selectOption('#q-mode', 'along'); await wait(page, 300);
+        got[`${w}x${h}`] = { watch, along: await look() };
+        errs += errors.length;
+        await ctx.close();
+      }
+      ok('hint #3: "Piano:" at the hands in Watch, "You:" in Play along, at 390, 320, sideways and tablet, every bar control on screen', Object.values(got).every((g) => g.watch.text === 'Piano:' && g.along.text === 'You:' && g.watch.shown && g.along.shown && g.watch.inside && g.along.inside), JSON.stringify(got));
+      ok('hint #3: no page errors', errs === 0, String(errs));
+    }
+
+    // Hint #1, Simon: with no keyboard and no keys on the screen (Nothing under the music, help 3), Ready says there is
+    // nothing to play on; with the keys shown, or a keyboard connected, it says nothing of the kind.
+    {
+      const nothing = () => { localStorage.setItem('piano-web.exercise-display.v1', JSON.stringify({ 'phone-upright': { under: 'nothing' } })); localStorage.setItem('piano-web.simon.v1', JSON.stringify({ level: { rung: 3 } })); };
+      const got = {};
+      let errs = 0;
+      for (const [name, keys, init] of [['no keys, no keyboard', undefined, nothing], ['keys shown, no keyboard', undefined, undefined], ['no keys, a keyboard', 1, nothing]]) {
+        const { ctx, page, errors } = await phone(`${BASE}?tab=practice`, { keys, init });
+        await tapOn(page, '[data-practice="Simon"]'); await wait(page, 1500);
+        got[name] = await page.evaluate(() => document.getElementById('ex-status').textContent);
+        errs += errors.length;
+        await ctx.close();
+      }
+      const NO = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+      ok('hint #1, Simon: Ready says there is nothing to play on only with no keyboard and no keys on the screen', got['no keys, no keyboard'] === NO && got['keys shown, no keyboard'] !== NO && got['no keys, a keyboard'] !== NO, JSON.stringify(got));
+      ok('hint #1 Simon: no page errors', errs === 0, String(errs));
+    }
+
+    // Hint #1, Wait for me turned sideways during a run with no keyboard: the run started upright on the screen's keys,
+    // the phone turned: it says the owner's line (it was silent); turned back, the line goes and the keys are back.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2&mode=wait`);
+      await scoreReady(page); await firstTap(page); await barsUp(page);
+      await tapOn(page, '#play'); await wait(page, 1500);
+      const started = await page.evaluate(() => !document.getElementById('keyboard').hidden) && await running(page);
+      await page.setViewportSize({ width: 844, height: 390 }); await wait(page, 2500);
+      const sideways = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden) };
+      await page.setViewportSize({ width: 390, height: 844 }); await wait(page, 2500);
+      const upright = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden) };
+      ok('hint #1: Wait for me turned sideways mid-run with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s keys, or plug one in."; turned back, the line goes and the keys are back', started && /^No MIDI keyboard found\. Turn the phone upright to play on the screen’s keys, or plug one in\.$/.test(sideways.said) && !sideways.keys && upright.keys && !/Turn the phone upright/.test(upright.said), JSON.stringify({ started, sideways, upright }));
+      ok('hint #1 sideways: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // The install card: in a browser tab, Home says "Install the app to keep your files and play offline." with Chrome's
+    // menu words until the browser offers its prompt, then an Install button; Install calls the prompt and, installed,
+    // the card goes for good. ✕ hides it, also after a reload. In the installed app there is no card.
+    {
+      const card = (page) => page.evaluate(() => { const c = document.getElementById('install-card'); return c ? { text: c.textContent, install: !!c.querySelector('.btn.main') } : null; });
+      const { ctx, page, errors } = await phone(BASE);
+      const before = await card(page);
+      await page.evaluate(() => {
+        const e = new Event('beforeinstallprompt', { cancelable: true });
+        e.prompt = async () => { window.__prompted = (window.__prompted ?? 0) + 1; };
+        e.userChoice = Promise.resolve({ outcome: 'accepted' });
+        window.dispatchEvent(e);
+        window.__stopped = e.defaultPrevented;
+      });
+      await wait(page, 300);
+      const offered = { ...(await card(page)), stopped: await page.evaluate(() => window.__stopped) };
+      let prompted = 0;
+      try { await tapOn(page, '#install-card .btn.main'); prompted = await page.evaluate(() => window.__prompted ?? 0); } catch { /* no button */ }
+      await page.evaluate(() => window.dispatchEvent(new Event('appinstalled'))); await wait(page, 300);
+      const installed = await card(page);
+      await page.reload(); await wait(page, 1800);
+      const reloaded = await card(page);
+      ok('install card: in a tab, Home shows it with Chrome’s menu words until the browser offers to install', !!before && before.text.includes('Install the app to keep your files and play offline.') && before.text.includes('Chrome menu ⋮ → Install app') && !before.install, JSON.stringify(before));
+      ok('install card: beforeinstallprompt (its mini-infobar stopped) brings the Install button; a tap calls the browser’s prompt', !!offered.install && offered.stopped === true && prompted === 1, JSON.stringify({ offered, prompted }));
+      ok('install card: installed (appinstalled), it goes, also after a reload', !!before && installed === null && reloaded === null, JSON.stringify({ installed, reloaded }));
+      ok('install card: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+    {
+      const card = (page) => page.evaluate(() => !!document.getElementById('install-card'));
+      const { ctx, page, errors } = await phone(BASE);
+      const shown = await card(page);
+      try { await tapOn(page, '#install-card .inst-x'); } catch { /* none */ }
+      const gone = !(await card(page));
+      await page.reload(); await wait(page, 1800);
+      const stays = !(await card(page));
+      await ctx.close();
+      const app = await phone(BASE, { init: () => { window.__pianoInstalled = true; } });
+      const inApp = await card(app.page);
+      ok('install card: ✕ hides it, and it stays hidden after a reload', shown && gone && stays, JSON.stringify({ shown, gone, stays }));
+      ok('install card: none in the installed app (and one in a tab, above)', shown && inApp === false, JSON.stringify({ tab: shown, installedApp: inApp }));
+      ok('install card ✕: no page errors', errors.length === 0 && app.errors.length === 0, [...errors, ...app.errors].join(' | '));
+      await app.ctx.close();
+    }
+
+    // How the app works: Settings opens it from the top with a section a screen; Back closes it and nothing else.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?page=settings`);
+      try { await tapOn(page, '#set-help'); } catch { /* no row */ }
+      const st = await page.evaluate(() => { const d = document.getElementById('help'); return { open: !!d?.open, title: document.getElementById('help-title')?.textContent ?? '', ids: [...document.querySelectorAll('#help .help-sec')].map((s) => s.dataset.help) }; });
+      await back(page);
+      const after = await page.evaluate(() => ({ open: !!document.getElementById('help')?.open, view: window.__pianoDebug.shell().view }));
+      const want = ['home', 'path', 'score', 'memorise', 'simon', 'drills', 'lab', 'freeplay', 'metronome', 'practice', 'music', 'pdf', 'settings', 'install'];
+      ok('help: Settings → How the app works opens the page with a section for each screen', st.open && st.title === 'How the app works' && want.every((w) => st.ids.includes(w)), JSON.stringify(st));
+      ok('help: Back closes it and Settings is still there', st.open && !after.open && after.view === 'v-settings', JSON.stringify(after));
+      ok('help Settings: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // How this screen works, from each screen: it opens that screen's section, marked and in view.
+    {
+      /** The help as it shows: which section is marked, and whether its title is in the page's view. */
+      const shown = (page) => page.evaluate(() => {
+        const d = document.getElementById('help'), here = d?.querySelector('.help-sec.here'), form = d?.querySelector('form');
+        const r = here?.getBoundingClientRect(), f = form?.getBoundingClientRect();
+        return { open: !!d?.open, here: here?.dataset.help ?? null, inView: !!r && !!f && r.top >= f.top - 1 && r.top < f.bottom - 40 };
+      });
+      const got = {};
+      let errs = 0;
+      const each = async (name, url, steps, want) => {
+        const { ctx, page, errors } = await phone(url);
+        try { await steps(page); got[name] = { ...(await shown(page)), want }; } catch (e) { got[name] = { error: String(e).slice(0, 160), want }; }
+        errs += errors.length;
+        await ctx.close();
+      };
+      const viaLink = async (page) => { const l = page.locator('.help-link:visible').first(); await l.scrollIntoViewIfNeeded({ timeout: 8000 }); await l.click({ timeout: 8000 }); await wait(page, 500); };
+      await each('score (⋯)', `${BASE}?piece=mozart-k2`, async (page) => { await scoreReady(page); await firstTap(page); await barsUp(page); await tapOn(page, '#open-more'); await tapOn(page, '#more [data-help]'); }, 'score');
+      await each('Memorise (Settings)', `${BASE}?piece=mozart-k2`, async (page) => { await scoreReady(page); await firstTap(page); await barsUp(page); await tapOn(page, '#open-more'); await tapOn(page, '#open-memorise'); await wait(page, 2000); await tapOn(page, '#memo-settings'); await tapOn(page, '#memo-dialog [data-help]'); }, 'memorise');
+      await each('Simon (Level)', `${BASE}?tab=practice`, async (page) => { await tapOn(page, '[data-practice="Simon"]'); await wait(page, 1200); await tapOn(page, '#ex-level'); await tapOn(page, '#ex-level-dialog [data-help]'); }, 'simon');
+      await each('Drills (Level)', `${BASE}?tab=practice`, async (page) => { await tapOn(page, '[data-practice="Drills"]'); await wait(page, 1200); await tapOn(page, '#ex-level'); await tapOn(page, '#drill-dialog [data-help]'); }, 'drills');
+      await each('the lab (⚙)', `${BASE}?tab=practice`, async (page) => { await tapOn(page, '[data-practice="Accompaniment lab"]'); await wait(page, 1500); await tapOn(page, '#lab-band'); await tapOn(page, '#lab-band-dialog [data-help]'); }, 'lab');
+      await each('Free play (Show)', `${BASE}?tab=practice`, async (page) => { await tapOn(page, '[data-practice="Free play"]'); await wait(page, 600); await tapOn(page, '#fp-show'); await tapOn(page, '#fp-show-dialog [data-help]'); }, 'freeplay');
+      await each('the metronome (a link)', `${BASE}?tab=practice`, async (page) => { await tapOn(page, '[data-practice="Metronome"]'); await wait(page, 600); await tapOn(page, '#metronome [data-help]'); }, 'metronome');
+      await each('the PDF reader (⚙)', `${BASE}?tab=music`, async (page) => { await wait(page, 800); await page.setInputFiles('#lib-file', SHAPES); await wait(page, 2500); await page.locator('#lib-toast').waitFor({ state: 'hidden', timeout: 8000 }).catch(() => {}); await tapOn(page, '.lib-row', 'three shapes'); await wait(page, 2500); await tapOn(page, '#pdf-open-settings'); await tapOn(page, '#pdf-settings [data-help]'); }, 'pdf');
+      await each('Music (end of the list)', `${BASE}?tab=music`, async (page) => { await wait(page, 1500); await viaLink(page); }, 'music');
+      await each('Home (end of the page)', BASE, async (page) => { await viaLink(page); }, 'home');
+      await each('Practice (end of the page)', `${BASE}?tab=practice`, async (page) => { await viaLink(page); }, 'practice');
+      await each('Path (end of the page)', `${BASE}?tab=path`, async (page) => { await wait(page, 600); await viaLink(page); }, 'path');
+      await each('a lesson page (end of the page)', `${BASE}?page=lesson&lesson=test-minuet-opening`, async (page) => { await wait(page, 800); await viaLink(page); }, 'path');
+      ok('help: "How this screen works" from the score, Memorise, Simon, Drills, the lab, Free play, the metronome, the PDF reader, Music, Home, Practice, Path and a lesson opens that screen’s section, marked and in view', Object.values(got).every((g) => g.open && g.here === g.want && g.inView), JSON.stringify(got));
+      ok('help from each screen: no page errors', errs === 0, String(errs));
+    }
+    // Back from a screen's help closes the help only: the score is still there.
+    {
+      const { ctx, page, errors } = await phone(`${BASE}?piece=mozart-k2`);
+      await scoreReady(page); await firstTap(page); await barsUp(page);
+      await tapOn(page, '#open-more');
+      const had = await page.locator('#more [data-help]').count();
+      if (had) await tapOn(page, '#more [data-help]');
+      await back(page);
+      const st = await page.evaluate(() => ({ help: !!document.getElementById('help')?.open, screen: window.__pianoDebug.showing(), nav: window.__pianoDebug.nav() }));
+      ok('help over the score: Back closes the help and the score stays', had > 0 && !st.help && st.screen === 'score' && st.nav.at(-1) === 'score', JSON.stringify({ had, ...st }));
+      ok('help Back: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // The hint store goes into the backup and comes back with a restore (made by the app: the tip used on a run).
+    {
+      const { ctx, page, errors } = await phone(BASE);
+      await run(page); await page.mouse.click(195, 330); await wait(page, 500);
+      const made = await hints(page);
+      await page.goto(`${BASE}?page=settings`); await wait(page, 1200);
+      const download = page.waitForEvent('download', { timeout: 8000 }).catch(() => null);
+      await tapOn(page, '#backup');
+      const d = await download;
+      let inZip = null, file = null;
+      if (d) { file = join(tmp, `hints-backup-${Date.now()}.zip`); await d.saveAs(file); inZip = readFileSync(file).includes(Buffer.from('piano-web.hints.v1')); }
+      await page.evaluate(() => localStorage.removeItem('piano-web.hints.v1'));
+      if (file) { await page.setInputFiles('#restore-file', file); await wait(page, 4000); }
+      const restored = await hints(page);
+      ok('backup: the hint store made by a run goes into the backup and a restore brings it back', !!made?.tips?.['tap-to-stop']?.done && inZip === true && JSON.stringify(restored) === JSON.stringify(made), JSON.stringify({ made, inZip, restored }));
+      ok('hint backup: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    }
+
+    // The loose end of today's reviews: on a phone (isMobile), the first message after a piece opens (the two-parts
+    // warning; an activity's title) was cleared at once by the layout after the phone's own resize. It stays now.
+    {
+      const got = {};
+      let errs = 0;
+      for (const [name, url, want] of [['two parts', `${BASE}?piece=bach-bwv514`, /has 2 parts/], ['activity title', `${BASE}?activity=k2-wait-right`, /Minuet K\. 2, right hand, bars 1–4/]]) {
+        const { ctx, page, errors } = await phone(url, { mobile: true });
+        await scoreReady(page); await wait(page, 2500);
+        // (and a resize once it is up, as the phone's address bar gives: whether the emulation's own first resize comes
+        // before or after the drawing varies run to run, so it is made to happen after)
+        await page.setViewportSize({ width: 390, height: 800 }); await wait(page, 1200);
+        await page.setViewportSize({ width: 390, height: 844 }); await wait(page, 1200);
+        const s = await said(page);
+        got[name] = { said: s, ok: want.test(s) };
+        errs += errors.length;
+        await ctx.close();
+      }
+      ok('a phone’s first layout keeps the first message: the two-parts warning and an activity’s title stay', Object.values(got).every((g) => g.ok), JSON.stringify(got));
+      ok('first message: no page errors', errs === 0, String(errs));
+    }
+  }
+  // ---- end of teaching the app --------------------------------------------------------------------------------------
 } finally {
   await browser?.close();
   stop();

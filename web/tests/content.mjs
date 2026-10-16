@@ -15,6 +15,7 @@ import { readChart, readStyle } from '../src/lab/music.ts';
 import { soundOf } from '../src/library/midi/band.ts';
 import { BUNDLED_PARTS } from '../src/sound.ts';
 import { namedPieces } from './named-pieces.mjs';
+import { HELP_IDS, readHelp } from '../src/help/read.ts';
 
 const pub = (p) => new URL(`../public/${p}`, import.meta.url);
 const json = (p) => JSON.parse(readFileSync(pub(p), 'utf8'));
@@ -293,6 +294,24 @@ if (existsSync(pub('catalogue/index.json'))) {
   refuses('a catalogue row one value short', catalogueProblems({ version: 'v', fields: CAT_FIELDS, rows: [CAT_FIELDS.slice(1)] }), /should have 18 values/);
   refuses('a catalogue index without a field catalogue.ts reads', catalogueProblems({ version: 'v', fields: CAT_FIELDS.filter((f) => f !== 'bars'), rows: [] }), /lacks bars/);
 } else ok('no catalogue in this build (nothing to check)', true);
+
+// ---- How the app works: src/help/help.md (docs §7d), read with the app's own reader; every section the app opens is there.
+{
+  const why = (f) => { try { f(); return ''; } catch (e) { return e instanceof Error ? e.message : String(e); } };
+  let sections = [];
+  const problem = why(() => { sections = readHelp(readFileSync(new URL('../src/help/help.md', import.meta.url), 'utf8')); });
+  const missing = HELP_IDS.filter((id) => !sections.some((s) => s.id === id));
+  ok(`src/help/help.md: ${sections.length} sections read, every one the app opens there (${HELP_IDS.join(', ')})`, !problem && !missing.length, problem || `missing: ${missing.join(', ')}`);
+  // Every "How this screen works" in index.html names a section the reader has.
+  const named = [...readFileSync(new URL('../index.html', import.meta.url), 'utf8').matchAll(/data-help="([^"]+)"/g)].map((m) => m[1]);
+  ok(`index.html: its ${named.length} "How this screen works" buttons each name a section`, named.length > 0 && named.every((id) => HELP_IDS.includes(id)), named.join(', '));
+  const lines = (...ls) => ls.join('\n');
+  refuses('help text before the first section', [why(() => readHelp(lines('hello', '# Home {#home}', 'Text.')))], /before the first section/);
+  refuses('a help section with no id', [why(() => readHelp(lines('# Home', 'Text.')))], /ends with its id/);
+  refuses('a help id used twice', [why(() => readHelp(lines('# A {#a}', 'One.', '# B {#a}', 'Two.')))], /used twice/);
+  refuses('HTML in help text', [why(() => readHelp(lines('# A {#a}', '<b>no</b>')))], /HTML/);
+  refuses('an empty help section', [why(() => readHelp(lines('# A {#a}', '', '# B {#b}', 'Text.')))], /empty/);
+}
 
 console.log(failed ? `${failed} of ${ran} failed` : `all ${ran} passed`);
 process.exit(failed ? 1 : 0);

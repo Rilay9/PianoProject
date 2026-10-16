@@ -51,6 +51,7 @@ otherwise.
 | Activities | in (Claude) | `web/public/content/activities/` | §8b | `activity.ts` | check:activity |
 | The path: rungs, lessons, blocks, media | in (Claude) | `web/public/content/path/` | §8c | `lesson/read.ts`, `text.ts` | check:path |
 | The catalogue index | in (built by `web/tools/catalogue/`) | `web/public/catalogue/index.json`, `catalogue/*.mxl` | §5c (Catalogue) | `library/catalogue.ts` | check:content |
+| How the app works (the help text) | in (Claude) | `web/src/help/help.md` | §7d | `help/read.ts` | check:content |
 | Addresses (links, reload) | in | `?piece=`, `?activity=`, `tab`, `page`, `lesson`, `step`, `tool`… | §7c | `main.ts` start, `nav.ts`, `screens/shell.ts` | check:browser (routes) |
 | Files a learner adds | in (learner) | + Add, Share → Piano | §5c (Adding) | `library/files.ts`, `library/midi/` | check:midi, check:browser |
 | The practice log export | out (to Claude) | Settings → Export practice log | §7b | Claude | sample in §7b |
@@ -108,7 +109,8 @@ scrolling and honest states.
   two columns (V02).
 - **Settings** (⚙ on Home; app-wide only): piano plays through (phone / MIDI keyboard; said when there is none to play
   through), piano and click volume, click sound, Keyboard controls (§7), theme, export practice log (with its count)
-  and "delete entries older than a month", back up, restore, and what is saved for offline. The same stores as before
+  and "delete entries older than a month", back up, restore, what is saved for offline, and Help (How the app works, Show
+  tips again: §7d). The same stores as before
   (`piano-web.app.v1`, the remote, the log, the backup); the Tempo panel inside a piece keeps its piano-out and volume
   controls (the same settings).
 
@@ -185,7 +187,7 @@ by their flags): 19 and 5 failed before, 0 and 0 after.
 other staff as the left). A file with other parts or more than two staves is opened with a note saying the hands may
 be wrong. A per-score hand map is to be added when a piece needs one.
 
-**Hands:** L / R / Both / Off. In Watch these are the hands the piano plays (a change while it plays is heard at
+**Hands:** L / R / Both / Off, labelled on screen *Piano:* in Watch and *You:* in the other modes (§7d). In Watch these are the hands the piano plays (a change while it plays is heard at
 once); in the other modes the hands *you* play (the piano plays the rest; Off = you play everything, piano silent), and
 a change ends the run there, as a change of mode does: a run going stops with its summary for the hands it was played
 with, a run paused by itself is over; the next ▶ or key starts one with the new hands (review, 2026-10-15). Tempo: speed and beats per minute, ±5,
@@ -231,11 +233,14 @@ the timed modes still need one: with none connected, or MIDI not allowed, ▶ in
 nothing and says "No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the
 screen." (final review F17; the browser's own permission sentence is never shown). On a phone held sideways the keys
 are off, so Wait for me with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s
-keys, or plug one in." and starts nothing (owner, 2026-10-15). Choosing another mode ends a bar pick under way (Loop's
+keys, or plug one in." and starts nothing (owner, 2026-10-15); a run started upright on the screen's keys says the same
+when the phone is turned sideways (it waits; upright again, the line goes and the keys are back; §7d). Choosing another mode ends a bar pick under way (Loop's
 or Ladder's), as Cancel does. Leaving the piece (← or Back) during a Play along, Rhythm or Ladder run ends it quietly:
 it is logged, and no summary opens over where you land (owner, 2026-10-15, F04); Loop tapped during a run stops it with
 its summary and log first (F02). The warning that a file has more parts or staves than two hands is said only for the
-piece opened. The rest of a chord pressed while a run starts counts for the first notes, as the key
+piece opened, and the first message after a piece opens (that warning, an activity's title) stays when the music is laid
+out again (a phone's own resize just after opening cleared it before: a relayout now keeps the message line; review
+2026-10-15). The rest of a chord pressed while a run starts counts for the first notes, as the key
 that started it does. With the keys showing in Wait for me, the bottom bar sits above them, never over them. In the judged
 modes it pauses by itself on silence (3 s with two or more of your notes due), on mashing (6+ keys not in the
 score within ¼ s) or when the phone turns (the music is laid out again; Watch just pauses; Wait for me waits at your
@@ -357,9 +362,12 @@ scale or chord by name, something to play back by ear), given at once — not fr
 
 **Reached:** Practice → Drills, an exercise in Exercises (most kinds open here, §0), a lesson's step, a link. The
 header's **Drills▾** is *Practise as…*: the same set in Simon (owner, 2026-10-15). ← at the top left goes back where it was opened.
-Back from Simon to Drills in a lesson step's set, the step's own level comes back (F22). With no MIDI keyboard
-connected (or MIDI not allowed) the Ready screen says "Cards are judged from a MIDI keyboard; none is connected." until
-one is seen (F17). A set file that could not be read is read again the next time Drills or Simon opens (F20).
+Back from Simon to Drills in a lesson step's set, the step's own level comes back (F22). Cards are played on a MIDI
+keyboard or by tapping the keys on the screen. With nothing to play on (no MIDI keyboard connected, or MIDI not allowed,
+and no keys on the screen: Nothing under the music, help above 1) the Ready screen says "No MIDI keyboard found: choose
+Keyboard under the music (Level) to play on the screen, or plug one in." until a keyboard is seen or the keys are shown
+(F17; owner, 2026-10-15: it said "Cards are judged from a MIDI keyboard; none is connected." with the keys showing too,
+which was false). Simon says the same in the same case (§7d). A set file that could not be read is read again the next time Drills or Simon opens (F20).
 
 **How it works:** a card appears at the chosen help level (1–2: it plays the card first; 4: the name only, and any
 octave counts, held as written in whichever octave you play; 5: by ear, it plays and you play it back). A timed card starts after a bar of count-in clicks or on
@@ -1043,7 +1051,7 @@ placeholders for checking the app, not lesson content.
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
   `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
   `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF), `piano-web.path.v1` (the path: steps done and how, steps tried, the
-  lesson you are on; §8c), `piano-web.metronome.v1` (the metronome's tempo and beats) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
+  lesson you are on; §8c), `piano-web.metronome.v1` (the metronome's tempo and beats), `piano-web.hints.v1` (tips seen or used and the install card, §7d) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
   **The stores as a contract** (for a new screen or mode; 2026-10-15): each key belongs to one module, which reads it
   forgivingly (a missing or broken value is that module's defaults, never an error) and writes the whole value back.
   The `.vN` is the shape's version: a change that an older reader would misread takes a new key, and the module reads
@@ -1065,9 +1073,65 @@ placeholders for checking the app, not lesson content.
   | `piano-web.log.v1` | `log.ts` | `{ autoDelete, entries: [entry…] }` (§7b) |
   | `piano-web.pdf.v1` | `screens/pdf.ts` | `{ <piece id>: { line, part, cuts (the lines per page), angles, margins, splits, view (whole/split per screen), spacing, size, edgeMusic } }` |
   | `piano-web.path.v1` | `lesson/progress.ts` | `{ version: 1, current?: <lesson id>, done: { <lesson>: { <step>: { at, how: target \| played \| opened } } }, tried: { <lesson>: { <step>: <ISO time> } } }` |
+  | `piano-web.hints.v1` | `hints.ts` | `{ tips: { <tip id>: { since, shown, done } }, install: { dismissed?, installed? } }` (§7d) |
   | `piano-web.offline.v1` | `offline.ts` | `"<files saved>:<fingerprint>"`; this device only, not backed up |
   | IndexedDB `piano-library` (version 1) | `library/store.ts` | store `items` (records, keyed by `id`, as in a backup) and store `files` (the file under `<id>`, a MIDI original under `<id>:midi`) |
   | Cache `piano-shared` | `sw.js`, `screens/library.ts` | files shared to the app, taken out (and deleted) when the library adds them |
+
+## 7d. Teaching the app: hints, the install card, How the app works (owner, 2026-10-15)
+
+The owner's choice (`docs/inputs/2026-10-15.md`; proposal and words in `design/2026-10-15-final-review/onboarding.md`): no
+first-run tour; short hints where a feature is met, an install card, and a help page. Lesson tip blocks that teach the app
+are content for later (§8c `tip`).
+
+- **The hints** (proposals #1–#4; none blocks a tap: the message line lets taps through to the music under it, all but
+  its own button):
+  - *No keyboard* (states, said while true): Play along, Ladder and Rhythm, Drills' Ready and Wait for me sideways as §1
+    and §4 say; **Simon's Ready** says "No MIDI keyboard found: choose Keyboard under the music (Level) to play on the
+    screen, or plug one in." only when there is no keyboard and no keys on the screen (Simon counts the screen's keys:
+    Nothing under the music, help above 1), and so do Drills' (§4); **Wait for me turned sideways mid-run** with no keyboard says §1's sideways line.
+  - *Tap to stop* (the one stored tip): as a score run starts and the bars fade, "Tap the music to stop and get the
+    controls back." on the message line (after "…: play on the keys below." when that is said). Shown on the first 3
+    runs, or until a run is stopped by a tap on the music; it goes with the run.
+  - *The hands label*: "Piano:" in Watch, "You:" in the others, before L R Both Off. Sideways and on a tablet beside the
+    buttons (the bar stays one row); on a phone upright a small caption above them (beside them it took a third row of
+    the bottom bar, 45 px of music; above them the bar grows 9 px).
+  - *What a mode is for*: one line on the message line each time a mode is picked (not stored): "Watch: the app plays
+    it; follow the marker." · "Wait for me: it waits for your notes; no clock." · "Play along: at tempo; the piano plays
+    the hand you don’t; a summary at the end." · "Rhythm: any key counts: play the rhythm only." · Ladder: with no loop
+    "Ladder: tap the first bar to practise. It goes round that loop; each clean pass a little faster, a messy one
+    slower.", with one "Ladder: round a loop; each clean pass a little faster, a messy one slower."
+- **The hint store** `piano-web.hints.v1` (`web/src/hints.ts`; in the backup and merged on restore like every
+  `piano-web.*` key): `{ "tips": { "<tip id>": { "since": "<app version that introduced it>", "shown": n, "done": "<ISO
+  time>" } }, "install": { "dismissed"?: "<ISO time>", "installed"?: "<ISO time>" } }`. The app has no version number, so
+  a tip's version is the date of the release that brought it (`tap-to-stop`: "2026-10-15"). **After an update only tips
+  new in it show** (owner): a record counts only for the version it was written at, so a new tip, or one given a newer
+  `since` because it changed, shows by its own rule once; tips already done stay done. **Settings → Show tips again**
+  removes `tips` (every tip shows again); the install card's ✕ stays (it is not a tip; the owner chose "never again").
+  A check can make a tip look newer with `window.__pianoHintSince = { "<tip id>": "<version>" }`.
+- **The install card** (Home, in a browser tab only; `web/src/install.ts`): "Install the app to keep your files and play
+  offline." with ✕ and, when the browser has offered to install (`beforeinstallprompt`, its mini-infobar stopped with
+  `preventDefault`), **Install**, which calls the browser's prompt (once per offer); otherwise "Chrome menu ⋮ → Install
+  app". It goes on `appinstalled` (kept, so a reload in the tab does not bring it back), in the installed app
+  (`offline.ts` `installed`), and after ✕ for good. Chrome's rules (web.dev, *What does it take to be installable?* and
+  *How to provide your own in-app install experience*, read 2026-10-15): not already installed; HTTPS; a manifest with a
+  name, 192 and 512 px icons, `start_url`, `display` standalone (ours has them); the person has tapped the page once and
+  spent 30 seconds on it, at any time; `prompt()` once per event; after Cancel, wait for the event again; `appinstalled`
+  fires however the app was installed. The menu words are Chrome on Android's; other browsers differ.
+- **How the app works** (`web/src/help/`): a page over whatever shows (a full-height dialog: it pauses a run as every
+  panel does; Back, ✕ or Done close it and nothing else). Settings → Help → *How the app works* opens it at the top, with
+  a row of the sections. Each screen's **How this screen works** opens it at that screen's section, marked: in the
+  score's ⋯; where a screen has no ⋯, in its own panel (Memorise's Settings, Simon's and Drills' Level, the lab's ⚙, Free
+  play's Show, the PDF reader's ⚙); where it has no panel either, a link at the end of the page (Home, Practice,
+  Exercises, Path, a lesson page, Music's list, the metronome). The score's ⓘ stays "about this song".
+- **The help file** `web/src/help/help.md` (read by `help/read.ts`, built into the app so it is there offline): plain
+  text. A line starting `//` is a note for the editor. `# Title {#id}` starts a section; the lines under it, to the next
+  such title, are its text in the lessons' small text format (§8c text: paragraphs, `##` headings, `- ` and `1. ` lists,
+  `**bold**`, `*italics*`, `[links](https://…)`; never HTML). Section ids the app opens: home, path, score, memorise,
+  simon, drills, lab, freeplay, metronome, practice, music, pdf, settings, install (`HELP_IDS`). Text before the first
+  section, a title without its id, an id used twice, HTML or an empty section is refused with the line;
+  `npm run check:content` reads the file with this reader and checks every id the app opens and every `data-help` in
+  `index.html`. **Keep it true:** whoever changes a screen changes its section in the same commit.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -1477,4 +1541,4 @@ place that maps a kind to its drawing), a case in `tests/path.mjs`, and a line h
 The library's next parts (§5c): difficulty (on hold: the estimator's check failed, the owner decides), later the phone folder (a few big zip files) and the Shelf; history /
 projects (the owner will explain);
 the accompaniment lab's lead sheets and several-part files (§5b); sight-reading tools; generated
-drill cards; a setup tour and guide (last).
+drill cards. A setup tour: not wanted (owner, 2026-10-15: hints at the moment and a help page instead, §7d).

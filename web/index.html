@@ -29,12 +29,12 @@
     </select>
     <button id="q-loop" type="button" class="btn" aria-pressed="false">Loop</button>
     <button id="open-tempo" type="button" class="btn" aria-haspopup="dialog" aria-label="Tempo">♩ <span id="q-bpm"></span></button>
-    <div class="seg" id="q-hands" role="group" aria-label="Hands the piano plays">
+    <div class="q-hands-wrap"><span id="q-hands-label" class="q-hands-label" aria-hidden="true">Piano:</span><div class="seg" id="q-hands" role="group" aria-label="Hands the piano plays">
       <button type="button" data-hands="left" aria-label="Left hand only">L</button>
       <button type="button" data-hands="right" aria-label="Right hand only">R</button>
       <button type="button" data-hands="both">Both</button>
       <button type="button" data-hands="off" aria-label="No piano sound">Off</button>
-    </div>
+    </div></div>
     <!-- Size stays here, so the music can be seen changing (spacing and Make default are in Display). -->
     <span class="q-sizes"><button id="q-smaller" type="button" class="btn" aria-label="Smaller notation">A−</button><output id="q-size" aria-live="polite"></output><button id="q-larger" type="button" class="btn" aria-label="Larger notation">A+</button></span>
   </div>
@@ -123,6 +123,7 @@
         <label><input type="checkbox" name="fp-col" value="notes"> Notes</label>
         <label><input type="checkbox" name="fp-col" value="intervals"> Intervals</label>
       </fieldset>
+      <p class="help-row"><button type="button" class="lnk" data-help="freeplay">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -246,6 +247,7 @@
       <div class="row">Phone upright <label><input type="radio" name="pdf-view-phone-upright" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-phone-upright" value="split"> Split lines</label></div>
       <div class="row">Phone sideways <label><input type="radio" name="pdf-view-phone-sideways" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-phone-sideways" value="split"> Split lines</label></div>
       <div class="row">Tablet <label><input type="radio" name="pdf-view-tablet" value="whole"> Whole lines</label> <label><input type="radio" name="pdf-view-tablet" value="split"> Split lines</label></div>
+      <p class="help-row"><button type="button" class="lnk" data-help="pdf">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -307,6 +309,7 @@
         <label><input type="radio" name="lab-dropouts" value="band"> The whole band goes quiet</label>
       </fieldset>
       <p class="note">Tap bars in the box of chords (while stopped) to loop them. A clean round below the chart's own tempo moves it up 5%.</p>
+      <p class="help-row"><button type="button" class="lnk" data-help="lab">How this screen works</button></p>
       <p class="note">Sounds: bass and guitar from the FluidR3 General MIDI set (Frank Wen, CC BY 3.0, via midi-js-soundfonts); drums from the LM-2 drum machine samples (public domain).</p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
@@ -348,6 +351,7 @@
         <label><input type="radio" name="d-under" value="nothing"> Nothing</label>
       </fieldset>
       <p class="note">A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app's.</p>
+      <p class="help-row"><button type="button" class="lnk" data-help="drills">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -402,6 +406,7 @@
         <label><input type="radio" name="ex-under" value="nothing"> Nothing</label>
       </fieldset>
       <p class="note">With Nothing, play on your MIDI keyboard. Help 1 still shows the keyboard, since its lit keys are the help.</p>
+      <p class="help-row"><button type="button" class="lnk" data-help="simon">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -467,6 +472,7 @@
         <label><input type="radio" name="m-next" value="tap"> When I tap</label>
       </fieldset>
       <p class="note">Your place is kept for each piece and each choice of hands. Size, keyboard, tempo, metronome and On time here are Memorise's own.</p>
+      <p class="help-row"><button type="button" class="lnk" data-help="memorise">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -486,6 +492,7 @@
         <button id="open-memorise" type="button">Memorise this piece</button>
         <button id="edit-marks" type="button">Edit fingering</button>
         <button id="export-score" type="button">Export score with my fingering</button>
+        <button type="button" data-help="score">How this screen works</button>
       </div>
       <p class="note">Fingering is written into the score: it shows when Display → Show → Fingering is on, and the exported file opens in MuseScore with it. The app's own settings (sound, keyboard controls, theme, the practice log, backup) are in ⚙ on Home.</p>
       <div class="actions"><button value="close">Close</button></div>
@@ -693,6 +700,11 @@
             <div class="set-row stack"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
             <div id="set-full" class="set-row" hidden><span class="set-name">Full PDMX set<small id="set-full-size"></small><small id="set-full-cleanup" class="set-warn" hidden></small></span><button id="set-full-remove" type="button" class="btn danger">Remove</button></div>
           </div>
+          <p class="set-sec">Help</p>
+          <div class="set-list">
+            <button id="set-help" type="button" class="set-row"><span class="set-name">How the app works<small>What each screen is for, and the taps nothing on screen shows</small></span><span class="set-go">›</span></button>
+            <button id="set-tips" type="button" class="set-row"><span class="set-name">Show tips again<small id="set-tips-note">Tips you have seen show again</small></span><span class="set-go">›</span></button>
+          </div>
           <p class="note">A piece's own choices (size, tempo, hands, fingering) stay on its screen. The Tempo panel inside a piece changes the same piano and click settings.</p>
         </div>
       </div>
@@ -708,6 +720,14 @@
       </div>
     </div>
   </section>
+  <!-- How the app works (src/help/page.ts, text in src/help/help.md): a page over whatever shows; Back or ✕ closes it. -->
+  <dialog id="help" class="help-dlg" aria-labelledby="help-title">
+    <form method="dialog">
+      <h2 id="help-title">How the app works</h2>
+      <div id="help-body" class="help-body"></div>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
   <dialog id="switch-sheet" class="sheet" aria-labelledby="switch-title">
     <form method="dialog">
       <h2 id="switch-title">Switch to…</h2>
@@ -727,6 +747,7 @@
       <div class="metro-row"><span>Sound</span><span class="seg" role="group" aria-label="Click sound"><button type="button" data-mclick="wood">Wood</button><button type="button" data-mclick="beep">Beep</button><button type="button" data-mclick="high">High</button></span></div>
       <button id="metro-go" type="button" class="btn main metro-go">▶ Start</button>
       <p class="note">The click sound is the app's own (the score and the drills use it too); its volume is in ⚙ on Home.</p>
+      <p class="help-row"><button type="button" class="lnk" data-help="metronome">How this screen works</button></p>
     </div>
   </section>
 

@@ -79,7 +79,9 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   F06). Keep with a run what it is played as when it starts; check by changing each of them part way.
 - **The reviewer's device, not a lookalike.** The "has 2 parts" warning on Home showed only in a context with
   `isMobile` (as the tour ran), whose first layout fires a resize; the same check at the same size without it passed on
-  the broken build (2026-10-15). Run a reported case the way it was reported before calling it fixed or unreproduced.
+  the broken build (2026-10-15). And don't bend a check around a bug: that check's "where it opens" half used a plain
+  context because the phone's relayout cleared the message, which hid that bug (the first message after opening lost on
+  every phone) until it was named as a loose end (2026-10-15). Run a reported case the way it was reported before calling it fixed or unreproduced.
 - **A name switched before the data it names.** An id set at once while the data it names arrives later: any save in
   between files one item's data under another's (a PDF opening saved the previous PDF's lines under its own name, review
   2026-10-15). Switch the name and its data together, and keep saves off in between.

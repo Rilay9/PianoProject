@@ -9,6 +9,7 @@ import type { Activity } from '../activity';
 import { entries, putEntry, removeEntry, type LessonRef, type LogEntry } from '../log';
 import type { Sound } from '../sound';
 import { drawBlock } from './blocks';
+import { helpLink } from '../help/page';
 import { stopMiniScores } from './miniscore';
 import { activityOf, describe, lessonOrder, lessonState, loadPath, nextTodo, placeOf, stepStates, stepsOf, type PathData, type StepBlock } from './path';
 import { doneSteps, markDone, markTried, setCurrentLesson } from './progress';
@@ -78,7 +79,7 @@ export function createLessonPage(d: LessonDeps) {
     const out: HTMLElement[] = [el('h2', 'les-title', lesson.title)];
     for (const b of lesson.blocks) out.push(drawBlock(b, ctx));
     const column = el('div', 'les-column');
-    column.append(...out);
+    column.append(...out, helpLink('path')); // (How this screen works: the lesson page has no ⋯)
     body.replaceChildren(column);
     body.scrollTop = 0;
     // The bottom bar: the next step not done, or the lesson done (and the next lesson, if there is one).

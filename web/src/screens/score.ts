@@ -15,10 +15,24 @@ import { yours } from '../practice';
 import type { Command } from '../remote';
 import type { StepNotes } from '../follow';
 import type { ScorePreset } from '../activity';
+import { TIPS, tipDue, tipShown, tipUsed } from '../hints';
 import {
   clearPreset, currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, presetPiece, resetPiece, savePieceSetting, setPreset, settingsFor,
   slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Theme, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
 } from '../settings';
+
+/** What each mode is for: said on the message line when the learner picks it, every time (owner, 2026-10-15). */
+export const MODE_LINES: Partial<Record<Mode, string>> = {
+  watch: 'Watch: the app plays it; follow the marker.',
+  wait: 'Wait for me: it waits for your notes; no clock.',
+  along: 'Play along: at tempo; the piano plays the hand you don’t; a summary at the end.',
+  ladder: 'Ladder: round a loop; each clean pass a little faster, a messy one slower.',
+  rhythm: 'Rhythm: any key counts: play the rhythm only.',
+};
+/** Ladder picked with no loop: it asks for the bars, with what it is for. */
+const LADDER_PICK = 'Ladder: tap the first bar to practise. It goes round that loop; each clean pass a little faster, a messy one slower.';
+/** The tip as a run starts and the bars fade (owner, 2026-10-15; hints.ts: the first 3 runs, or until used). */
+export const TAP_TIP = 'Tap the music to stop and get the controls back.';
 
 export const SIZE_MIN = 0.6; // same range as the Display panel's slider
 export const SIZE_MAX = 1.8;
@@ -118,11 +132,16 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   /** Lays the song out again; keep = stay where the marker is (a setting changed), otherwise start at the top. */
   let drawRequest = 0;
+  let lastDrawError = '';
   async function draw(keep = false): Promise<void> {
     const request = ++drawRequest; // a newer draw (another song picked while this one downloads) wins
     const piece = currentPiece();
     document.body.classList.remove('draw-failed'); // (the bars come back to be measured; a failure hides them again)
-    showMessage('');
+    // A new piece starts with a clear message line. Laid out again (turned, resized, a look changed) what it says stays:
+    // a phone's own resize just after a piece opened cleared its first message (the two-parts warning, an activity's
+    // title; review 2026-10-15). Only a failure to draw, said by the last draw, goes.
+    if (!keep || (lastDrawError && app.messageText === lastDrawError)) showMessage('');
+    lastDrawError = '';
     fillBars();
     view.title = piece.title;
     try {
@@ -158,7 +177,8 @@ export function createScoreScreen(app: App): ScoreScreen {
       const why = cause instanceof Error ? cause.message : String(cause);
       // (its file could not be read: the music of the piece before is not left under this title, P01)
       if (request === drawRequest) view.fail(`“${piece.title}” could not be opened: ${why}`);
-      showMessage(`Could not load ${piece.title}: ${why}`);
+      lastDrawError = `Could not load ${piece.title}: ${why}`;
+      showMessage(lastDrawError);
     }
     fillBars(); // the tempo shown comes from the song
   }
@@ -255,6 +275,8 @@ export function createScoreScreen(app: App): ScoreScreen {
     $('q-loop').textContent = picking ? 'Cancel' : loop ? `Loop ${la === lb ? la : `${la}–${lb}`}` : 'Loop';
     $('q-loop').setAttribute('aria-pressed', String(!!loop));
     $('q-hands').setAttribute('aria-label', s.mode === 'watch' ? 'Hands the piano plays' : 'Hands you play');
+    // The same buttons mean the piano's hands in Watch and yours elsewhere: said on screen (owner, 2026-10-15).
+    $('q-hands-label').textContent = s.mode === 'watch' ? 'Piano:' : 'You:';
     for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) b.setAttribute('aria-pressed', String(b.dataset.hands === s.hands));
   }
 
@@ -310,6 +332,9 @@ export function createScoreScreen(app: App): ScoreScreen {
   // Playing: the bars go while the music plays; a tap on the music pauses and brings them back (owner, 2026-10-11).
   // With the piano or the metronome on, the sound's clock drives the marker so the two stay together.
   let starting = false;
+  let tipping = false; // this run showed the tap-to-stop tip
+  /** The tip goes with the run it was for. */
+  const endTip = () => { tipping = false; if (app.messageText === TAP_TIP) showMessage(''); };
   /**
    * Starts playing from the marker. fromKey: begun by playing your first note (no count-in; that key counts as
    * played on its note). After a pause by itself, the same run carries on.
@@ -338,7 +363,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       // nothing on a phone with no keyboard). A keyboard allowed later plays in as it comes. The timed modes need one.
       const touchOnly = s.mode === 'wait' && !$('keyboard').hidden && s.pianoOut !== 'keyboard'; // (the keys are showing)
       if (touchOnly) void midi.start().then((names) => names.length ? undefined : 'No MIDI keyboard is connected', () => 'No MIDI keyboard here')
-        .then((why) => { if (why && request === startRequest && !app.messageText) showMessage(`${why}: play on the keys below.`, true); });
+        .then((why) => { if (why && request === startRequest && (!app.messageText || app.messageText === TAP_TIP)) showMessage(`${why}: play on the keys below.${tipping ? ` ${TAP_TIP}` : ''}`, true); });
       else if (s.mode !== 'watch' || s.pianoOut === 'keyboard') {
         // In plain words, never the browser's own (final review 2026-10-15, F17): the timed modes listen to a keyboard,
         // so with none (none connected, or MIDI not allowed) they say so and do not start a run that then "pauses".
@@ -378,6 +403,13 @@ export function createScoreScreen(app: App): ScoreScreen {
     hideBars();
     pass = 0;
     const loop = view.looped, continuing = resumable;
+    // The bars fade: how to get them back, for the first runs (hints.ts), unless something else is being said.
+    tipping = false;
+    if (!continuing && tipDue(TIPS.tapToStop)) {
+      tipShown(TIPS.tapToStop);
+      tipping = true;
+      if (!app.messageText) showMessage(TAP_TIP, true);
+    }
     // The practice log (owner, 2026-10-13): a run from here to its stop (carrying on after a pause is the same run).
     if (s.mode !== 'watch' && !(continuing && logRun)) logRun = { run: new Run(), mode: s.mode, fromStep: view.index, passes: [], steps: 0, rounds: 0, furthest: view.index, at: view.index };
     resumable = false;
@@ -642,6 +674,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     startRequest++; // a start still getting ready is dropped
     starting = false;
     if (borrower) { borrower.stop(); return; }
+    endTip();
     quiet = leaving;
     try {
       if (view.playing) view.pause();
@@ -651,6 +684,7 @@ export function createScoreScreen(app: App): ScoreScreen {
   }
   view.onStop = () => {
     sound.stop();
+    endTip();
     if (borrower || holding) return; // a borrower stops the music itself (memorise.ts); nothing here stops it
     practice.stop(!view.looped);
     fillBars();
@@ -676,7 +710,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       panelPaused = false;
       heldWait = '';
       if (borrower) return; // (Memorise opened from ⋯ meanwhile: its run is over)
-      if (paused && resumable) pausedMessage(PANEL_PAUSED); // (a redraw meanwhile clears messages)
+      if (paused && resumable) pausedMessage(PANEL_PAUSED); // (said again: something may have been said meanwhile)
       if (held === currentPiece().id && practice.active && s.mode === 'wait') practice.release();
       return;
     }
@@ -706,7 +740,10 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (picking) { picking = 0; view.setLoop(null); showMessage(''); }
     savePieceSetting(currentPiece().id, 'mode', (e.target as HTMLSelectElement).value as Mode);
     fillBars();
-    if (settingsFor(currentPiece().id).mode === 'ladder' && !view.looped) startPicking('Ladder: tap the first bar to practise');
+    // What the mode is for, every time one is picked (owner, 2026-10-15); Ladder with no loop then asks for its bars.
+    const mode = settingsFor(currentPiece().id).mode;
+    if (mode === 'ladder' && !view.looped) startPicking(LADDER_PICK);
+    else if (MODE_LINES[mode]) showMessage(MODE_LINES[mode]!, true);
   });
 
   // The keys under the music play, and count as your playing, where timing isn't tight: Memorise and Wait for me
@@ -816,7 +853,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (borrower) { borrower.tap(e, dx, dy); return; }
     if (marking) { pickNote(e.clientX, e.clientY); return; }
     if (picking && Math.abs(dx) < SWIPE / 4 && Math.abs(dy) < SWIPE / 4) { pickBar(e.clientX, e.clientY); return; }
-    if (view.playing || practice.active) { stopAll(); return; }
+    if (view.playing || practice.active) { tipUsed(TIPS.tapToStop); stopAll(); return; } // (learned: the tip is done)
     if (Math.abs(dy) > SWIPE && Math.abs(dy) > Math.abs(dx)) { view.browse(dy < 0 ? 1 : -1); return; }
     if (Math.abs(dx) > SWIPE / 4 || Math.abs(dy) > SWIPE / 4) return; // a drag: the one-line layouts scroll
     if (bars[0].classList.contains('faded')) showBars();
@@ -945,10 +982,21 @@ export function createScoreScreen(app: App): ScoreScreen {
       else if (waiting) { holding = true; view.pause(); holding = false; sound.stop(); }
       else if (view.playing && !borrower) view.pause();
       void draw(true).then(() => {
-        if (along && resumable) pausedMessage(turned); // (drawing clears messages)
+        if (along && resumable) pausedMessage(turned); // (said again: the layout may have said something meanwhile)
         if (waiting && practice.active) practice.carryOn();
+        sidewaysWithoutKeys();
       });
     }, 150);
+  }
+
+  /**
+   * Wait for me turned sideways during a run (owner, 2026-10-15): the keys under the music are off there, so with no
+   * keyboard there is nothing to play on. Said as at ▶ sideways; the run waits, and turning back upright carries on.
+   */
+  function sidewaysWithoutKeys(): void {
+    const applies = () => !borrower && practice.active && settingsFor(currentPiece().id).mode === 'wait' && currentDevice() === 'phone-sideways' && $('keyboard').hidden;
+    if (!applies()) { if (app.messageText === NO_KEYBOARD_SIDEWAYS) showMessage(''); return; } // (upright again: the keys are back)
+    void midi.start().then((names) => names.length, () => 0).then((n) => { if (!n && applies()) showMessage(NO_KEYBOARD_SIDEWAYS); });
   }
 
   // Panels: info, display.

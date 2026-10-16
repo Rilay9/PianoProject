@@ -36,6 +36,9 @@ import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
 import { createPdfScreen } from './screens/pdf';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
+import { openHelp } from './help/page';
+import { HELP_IDS, type HelpId } from './help/read';
+import { resetTips } from './hints';
 import type { Piece } from './app';
 
 const app = new App();
@@ -345,6 +348,7 @@ function fillSettings(): void {
   $<HTMLInputElement>('log-autodelete').checked = autoDelete();
   logCount();
   $('set-offline').textContent = offlineState();
+  $('set-tips-note').textContent = 'Tips you have seen show again';
   void fillFull();
 }
 /** The full PDMX set on this phone (owner, 2026-10-15): its size, and Remove. Not in the backup. */
@@ -418,6 +422,18 @@ $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
   }
 });
 
+// How the app works (owner, 2026-10-15): Settings' row opens it from the top; each screen's "How this screen works" (in
+// its ⋯ or its own panel: the score's ⋯, Memorise's Settings, Simon's and Drills' Level, the lab's ⚙, Free play's Show,
+// the PDF reader's ⚙; a link on the metronome and at the end of the tabs' pages) opens its section.
+for (const b of document.querySelectorAll<HTMLElement>('[data-help]')) {
+  const id = b.dataset.help as HelpId;
+  if (!(HELP_IDS as readonly string[]).includes(id)) throw new Error(`no help section "${id}"`);
+  b.addEventListener('click', () => openHelp(id));
+}
+$('set-help').addEventListener('click', () => openHelp());
+// Show tips again (hints.ts): every tip shows again, once each; the install card's ✕ stays.
+$('set-tips').addEventListener('click', () => { resetTips(); $('set-tips-note').textContent = 'Done: the tips will show again'; });
+
 // Every dialog: a ✕ in its top corner, and its Done bar stays in view while the settings scroll (owner, 2026-10-12).
 for (const form of document.querySelectorAll<HTMLFormElement>('dialog > form')) {
   const x = Object.assign(document.createElement('button'), { type: 'submit', value: 'close', className: 'dlg-x', textContent: '✕' });
@@ -446,7 +462,7 @@ async function start(): Promise<void> {
   const tool = params.get('tool'), set = params.get('set') ?? undefined, chart = params.get('chart') ?? undefined;
   // (a Switch sheet taken off shows nothing new: what is under it is still showing)
   nav.startNav((popped) => {
-    if (popped.every((n) => n === 'sheet')) return;
+    if (popped.every((n) => n === 'sheet' || n === 'help')) return; // (a sheet or the help over what still shows)
     const t = nav.top();
     if (!t || ['tab', 'settings', 'exercises', 'lesson', 'result', 'sheet'].includes(t.name)) { tapToStart.hidden = true; shell.show(); } // (nothing to start on the tabs)
   });

@@ -939,3 +939,38 @@ body.in-shell.shell-no-tabs .message { bottom: calc(8px + env(safe-area-inset-bo
 @media not ((orientation: landscape) and (max-height: 599px)) { .lib-tabs button { min-height: 44px; } }
 /* A piece that could not be drawn offers nothing to start (P14): only its message and ← Back. */
 body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !important; }
+
+/* ---- Teaching the app (owner, 2026-10-15): hints, the install card, How the app works ---------------------------- */
+/* A message never takes a tap meant for the music under it (the tap-to-stop tip sits over the music while the bars are
+   away); only its own button (See how it went) takes taps. */
+.message { pointer-events: none; }
+.message .msg-action { pointer-events: auto; }
+/* The hands label: Piano: in Watch, You: elsewhere, kept beside its buttons when the bar wraps. */
+.q-hands-wrap { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.q-hands-label { font-size: 13px; font-weight: 600; color: var(--bar-muted); }
+/* The install card on Home (a browser tab only). */
+.inst-card { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 10px; background: var(--current-bg); border: 1px solid var(--line); border-radius: 14px; padding: 10px 8px 10px 14px; flex: none; }
+.inst-text { flex: 1 1 0; min-width: 0; font-size: 14px; }
+.inst-how { flex: 1 0 100%; display: flex; align-items: center; min-height: 44px; }
+.inst-menu { font-size: 13px; font-weight: 600; color: var(--muted); }
+.inst-card .btn { min-height: 44px; }
+.inst-x { min-width: 44px; }
+/* How the app works: a page over whatever shows (full height on a phone). */
+.help-dlg { max-width: min(640px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); }
+.help-toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.help-toc .chip { font: inherit; font-size: 13px; padding: 6px 10px; min-height: 36px; border: 1px solid var(--btn-line); border-radius: 18px; background: var(--btn-bg); color: inherit; }
+.help-sec { padding: 10px 0 6px; border-top: 1px solid var(--line); margin-top: 10px; scroll-margin-top: 8px; }
+.help-sec h3 { margin: 0 0 6px; font-size: 17px; }
+.help-sec .les-text h4 { font-size: 15px; margin: 10px 0 4px; }
+.help-sec.here { border-left: 3px solid var(--accent); padding-left: 10px; margin-left: -13px; }
+.help-row { margin: 10px 0 0; }
+.help-link { align-self: flex-start; }
+@media (max-width: 599px) {
+  .help-dlg { max-width: 100vw; width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 0; border: 0; }
+}
+/* A phone upright: beside the buttons the label would take a third row of the bottom bar (45 px of music at 390 and
+   320 px wide); above them, as a small caption, it costs a few pixels of the row (measured 2026-10-15). */
+@media (max-width: 599px) {
+  .q-hands-wrap { flex-direction: column; align-items: flex-start; gap: 0; }
+  .q-hands-label { font-size: 11px; line-height: 13px; margin: -4px 0 0 2px; }
+}

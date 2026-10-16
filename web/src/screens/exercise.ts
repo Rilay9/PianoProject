@@ -42,12 +42,16 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
   drill.keysShown = () => !$('ex-keyboard').classList.contains('off');
   // The MIDI keyboards connected (none: Drills' Ready says cards are judged from one, until one is seen: F17).
   let inputs: string[] = [];
-  drill.noKeyboard = () => !inputs.length;
+  // Both count taps on the screen's keys: they say there is nothing to play on only with no keyboard and the keys
+  // hidden (owner, 2026-10-15).
+  drill.noKeyboard = () => !inputs.length && $('ex-keyboard').classList.contains('off');
+  simon.noKeys = drill.noKeyboard;
   const devicesBefore = midi.onDevices;
   midi.onDevices = (names) => {
     devicesBefore(names);
     inputs = names;
     if (names.length && isOpen() && $('ex-status').textContent === NO_KEYBOARD) { $('ex-status').textContent = ''; $('ex-status').className = 'ex-status'; }
+    if (isOpen()) { if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine(); }
   };
   // No music on screen (Ready, a name, by ear, the results): nothing for A−/A+ to size, so they go.
   exerciseNotation.onShown = (on) => $('exercise').classList.toggle('no-music', !on);
@@ -76,6 +80,7 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     // Help 1 lights the keys, so the keyboard stays for it even when set to Nothing.
     const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
     $('ex-keyboard').classList.toggle('off', d.under === 'nothing' && rung !== 1);
+    if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine();
     // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
     const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, cardMost()] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
     $<HTMLOutputElement>('ex-size').value = `${Math.round(now * 100)}%`;
@@ -146,8 +151,9 @@ export function createExerciseScreen(app: App, closed: () => void): ExerciseScre
     $('exercise').hidden = false;
     fillExerciseDisplay();
     if (kind === 'drill') drill.open(sets, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(sets, activity as { set: string; level: Partial<SimonLevel> } | undefined);
+    fillExerciseDisplay(); // (again with the level just opened: an activity's help rung decides whether the keys show)
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
-    else if (activity?.title && !(kind === 'drill' && !inputs.length)) { $('ex-status').textContent = activity.title; $('ex-status').className = 'ex-status'; } // the activity's own words (with no keyboard, that is said instead: F17)
+    else if (activity?.title && !drill.noKeyboard()) { $('ex-status').textContent = activity.title; $('ex-status').className = 'ex-status'; } // the activity's own words (with no keyboard, that is said instead: F17)
     app.stayAwake();
   }
   function close(): void {

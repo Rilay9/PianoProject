@@ -3,6 +3,7 @@
 // page beside the list (sideways and tablets). Rows and filters show only what is read from the notes or what you set
 // yourself (favourite, tags); never a catalogue's guess. Files you add are kept on the phone (library/store.ts).
 
+import { helpLink } from '../help/page';
 import { $, base, type App, type Screen } from '../app';
 import { KIND_NAMES, keyText, noteName, type Kind } from '../library/facts';
 import { ACCEPT, prepare, xmlOfFile, type Converter, type Prepared } from '../library/files';
@@ -433,6 +434,10 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       list.append(li);
     }
     list.append(...rowsDone);
+    // How this screen works: Music has no ⋯ of its own (a row's ⋯ is the piece's page), so the list ends with it.
+    const help = el('li', 'lib-more-rows');
+    help.append(helpLink('music'));
+    list.append(help);
     if (!rows.length) {
       const why = activeNames();
       const li = el('li', 'lib-empty', tab === 'full' && fullReading ? 'Reading the list…' : all.length ? `Nothing matches${why.length || search.value ? `: ${[search.value && `“${search.value}”`, ...why].filter(Boolean).join(', ')}` : ''}.` : tab === 'full' ? (fullReading ? 'Reading the list…' : 'Nothing listed.') : 'The library is empty.');
@@ -442,7 +447,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
         clear.addEventListener('click', () => { clearFilters(); search.value = ''; render(); });
         li.append(' ', clear);
       }
-      list.replaceChildren(li);
+      list.replaceChildren(li, help);
     }
     // The catalogue lists a piece once with its versions folded under it (as its tab counts it): counted the same way
     // (2026-10-15: the line said 1,826 scores, every version, beside a tab of 1,631 and a list of one row a piece).

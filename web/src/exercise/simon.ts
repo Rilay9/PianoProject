@@ -50,6 +50,9 @@ export interface SimonParts {
 
 type State = 'ready' | 'showing' | 'turn' | 'miss' | 'over' | 'done';
 
+/** Simon's Ready line when there is nothing to play on (the screen's keys count in Simon, so only with them hidden). */
+export const NO_KEYS = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+
 export class Simon {
   private sets: ItemSet[] = [];
   private set!: ItemSet;
@@ -94,6 +97,16 @@ export class Simon {
   }
 
   get levelNow(): SimonLevel { return { ...this.level }; }
+  /** Nothing to play on: no MIDI keyboard connected and no keys on the screen (owner, 2026-10-15: Ready says so). */
+  noKeys: () => boolean = () => false;
+  /** Ready's line again (a keyboard came, or the keys were shown or hidden). */
+  readyLine(): void {
+    if (!this.on || this.state !== 'ready') return;
+    const none = this.noKeys();
+    if (!none && this.ui.status.textContent !== NO_KEYS) return; // (something else is said: leave it)
+    this.ui.status.textContent = none ? NO_KEYS : '';
+    this.ui.status.className = none ? 'ex-status bad' : 'ex-status';
+  }
   /** Your turn with any octave counting: every key is music (the keyboard's edge keys are notes, not commands). */
   get anyOctaveNow(): boolean { return this.on && this.state === 'turn' && this.level.match !== 'same'; }
   /** For checks: the keys of each group still to play this turn. */
@@ -175,6 +188,7 @@ export class Simon {
     this.ui.status.textContent = '';
     this.ui.status.className = 'ex-status';
     this.ui.sub.textContent = this.items.length ? 'Press Start, or play any key' : 'This set has nothing to play';
+    this.readyLine();
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = !this.items.length;
     this.ui.hear.hidden = true;

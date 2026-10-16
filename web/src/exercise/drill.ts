@@ -17,7 +17,7 @@ import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../lo
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
-import { dialogOpen, type Rung } from './simon';
+import { dialogOpen, NO_KEYS, type Rung } from './simon';
 
 export interface DrillLevel {
   rung: Rung;
@@ -36,7 +36,9 @@ const CLEAN_NEXT_MS = 1200; // a clean card's ✓ on show before the next card
 const HINT_MS = 8000; // notes only: nothing played this long, and the next notes light (owner, 2026-10-13: longer than 3 s, so a slow reader can still read)
 const DEMO_GAP_MS = 600; // after it plays the card, before your turn
 const MISSED = '#16a34a', OFF_TIME = '#d97706';
-export const NO_KEYBOARD = 'Cards are judged from a MIDI keyboard; none is connected.';
+// (Ready, with nothing to play on: no MIDI keyboard and no keys on the screen, whose taps play cards too; owner,
+// 2026-10-15: the earlier "Cards are judged from a MIDI keyboard" was false. Simon says the same: exercise/simon.ts.)
+export const NO_KEYBOARD = NO_KEYS;
 const RUNG_NAMES: Record<Rung, string> = { 1: 'Music, sound, keys', 2: 'Music + sound', 3: 'Music only', 4: 'Name only', 5: 'By ear' };
 
 export interface DrillParts {
@@ -91,8 +93,16 @@ export class Drill {
   private retrying = false; // Again: this card's try replaces its result (owner, 2026-10-12), the set still N cards
   /** Whether the keys are on screen (a hint names the notes when they are not). */
   keysShown: () => boolean = () => true;
-  /** No MIDI keyboard connected (the Ready screen says so: final review 2026-10-15, F17). */
+  /** Nothing to play on: no MIDI keyboard connected and no keys on the screen (Ready says so: F17; owner, 2026-10-15). */
   noKeyboard: () => boolean = () => false;
+  /** Ready's line again (a keyboard came, or the keys were shown or hidden). */
+  readyLine(): void {
+    if (!this.on || this.state !== 'idle') return;
+    const none = this.noKeyboard();
+    if (!none && this.ui.status.textContent !== NO_KEYBOARD) return; // (something else is said: leave it)
+    this.ui.status.textContent = none ? NO_KEYBOARD : '';
+    this.ui.status.className = none ? 'ex-status bad' : 'ex-status';
+  }
 
   constructor(private readonly ui: DrillParts, private readonly keys: ExerciseKeys, private readonly notation: ExerciseNotation, private readonly sound: Sound) {
     this.stored = this.read();

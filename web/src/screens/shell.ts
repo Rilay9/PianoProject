@@ -18,6 +18,8 @@ import { stopMiniScores } from '../lesson/miniscore';
 import { ago, button, el } from '../ui';
 import { icon, type IconName } from '../icons';
 import type { LibraryScreen } from './library';
+import { helpLink } from '../help/page';
+import { installCard } from '../install';
 
 export type Tab = 'home' | 'music' | 'practice' | 'path';
 const TABS: Tab[] = ['home', 'music', 'practice', 'path'];
@@ -241,6 +243,8 @@ export function createShell(app: App, d: ShellDeps) {
       go.append(el('span', 's', `${st.done} of ${st.total} steps done`), bar, up ? button('Start ▶', 'btn main', () => startStep(lesson.id, up.id)) : button('Open ▶', 'btn main', () => openLesson(lesson.id)));
       card.append(go);
       left.append(card);
+      const inst = installCard(); // (in a browser tab: install to keep your files and play offline; owner, 2026-10-15)
+      if (inst) left.append(inst);
       const lbl = el('div', 'lbl');
       lbl.append(el('span', '', 'This lesson'), button('Switch…', 'lnk', () => void openSwitch(lesson.id)), button('All lessons ›', 'lnk', () => goTab('path')));
       const list = el('div', 'steps');
@@ -276,6 +280,8 @@ export function createShell(app: App, d: ShellDeps) {
         card.append(go);
       }
       left.append(card);
+      const inst = installCard();
+      if (inst) left.append(inst);
       const all = lessonOrder(path).length;
       // (review 2026-10-15: an ordinary invitation to practise; the log's export stays in Settings)
       const ways = el('div', 'ways');
@@ -293,7 +299,8 @@ export function createShell(app: App, d: ShellDeps) {
     week.append(el('div', 'lbl', 'This week'), stat);
     const grid = el('div', 'home-grid');
     grid.append(left, right, week, ...(low.childElementCount ? [low] : []));
-    body.replaceChildren(grid);
+    // How this screen works: the tabs have no ⋯, so a link ends each tab's page (owner, 2026-10-15).
+    body.replaceChildren(grid, helpLink('home'));
   }
 
   /** A step started from Home or the Path: its lesson page opens first, so you come back to it (and its feedback). */
@@ -334,7 +341,7 @@ export function createShell(app: App, d: ShellDeps) {
       li.append(ic, tx, el('span', 'r', '›'));
       list.append(li);
     }
-    $('practice-body').replaceChildren(list, el('p', 'note', 'Memorise stays with each piece: Music → a piece → Memorise.'));
+    $('practice-body').replaceChildren(list, el('p', 'note', 'Memorise stays with each piece: Music → a piece → Memorise.'), helpLink('practice'));
   }
 
   // ---- Exercises -------------------------------------------------------------------------------------------------
@@ -397,7 +404,7 @@ export function createShell(app: App, d: ShellDeps) {
     }
     if (problems.length) out.push(el('p', 'note les-bad', `Some could not be read: ${problems.join('; ')}`));
     if (!rows.length) out.push(el('p', 'note', 'No exercises yet.'));
-    body.replaceChildren(...out);
+    body.replaceChildren(...out, helpLink('practice'));
   }
 
   // ---- Path ------------------------------------------------------------------------------------------------------
@@ -468,7 +475,7 @@ export function createShell(app: App, d: ShellDeps) {
     for (const e of out) (e.classList.contains('rung') || e.classList.contains('les-bad') ? rungs : side).append(e);
     const grid = el('div', 'path-grid');
     grid.append(side, rungs);
-    body.replaceChildren(grid);
+    body.replaceChildren(grid, helpLink('path'));
   }
 
   // ---- Switch… ---------------------------------------------------------------------------------------------------
