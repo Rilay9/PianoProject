@@ -3,7 +3,11 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nLet's start with a sound. Tap **Start** below to open the keys. Find two black keys sitting close together and tap them, one after the other. Now find another pair of black keys far over to the right and tap those (use the arrows beside the keys to reach higher and lower keys). Then one far over to the left. Hear how the sound goes up as you move right, and down as you move left? The keys show their names as you tap them: you don't need those yet (names come in lesson 3). When you're done, come back here with ←."
+      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll know how to sit and shape your hand at a real keyboard. The copying game is the one part the app scores; the rest you'll check for yourself at the end."
+    },
+    {
+      "kind": "text",
+      "text": "Let's start with a sound. Tap **Start** below to open the keys. Find two black keys sitting close together and tap them, one after the other. Now find another pair of black keys far over to the right and tap those (use the arrows beside the keys to reach higher and lower keys). Then one far over to the left. Hear how the sound goes up as you move right, and down as you move left? When you're done, come back here with ←."
     },
     {
       "kind": "step",
@@ -11,10 +15,6 @@
       "title": "Your first sounds",
       "activity": "r1-first-sounds",
       "about": "Tap pairs of black keys: in the middle, far right, far left."
-    },
-    {
-      "kind": "text",
-      "text": "By the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll know how to sit and shape your hand at a real keyboard. The copying game is the one part the app scores; the rest you'll check for yourself at the end."
     },
     {
       "kind": "text",
@@ -39,7 +39,7 @@
     },
     {
       "kind": "text",
-      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The phone can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video below shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall**, leaning very slightly forward, and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them; on a portable keyboard, the edge of the case just behind the keys). Then let your elbows bend and hang.\n\nRest your **feet flat** on the floor."
+      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The phone can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video below shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall** and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them; on a portable keyboard, the edge of the case just behind the keys). Then let your elbows bend and hang.\n\nRest your **feet flat** on the floor."
     },
     {
       "kind": "video",
@@ -49,7 +49,7 @@
     },
     {
       "kind": "text",
-      "text": "# At a real keyboard: a round hand\nPianists play with a **round hand**: fingers gently curved, so they land on their tips. A round hand is strong without being tight, and every finger can reach its key easily.\n\nHere's a way to find the shape. Let your arms hang by your sides and relax your hands completely; they curve on their own. Now lift one hand onto the keys, or the table, without changing that shape. Your fingers make a letter **C**, with the fingertips resting on the surface and the thumb resting lightly on its side.\n\nIf your hand feels stiff, imagine you're holding an apple in each hand, then **drop the apples**: your wrists go soft and your fingers stay curved. That softness is what you want to keep."
+      "text": "# At a real keyboard: a round hand\nPianists play with a **round hand**: fingers gently curved, so they land on their tips. A round hand is strong without being tight, and every finger can reach its key easily.\n\nHere's a way to find the shape. Let your arms hang by your sides and relax your hands completely; they curve on their own. Now lift one hand onto the keys, or the table, without changing that shape. Your fingers make a letter **C**, with the fingertips resting on the surface and the thumb resting lightly beside them.\n\nIf your hand feels stiff, imagine you're holding an apple in each hand, then **drop the apples**: your wrists go soft and your fingers stay curved. That softness is what you want to keep."
     },
     {
       "kind": "text",
@@ -61,7 +61,7 @@
     },
     {
       "kind": "text",
-      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
+      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one. Once you've copied a pattern of three, the game ends: that's the goal for today.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
     },
     {
       "kind": "step",

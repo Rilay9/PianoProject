@@ -8,5 +8,11 @@
   "r1-first-sounds.json",
   "r1-find-groups.json",
   "r1-copy-black-keys.json",
-  "r1-make-a-tune.json"
+  "r1-make-a-tune.json",
+  "r2-tap-with-clicks.json",
+  "r2-beat-on-your-own.json",
+  "r2-hear-then-tap.json",
+  "r2-read-then-tap.json",
+  "r2-whole-note.json",
+  "r2-rhythm-tune.json"
 ]

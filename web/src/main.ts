@@ -212,7 +212,7 @@ async function openLab(chart?: string): Promise<void> {
   if (still() && labScreen.isOpen) enter({ name: 'lab', params: { tool: 'lab', ...(chart ? { chart } : {}) }, leave: () => labScreen.close() });
 }
 /** keys: an activity's chosen keys (2026-10-16). */
-function openFreePlay(keys?: ChosenKeys, lesson?: { task?: string }): void {
+function openFreePlay(keys?: ChosenKeys, lesson?: { task?: string; names?: boolean }): void {
   wanted();
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   app.appSound();
@@ -574,7 +574,7 @@ async function launchScreen(a: Activity, step?: string, task?: string): Promise<
     case 'simon':
     case 'drills': {
       const still = wanted();
-      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', still, a);
+      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', still, a, step ? task : undefined);
       if (!still() || !exerciseScreen.isOpen) return no;
       enter({ name: 'exercise', params: withStep({ tool: a.screen === 'simon' ? 'simon' : 'drill', set: a.set }), leave: () => exerciseScreen.close() });
       return () => still() && exerciseScreen.isOpen;
@@ -587,7 +587,7 @@ async function launchScreen(a: Activity, step?: string, task?: string): Promise<
       return () => still() && labScreen.isOpen;
     }
     case 'freeplay': {
-      openFreePlay(a.keys, step ? { task } : undefined); // (a lesson's step: its task on screen, the columns hidden)
+      openFreePlay(a.keys, step ? { task, names: a.names } : a.names === false ? { names: false } : undefined); // (a lesson's step: its task on screen, the columns hidden; names as the activity says)
       if (step) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step })}`);
       const still = () => freePlay.open;
       return still;

@@ -163,6 +163,8 @@ export function musicExercises(app: App): Promise<Piece[]> {
 const MODES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me', along: 'Play along', ladder: 'Ladder', rhythm: 'Rhythm' };
 const HANDS: Record<string, string> = { right: 'right hand', left: 'left hand', both: 'both hands', off: 'you play both' };
 const RUNGS = ['keys and sound, no music', 'music, sound and keys lit', 'music and sound', 'music only', 'name only', 'by ear'];
+/** A rhythm set's rungs: the pad, not keys (2026-10-16: lesson 2's steps said "keys" for the pad). */
+const PAD_RUNGS = ['hear it, pad lit, no music', 'music, sound and pad lit', 'music and sound', 'music only', 'name only', 'by ear'];
 
 /** The step's activity in a few words: the tool, what it plays, the choices that matter ("Wait for me · right hand · bars 1–4"). */
 export async function describe(a: Activity, app: App): Promise<string> {
@@ -170,14 +172,18 @@ export async function describe(a: Activity, app: App): Promise<string> {
   const named = a.screen === 'score' || a.screen === 'memorise' ? a.piece : '';
   const catalogue = named.startsWith('u-') && !app.pieces.some((p) => p.id === named) ? await loadCatalogue(base).catch(() => null) : null;
   const piece = (id: string) => app.pieces.find((p) => p.id === id)?.title ?? catalogue?.rows.find((r) => r.id === id)?.title ?? id;
-  const setTitle = async (id: string) => (await (sets ?? allSets(app).then((x) => x.sets)).catch(() => [] as ItemSet[])).find((s) => s.id === id)?.title.replace(/^Test:\s*/, '') ?? id;
+  const setOf = async (id: string) => (await (sets ?? allSets(app).then((x) => x.sets)).catch(() => [] as ItemSet[])).find((s) => s.id === id);
+  const setTitle = async (id: string) => (await setOf(id))?.title.replace(/^Test:\s*/, '') ?? id;
   switch (a.screen) {
     case 'score': {
       const s = a.settings;
       return [s.mode ? MODES[s.mode] : 'Score', piece(a.piece), a.bars ? `bars ${a.bars[0]}–${a.bars[1]}` : '', s.hands ? HANDS[s.hands] : '', s.tempo ? `♩ ${s.tempo}` : ''].filter(Boolean).join(' · ');
     }
     case 'memorise': return ['Memorise', piece(a.piece), a.settings.hands ? HANDS[a.settings.hands] : '', a.settings.chunk ? `${a.settings.chunk} bars at a time` : ''].filter(Boolean).join(' · ');
-    case 'drills': return ['Drills', await setTitle(a.set), a.level.cards ? `${a.level.cards} cards` : '', a.level.rung !== undefined ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
+    case 'drills': {
+      const rungs = (await setOf(a.set))?.kind === 'rhythm' ? PAD_RUNGS : RUNGS;
+      return ['Drills', await setTitle(a.set), a.level.cards ? `${a.level.cards} cards` : '', a.level.rung !== undefined ? rungs[a.level.rung] : ''].filter(Boolean).join(' · ');
+    }
     case 'simon': return ['Simon', await setTitle(a.set), a.level.rung !== undefined ? RUNGS[a.level.rung] : ''].filter(Boolean).join(' · ');
     case 'lab': {
       const chart = (await loadCharts(base).catch(() => [])).find((c) => c.id === a.chart)?.title.replace(/^Test:\s*/, '') ?? a.chart;

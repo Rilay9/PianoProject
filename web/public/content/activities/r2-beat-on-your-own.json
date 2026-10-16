@@ -1,0 +1,11 @@
+{
+  "title": "Keep the beat on your own",
+  "screen": "drills",
+  "set": "rhythm-steady-beat",
+  "level": {
+    "rung": 5,
+    "metronome": false,
+    "onTime": "relaxed",
+    "cards": 5
+  }
+}

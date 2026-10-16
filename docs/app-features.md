@@ -351,7 +351,7 @@ header's **Simon▾** is *Practise as…*: the same set in Drills (owner, 2026-1
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
 outlined, names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
 game over / keep going). Pools add a random item each round; passages grow in their own order; a completed passage
-is drawn whole. Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
+is drawn whole; an activity's `goal` ends the game, done, at a chain that long played whole without help (§8b). Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
 one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15). While the Level panel is
 open keys count nothing and start nothing (owner, 2026-10-15; also Drills): your turn has no clock, so it simply waits;
 a chain being given when it opens (played, shown, or again after a miss) stops and is given again from its start when
@@ -441,8 +441,8 @@ read, patterns generated from the values taught; `exercise/rhythm.ts`, `pad.ts`)
 `rhythm` (§6).
 - **The pad:** the keys under the music are replaced by one large pad across the width (upright as tall as Free play's
   keys, `min(42vh, 360px)`: 328 px at 360×780, 360 px on a tablet at 820×1180; sideways 30% of the height, 117 px at
-  844×390), "Tap · hold for long notes". A tap is a note; keeping the finger down holds it, so a half or whole note means
-  holding the pad. It lights orange while pressed and blue when the app plays a note (rungs 0 and 1: each note most of
+  844×390), "Press · hold each note its length" (every note is held ¾ of its length, quarters too: owner, 2026-10-16). A tap is a
+  note; keeping the finger down holds it. It lights orange while pressed and blue when the app plays a note (rungs 0 and 1: each note most of
   its length, so two quarters are two flashes and a half a long one). A second finger down while one is held is a new
   tap; letting go, a cancelled pointer or a finger slid off the pad lets go. **A tap sounds** at once (ChatGPT's review of
   lesson 2, passed on by the owner: so a tap on the beat covers the click): a short low knock (noise through a 600 Hz
@@ -493,9 +493,11 @@ columns off. Nothing is judged or kept. `web/src/freeplay.ts`. The keys are 42% 
 overridden by mistake (fixed 2026-10-16). Opened from a lesson step, its activity can choose the
 keys shown (§8b `keys`: e.g. C4–E5 upright, so the black keys are about 30 px wide on a phone); ‹ › then move those
 keys an octave at a time. **Opened by a lesson's step** (owner, 2026-10-16, after ChatGPT's live review of lesson 1: the screen said only "Play
-something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows where "Play something"
-was, at reading size, and the three columns start hidden; Show turns them on for that visit only (your own Free play
-keeps its columns, `piano-web.freeplay.v1`). A step's `about` is therefore written as the task to do on that screen.
+something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows on its own line above,
+kept in view while keys are held, and the three columns start hidden; Show turns them on for that visit only (your own
+Free play keeps its columns, `piano-web.freeplay.v1`). An activity's `names: false` hides note names (§8b). Simon and
+Drills opened by a step show its `about` above the music too, until another set is chosen (owner, 2026-10-16). A step's
+`about` is therefore written as the task to do on that screen.
 
 **Metronome** (owner, 2026-10-15): on its own, Practice → Metronome (`web/src/screens/metronome.ts`): tempo (−5/+5, a
 slider 20–300, tap tempo), beats in a bar (1–7, the first accented), its sound (Wood / Beep / High: the app's click, one
@@ -1511,7 +1513,10 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
   no rung 4 and no `notes` (played as 3 and normal), and is never a simon activity's set: check:activity and check:path
   refuse those.
 - simon: `rung` 0–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
-  from-miss; `onNew` all / new.
+  from-miss; `onNew` all / new; `goal` a whole number 1–50: the game ends, "You did it: a pattern of n copied whole", once
+  a chain that long is played whole without help (owner, 2026-10-16: lesson 1's copying game stops at 3).
+- freeplay: `keys` (above); `names` false: no note names on the screen (the keys' octave labels, the range, the notes
+  held, the chord or interval named) until a lesson has taught them (owner, 2026-10-16: lesson 1's and 2's steps).
 - lab: `role` accomp / lead; `step` roots / beat1 / style / own (accompaniment) or root / tones / scale / answer / free
   (lead), which also sets the role; `style` a style's id; `dropouts` off / drums / band; `parts` drums / bass / chords /
   click, each true / false; `steps` { accompaniment: […], lead: […] } (kinds as above, each once; a `step` must be in it);

@@ -1,0 +1,20 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 150' width='360' height='150' role='img' aria-label='One bar of 4/4 on a one-line staff: quarter note on 1, quarter note on 2, half note on 3 held through 4, then a bar line'>
+<!-- Lesson 2 (2026-10-16), made by make_pictures.py -->
+<rect width='360' height='150' rx='8' fill='#ffffff'/>
+<line x1='20' y1='64' x2='318' y2='64' stroke='#111827' stroke-width='1.2'/>
+<rect x='28' y='54' width='4' height='20' fill='#111827'/><rect x='35' y='54' width='4' height='20' fill='#111827'/>
+<text x='62' y='61' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='22' font-weight='bold' fill='#111827' text-anchor='middle'>4</text>
+<text x='62' y='83' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='22' font-weight='bold' fill='#111827' text-anchor='middle'>4</text>
+<line x1='318' y1='50' x2='318' y2='78' stroke='#111827' stroke-width='1.6'/>
+<ellipse cx='112' cy='64' rx='7.2' ry='5.2' transform='rotate(-22 112 64)' fill='#111827' stroke='#111827' stroke-width='1.8'/><line x1='118.4' y1='62' x2='118.4' y2='26' stroke='#111827' stroke-width='1.6'/>
+<ellipse cx='166' cy='64' rx='7.2' ry='5.2' transform='rotate(-22 166 64)' fill='#111827' stroke='#111827' stroke-width='1.8'/><line x1='172.4' y1='62' x2='172.4' y2='26' stroke='#111827' stroke-width='1.6'/>
+<ellipse cx='220' cy='64' rx='7.2' ry='5.2' transform='rotate(-22 220 64)' fill='#ffffff' stroke='#111827' stroke-width='1.8'/><line x1='226.4' y1='62' x2='226.4' y2='26' stroke='#111827' stroke-width='1.6'/>
+<text x='112' y='104' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='18' font-weight='bold' fill='#111827' text-anchor='middle'>1</text>
+<text x='166' y='104' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='18' font-weight='bold' fill='#111827' text-anchor='middle'>2</text>
+<text x='220' y='104' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='18' font-weight='bold' fill='#111827' text-anchor='middle'>3</text>
+<text x='274' y='104' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='18' font-weight='bold' fill='#4b5563' text-anchor='middle'>4</text>
+<path d='M212 114 L212 120 L282 120 L282 114' fill='none' stroke='#2563eb' stroke-width='2'/>
+<text x='247.0' y='138' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='13' font-weight='normal' fill='#2563eb' text-anchor='middle'>hold through 3 and 4</text>
+<text x='318' y='28' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='12' font-weight='normal' fill='#4b5563' text-anchor='middle'>bar line</text>
+<line x1='318' y1='32' x2='318' y2='48' stroke='#4b5563' stroke-width='1' stroke-dasharray='2 2'/>
+</svg>

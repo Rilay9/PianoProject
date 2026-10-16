@@ -9,6 +9,7 @@
     "rung": 0,
     "match": "same",
     "miss": "tries",
-    "speed": "steady"
+    "speed": "steady",
+    "goal": 3
   }
 }

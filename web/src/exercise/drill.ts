@@ -59,6 +59,8 @@ const MISSED = '#16a34a', OFF_TIME = '#d97706';
 // 2026-10-15: the earlier "Cards are judged from a MIDI keyboard" was false. Simon says the same: exercise/simon.ts.)
 export const NO_KEYBOARD = NO_KEYS;
 const RUNG_NAMES: Record<Rung, string> = { 0: 'Keys + sound', 1: 'Music, sound, keys', 2: 'Music + sound', 3: 'Music only', 4: 'Name only', 5: 'By ear' };
+/** A rhythm set's: the pad, not keys (2026-10-16). */
+const PAD_RUNG_NAMES: Record<Rung, string> = { ...RUNG_NAMES, 0: 'Pad + sound', 1: 'Music, sound, pad' };
 
 export interface DrillParts {
   set: HTMLSelectElement; left: HTMLElement; mid: HTMLElement; right: HTMLElement;
@@ -732,7 +734,8 @@ export class Drill {
     const at = this.results.length + (this.state === 'demo' || this.state === 'countin' || this.state === 'turn' ? 1 : 0);
     this.ui.left.innerHTML = n ? `Card <b>${at}</b> of ${n}` : `Card <b>${at}</b>`;
     this.ui.mid.innerHTML = `<b>${this.results.filter((r) => r.clean).length}</b> clean`;
-    this.ui.right.textContent = this.level.onTime === 'notes' ? `${RUNG_NAMES[this.level.rung]} · notes only` : RUNG_NAMES[this.level.rung];
+    const names = this.rhythmNow ? PAD_RUNG_NAMES : RUNG_NAMES;
+    this.ui.right.textContent = this.level.onTime === 'notes' ? `${names[this.level.rung]} · notes only` : names[this.level.rung];
     // Endless sets: Finish while a set is going.
     this.ui.finish.hidden = !(this.on && this.limit === Infinity && this.state !== 'idle' && this.state !== 'done');
   }

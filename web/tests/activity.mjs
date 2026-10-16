@@ -75,6 +75,9 @@ ok('reads to: a Lab activity\'s role, step and ladder', read['blues-roots']?.pre
 
 const refused = [
   ['an unknown screen', { screen: 'piano' }, /screen "piano" is not one of/],
+  // (2026-10-16, owner's answers after the lesson 1 comparison: Free play's names, Simon's goal)
+  ['Free play names that are not true or false', { screen: 'freeplay', names: 'no' }, /names "no" should be true or false/],
+  ['a Simon goal of 0', { screen: 'simon', set: 'x', level: { goal: 0 } }, /goal/],
   ['a score without its piece', { screen: 'score' }, /needs "piece"/],
   ['a typo in a setting', { screen: 'score', piece: 'x', settings: { hand: 'right' } }, /settings has "hand"/],
   ['a mode that is not one', { screen: 'score', piece: 'x', settings: { mode: 'fast' } }, /settings.mode is "fast"/],
@@ -103,6 +106,10 @@ for (const [name, raw, want] of [
   ['a title that is not text', { screen: 'freeplay', title: 5 }, /title should be some text/],
   ['a ladder step with misspelt words', { screen: 'lab', chart: 'c', preset: { steps: { accompaniment: [{ kind: 'roots', nmae: 'x' }] } } }, /a step has "nmae"/],
 ]) ok(`refused by the content check: ${name}`, laxProblems(raw).some((p) => want.test(p)), laxProblems(raw).join('; ') || 'accepted');
+{
+  const fp = readActivity('t', { screen: 'freeplay', names: false }), sm = readActivity('t', { screen: 'simon', set: 'x', level: { goal: 3 } });
+  ok('Free play names: false reads (no note names until taught), and Simon goal: 3 (the game ends at a chain of 3)', fp.names === false && sm.level.goal === 3, JSON.stringify({ fp, sm }));
+}
 for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }
   catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }

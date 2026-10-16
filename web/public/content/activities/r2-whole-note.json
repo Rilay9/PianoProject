@@ -1,0 +1,12 @@
+{
+  "title": "Meet the whole note",
+  "screen": "drills",
+  "set": "rhythm-whole",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "relaxed",
+    "cards": 5
+  }
+}

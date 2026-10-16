@@ -1,0 +1,12 @@
+{
+  "title": "Hear it, then tap it",
+  "screen": "drills",
+  "set": "rhythm-quarter-half",
+  "level": {
+    "rung": 1,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "relaxed",
+    "cards": 5
+  }
+}

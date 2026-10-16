@@ -79,6 +79,9 @@ export class FreePlay {
    * for this visit, leaving your own choice for Free play as it was.
    */
   private task = '';
+  /** Note names shown: the keys' octave labels, the range, the notes held and the chord or interval they make. A lesson
+   * step can turn them off until names are taught (owner, 2026-10-16: lesson 1 "Hide until taught"). */
+  private names = true;
   private lessonColumns: Record<Column, boolean> | null = null;
   private columnsOn(): Record<Column, boolean> { return this.lessonColumns ?? shownColumns(); }
 
@@ -89,10 +92,15 @@ export class FreePlay {
 
   /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. lesson: opened by a
    * lesson's step, with its task (above). */
-  show(down: Set<number>, keys?: ChosenKeys, lesson?: { task?: string }): void {
+  show(down: Set<number>, keys?: ChosenKeys, lesson?: { task?: string; names?: boolean }): void {
     this.open = true;
     this.task = lesson?.task ?? '';
-    this.lessonColumns = lesson ? { chords: false, notes: false, intervals: false } : null;
+    this.names = lesson?.names ?? true;
+    this.strip.names = this.names;
+    const taskLine = this.panel.querySelector<HTMLElement>('#fp-task')!;
+    taskLine.textContent = this.task;
+    taskLine.hidden = !this.task; // (kept in view while keys are held: owner, 2026-10-16)
+    this.lessonColumns = lesson && 'task' in lesson ? { chords: false, notes: false, intervals: false } : null; // (opened by a lesson's step)
     this.chosen = keys ?? null;
     this.moved = 0;
     this.midiDown = new Set(down);
@@ -145,7 +153,7 @@ export class FreePlay {
     if (r) {
       this.strip.showRange(r.lo, r.hi);
       (this.panel.querySelector('#fp-shift') as HTMLElement).hidden = false;
-      this.panel.querySelector('#fp-range')!.textContent = `${keyName(r.lo)}–${keyName(r.hi)}`;
+      this.panel.querySelector('#fp-range')!.textContent = this.names ? `${keyName(r.lo)}–${keyName(r.hi)}` : '';
       (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = r.lo - 12 < 21;
       (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = r.hi + 12 > 108;
       this.strip.setPressed(this.down());
@@ -155,7 +163,7 @@ export class FreePlay {
     this.strip.setSong([this.from, this.from + this.span() - 1]);
     (this.panel.querySelector('#fp-shift') as HTMLElement).hidden = false;
     const name = (m: number) => `C${Math.floor(m / 12) - 1}`;
-    this.panel.querySelector('#fp-range')!.textContent = `${name(this.from)}–${name(this.from + this.span())}`;
+    this.panel.querySelector('#fp-range')!.textContent = this.names ? `${name(this.from)}–${name(this.from + this.span())}` : '';
     (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = this.from <= 24;
     (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = this.from + this.span() >= 108;
     this.strip.setPressed(this.down());
@@ -199,10 +207,9 @@ export class FreePlay {
     // (final review 2026-10-15, F16: C3 + E5 was a plain "major 3rd", C4 + C5 nothing).
     const two = [...down].sort((a, b) => a - b);
     const big = two.length === 2 ? intervalName(two[0], two[1], chord) : chord;
-    const idle = !big && !down.size, chordLine = this.panel.querySelector('#fp-chord')!;
-    chordLine.textContent = big || (down.size ? '' : this.task || 'Play something');
-    chordLine.classList.toggle('fp-task', idle && !!this.task);
-    this.panel.querySelector('#fp-notes')!.textContent = names;
+    // (the task has its own line above; "Play something" only when there is none; no names while they are hidden)
+    this.panel.querySelector('#fp-chord')!.textContent = this.names ? big || (down.size || this.task ? '' : 'Play something') : '';
+    this.panel.querySelector('#fp-notes')!.textContent = this.names ? names : '';
     if (!down.size) this.lastChord = '';
     this.renderRecent();
   }

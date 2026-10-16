@@ -20,7 +20,7 @@ import { currentDevice, settingsFor } from '../settings';
 
 export type ExerciseScreen = Screen & {
   /** activity: a set with a preset level (activity.ts), in force while it is open. */
-  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity): Promise<void>;
+  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity, task?: string): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
@@ -133,8 +133,12 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
    * back to (final review 2026-10-15, F22: back in the step's way, its level had gone while its tag stayed). */
   type Opened = { kind: 'simon' | 'drill'; activity?: ExerciseActivity };
   let opened: Opened | null = null;
-  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
+  /** task: a lesson step's task, shown above the music while its set is on screen (owner, 2026-10-16). */
+  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity, task?: string): Promise<void> {
     opened = { kind, activity };
+    const line = $('ex-task');
+    line.textContent = task ?? '';
+    line.hidden = !task;
     await show(kind, stillWanted, activity);
   }
   /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
@@ -215,7 +219,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if (t?.name === 'exercise') nav.replaceTop({ ...t, params: { ...t.params, ...params } });
   }
   // (another set may be a rhythm set, or not: the pad or the keys, fitted again)
-  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); fillExerciseDisplay(); } });
+  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { $('ex-task').hidden = true; if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); fillExerciseDisplay(); } });
 
   const drillDialog = $<HTMLDialogElement>('drill-dialog');
   /** The help rungs' words, for sets of notes and (owner, 2026-10-16) for rhythm sets, which have the pad and no rung 4. */

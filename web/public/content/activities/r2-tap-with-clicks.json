@@ -1,0 +1,12 @@
+{
+  "title": "Tap with the clicks",
+  "screen": "drills",
+  "set": "rhythm-steady-beat",
+  "level": {
+    "rung": 0,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "relaxed",
+    "cards": 5
+  }
+}

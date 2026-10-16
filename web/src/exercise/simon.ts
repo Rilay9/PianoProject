@@ -34,6 +34,9 @@ export interface SimonLevel {
   onMiss: 'all' | 'from-miss';
   /** When the chain grows, play back: the whole chain, or only the new item (you still play all of it). */
   onNew: 'all' | 'new';
+  /** The game ends, done, once a chain this long is played whole without help (owner, 2026-10-16: lesson 1's copying
+   * game stops at a chain of 3 with "You did it"); left out, it grows until the misses end it. An activity's choice. */
+  goal?: number;
 }
 const DEFAULT_LEVEL: SimonLevel = { rung: 1, match: 'same', miss: 'tries', speed: 'up', onMiss: 'all', onNew: 'all' };
 const KEY = 'piano-web.simon.v1';
@@ -142,7 +145,7 @@ export class Simon {
   // (set, level and tag: what the game is played as, kept from its start; final review 2026-10-15, F06: another set or
   // level chosen part way logged the game under the new one)
   private game: { run: Run; set: ItemSet; level: SimonLevel; tag: ActivityTag; longest: number; helped: number; misses: { item: string; n: number; wanted: string; played: string }[] } | null = null;
-  private endGame(ended: 'over' | 'all played' | 'stopped'): void {
+  private endGame(ended: 'over' | 'all played' | 'goal' | 'stopped'): void {
     const g = this.game;
     this.game = null;
     if (!g || (!g.longest && !g.misses.length)) return;
@@ -390,6 +393,17 @@ export class Simon {
       void this.drawChain([]); // the whole passage, now that it is played
       this.ui.status.textContent = `You played all of it (${length}).`;
       this.endGame('all played');
+      this.ui.start.textContent = 'Again';
+      this.ui.start.hidden = false;
+      this.ui.hear.hidden = true;
+      return;
+    }
+    if (this.level.goal && counts && length >= this.level.goal) {
+      this.state = 'done';
+      this.giving = null;
+      this.waitRelease = this.keys.down.size > 0;
+      this.ui.status.textContent = `You did it: a pattern of ${length} copied whole.`;
+      this.endGame('goal');
       this.ui.start.textContent = 'Again';
       this.ui.start.hidden = false;
       this.ui.hear.hidden = true;

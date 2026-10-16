@@ -102,6 +102,7 @@
   <!-- Free play: just the keys, named; nothing judged. -->
   <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
     <div class="fp-head"><button id="fp-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button></div>
+    <p id="fp-task" class="fp-task" hidden></p>
     <p id="fp-chord" class="fp-chord"></p>
     <p id="fp-notes" class="fp-notes"></p>
     <!-- What you played lately: chords, notes and intervals, newest on top; each can be turned off. -->
@@ -133,6 +134,7 @@
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
     <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
+    <p id="ex-task" class="ex-task" hidden></p>
     <div class="ex-prompt">
       <div id="ex-notation" class="ex-notation off"></div>
       <div id="ex-name" class="ex-name"></div>
@@ -161,7 +163,7 @@
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
     <!-- A rhythm set: one big pad to tap, in place of the keys (owner, 2026-10-16; exercise/pad.ts). -->
     <div id="ex-calib" class="ex-calib" hidden><span>Check your tap timing on this phone (a few clicks to tap along with)?</span><button id="ex-calib-go" type="button" class="btn main">Calibrate</button><button id="ex-calib-no" type="button" class="btn">Not now</button></div>
-    <div id="ex-pad" class="ex-pad" aria-label="Rhythm pad: tap for each note, hold for long notes" hidden><span>Tap · hold for long notes</span></div>
+    <div id="ex-pad" class="ex-pad" aria-label="Rhythm pad: press for each note and hold it for its length" hidden><span>Press · hold each note its length</span></div>
   </section>
 
   <!-- The accompaniment lab (screens/lab.ts): Lead or Accompaniment, a step, then the beat, the chord now and next,

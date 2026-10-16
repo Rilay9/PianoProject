@@ -1538,7 +1538,8 @@ try {
     for (const vp of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
       const { ctx, page, errors } = await open(`${BASE}?page=lesson&lesson=test-chords-and-band`, vp);
       // (steps 1 and 2 done before, so Free play is the last one to do)
-      await page.evaluate(() => { localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, 'r1-first-sounds': Object.fromEntries(['first-sounds', 'find-groups', 'copy', 'make-a-tune'].map((k) => [k, { at: new Date().toISOString(), how: 'opened' }])) }, tried: {} })); });
+      await page.evaluate(async () => { const idx = await (await fetch('content/path/index.json')).json(); const out = {}; for (const r of idx.rungs.filter((r) => !r.test)) for (const id of r.lessons) { const l = await (await fetch(`content/path/lessons/${id}.json`)).json(); out[id] = Object.fromEntries(l.blocks.filter((b) => b.kind === 'step').map((b) => [b.id, { at: new Date().toISOString(), how: 'opened' }])); } window.__realLessonsDone = out; });
+      await page.evaluate(() => { localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, ...window.__realLessonsDone }, tried: {} })); });
       await page.reload(); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       await click(page, '#fp-done'); await page.waitForTimeout(600);
@@ -1711,7 +1712,8 @@ try {
       await page.locator('.les-step[data-step="melody-cards"] .btn').click(); await page.waitForTimeout(2500);
       await reloadCheck('result Next');
       // Next lesson (lesson 1 all done but its last step), then that lesson's Start
-      await page.evaluate(() => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, 'r1-first-sounds': Object.fromEntries(['first-sounds', 'find-groups', 'copy', 'make-a-tune'].map((k) => [k, { at: new Date().toISOString(), how: 'opened' }])) }, tried: {} })));
+      await page.evaluate(async () => { const idx = await (await fetch('content/path/index.json')).json(); const out = {}; for (const r of idx.rungs.filter((r) => !r.test)) for (const id of r.lessons) { const l = await (await fetch(`content/path/lessons/${id}.json`)).json(); out[id] = Object.fromEntries(l.blocks.filter((b) => b.kind === 'step').map((b) => [b.id, { at: new Date().toISOString(), how: 'opened' }])); } window.__realLessonsDone = out; });
+      await page.evaluate(() => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, ...window.__realLessonsDone }, tried: {} })));
       await page.goto(`${BASE}?page=lesson&lesson=test-chords-and-band`); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       await click(page, '#fp-done'); await page.waitForTimeout(600);
@@ -3566,20 +3568,37 @@ try {
     await ctx.close();
   }
 
-  // ---- Free play opened by a lesson step (owner, 2026-10-16, after ChatGPT's live review of lesson 1) ------------------
-  // The step's task where "Play something" was, the chord / notes / interval columns hidden; Show turns one on for this
-  // visit only (your own Free play keeps its columns); Free play from Practice is as before. Lesson 1's shipped content.
+  } // (end of the sections run when no --only is given)
+  if (!only || only === 'lessons') { // (`--only lessons` runs this section alone)
+  // ---- Lesson steps after the reviews of lesson 1 (owner, 2026-10-16) -------------------------------------------------
+  // Free play opened by a step: the step's task on its own line, kept while a key is held; the columns hidden (Show for
+  // this visit only); lesson 1's steps hide note names (keys' labels, the range, the notes held, chord and interval
+  // names). Free play from Practice is as before. Simon from a step: the task above the music, and lesson 1's copying
+  // game ends at a chain of 3 ("You did it"). Lesson 1's shipped content, a plain phone tab, keys tapped by position.
   {
     const ctx = await learnerContext({ viewport: { width: 360, height: 780 }, hasTouch: true, serviceWorkers: 'block' });
     const page = await ctx.newPage();
     const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
-    const look = () => page.evaluate(() => ({ line: document.getElementById('fp-chord').textContent, task: document.getElementById('fp-chord').classList.contains('fp-task'),
-      cols: [...document.querySelectorAll('#freeplay .fp-col')].filter((c) => !c.hidden).map((c) => c.dataset.col) }));
+    const look = () => page.evaluate(() => {
+      const t = document.getElementById('fp-task');
+      return { task: t.hidden ? '' : t.textContent, line: document.getElementById('fp-chord').textContent, notes: document.getElementById('fp-notes').textContent,
+        range: document.getElementById('fp-range').textContent, labels: [...document.querySelectorAll('#freeplay .fp-keyboard .key')].map((k) => k.textContent).join(''),
+        cols: [...document.querySelectorAll('#freeplay .fp-col')].filter((c) => !c.hidden).map((c) => c.dataset.col) };
+    });
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
     await page.locator('.les-step[data-step="find-groups"] .btn').click(); await page.waitForTimeout(1500);
     const first = await look();
-    ok('lesson Free play: the step\'s task shows where "Play something" was', /Groups of two in three places/.test(first.line) && first.task, JSON.stringify(first));
+    ok('lesson Free play: the step’s task on its own line, no "Play something"', /Groups of two in three places/.test(first.task) && first.line === '', JSON.stringify(first));
     ok('lesson Free play: the chord, notes and interval columns start hidden', first.cols.length === 0, JSON.stringify(first.cols));
+    ok('lesson 1 Free play: no note names (no key labels, no range)', first.labels === '' && first.range === '', JSON.stringify({ labels: first.labels, range: first.range }));
+    // two black keys held together, by position: the task stays, and no interval or note name appears
+    const two = await page.evaluate(() => [...document.querySelectorAll('#freeplay .fp-keyboard .key.black')].slice(0, 2).map((k) => { const r = k.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }));
+    await page.touchscreen.tap(180, 60); await page.waitForTimeout(200); // (the first tap starts the sound, where nothing is)
+    const cdp = await ctx.newCDPSession(page);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: two.map(([x, y], i) => ({ x, y, id: i })) }); await page.waitForTimeout(250);
+    const held = { ...(await look()), pressed: await page.evaluate(() => document.querySelectorAll('#freeplay .fp-keyboard .key.pressed').length) };
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await page.waitForTimeout(200);
+    ok('lesson 1 Free play, two keys held: the task stays in view and nothing is named', held.pressed === 2 && /Groups of two/.test(held.task) && held.line === '' && held.notes === '', JSON.stringify(held));
     await page.evaluate(() => document.getElementById('fp-show').click()); await page.waitForTimeout(300);
     await page.evaluate(() => { const box = document.querySelector('#fp-show-dialog input[value="intervals"]'); box.checked = true; box.dispatchEvent(new Event('change', { bubbles: true })); document.getElementById('fp-show-dialog').close(); });
     await page.waitForTimeout(200);
@@ -3588,11 +3607,38 @@ try {
     ok('lesson Free play: your own column choice is left as it was', await page.evaluate(() => localStorage.getItem('piano-web.freeplay.v1')) === null, '');
     await page.goto(`${BASE}?tool=freeplay`); await page.waitForTimeout(1500);
     const own = await look();
-    ok('Free play from Practice: "Play something" and all three columns, as before', own.line === 'Play something' && !own.task && own.cols.length === 3, JSON.stringify(own));
-    ok('lesson Free play: no page errors', errors.length === 0, errors.join(' | '));
+    ok('Free play from Practice: "Play something", the names and all three columns, as before', own.line === 'Play something' && !own.task && own.cols.length === 3 && own.range !== '' && own.labels !== '', JSON.stringify(own));
+    // Simon from lesson 1's copying step: the task above the music; copied to a chain of 3, the game ends, done.
+    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="copy"] .btn').click(); await page.waitForTimeout(2500);
+    const task = await page.evaluate(() => { const t = document.getElementById('ex-task'); return t.hidden ? '' : t.textContent; });
+    ok('lesson Simon: the step’s task above the music', /black keys around middle C/i.test(task), JSON.stringify(task));
+    const play = async () => {
+      // On each turn, the keys Simon expects (its own hook) tapped by position, until the game ends (8 turns at most).
+      for (let turn = 0; turn < 8; turn++) {
+        let want = [];
+        for (let i = 0; i < 150; i++) {
+          const st = await page.evaluate(() => ({ want: window.__pianoDebug.simon(), status: document.getElementById('ex-status').textContent }));
+          if (/You did it/.test(st.status)) return st;
+          if (st.want.length) { want = st.want; break; }
+          await page.waitForTimeout(100);
+        }
+        for (const keys of want) {
+          const at = await page.evaluate((m) => { const k = document.querySelector(`#ex-keyboard .key[data-midi="${m}"]`); const r = k.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }, keys[0]);
+          await page.touchscreen.tap(at[0], at[1]); await page.waitForTimeout(250);
+        }
+        await page.waitForTimeout(300);
+      }
+      return page.evaluate(() => ({ status: document.getElementById('ex-status').textContent, sub: document.getElementById('ex-sub').textContent }));
+    };
+    await page.touchscreen.tap(180, 60); await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById('ex-start').click()); await page.waitForTimeout(300);
+    const end = await play();
+    ok('lesson 1 Simon: copied to a chain of 3, the game ends: "You did it"', /You did it: a pattern of 3/.test(end.status), JSON.stringify(end));
+    ok('lesson steps after the reviews: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
-  } // (end of the sections run when no --only is given)
+  }
 } finally {
   await browser?.close();
   stop();

@@ -37,7 +37,7 @@ export type Activity = { id: string; title: string } & (
   | { screen: 'simon'; set: string; level: Partial<SimonLevel>; keys?: ChosenKeys }
   | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys }
   | { screen: 'lab'; chart: string; preset: LabPreset }
-  | { screen: 'freeplay'; keys?: ChosenKeys }
+  | { screen: 'freeplay'; keys?: ChosenKeys; /** false: no note names (keys, range, notes, chords) until a lesson has taught them (owner, 2026-10-16) */ names?: boolean }
 );
 
 const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
@@ -117,7 +117,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const screen = f.screen;
   // The file's own fields, by screen: anything else (a misspelt "setting", Memorise "bars") is refused, not ignored.
   const fields: Record<string, string[]> = {
-    score: ['piece', 'bars', 'settings', 'keys'], memorise: ['piece', 'settings'], simon: ['set', 'level', 'keys'], drills: ['set', 'level', 'keys'], lab: ['chart', 'preset'], freeplay: ['keys'],
+    score: ['piece', 'bars', 'settings', 'keys'], memorise: ['piece', 'settings'], simon: ['set', 'level', 'keys'], drills: ['set', 'level', 'keys'], lab: ['chart', 'preset'], freeplay: ['keys', 'names'],
   };
   if (typeof screen === 'string' && fields[screen]) {
     for (const k of Object.keys(f)) {
@@ -156,7 +156,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
     case 'simon': {
       const level = check<Partial<SimonLevel>>(obj(f.level, 'level'), {
         rung: [0, 1, 2, 3, 4, 5], match: ['same', 'octave', 'inversion'], miss: ['tries', 'over', 'endless'], speed: ['up', 'steady'],
-        onMiss: ['all', 'from-miss'], onNew: ['all', 'new'],
+        onMiss: ['all', 'from-miss'], onNew: ['all', 'new'], goal: whole(1, 50),
       }, 'level');
       return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys };
     }
@@ -192,8 +192,10 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
       }
       return { id, title, screen, chart: str(f.chart, 'chart'), preset };
     }
-    case 'freeplay':
-      return { id, title, screen, ...withKeys };
+    case 'freeplay': {
+      if (f.names !== undefined && typeof f.names !== 'boolean') throw new Error(`names ${JSON.stringify(f.names)} should be true or false`);
+      return { id, title, screen, ...withKeys, ...(f.names === false ? { names: false } : {}) };
+    }
     default:
       throw new Error(`screen "${String(screen)}" is not one of score, memorise, simon, drills, lab, freeplay`);
   }
