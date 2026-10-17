@@ -111,6 +111,23 @@ Ask of each step:
 
 A green test suite does not rescue a chain that teaches the wrong thing or overclaims what the learner demonstrated.
 
+### Lesson-outline review: prove the learning experience before approval (2026-10-16)
+
+**Failure to prevent:** Lesson 1 promised recognition of two- and three-black-key groups, but the plan only specified unjudged Free Play and Simon imitation. Those did not establish that skill; my plan approval missed the gap. Lesson 2 also accumulated too many separately judged activities. Do not repeat either mistake.
+
+For each **primary learning outcome** in an outline, trace the *actual proposed learner journey*, not section titles:
+
+`outcome -> prerequisite -> specific learner action -> demonstration/support -> independent practice (or explicit self-check) -> feedback and recovery -> honest evidence of success`
+
+Name the actual mode, input device, completion rule and what that mode can observe. If the learner could finish the step without doing the intended skill (e.g. one tap counts as Free Play; copying lit keys needn't identify black-key groups), the outline has a teaching gap. Self-checks are appropriate for unobservable physical technique, but still require a usable demonstration and a real opportunity to practise. Never turn a visited step or helped run into a mastery claim.
+
+Mentally walk **entry -> explanation -> practice -> mistake -> retry -> result -> return -> next lesson**. A Home shortcut that bypasses instruction, or an activity whose help/score/retry rules contradict the lesson, is a substantive concern. On an outline, mark unverified implementation behavior as a dependency to check, not a confirmed defect.
+
+Count the actual new concepts, physical skills, modes and required scored sets; ask whether the **total experience** is paced and rewarding for this learner, rather than checking each block in isolation. Recommend the smallest teaching change that closes any gap. Do not demand automatic scoring for everything or new features without a demonstrated need.
+
+**Verdict boundary:** APPROVE of an outline means its teaching design is plausible, *not* that its pictures, sound, input handling, phone layouts, navigation or assessment were tested. Those require a separate rendered and interactive implementation review. State what remains unverified explicitly.
+
+
 Use `MODE-SHEET.md` literally for evidence boundaries: Wait, Keep tempo, Hear/Listen, Simon, Lab, Jam, Duet, Free Play, Rhythm only, charts, loops, ladders, etc. have different teaching and measurement semantics. Never turn an available UI mode into evidence it does not provide.
 
 ### Enforce the existing addressee and owner-work rules
