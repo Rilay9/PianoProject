@@ -348,14 +348,17 @@ Plan the teaching first (§1–6); then pick the block or mode that does each jo
 | Explaining why, how, what to look for | **text**, **tip** | Short headed sections (§4). A tip where an app feature first appears (onboarding decision, 2026-10-15). |
 | Showing a shape or position | **image** (own SVG or checked free image) | Labels on the picture (§5). |
 | Showing a movement | **animation** (SVG with its own animation, GIF, WebP, mp4/webm) | Loops, muted; text beside it. |
-| A real player or teacher | **video** (YouTube, start/end; a `size: row` option is coming) | Bottom of the lesson unless central; the lesson must work without it. |
+| A real player or teacher | **video** (YouTube, start/end; `size: row` for a compact reference row) | Beside the section it shows (walk-through 2026-10-16: a video at the bottom, away from its section, went unwatched); a row for extra references. The lesson must work without it. |
 | Showing which keys and fingers | **keys** block | Up to 12 keys, fingers 1–5 on them. Exact notes, checked (§8). |
 | Hearing and seeing a short passage | **score** block (▶ Hear it, moving marker, lit keys) | The "model" step. Notation only once the lesson has taught it; before the staff, use keys. |
-| Exploring the keyboard freely, naming what you play | **Free play** step (visited, nothing judged) | Two octaves on a phone, three on a tablet, ‹ › moves by an octave (§7). |
-| Remembering a short sequence by ear and eye, growing | **Simon** step (target `chain`) | Small units only. Help levels 1–5; matching can accept any octave. |
-| Playing one complete short thing at once, judged | **Drills** step (target `clean`) | Full sets only count. Name, by ear, or music cards. |
+| Exploring the keyboard freely, naming what you play | **Free play** step (visited after a key; nothing judged) | Two octaves on a phone, three on a tablet, ‹ › moves by an octave, with the whole piano drawn small and the part shown named (the middle, higher…). A step can: outline the black-key groups (on by default in a step; `groups: false`), show finger numbers (`fingers`), hide names (`names: false`), and run a click (`click: {bpm}`) for making up rhythms. Exploring only: pair it with a step that can come out wrong. |
+| Remembering a short sequence by ear and eye, growing | **Simon** step (target `chain`, `goal` ends the game) | Small units only. Help levels 0–5; matching can accept any octave; at by ear a miss replays the note and the learner keeps trying. `fingers` and `names` as in Free play. |
+| Finding a place on the keyboard by its pattern (a group of two or three, a letter) | **Drills, find-it set** (`kind: find`: "a group of three, higher up", "a D, lower down"; target `clean`) | Untimed; names and octave labels never shown on its keys. Cards count places over the set's `keys` span. |
+| Keeping a beat, then rhythms of note values, on a tap pad | **Drills, rhythm set** (`kind: rhythm`, generated or MusicXML; target `clean`) | One pad (or any key); a one-line staff, or at help 0 no music with the taps marked on a beat line. Timing check offered once. The demo can be skipped after a set's first card. "You sped up / slowed down" is named on timed cards. |
+| A first tune before the staff (letters and note shapes) | **Drills, letters view** (`view: "letters"` on a set of MusicXML items) | The one-line rhythm staff with the letter under each note, played on the keys, judged for key and timing. Up to 4 bars a card on a phone upright: split longer tunes into 4-bar cards. |
+| Playing one complete short thing at once, judged | **Drills** step (target `clean`) | A target counts only runs played as the step sets them; the step's result shows its best such run. An unscored Drills step is done when its set is played through. Name, by ear, or music cards. |
 | Learning the notes of a piece without time pressure | **score, Wait for me** | On the screen's keys (upright, two octaves that follow the music; sideways only when the keys are shown in Display, which is off by default). |
-| Playing at tempo / rhythm alone / building speed | **score, Play along / Rhythm / Ladder** (targets `onTime`, `bpm`) | Need a MIDI keyboard today; the screen's keys only show. Touch in Rhythm is planned for the beat lesson. |
+| Playing at tempo / rhythm alone / building speed | **score, Play along / Rhythm / Ladder** (targets `onTime`, `bpm`) | Need a MIDI keyboard today; the screen's keys only show. For rhythm on a phone, use the Drills rhythm sets (above). |
 | Keeping a beat with no music | **Metronome** (nothing judged) | Visited only. |
 | Learning by heart | **Memorise** | Later rungs. |
 
@@ -363,7 +366,8 @@ Plan the teaching first (§1–6); then pick the block or mode that does each jo
 plan says which keys it needs and checks they fit what each screen shows: phone upright, phone sideways, tablet.
 What's known now: Wait for me plays on the screen's keys upright (two octaves that follow the music) and sideways only
 when the keys are shown in Display (off by default); Free play shows two octaves on a phone and three on a tablet; Simon and Drills take the screen's keys when
-"Keyboard" is under the music (their visible range per screen: check in the app, not stated in app-features). Keep
+"Keyboard" is under the music (their visible range per screen: check in the app, not stated in app-features; a movable
+range with ‹ › when no MIDI keyboard is being built, 2026-10-17). Keep
 early material inside one or two octaves and say in the step which keys to use. **A visible range is not
 necessarily playable**: check that the keys a step needs are large enough to tap reliably at each screen size, and
 that notes meant to sound together register when tapped together. The owner suggested a step could
