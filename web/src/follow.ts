@@ -11,6 +11,7 @@
 
 import { ChordSymbolContainer, OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { phraseEndLength } from './holds';
+import { MARK, ringNotehead } from './result-marks';
 import { osmdOptions, prepareXml, SIDE_MARGIN_SHARE } from './scoreView';
 import type { Layout, Marker, MarkerFollows, ScoreSettings } from './settings';
 import type { Beat, NoteEvent } from './sound';
@@ -854,12 +855,15 @@ export class FollowView {
     }
   }
 
-  /** Colours these notes (Memorise: a slip's notes), until cleared with an empty list. */
+  /** Colours these notes (Memorise's slips, the score's runs: result-marks.ts), until cleared with an empty list. */
   markNotes(marks: { step: number; midi: number; color: string }[]): void { this.marks = marks; this.update(); }
+  private rings: SVGElement[] = [];
 
   private applyMarks(): void {
     for (const el of this.marked) { el.style.removeProperty('fill'); el.style.removeProperty('stroke'); }
     this.marked = [];
+    for (const r of this.rings) r.remove();
+    this.rings = [];
     for (const m of this.marks) {
       const s = this.steps[m.step];
       const at = s && this.place(s);
@@ -867,11 +871,20 @@ export class FollowView {
       for (const st of s.pos.staves) for (const n of st.notes) {
         if (n.midi !== m.midi || !n.id) continue;
         const g = at.root.querySelector(`[id="${CSS.escape(n.id)}"]`);
-        if (g) for (const path of g.querySelectorAll('path')) {
+        if (!g) continue;
+        for (const path of g.querySelectorAll('path')) {
           (path as SVGElement).style.fill = m.color;
           (path as SVGElement).style.stroke = m.color;
           this.marked.push(path as SVGElement);
         }
+        // A missed note is ringed as well as grey (not colour alone): its own notehead, by its place in a chord (the
+        // noteheads bottom to top are the chord's notes low to high).
+        if (m.color !== MARK.missed) continue;
+        const heads = [...g.querySelectorAll<SVGGraphicsElement>('.vf-notehead')];
+        const chord = st.notes.filter((x) => x.id === n.id).map((x) => x.midi).sort((a, b) => a - b);
+        const byHeight = heads.map((h) => { try { return { h, y: h.getBBox().y }; } catch { return { h, y: 0 }; } }).sort((a, b) => b.y - a.y).map((x) => x.h);
+        const mine = byHeight.length === chord.length ? [byHeight[chord.indexOf(n.midi)]] : byHeight;
+        for (const h of mine) { const ring = h && ringNotehead(h); if (ring) this.rings.push(ring); }
       }
     }
   }

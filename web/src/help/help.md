@@ -21,7 +21,11 @@ A lesson page holds text, pictures, videos, little scores (▶ Hear it plays one
 
 Videos to watch for more are listed at the end of a lesson, under **Videos**: tap one to play it there, and **✕ Close** folds it back. Offline, each shows a link to watch it later.
 
-After a step you see how it went this time and, after earlier tries, your best so far. **Hard**, **OK** or **Easy** and a note are up to you. The bottom bar has Again, Lesson and the way on.
+A step opens its screen with the step's task on a line at the top. If you change what the step set (its set, help level, mode, hands, bars…), the line says **Practice now: not counted for the step** until you change it back. When the step's set, game or run ends, **Back to the lesson ▶** takes you to how it went; with a MIDI keyboard, a key does it too.
+
+After a step you see how it went this time and, after earlier tries, your best so far. **Hard**, **OK** or **Easy** and a note are up to you. The bottom bar has Again, Lesson and the way on; once your keyboard's lowest and highest keys are set up (Settings → Keyboard controls), the highest key is Next and the lowest Again.
+
+A step with nothing to judge (Free play, or listening in Watch) counts as visited once you have played a key there, or heard the music to its end.
 
 **Switch…** picks another lesson. Back or ← takes you back the way you came.
 
@@ -36,12 +40,12 @@ For reading and playing a piece, with what comes next always in view.
 ## The modes
 - **Watch:** the app plays it; follow the marker.
 - **Wait for me:** it waits for your notes; no clock. The piano plays the other hand up to your next note.
-- **Play along:** at tempo, the piano playing the hand you don't. At the end, a summary: how many notes were on time, early, late or missed, and the weak bars to loop. Round a loop, a line after each pass instead.
+- **Play along:** at tempo, the piano playing the hand you don't. At the end, a strip at the bottom says how many notes were on time, early, late or missed, with the weak bars to loop, and the slips are marked on the music: grey (ringed) missed, orange early, late or let go early. Round a loop, a line after each pass, and the last pass marked when you stop. A key (or **▶ Again**) starts the next run; ✕ puts the strip away.
 - **Ladder:** Play along round a loop (it asks for the bars first). A clean pass goes a little faster, a messy one a little slower, never past the written tempo.
 - **Rhythm:** any key counts: play the rhythm only.
 
 ## Starting and stopping
-- Press ▶, or (not in Watch) just play your first note.
+- Press ▶, or play a key: your first note starts it and counts; another key starts it as ▶ does.
 - While it plays, the bars fade. **A tap on the music stops** and brings them back.
 - Play along, Ladder and Rhythm pause by themselves after a few seconds without keys, when you press lots of keys at once, and when the phone turns. Play to carry on, or tap **See how it went**.
 
@@ -60,7 +64,8 @@ For learning a piece by heart, a few bars at a time. Open it from the score's �
 It plays a bar, then covers it, and you play it from memory. Your first note starts your turn. New bars are added one at a time, chunk by chunk.
 
 - **Stuck?** Hold **Peek** to uncover the bars while you hold it. When it waits for you (not in time), after 3 seconds the next note lights up on the keys, or is named if no keys show. Either counts as a slip.
-- **Hear:** a tap plays the bar you are on; held, everything you are learning.
+- **Hear it:** a tap plays the bar you are on; held, everything you are learning.
+- After a pass with slips, they are marked: grey (ringed) missed, orange off time or let go early, wrong keys red on the keys.
 - Tap a covered bar to start your turn there. ‹ › change chunk.
 - A learned chunk asks how to join it up. When every bar is learned, **Test** has you play the whole piece from memory.
 - **Settings:** hands, tempo, chunk size, playing in time, and more. Opening it during your turn pauses it.
@@ -69,32 +74,34 @@ It plays a bar, then covers it, and you play it from memory. Your first note sta
 A memory game. The app gives you a chain (notes, chords, intervals…), and you play the whole chain back. Each round it grows by one, until your misses run out.
 
 - Press **Start**, or play any key.
-- A miss names what was due and what you played (the wrong key shows red on the keys; at help 0 it shows them on the keys only). It costs a try, the game, or nothing, as Level says.
+- A miss names what was due and what you played (the wrong key shows red on the keys and the right one outlined in blue; at help 0 it shows them on the keys only). It costs a try, the game, or nothing, as Level says.
+- **Hear it** plays the chain again (it then can't be a best). A mash of keys ends the game, showing how far it got.
 - **Level:** how much help (0 keys and sound, with no music … 5 by ear), what must match, what a miss costs, the speed. Opening it pauses the game.
-- **0 Keys + sound, no music** is for before you read music: you hear each item and see its keys light up, and no notes are written or named anywhere. Copy what you see and hear. A miss shows the wrong key in red and the right one outlined. From 1 on, the music is shown too.
+- **0 Keys + sound, no music** is for before you read music: you hear each item and see its keys light up, and no notes are written or named anywhere. Copy what you see and hear. A miss shows the wrong key in red and the right one outlined in blue. From 1 on, the music is shown too.
 - You can play on the keys on the screen or on a MIDI keyboard. With *Nothing* under the music (help 2 to 5), play on a MIDI keyboard.
 - **Simon ▾** switches to Drills, with the same set.
 
 # Drills {#drills}
 Flashcards. Each card is one short thing to play at once: music to read, a name, or something to play back by ear.
 
-- Press **Start**. A card with rhythm starts after a bar of clicks (or on your first note, as Level says; by ear, always on your first note) and is judged in time. One without rhythm is judged on its notes, or in steady beats if its set says so. With On time: *Notes only*, every card is judged on its notes.
-- A right card moves on by itself. A card with slips shows them; then **Again** or **Next**.
+- Press **Start**. A card with rhythm starts after a bar of clicks (or on your first note, as Level says; by ear, always on your first note) and is judged in time. One without rhythm is judged on its notes, or in steady beats if its set says so. With On time: *Notes only*, every card is judged on its notes. A card judged on its notes waits for you; after 8 seconds with no key its next notes light up (counted as help), time enough to read it (Memorise's hint, from memory, comes after 3).
+- A right card moves on by itself. A card with slips shows them, with a one-line key: grey (ringed) missed, orange early, late or let go early; on the keys, a wrong key red and a missed one outlined in blue. Then **Again** or **Next** (a key goes on too).
 - **Hear it** and **Show me** help, but the card then doesn't count as clean.
 - At the end: each card's result, the misses again, or a new set.
 - Play on a MIDI keyboard, or tap the keys on the screen (Level → Under the music: Keyboard). With neither, Ready says so.
 - **Level:** help, how a card starts, the metronome, On time, cards per set, tempo. Opening it pauses the card.
-- **Help 0, Keys + sound, no music:** each card is played to you with its keys lit, and no music is written, even after the card: the keys show what was wrong (red) and what was missed (outlined).
+- **Help 0, Keys + sound, no music:** each card is played to you with its keys lit, and no music is written, even after the card: the keys show what was wrong (red) and what was missed (outlined in blue).
 - **Drills ▾** switches to Simon, with the same set.
 
 # The accompaniment lab {#lab}
 Play with a band: the lead on top, or the chords underneath.
 
 - First choose **Lead** (improvise on top) or **Accompaniment** (the chords). Then a step: the one you were on is chosen, and you can tap another. One sentence says what your part is and what the band plays.
-- **▶ Start** gives a bar of count-in, then the band plays round after round until ■.
+- **▶ Start** (or a key) gives a bar of count-in, then the band plays round after round until ■.
 - The keys to use light up. In Accompaniment, the Help choice at the bottom can name the notes instead, or show the chord symbol only.
 - **Show me first** (Accompaniment) plays one round with your part played for you.
-- After ■: how the last round went; the next step once this one has its rounds (two, unless the chart says otherwise: clean ones, or in Lead, played ones); and in Accompaniment, the bars that went wrong to loop.
+- After ■: how the last round went, each bar marked with a sign as well as a colour (✓ right, ~ early or late, – a note missing, ✗ a wrong key); the next step once this one has its rounds (two, unless the chart says otherwise: clean ones, or in Lead, played ones); and in Accompaniment, the bars that went wrong to loop. A key does the main button.
+- Bars are right when their chord lands within about 150 ms of the beat (a chord is judged more loosely than a single note on the score).
 - Stopped, tap bars in the box of chords to loop them.
 - **⚙:** which band parts play, the click, and drop-outs. Opening it while the band plays pauses that round; it starts again with a bar of count-in when you close it.
 
@@ -140,7 +147,7 @@ For reading your own PDF scores at the piano, a line at a time. Nothing is judge
 The app's own settings, from ⚙ on Home.
 
 - **Sound:** where the piano plays (the phone or your MIDI keyboard), the piano and click volumes, the click sound.
-- **Keyboard controls:** learn your keyboard's lowest and highest key, so they work as buttons (back and start); a mash of keys stops.
+- **Keyboard controls:** learn your keyboard's lowest and highest key, so they work as buttons (back and start); a mash of keys stops. The first time a MIDI keyboard connects, the app offers to set them up there and then.
 - **Look:** Light, Auto (as the phone is) or Dark.
 - **Your data:** export the practice log, back up your settings, progress and library to one file and restore it, and what is saved for offline.
 - **Help:** this page, and Show tips again.

@@ -4,13 +4,13 @@
 //
 // usage: npm run check:browser              (builds, serves on :5194, runs every case)
 //        node tests/browser.mjs --url http://localhost:5196/PianoProject/   (a build served elsewhere: no build, no server)
-//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills)
+//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills; also lessons, consistency)
 // PIANO_CHROMIUM names a Chromium when Playwright's own build is not installed (a cloud session: /opt/pw-browsers/chromium).
 // Not here: the library store's lost update (F03; shown with the store module through the dev server, 0 of 10 before,
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
 
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -120,7 +120,9 @@ try {
   // Test rungs ("test": true in content/path/index.json) are hidden from the learner (2026-10-16); every context made here
   // sees them as before (window.__pianoTestContent, set before the app starts). learnerContext: a context without it.
   const learnerContext = browser.newContext.bind(browser);
-  browser.newContext = async (options) => { const ctx = await learnerContext(options); await ctx.addInitScript(() => { window.__pianoTestContent = true; }); return ctx; };
+  // The one-time offer to set up a keyboard's ends (2026-10-16) is put away there too (it would sit over the top of every
+  // screen a stand-in keyboard is connected to); `--only consistency` checks it in a learner's context.
+  browser.newContext = async (options) => { const ctx = await learnerContext(options); await ctx.addInitScript(() => { window.__pianoTestContent = true; window.__pianoNoKeyboardHint = true; }); return ctx; };
 
   /** A fresh phone-sized page: offline cache off (it would answer before a slowed route), MIDI allowed. */
   async function fresh(init) {
@@ -891,7 +893,8 @@ try {
       for (let i = 0; i < 6; i++) { await tap(page, 60); await page.waitForTimeout(350); }
       const during = await playing(page);
       await press(page, '#q-hands button[data-hands="right"]'); await page.waitForTimeout(300);
-      const after = { playing: await playing(page), summary: await page.evaluate(() => document.getElementById('summary').open) };
+      // (2026-10-16, the consistency pass: the summary is the strip at the bottom, not a dialog)
+      const after = { playing: await playing(page), summary: await page.evaluate(() => !document.getElementById('run-strip').hidden) };
       const e = (await entries(page)).at(-1);
       ok('Hands mid-run: the run ends there with its summary, logged for the hands it was played with', during && !after.playing && after.summary && e?.settings.hands === 'both',
         `running before ${during}, after ${JSON.stringify(after)}, logged hands ${e?.settings.hands}`);
@@ -1069,7 +1072,7 @@ try {
         const carried = await playing(page);
         await press(page, '#play'); await wait(page, 400); // ■: the run ends with its summary
         const e = await lastEntry(page);
-        await closePanel(page); await wait(page, 200); // (the summary)
+        await wait(page, 900); // (the summary is the strip now, and a key starts the next run only after a moment: 2026-10-16)
         ok(`A3 score, Play along, ${kind}: paused (keys behind it not counted), carries on from a key`, started && during.open && !during.playing && during.moved === 0 && /panel/.test(said) && carried && e?.result?.wrongKeys === 0,
           `started ${started}; while open ${JSON.stringify(during)}; said "${said}"; carried on ${carried}; logged wrong keys ${e?.result?.wrongKeys}`);
       }
@@ -1414,12 +1417,13 @@ try {
     }
 
     // Steps never lock: step 2 started first (from the lesson page), left unplayed (nothing marked), step 1 then "skipped"
-    // only once a later step was played. Free play (keeps no runs) is done on coming back. Switch: skip ahead, Path follows.
+    // only once a later step was played. Free play (keeps no runs) is done on coming back after a key (2026-10-16). Switch: skip ahead, Path follows.
     {
       const { ctx, page, errors } = await open(`${BASE}?tab=path&page=lesson&lesson=test-chords-and-band`);
       await page.waitForTimeout(1200);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
       const fp = await where(page);
+      await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)
       await click(page, '#fp-done'); await page.waitForTimeout(500);
       const state = await page.evaluate(() => ({ line: document.querySelector('.les-result .h')?.textContent, done: JSON.parse(localStorage.getItem('piano-web.path.v1')).done }));
       await page.locator('#lesson-bar button[aria-label="Back to the lesson"]').click(); await page.waitForTimeout(800);
@@ -1556,6 +1560,7 @@ try {
       await page.evaluate(() => { localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, ...window.__realLessonsDone }, tried: {} })); });
       await page.reload(); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
+      await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)
       await click(page, '#fp-done'); await page.waitForTimeout(600);
       const text = await resultText(page);
       const inView = await page.evaluate(() => [...document.querySelectorAll('#lesson-bar button:not([hidden])')].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 0 && r.bottom <= innerHeight && r.top >= 0; }).map((b) => b.textContent.trim()));
@@ -1731,6 +1736,7 @@ try {
       await page.evaluate(() => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-chords-and-band', done: { 'test-chords-and-band': { 'simon-chords': { at: new Date().toISOString(), how: 'target' }, 'band-roots': { at: new Date().toISOString(), how: 'target' } }, ...window.__realLessonsDone }, tried: {} })));
       await page.goto(`${BASE}?page=lesson&lesson=test-chords-and-band`); await page.waitForTimeout(2000);
       await page.locator('.les-step[data-step="free"] .btn').click(); await page.waitForTimeout(800);
+      await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)
       await click(page, '#fp-done'); await page.waitForTimeout(600);
       await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1500); // (the rest of the lesson first: A3)
       await page.locator('#lesson-bar button', { hasText: 'Next lesson' }).click(); await page.waitForTimeout(2000);
@@ -2496,7 +2502,7 @@ try {
     const back = async (page) => { await page.evaluate(() => history.back()); await wait(page, 900); };
     const log = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries);
     const chord = async (page, keys, ms = 80) => { await page.evaluate((ks) => { for (const k of ks) window.__key(k, true); }, keys); await wait(page, ms); await page.evaluate((ks) => { for (const k of ks) window.__key(k, false); }, keys); };
-    const NO_KEYS = 'No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the screen.';
+    const NO_KEYS = 'No MIDI keyboard found: this mode listens to one. Plug it in, or choose Wait for me to play on the keys below.'; // (one phrase family: the consistency pass, 2026-10-16)
 
     // F15: a step's run logged, then a reload (a phone reopening the tab), then ←: the run counts for the step.
     {
@@ -2566,10 +2572,10 @@ try {
       await run(5000);
       await page.mouse.click(195, 330); await wait(page, 1000); // ■ by a tap on the music
       const first = (await log(page)).filter((e) => e.screen === 'score');
-      await page.evaluate(() => document.getElementById('summary').close()); await wait(page, 300);
+      await page.evaluate(() => document.getElementById('rs-close').click()); await wait(page, 300); // (the strip: 2026-10-16)
       await run(2500);
       await page.evaluate(() => document.getElementById('q-loop').click()); await wait(page, 1000);
-      const summary = await page.evaluate(() => document.getElementById('summary').open);
+      const summary = await page.evaluate(() => !document.getElementById('run-strip').hidden);
       const second = (await log(page)).filter((e) => e.screen === 'score');
       const r = first[0]?.result ?? {};
       ok('F9: a Play along run with no loop logs the bars it went through (from bar 1 to the bar reached)', first.length === 1 && r.fromBar === 1 && r.toBar >= 2 && r.notes > 0, JSON.stringify({ fromBar: r.fromBar, toBar: r.toBar, notes: r.notes }));
@@ -2869,7 +2875,7 @@ try {
       await barsUp(page); await tapOn(page, '#play');
       for (let t = 0; t < 2500; t += 250) { const keys = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step)); if (keys.length) await chord(page, keys, 60); await wait(page, 190); }
       await back(page); await wait(page, 600);
-      const st = { ...(await where(page)), summary: await page.evaluate(() => document.getElementById('summary').open), runs: (await log(page)).filter((e) => e.screen === 'score').length };
+      const st = { ...(await where(page)), summary: await page.evaluate(() => !document.getElementById('run-strip').hidden), runs: (await log(page)).filter((e) => e.screen === 'score').length };
       ok('F04: Back during a Play along run: Home, no summary over it, and the run logged', st.screen === 'shell' && st.view === 'v-home' && !st.summary && st.runs === 1, JSON.stringify(st));
       ok('F04: no page errors', errors.length === 0, errors.join(' | '));
       await ctx.close();
@@ -2904,7 +2910,7 @@ try {
         got[name] = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden), errors: errors.length };
         await ctx.close();
       }
-      ok('Wait for me sideways, no keyboard: "No MIDI keyboard found. Turn the phone upright to play on the screen\u2019s keys, or plug one in." and no keys', Object.values(got).every((g) => /^No MIDI keyboard found\. Turn the phone upright to play on the screen[’']s keys, or plug one in\.$/.test(g.said) && !g.keys && !g.errors), JSON.stringify(got));
+      ok('Wait for me sideways, no keyboard: "No MIDI keyboard found. Turn the phone upright to play on the screen\u2019s keys, or plug one in." and no keys', Object.values(got).every((g) => /^No MIDI keyboard found: turn the phone upright to play on the keys below, or plug one in\.$/.test(g.said) && !g.keys && !g.errors), JSON.stringify(got));
     }
 
     // Restore (owner, 2026-10-15): Memorise's learned bars of one piece and hands on both phones are joined.
@@ -3078,7 +3084,7 @@ try {
       const sideways = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden) };
       await page.setViewportSize({ width: 390, height: 844 }); await wait(page, 2500);
       const upright = { said: await said(page), keys: await page.evaluate(() => !document.getElementById('keyboard').hidden) };
-      ok('hint #1: Wait for me turned sideways mid-run with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s keys, or plug one in."; turned back, the line goes and the keys are back', started && /^No MIDI keyboard found\. Turn the phone upright to play on the screen’s keys, or plug one in\.$/.test(sideways.said) && !sideways.keys && upright.keys && !/Turn the phone upright/.test(upright.said), JSON.stringify({ started, sideways, upright }));
+      ok('hint #1: Wait for me turned sideways mid-run with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s keys, or plug one in."; turned back, the line goes and the keys are back', started && /^No MIDI keyboard found: turn the phone upright to play on the keys below, or plug one in\.$/.test(sideways.said) && !sideways.keys && upright.keys && !/turn the phone upright/i.test(upright.said), JSON.stringify({ started, sideways, upright }));
       ok('hint #1 sideways: no page errors', errors.length === 0, errors.join(' | '));
       await ctx.close();
     }
@@ -3220,7 +3226,8 @@ try {
         // before or after the drawing varies run to run, so it is made to happen after)
         await page.setViewportSize({ width: 390, height: 800 }); await wait(page, 1200);
         await page.setViewportSize({ width: 390, height: 844 }); await wait(page, 1200);
-        const s = await said(page);
+        // (an activity's title is on the score's task line since the consistency pass, 2026-10-16: it must stay there)
+        const s = name === 'activity title' ? await page.evaluate(() => { const t = document.getElementById('score-task'); return t && !t.hidden ? t.textContent : ''; }) : await said(page);
         got[name] = { said: s, ok: want.test(s) };
         errs += errors.length;
         await ctx.close();
@@ -3585,6 +3592,399 @@ try {
   }
 
   } // (end of the sections run when no --only is given)
+  if (!only || only === 'consistency') { // (`--only consistency` runs this section alone)
+  // ---- The consistency pass (owner, 2026-10-16; docs/app-features.md §7e) --------------------------------------------
+  // One set of result marks (Drills, Memorise, a score run: grey ringed missed, orange off time, the same one-line key,
+  // the blue outline on the keys); the score's run strip (no dialog; a key starts the next run); the task line on every
+  // screen a lesson opens and "Practice now" after a change; Back to the lesson at a step's end, by key too; the step's
+  // result by the edge keys; the one-time keyboard hint; "visited" only after a key or the music heard to its end; the
+  // marks' contrast measured on the screen in both themes. Plain phone tabs (touch, no MIDI permission) tapped by position,
+  // and a stand-in MIDI keyboard (window.__key) where keys matter. Screenshots in web/r3shots-consistency/.
+  // Run against the build before (dce50d76, --url): see the report; most cases fail there by design (no strip, no task
+  // line on the score, Memorise or the lab, green outlines, visited on return).
+  {
+    /** A case that throws (a control not there, as on a build before) is a failure of its own, and the next case runs. */
+    const guard = async (f) => { try { await f(); } catch (e) { ok('consistency: a case ran to its end', false, String(e).split(String.fromCharCode(10))[0].slice(0, 240)); } };
+    const SHOTS = here('../r3shots-consistency/');
+    mkdirSync(SHOTS, { recursive: true });
+    const fakeKeys = (edges) => {
+      const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+      const access = { inputs: new Map([[input.id, input]]), outputs: new Map(), onstatechange: null };
+      Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+      window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+      if (edges && !localStorage.getItem('piano-web.remote.v1')) localStorage.setItem('piano-web.remote.v1', JSON.stringify({ edges: true, mash: true, low: 21, high: 108 }));
+    };
+    /** A phone tab: touch, no MIDI permission; keys: a stand-in MIDI keyboard (edges: its lowest and highest keys set up). */
+    async function tab({ viewport = { width: 360, height: 780 }, keys = false, edges = false, dark = false, hint = false } = {}) {
+      const ctx = await (hint ? learnerContext : browser.newContext)({ viewport, hasTouch: true, serviceWorkers: 'block', colorScheme: dark ? 'dark' : 'light' });
+      const page = await ctx.newPage();
+      if (keys) await page.addInitScript(fakeKeys, edges);
+      // (hint: a learner's context, where the one-time keyboard hint shows; the others put it away: browser.newContext above)
+      const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+      return { ctx, page, errors };
+    }
+    const wait = (page, ms) => page.waitForTimeout(ms);
+    /** A tap where an element is (its centre, or off it by dx), sent to whatever lies there. */
+    const tapAt = async (page, sel, dx = 0) => {
+      const r = await page.evaluate((s) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return b.width ? [b.left + b.width / 2, b.top + b.height / 2] : null; }, sel);
+      if (!r) { console.log(`  (not there to tap: ${sel})`); return false; }
+      await page.touchscreen.tap(r[0] + dx, r[1]); await wait(page, 350); return true;
+    };
+    const firstTap = async (page) => { await page.touchscreen.tap(8, 400); await wait(page, 300); }; // (the browser's sound and MIDI start on a first tap)
+    const key = async (page, m, ms = 120) => { await page.evaluate((m) => window.__key(m, true), m); await wait(page, ms); await page.evaluate((m) => window.__key(m, false), m); };
+    const lesson = async (page, id) => { await page.goto(`${BASE}?page=lesson&lesson=${id}`); await wait(page, 2200); };
+    // (a step not there, as on a build before its lesson: said, and the case's own checks fail; the run carries on)
+    const startStep = async (page, step) => { try { await page.locator(`.les-step[data-step="${step}"] .btn`).click({ timeout: 8000 }); } catch { console.log(`  (no step to start: ${step})`); } await wait(page, 2200); };
+    const result = (page) => page.evaluate(() => document.querySelector('.les-result')?.innerText ?? '');
+    const progress = (page, l, s) => page.evaluate(([l, s]) => { const p = JSON.parse(localStorage.getItem('piano-web.path.v1') ?? '{}'); return { done: p.done?.[l]?.[s] ?? null, tried: p.tried?.[l]?.[s] ?? null }; }, [l, s]);
+    const taskOf = (page, id) => page.evaluate((id) => { const t = document.getElementById(id); return t && !t.hidden ? t.innerText.trim() : ''; }, id);
+    /** The marks in a drawing: notes painted grey or orange (by attribute or style), the rings, and the blue outlines on the keys. */
+    const marksIn = (page, root, keys) => page.evaluate(([root, keys]) => {
+      // (the score's one-line layout, a phone sideways, shows its drawing through <use> from #score-src, kept outside #score)
+      const paths = [...document.querySelectorAll(root === '#score' ? '#score svg path, #score-src path' : `${root} svg path`)];
+      const is = (p, hex, rgb) => (p.getAttribute('fill') ?? '').toLowerCase() === hex || p.style.fill === rgb;
+      return { grey: paths.filter((p) => is(p, '#6b7280', 'rgb(107, 114, 128)')).length, orange: paths.filter((p) => is(p, '#d97706', 'rgb(217, 119, 6)')).length,
+        green: paths.filter((p) => is(p, '#16a34a', 'rgb(22, 163, 74)')).length, rings: document.querySelectorAll(root === '#score' ? '#score .slip-ring, #score-src .slip-ring' : `${root} .slip-ring`).length,
+        outlines: keys ? [...new Set([...document.querySelectorAll(`${keys} .key.want`)].map((k) => getComputedStyle(k).boxShadow.match(/rgb\([^)]*\)/)?.[0]))] : [] };
+    }, [root, keys]);
+    /** The contrast between a mark and the paper as seen on the screen: a screenshot of the notehead's box read back. */
+    async function contrastOf(page, root, colour) {
+      const box = await page.evaluate(([root, colour]) => {
+        const head = [...document.querySelectorAll(`${root} .vf-notehead`)].find((h) => [...h.querySelectorAll('path')].some((p) => (p.getAttribute('fill') ?? '').toLowerCase() === colour || p.style.fill === colour));
+        const b = head?.getBoundingClientRect();
+        return b ? { x: b.left, y: b.top, w: b.width, h: b.height } : null;
+      }, [root, colour]);
+      if (!box) return null;
+      const pad = 10, clip = { x: Math.max(0, box.x - pad), y: Math.max(0, box.y - pad), width: box.w + 2 * pad, height: box.h + 2 * pad };
+      const png = await page.screenshot({ clip });
+      return page.evaluate(async ([b64, inner]) => {
+        const img = new Image(); img.src = `data:image/png;base64,${b64}`; await img.decode();
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+        const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+        const sx = img.width / inner.w, sy = img.height / inner.h;
+        const at = (x, y) => [...g.getImageData(Math.round(x * sx), Math.round(y * sy), 1, 1).data].slice(0, 3);
+        const lum = ([r, gg, b]) => { const f = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(gg) + 0.0722 * f(b); };
+        const mark = at(inner.cx, inner.cy), paper = at(2, 2);
+        const [hi, lo] = [lum(mark), lum(paper)].sort((a, b) => b - a);
+        return { mark, paper, ratio: Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100 };
+      }, [png.toString('base64'), { w: clip.width, h: clip.height, cx: box.x - clip.x + box.w / 2, cy: box.y - clip.y + box.h / 2 }]);
+    }
+
+    // 1. Drills, a lesson step that hides names (test-consistency "cards-no-names": 2 cards, the first note starts the
+    // clock): the first note on time, the next two late, the rest left: grey (ringed) and orange on the card, the key says
+    // both, the missed keys outlined blue (none green); no note named in the words or on the keys. Plain tab, keys tapped by
+    // position (off centre); then the set's end: Back to the lesson by a tap.
+    for (const viewport of [{ width: 360, height: 780 }, { width: 844, height: 390 }]) await guard(async () => {
+      const tag = `${viewport.width}×${viewport.height}`;
+      const { ctx, page, errors } = await tab({ viewport });
+      await lesson(page, 'test-consistency'); await startStep(page, 'cards-no-names');
+      const task = await taskOf(page, 'ex-task');
+      await firstTap(page);
+      await tapAt(page, '#ex-start'); await wait(page, 600);
+      const playCard = async () => {
+        let d = null;
+        for (let i = 0; i < 40; i++) { d = await page.evaluate(() => window.__pianoDebug.drill()); if (d.state === 'turn') break; await wait(page, 150); }
+        const pos = (m) => page.evaluate((m) => { const k = document.querySelector(`#ex-keyboard .key[data-midi="${m}"]`); if (!k) return null; const r = k.getBoundingClientRect(); return [r.left + r.width / 2 + Math.min(6, r.width / 4), r.top + r.height * 0.75]; }, m);
+        const steps = d.steps;
+        const p0 = await pos(steps[0].keys[0]); if (p0) await page.touchscreen.tap(p0[0], p0[1]);
+        const t0 = Date.now();
+        for (const k of [1, 2]) {
+          const due = steps[k].t + 320; // (late: past the normal ±100 ms)
+          while (Date.now() - t0 < due) await wait(page, 20);
+          const p = await pos(steps[k].keys[0]); if (p) await page.touchscreen.tap(p[0], p[1]);
+        }
+        for (let i = 0; i < 60; i++) { const s = await page.evaluate(() => document.getElementById('ex-status').textContent); if (/Not quite|✓/.test(s)) break; await wait(page, 200); }
+        await wait(page, 600);
+      };
+      await playCard();
+      const card = { ...(await marksIn(page, '#ex-notation', '#ex-keyboard')), legend: await page.evaluate(() => { const l = document.getElementById('ex-legend'); return l.hidden ? '' : l.textContent; }),
+        words: await page.evaluate(() => document.getElementById('ex-sub').textContent), labels: await page.evaluate(() => [...document.querySelectorAll('#ex-keyboard .key')].map((k) => k.textContent).join('')) };
+      await page.screenshot({ path: join(SHOTS, `drills-result-${tag.replace('×', 'x')}.png`) });
+      ok(`consistency ${tag}: Drills, a step's card: its missed notes grey and ringed, its late ones orange, none green; the key says both`, card.grey > 0 && card.orange > 0 && card.green === 0 && card.rings > 0 && card.legend === 'grey: missed · orange: early, late or let go early', JSON.stringify(card));
+      ok(`consistency ${tag}: Drills: a missed key outlined in blue (#2563eb), not green`, card.outlines.length === 1 && card.outlines[0] === 'rgb(37, 99, 235)', JSON.stringify(card.outlines));
+      ok(`consistency ${tag}: Drills, names: false: no note named in the card's words or on the keys; the task line shows`, !/\b[A-G][♯♭#b]?\d?\s+(late|missed|early)/.test(card.words) && /\d+ notes? (late|missed)/.test(card.words) && card.labels === '' && /nothing names a note/.test(task), JSON.stringify({ words: card.words, labels: card.labels, task }));
+      // the next card by a tap on Next, played the same; then Set done: Back to the lesson is the main button
+      await tapAt(page, '#ex-next'); await wait(page, 400);
+      await playCard();
+      await tapAt(page, '#ex-next'); await wait(page, 1200);
+      const end = await page.evaluate(() => ({ state: window.__pianoDebug.drill().state, back: !document.getElementById('ex-back').hidden && document.getElementById('ex-back').classList.contains('main'), fresh: document.getElementById('ex-fresh').classList.contains('main'), text: document.getElementById('ex-back').textContent }));
+      await page.screenshot({ path: join(SHOTS, `end-back-to-lesson-${tag.replace('×', 'x')}.png`) });
+      ok(`consistency ${tag}: Drills, a step's set done: "Back to the lesson ▶" is the main button (New set is not)`, end.state === 'done' && end.back && !end.fresh && /Back to the lesson/.test(end.text), JSON.stringify(end));
+      await tapAt(page, '#ex-back'); await wait(page, 1200);
+      const res = await result(page);
+      ok(`consistency ${tag}: Back to the lesson: the step's result, played through (the whole set played is what counts)`, /Played through: step done ✓ \(no target: the whole set played is what counts\)/.test(res), res.slice(0, 200));
+      ok(`consistency ${tag}: Drills: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 2. The score: a step's Wait for me (test-minuet-opening "wait-rh"), changed to Play along: the task line says
+    // "Practice now"; a run round its loop with notes on time, late and missed; ■: the strip (no dialog), the slips marked
+    // with the same marks and key; a key (stand-in) starts the next run. Then the strip's Back to the lesson: practice.
+    for (const viewport of [{ width: 360, height: 780 }, { width: 844, height: 390 }]) await guard(async () => {
+      const tag = `${viewport.width}×${viewport.height}`;
+      const { ctx, page, errors } = await tab({ viewport, keys: true });
+      await lesson(page, 'test-minuet-opening'); await startStep(page, 'wait-rh');
+      await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 }); await wait(page, 600);
+      await firstTap(page);
+      if (await page.evaluate(() => document.getElementById('top-bar').classList.contains('faded'))) await firstTap(page);
+      const before = await taskOf(page, 'score-task');
+      await page.selectOption('#q-mode', 'along'); await wait(page, 500);
+      const after = await taskOf(page, 'score-task');
+      await page.screenshot({ path: join(SHOTS, `task-line-practice-now-${tag.replace('×', 'x')}.png`) });
+      ok(`consistency ${tag}: the score's task line: the step's, then "Practice now: not counted for the step (another mode)" in Play along`, /Minuet K\. 2, right hand/.test(before) && !/Practice now/.test(before) && /Practice now: not counted for the step \(another mode\)/.test(after), JSON.stringify({ before, after }));
+      await tapAt(page, '#play'); await wait(page, 300);
+      const t0 = Date.now();
+      let n = 0;
+      while (Date.now() - t0 < 11000) {
+        const st = await page.evaluate(() => ({ step: window.__pianoDebug.state().step, playing: document.getElementById('play').getAttribute('aria-label') === 'Stop' }));
+        const want = await page.evaluate((s) => window.__pianoDebug.struck(s, 'right'), st.step);
+        if (want.length && n++ % 3 === 0) await key(page, want[0], 120); else await wait(page, 260);
+      }
+      await page.touchscreen.tap(viewport.width / 2, viewport.height * 0.3); await wait(page, 900); // (a tap on the music stops the run)
+      const strip = { shown: await page.evaluate(() => !document.getElementById('run-strip').hidden), dialog: await page.evaluate(() => !!document.querySelector('dialog[open]')),
+        legend: await page.evaluate(() => document.getElementById('rs-legend').textContent), keys: await page.evaluate(() => document.getElementById('rs-keys').textContent), back: await page.evaluate(() => !document.getElementById('rs-back').hidden),
+        ...(await marksIn(page, '#score', null)) };
+      await page.screenshot({ path: join(SHOTS, `score-strip-${tag.replace('×', 'x')}.png`) });
+      ok(`consistency ${tag}: a score run's end: a strip at the bottom, no dialog; Back to the lesson there (a step)`, strip.shown && !strip.dialog && strip.back, JSON.stringify(strip));
+      ok(`consistency ${tag}: the score run's slips on the music: grey (ringed) and orange, none green, the same key as Drills'`, strip.grey > 0 && strip.orange > 0 && strip.green === 0 && strip.rings > 0 && strip.legend === 'grey: missed · orange: early, late or let go early', JSON.stringify(strip));
+      ok(`consistency ${tag}: the strip says a key starts the next run (a keyboard is connected)`, /a key starts the next run/.test(strip.keys), strip.keys);
+      await wait(page, 900);
+      await key(page, 30); await wait(page, 700);
+      const next = await page.evaluate(() => ({ running: document.getElementById('play').getAttribute('aria-label') === 'Stop', strip: !document.getElementById('run-strip').hidden, marks: [...document.querySelectorAll('#score svg path, #score-src path')].filter((p) => p.style.fill).length }));
+      ok(`consistency ${tag}: a key starts the next run: running, the strip and the marks gone`, next.running && !next.strip && next.marks === 0, JSON.stringify(next));
+      await page.touchscreen.tap(viewport.width / 2, viewport.height * 0.3); await wait(page, 900);
+      if (await page.evaluate(() => document.getElementById('run-strip').hidden)) await page.evaluate(() => document.getElementById('score-back').click());
+      else await tapAt(page, '#rs-back');
+      await wait(page, 1200);
+      const res = await result(page);
+      ok(`consistency ${tag}: the step's result: the Play along run is practice for a Wait for me step, said so`, /played with another mode: practice, not counted for the step/.test(res) && !/step done ✓/.test(res), res.slice(0, 260));
+      ok(`consistency ${tag}: score: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 2b. The score in the step's own mode (Wait for me round bars 1–4, the stand-in keyboard with its ends set up): stopped
+    // by a tap after one round, the strip says it was played through, and the keyboard's highest key goes back to the
+    // lesson (the strip's main button; any other key would start the next run): played through.
+    await guard(async () => {
+      const { ctx, page, errors } = await tab({ keys: true, edges: true });
+      await lesson(page, 'test-minuet-opening'); await startStep(page, 'wait-rh');
+      await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 }); await wait(page, 600);
+      await firstTap(page);
+      let rounds = 0, last = -1;
+      for (let i = 0; i < 80 && rounds < 1; i++) {
+        const s = await page.evaluate(() => window.__pianoDebug.state().step);
+        if (s < last) rounds++;
+        last = s;
+        const want = await page.evaluate((s) => window.__pianoDebug.struck(s, 'right'), s);
+        if (want.length) await key(page, want[0], 150); else await wait(page, 200);
+        await wait(page, 120);
+      }
+      await wait(page, 400);
+      await page.touchscreen.tap(180, 230); await wait(page, 900);
+      const strip = await page.evaluate(() => ({ shown: !document.getElementById('run-strip').hidden, line: document.getElementById('rs-line').textContent, keys: document.getElementById('rs-keys').textContent }));
+      await wait(page, 600);
+      await key(page, 108); await wait(page, 1500);
+      const res = await result(page);
+      ok('consistency: a Wait for me step round its bars, stopped: the strip says so; the highest key goes back to the lesson: played through', strip.shown && /Played through bars 1–4/.test(strip.line) && /highest key: back to the lesson/.test(strip.keys) && /Played through: step done ✓/.test(res),
+        JSON.stringify({ rounds, strip, res: res.slice(0, 160) }));
+      ok('consistency: Wait for me step: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 3. Memorise, a lesson step (test-consistency "memorise-rh": right hand, bars 1–2, learned after one clean pass): the
+    // task line; a pass with a hint (missed) and a wrong key: grey, ringed, the same key; then clean: the chunk learned is
+    // the step's end, Back to the lesson the main button, and a key does it: played through.
+    for (const viewport of [{ width: 360, height: 780 }, { width: 844, height: 390 }]) await guard(async () => {
+      const tag = `${viewport.width}×${viewport.height}`;
+      const { ctx, page, errors } = await tab({ viewport, keys: true });
+      await lesson(page, 'test-consistency'); await startStep(page, 'memorise-rh');
+      await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 }); await wait(page, 800);
+      const task = await taskOf(page, 'memo-task');
+      await firstTap(page);
+      const say = () => page.evaluate(() => document.getElementById('memo-say').textContent);
+      const pass = async (slip) => {
+        for (let i = 0; i < 80 && !/Your turn|press ▶|Play when|From memory/.test(await say()); i++) await wait(page, 200);
+        if (/press ▶/.test(await say())) { await key(page, 30); for (let i = 0; i < 80 && !/Your turn/.test(await say()); i++) await wait(page, 200); }
+        for (let i = 0; i < 16; i++) {
+          if (!/Your turn|From memory|Next:/.test(await say())) break;
+          if (slip && i === 1) { await wait(page, 3600); await key(page, 30); } // (3 s with no key: the next note shown, a slip; then a wrong key)
+          const now = await page.evaluate(() => window.__pianoDebug.struck(window.__pianoDebug.state().step, 'right'));
+          if (!now.length) break;
+          await page.evaluate((ks) => { for (const k of ks) window.__key(k, true); }, now); await wait(page, 200);
+          await page.evaluate((ks) => { for (const k of ks) window.__key(k, false); }, now); await wait(page, 200);
+        }
+        await wait(page, 900);
+      };
+      await key(page, 30); // (Ready: a key starts it: it plays the bars, then your turn)
+      await pass(true);
+      const slip = { say: await say(), sub: await page.evaluate(() => document.getElementById('memo-sub').textContent), ...(await marksIn(page, '#score', null)) };
+      await page.screenshot({ path: join(SHOTS, `memorise-slip-${tag.replace('×', 'x')}.png`) });
+      ok(`consistency ${tag}: Memorise, a step: its task line`, /Play bars 1–2 from memory, right hand/.test(task), task);
+      ok(`consistency ${tag}: Memorise's slip: the missed note grey and ringed, none green, the same key (with red for the wrong key)`, slip.grey > 0 && slip.green === 0 && slip.rings > 0 && /^grey: missed · red: a wrong key/.test(slip.sub) && /1 missed/.test(slip.say), JSON.stringify(slip));
+      // again, clean, from bar 1's first note (the slip's bar): the chunk learned ends the step
+      await key(page, (await page.evaluate(() => window.__pianoDebug.struck(0, 'right')))[0] ?? 77);
+      await pass(false);
+      for (let i = 0; i < 20 && !/step done/.test(await say()); i++) await wait(page, 250);
+      const end = await page.evaluate(() => ({ say: document.getElementById('memo-say').textContent, back: !document.getElementById('memo-back').hidden, next: !document.getElementById('memo-next-chunk').hidden }));
+      ok(`consistency ${tag}: Memorise, a step's chunk learned: "step done", Back to the lesson shown with Next chunk beside it`, /Chunk learned: step done/.test(end.say) && end.back && end.next, JSON.stringify(end));
+      await wait(page, 900);
+      await key(page, 40); await wait(page, 1500);
+      const res = await result(page);
+      ok(`consistency ${tag}: Memorise: a key goes back to the lesson; played through (a chunk learned is what counts)`, /Played through: step done ✓ \(no target: a chunk learned is what counts\)/.test(res), res.slice(0, 200));
+      ok(`consistency ${tag}: Memorise: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 4. The task line on every screen a lesson opens (plain phone tab), and "Practice now" after a change that differs
+    // from the step, gone when changed back: Simon (another set), Drills (the help level), the lab (the other part), Free
+    // play (its task; nothing to change), and the score and Memorise above.
+    await guard(async () => {
+      const { ctx, page, errors } = await tab();
+      const seen = {};
+      await lesson(page, 'test-chords-and-band'); await startStep(page, 'simon-chords');
+      seen.simon = await taskOf(page, 'ex-task');
+      await page.evaluate(() => { const s = document.getElementById('ex-set'); s.value = [...s.options].find((o) => o.value !== s.value).value; s.dispatchEvent(new Event('change')); }); await wait(page, 400);
+      seen.simonChanged = await taskOf(page, 'ex-task');
+      await page.evaluate(() => history.back()); await wait(page, 1200);
+      await lesson(page, 'test-minuet-opening'); await startStep(page, 'melody-cards');
+      seen.drills = await taskOf(page, 'ex-task');
+      const rung = async (r) => { await page.evaluate(() => document.getElementById('ex-level').click()); await wait(page, 300); await page.evaluate((r) => { const i = document.querySelector(`#drill-dialog input[name="d-rung"][value="${r}"]`); i.checked = true; i.dispatchEvent(new Event('change', { bubbles: true })); document.getElementById('drill-dialog').close(); }, r); await wait(page, 400); };
+      await rung(1); seen.drillsChanged = await taskOf(page, 'ex-task');
+      await rung(3); seen.drillsBack = await taskOf(page, 'ex-task');
+      await page.evaluate(() => history.back()); await wait(page, 1200);
+      await lesson(page, 'test-chords-and-band'); await startStep(page, 'band-roots');
+      seen.lab = await taskOf(page, 'lab-task');
+      await page.evaluate(() => document.getElementById('lab-role-lead').click()); await wait(page, 400);
+      seen.labChanged = await taskOf(page, 'lab-task');
+      await page.evaluate(() => history.back()); await wait(page, 1200);
+      await lesson(page, 'test-chords-and-band'); await startStep(page, 'free');
+      seen.free = await taskOf(page, 'fp-task');
+      const styles = await page.evaluate(() => [...new Set(['score-task', 'memo-task', 'ex-task', 'fp-task', 'lab-task'].map((id) => document.getElementById(id).className.split(' ').filter((c) => c === 'step-task').join()))]);
+      ok('consistency: the task line on Simon, Drills, the lab and Free play (and the score and Memorise above), one style (.step-task)', ['simon', 'drills', 'lab', 'free'].every((k) => seen[k] && !/Practice now/.test(seen[k])) && styles.join() === 'step-task', JSON.stringify({ seen, styles }));
+      ok('consistency: "Practice now: not counted for the step" after another set (Simon), help level (Drills) and part (the lab); gone when changed back',
+        /Practice now: not counted for the step \(another set\)/.test(seen.simonChanged) && /\(another help level\)/.test(seen.drillsChanged) && !/Practice now/.test(seen.drillsBack) && /\(the lead, not the accompaniment\)/.test(seen.labChanged), JSON.stringify(seen));
+      ok('consistency: task lines: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 5. "Visited" only after a key (Free play) or the music heard to its end (Watch); Back to the lesson at Watch's end;
+    // the lab's result by key: Back to the lesson is its main button. Plain phone tab; a stand-in keyboard for the lab.
+    await guard(async () => {
+      const { ctx, page, errors } = await tab({ keys: true });
+      await lesson(page, 'test-chords-and-band'); await startStep(page, 'free');
+      await page.evaluate(() => document.getElementById('fp-done').click()); await wait(page, 1000);
+      const noKey = { res: await result(page), state: await progress(page, 'test-chords-and-band', 'free') };
+      await page.locator('#lesson-bar button', { hasText: 'Again' }).click(); await wait(page, 1500);
+      const k = await page.evaluate(() => { const e = document.querySelector('#freeplay .fp-keyboard .key.white'); const r = e.getBoundingClientRect(); return [r.left + r.width / 2 + 4, r.top + r.height * 0.8]; });
+      await page.touchscreen.tap(k[0], k[1]); await wait(page, 400);
+      await page.evaluate(() => document.getElementById('fp-done').click()); await wait(page, 1000);
+      const withKey = { res: await result(page), state: await progress(page, 'test-chords-and-band', 'free') };
+      ok('consistency: a Free play step left with no key played: "Opened, nothing played", not marked', /Opened, nothing played/.test(noKey.res) && !noKey.state.done, JSON.stringify(noKey));
+      ok('consistency: a Free play step with a key tapped (by position): visited, counted', /Visited: a key played/.test(withKey.res) && withKey.state.done?.how === 'opened', JSON.stringify(withKey));
+      // Watch: back at once, then heard to the end (bars 1–2 at ♩ 240)
+      await lesson(page, 'test-consistency'); await startStep(page, 'listen');
+      await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 }); await wait(page, 500);
+      await page.evaluate(() => document.getElementById('score-back').click()); await wait(page, 1200);
+      const watchNo = await result(page);
+      await page.locator('#lesson-bar button', { hasText: 'Again' }).click(); await wait(page, 1500);
+      await page.waitForFunction(() => window.__pianoDebug?.state().steps > 0, null, { timeout: 30000 }); await wait(page, 500);
+      await firstTap(page);
+      if (await page.evaluate(() => document.getElementById('bottom-bar').classList.contains('faded'))) await firstTap(page);
+      await tapAt(page, '#play');
+      for (let i = 0; i < 60 && await page.evaluate(() => document.getElementById('run-strip').hidden); i++) await wait(page, 250);
+      const watchEnd = await page.evaluate(() => ({ strip: !document.getElementById('run-strip').hidden, line: document.getElementById('rs-line').textContent, back: !document.getElementById('rs-back').hidden }));
+      await tapAt(page, '#rs-back'); await wait(page, 1200);
+      const watchYes = { res: await result(page), state: await progress(page, 'test-consistency', 'listen') };
+      ok('consistency: a Watch step left at once: "Opened, nothing played"', /Opened, nothing played/.test(watchNo), watchNo.slice(0, 160));
+      ok('consistency: a Watch step heard to the end: the strip with Back to the lesson; visited', watchEnd.strip && watchEnd.back && /Played to the end/.test(watchEnd.line) && /Visited: the music heard to its end/.test(watchYes.res) && watchYes.state.done?.how === 'opened', JSON.stringify({ watchEnd, watchYes }));
+      // the lab: a key on its steps starts the count-in; ■; on the result a key (after a moment) does its main button, Back to the lesson
+      await lesson(page, 'test-chords-and-band'); await startStep(page, 'band-roots');
+      const say = await page.evaluate(() => document.getElementById('lab-keys-say').textContent);
+      await firstTap(page);
+      await key(page, 30); await wait(page, 2500);
+      const running = await page.evaluate(() => window.__pianoDebug.lab().running);
+      await page.evaluate(() => document.getElementById('lab-stop').click()); await wait(page, 600);
+      const main = await page.evaluate(() => [...document.querySelectorAll('#lab-result .btn.main')].map((b) => b.textContent));
+      await wait(page, 900);
+      await key(page, 30); await wait(page, 1500);
+      const labRes = await result(page);
+      ok('consistency: the lab, a step: "or play any key" by ▶ Start, a key starts it; its result\'s main button is Back to the lesson, and a key does it', say === 'or play any key' && running && main.join() === 'Back to the lesson ▶' && /Step 2 · /i.test(labRes), JSON.stringify({ say, running, main, labRes: labRes.slice(0, 120) }));
+      ok('consistency: visited and the lab: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 6. The step's result page by the keyboard's edge keys (set up): the highest is Next ▶, the lowest Again; the lesson
+    // page itself takes no keys.
+    await guard(async () => {
+      const { ctx, page, errors } = await tab({ keys: true, edges: true });
+      await lesson(page, 'test-chords-and-band'); await firstTap(page);
+      await key(page, 108); await wait(page, 1200);
+      const onLesson = await page.evaluate(() => ({ nav: window.__pianoDebug.nav(), result: !!document.querySelector('.les-result') }));
+      await startStep(page, 'free');
+      await page.evaluate(() => document.getElementById('fp-done').click()); await wait(page, 1000);
+      const bar = await page.evaluate(() => document.querySelector('#lesson-bar .lesson-bar-note')?.textContent ?? '');
+      await key(page, 21); await wait(page, 1500);
+      const again = await page.evaluate(() => window.__pianoDebug.showing());
+      await page.evaluate(() => document.getElementById('fp-done').click()); await wait(page, 1000);
+      await key(page, 108); await wait(page, 1500);
+      const next = await page.evaluate(() => ({ nav: window.__pianoDebug.nav(), result: !!document.querySelector('.les-result') }));
+      ok('consistency: a step\'s result by the edge keys: lowest Again (the step opens again), highest Next (the lesson page); the bar says so', again === 'freeplay' && next.nav.at(-1) === 'lesson' && !next.result && /highest key: Next · lowest key: Again/.test(bar), JSON.stringify({ again, next, bar }));
+      ok('consistency: the lesson page itself takes no keys (the highest key there opens nothing)', onLesson.nav.at(-1) === 'lesson' && !onLesson.result, JSON.stringify(onLesson));
+      ok('consistency: result keys: no page errors', errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    });
+
+    // 7. The one-time keyboard hint: a keyboard connects for the first time (its ends not set up): the card; Not now puts
+    // it away for good; Set them up opens Keyboard controls asking for the lowest key; with no keyboard, never.
+    await guard(async () => {
+      const a = await tab({ keys: true, hint: true });
+      await a.page.goto(BASE); await wait(a.page, 1500); await firstTap(a.page); await wait(a.page, 800);
+      const shown = await a.page.evaluate(() => !document.getElementById('keys-hint').hidden);
+      await a.page.screenshot({ path: join(SHOTS, 'keyboard-hint-360x780.png') });
+      await tapAt(a.page, '#keys-hint-no');
+      const gone = await a.page.evaluate(() => document.getElementById('keys-hint').hidden);
+      await a.page.reload(); await wait(a.page, 1500); await firstTap(a.page); await wait(a.page, 800);
+      const again = await a.page.evaluate(() => !document.getElementById('keys-hint').hidden);
+      await a.ctx.close();
+      const b = await tab({ keys: true, hint: true });
+      await b.page.goto(BASE); await wait(b.page, 1500); await firstTap(b.page); await wait(b.page, 800);
+      await tapAt(b.page, '#keys-hint-go');
+      const setup = await b.page.evaluate(() => ({ open: document.getElementById('remote-dialog').open, says: document.getElementById('r-keys').textContent }));
+      await b.ctx.close();
+      const c = await tab({ hint: true });
+      await c.page.goto(BASE); await wait(c.page, 1500); await firstTap(c.page); await wait(c.page, 800);
+      const none = await c.page.evaluate(() => !document.getElementById('keys-hint').hidden);
+      ok('consistency: the keyboard hint: shown when a keyboard first connects; Not now puts it away, also after a reload', shown && gone && !again, JSON.stringify({ shown, gone, again }));
+      ok('consistency: the keyboard hint: Set them up opens Keyboard controls asking for the lowest key; no keyboard, no hint', setup.open && /lowest key/.test(setup.says) && !none, JSON.stringify({ setup, none }));
+      ok('consistency: keyboard hint: no page errors', [...a.errors, ...b.errors, ...c.errors].length === 0, [...a.errors, ...b.errors, ...c.errors].join(' | '));
+      await c.ctx.close();
+    });
+
+    // 8. The marks' contrast on the screen (light and dark themes: the dark theme draws the music inverted whole): a grey
+    // and an orange notehead against the paper beside it, read from a screenshot of a Drills card.
+    await guard(async () => {
+      const got = {};
+      for (const dark of [false, true]) {
+        const { ctx, page } = await tab({ dark });
+        await lesson(page, 'test-consistency'); await startStep(page, 'cards-no-names');
+        await firstTap(page); await tapAt(page, '#ex-start'); await wait(page, 600);
+        let d = null;
+        for (let i = 0; i < 40; i++) { d = await page.evaluate(() => window.__pianoDebug.drill()); if (d.state === 'turn') break; await wait(page, 150); }
+        const pos = (m) => page.evaluate((m) => { const k = document.querySelector(`#ex-keyboard .key[data-midi="${m}"]`); const r = k.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * 0.75]; }, m);
+        const p0 = await pos(d.steps[0].keys[0]); await page.touchscreen.tap(p0[0], p0[1]);
+        const t0 = Date.now();
+        while (Date.now() - t0 < d.steps[1].t + 320) await wait(page, 20);
+        const p1 = await pos(d.steps[1].keys[0]); await page.touchscreen.tap(p1[0], p1[1]);
+        for (let i = 0; i < 60; i++) { if (/Not quite|✓/.test(await page.evaluate(() => document.getElementById('ex-status').textContent))) break; await wait(page, 200); }
+        await wait(page, 700);
+        got[dark ? 'dark' : 'light'] = { grey: await contrastOf(page, '#ex-notation', '#6b7280'), orange: await contrastOf(page, '#ex-notation', '#d97706') };
+        await ctx.close();
+      }
+      const all = [got.light?.grey, got.light?.orange, got.dark?.grey, got.dark?.orange];
+      ok('consistency: the marks against the paper, measured on screen: grey and orange at least 3:1 (WCAG for graphics) in both themes', all.every((x) => x && x.ratio >= 3), JSON.stringify(got));
+    });
+  }
+  } // (end of `--only consistency`)
   if (!only || only === 'lessons') { // (`--only lessons` runs this section alone)
   // ---- Lesson steps after the reviews of lesson 1 (owner, 2026-10-16) -------------------------------------------------
   // Free play opened by a step: the step's task on its own line, kept while a key is held; the columns hidden (Show for
@@ -3699,6 +4099,7 @@ try {
     await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-first-sounds', done: { 'r1-first-sounds': { 'first-sounds': { at, how: 'opened' }, 'find-groups': { at, how: 'opened' }, copy: { at, how: 'target' } } }, tried: {} })); });
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
     await page.locator('.les-step[data-step="make-a-tune"] .btn').click(); await page.waitForTimeout(1200);
+    await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)
     await page.evaluate(() => document.getElementById('fp-done').click()); await page.waitForTimeout(800);
     const done = await page.evaluate(() => document.getElementById('lesson-body').innerText);
     await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1200);

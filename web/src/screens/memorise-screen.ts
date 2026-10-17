@@ -11,9 +11,12 @@ import { yours } from '../practice';
 import type { Command } from '../remote';
 import { currentDevice, settingsFor, type ScoreSettings } from '../settings';
 import { pianoHands, SIZE_MAX, type Borrower, type ScoreScreen } from './score';
+import { namesShown, stepFor } from '../log';
+import { fillTaskLine } from '../lesson/task-line';
+import { noKeyboard } from '../key-words';
 
-/** open(preset): an activity's preset for the piece showing (activity.ts), in force until Done. */
-export type MemoriseScreen = Screen & { open(preset?: MemorisePreset, title?: string): Promise<void>; close(): void; readonly isOpen: boolean; reloadStorage(): void };
+/** open(preset): an activity's preset for the piece showing (activity.ts), in force until Done (its task: log.ts stepFor). */
+export type MemoriseScreen = Screen & { open(preset?: MemorisePreset): Promise<void>; close(): void; readonly isOpen: boolean; reloadStorage(): void };
 
 /** The score's biggest notation size (Display's slider): Memorise never draws bigger, and never stretches (owner). */
 const MEMO_MAX_SIZE = SIZE_MAX;
@@ -35,6 +38,8 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     replayKey: (key) => practice.key({ midi: key, on: true, velocity: 100, time: performance.now() }),
     changed: () => fillMemo(),
     anyKeyDown: () => midi.down.size > 0,
+    inStep: () => !!stepFor('memorise')?.lesson,
+    names: () => namesShown('memorise'),
   });
   practice.onPassEnd = () => memorise.passEnded();
 
@@ -62,10 +67,9 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     memoPreparing = true;
     const mine = visit;
     try {
-      const onScreen = memorise.look(currentDevice()).under === 'keyboard'
-        ? 'Play on the keys below.' : 'Play on a MIDI keyboard, or show the keyboard in Settings.';
-      memoProblem = await midi.startSoon().then((names) => (names.length ? '' : `No MIDI keyboard is connected. ${onScreen}`),
-        () => `This browser has no MIDI. ${onScreen}`);
+      const onScreen = memorise.look(currentDevice()).under === 'keyboard' ? 'play on the keys below' : 'show the keyboard in Settings, or plug one in';
+      memoProblem = await midi.startSoon().then((names) => (names.length ? '' : noKeyboard(onScreen)),
+        () => `This browser has no MIDI: ${onScreen.replace(', or plug one in', '')}.`);
       const s = memoSettings();
       sound.keyboard = s.pianoOut === 'keyboard' && midi.canPlay ? midi : null;
       await sound.prepare(!sound.keyboard).catch(() => {});
@@ -84,6 +88,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
   function memoKey(e: KeyEvent): void {
     const ph = memorise.phase;
     if (memorise.waitRelease) return; // the note that ended the pass is still down
+    if (memorise.stepEnd) { backToLesson(); return; } // (a lesson step's chunk learned: a key goes back to the lesson)
     if (ph === 'off' || ph === 'done') { void memoGo(() => memorise.start()); return; }
     if (ph === 'review') { memorise.resumeWith(e.midi); return; }
     if (ph !== 'ready') return;
@@ -130,6 +135,11 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
       $('memo-join-next').textContent = c.next;
     }
     $('memo-next-chunk').hidden = !memorise.waitingForNext;
+    $('memo-next-chunk').classList.toggle('main', !memorise.stepEnd);
+    $('memo-back').hidden = !memorise.stepEnd; // (a lesson step's end: its main button, owner 2026-10-16)
+    // The task line (lesson/task-line.ts): the step's task, and "Practice now" once the piece or hands differ from it.
+    const piece = currentPiece()?.id;
+    if (piece) fillTaskLine($('memo-task'), 'memorise', { screen: 'memorise', piece, settings: { hands: memorise.hands(piece) } });
     const running = memorise.active && memorise.phase !== 'done' && !memorise.waitingForNext; // waiting for Next chunk: ▶ goes on
     $('memo-go').textContent = running ? '■' : '▶ Start';
     $('memo-go').setAttribute('aria-label', running ? 'Stop memorising' : 'Start memorising');
@@ -181,15 +191,15 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
       memoShown = !memoShown || $('memo-head').classList.contains('faded'); // sideways: a tap brings them back (or lets them fade)
       fillMemo();
     },
-    // No keys under the music: the hint names the notes instead (owner, 2026-10-12).
+    // No keys under the music: the hint names the notes instead (owner, 2026-10-12); not where a step hides names.
     hint: (keys: number[]) => {
-      if (memoSettings().under === 'nothing') memorise.hint(view.namesAt(view.index, yours(memoSettings())).filter((n) => keys.includes(n.midi)).map((n) => n.name));
+      if (memoSettings().under === 'nothing' && namesShown('memorise')) memorise.hint(view.namesAt(view.index, yours(memoSettings())).filter((n) => keys.includes(n.midi)).map((n) => n.name));
     },
     stop: () => { if (memorise.active) memorise.stop(); },
     get busy() { return memorise.active; },
   };
 
-  async function open(preset?: MemorisePreset, title?: string): Promise<void> {
+  async function open(preset?: MemorisePreset): Promise<void> {
     if (preset) { const { hands, tempo, ...options } = preset; memorise.setPreset({ piece: currentPiece().id, options, hands, tempo }); }
     else memorise.setPreset(null);
     scoreScreen.lend(borrower);
@@ -202,8 +212,10 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
     $('memo-piece').textContent = currentPiece().title;
     app.showMessage('');
     await scoreScreen.draw();
-    if (title) memorise.note(title); // an activity's own words, in Memorise's message line
   }
+  /** A lesson step's end: back to the lesson (its result), as ← does. */
+  const backToLesson = () => $('memo-done').click();
+  $('memo-back').addEventListener('click', backToLesson);
 
   function close(): void {
     memorise.leave();
@@ -311,6 +323,7 @@ export function createMemoriseScreen(app: App, scoreScreen: ScoreScreen): Memori
       if (c === 'mash') { if (memorise.active) { memorise.stop(); memorise.note('Stopped by a mash'); } }
       else if (c === 'low') void memoGo(() => memorise.hearBar());
       else if (c === 'peek-on' || c === 'peek-off') memorise.peek(c === 'peek-on');
+      else if (memorise.stepEnd) backToLesson(); // (a lesson step's end: its main button)
       else if (memorise.canCountIn) void memoGo(() => memorise.countIn()); // highest key, in time and waiting: the count-in
       else if (memorise.waitingForNext) memorise.nextChunk(1);
       else if (memorise.phase === 'review') memorise.goAgain();

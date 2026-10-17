@@ -17,6 +17,7 @@
     <button id="open-info" type="button" class="btn" aria-label="About this song">ⓘ</button>
     <button id="open-settings" type="button" class="btn" aria-haspopup="dialog">Display</button>
     <button id="open-more" type="button" class="btn" aria-haspopup="dialog" aria-label="More">⋯</button>
+    <p id="score-task" class="step-task" hidden></p>
   </header>
   <div class="bar bottom" id="bottom-bar" role="toolbar" aria-label="Playing this song">
     <button id="play" type="button" class="btn play" aria-label="Play">▶</button>
@@ -40,6 +41,18 @@
   </div>
 
   <p id="message" class="message" hidden></p>
+  <!-- Once, when a MIDI keyboard first connects (owner, 2026-10-16): set up its lowest and highest keys as buttons. -->
+  <div id="keys-hint" class="keys-hint" role="dialog" aria-labelledby="keys-hint-text" hidden>
+    <p id="keys-hint-text">Your keyboard is connected. Its lowest and highest keys can start, go on and go again, so your hands stay on the keys. Set them up now?</p>
+    <div class="keys-hint-buttons"><button id="keys-hint-go" type="button" class="btn main">Set them up</button><button id="keys-hint-no" type="button" class="btn">Not now</button></div>
+  </div>
+  <!-- After a run (Play along, Rhythm, a loop's passes): how it went, over the bottom of the music, with the slips marked
+       on the music above it (result-marks.ts); a key starts the next run (owner, 2026-10-16: a strip, not a dialog). -->
+  <div id="run-strip" class="run-strip" role="status" hidden>
+    <div class="rs-text"><p id="rs-line" class="rs-line"></p><p id="rs-legend" class="mark-legend" hidden></p><p id="rs-keys" class="rs-keys"></p></div>
+    <div id="rs-weak" class="rs-weak"></div>
+    <div class="rs-buttons"><button id="rs-again" type="button" class="btn">▶ Again</button><button id="rs-back" type="button" class="btn main" hidden>Back to the lesson ▶</button><button id="rs-close" type="button" class="btn" aria-label="Close">✕</button></div>
+  </div>
   <main id="score" class="score"></main>
   <!-- Fingering mode: tap a note, pick a finger. -->
   <div id="marks-bar" class="bar marks-bar" hidden>
@@ -56,6 +69,7 @@
     <span class="memo-title">Memorise · <b id="memo-piece"></b></span>
     <span id="memo-head-info" class="memo-head-info"></span>
     <button id="memo-settings" type="button" class="btn" aria-haspopup="dialog">Settings</button>
+    <p id="memo-task" class="step-task" hidden></p>
   </div>
   <div id="memo-panel" class="memo-panel" hidden>
     <div id="memo-info" class="memo-info">
@@ -78,10 +92,11 @@
     <!-- The test's choices (which test; after it: practise the bars, test again). -->
     <div id="memo-offers" class="memo-choices" hidden></div>
     <button id="memo-next-chunk" type="button" class="btn main" hidden>Next chunk</button>
+    <button id="memo-back" type="button" class="btn main" hidden>Back to the lesson ▶</button>
     <div id="memo-ctl" class="memo-ctl">
       <button id="memo-go" type="button" class="btn main">▶ Start</button>
       <button id="memo-countin" type="button" class="btn main" hidden>▶ Count-in</button>
-      <button id="memo-hear" type="button" class="btn">Hear</button>
+      <button id="memo-hear" type="button" class="btn">Hear it</button>
       <button id="memo-peek" type="button" class="btn">Peek</button>
       <button id="memo-test" type="button" class="btn" hidden>Test</button>
       <button id="memo-stuck" type="button" class="btn" hidden>Stuck</button>
@@ -102,7 +117,7 @@
   <!-- Free play: just the keys, named; nothing judged. -->
   <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
     <div class="fp-head"><button id="fp-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button></div>
-    <p id="fp-task" class="fp-task" hidden></p>
+    <p id="fp-task" class="step-task" hidden></p>
     <p id="fp-chord" class="fp-chord"></p>
     <p id="fp-notes" class="fp-notes"></p>
     <!-- What you played lately: chords, notes and intervals, newest on top; each can be turned off. -->
@@ -134,7 +149,7 @@
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
     <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
-    <p id="ex-task" class="ex-task" hidden></p>
+    <p id="ex-task" class="step-task" hidden></p>
     <div class="ex-prompt">
       <div id="ex-notation" class="ex-notation off"></div>
       <div id="ex-name" class="ex-name"></div>
@@ -145,6 +160,8 @@
         <p id="ex-sub" class="ex-sub"></p>
         <p id="ex-legend" class="ex-legend" hidden></p>
         <button id="ex-start" type="button" class="btn ex-start">Start</button>
+        <!-- A lesson step's set or game at its end: back to the step's result (owner, 2026-10-16); a key does it too. -->
+        <button id="ex-back" type="button" class="btn main ex-start" hidden>Back to the lesson ▶</button>
         <!-- Drills: after a card with slips, and at the end of a set. -->
         <div id="ex-after" class="ex-after" hidden>
           <button id="ex-again" type="button" class="btn">Again</button>
@@ -158,7 +175,7 @@
       <button id="ex-smaller" type="button" class="btn" aria-label="Smaller music">A−</button>
       <output id="ex-size" aria-live="polite"></output>
       <button id="ex-larger" type="button" class="btn" aria-label="Larger music">A+</button>
-      <button id="ex-hear" type="button" class="btn" hidden>Hear again</button>
+      <button id="ex-hear" type="button" class="btn" hidden>Hear it</button>
       <button id="ex-finish" type="button" class="btn" hidden>Finish</button>
     </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
@@ -171,6 +188,7 @@
        the box of chords and the keys to use. -->
   <section id="lab" class="lab" aria-label="Accompaniment lab" hidden>
     <div class="fp-head"><button id="lab-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Lab</span><span class="lab-sp"></span><button id="lab-band" type="button" class="btn" aria-haspopup="dialog" aria-label="The band">⚙</button><button id="lab-stop" type="button" class="btn" hidden aria-label="Stop">■</button></div>
+    <p id="lab-task" class="step-task" hidden></p>
     <div class="lab-body">
       <div class="lab-side">
         <div id="lab-open" class="lab-open">
@@ -195,7 +213,7 @@
         <div id="lab-result" class="lab-result" hidden></div>
       </div>
     </div>
-    <div id="lab-actions" class="lab-actions"><button id="lab-show" type="button" class="btn">Show me first</button><button id="lab-start" type="button" class="btn main">▶ Start</button></div>
+    <div id="lab-actions" class="lab-actions"><button id="lab-show" type="button" class="btn">Show me first</button><button id="lab-start" type="button" class="btn main">▶ Start</button><span id="lab-keys-say" class="lab-keys-say"></span></div>
     <div class="lab-bottom"><button id="lab-slower" type="button" class="btn" aria-label="Slower">−</button><output id="lab-bpm"></output><button id="lab-faster" type="button" class="btn" aria-label="Faster">+</button>
       <select id="lab-help" aria-label="Help"><option value="lit">Keys lit</option><option value="names">Notes named</option><option value="symbol">Chord symbol only</option></select></div>
     <div id="lab-keyboard" class="keyboard lab-keyboard"></div>
@@ -532,19 +550,12 @@
         <span id="r-keys" class="note"></span>
         <button id="r-learn" type="button">Learn them</button>
       </fieldset>
-      <p class="note">Lowest key: back / again (the score: to the loop's or the bar's start; Memorise: Hear; Drills: Again, or Hear it; Simon: Hear again; the lab, stopped: back to the steps). Hold it in Memorise: Peek. Highest key: start / next / carry on (the lab: Start, or Again). Where any octave counts (the lab while the band plays; Drills by name; Simon in any octave) they are notes like the rest; a mash still stops.</p>
+      <p class="note">Lowest key: back / again (the score: to the loop's or the bar's start; Memorise: Hear it; Drills: Again, or Hear it; Simon: Hear it, or Again after a game; the lab, stopped: back to the steps; a step's result: Again). Hold it in Memorise: Peek. Highest key: start / next / carry on (the lab: its main button; a step's end: back to the lesson; a step's result: Next). Where any octave counts (the lab while the band plays; Drills by name; Simon in any octave) they are notes like the rest; a mash still stops.</p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
 
-  <dialog id="summary" aria-labelledby="summary-title">
-    <form method="dialog">
-      <h2 id="summary-title">How it went</h2>
-      <p id="summary-body"></p>
-      <div id="summary-weak" class="menu"></div>
-      <div class="actions"><button value="close">Close</button></div>
-    </form>
-  </dialog>
+  <!-- (A run's summary is the strip #run-strip, not a dialog: owner, 2026-10-16.) -->
 
   <dialog id="tempo" aria-labelledby="tempo-title">
     <form method="dialog">

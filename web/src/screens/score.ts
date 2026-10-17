@@ -9,9 +9,12 @@ import type { NoteEvent } from '../sound';
 import { $, type App, type Piece, type Screen, type KeyRange } from '../app';
 import { isStrip } from '../follow';
 import { addFingerings, fingeringsFor, sameNote, setFingering } from '../marks';
-import { addEntry, keyName, Run, setActivity, type Slip } from '../log';
+import { addEntry, keyName, namesShown, Run, stepEvidence, stepFor, type Slip } from '../log';
+import { fillTaskLine } from '../lesson/task-line';
+import { kindsOf, showLegend, slipMarks } from '../result-marks';
+import { edgeWords, joinWords, keyDoes, noKeyboard } from '../key-words';
 import { MidiInput, type KeyEvent } from '../midi';
-import { yours } from '../practice';
+import { yours, type WeakSpot } from '../practice';
 import type { Command } from '../remote';
 import type { StepNotes } from '../follow';
 import { keysToShow, type ChosenKeys, type ScorePreset } from '../activity';
@@ -109,7 +112,6 @@ export function createScoreScreen(app: App): ScoreScreen {
   const settingsDialog = $<HTMLDialogElement>('settings');
   const infoDialog = $<HTMLDialogElement>('info');
   const tempoDialog = $<HTMLDialogElement>('tempo');
-  const summaryDialog = $<HTMLDialogElement>('summary');
   let borrower: Borrower | null = null;
   /** A score activity's chosen keys (activity.ts), for its piece while its preset lasts. */
   let activityKeys: { piece: string; keys: ChosenKeys } | null = null;
@@ -159,6 +161,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       warnAboutHands(piece, xml);
       // The strip takes its height at the bottom first, so the slots are laid out in the room left above it.
       document.body.style.setProperty('--under-h', `${strip.setMode(s.under)}px`);
+      strip.names = namesShown(borrower ? 'memorise' : 'score'); // (an activity can hide note names until taught)
       placeBottomBar();
       borrower?.beforeShow(); // the borrower's panel height too
       await view.show(addFingerings(xml, fingeringsFor(piece.id)), s, at, () => strip.setSong(view.songPitches));
@@ -210,9 +213,12 @@ export function createScoreScreen(app: App): ScoreScreen {
 
   async function openSong(id: string): Promise<void> {
     endRun();
+    hideStrip();
     startRequest++; // a start still getting ready is dropped
     starting = false;
-    if (presetPiece() !== id) { clearPreset(); setActivity(null); } // another song: an activity (its preset, its log tag) is over
+    // Another song: an activity's preset is over; a lesson step stays in force, its task line saying the practice now is
+    // not counted (owner, 2026-10-16), its runs kept with it as practice.
+    if (presetPiece() !== id) clearPreset();
     forgetRun();
     if (marking) setMarking(false); // (another piece: editing the last one's fingering is over, F01)
     sideFit = 1;
@@ -239,8 +245,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       view.setLoop(range);
       view.goTo(range.a);
     }
-    fillBars();
-    showMessage(a.title, true);
+    fillBars(); // (the activity's own words are on the task line)
   }
 
   // Bars: the song's name on top; the playing controls and the notation size at the bottom (the rest of the
@@ -282,6 +287,9 @@ export function createScoreScreen(app: App): ScoreScreen {
     // The same buttons mean the piano's hands in Watch and yours elsewhere: said on screen (owner, 2026-10-15).
     $('q-hands-label').textContent = s.mode === 'watch' ? 'Piano:' : 'You:';
     for (const b of document.querySelectorAll<HTMLButtonElement>('#q-hands button')) b.setAttribute('aria-pressed', String(b.dataset.hands === s.hands));
+    // The task line (lesson/task-line.ts): the step's task, and "Practice now" once the piece, mode, hands, bars or timing
+    // differ from what the step set (owner, 2026-10-16; tempo is free).
+    fillTaskLine($('score-task'), 'score', { screen: 'score', piece: piece.id, mode: s.mode, settings: { mode: s.mode, hands: s.hands, onTime: s.onTime, ...(loop ? { loop: `${la}-${lb}` } : {}) } });
   }
 
   function change<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]): void {
@@ -346,8 +354,8 @@ export function createScoreScreen(app: App): ScoreScreen {
   // A start waits for MIDI permission and the piano's samples; another song, mode or hands, a stop, or another screen
   // in the meantime drops it (ChatGPT's review, 2026-10-13), rather than starting what is no longer chosen.
   let startRequest = 0;
-  const NO_KEYBOARD = 'No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the screen.';
-  const NO_KEYBOARD_SIDEWAYS = 'No MIDI keyboard found. Turn the phone upright to play on the screen’s keys, or plug one in.';
+  const NO_KEYBOARD = noKeyboard('this mode listens to one. Plug it in, or choose Wait for me to play on the keys below');
+  const NO_KEYBOARD_SIDEWAYS = noKeyboard('turn the phone upright to play on the keys below, or plug one in');
   const startShape = () => { const s = settingsFor(currentPiece().id); return `${currentPiece().id}|${s.mode}|${s.hands}|${!!borrower}`; };
   async function play(fromKey?: number, fromAt?: number): Promise<void> {
     if (starting) return;
@@ -355,6 +363,8 @@ export function createScoreScreen(app: App): ScoreScreen {
     const s = settingsFor(currentPiece().id);
     if (s.mode === 'ladder' && !view.looped) { startPicking('Ladder: tap the first bar to practise'); return; }
     starting = true;
+    hideStrip(); // (the last run's result and marks go as the next starts)
+    if (!resumable) lastPass = null;
     const request = ++startRequest, shape = startShape();
     if (app.messageIsNews) showMessage(''); // "Paused… play to carry on" and the like are done with
     // Begun from a key: it counts as your first note only where you have notes at the marker (in Rhythm: a beat to tap there).
@@ -366,8 +376,8 @@ export function createScoreScreen(app: App): ScoreScreen {
       // without it, one not allowed it, or one still asking you to allow it (owner, 2026-10-15: the touch keys did
       // nothing on a phone with no keyboard). A keyboard allowed later plays in as it comes. The timed modes need one.
       const touchOnly = s.mode === 'wait' && !$('keyboard').hidden && s.pianoOut !== 'keyboard'; // (the keys are showing)
-      if (touchOnly) void midi.start().then((names) => names.length ? undefined : 'No MIDI keyboard is connected', () => 'No MIDI keyboard here')
-        .then((why) => { if (why && request === startRequest && (!app.messageText || app.messageText === TAP_TIP)) showMessage(`${why}: play on the keys below.${tipping ? ` ${TAP_TIP}` : ''}`, true); });
+      if (touchOnly) void midi.start().then((names) => names.length ? undefined : noKeyboard('play on the keys below'), () => 'This browser has no MIDI: play on the keys below.')
+        .then((why) => { if (why && request === startRequest && (!app.messageText || app.messageText === TAP_TIP)) showMessage(`${why}${tipping ? ` ${TAP_TIP}` : ''}`, true); });
       else if (s.mode !== 'watch' || s.pianoOut === 'keyboard') {
         // In plain words, never the browser's own (final review 2026-10-15, F17): the timed modes listen to a keyboard,
         // so with none (none connected, or MIDI not allowed) they say so and do not start a run that then "pauses".
@@ -487,21 +497,77 @@ export function createScoreScreen(app: App): ScoreScreen {
   practice.onLoopRound = () => { if (logRun?.mode === 'wait' && !borrower) { trackWait(); logRun.steps += 1; logRun.rounds += 1; logRun.at = view.loopSpan()?.a ?? 0; } };
   let mashedAt = -Infinity;
   const SETTLE_MS = 1000; // after a pause for mashing, keys still landing from the same burst do not start it again
+  /**
+   * A key while nothing runs starts (owner, 2026-10-16: a key starts everywhere it can, and after a run a key starts the
+   * next): your note at the marker (any key in Rhythm) is the run's first note, played on time; another key starts it
+   * as ▶ does. Not in the first moment after a run ended (the last notes' keys), nor while picking a loop's bars.
+   */
   async function startFromKey(e: KeyEvent): Promise<void> {
     if (view.playing || practice.active || starting || marking || picking || app.dialogOpen()) return;
-    if (e.time - mashedAt < SETTLE_MS) return;
+    if (e.time - mashedAt < SETTLE_MS || e.time - endedAt < RESULT_SETTLE_MS) return;
     if (borrower) { borrower.keyToStart(e); return; }
     const s = settingsFor(currentPiece().id);
-    if (s.mode === 'watch' || (s.mode === 'ladder' && !view.looped)) return;
+    if (s.mode === 'ladder' && !view.looped) return;
+    if (s.mode === 'watch') { await play(); return; }
     if (s.mode === 'wait') {
       practice.pressedBefore(e.midi); // that key counts for the first notes, held or not
       await play();
       return;
     }
     const mine = view.struckAt(view.index, yours(s));
-    if (s.mode !== 'rhythm' && mine.length && !mine.includes(e.midi)) return; // not your note: wait for it
+    if (s.mode !== 'rhythm' && mine.length && !mine.includes(e.midi)) { await play(); return; } // (not your note: it starts, as ▶)
     await play(e.midi, e.time);
   }
+  /** When a run (or the music, in Watch) last ended: a key this soon after is not "start again". */
+  let endedAt = -Infinity;
+  const RESULT_SETTLE_MS = 800;
+
+  // ---- after a run: the strip (owner, 2026-10-16: the slips marked on the music with the app's one set of marks and
+  // its key, the summary as a strip at the bottom, not a dialog; a key starts the next run) -----------------------------
+  const runStrip = $('run-strip');
+  let stripShown = false;
+  const inStep = () => !!stepFor('score')?.lesson;
+  function showStrip(o: { line: string; slips?: { step: number; midi: number; kind: string }[]; weak?: WeakSpot[]; from?: number }): void {
+    if (quiet || borrower) return; // (leaving the piece: logged, nothing shown over where you land)
+    stripShown = true;
+    endedAt = performance.now();
+    if (app.messageIsNews) showMessage(''); // (the strip says how it went: no pass line under it)
+    $('rs-line').textContent = o.line;
+    const slips = o.slips ?? [];
+    showLegend($('rs-legend'), slips.length ? kindsOf(slips) : null);
+    view.markNotes(slipMarks(slips));
+    $('rs-weak').replaceChildren(...(o.weak ?? []).map((w) => {
+      const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn' });
+      const label = barsLabel(view.barNumber(w.a), view.barNumber(w.b));
+      b.textContent = `Loop ${label} (${w.count} off)`;
+      b.addEventListener('click', () => {
+        hideStrip();
+        view.setLoop({ a: w.a, b: w.b });
+        view.goTo(w.a);
+        showMessage(`Looping ${label}: press ▶`, true);
+        fillBars();
+      });
+      return b;
+    }));
+    const step = inStep();
+    $('rs-back').hidden = !step;
+    $('rs-again').classList.toggle('main', !step);
+    $('rs-keys').textContent = joinWords(keyDoes('starts the next run'), edgeWords({ high: step ? 'back to the lesson' : undefined }));
+    // The marker back where the run started, so the next run (a key, or ▶ Again) plays the same bars again.
+    if (o.from !== undefined && o.from >= 0) view.goTo(o.from);
+    runStrip.hidden = false;
+  }
+  function hideStrip(): void {
+    if (!stripShown) return;
+    stripShown = false;
+    runStrip.hidden = true;
+    view.markNotes([]);
+  }
+  $('rs-again').addEventListener('click', () => void play());
+  $('rs-close').addEventListener('click', hideStrip);
+  $('rs-back').addEventListener('click', () => $('score-back').click()); // (a lesson step: back to its result, as ←)
+  /** A loop's last whole pass, for the strip when the run stops (Ladder, or a loop in Play along or Rhythm). */
+  let lastPass: { r: ReturnType<typeof practice.passResult>; line: string } | null = null;
   practice.onAutoPause = (reason, step) => {
     if (reason === 'mash') { mashedAt = performance.now(); practice.forgetMash(mashedAt); }
     pauseRun(step, reason === 'silence' ? 'Paused: no keys for a few seconds. Play to carry on.' : 'Paused: lots of keys at once. Play to carry on.');
@@ -651,6 +717,12 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (borrower) { borrower.loopEnded(); return; }
     const s = settingsFor(currentPiece().id);
     if (s.mode === 'wait') { practice.loopBack(); return; }
+    if (s.mode === 'watch') {
+      stepEvidence('score'); // (a lesson's Watch step: the music heard round to its end)
+      // In a lesson step, once round the step's bars is its end: it stops there, with Back to the lesson (▶ Again
+      // listens again); your own loop in Watch goes round as before.
+      if (inStep()) { sound.stop(); view.songClock = null; view.goTo(view.looped?.a ?? 0); fillBars(); showBars(); showStrip({ line: 'Played to the end.', from: view.looped?.a ?? 0 }); return; }
+    }
     if (judged(s.mode)) {
       const r = practice.passResult();
       pass++;
@@ -667,6 +739,7 @@ export function createScoreScreen(app: App): ScoreScreen {
           : rounded < s.speed ? ` — down to ${bpm} bpm` : ` — staying at ${bpm} bpm`;
       }
       showMessage(line, true);
+      lastPass = { r, line };
     }
     startLoopPass();
   };
@@ -680,9 +753,20 @@ export function createScoreScreen(app: App): ScoreScreen {
     if (borrower) { borrower.stop(); return; }
     endTip();
     quiet = leaving;
+    if (leaving) hideStrip(); // (the strip and its marks belong to the piece on screen)
     try {
+      // A loop's run (its passes): how its last whole pass went, on the strip, as a run with no loop has its summary.
+      const lr = logRun, pass = lastPass;
+      lastPass = null;
       if (view.playing) view.pause();
       else { sound.stop(); practice.stop(!view.looped); fillBars(); showBars(); }
+      if (lr && pass && view.looped && judged(lr.mode as Mode) && !resumable) {
+        showStrip({ line: `${lr.passes.length} ${lr.passes.length === 1 ? 'pass' : 'passes'} · last: ${pass.line.replace(/^Pass \d+: /, '')}`, slips: pass.r.slips, from: view.looped.a });
+      }
+      // Wait for me round its loop at least once (the step's "through"): said on the strip too, with Back to the lesson in
+      // a step; nothing is judged, so no marks.
+      const loop = view.loopSpan();
+      if (lr?.mode === 'wait' && loop && lr.rounds >= 1) showStrip({ line: `Played through ${barsLabel(view.barNumber(loop.a), view.barNumber(loop.b))}${lr.rounds > 1 ? `, ${lr.rounds} times` : ''}.`, from: loop.a });
       if (!resumable) endRun(); // (a run paused by itself is not over: it carries on, or See how it went ends it)
     } finally { quiet = false; }
   }
@@ -691,6 +775,11 @@ export function createScoreScreen(app: App): ScoreScreen {
     endTip();
     if (borrower || holding) return; // a borrower stops the music itself (memorise.ts); nothing here stops it
     practice.stop(!view.looped);
+    // Watch to the end: a lesson's Watch step is visited (owner, 2026-10-16), and its end offers Back to the lesson.
+    if (settingsFor(currentPiece().id).mode === 'watch' && view.index >= view.stepCount - 1) {
+      stepEvidence('score');
+      if (inStep()) showStrip({ line: 'Played to the end.', from: view.looped?.a ?? 0 });
+    }
     fillBars();
     showBars();
   };
@@ -747,7 +836,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     // What the mode is for, every time one is picked (owner, 2026-10-15); Ladder with no loop then asks for its bars.
     const mode = settingsFor(currentPiece().id).mode;
     if (mode === 'ladder' && !view.looped) startPicking(LADDER_PICK);
-    else if (MODE_LINES[mode]) showMessage(MODE_LINES[mode]!, true);
+    else if (MODE_LINES[mode]) showMessage(joinWords(MODE_LINES[mode]!, keyDoes('starts it')), true); // (with a keyboard: a key starts it too)
   });
 
   // The keys under the music play, and count as your playing, where timing isn't tight: Memorise and Wait for me
@@ -795,35 +884,30 @@ export function createScoreScreen(app: App): ScoreScreen {
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) $('keyboard').addEventListener(ev, liftKey);
   $('keyboard').addEventListener('contextmenu', (e) => e.preventDefault());
 
-  practice.onDone = () => { if (logRun?.mode === 'wait') { trackWait(); logRun.steps += 1; logRun.rounds += 1; } endRun(); fillBars(); showBars(); };
+  practice.onDone = () => {
+    const lr = logRun;
+    if (lr?.mode === 'wait') { trackWait(); lr.steps += 1; lr.rounds += 1; }
+    // Wait for me to the piece's end: said on the strip, as a timed run's result is (a key goes again, or back to the lesson).
+    if (lr?.mode === 'wait' && !borrower) showStrip({ line: `Played through to the end (from bar ${view.barNumber(lr.fromStep)}).`, from: lr.fromStep });
+    endRun();
+    fillBars();
+    showBars();
+  };
   practice.onSummary = (r) => {
     if (!r.total) return;
+    const from = logRun?.fromStep;
     // The log: the run's counts and slips (owner, 2026-10-13).
     logSlips(r);
     endRun({ notes: r.total, onTime: r.onTime, early: r.early, late: r.late, missed: r.missed, letGoEarly: r.short, wrongKeys: r.wrong, toleranceMs: r.tolerance,
       weakBars: r.weak.map((w) => `${view.barNumber(w.a)}-${view.barNumber(w.b)}`) });
     const pct = (n: number) => `${Math.round((n / r.total) * 100)}%`;
-    $('summary-body').textContent = r.rhythm
+    const line = r.rhythm
       ? `${r.total} beats to tap: ${r.onTime} on time and held (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.short} let go early, ${r.early} early, ` +
         `${r.late} late, ${r.missed} missed. ${r.wrong} extra tap${r.wrong === 1 ? '' : 's'}.`
       : `${r.total} notes: ${r.onTime} on time and held (${pct(r.onTime)}, within ±${r.tolerance} ms), ${r.short} let go early, ${r.early} early, ` +
         `${r.late} late, ${r.missed} missed. ${r.wrong} key${r.wrong === 1 ? '' : 's'} the score did not ask for.`;
-    // The weakest stretches, each a button that loops it (the summary's "loop the weak bars").
-    $('summary-weak').replaceChildren(...r.weak.map((w) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      const label = barsLabel(view.barNumber(w.a), view.barNumber(w.b));
-      b.textContent = `Loop ${label} (${w.count} off)`;
-      b.addEventListener('click', () => {
-        summaryDialog.close();
-        view.setLoop({ a: w.a, b: w.b });
-        view.goTo(w.a);
-        showMessage(`Looping ${label}: press ▶`, true);
-        fillBars();
-      });
-      return b;
-    }));
-    if (!quiet) summaryDialog.showModal();
+    // The slips marked on the music; the weakest stretches, each a button that loops it.
+    showStrip({ line, slips: r.slips, weak: r.weak, from });
   };
 
   // Hands: L | R | Both | Off in the bottom bar, saved per song; a change while playing is heard at once (Watch).
@@ -1109,7 +1193,10 @@ export function createScoreScreen(app: App): ScoreScreen {
       if (running) stopAll();
       const loop = view.looped, bar = view.barOf(view.index), first = view.firstStepOfBar(bar);
       view.goTo(loop ? loop.a : first === view.index && bar > 0 ? view.firstStepOfBar(bar - 1) : first);
-    } else if (c === 'high' && !running) void play();
+    } else if (c === 'high' && !running) {
+      if (stripShown && inStep()) $('score-back').click(); // (a lesson step's run done: the strip's main button)
+      else void play();
+    }
   }
 
   return {
@@ -1134,7 +1221,7 @@ export function createScoreScreen(app: App): ScoreScreen {
     openSong,
     openActivity,
     lend(b: Borrower | null): void {
-      if (b) { stopAll(); forgetRun(); if (marking) setMarking(false); picking = 0; }
+      if (b) { stopAll(); forgetRun(); hideStrip(); if (marking) setMarking(false); picking = 0; }
       borrower = b;
       for (const bar of bars) bar.hidden = !!b;
       if (!b) { view.setBand(0, 0); showBars(); }

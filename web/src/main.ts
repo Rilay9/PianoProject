@@ -18,7 +18,8 @@ import { holds } from './holds';
 import { addFingerings, fingeringsFor } from './marks';
 import { MidiInput } from './midi';
 import { installed, setUpOffline } from './offline';
-import { autoDelete, entries, entryCount, exportLog, setActivity, setAutoDelete, type LessonRef } from './log';
+import { autoDelete, endStep, entries, entryCount, exportLog, setAutoDelete, setStep, type LessonRef } from './log';
+import { setEdgeSource, setKeyboards } from './key-words';
 import * as nav from './nav';
 import { KeyRemote } from './remote';
 import { clearPreset, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
@@ -39,7 +40,7 @@ import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
 import { openHelp } from './help/page';
 import { HELP_IDS, type HelpId } from './help/read';
-import { resetTips } from './hints';
+import { resetTips, TIPS, tipDue, tipShown, tipUsed } from './hints';
 import type { Piece } from './app';
 
 const app = new App();
@@ -129,7 +130,6 @@ function leaveScore(): void {
   scoreScreen.stopAll(true); // (quietly: the run logged, no summary over the tab you go to; owner, 2026-10-15, F04)
   scoreScreen.forgetRun();
   clearPreset();
-  setActivity(null);
   app.showMessage('');
 }
 
@@ -211,14 +211,15 @@ async function openLab(chart?: string): Promise<void> {
   await labScreen.open(still, undefined, chart);
   if (still() && labScreen.isOpen) enter({ name: 'lab', params: { tool: 'lab', ...(chart ? { chart } : {}) }, leave: () => labScreen.close() });
 }
-/** keys: an activity's chosen keys (2026-10-16). */
-function openFreePlay(keys?: ChosenKeys, lesson?: { task?: string; names?: boolean }): void {
-  wanted();
+function openFreePlay(): void { wanted(); showFreePlay(); }
+/** keys: an activity's chosen keys (2026-10-16); params: its address (a lesson's step with it). The task, names and
+ * keys' start come from the activity in force (log.ts stepFor). */
+function showFreePlay(keys?: ChosenKeys, params: Record<string, string> = { tool: 'freeplay' }): void {
   void midi.start().catch(() => {}); // a tap: MIDI may be allowed now
   app.appSound();
-  freePlay.show(midi.down, keys, lesson);
+  freePlay.show(midi.down, keys);
   app.stayAwake();
-  enter({ name: 'freeplay', params: { tool: 'freeplay' }, leave: () => freePlay.close() });
+  enter({ name: 'freeplay', params, leave: () => freePlay.close() });
 }
 function openPdf(id: string, title: string): void { wanted(); void pdfScreen.open(id, title); }
 /** A reload inside the PDF reader (its address: tool=pdf&piece=…; F12): the PDF again, over the tab it was opened from. */
@@ -235,6 +236,7 @@ $('memo-done').addEventListener('click', () => nav.closedItself('memorise'));
 // ---- keys: the keyboard remote first, then the screen showing -------------------------------------------------
 
 const remote = new KeyRemote();
+setEdgeSource(() => remote.settings); // (key-words.ts: the edge keys are said once they are set up)
 remote.enabled = () => !freePlay.open;
 remote.musicRange = () => showing().musicRange();
 remote.peekable = () => showing() === memoriseScreen;
@@ -257,6 +259,28 @@ app.onPanel = (open) => {
   s?.panel?.(false);
 };
 midi.onPedal = (down, time) => holds.sustain(down, time);
+// The keyboards connected (chained after the screens' own listeners): what the keys do is said only with one
+// (key-words.ts), and the first time one connects, the offer to set up its lowest and highest keys (owner, 2026-10-16).
+{
+  const before = midi.onDevices;
+  midi.onDevices = (names) => { before(names); setKeyboards(names); if (names.length) offerKeyboardEnds(); };
+}
+const keysHint = $('keys-hint');
+function offerKeyboardEnds(): void {
+  const r = remote.settings;
+  if ((window as { __pianoNoKeyboardHint?: boolean }).__pianoNoKeyboardHint) return; // (the checks' stand-in keyboards: tests/browser.mjs)
+  if (!keysHint.hidden || (r.low !== undefined && r.high !== undefined) || !tipDue(TIPS.keyboardEnds)) return;
+  tipShown(TIPS.keyboardEnds); // (once: Not now, or set up, and it is done; Settings → Keyboard controls keeps the setup)
+  keysHint.hidden = false;
+}
+$('keys-hint-no').addEventListener('click', () => { keysHint.hidden = true; tipUsed(TIPS.keyboardEnds); });
+$('keys-hint-go').addEventListener('click', () => {
+  keysHint.hidden = true;
+  tipUsed(TIPS.keyboardEnds);
+  fillRemote();
+  remoteDialog.showModal();
+  $('r-learn').click(); // (straight to "Press the lowest key…")
+});
 window.addEventListener('resize', () => { for (const s of app.screens) s.resized(); });
 
 // The first tap anywhere starts listening to the MIDI keyboard and wakes the sound (browsers allow sound to
@@ -282,7 +306,7 @@ document.addEventListener('click', (e) => {
 $('open-more').addEventListener('click', () => moreDialog.showModal());
 // The screen asked for last wins: one still getting ready (loading its content) when another is opened stays shut.
 let opening = 0;
-const wanted = () => { const n = ++opening; setActivity(null); return () => n === opening; }; // (another screen: an activity is over)
+const wanted = () => { const n = ++opening; endStep(); return () => n === opening; }; // (another screen: an activity is over)
 // ⋯ keeps what belongs to the piece (owner, 2026-10-15): Memorise, Edit fingering, Export with my fingering.
 $('open-memorise').addEventListener('click', () => {
   moreDialog.close();
@@ -529,11 +553,15 @@ async function openActivity(id: string): Promise<void> {
  * opened over a slow start, had your own runs logged as the activity). Says whether it opened.
  */
 async function launch(a: Activity, lesson?: LessonRef, task?: string): Promise<boolean> {
+  // The activity is in force from before its screen opens (owner, 2026-10-16, the consistency pass: one "opened from a
+  // lesson" path): the screen reads its task, names and keys from it (log.ts stepFor) as it draws. Another screen opened
+  // meanwhile (wanted) ends it; one that did not open ends it here.
+  const still = wanted();
+  setStep({ id: a.id, screen: a.screen, title: a.title, ...(lesson ? { lesson, task } : {}), ...(a.names === false ? { names: false } : {}), activity: a });
   // (the screen's address names the step: a reload opens it again, V21; passed along, not kept in a variable another
   // launch could change while this one waits for its piece)
-  const opened = await launchScreen(a, lesson?.step, task);
-  if (!opened()) return false;
-  setActivity({ id: a.id, screen: a.screen, ...(lesson ? { lesson } : {}) });
+  const opened = await launchScreen(a, still, lesson?.step);
+  if (!opened()) { if (still()) endStep(); return false; }
   // A catalogue piece added for it (owner, 2026-10-15): said once its screen shows, after what the screen says (the
   // activity's title).
   const piece = a.screen === 'score' || a.screen === 'memorise' ? app.pieces.find((p) => p.id === a.piece) : undefined;
@@ -541,7 +569,7 @@ async function launch(a: Activity, lesson?: LessonRef, task?: string): Promise<b
   return true;
 }
 /** Opens the screen and puts it on top; then says whether it is the activity's and still showing. */
-async function launchScreen(a: Activity, step?: string, task?: string): Promise<() => boolean> {
+async function launchScreen(a: Activity, still: () => boolean, step?: string): Promise<() => boolean> {
   const no = () => false;
   /** The address of the activity's screen: its own, and the lesson step it was opened for (if any). */
   const withStep = (params: Record<string, string>): Record<string, string> => (step ? { ...params, step } : params);
@@ -551,8 +579,7 @@ async function launchScreen(a: Activity, step?: string, task?: string): Promise<
   };
   switch (a.screen) {
     case 'score': {
-      // (taken before the piece is had: an open made meanwhile, or a second tap's, wins, and this one opens nothing)
-      const still = wanted(); // (another screen opened meanwhile counts one up; another song ends the preset)
+      // (still was taken before the piece is had: an open made meanwhile, or a second tap's, wins, and this one opens nothing)
       if (!await known(a.piece) || !still()) return no;
       const place = scorePlace(a.piece);
       enter({ ...place, params: withStep(place.params!) });
@@ -560,7 +587,6 @@ async function launchScreen(a: Activity, step?: string, task?: string): Promise<
       return () => still() && app.currentId === a.piece && presetPiece() === a.piece;
     }
     case 'memorise': {
-      const still = wanted();
       if (!await known(a.piece) || !still()) return no;
       clearPreset();
       const place = memorisePlace(a.piece);
@@ -568,29 +594,25 @@ async function launchScreen(a: Activity, step?: string, task?: string): Promise<
       const mine = nav.top();
       await scoreScreen.openSong(a.piece);
       if (!still() || nav.top() !== mine) return no; // (Back while its piece loaded: it stays shut, F08)
-      await memoriseScreen.open(a.settings, a.title);
+      await memoriseScreen.open(a.settings);
       return () => still() && memoriseScreen.isOpen;
     }
     case 'simon':
     case 'drills': {
-      const still = wanted();
-      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', still, a, step ? task : undefined);
+      await exerciseScreen.open(a.screen === 'simon' ? 'simon' : 'drill', still, a);
       if (!still() || !exerciseScreen.isOpen) return no;
       enter({ name: 'exercise', params: withStep({ tool: a.screen === 'simon' ? 'simon' : 'drill', set: a.set }), leave: () => exerciseScreen.close() });
       return () => still() && exerciseScreen.isOpen;
     }
     case 'lab': {
-      const still = wanted();
       await labScreen.open(still, a);
       if (!still() || !labScreen.isOpen) return no;
       enter({ name: 'lab', params: withStep({ tool: 'lab', chart: a.chart }), leave: () => labScreen.close() });
       return () => still() && labScreen.isOpen;
     }
     case 'freeplay': {
-      openFreePlay(a.keys, step ? { task, names: a.names } : a.names === false ? { names: false } : undefined); // (a lesson's step: its task on screen, the columns hidden; names as the activity says)
-      if (step) history.replaceState(history.state, '', `${location.pathname}?${new URLSearchParams({ ...nav.topParams(), step })}`);
-      const still = () => freePlay.open;
-      return still;
+      showFreePlay(a.keys, withStep({ tool: 'freeplay' }));
+      return () => still() && freePlay.open;
     }
   }
 }

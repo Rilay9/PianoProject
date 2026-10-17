@@ -4,6 +4,8 @@
 // phone (in the backup too), exported from ⋯ → Export practice log. Entries older than a month are deleted (a choice
 // in ⋯, on by default), and never more than MAX_ENTRIES (the oldest go first). docs/app-features.md §7b.
 
+import type { Activity } from './activity';
+
 const KEY = 'piano-web.log.v1';
 const MAX_ENTRIES = 3000; // owner: months of daily practice, well within the phone's storage
 const MONTH_MS = 31 * 24 * 3600 * 1000;
@@ -50,14 +52,53 @@ function prune(s: Stored): void {
   if (s.entries.length > MAX_ENTRIES) s.entries.splice(0, s.entries.length - MAX_ENTRIES);
 }
 
-/** The activity a screen was opened from, and the lesson step it was opened for (main.ts sets it; another screen or
- * song ends it, and its runs stop being the step's). */
-let activity: { id: string; screen: string; lesson?: LessonRef } | null = null;
-export function setActivity(a: { id: string; screen: string; lesson?: LessonRef } | null): void { activity = a; }
+/**
+ * "Opened from an activity" (owner, 2026-10-16, the consistency pass: one path for every screen, replacing the
+ * lesson-only flags): the activity a screen was opened with and, when a lesson step opened it, the step, its task and
+ * whether note names are shown. main.ts `launch` sets it before the screen opens; `endStep()` ends it, when another
+ * screen is opened (or you come back to the lesson). Choices changed on the screen (another set, level, mode, hands,
+ * bars) do not end it: the task line says the practice now is not counted (lesson/task-line.ts), and the runs are
+ * still kept with the step, where lesson/result.ts `playedAsSet` tells them apart.
+ */
+export interface StepContext {
+  id: string;
+  screen: string;
+  lesson?: LessonRef;
+  /** The activity's own title, and the step's task (its `about`), shown on the screen's task line. */
+  title?: string;
+  task?: string;
+  /** false: no note names on this screen while the activity lasts (owner, 2026-10-16: until a lesson has taught them). */
+  names?: boolean;
+  /** The activity itself, for the live "played as the step sets it" (lesson/result.ts playedAsSet). */
+  activity?: Activity;
+}
+let activity: StepContext | null = null;
+export function setStep(a: StepContext): void { activity = a; }
+/** The one place the activity ends. */
+export function endStep(): void { activity = null; }
+/** Simon and Drills are one screen with two ways to practise (Practise as…): an activity opened in one is still in force in the other. */
+const sameScreen = (a: string, b: string) => a === b || ((a === 'simon' || a === 'drills') && (b === 'simon' || b === 'drills'));
+/** The activity in force on this screen (null: none). */
+export function stepFor(screen: string): StepContext | null { return activity && sameScreen(activity.screen, screen) ? activity : null; }
 export function activityOf(screen: string): string | undefined { return activity?.screen === screen ? activity.id : undefined; }
+/** Whether note names are shown on this screen now (an activity can turn them off until they are taught). */
+export function namesShown(screen: string): boolean { return stepFor(screen)?.names !== false; }
 /** The activity in force for this screen now, to be kept with a run as it starts (null: none). */
 export type ActivityTag = { id: string; screen: string; lesson?: LessonRef } | null;
-export function activityTag(screen: string): ActivityTag { return activity?.screen === screen ? { ...activity } : null; }
+export function activityTag(screen: string): ActivityTag {
+  const a = stepFor(screen);
+  return a ? { id: a.id, screen, ...(a.lesson ? { lesson: a.lesson } : {}) } : null;
+}
+
+/**
+ * What a step with nothing judged needs before it counts as visited (owner, 2026-10-16): Free play, a key played;
+ * Watch, the music heard to its end. Kept apart from the activity (which ends as the screen closes) until the lesson page
+ * reads it on your return.
+ */
+const evidence = new Set<string>();
+const stepKey = (r: LessonRef) => `${r.rung}|${r.lesson}|${r.step}`;
+export function stepEvidence(screen: string): void { const a = stepFor(screen); if (a?.lesson) evidence.add(stepKey(a.lesson)); }
+export function takeEvidence(r: LessonRef): boolean { const k = stepKey(r); const had = evidence.has(k); evidence.delete(k); return had; }
 
 /**
  * Adds a run (nothing is added for a run with nothing in it: the caller decides). tag: the activity the run was played
@@ -66,8 +107,8 @@ export function activityTag(screen: string): ActivityTag { return activity?.scre
  */
 export function addEntry(e: LogEntry, tag?: ActivityTag): void {
   const s = read();
-  const t = tag === undefined ? activity : tag;
-  const a = t?.screen === e.screen ? t : null;
+  const t = tag === undefined ? activityTag(e.screen) : tag;
+  const a = t && sameScreen(t.screen, e.screen) ? t : null;
   s.entries.push({ ...e, ...(e.activity === undefined && a ? { activity: a.id } : {}), ...(e.lesson === undefined && a?.lesson ? { lesson: a.lesson } : {}) });
   prune(s);
   write(s);

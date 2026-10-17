@@ -9,6 +9,8 @@
 // line), and intervals (from each single note to the next, and two notes held together). Cleared on opening.
 
 import type { ChosenKeys } from './activity';
+import { fillTaskLine } from './lesson/task-line';
+import { stepEvidence, stepFor } from './log';
 import type { KeyEvent } from './midi';
 import type { Sound } from './sound';
 import { currentDevice } from './settings';
@@ -74,15 +76,16 @@ export class FreePlay {
   }
 
   /**
-   * Opened by a lesson's step (owner, 2026-10-16, after ChatGPT's live review of lesson 1): the step's task where "Play
-   * something" was, and the columns hidden (chord and interval names a first lesson hasn't taught); Show turns them on
-   * for this visit, leaving your own choice for Free play as it was.
+   * Opened by a lesson's step (owner, 2026-10-16, after ChatGPT's live review of lesson 1): the step's task on the task
+   * line (lesson/task-line.ts) where "Play something" was, and the columns hidden (chord and interval names a first
+   * lesson hasn't taught); Show turns them on for this visit, leaving your own choice for Free play as it was.
    */
   private task = '';
-  /** Note names shown: the keys' octave labels, the range, the notes held and the chord or interval they make. A lesson
-   * step can turn them off until names are taught (owner, 2026-10-16: lesson 1 "Hide until taught"). */
+  /** Note names shown: the keys' octave labels, the range, the notes held and the chord or interval they make. An
+   * activity can turn them off until names are taught (owner, 2026-10-16: lesson 1 "Hide until taught"). */
   private names = true;
   private lessonColumns: Record<Column, boolean> | null = null;
+  private keyPlayed = false; // this visit: a key played (a lesson step's "visited": owner, 2026-10-16)
   private columnsOn(): Record<Column, boolean> { return this.lessonColumns ?? shownColumns(); }
 
   private showColumns(): void {
@@ -90,22 +93,23 @@ export class FreePlay {
     for (const col of this.panel.querySelectorAll<HTMLElement>('.fp-col')) col.hidden = !on[col.dataset.col as Column];
   }
 
-  /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. lesson: opened by a
-   * lesson's step, with its task (above). */
-  show(down: Set<number>, keys?: ChosenKeys, lesson?: { task?: string; names?: boolean }): void {
+  /** keys: an activity's chosen keys (per kind of screen); left out, the keys as you left them. The task, the names and
+   * a lesson step's columns and register come from the activity in force (log.ts stepFor). */
+  show(down: Set<number>, keys?: ChosenKeys): void {
     this.open = true;
-    this.task = lesson?.task ?? '';
-    this.names = lesson?.names ?? true;
-    this.strip.names = this.names;
+    const step = stepFor('freeplay'), lesson = !!step?.lesson;
     const taskLine = this.panel.querySelector<HTMLElement>('#fp-task')!;
-    taskLine.textContent = this.task;
-    taskLine.hidden = !this.task; // (kept in view while keys are held: owner, 2026-10-16)
-    this.lessonColumns = lesson && 'task' in lesson ? { chords: false, notes: false, intervals: false } : null; // (opened by a lesson's step)
+    fillTaskLine(taskLine, 'freeplay'); // (kept in view while keys are held: owner, 2026-10-16)
+    this.task = taskLine.hidden ? '' : taskLine.textContent ?? '';
+    this.names = step?.names !== false;
+    this.strip.names = this.names;
+    this.keyPlayed = false;
+    this.lessonColumns = lesson ? { chords: false, notes: false, intervals: false } : null; // (opened by a lesson's step)
     this.chosen = keys ?? null;
     this.moved = 0;
     // A lesson's step opens in the middle (C3 up), not where you last left Free play: its task may say "higher, then
     // lower" (ChatGPT's review, 2026-10-16, F5: left at the bottom, Find the groups opened with ‹ already off).
-    if (lesson && 'task' in lesson) this.from = FROM_START;
+    if (lesson) this.from = FROM_START;
     this.midiDown = new Set(down);
     this.panel.hidden = false;
     this.drawKeys();
@@ -177,6 +181,7 @@ export class FreePlay {
 
   /** A key went down: on the line of keys pressed together, or a new line. */
   private pressed(midi: number): void {
+    if (!this.keyPlayed) { this.keyPlayed = true; stepEvidence('freeplay'); } // (a lesson's Free play step: visited once a key is played)
     const now = performance.now(), line = this.lines[0];
     const down = this.down();
     // A rolled chord is a run of keys each soon after the one before, all still down.

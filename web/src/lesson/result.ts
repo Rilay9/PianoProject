@@ -6,11 +6,15 @@
 //       drills clean:  that many clean cards in one set
 //       simon  chain:  a chain that long, played whole in one go without help (Simon's own "best")
 //       lab    cleanRounds: that many accompaniment rounds with every bar right, in one run
-//   - without a target, when a run of it ended (one log entry: a set, a game, a Memorise session); a score step's run
-//     counts only in the step's own mode and when it reached the end of its bars (owner, 2026-10-15, Q5): Wait for me
-//     round its loop or to the piece's end (V10), Play along, Rhythm or Ladder a pass round its loop or to the piece's
-//     last note (`reachedEnd`); a Play along run stopped after two notes does not mark a Wait for me step done;
-//   - a step whose screen keeps no runs (the score in Watch, Free play), when you come back from it: "visited".
+//   - without a target, when a run of it went through the whole of what the step set ("played through"; `ended`, and
+//     its words in `through`, one rule per screen; owner, 2026-10-15 Q5 and 2026-10-16): Drills its whole set; Simon a
+//     game to its end; the score its bars to the end in the step's mode (Wait for me round its loop or to the piece's
+//     end, V10; the timed modes a pass round the loop or the last note reached, `reachedEnd`); Memorise a chunk learned
+//     (owner, 2026-10-16: "its first chunk learned"); the lab a whole round of the chart;
+//   - either way, only runs played as the step sets them (playedAsSet: its set, piece or chart, its mode and hands, its
+//     help level or harder…; tempo free): the others are practice, kept in the log and said so;
+//   - a step whose screen keeps no runs (the score in Watch, Free play): "visited" once a key was played (Free play) or
+//     the music was heard to its end (Watch), on coming back (owner, 2026-10-16); without that, "opened, nothing played".
 
 import type { LogEntry } from '../log';
 import type { Activity } from '../activity';
@@ -41,45 +45,132 @@ export function meets(e: LogEntry, t: Target): boolean {
   return true;
 }
 
+/** What a run was played as: a log entry, or (the task line, lesson/task-line.ts) what a screen would play now. */
+export type Played = Pick<LogEntry, 'screen' | 'settings'> & Partial<Pick<LogEntry, 'mode' | 'set' | 'piece' | 'chart' | 'bars'>>;
+
 /**
  * Was this run played as the step sets it? '' if so, else why not, in a few words (owner, 2026-10-16, after ChatGPT's
- * review of lessons 1 and 2: a step's target counts only runs played with the step's set, its help level or a harder
- * one, its number of cards, and its timing or a stricter one; tempo is free). Other runs stay in the log as practice.
- * Harder help levels: from 0 (keys and sound) by ear (5); from 1 or 2, less help on the same music (up to 3, music only).
+ * review of lessons 1 and 2: a step counts only runs played with the step's set, its help level or a harder one, its
+ * number of cards, and its timing or a stricter one; tempo is free). Carried to every screen in the consistency pass:
+ *   - the way: Simon for a Simon step, Drills for a Drills one (Practise as… is practice);
+ *   - Simon and Drills: as above;
+ *   - the score: its piece; its mode (Play along and Ladder count for each other, Rhythm only for Rhythm, Wait for me
+ *     only for Wait for me); its hands or more (one hand: that hand, both or Off); a loop holding its bars; its timing
+ *     or stricter; tempo free (a `bpm` target is the tempo: meets() checks it);
+ *   - the lab: its chart, its part, and its step or a later one;
+ *   - Memorise: its piece, and its hands or both.
+ * Other runs stay in the log as practice. Harder help levels: from 0 (keys and sound) by ear (5); from 1 or 2, less help
+ * on the same music (up to 3, music only).
  */
 const HARDER: Record<number, number[]> = { 0: [0, 5], 1: [1, 2, 3], 2: [2, 3], 3: [3], 4: [4], 5: [5] };
 const STRICT = ['relaxed', 'normal', 'strict'];
-export function playedAsSet(e: LogEntry, a: Activity): string {
-  if (a.screen !== 'drills' && a.screen !== 'simon') return '';
-  if (e.set !== a.set) return 'another set';
-  const s = (e.settings ?? {}) as Record<string, unknown>, lv = a.level as Record<string, unknown>;
-  if (typeof lv.rung === 'number' && !HARDER[lv.rung]?.includes(num(s.rung))) return 'another help level';
-  if (a.screen === 'drills') {
-    if (typeof lv.cards === 'number' && s.cards !== lv.cards) return 'another number of cards';
-    const want = lv.onTime, got = s.onTime;
-    if (typeof want === 'string' && want !== 'notes' && !(typeof got === 'string' && STRICT.indexOf(got) >= STRICT.indexOf(want))) return 'more lenient timing';
+const MODE_COUNTS: Record<string, string[]> = { along: ['along', 'ladder'], ladder: ['ladder', 'along'], rhythm: ['rhythm'], wait: ['wait'], watch: ['watch'] };
+const HANDS_COUNT: Record<string, string[]> = { right: ['right', 'both', 'off'], left: ['left', 'both', 'off'], both: ['both', 'off'], off: ['off', 'both'] };
+const LAB_STEPS: Record<string, readonly string[]> = { accomp: ['roots', 'beat1', 'style', 'own'], lead: ['root', 'tones', 'scale', 'answer', 'free'] };
+/** "3-6" (printed bars) as numbers. */
+const barsOf = (v: unknown): [number, number] | null => { const m = /^(\d+)(?:-(\d+))?$/.exec(String(v ?? '')); return m ? [Number(m[1]), Number(m[2] ?? m[1])] : null; };
+export function playedAsSet(e: Played, a: Activity): string {
+  if (a.screen === 'freeplay') return '';
+  if (e.screen !== a.screen) return e.screen === 'simon' ? 'Simon, not Drills' : e.screen === 'drills' ? 'Drills, not Simon' : 'another screen';
+  const s = (e.settings ?? {}) as Record<string, unknown>;
+  switch (a.screen) {
+    case 'drills':
+    case 'simon': {
+      if (e.set !== a.set) return 'another set';
+      const lv = a.level as Record<string, unknown>;
+      if (typeof lv.rung === 'number' && !HARDER[lv.rung]?.includes(num(s.rung))) return 'another help level';
+      if (a.screen === 'drills') {
+        if (typeof lv.cards === 'number' && s.cards !== lv.cards) return 'another number of cards';
+        const want = lv.onTime, got = s.onTime;
+        if (typeof want === 'string' && want !== 'notes' && !(typeof got === 'string' && STRICT.indexOf(got) >= STRICT.indexOf(want))) return 'more lenient timing';
+      }
+      if (a.screen === 'simon' && lv.match === 'same' && s.match !== undefined && s.match !== 'same') return 'any octave allowed';
+      return '';
+    }
+    case 'score': {
+      if (e.piece !== undefined && e.piece !== a.piece) return 'another piece';
+      const want = a.settings, mode = String(e.mode ?? s.mode ?? '');
+      if (want.mode && mode && !MODE_COUNTS[want.mode]?.includes(mode)) return 'another mode';
+      if (want.hands && typeof s.hands === 'string' && !HANDS_COUNT[want.hands]?.includes(s.hands)) return 'other hands';
+      if (a.bars) {
+        // A loop must hold the step's bars (a run over the whole piece holds them too).
+        const loop = barsOf(s.loop), [lo, hi] = a.bars;
+        if (loop && (loop[0] > lo || loop[1] < hi)) return 'other bars';
+      }
+      if (want.onTime && typeof s.onTime === 'string' && STRICT.indexOf(s.onTime) < STRICT.indexOf(want.onTime)) return 'more lenient timing';
+      return '';
+    }
+    case 'lab': {
+      if (e.chart !== undefined && e.chart !== a.chart) return 'another chart';
+      const p = a.preset;
+      if (p.role && typeof s.role === 'string' && s.role !== p.role) return p.role === 'lead' ? 'the accompaniment, not the lead' : 'the lead, not the accompaniment';
+      if (p.step && typeof s.step === 'string') {
+        // (the activity's own ladder, if it has one, else the lab's: what comes later in it is harder)
+        const own = p.role === 'lead' ? p.steps?.lead : p.steps?.accompaniment;
+        const list = own ? (own as unknown[]).map((x) => (typeof x === 'string' ? x : (x as { kind?: string })?.kind ?? '')) : LAB_STEPS[p.role ?? 'accomp'] ?? [];
+        if (list.indexOf(s.step) < list.indexOf(p.step)) return 'an earlier step';
+      }
+      if (e.bars) return 'some bars looped'; // (a loop is practice, as the lab says: only rounds of the whole chart count)
+      return '';
+    }
+    case 'memorise': {
+      if (e.piece !== undefined && e.piece !== a.piece) return 'another piece';
+      const want = a.settings.hands;
+      if (want && typeof s.hands === 'string' && s.hands !== want && s.hands !== 'both') return 'other hands';
+      return '';
+    }
   }
-  if (a.screen === 'simon' && lv.match === 'same' && s.match !== undefined && s.match !== 'same') return 'any octave allowed';
   return '';
 }
 
 /**
- * A run that ended, for a step with no target. A score run (owner, 2026-10-15, Q5) only in the step's own mode (when it
- * names one) and through to the end of its bars: Wait for me round its loop or to the piece's end (a Wait for me entry
- * from before `rounds` was logged counts); the timed modes a pass round the loop, or the piece's last note reached.
+ * What "played through" means on each screen (owner, 2026-10-16: one table, one set of words for the result card and
+ * the step list): the reason the result card gives for a step with no target.
  */
-export function ended(e: LogEntry, a?: Activity): boolean {
-  // A Drills step with no target (an introduction) is done when its whole set is played through, any result: real
-  // practice, no pass mark (owner, 2026-10-16: one card "how do they learn anything from that?"); a set left part way is
-  // tried (ChatGPT's review, F6: "left" had been called "played through"). A Simon game logs only once something was played.
-  if (e.screen === 'drills') return e.result.ended === 'set done';
-  if (e.screen === 'simon') return e.result.ended !== 'stopped'; // (game over, all played or its goal: through; left part way: tried)
-  if (e.screen !== 'score') return true;
-  const mode = a?.screen === 'score' ? a.settings.mode : undefined;
-  if (mode && e.mode !== mode) return false;
+export function through(a: Activity): string {
+  switch (a.screen) {
+    case 'drills': return 'the whole set played';
+    case 'simon': return 'a game played to its end';
+    case 'score': return a.settings.mode === 'watch' ? 'the music heard to its end' : a.bars ? `${range(a.bars[0], a.bars[1])} played to the end` : 'played to the end';
+    case 'memorise': return 'a chunk learned';
+    case 'lab': return 'a whole round of the chart';
+    case 'freeplay': return 'a key played';
+  }
+  return '';
+}
+
+/**
+ * A run that went through the whole of what its screen plays, for a step with no target (one rule a screen; its words:
+ * `through`). The step's own mode, set and the rest are playedAsSet's (outcome asks both). A score run (owner, 2026-10-15,
+ * Q5) through to the end of its bars: Wait for me round its loop or to the piece's end (a Wait for me entry from before
+ * `rounds` was logged counts); the timed modes a pass round the loop, or the piece's last note reached.
+ */
+export function ended(e: LogEntry): boolean {
   const r = e.result;
-  if (e.mode === 'wait') return r.rounds === undefined || num(r.rounds) >= 1;
-  return (Array.isArray(r.passes) && r.passes.length > 0) || r.reachedEnd === true;
+  switch (e.screen) {
+    // A Drills step with no target (an introduction) is done when its whole set is played through, any result: real
+    // practice, no pass mark (owner, 2026-10-16: one card "how do they learn anything from that?"); a set left part way
+    // is tried (ChatGPT's review, F6: "left" had been called "played through").
+    case 'drills': return r.ended === 'set done';
+    // A Simon game logs only once something was played: game over, all played or its goal is through; left part way, tried.
+    case 'simon': return r.ended !== 'stopped';
+    // Memorise (owner, 2026-10-16): a chunk learned (its clean passes), or a whole-piece test with every bar clean.
+    case 'memorise': return (Array.isArray(r.learned) && r.learned.some((x) => String(x).startsWith('chunk:'))) || (Array.isArray(r.tests) && (r.tests as { clean?: boolean }[]).some((t) => t.clean === true));
+    // The lab: a whole round of the chart (not one stopped part way, nor a loop of some bars); improvising, a round played
+    // in (at least half its bars: the lab's own count).
+    case 'lab': {
+      if (e.bars) return false;
+      if (r.roundsPlayed !== undefined) return num(r.roundsPlayed) >= 1;
+      return ((r.rounds as Round[] | undefined) ?? []).some((x) => x.stoppedInBar === undefined);
+    }
+    // The score: through to the end of its bars (in the step's mode: playedAsSet, so another mode's run through is said
+    // to be practice).
+    case 'score': {
+      if (e.mode === 'wait') return r.rounds === undefined || num(r.rounds) >= 1;
+      return (Array.isArray(r.passes) && r.passes.length > 0) || r.reachedEnd === true;
+    }
+    default: return true;
+  }
 }
 /** "bars 1–4" that never breaks after its dash. */
 const range = (a: unknown, b: unknown) => (String(a) === String(b) ? `bar ${String(a)}` : `bars ${String(a)}–⁠${String(b)}`);
@@ -123,18 +214,24 @@ export function runLine(e: LogEntry): string {
 
 export interface StepOutcome { runs: number; done: boolean; met: boolean; line: string }
 
-/** How the step went: its runs while it was open, whether the target (or a run) makes it done, and a line to show. */
-export function outcome(runs: LogEntry[], a: Activity, target: Target | undefined, returned: boolean): StepOutcome {
+/**
+ * How the step went: its runs while it was open, whether the target (or a run through) makes it done, and a line to
+ * show. evidence: for a step that keeps no runs, whether a key was played (Free play) or the music heard to its end
+ * (Watch) while it was open (log.ts takeEvidence).
+ */
+export function outcome(runs: LogEntry[], a: Activity, target: Target | undefined, returned: boolean, evidence = false): StepOutcome {
   if (!runs.length) {
-    const done = returned && keepsNoRuns(a);
-    return { runs: 0, done, met: false, line: done ? (a.screen === 'freeplay' ? 'Free play: visited' : 'Watched') : 'Nothing played' };
+    const done = returned && keepsNoRuns(a) && evidence;
+    const line = done ? (a.screen === 'freeplay' ? 'Free play: a key played' : 'Watched to the end') : keepsNoRuns(a) ? 'Opened, nothing played' : 'Nothing played';
+    return { runs: 0, done, met: false, line };
   }
-  const met = target ? runs.some((e) => meets(e, target) && !playedAsSet(e, a)) : runs.some((e) => ended(e, a));
+  const counts = (e: LogEntry) => !playedAsSet(e, a);
+  const met = target ? runs.some((e) => meets(e, target) && counts(e)) : runs.some((e) => ended(e) && counts(e));
   const last = runLine(runs[runs.length - 1]);
-  // A run that would have met the target with other settings: said, as practice (not counted).
-  const other = target && !met ? runs.map((e) => (meets(e, target) ? playedAsSet(e, a) : '')).find(Boolean) : '';
+  // A run that would have counted had it been played as the step sets it: said, as practice (not counted).
+  const other = !met ? runs.map((e) => ((target ? meets(e, target) : ended(e)) ? playedAsSet(e, a) : '')).find(Boolean) : '';
   const line = runs.length > 1 ? `${last} · ${runs.length} runs` : last;
-  return { runs: runs.length, done: met, met, line: other ? `${line} · played with ${other}: practice, not counted for the target` : line };
+  return { runs: runs.length, done: met, met, line: other ? `${line} · played with ${other}: practice, not counted for the step` : line };
 }
 
 /** The best of a step's runs so far, in its screen's words (the most clean cards, the longest chain, the best share on

@@ -37,8 +37,8 @@ const { Simon } = await import('../src/exercise/simon.ts');
 
 const failures = [];
 const check = (name, ok, detail = '') => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : ` — ${detail}`}`); if (!ok) failures.push(name); };
-const el = () => ({ textContent: '', className: '', hidden: false, innerHTML: '', value: '', addEventListener() {}, replaceChildren() {}, prepend() {}, after() {} });
-const parts = () => Object.fromEntries(['set', 'left', 'mid', 'right', 'name', 'chain', 'status', 'sub', 'start', 'hear', 'help', 'after', 'again', 'next', 'misses', 'fresh', 'finish'].map((k) => [k, el()]));
+const el = () => ({ textContent: '', className: '', hidden: false, innerHTML: '', value: '', addEventListener() {}, replaceChildren() {}, prepend() {}, after() {}, classList: { toggle() {}, add() {}, remove() {} } });
+const parts = () => Object.fromEntries(['set', 'left', 'mid', 'right', 'name', 'chain', 'status', 'sub', 'start', 'hear', 'help', 'after', 'again', 'next', 'misses', 'fresh', 'finish', 'back'].map((k) => [k, el()]));
 const keysStub = () => ({ onKey: null, down: new Set(), setRange() {}, choose() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, release() {} });
 const notation = { show: async () => {}, clear() {} };
 const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play() {}, stop() {}, prepare: async () => {} };
@@ -149,11 +149,13 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
 }
 
 // ---- The log: a set or game left part way (final review 2026-10-15, F06; interfaces review F10) -------------------------
-// Played as a lesson step's activity, then another set chosen from the menu (which ends the activity) or the level
-// changed: the part played is logged as what it was played as (its set, title, level and the step's tag), and each item
-// with its number in the set, so two items sharing a name can be told apart.
+// Played as a lesson step's activity, then another set chosen from the menu or the level changed: the part played is
+// logged as what it was played as (its set, title, level and the step's tag), and each item with its number in the set,
+// so two items sharing a name can be told apart. (Since the consistency pass, 2026-10-16, another set no longer ends the
+// step: what is played next is still kept with the step, as practice: lesson/result.ts playedAsSet.)
 {
-  const { setActivity } = await import('../src/log.ts');
+  const { setStep, endStep } = await import('../src/log.ts');
+  const setActivity = (a) => (a ? setStep(a) : endStep());
   const lesson = { rung: 'r1', lesson: 'l1', step: 's1' };
   const A = { id: 'set-a', title: 'Set A', order: 'passage', tempo: 80, items: ['C4', 'D4'].map((n, i) => ({ n: i + 1, name: 'same name', short: n, groups: [[n]] })) };
   const B = { id: 'set-b', title: 'Set B', order: 'passage', tempo: 80, items: [{ n: 1, name: 'E4', short: 'E4', groups: [['E4']] }] };
@@ -166,7 +168,7 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   setActivity({ id: 'step-drill', screen: 'drills', lesson });
   d.key(60, true, 1); await settle();
   for (let k = 0; k < 2; k++) { d.skip(); d.nextCard(); await settle(); }
-  d.chooseSet('set-b'); // (as the set menu does: your own choice, which ends the activity)
+  d.chooseSet('set-b'); // (as the set menu does: your own choice; the step stays in force)
   const left = log().at(-1);
   check('Drills, another set chosen part way: logged as set A at the step’s level, with the step’s tag', left?.set === 'set-a' && left.title === 'Set A' && left.settings.cards === 5
     && left.activity === 'step-drill' && left.lesson?.step === 's1', fmt(left));
@@ -177,7 +179,7 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   d.skip(); await settle();
   d.setLevel({ rung: before === 2 ? 3 : 2 });
   const level = log().at(-1);
-  check('Drills, the level changed part way: logged at the level played (and untagged: no activity then)', level?.set === 'set-b' && level.settings.rung === before && level.activity === undefined, fmt(level));
+  check('Drills, the level changed part way: logged at the level played, still with the step (another set: practice for it)', level?.set === 'set-b' && level.settings.rung === before && level.activity === 'step-drill', fmt(level));
   d.close();
   setActivity(null);
   // Simon: the step's set, chain 1 played, a wrong key in chain 2, then set B chosen.
@@ -201,7 +203,8 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
 // Before the staff is taught: the item is heard and its keys light, and no staff is drawn at any point (given, your turn,
 // a miss, Hear again; a drill card's result too). Simon on the black keys of one octave, chain 3 played back.
 {
-  const { setActivity } = await import('../src/log.ts');
+  const { endStep } = await import('../src/log.ts');
+  const setActivity = () => endStep();
   const black = [['C#4', 61], ['D#4', 63], ['F#4', 66], ['G#4', 68], ['A#4', 70]];
   const set = { id: 't-black', title: 'test', order: 'pool', tempo: 80, items: black.map(([n], i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
   const seen = { drawn: 0, lit: [], played: 0 };
@@ -499,6 +502,62 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   check('calibration applies: 150 kept for screen taps is used for screen taps only (MIDI keys and no input: 60)', kept[0] === 150 && Math.abs(kept[1] - 60) < 1e-9 && Math.abs(kept[2] - 60) < 1e-9 && kept[3] === 150, JSON.stringify(kept));
   check('calibration applies: the piano on the MIDI keyboard: 0 (no phone sound), the clicks still the kept 150', keyboard[0] === 0 && keyboard[1] === 150, JSON.stringify(keyboard));
   check('calibration applies: reset, back to the browser\'s figure', Math.abs(after[0] - 60) < 1e-9 && after[1] === null, JSON.stringify(after));
+}
+
+// ---- The consistency pass (owner, 2026-10-16) ------------------------------------------------------------------------
+// One set of result marks: the colours result-marks.ts draws the music with are style.css's tokens (keys and legends).
+{
+  const { MARK, legendLine, kindsOf } = await import('../src/result-marks.ts');
+  const { readFileSync } = await import('node:fs');
+  const css = readFileSync(new URL('../src/style.css', import.meta.url), 'utf8');
+  const token = (n) => new RegExp(`--mark-${n}:\\s*(#[0-9a-f]{6})`).exec(css)?.[1];
+  const pairs = { missed: token('missed'), timing: token('timing'), wrong: token('wrong'), want: token('want') };
+  check('marks: style.css --mark-* tokens are result-marks.ts MARK (grey, orange, red, the blue outline)', Object.entries(pairs).every(([k, v]) => v === MARK[k]) && MARK.want !== '#16a34a', JSON.stringify({ pairs, MARK }));
+  check('marks: the key says only the kinds present',
+    legendLine(kindsOf([{ kind: 'missed' }])) === 'grey: missed' && legendLine(kindsOf([{ kind: 'late' }, { kind: 'short' }])) === 'orange: early, late or let go early'
+    && legendLine(kindsOf([{ kind: 'missed' }, { kind: 'early' }], 1)) === 'grey: missed · orange: early, late or let go early · red: a wrong key' && legendLine(kindsOf([])) === '',
+    legendLine(kindsOf([{ kind: 'missed' }, { kind: 'early' }], 1)));
+}
+// A lesson step's set done: "Back to the lesson ▶" shows, and a key does it (not in its first moment); outside a step, a
+// key at Set done does nothing (New set is a tap).
+{
+  const set = { id: 't-end', title: 'test', order: 'pool', tempo: 80, items: ['C4', 'D4'].map((n, i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
+  async function endOfSet(inStep) {
+    store.clear();
+    const ui = parts(), d = new Drill(ui, keysStub(), notation, sound);
+    let back = 0;
+    d.inStep = () => inStep;
+    d.back = () => { back++; };
+    d.open([set]);
+    d.setLevel({ rung: 3, start: 'first', onTime: 'notes', metronome: false, cards: 2 });
+    await d.begin(); await settle();
+    while (d.state === 'turn') { d.skip(); d.nextCard(); await settle(); }
+    const shown = { state: d.state, back: !ui.back.hidden, sub: ui.sub.textContent };
+    const t = performance.now();
+    d.key(60, true, t); await settle(); // (at once: the last card's keys)
+    const early = back;
+    d.key(60, true, t + 900); await settle();
+    d.close();
+    return { ...shown, early, late: back };
+  }
+  const step = await endOfSet(true), own = await endOfSet(false);
+  check('Drills, a lesson step\'s set done: Back to the lesson shows; a key does it after a moment, not at once', step.state === 'done' && step.back && step.early === 0 && step.late === 1, JSON.stringify(step));
+  check('Drills, your own set done: no Back to the lesson, and a key does nothing', own.state === 'done' && !own.back && own.late === 0, JSON.stringify(own));
+}
+// Simon: a mash during a game ends it with what it reached (as Drills keeps a set's results), not back to Ready.
+{
+  store.clear();
+  const set = { id: 't-mash', title: 'test', order: 'passage', tempo: 80, items: ['C4', 'D4', 'E4'].map((n, i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
+  const ui = parts(), s = new Simon(ui, keysStub(), notation, sound);
+  s.open([set], { set: 't-mash', level: { rung: 3, match: 'same', miss: 'tries', speed: 'steady', onMiss: 'all', onNew: 'all' } });
+  const tap = async (m) => { s.key(m, true); s.key(m, false); await settle(); };
+  await tap(60); await settle(); // starts: chain 1
+  await tap(60); await pass(1000); // chain 1 right; chain 2 given
+  s.command('mash');
+  const log = JSON.parse(store.get('piano-web.log.v1') ?? '{"entries":[]}').entries;
+  check('Simon, a mash: the game ends showing its longest chain (1), logged as stopped, Again offered', s.state === 'over' && /Stopped by a mash: longest chain 1/.test(ui.status.textContent) && log.at(-1)?.result.ended === 'stopped' && ui.start.textContent === 'Again' && !ui.start.hidden,
+    JSON.stringify({ state: s.state, status: ui.status.textContent, ended: log.at(-1)?.result.ended }));
+  s.close();
 }
 
 console.log(failures.length ? `${failures.length} failed` : 'all passed');

@@ -8,7 +8,10 @@ import { touch } from '../library/store';
 import type { LabPreset } from '../activity';
 import { $, base, type App, type Screen, type KeyRange } from '../app';
 import { holds } from '../holds';
-import { addEntry, keyName as logKey, Run, setActivity, type Slip } from '../log';
+import { addEntry, keyName as logKey, namesShown, Run, stepFor, type Slip } from '../log';
+import { fillTaskLine } from '../lesson/task-line';
+import { joinWords, keyboardConnected, keyDoes } from '../key-words';
+import { legendLine } from '../result-marks';
 import { ExerciseKeys } from '../exercise/keys';
 import { barMarks, improvised, judgeHit, ON_TIME_MS, sayHit, type HitResult, type Improv, type Mark, type Press } from '../lab/judge';
 import {
@@ -186,8 +189,11 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   // ---- the box of chords ----------------------------------------------------------------------------------------
 
+  /** The bars of the last result with a wrong key in them (the rest of its "miss" bars: a note missing). */
+  let wrongBars = new Set<number>();
   function fillGrid(marks?: Map<number, Mark>, now = -1): void {
     if (!chart) return;
+    wrongBars = new Set((marks && lastRound?.marks === marks ? lastRound.results : []).filter((r) => r.mark === 'miss' && r.wrong.length).map((r) => r.hit.bar));
     const k = `${chart.id}|${now}|${picking}|${loopBars}|${marks ? [...marks].join() : ''}`;
     if (k === gridKey) return;
     gridKey = k;
@@ -198,9 +204,12 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       d.type = 'button';
       const inLoop = !loopBars || (i >= loopBars[0] && i <= loopBars[1]);
       const m = marks?.get(i - (loopBars?.[0] ?? 0));
-      d.className = `lab-bar${inLoop ? '' : ' out'}${m ? ` ${m}` : ''}${i === now ? ' now' : ''}${picking === i ? ' pick' : ''}`;
+      // The app's one set of marks (result-marks.ts), with a sign as well as the tint (not colour alone): ✓ right,
+      // ~ early, late or let go early, – a missing note, ✗ a wrong key.
+      const kind = m === 'miss' ? (wrongBars.has(i - (loopBars?.[0] ?? 0)) ? 'miss wrong' : 'miss missed') : m;
+      d.className = `lab-bar${inLoop ? '' : ' out'}${kind ? ` ${kind}` : ''}${i === now ? ' now' : ''}${picking === i ? ' pick' : ''}`;
       d.innerHTML = '<small></small><b></b>';
-      d.querySelector('small')!.textContent = String(i + 1);
+      d.querySelector('small')!.textContent = `${i + 1}${m ? ` ${m === 'ok' ? '✓' : m === 'late' ? '~' : kind === 'miss wrong' ? '✗' : '–'}` : ''}`;
       d.querySelector('b')!.textContent = symbols.join(' ');
       d.addEventListener('click', () => pickBar(i));
       return d;
@@ -434,7 +443,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       const on = stored.help === 'lit' || !yourTurn;
       keys.light(on ? (accompStep() === 'roots' ? [voicing(c)[0]] : voicing(c)) : []);
       keys.want([]);
-      $('lab-names').textContent = stored.help !== 'symbol' ? `${c.symbol} = ${c.names.join(' ')}` : '';
+      $('lab-names').textContent = stored.help === 'symbol' ? '' : namesShown('lab') ? `${c.symbol} = ${c.names.join(' ')}` : c.symbol;
       return;
     }
     const step = leadStep();
@@ -443,7 +452,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     const pale = step === 'scale' || step === 'answer' ? scale.filter((p) => !dark.includes(p)) : [];
     keys.light(range.filter((m) => (step === 'root' ? m >= 60 && m < 72 : true) && dark.includes(m % 12)));
     keys.mark('next-r', range.filter((m) => pale.includes(m % 12)));
-    $('lab-names').textContent = step === 'free' ? '' : step === 'root' ? `${c.symbol}: root ${c.rootName}` : `${c.symbol} = ${c.names.join(' ')}${pale.length ? ` · ${chart!.scale}` : ''}`;
+    $('lab-names').textContent = step === 'free' ? '' : !namesShown('lab') ? c.symbol : step === 'root' ? `${c.symbol}: root ${c.rootName}` : `${c.symbol} = ${c.names.join(' ')}${pale.length ? ` · ${chart!.scale}` : ''}`;
   }
   /** Improvising: the notes the step lights for a chord (counted as "from the lit keys"); Free lights none, and counts the chord's and the scale's. */
   function guideOf(chordPcs: number[]): number[] {
@@ -549,14 +558,19 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     const key = `${stepKey()}|${st.id}`;
     const off = loopBars?.[0] ?? 0, total = form!.chart.bars.length;
     const stoppedIn = lastRound?.stoppedBar !== undefined ? `Stopped in bar ${lastRound.stoppedBar + 1 + off}` : '';
+    resultAt = performance.now();
     if (!lastRound) { add('lab-r-head', 'Not a bar of it played yet'); fillGrid(); }
     else if (role() === 'accomp') {
       const m = lastRound.marks, n = stoppedIn ? m.size : total;
       const right = [...m.values()].filter((x) => x !== 'miss').length, onBeat = [...m.values()].filter((x) => x === 'ok').length;
       add('lab-r-head', `${stoppedIn ? `${stoppedIn}: ` : ''}${right} of ${n} bar${n === 1 ? '' : 's'} right · ${onBeat} on the beat${!stoppedIn && roundsDone > 1 ? ` (last of ${roundsDone} rounds)` : ''}`);
       if (stoppedIn) add('lab-r-line', roundsDone ? `A round stopped in the middle does not count (${roundsDone} whole round${roundsDone === 1 ? '' : 's'} before it).` : 'A round stopped in the middle does not count.');
-      for (const r of lastRound.results.filter((x) => x.mark !== 'ok').slice(0, 3)) add('lab-r-line', sayHit(r, accompStep(), off));
+      for (const r of lastRound.results.filter((x) => x.mark !== 'ok').slice(0, 3)) add('lab-r-line', namesShown('lab') ? sayHit(r, accompStep(), off) : `Bar ${r.hit.bar + 1 + off} ${r.hit.chord.symbol}: ${r.wrong.length ? 'a key not in the chord' : r.missing.length ? 'a note of the chord missing' : r.mark === 'late' ? 'early or late' : 'not quite'}`);
       fillGrid(m);
+      const marked = [...m.values()];
+      const wrongN = lastRound.results.filter((r) => r.mark === 'miss' && r.wrong.length).length;
+      const key = joinWords(marked.includes('ok') && '✓ green: right', legendLine({ timing: marked.includes('late'), missed: lastRound.results.some((r) => r.mark === 'miss' && !r.wrong.length), wrong: wrongN > 0 }).replace('grey: missed', '– grey: a note missing').replace('orange:', '~ orange:').replace('red: a wrong key', '✗ red: a key not in the chord'));
+      if (key) add('mark-legend', key);
     } else {
       const im = lastRound.improv!;
       add('lab-r-head', roundsDone ? `${roundsDone} round${roundsDone === 1 ? '' : 's'} · you played in ${roundsPlayed}` : stoppedIn);
@@ -568,16 +582,21 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       fillGrid();
     }
     if (loopBars && lastRound) add('lab-r-line', "Looping bars is practice: the step's ✓ comes from rounds over every bar.");
-    // What next: the next step after enough clean rounds (or rounds played, improvising).
+    // What next: the next step after enough clean rounds (or rounds played, improvising). In a lesson step, "Back to
+    // the lesson ▶" is the main button (owner, 2026-10-16); a key (and the highest key) does the main button.
     const done = (stored.clean[key] ?? 0) >= cleanForNext(), i = stepIndex();
     const buttons = document.createElement('div');
     buttons.className = 'lab-r-buttons';
-    const btn = (text: string, main: boolean, run: () => void) => { const b = Object.assign(document.createElement('button'), { type: 'button', className: `btn${main ? ' main' : ''}`, textContent: text }); b.addEventListener('click', run); buttons.append(b); };
-    if (done && i + 1 < steps().length) {
+    const btn = (text: string, main: boolean, run: () => void) => { const b = Object.assign(document.createElement('button'), { type: 'button', className: `btn${main ? ' main' : ''}`, textContent: text }); b.addEventListener('click', run); buttons.append(b); if (main) mainAction = run; };
+    const inStep = !!stepFor('lab')?.lesson, nextStep = done && i + 1 < steps().length;
+    if (inStep) btn('Back to the lesson ▶', true, () => close());
+    if (nextStep) {
       add('lab-r-next', `Next: step ${i + 2}, ${steps()[i + 1].name.toLowerCase()} · ${role() === 'accomp' ? `${cleanForNext()} clean rounds` : `${cleanForNext()} rounds`} on this one`);
-      btn(`Step ${i + 2} ▶`, true, () => { setStep(i + 1); void start(false); });
+      btn(`Step ${i + 2} ▶`, !inStep, () => { setStep(i + 1); void start(false); });
     }
-    btn('Again ▶', !(done && i + 1 < steps().length), () => void start(false));
+    btn('Again ▶', !inStep && !nextStep, () => void start(false));
+    const goes = keyDoes(inStep ? 'goes back to the lesson' : nextStep ? `starts step ${i + 2}` : 'starts again');
+    if (goes) add('lab-r-line', `${goes.charAt(0).toUpperCase()}${goes.slice(1)}.`);
     const worst = lastRound?.results.find((r) => r.mark === 'miss');
     if (worst && !loopBars) btn(`Loop bars ${worst.hit.bar + 1}–${Math.min(chart!.bars.length, worst.hit.bar + 2)}`, false, () => { loopBars = [worst.hit.bar, Math.min(chart!.bars.length - 1, worst.hit.bar + 1)]; rebuildForm(); backToOpen(); });
     btn(role() === 'accomp' ? 'Try the lead' : 'Try the accompaniment', false, () => { setRole(role() === 'accomp' ? 'lead' : 'accomp'); rebuildForm(); backToOpen(); });
@@ -587,6 +606,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   function backToOpen(): void {
     stopRun();
+    mainAction = null;
     $('lab-play').hidden = true;
     $('lab-result').hidden = true;
     $('lab-open').hidden = false;
@@ -616,7 +636,13 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
 
   function feedback(text: string): void { $('lab-feedback').textContent = text; }
   /** The opening (or the result) drawn again; the last result's marks only where it is a result of what is chosen now. */
-  function fill(): void { fillOpen(); fillGrid(lastRound && !running && lastRound.ctx === ctx() ? lastRound.marks : undefined); fillBottom(); $('lab-band-line').textContent = bandLine(); }
+  function fill(): void {
+    fillOpen(); fillGrid(lastRound && !running && lastRound.ctx === ctx() ? lastRound.marks : undefined); fillBottom(); $('lab-band-line').textContent = bandLine();
+    // The task line (lesson/task-line.ts): the step's task, and "Practice now" once the chart, part, step or bars differ.
+    if (chart) fillTaskLine($('lab-task'), 'lab', { screen: 'lab', chart: chart.id, ...(loopBars ? { bars: `${loopBars[0] + 1}-${loopBars[1] + 1}` } : {}), settings: { role: role(), step: role() === 'accomp' ? accompStep() : leadStep() } });
+    keys.setNames(namesShown('lab'));
+    $('lab-keys-say').textContent = keyboardConnected() ? 'or play any key' : ''; // (key-words.ts: said with a keyboard only)
+  }
 
   // ---- the controls ------------------------------------------------------------------------------------------------
 
@@ -635,7 +661,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
       b.innerHTML = '<strong></strong><small></small>';
       b.querySelector('strong')!.textContent = c.title;
       b.querySelector('small')!.textContent = `${c.bars.length} bars · ${c.meter.beats}/${c.meter.beatType} · ♩ ${c.tempo}`;
-      b.addEventListener('click', () => { pickDialog.close(); preset = null; setActivity(null); choose(c.id); lastRound = null; feedback(''); fill(); }); // another chart: the activity is over
+      b.addEventListener('click', () => { pickDialog.close(); preset = null; choose(c.id); lastRound = null; feedback(''); fill(); }); // another chart: the activity's choices are over (a lesson step's task line says it is practice)
       const li = document.createElement('li');
       li.append(b);
       return li;
@@ -669,7 +695,8 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
   // Keys: from the MIDI keyboard and the screen's keys, timed on the band's clock at the moment the key moved (the
   // keyboard's own time, not when the page got round to it). A key's release is kept: a chord is its notes held together.
   keys.onKey = (m, on, time, input) => {
-    if (!running || pausedRound !== null) return;
+    if (!running) { if (on) restingKey(time); return; }
+    if (pausedRound !== null) return;
     // (judged against the band as heard: it always plays on the phone, whose sound reaches the ear heardDelayMs late; 2026-10-16)
     const songT = sound.songTime() - (Math.min(1000, Math.max(0, performance.now() - time)) + sound.heardDelayMs('clicks', input)) * speed();
     if (!on) { const p = held.get(m); if (p) { p.off = songT - p.round * roundMs(); held.delete(m); } return; }
@@ -681,6 +708,19 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     presses.push(p);
     held.set(m, p);
   };
+
+  /**
+   * A key while the band is not playing (owner, 2026-10-16: a key starts, goes on and goes again): on the steps, it
+   * starts (the bar of count-in, as ▶ Start: not a note); on a result, after a moment (the last chord's keys), it does
+   * the result's main button. Not behind a panel.
+   */
+  let mainAction: (() => void) | null = null, resultAt = 0;
+  const RESULT_SETTLE_MS = 800;
+  function restingKey(time: number): void {
+    if (!isOpen || starting || app.dialogOpen()) return;
+    if (!$('lab-result').hidden) { if (mainAction && time - resultAt >= RESULT_SETTLE_MS) mainAction(); return; }
+    if (!$('lab-open').hidden) void start(false);
+  }
 
   /** chartId: a chart chosen in the library (remembered, as one chosen with Change). */
   async function open(stillWanted: () => boolean = () => true, activity?: { chart: string; preset: LabPreset; title?: string }, chartId?: string): Promise<void> {
@@ -700,7 +740,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     $('lab').hidden = false;
     choose(activity?.chart ?? chartId ?? stored.chart ?? charts[0].id, !activity);
     backToOpen();
-    feedback(loadProblems || activity?.title || ''); // (an activity's own words)
+    feedback(loadProblems); // (an activity's own words are on the task line)
     app.stayAwake();
   }
   /** An activity's ladder that cannot be read: why (none: fine). */
@@ -736,7 +776,7 @@ export function createLabScreen(app: App, closed: () => void): LabScreen {
     // is the only way to stop from the keyboard then (review 2026-10-14: a "lowest stops" branch here never ran).
     command(c: Command): void {
       if (c === 'mash') { if (running) { stop(); feedback('Stopped by a mash'); } }
-      else if (c === 'high') { if (!running) void start(false); }
+      else if (c === 'high') { if (!running) { if (!$('lab-result').hidden && mainAction) mainAction(); else void start(false); } } // (a result: its main button)
       else if (c === 'low') { if (!running) backToOpen(); }
     },
     // The keys the music uses (the remote's edge keys outside them are commands). While the band plays any octave

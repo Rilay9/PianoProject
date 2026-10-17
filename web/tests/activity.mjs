@@ -77,6 +77,7 @@ const refused = [
   ['an unknown screen', { screen: 'piano' }, /screen "piano" is not one of/],
   // (2026-10-16, owner's answers after the lesson 1 comparison: Free play's names, Simon's goal)
   ['Free play names that are not true or false', { screen: 'freeplay', names: 'no' }, /names "no" should be true or false/],
+  ['Drills names that are not true or false', { screen: 'drills', set: 's', names: 'false' }, /names "false" should be true or false/],
   ['a Simon goal of 0', { screen: 'simon', set: 'x', level: { goal: 0 } }, /goal/],
   ['a score without its piece', { screen: 'score' }, /needs "piece"/],
   ['a typo in a setting', { screen: 'score', piece: 'x', settings: { hand: 'right' } }, /settings has "hand"/],
@@ -109,6 +110,10 @@ for (const [name, raw, want] of [
 {
   const fp = readActivity('t', { screen: 'freeplay', names: false }), sm = readActivity('t', { screen: 'simon', set: 'x', level: { goal: 3 } });
   ok('Free play names: false reads (no note names until taught), and Simon goal: 3 (the game ends at a chain of 3)', fp.names === false && sm.level.goal === 3, JSON.stringify({ fp, sm }));
+  // (the consistency pass, 2026-10-16: names: false on any activity, honoured on every screen that names notes)
+  const every = [{ screen: 'score', piece: 'x' }, { screen: 'memorise', piece: 'x' }, { screen: 'simon', set: 's' }, { screen: 'drills', set: 's' }, { screen: 'lab', chart: 'c' }, { screen: 'freeplay' }]
+    .map((raw) => readActivity('t', { ...raw, names: false }));
+  ok('names: false reads on every screen (score, Memorise, Simon, Drills, the lab, Free play); left out, names show', every.every((a) => a.names === false) && readActivity('t', { screen: 'drills', set: 's' }).names === undefined, JSON.stringify(every.map((a) => [a.screen, a.names])));
 }
 for (const [name, file, want] of refused) {
   try { readActivity('t', file); ok(`refused: ${name}`, false, 'it was accepted'); }

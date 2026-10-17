@@ -9,6 +9,8 @@
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { midiOf, type Item } from './items';
 
+import { MARK, ringMissed } from '../result-marks';
+
 const SPLIT = 60; // middle C: lower notes go to the bass staff
 const DIVISIONS = 8; // per quarter note: a 32nd note is one
 
@@ -59,7 +61,7 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
 export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): string {
   let gi = 0; // each group's number across all the items, for marks ("group:midi" -> colour)
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
-    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? '#2563eb' : null, item: i, gi: gi++, staccato: !!it.detached?.[k],
+    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? MARK.want : null, item: i, gi: gi++, staccato: !!it.detached?.[k],
   })));
   const all = groups.flatMap((x) => x.g.map(midiOf));
   const low = Math.min(...all, 72), high = Math.max(...all, 48);
@@ -224,7 +226,7 @@ export class ExerciseNotation {
     this.box.style.paddingBottom = `${reserve}px`;
     this.osmd.EngravingRules.RenderSingleHorizontalStaffline = this.line;
     this.small.style.flex = this.line ? 'none' : '';
-    this.osmd.render();
+    this.osmd.render(); ringMissed(this.small); // (missed notes ringed as well as grey: result-marks.ts)
     const lit = [...this.small.querySelectorAll<SVGElement>('[fill="#2563eb"]')];
     if (!lit.length) { if (this.line) this.box.scrollLeft = this.box.scrollWidth; return; } // the newest end in view
     const box = this.box.getBoundingClientRect();
@@ -246,7 +248,7 @@ export class ExerciseNotation {
     this.small.style.width = '4000px'; // wide enough that a card's bars stay on one line
     this.small.style.flex = 'none'; // (a flex item would shrink back to the room's width and wrap the card)
     this.osmd.zoom = 1.1;
-    this.osmd.render();
+    this.osmd.render(); ringMissed(this.small); // (missed notes ringed as well as grey: result-marks.ts)
     const svg = this.small.querySelector('svg');
     this.small.style.width = '';
     this.small.style.flex = '';

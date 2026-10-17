@@ -20,6 +20,8 @@
 
 import type { FollowView } from './follow';
 import { addEntry, keyName as logKey, Run, type Slip } from './log';
+import { kindsOf, legendLine, slipMarks } from './result-marks';
+import { joinWords, keyDoes, startWords } from './key-words';
 import { yours, type Practice } from './practice';
 import type { Device, ScoreSettings } from './settings';
 import type { Sound } from './sound';
@@ -99,6 +101,10 @@ export interface MemoriseDeps {
   changed: () => void;
   /** Any key held down on the keyboard now. */
   anyKeyDown: () => boolean;
+  /** Opened by a lesson step: a chunk learned is the step's end (owner, 2026-10-16), with Back to the lesson. */
+  inStep: () => boolean;
+  /** Note names shown (an activity can hide them until taught). */
+  names: () => boolean;
 }
 
 export class Memorise {
@@ -149,6 +155,13 @@ export class Memorise {
   /** Waiting for a tap to go on to the next chunk. */
   get waitingForNext(): boolean { return this.phase === 'between' && this.tapNext; }
   private tapNext = false;
+  /**
+   * A lesson step's end: a chunk learned (owner, 2026-10-16: the step is done when its first chunk is learned), waiting
+   * with "Back to the lesson ▶" as the main button (a key does it) and Next chunk beside it.
+   */
+  get stepEnd(): boolean { return this.atStepEnd && (this.waitingForNext || this.phase === 'done'); }
+  private stepEnded = false; // (this visit: the step's end was reached once; later chunks go on as set)
+  private atStepEnd = false;
 
   private num(m: number): number { return this.d.view.barNumber(this.d.view.firstStepOfBar(m)); }
   private bars(a: number, b: number): string { return a === b ? `bar ${this.num(a)}` : `bars ${this.num(a)}–${this.num(b)}`; }
@@ -338,11 +351,12 @@ export class Memorise {
       : this.place.learned > 1 && o.adds === 'bar'
       ? `Carrying on: ${this.bars(a, a + this.place.learned - 2)} learned`
       : o.before === 'nothing' ? 'They hide and you play them from memory' : o.before === 'all' || o.adds === 'chunk' ? 'It plays them, then hides them for you' : `It plays ${this.bars(a, a)}, then hides it for you`;
-    this.say(`${this.bars(a, b)[0].toUpperCase()}${this.bars(a, b).slice(1)} · press ▶ or play to start`, sub);
+    this.say(`${this.bars(a, b)[0].toUpperCase()}${this.bars(a, b).slice(1)} · ${startWords('press ▶')}`, sub);
   }
 
   /** ▶ (or your first key): start, or carry on where you were. */
   start(): void {
+    this.atStepEnd = false;
     if (this.active && this.phase !== 'done') return;
     this.endLog(); // a new session in the practice log
     this.beginLog();
@@ -366,6 +380,7 @@ export class Memorise {
 
   /** Done: leaving the Memorise screen. */
   leave(): void {
+    this.stepEnded = this.atStepEnd = false; // (the next visit is a new one)
     this.endLog();
     this.halt();
     this.d.practice.autoPause = true;
@@ -552,7 +567,7 @@ export class Memorise {
     this.advance();
   }
 
-  /** Slips shown on the uncovered bars (missed green, early or late amber), until you play again. */
+  /** Slips shown on the uncovered bars in the app's one set of marks (result-marks.ts), until you play again. */
   private review(slips: { step: number; midi: number; kind: string }[], extra: { step: number; midi: number }[]): void {
     if (this.practising) this.practisePasses = 0;
     else { this.place.passes = 0; this.savePlace(); }
@@ -567,13 +582,13 @@ export class Memorise {
     this.slipBar = v.barOf(firstStep);
     this.slipStep = firstStep;
     v.goTo(firstStep); // the slip on screen
-    v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
+    v.markNotes(slipMarks(slips));
     this.carry = this.opts.carryFrom === 'bar' ? this.slipBar : this.scope()[0];
     const missed = slips.filter((x) => x.kind === 'missed').length, short = slips.filter((x) => x.kind === 'short').length, timing = slips.length - missed - short;
-    const wrong = this.wrongKeys.map(keyName).join(' ');
-    const parts = [missed && `${missed} missed (green)`, timing && `${timing} off time (amber)`, short && `${short} let go early (amber)`, extra.length && `wrong ${extra.length === 1 ? 'key' : 'keys'} ${wrong}`].filter(Boolean);
+    const wrong = this.d.names() ? ` ${this.wrongKeys.map(keyName).join(' ')}` : '';
+    const parts = [missed && `${missed} missed`, timing && `${timing} off time`, short && `${short} let go early`, extra.length && `${extra.length === 1 ? 'a wrong key' : `${extra.length} wrong keys`}${wrong}`].filter(Boolean);
     const what = parts.length ? `Bar ${this.num(this.slipBar)}: ${parts.join(', ')}` : 'You peeked: not a clean pass';
-    this.say(what, `Play from bar ${this.num(this.carry)} to go again · Hear plays it`, 'bad');
+    this.say(what, joinWords(legendLine(kindsOf(slips, extra.length)), `Play from bar ${this.num(this.carry)} to go again, or tap Hear it`), 'bad');
   }
 
   /** Learned: add a bar, join up, or move on. */
@@ -622,6 +637,9 @@ export class Memorise {
 
   private chunkDone(): void {
     this.joining = null;
+    // A lesson step: this chunk learned is the step's end (owner, 2026-10-16); it waits, Back to the lesson the main button.
+    const endsStep = this.d.inStep() && !this.stepEnded;
+    if (endsStep) { this.stepEnded = true; this.atStepEnd = true; }
     // This chunk's bars are learned (the test is offered once every bar is).
     { const [a, b] = this.chunkRange(); this.log?.learned.push(`chunk: ${this.bars(a, b)}`); }
     const lk = this.learnedKey();
@@ -635,13 +653,19 @@ export class Memorise {
       // skipped with ›, so only the test (every bar learned) can mark the piece memorized.
       this.stored.progress[this.key()] = { chunk: 0, learned: 1, passes: 0, size: this.opts.chunk };
       this.save();
-      if (this.allLearned()) { this.offer('test'); this.say('✓ That was the last chunk: every bar learned', 'Take the test to mark the piece memorized', 'ok'); return; }
+      if (this.allLearned() && !endsStep) { this.offer('test'); this.say('✓ That was the last chunk: every bar learned', 'Take the test to mark the piece memorized', 'ok'); return; }
+      if (endsStep) { this.say('✓ That was the last chunk: step done', joinWords('Back to the lesson, or ▶ to start again', keyDoes('goes back to the lesson')), 'ok'); return; }
       const missing = this.d.view.barCount - (this.stored.learned[lk]?.length ?? 0);
       this.say('✓ That was the last chunk', `${missing} ${missing === 1 ? 'bar' : 'bars'} not learned yet (chunks skipped) · ▶ starts again from bar 1`, 'ok');
       return;
     }
     const [a, b] = this.chunkRange(this.place.chunk + 1);
     this.phase = 'between';
+    if (endsStep) {
+      this.tapNext = true;
+      this.say(`✓ Chunk learned: step done`, joinWords(`Back to the lesson, or Next chunk (${this.bars(a, b)})`, keyDoes('goes back to the lesson')), 'ok');
+      return;
+    }
     if (this.opts.next === 'tap') {
       this.tapNext = true;
       this.say(`✓ Chunk learned. Next: ${this.bars(a, b)}`, 'Tap Next chunk when ready', 'ok');
@@ -654,6 +678,7 @@ export class Memorise {
 
   /** ‹ › (or the next chunk coming): that chunk from its start. */
   nextChunk(step: 1 | -1): void {
+    this.atStepEnd = false;
     const was = this.active && this.phase !== 'done' && this.phase !== 'offer' && !this.testing && !this.practising;
     this.halt();
     this.joining = null;
@@ -774,13 +799,12 @@ export class Memorise {
     }
     this.toPractise = bars;
     this.wrongKeys = [...new Set(extra.map((x) => x.midi))];
-    v.markNotes(slips.map((x) => ({ step: x.step, midi: x.midi, color: x.kind === 'missed' ? '#16a34a' : '#d97706' })));
+    v.markNotes(slipMarks(slips));
     this.slipStep = this.steps(bars[0], bars[0]).a;
     v.goTo(this.slipStep);
     this.offer('report');
     const n = bars.length;
-    this.say(`Test: ${n} ${n === 1 ? 'bar' : 'bars'} to practise (${bars.map((m) => this.num(m)).join(', ')})`,
-      'Marked: missed green, off time or let go early amber, wrong keys red', 'bad');
+    this.say(`Test: ${n} ${n === 1 ? 'bar' : 'bars'} to practise (${bars.map((m) => this.num(m)).join(', ')})`, legendLine(kindsOf(slips, extra.length)), 'bad');
   }
 
   /** The bars a test found, one at a time (clean passes as for learning), then the test again. */

@@ -14,6 +14,7 @@
       "test": true,
       "lessons": [
         "test-minuet-opening",
+        "test-consistency",
         "test-catalogue-piece",
         "test-chords-and-band"
       ]

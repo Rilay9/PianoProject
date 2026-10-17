@@ -17,6 +17,8 @@ const KEY = 'piano-web.hints.v1';
 export const TIPS = {
   /** The score: "Tap the music to stop and get the controls back." The first 3 runs, or until a run is stopped by a tap on the music. */
   tapToStop: { id: 'tap-to-stop', since: '2026-10-15', runs: 3 },
+  /** A MIDI keyboard connected for the first time (owner, 2026-10-16): set up its lowest and highest keys as buttons? Once. */
+  keyboardEnds: { id: 'keyboard-ends', since: '2026-10-16', runs: 1 },
 } as const;
 type Tip = (typeof TIPS)[keyof typeof TIPS];
 

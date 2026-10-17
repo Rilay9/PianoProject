@@ -531,7 +531,13 @@ export function createShell(app: App, d: ShellDeps) {
     nav.back(() => { if (nav.top()?.name === 'result') nav.back(() => openLesson(id)); else openLesson(id); });
   }
 
-  const screen: Screen = { key: () => {}, command: () => {}, musicRange: () => null, resized: () => {}, get busy() { return false; } };
+  // Keys on the tabs and pages do nothing, but on a step's result (owner, 2026-10-16) the keyboard's highest key is
+  // Next and its lowest Again; the lesson page itself is read, and takes no keys.
+  const screen: Screen = {
+    key: () => {},
+    command: (c) => { if (showing && nav.top()?.name === 'result' && lessonPage.resultShown) lessonPage.resultCommand(c); },
+    musicRange: () => null, resized: () => {}, get busy() { return false; },
+  };
 
   return {
     show, hide, goTab, openPage, openLesson, screen,

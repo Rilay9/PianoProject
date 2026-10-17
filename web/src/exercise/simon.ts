@@ -11,7 +11,8 @@ import type { Sound, NoteEvent } from '../sound';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
-import { activityTag, addEntry, Run, setActivity, type ActivityTag } from '../log';
+import { activityTag, addEntry, Run, type ActivityTag } from '../log';
+import { joinWords, keyDoes, noKeyboard, startWords } from '../key-words';
 
 /**
  * The help rung: 1 music + sound + keys lit … 5 by ear (the numbers saved levels, bests and logs have always used), and
@@ -59,12 +60,14 @@ const REPLAY_MS = 1800; // after a miss, time to see what was wanted before it p
 export interface SimonParts {
   set: HTMLSelectElement; left: HTMLElement; mid: HTMLElement; right: HTMLElement;
   name: HTMLElement; chain: HTMLElement; status: HTMLElement; sub: HTMLElement; start: HTMLButtonElement; hear: HTMLButtonElement;
+  /** A lesson step's game at its end: "Back to the lesson ▶" (owner, 2026-10-16). */
+  back?: HTMLButtonElement;
 }
 
 type State = 'ready' | 'showing' | 'turn' | 'miss' | 'over' | 'done';
 
 /** Simon's Ready line when there is nothing to play on (the screen's keys count in Simon, so only with them hidden). */
-export const NO_KEYS = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+export const NO_KEYS = noKeyboard('choose Keyboard under the music (Level) to play on the screen, or plug one in');
 
 export class Simon {
   private sets: ItemSet[] = [];
@@ -84,7 +87,7 @@ export class Simon {
   // new game at once: only a fresh press after letting go does.
   private waitRelease = false;
   private token = 0; // bumps to cancel a showing in progress
-  private helpedNow = false; // this chain was given again with Hear again / Show me
+  private helpedNow = false; // this chain was given again with Hear it / Show me
   private wholeNow = false; // this turn asks for the whole chain (not from a miss on): only then can it be a best
   private timers: number[] = [];
   // What it is giving you (the chain played and shown, or played again after a miss), to give again from its start when
@@ -112,6 +115,11 @@ export class Simon {
   get levelNow(): SimonLevel { return { ...this.level }; }
   /** Nothing to play on: no MIDI keyboard connected and no keys on the screen (owner, 2026-10-15: Ready says so). */
   noKeys: () => boolean = () => false;
+  /** Opened by a lesson step (exercise.ts): its game's end offers Back to the lesson, and a key does it. */
+  inStep: () => boolean = () => false;
+  back: () => void = () => {};
+  /** Note names shown (an activity can hide them until taught: owner, 2026-10-16). */
+  names: () => boolean = () => true;
   /** Ready's line again (a keyboard came, or the keys were shown or hidden). */
   readyLine(): void {
     if (!this.on || this.state !== 'ready') return;
@@ -175,7 +183,9 @@ export class Simon {
   private chooseSet(id: string, remember = true): void {
     this.set = this.sets.find((s) => s.id === id) ?? this.sets[0];
     this.ui.set.value = this.set.id;
-    if (remember) { this.mySet = this.set.id; if (this.on) setActivity(null); this.keys.choose(null); } // (your own choice: an activity, and its keys, are over)
+    // Your own choice: the activity's keys are over; a lesson step stays in force, its task line saying the practice now
+    // is not counted (owner, 2026-10-16).
+    if (remember) { this.mySet = this.set.id; this.keys.choose(null); }
     this.makeItems();
     this.keys.setRange(this.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.save();
@@ -200,10 +210,11 @@ export class Simon {
     this.ui.chain.replaceChildren();
     this.ui.status.textContent = '';
     this.ui.status.className = 'ex-status';
-    this.ui.sub.textContent = this.items.length ? 'Press Start, or play any key' : 'This set has nothing to play';
+    this.ui.sub.textContent = this.items.length ? startWords() : 'This set has nothing to play';
     this.readyLine();
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = !this.items.length;
+    if (this.ui.back) this.ui.back.hidden = true;
     this.ui.hear.hidden = true;
     this.scoreLine();
   }
@@ -219,6 +230,7 @@ export class Simon {
     this.endGame('stopped');
     this.game = { run: new Run(), set: this.set, level: { ...this.level }, tag: activityTag('simon'), longest: 0, helped: 0, misses: [] };
     this.ui.start.hidden = true;
+    if (this.ui.back) this.ui.back.hidden = true;
     this.grow();
     await this.showChain(0);
   }
@@ -246,13 +258,13 @@ export class Simon {
 
   /**
    * Gives the chain from item `from` on, as the rung says, then it is your turn from `turnFrom` (a group index).
-   * help: give it with sound and keys whatever the rung (Hear again / Show me).
+   * help: give it with sound and keys whatever the rung (Hear it / Show me).
    */
   private async showChain(from: number, turnFrom = 0, help = false): Promise<void> {
     const token = ++this.token;
     this.state = 'showing';
     this.giving = () => void this.showChain(from, turnFrom, help);
-    // Helped (Hear again / Show me): this chain cannot be a best; played whole again unhelped, it can (review, 2026-10-13).
+    // Helped (Hear it / Show me): this chain cannot be a best; played whole again unhelped, it can (review, 2026-10-13).
     if (help) this.helpedNow = true;
     else if (turnFrom === 0) this.helpedNow = false;
     this.keys.clearMarks();
@@ -320,10 +332,10 @@ export class Simon {
     const what = left === 1 ? 'play it' : `play these ${left}`;
     this.ui.status.textContent = rung === 5 ? `Your turn: ${what}` : `Your turn: ${what} (it hides when you start)`;
     this.ui.status.className = 'ex-status';
-    this.ui.hear.textContent = rung === 3 || rung === 4 ? 'Show me' : 'Hear again';
+    this.ui.hear.textContent = rung === 3 || rung === 4 ? 'Show me' : 'Hear it';
     this.ui.hear.hidden = false;
-    // (at "keys, no music" no note names anywhere: lesson 1 teaches none yet; 2026-10-16)
-    this.ui.sub.textContent = from > 0 ? (rung === 0 ? 'From where you missed' : `From ${this.chain[this.flat[from].item].name}`) : '';
+    // (at "keys, no music" no note names anywhere: lesson 1 teaches none yet; 2026-10-16; nor where a step hides them)
+    this.ui.sub.textContent = from > 0 ? (rung === 0 || !this.names() ? 'From where you missed' : `From ${this.chain[this.flat[from].item].name}`) : '';
     this.ui.chain.replaceChildren();
   }
 
@@ -331,13 +343,15 @@ export class Simon {
   private progress(): void {
     const done = this.flat[this.pos]?.item ?? this.chain.length;
     this.ui.chain.replaceChildren(...this.chain.map((it, i) =>
-      Object.assign(document.createElement('span'), { className: `chip${i < done ? ' done' : i === done ? ' now' : ''}`, textContent: i < done ? (this.level.rung === 0 ? '•' : it.short) : '·' })));
+      Object.assign(document.createElement('span'), { className: `chip${i < done ? ' done' : i === done ? ' now' : ''}`, textContent: i < done ? (this.level.rung === 0 || !this.names() ? '•' : it.short) : '·' })));
     this.ui.sub.textContent = '';
   }
 
   /** A key from either keyboard. */
   key(midi: number, on: boolean): void {
     if (!on) { if (this.waitRelease && this.keys.down.size === 0) this.waitRelease = false; return; }
+    // The game's end in a lesson step: a key goes back to the lesson (owner, 2026-10-16); otherwise it starts again.
+    if ((this.state === 'over' || this.state === 'done') && this.inStep()) { if (!this.waitRelease && !dialogOpen()) this.back(); return; }
     if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { if (!this.waitRelease && !dialogOpen()) void this.begin(); return; }
     if (this.state !== 'turn') return;
     if (!this.hidden) { // your first key: from here it is from memory
@@ -393,9 +407,7 @@ export class Simon {
       void this.drawChain([]); // the whole passage, now that it is played
       this.ui.status.textContent = `You played all of it (${length}).`;
       this.endGame('all played');
-      this.ui.start.textContent = 'Again';
-      this.ui.start.hidden = false;
-      this.ui.hear.hidden = true;
+      this.atEnd();
       return;
     }
     if (this.level.goal && counts && length >= this.level.goal) {
@@ -404,9 +416,7 @@ export class Simon {
       this.waitRelease = this.keys.down.size > 0;
       this.ui.status.textContent = `You did it: a pattern of ${length} copied whole.`;
       this.endGame('goal');
-      this.ui.start.textContent = 'Again';
-      this.ui.start.hidden = false;
-      this.ui.hear.hidden = true;
+      this.atEnd();
       return;
     }
     const token = this.token;
@@ -425,8 +435,9 @@ export class Simon {
     // What was wanted: a chord or one note by name; within a longer item (an arpeggio, a bar), the notes due next.
     const played = item.groups.filter((g) => g.length);
     const next = played[this.flat.slice(0, this.pos + 1).filter((g) => g.item === group.item).length - 1] ?? [];
-    // At "keys, no music" no names: the keys say it (the wrong key red, the right one outlined; 2026-10-16).
-    const names = this.level.rung !== 0;
+    // At "keys, no music" no names: the keys say it (the wrong key red, the right one outlined in blue; 2026-10-16); nor
+    // where a lesson step hides names.
+    const names = this.level.rung !== 0 && this.names();
     this.ui.status.textContent = names ? `Wanted ${next.map(shown).join(' ')} · you played ${shown(noteName(midi))}` : 'Not that one: the right key is outlined';
     if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, n: item.n, wanted: next.map(shown).join(' '), played: shown(noteName(midi)) });
     this.ui.status.className = 'ex-status bad';
@@ -439,9 +450,7 @@ export class Simon {
       this.waitRelease = true; // the miss's own key is still down
       this.ui.sub.textContent = `${this.ui.sub.textContent} Game over: chain ${this.chain.length - 1}.`.trim();
       this.endGame('over');
-      this.ui.start.textContent = 'Again';
-      this.ui.start.hidden = false;
-      this.ui.hear.hidden = true;
+      this.atEnd();
       return;
     }
     // Again: the whole chain from the start, or from the missed item on (and you carry on from there).
@@ -472,11 +481,46 @@ export class Simon {
     again?.();
   }
 
-  /** The keyboard as a remote (remote.ts): a mash stops the game, the lowest key is Hear again, the highest Start. */
+  /**
+   * A game's end (game over, all played, its goal, or stopped by a mash): Again; in a lesson step, "Back to the lesson ▶"
+   * is the main button and a key does it (owner, 2026-10-16). The words say what a key does, with a keyboard.
+   */
+  private atEnd(stopped = false): void {
+    const step = this.inStep();
+    this.ui.start.textContent = 'Again';
+    this.ui.start.hidden = false;
+    if (this.ui.back) this.ui.back.hidden = !step;
+    this.ui.hear.hidden = true;
+    const keyWord = step ? keyDoes('goes back to the lesson') : keyDoes('starts again');
+    this.ui.sub.textContent = joinWords(this.ui.sub.textContent, stopped ? '' : keyWord);
+  }
+
+  /** The keyboard as a remote (remote.ts): a mash stops the game (its result kept), the lowest key is Hear it (on a game's
+   * end: Again), the highest Start (on a lesson step's end: back to the lesson). */
   command(c: 'mash' | 'low' | 'high'): void {
     if (!this.on) return;
-    if (c === 'mash') { if (this.state !== 'ready') { this.reset(); this.ui.sub.textContent = 'Stopped by a mash'; } return; }
-    if (c === 'low') { if (this.state === 'turn') void this.hearAgain(); return; }
+    if (c === 'mash') {
+      if (this.state === 'ready' || this.state === 'over' || this.state === 'done') return;
+      // As Drills keeps a set's results: the game ends with what it reached (consistency pass, 2026-10-16).
+      const longest = this.game?.longest ?? 0;
+      this.stopAll();
+      this.giving = null;
+      this.state = 'over';
+      this.waitRelease = this.keys.down.size > 0;
+      this.keys.clearMarks();
+      this.endGame('stopped');
+      this.ui.status.textContent = `Stopped by a mash: longest chain ${longest}`;
+      this.ui.status.className = 'ex-status';
+      this.ui.sub.textContent = '';
+      this.atEnd(true);
+      return;
+    }
+    if (c === 'low') {
+      if (this.state === 'turn') void this.hearAgain();
+      else if ((this.state === 'over' || this.state === 'done') && !this.waitRelease) void this.begin();
+      return;
+    }
+    if ((this.state === 'over' || this.state === 'done') && this.inStep()) { this.back(); return; }
     if ((this.state === 'ready' || this.state === 'over' || this.state === 'done') && !this.waitRelease) void this.begin();
   }
 

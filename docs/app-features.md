@@ -74,8 +74,9 @@ scrolling and honest states.
   Pages over a tab (Settings, Exercises, a lesson) hide the tabs, as the mockups do.
 - **Home A (a lesson to do):** *Up next · Rung n · Lesson n · step n of m*, the step's title, "k of m steps done", Start ▶
   (it opens the lesson page and the step at once, so you come back to the lesson page and its feedback). Under it the
-  lesson's steps, each in words: *target met*, *played through* (done ✓), *visited* (a step with nothing to judge: it counts,
-  without a ✓; V18), *tried, target not met yet*, *skipped* (a later step was played), *up next*, *to come*; a tap
+  lesson's steps, each in words: *target met*, *played through* (done ✓), *visited* (a step with nothing to judge, once a
+  key was played or the music heard to its end: it counts, without a ✓; V18), *tried, target not met yet* / *tried, not
+  through yet*, *skipped* (a later step was played), *up next*, *to come*; a tap
   starts that step (steps never lock). "Switch…" and "All lessons ›". A lesson you came back to with Revisit (every step
   done) shows *Again* and its first step. Then *Recently practised*. The order is always Today → the lesson's steps →
   recently practised (V16): one under the other on a phone upright; sideways and on a tablet Today and recent on the left,
@@ -211,13 +212,13 @@ tapped before that read ends waits for it, so the first run has the band too (re
 |---|---|---|---|
 | **Watch** | hearing and seeing the piece | the app plays; the marker follows the sound | nothing |
 | **Wait for me** | learning the notes without time pressure | the marker waits at each of your notes until all its keys are down (freshly pressed); the piano plays the other hand up to your next note; held piano notes ring on | nothing scored; it simply waits |
-| **Play along** | playing at tempo | the piece runs at its tempo with the piano playing the other hand; at the end a summary | each note on time and held / let go early / early / late / missed, keys not in the score; *On time*: relaxed ±200, normal ±100, strict ±50 ms; the weakest bars offered as a one-tap loop |
+| **Play along** | playing at tempo | the piece runs at its tempo with the piano playing the other hand; at the end the run strip (below) and the slips marked on the music | each note on time and held / let go early / early / late / missed, keys not in the score; *On time*: relaxed ±200, normal ±100, strict ±50 ms; the weakest bars offered as a one-tap loop |
 | **Ladder** | building speed on a passage | Play along round a loop; a clean pass (every note on time and held, nothing wrong) raises the speed a step (2 / 5 / 10 %), a messy one lowers it; never above the written tempo | as Play along, per pass |
 | **Rhythm** | the rhythm alone | Play along where any key counts: one tap per note or chord (keys within 30 ms are one tap) | timing of each tap, held as long as the moment's longest note; extra taps |
 
 **Held notes** (owner, 2026-10-13; `web/src/holds.ts`): wherever rhythm is judged (Play along, Ladder, Rhythm,
 timed Drills, Memorise "in time", the lab's chords) a note must sound at least ¾ of its written length at the speed
-played, or it is *let go early* (amber, named). The sustain pedal counts as holding (a key let go under the pedal
+played, or it is *let go early* (orange, named). The sustain pedal counts as holding (a key let go under the pedal
 sounds until it lifts, or until struck again; owner, 2026-10-13: what you hear is judged; pedalling itself is not).
 Notes marked staccato, staccatissimo or spiccato are meant short and never asked to be held. A note at a phrase end
 (a written rest follows it in its voice, or it ends a slur) needs only half its length. In Rhythm a tap is never asked
@@ -244,15 +245,27 @@ replace this in Wait for me, on the kinds of screen it names: those keys with ev
 bars, fixed for the run. Wait for me with the keys showing starts
 without a MIDI keyboard (no MIDI in the browser, not allowed, or still being asked) and says to play on the keys below;
 the timed modes still need one: with none connected, or MIDI not allowed, ▶ in Play along, Rhythm or Ladder starts
-nothing and says "No MIDI keyboard found. This mode listens to one: plug it in, or choose Wait for me to play on the
-screen." (final review F17; the browser's own permission sentence is never shown). On a phone held sideways the keys
-are off, so Wait for me with no keyboard says "No MIDI keyboard found. Turn the phone upright to play on the screen’s
-keys, or plug one in." and starts nothing (owner, 2026-10-15); a run started upright on the screen's keys says the same
+nothing and says "No MIDI keyboard found: this mode listens to one. Plug it in, or choose Wait for me to play on the
+keys below." (final review F17; the browser's own permission sentence is never shown; one phrase family with every
+screen's: §7e). On a phone held sideways the keys are off, so Wait for me with no keyboard says "No MIDI keyboard found:
+turn the phone upright to play on the keys below, or plug one in." and starts nothing (owner, 2026-10-15); with the keys
+showing it says "No MIDI keyboard found: play on the keys below." and plays; a run started upright on the screen's keys says the sideways line
 when the phone is turned sideways (it waits; upright again, the line goes and the keys are back; §7d). Choosing another mode ends a bar pick under way (Loop's
 or Ladder's), as Cancel does. Leaving the piece (← or Back) during a Play along, Rhythm or Ladder run ends it quietly:
-it is logged, and no summary opens over where you land (owner, 2026-10-15, F04); Loop tapped during a run stops it with
-its summary and log first (F02). The warning that a file has more parts or staves than two hands is said only for the
-piece opened, and the first message after a piece opens (that warning, an activity's title) stays when the music is laid
+it is logged, and no summary shows over where you land (owner, 2026-10-15, F04); Loop tapped during a run stops it with
+its summary and log first (F02). **After a run** (owner, 2026-10-16, the consistency pass; §7e): the summary is **a strip**
+at the bottom over the music, not a dialog: how it went (the same words as before), the one-line key, the weak bars to
+loop, ▶ Again, ✕, and in a lesson step **Back to the lesson ▶** as its main button; the slips are **marked on the music**
+(grey and ringed missed, orange early, late or let go early); the marker goes back to where the run started, and **a key
+starts the next run** (your note at the marker counts as its first; not in the first 0.8 s; the strip says so with a
+keyboard connected). A loop's run (Ladder, a loop in Play along or Rhythm) shows its last whole pass the same way when
+it stops; Wait for me played to the piece's end, or stopped after going round its loop at least once ("Played through
+bars 1–4, 2 times."), shows a strip too (no marks: nothing is judged), and so does Watch to the end in a lesson step
+(visited: §8c; with the step's bars looped, Watch stops after one round there instead of going round). The marks and the strip go when the next run starts, another piece opens, or ✕.
+**A key while nothing runs starts** (2026-10-16): your note at the marker (any key in Rhythm) as the first note, played
+on time; another key as ▶ does (it used to do nothing, said nowhere); Watch too; Ladder with no loop still asks for its bars.
+The warning that a file has more parts or staves than two hands is said only for the
+piece opened, and the first message after a piece opens (that warning) stays when the music is laid
 out again (a phone's own resize just after opening cleared it before: a relayout now keeps the message line; review
 2026-10-15). The rest of a chord pressed while a run starts counts for the first notes, as the key
 that started it does. With the keys showing in Wait for me, the bottom bar sits above them, never over them. In the judged
@@ -282,7 +295,10 @@ moving on so the learner just plays and takes in the corrections. `web/src/memor
 Memorise (← goes back to Music). It uses the score's drawing of the
 piece, nothing else of the score screen. Back while its piece is still loading leaves it shut (F08); an exercise's
 music (`ex-…`) opens in it after a reload or Carry on too (F18). Before ▶, its opening line follows its Settings as they
-change (F21).
+change (F21). **Opened by a lesson step** (owner, 2026-10-16): the step's task on the task line under the header (§7e);
+the step's end is **a chunk learned**: Memorise then waits ("✓ Chunk learned: step done") with **Back to the lesson ▶**
+as the main button (a key, or the highest key, does it) and *Next chunk* beside it; after that one, later chunks go on
+as set. Its *Hear* button is **Hear it** (one name for "play it to me" across the app).
 
 **How it works:**
 1. The piece is split into chunks of N bars (2 / 4 / 8). Within a chunk bars are added one at a time (or the whole
@@ -295,7 +311,8 @@ change (F21).
    first note doesn't start the pass: it says so and waits (also when going again after a slip).
 4. After the pass: clean passes count towards "learned" (1 / 2 / 3 in a row), but only passes from the first bar
    being learned (one started at a later bar is practice, then it asks for the whole); slips show on the uncovered bars
-   (missed notes green, early/late amber when timing counts, wrong keys red on the keys) and stay until you play
+   in the app's one set of marks (§7e: missed notes grey and ringed, early, late or let go early orange, wrong keys red on
+   the keys), with the one-line key in the message's second line, and stay until you play
    again, from the bar of the first slip (or the start).
 5. A learned chunk asks how to join it up: with the chunk before, everything so far, or on to the next chunk
    (on the last chunk: finish); "Always do this" remembers the choice. Then the next chunk, by itself or on a tap.
@@ -349,10 +366,15 @@ header's **Simon▾** is *Practise as…*: the same set in Drills (owner, 2026-1
 
 **How it works:** the app gives the chain (as the help level says), it stays shown until your first key, then you
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
-outlined, names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
+outlined in blue (the "play this" colour; §7e), names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
 game over / keep going). Pools add a random item each round; passages grow in their own order; a completed passage
 is drawn whole; an activity's `goal` ends the game, done, at a chain that long played whole without help (§8b). Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
-one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15). While the Level panel is
+one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15).
+**A mash** during a game ends it with what it reached ("Stopped by a mash: longest chain n", logged as stopped; it used to
+go back to Ready, the game's result lost; 2026-10-16, as Drills keeps a set's results). At a game's end (game over, all
+played, its goal, a mash) *Again*; after letting go, a key starts again, or in a lesson step goes back to the lesson
+(**Back to the lesson ▶** is then the main button; §7e). The lowest edge key is *Hear it* on your turn and *Again* at a
+game's end. While the Level panel is
 open keys count nothing and start nothing (owner, 2026-10-15; also Drills): your turn has no clock, so it simply waits;
 a chain being given when it opens (played, shown, or again after a miss) stops and is given again from its start when
 it closes. A level changed there starts afresh.
@@ -360,12 +382,13 @@ it closes. A level changed there starts afresh.
 **Help levels** (shared with Drills): 0 keys + sound, no music; 1 music + sound + keys lit, 2 music + sound, 3 music
 only, 4 name only, 5 by ear. **0, "keys, no music"** (2026-10-16, for lessons before the staff is taught, Faber's
 order): the chain is heard and its keys light as it plays, with no staff or notation at any point (given, your turn,
-after a miss, Hear again); your turn lights where to start, as at 1. It is numbered 0, before 1, rather than renumbering
+after a miss, Hear it); your turn lights where to start, as at 1. It is numbered 0, before 1, rather than renumbering
 the ladder: saved levels, bests (kept per rung) and the practice log's `settings.rung` keep 1–5 meaning what they meant.
 With *Nothing* under the music the keyboard still shows at 0 and 1 (the lit keys are the help). **No note names at 0**
 (decided 2026-10-16 from lesson 1's plan, which teaches none yet): a miss says "Not that one: the right key is outlined"
 (the wrong key red, the right one outlined), carrying on from a miss says "From where you missed", the chain's dots are
-plain dots, and the keys have no octave labels (C4, C5); rungs 1–5 name as before. The practice log still records the
+plain dots, and the keys have no octave labels (C4, C5); rungs 1–5 name as before, unless the activity says `names:
+false` (§8b), which does the same at every rung. The practice log still records the
 notes by name (it is for Claude). **Matching:** the same keys, any octave, or any octave and inversion (a chord still needs as many keys as
 it has notes: C4 and C5 are two keys). **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
@@ -402,24 +425,28 @@ octave counts, held as written in whichever octave you play; 5: by ear, it plays
 your first note (by ear: always your first note); the metronome can keep clicking. **At music only (3) with a count-in,
 the card is shown and waits** (owner, 2026-10-16, after ChatGPT's review of lesson 2: it counted in at once, about 3 s
 to read two bars): "Read it", then a key, a pad tap or *Count in* starts the count-in (that key is not a note); *Hear it*
-there plays the card first (help). After a card, missed notes are **grey** and early, late or let-go-early notes orange,
-with a one-line key under the card ("grey: missed · orange: early, late or let go early"; owner, 2026-10-16: green read
-as right). A set with no clean card is never called a new best. With a MIDI keyboard connected the lines say a key
-starts and goes on too ("tap the pad, play a key or press Start"; owner, 2026-10-16: hands stay on the keys). Cards are judged:
+there plays the card first (help). After a card, missed notes are **grey** (and ringed with a dashed circle: a shape
+too, not colour alone) and early, late or let-go-early notes orange, with a one-line key under the card ("grey: missed ·
+orange: early, late or let go early", and "red: a wrong key" when one shows red on the keys; owner, 2026-10-16: green
+read as right; the app's one set of marks, §7e); on the keys a wrong key is red and a missed one **outlined in blue**
+(the "play this" colour; it was green). A set with no clean card is never called a new best. With a MIDI keyboard
+connected the lines say a key starts and goes on too ("play a key or press Start", "tap the pad, play a key or press
+Start"; owner, 2026-10-16: hands stay on the keys); with none they say Start (and the pad) only. Cards are judged:
 - **with written rhythm** (MusicXML items, bars from a piece): in time, as Play along (on time and held / let go
   early / early / late / missed, wrong keys; *On time* relaxed / normal / strict);
 - **without** (notes, chords, intervals): as the set says — the right notes in order, or steady beats of a given
   length (steady beats are judged on when, not how long); *On time: notes only* judges every card on notes alone.
 
-A right card moves on by itself; one with slips shows them on the card (missed green, early/late amber, wrong keys
-red) and waits for *Again* or *Next*. *Again* replays the card and that try replaces its result (a set is always N
+A right card moves on by itself; one with slips shows them on the card (missed grey, early/late orange, wrong keys
+red, as above) and waits for *Again* or *Next* (a key goes on after 0.8 s). *Again* replays the card and that try replaces its result (a set is always N
 cards: a retry never adds one). A pool is dealt like a shuffled deck (owner, 2026-10-15): every item once before any
 comes again, then shuffled again, never the same card twice running (across a reshuffle or into the next set either), so
 a set of 5 from 3 items holds all 3 and 6 from 3 holds each twice; a passage gives its items in order, and *the misses
 again* in the order they were missed. A card got right on Again shows as "right on a retry", not clean, and is not one of the misses.
 Help (*Hear it*, *Show me*, or the hint after 8 s without a key on a notes-only card, which names the notes when the keys aren't shown) is
 noted and the card doesn't count as clean. Notes-only cards have *Skip*. A set is 10 / 20 cards, or endless with a
-*Finish* button; then each card's result, *the misses again* (just those) or a new set. Best kept per set and level
+*Finish* button; then each card's result, *the misses again* (just those) or a new set; in a lesson step **Back to the
+lesson ▶** is the main button there, and a key does it after 0.8 s (outside a step a key at Set done does nothing; §7e). Best kept per set and level
 (help rung, On time) and set size, from full sets only (not one stopped early by a mash or Finish, not an endless
 one), shown on the Ready screen and at the end; tempo per set. A name to play
 is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
@@ -499,14 +526,12 @@ columns off. Nothing is judged or kept. `web/src/freeplay.ts`. The keys are 42% 
 overridden by mistake (fixed 2026-10-16). Opened from a lesson step, its activity can choose the
 keys shown (§8b `keys`: e.g. C4–E5 upright, so the black keys are about 30 px wide on a phone); ‹ › then move those
 keys an octave at a time. **Opened by a lesson's step** (owner, 2026-10-16, after ChatGPT's live review of lesson 1: the screen said only "Play
-something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows on its own line above,
+something" and named intervals a first lesson hasn't taught): the step's `about` (its task) shows on the task line (§7e),
 kept in view while keys are held, and the three columns start hidden; Show turns them on for that visit only (your own
 Free play keeps its columns, `piano-web.freeplay.v1`), and it opens in the middle (from C3), not where you last left Free play
 (ChatGPT's review, F5: left at the bottom, a step asking for higher and lower opened with ‹ off). An activity's `names:
-false` hides note names (§8b). The task line on Simon and Drills goes when you change the help level (it is written
-for the step's own). Simon and
-Drills opened by a step show its `about` above the music too, until another set is chosen (owner, 2026-10-16). A step's
-`about` is therefore written as the task to do on that screen.
+false` hides note names (§8b). Every screen a step opens shows its task the same way (§7e), so a step's `about` is
+written as the task to do on that screen. A Free play step counts as visited once a key is played there (§8c).
 
 **Metronome** (owner, 2026-10-15): on its own, Practice → Metronome (`web/src/screens/metronome.ts`): tempo (−5/+5, a
 slider 20–300, tap tempo), beats in a bar (1–7, the first accented), its sound (Wood / Beep / High: the app's click, one
@@ -529,13 +554,15 @@ chords shows the form. *▶ Start* (or the keyboard's highest key) gives a bar o
 after round until ■ (or 40 rounds). Changing anything while the band gets ready drops that start. While playing: one instruction, the beat (1 2 3 4), the chord now and the next two, the box of chords with the bar
 you are in, and the keys to use, lit and named. *Show me first* plays one round with your part played for you.
 - **Accompaniment steps:** Roots (the root on each chord's first beat) → Chords on the beat (the whole chord, held) →
-  the style's rhythm (the chord where the style plays it) → Your own way (any voicing, any rhythm). A bar is green
+  the style's rhythm (the chord where the style plays it) → Your own way (any voicing, any rhythm). A bar is green ✓
   when every note of its chord (any voicing or octave; the Roots step: the root) is down together by the beat
-  (±150 ms of real time at any speed; a small roll is fine), amber when a little late (before the next chord), red with
-  a missing note, the notes only ever played one at a time (Your own way allows that), or a key not in the chord; said
+  (±150 ms of real time at any speed; a small roll is fine; looser than a note's ±100 on the score: a chord's notes land
+  over a moment), orange ~ when a little late (before the next chord), grey – (dashed) with a missing note or the notes
+  only ever played one at a time (Your own way allows that), red ✗ with a key not in the chord: the app's one set of
+  marks (§7e), each with its sign beside the bar number as well as the tint, and a one-line key under the result; said
   in music words ("Bar 4 C7: you played C E G; it needs B♭ (the 7th) as well"); a key not in the chord is named from
   the chord's key signature (flats for flat-side chords and C: "E♭ isn't in C7", "A♭ isn't in Cm"; 2026-10-14). Chords on the beat are held until the
-  chord changes, the style's rhythm as long as the band holds each (¾ of it, pedal counts; amber if let go early);
+  chord changes, the style's rhythm as long as the band holds each (¾ of it, pedal counts; orange if let go early);
   Roots and Your own way leave the length to you. Times are the keyboard's own. Help: keys lit, notes named, or the symbol only.
 - **Lead steps (over a chart: improvising):** roots in rhythm → chord notes (lit) → the scale (the chart's, lit pale,
   the chord's notes dark; land on a dark one when the chord changes) → call and answer (the band plays the chord's
@@ -544,7 +571,10 @@ you are in, and the keys to use, lit and named. *Show me first* plays one round 
   the lit keys"; Free, with nothing lit: "% of notes in the chord or the scale"). A round counts as played (toward the
   ✓) when you played in at least half its bars. The keys: two octaves from middle C.
 - **After:** how it went, the next step once a step has two clean rounds, loop the bars that went wrong, try the other
-  part. ■ in the middle of a round shows that round as far as it went, and it does not count. Tap bars in the box
+  part. The main button is *Step n ▶* when offered, else *Again ▶*; in a lesson step **Back to the lesson ▶** (§7e). A
+  key (after 0.8 s) or the highest key does the main button (the highest key always did Again before); stopped on the
+  steps, a key starts the count-in as ▶ Start does (not a note), said "or play any key" beside ▶ Start with a keyboard
+  connected. ■ in the middle of a round shows that round as far as it went, and it does not count. Tap bars in the box
   (stopped) to loop them: a loop is practice (no ✓ from it). A clean round below the chart's own tempo moves it up 5%
   (as Ladder). A result shows only for the chart, part, step and bars it came from. The style is the chart's (content, not a choice; owner, 2026-10-13). ⚙ while
   the band plays pauses it (owner, 2026-10-15): the round it was in is dropped (not judged or logged; keys played while
@@ -762,7 +792,7 @@ one); examples to copy written into a chart.
   block may name a catalogue piece by the id it gets when added, `u-` + its catalogue id (§8b, §8c). Opened when it is
   not in your library yet, it is added first by the same code as + Add (`addFromCatalogue` in `library/catalogue.ts`:
   the same record, origin "catalogue", PDMX source and the uploader's licence), works offline, and says one line
-  ("Added “…” to your library (Music).", after the activity's title on the message line); then the step carries on. So
+  ("Added “…” to your library (Music)." on the message line); then the step carries on. So
   a piece added by hand and one a lesson added are the same piece, with the same choices, fingering and Memorise data.
   Two opens at once share one add (the file is fetched and kept once). A file that can't be had is said ("“…” could
   not be added from the catalogue: …"), nothing opens and the step marks nothing; a `u-` id in neither your library
@@ -1122,9 +1152,10 @@ placeholders for checking the app, not lesson content.
   first, so a command never reaches a mode. A mash (six or more keys packed close within ¼ s) stops or pauses what
   is playing (the judged score modes pause as before). Your keyboard's lowest and highest key, learned once, are
   buttons when the music on screen doesn't use them: lowest = back / again (score: to the loop's or the bar's
-  start; Memorise: Hear; Drills: Again or Hear it; Simon: Hear again; the lab, stopped: back to the steps), held in
-  Memorise = Peek (held elsewhere: the same as a tap); highest = start / next / carry on (Drills: Start, Next, Skip,
-  New set; the lab: Start or Again). Where any octave counts (the lab while the band plays, Drills by name, Simon in
+  start; Memorise: Hear it; Drills: Again or Hear it; Simon: Hear it, or Again at a game's end; the lab, stopped: back
+  to the steps; a step's result page: Again), held in Memorise = Peek (held elsewhere: the same as a tap); highest =
+  start / next / carry on (Drills: Start, Next, Skip, New set; the lab: Start, or its result's main button; a lesson
+  step's end: Back to the lesson; a step's result page: Next ▶; §7e). Where any octave counts (the lab while the band plays, Drills by name, Simon in
   any octave) the music uses every key, so the edges are notes there; a mash still stops.
 - Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them), or the keys a lesson step's activity chose (§8b `keys`, 2026-10-16). A diminished 7th is named from its bass (Cdim7).
 - The full PDMX set (§5c) is the learner's own copy in the app's storage: offline in a tab too, not in the backup.
@@ -1207,11 +1238,17 @@ are content for later (§8c `tip`).
 
 - **The hints** (proposals #1–#4; none blocks a tap: the message line lets taps through to the music under it, all but
   its own button):
-  - *No keyboard* (states, said while true): Play along, Ladder and Rhythm, Drills' Ready and Wait for me sideways as §1
-    and §4 say; **Simon's Ready** says "No MIDI keyboard found: choose Keyboard under the music (Level) to play on the
+  - *No keyboard* (states, said while true; every one "No MIDI keyboard found: <what to do>.", §7e): Play along, Ladder
+    and Rhythm, Drills' Ready and Wait for me as §1 and §4 say; Memorise "No MIDI keyboard found: play on the keys
+    below." (or "…: show the keyboard in Settings, or plug one in."); **Simon's Ready** says "No MIDI keyboard found: choose Keyboard under the music (Level) to play on the
     screen, or plug one in." only when there is no keyboard and no keys on the screen (Simon counts the screen's keys:
     Nothing under the music, help above 1), and so do Drills' (§4); **Wait for me turned sideways mid-run** with no keyboard says §1's sideways line.
-  - *Tap to stop* (the one stored tip): as a score run starts and the bars fade, "Tap the music to stop and get the
+  - *Your keyboard's ends* (stored, once; owner, 2026-10-16): the first time a MIDI keyboard connects and its lowest and
+    highest keys are not set up, a card at the top: "Your keyboard is connected. Its lowest and highest keys can start,
+    go on and go again, so your hands stay on the keys. Set them up now?" **Set them up** opens Keyboard controls already
+    asking for the lowest key; **Not now** puts it away for good (Settings → Keyboard controls keeps the setup; Show tips
+    again brings the card back). Tip id `keyboard-ends`.
+  - *Tap to stop* (a stored tip): as a score run starts and the bars fade, "Tap the music to stop and get the
     controls back." on the message line (after "…: play on the keys below." when that is said). Shown on the first 3
     runs, or until a run is stopped by a tap on the music; it goes with the run.
   - *The hands label*: "Piano:" in Watch, "You:" in the others, before L R Both Off. Sideways and on a tablet beside the
@@ -1221,7 +1258,8 @@ are content for later (§8c `tip`).
     it; follow the marker." · "Wait for me: it waits for your notes; no clock." · "Play along: at tempo; the piano plays
     the hand you don’t; a summary at the end." · "Rhythm: any key counts: play the rhythm only." · Ladder: with no loop
     "Ladder: tap the first bar to practise. It goes round that loop; each clean pass a little faster, a messy one
-    slower.", with one "Ladder: round a loop; each clean pass a little faster, a messy one slower."
+    slower.", with one "Ladder: round a loop; each clean pass a little faster, a messy one slower." With a MIDI keyboard
+    connected each adds " · a key starts it" (§7e).
 - **The hint store** `piano-web.hints.v1` (`web/src/hints.ts`; in the backup and merged on restore like every
   `piano-web.*` key): `{ "tips": { "<tip id>": { "since": "<app version that introduced it>", "shown": n, "done": "<ISO
   time>" } }, "install": { "dismissed"?: "<ISO time>", "installed"?: "<ISO time>" } }`. The app has no version number, so
@@ -1253,6 +1291,52 @@ are content for later (§8c `tip`).
   section, a title without its id, an id used twice, HTML or an empty section is refused with the line;
   `npm run check:content` reads the file with this reader and checks every id the app opens and every `data-help` in
   `index.html`. **Keep it true:** whoever changes a screen changes its section in the same commit.
+
+## 7e. Across the screens: result marks, opened from a lesson, keys (owner, 2026-10-16: the consistency pass)
+
+The owner asked that what applies across modes be applied across all of them, not stacked screen by screen
+(`docs/inputs/2026-10-15.md`, 2026-10-16), and answered the survey's questions
+(`design/2026-10-16-consistency/survey.md`). One shared piece for each:
+
+- **One set of result marks** (`web/src/result-marks.ts`; tokens `--mark-*` in `style.css`, checked equal by
+  `check:exercise`): on the music, **missed grey** and ringed with a dashed circle (a shape as well as a colour; the
+  notehead's own ring, in a chord the missed note's), **early, late or let go early orange**; on the keys, **a wrong
+  key red** and **a key you were to play and didn't outlined in blue** (the lit keys' "play this" blue; it was green,
+  which read as right); **one one-line key**, only for the kinds present: "grey: missed · orange: early, late or let go
+  early · red: a wrong key". Used by a Drills card, Memorise's passes and test, the score's runs (Play along, Rhythm, a
+  loop's last pass), Simon's miss (its keys) and the lab's bar boxes (✓ green right, ~ orange off time, – grey a note
+  missing, ✗ red a wrong key, a sign beside each bar number). A key held down is **cyan** (`--key-pressed`, the pad
+  pressed too): it was amber, next to the timing orange. Green means right only (a ✓, the lab's right bars, done dots).
+  The music's dark theme is the light drawing inverted whole, the marks with it (contrast measured: §7e's check notes).
+- **One "opened from an activity"** (`log.ts` `StepContext`, grown from the practice log's tag): `launch` (`main.ts`)
+  sets it before the screen opens, with the activity, and for a lesson step the step and its task (`about`); it ends in
+  one function (`endStep`) when another screen opens or you come back to the lesson page. Every screen reads it
+  (`stepFor`): **the task line** (`lesson/task-line.ts`, `.step-task`, one style): the score and Memorise under their top
+  bar, the lab above its steps, Simon and Drills above the music, Free play where "Play something" was: the step's task,
+  else the activity's title (it used to be said as a message on four screens). **When you change what the step set**
+  (its set, help level, cards, timing, the way: Practise as…; the score's piece, mode, hands, bars, timing; the lab's
+  chart, part, step, a loop of bars; Memorise's piece or hands) the line stays and says under it **"Practice now: not
+  counted for the step (why)"**, from the same rule the step's result uses (`playedAsSet`, §8c), until it is changed
+  back. Another set, chart or piece chosen no longer ends the step: what you play then is kept with it, as practice.
+  **`names: false`** on any activity (§8b) hides note names on its screen: the keys' octave labels and the notes under
+  the score (score, Memorise), a miss's and a card's words and a set's results (Simon, Drills, at every help level), the
+  wrong keys' names (Memorise), the chord tones (the lab: the chord symbol only), Free play as before. Free play's own
+  reading of a step (the register from C3, the columns hidden) stays.
+- **Ends and keys**: when a lesson step's set or game ends (Drills' Set done, Simon's game end, a Memorise step's chunk
+  learned, the lab's result, a score run's strip, Watch to the end), **Back to the lesson ▶** is the main button (the
+  step's result: as ← does) and a key does it (after 0.8 s, the last notes' keys). On the score a key starts the next run
+  (the owner's answer for runs) and the highest key goes back; Wait for me and Watch end a step's run as §1 says (Watch
+  stops after one round of a step's bars; Wait for me goes round until stopped, then the strip). On the step's **result page** the
+  highest key is Next ▶ and the lowest Again (the edge keys, once set up); the lesson page itself takes no keys. On
+  Ready a key starts wherever it can: the score (any mode), Simon, Drills, Memorise, the lab (its count-in, not a note).
+  The lab's highest key does its result's main button (it was always Again). **One helper for the words about keys**
+  (`key-words.ts`): said only with a MIDI keyboard connected ("Press Start or play any key", "a key goes on to the next
+  card", "a key goes back to the lesson", the lab's "or play any key"), the edge keys only once set up; every "no
+  keyboard" sentence is "No MIDI keyboard found: <what to do>.". The one-time offer to set up the keyboard's ends: §7d.
+- **One play-it-to-me name**: *Hear it* (Drills, Simon, Memorise, a lesson's little score); *Show me* shows the music;
+  Memorise's *Peek* and the lab's *Show me first* are other things and keep their names. **The stuck hint** stays
+  as it is on purpose: 8 s on a Drills notes-only card (reading: owner, 2026-10-13), 3 s in Memorise (from memory), said
+  in each screen's help.
 
 ## 7b. The practice log (owner, 2026-10-13; `web/src/log.ts`)
 
@@ -1502,7 +1586,7 @@ Every field but `screen` and its content (`piece`, `set`, `chart`) may be left o
 is refused (`keys`: free play, simon, drills, score). **The file** (2026-10-15): its id is its file name without `.json`, letters, digits, `-` and `_` (what
 `?activity=` and a step's `activity` name); `index.json` is a list of the file names, used to save them for offline and
 by the check (the app opens an activity by its id, so one missing from the index still opens online but is not saved for
-offline; check:activity requires every file listed). `title` is text, shown as the activity opens (and in a message that it cannot);
+offline; check:activity requires every file listed). `title` is text, shown on the screen's task line while the activity lasts (§7e; a lesson step's `about` takes its place there), and in a message when it cannot open;
 left out (or not text: the reader quietly uses the id, a reader finding, refused by
 check:activity) it is the id. `bars` is "5-8" or one bar "5"; bar 0 (a pickup) reads, though the check counts bars from
 1. A lab ladder's step written out is `{ "kind", "name", "detail", "doing" }` as a chart's (§5b); a misspelt word there
@@ -1524,8 +1608,13 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
 - simon: `rung` 0–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
   from-miss; `onNew` all / new; `goal` a whole number 1–50: the game ends, "You did it: a pattern of n copied whole", once
   a chain that long is played whole without help (owner, 2026-10-16: lesson 1's copying game stops at 3).
-- freeplay: `keys` (above); `names` false: no note names on the screen (the keys' octave labels, the range, the notes
-  held, the chord or interval named) until a lesson has taught them (owner, 2026-10-16: lesson 1's and 2's steps).
+- freeplay: `keys` (above).
+- **any screen**: `names` false: no note names on the activity's screen while it lasts, until a lesson has taught them
+  (owner, 2026-10-16: lesson 1's and 2's steps; the consistency pass: every screen that names notes, §7e). Free play:
+  the keys' octave labels, the range, the notes held, the chord or interval named; the score and Memorise: the keys'
+  labels, the notes under the music, Memorise's wrong-key names and hints; Simon and Drills: the keys' labels and every
+  word that names a note, at any help level; the lab: the chord tones (the symbol stays). `"names": true` or leaving it
+  out shows them; anything else is refused.
 - lab: `role` accomp / lead; `step` roots / beat1 / style / own (accompaniment) or root / tones / scale / answer / free
   (lead), which also sets the role; `style` a style's id; `dropouts` off / drums / band; `parts` drums / bass / chords /
   click, each true / false; `steps` { accompaniment: […], lead: […] } (kinds as above, each once; a `step` must be in it);
@@ -1627,8 +1716,9 @@ next lesson with steps to do.
   Starts at once: the later one opens the step, and the step still gets its result.
 - **tip**: a callout (`label`: "Tip" by default, e.g. "Note").
 
-**A step counts as done** (shown in words, never one green tick for all: *target met*, *played*, *opened*; or *tried,
-target not met yet*; *skipped* when a later step was played; review 2026-10-15):
+**A step counts as done** (shown in words, never one green tick for all: *target met*, *played through*, *visited*; or
+*tried, target not met yet* / *tried, not through yet*; *skipped* when a later step was played; review 2026-10-15; the
+words on the step list and the result card come from one place, `progress.ts` `stepWords` and `result.ts` `through`):
 - with a **target**, when one run played for it meets it, as its screen's result can tell: score `onTime` (0.05–1: a Play
   along or Rhythm run, or a pass round a loop, with that share of its notes on time and held; needs Play along, Rhythm
   or Ladder), score `bpm` (a clean pass round the loop at that tempo or faster; needs `bars`), drills `clean` (that many
@@ -1639,16 +1729,28 @@ target not met yet*; *skipped* when a later step was played; review 2026-10-15):
   is refused. **A run counts toward a target only when played as the step sets it** (owner, 2026-10-16, after ChatGPT's
   review of lessons 1 and 2, F2; `result.ts` `playedAsSet`): Drills and Simon steps need the step's set, its help level or
   a harder one (from 0, also 5; from 1, also 2–3; from 2, also 3; else the same), Drills its number of cards and its
-  timing or a stricter one (tempo free), Simon `match: same` when the step says same. Other runs stay in the log as
-  practice; the result says "played with another help level: practice, not counted for the target";
-- without a target, when a run of it ended (one log entry: a set, a game, a Memorise session; a Drills set only when
-  played through, not left part way; a Simon game that ran its course, not one left: ChatGPT's review, F6). A **score** step counts
-  only a run in the step's own mode (when its activity names one) that reached the end of its bars (owner, 2026-10-15):
-  Wait for me round its loop, or to the piece's end (V10); Play along, Rhythm or Ladder a pass round its loop, or the
-  piece's last note reached (`reachedEnd`, §7b). A run that stops part way, or one in another mode (a Play along run
-  stopped after two notes, in a Wait for me step), is a start: the step is *tried*;
-- for what keeps no runs (the score in Watch, Free play), when you come back from it: **visited** (V18: it counts toward
-  the lesson's steps, shown without a ✓, since nothing was judged).
+  timing or a stricter one (tempo free), Simon `match: same` when the step says same; **the consistency pass (2026-10-16)
+  carried the rule to every screen and to steps with no target**: the way of practising (a Simon game is practice for a
+  Drills step, and the other way round); a **score** step's piece, its mode (Play along and Ladder count for each other;
+  Rhythm only for Rhythm; Wait for me only for Wait for me), its hands or more (one hand: that hand, both or Off; both:
+  both or Off), a loop holding its bars, its timing or stricter, tempo free (a `bpm` target is the tempo); a **lab**
+  step's chart, part, and step or a later one in its ladder (the activity's own ladder if it has one), over the whole
+  chart (a loop is practice); a **Memorise** step's piece, and its hands or both. Other runs stay in the log as practice;
+  the result says "played with another help level: practice, not counted for the step";
+- without a target, when a run of it went through **the whole of what the step set** (one table, `result.ts` `ended` and
+  `through`; owner, 2026-10-15 and 2026-10-16): Drills its whole set (not left part way); Simon a game to its end (game
+  over, all played, its goal; not one left part way: ChatGPT's review, F6, ledger C17); the **score** its bars to the end
+  in the step's mode: Wait for me round its loop, or to the piece's end (V10), Play along, Rhythm or Ladder a pass round
+  its loop, or the piece's last note reached (`reachedEnd`, §7b); **Memorise a chunk learned** (owner, 2026-10-16: "its
+  first chunk learned", its clean passes; Memorise opens at the chunk you were on, so it is the first chunk learned there),
+  or a whole-piece test with every bar clean; the **lab** a whole round of the chart (not one stopped part way, nor a
+  loop; improvising, a round played in). A run that stops part way, or one not played as the step sets it, is a start:
+  the step is *tried* (the card says what counts: "the whole set played is what counts", "a game played to its end",
+  "bars 1–4 played to the end", "a chunk learned", "a whole round of the chart");
+- for what keeps no runs (the score in Watch, Free play): **visited** (V18: it counts toward the lesson's steps, shown
+  without a ✓, since nothing was judged) only once **a key was played** (Free play) or **the music heard to its end**
+  (Watch: the piece's end, or once round its loop) while the step was open (owner, 2026-10-16; `log.ts` `stepEvidence`);
+  coming back without that: "Opened, nothing played", nothing marked.
 After every step the result is a place of its own over the lesson page (V12: ← and Back from it are the lesson page): it
 shows **this time**'s result (as its screen words it), whether the target was met, the best so far over every attempt
 (kept apart), and the feedback (Hard / OK / Easy and a note, both skippable; both cleared again, the feedback entry

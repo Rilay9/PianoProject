@@ -262,9 +262,10 @@ export class UnderStrip {
     // Now first: a key both sounding now and coming next shows as now.
     notes.now.forEach((ps, staff) => light(ps, staff === 0 ? 'now-r' : 'now-l'));
     notes.next.forEach((ps, staff) => light(ps, staff === 0 ? 'next-r' : 'next-l'));
-    const names = (ps: Pitch[]) => [...ps].sort((a, b) => a.midi - b.midi).map((p) => p.name).join(' ');
+    // (no note names where an activity hides them until taught: owner, 2026-10-16)
+    const names = (ps: Pitch[]) => (this.names ? [...ps].sort((a, b) => a.midi - b.midi).map((p) => p.name).join(' ') : '');
     const left = notes.now.slice(1).flat();
-    const chord = notes.fileChord || chordName(notes.now.flat());
+    const chord = this.names ? notes.fileChord || chordName(notes.now.flat()) : '';
     this.line.replaceChildren(
       Object.assign(document.createElement('span'), { className: 'left', textContent: names(left) }),
       Object.assign(document.createElement('span'), { className: 'chord', textContent: chord }),

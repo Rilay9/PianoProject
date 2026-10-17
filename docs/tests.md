@@ -48,6 +48,8 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   straightened page). Times judged on the page's clock instead of the keyboard's, or a fixed millisecond window
   applied to speed-scaled song time. Or two identities for one key: a name-only drill matched a C5 to the written C4
   and then looked up how long the *C4* was held (2026-10-15). Decide which frame, clock or key each number lives in.
+  The same for where a drawing lives: the score's one-line layout (a phone sideways) shows its music through `<use>` from
+  `#score-src`, outside `#score`, so a check counting marks under `#score` found none there while they showed (2026-10-16).
 - **Evidence that doesn't prove the skill.** Notes in a window counted as a chord without being down together;
   silent rounds counted as played; a stopped half-round counted as a round; a Simon chain finished from the miss on
   saved as a best of the whole chain; a run whose hands changed half way judged and logged as the new hands

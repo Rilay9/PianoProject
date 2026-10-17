@@ -11,7 +11,8 @@ import { ExerciseNotation } from '../exercise/notation';
 import { PAD_KEY, RhythmPad } from '../exercise/pad';
 import { calibrationFor, calibrationOffered, markCalibrationOffered } from '../calibration';
 import { Simon, type Rung, type SimonLevel } from '../exercise/simon';
-import { activityOf } from '../log';
+import { activityOf, namesShown, stepFor } from '../log';
+import { fillTaskLine } from '../lesson/task-line';
 import type { ChosenKeys } from '../activity';
 import type { KeyEvent } from '../midi';
 import * as nav from '../nav';
@@ -19,8 +20,8 @@ import type { Command } from '../remote';
 import { currentDevice, settingsFor } from '../settings';
 
 export type ExerciseScreen = Screen & {
-  /** activity: a set with a preset level (activity.ts), in force while it is open. */
-  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity, task?: string): Promise<void>;
+  /** activity: a set with a preset level (activity.ts), in force while it is open (its task and names: log.ts stepFor). */
+  open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
@@ -38,14 +39,14 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   const pad = new RhythmPad($('ex-pad'), sound);
   const simon = new Simon({
     set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
-    status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'),
+    status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'), back: $<HTMLButtonElement>('ex-back'),
   }, exerciseKeys, exerciseNotation, sound);
   // Drills (owner, 2026-10-12): flashcards on the same screen, from the same sets.
   const drill = new Drill({
     set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
     status: $('ex-status'), sub: $('ex-sub'), legend: $('ex-legend'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
     after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
-    finish: $<HTMLButtonElement>('ex-finish'),
+    finish: $<HTMLButtonElement>('ex-finish'), back: $<HTMLButtonElement>('ex-back'),
   }, exerciseKeys, exerciseNotation, sound, pad);
   $('ex-calib-go').addEventListener('click', () => { markCalibrationOffered(); $('ex-calib').hidden = true; calibrate(); });
   $('ex-calib-no').addEventListener('click', () => { markCalibrationOffered(); $('ex-calib').hidden = true; });
@@ -57,7 +58,14 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   // hidden (owner, 2026-10-15).
   drill.noKeyboard = () => !inputs.length && $('ex-keyboard').classList.contains('off') && $('ex-pad').hidden === true;
   simon.noKeys = drill.noKeyboard;
-  drill.hasKeyboard = () => inputs.length > 0;
+  // Opened by a lesson step: its end offers "Back to the lesson ▶", and a key does it (owner, 2026-10-16); the way
+  // back is the screen's own ← (the step's result shows on the lesson page).
+  const inStep = () => !!stepFor(exerciseKind === 'drill' ? 'drills' : 'simon')?.lesson;
+  drill.inStep = simon.inStep = inStep;
+  drill.back = simon.back = () => close();
+  drill.names = () => namesShown('drills');
+  simon.names = () => namesShown('simon');
+  $('ex-back').addEventListener('click', () => { if (isOpen()) close(); });
   const devicesBefore = midi.onDevices;
   midi.onDevices = (names) => {
     devicesBefore(names);
@@ -70,7 +78,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   let exerciseKind: 'simon' | 'drill' = 'simon';
   const isOpen = () => !$('exercise').hidden;
 
-  // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear again, the keyboard in Level.
+  // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear it, the keyboard in Level.
   function fillExerciseDisplay(): void {
     // Sideways the size and Hear tools join the one bar of what it says and its buttons; otherwise their own row.
     const tools = $('ex-tools'), sideways = currentDevice() === 'phone-sideways';
@@ -97,8 +105,9 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if ($('ex-pad').hidden !== !rhythm) { $('ex-pad').hidden = !rhythm; if (!rhythm) pad.release(); }
     // The timing check offered once, the first time a rhythm set opens (owner, 2026-10-16), unless one is kept already.
     $('ex-calib').hidden = !(rhythm && !calibrationOffered() && !calibrationFor('screen'));
-    exerciseKeys.setNames(rung !== 0); // (no octave labels at "keys, no music": no note names yet)
+    exerciseKeys.setNames(rung !== 0 && namesShown(exerciseKind === 'drill' ? 'drills' : 'simon')); // (no octave labels at "keys, no music", nor where an activity hides names)
     if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine();
+    fillTask();
     // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
     const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, cardMost()] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
     $<HTMLOutputElement>('ex-size').value = `${Math.round(now * 100)}%`;
@@ -134,13 +143,19 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
    * back to (final review 2026-10-15, F22: back in the step's way, its level had gone while its tag stayed). */
   type Opened = { kind: 'simon' | 'drill'; activity?: ExerciseActivity };
   let opened: Opened | null = null;
-  /** task: a lesson step's task, shown above the music while its set is on screen (owner, 2026-10-16). */
-  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity, task?: string): Promise<void> {
+  async function open(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
     opened = { kind, activity };
-    const line = $('ex-task');
-    line.textContent = task ?? '';
-    line.hidden = !task;
     await show(kind, stillWanted, activity);
+  }
+  /**
+   * The task line (lesson/task-line.ts): the activity's task above the music, and "Practice now" under it once the set,
+   * help level, cards, timing or the way (Practise as…) differ from what the step set (owner, 2026-10-16).
+   */
+  function fillTask(): void {
+    const screen = exerciseKind === 'drill' ? 'drills' : 'simon';
+    const set = $<HTMLSelectElement>('ex-set').value;
+    const settings = exerciseKind === 'drill' ? (({ rung, cards, onTime }) => ({ rung, cards, onTime }))(drill.levelNow) : (({ rung, match }) => ({ rung, match }))(simon.levelNow);
+    fillTaskLine($('ex-task'), screen, { screen, set, settings });
   }
   /** stillWanted: false once another screen has been opened while this one got ready (it then stays shut). */
   async function show(kind: 'simon' | 'drill', stillWanted: () => boolean = () => true, activity?: ExerciseActivity): Promise<void> {
@@ -180,7 +195,6 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if (kind === 'drill') drill.open(offered, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(offered, activity as { set: string; level: Partial<SimonLevel> } | undefined);
     fillExerciseDisplay(); // (again with the level just opened: an activity's help rung decides whether the keys show)
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
-    else if (activity?.title && !drill.noKeyboard()) { $('ex-status').textContent = activity.title; $('ex-status').className = 'ex-status'; } // the activity's own words (with no keyboard, that is said instead: F17)
     app.stayAwake();
   }
   function close(): void {
@@ -220,7 +234,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if (t?.name === 'exercise') nav.replaceTop({ ...t, params: { ...t.params, ...params } });
   }
   // (another set may be a rhythm set, or not: the pad or the keys, fitted again)
-  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { $('ex-task').hidden = true; if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); fillExerciseDisplay(); } });
+  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); fillExerciseDisplay(); } });
 
   const drillDialog = $<HTMLDialogElement>('drill-dialog');
   /** The help rungs' words, for sets of notes and (owner, 2026-10-16) for rhythm sets, which have the pad and no rung 4. */
@@ -248,8 +262,8 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   }
   drillDialog.addEventListener('change', (e) => {
     const r = e.target as HTMLInputElement;
-    // (another help level: the step's task, written for its own level, goes: ChatGPT's review, 2026-10-16)
-    if (r.name === 'd-rung') { $('ex-task').hidden = true; drill.setLevel({ rung: Number(r.value) as Rung }); }
+    // (another help level: the task line stays and says the practice now is not counted: owner, 2026-10-16)
+    if (r.name === 'd-rung') drill.setLevel({ rung: Number(r.value) as Rung });
     else if (r.name === 'd-start') drill.setLevel({ start: r.value as DrillLevel['start'] });
     else if (r.name === 'd-metronome') drill.setLevel({ metronome: r.value === 'on' });
     else if (r.name === 'd-onTime') drill.setLevel({ onTime: r.value as DrillLevel['onTime'] });
@@ -272,7 +286,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   });
   levelDialog.addEventListener('change', (e) => {
     const r = e.target as HTMLInputElement;
-    if (r.name === 'ex-rung') { $('ex-task').hidden = true; simon.setLevel({ rung: Number(r.value) as Rung }); }
+    if (r.name === 'ex-rung') simon.setLevel({ rung: Number(r.value) as Rung });
     else if (r.name === 'ex-match') simon.setLevel({ match: r.value as SimonLevel['match'] });
     else if (r.name === 'ex-miss') simon.setLevel({ miss: r.value as SimonLevel['miss'] });
     else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });

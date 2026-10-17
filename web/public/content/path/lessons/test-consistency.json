@@ -1,0 +1,12 @@
+{
+  "title": "Test: one way across the screens",
+  "blocks": [
+    { "kind": "text", "text": "**Test:** steps on the screens the other test lessons don't open from a lesson (Memorise, Watch), and one that hides note names, for the app's checks of the task line, the step's end and \"visited\". Not teaching." },
+    { "kind": "step", "id": "memorise-rh", "title": "Bars 1–2 from memory", "about": "Play bars 1–2 from memory, right hand.", "doneWhen": "the chunk is learned",
+      "activity": { "title": "Test: Memorise bars 1–2, right hand", "screen": "memorise", "piece": "mozart-k2", "settings": { "hands": "right", "chunk": 2, "adds": "chunk", "learnedAfter": 1 } } },
+    { "kind": "step", "id": "listen", "title": "Listen to bars 1–2", "about": "Listen to bars 1–2 to the end.", "doneWhen": "heard to the end",
+      "activity": { "title": "Test: listen to bars 1–2", "screen": "score", "piece": "mozart-k2", "bars": "1-2", "settings": { "mode": "watch", "tempo": 240 } } },
+    { "kind": "step", "id": "cards-no-names", "title": "Two melody cards, no note names", "about": "Two melody cards; nothing names a note.", "doneWhen": "both cards played",
+      "activity": { "title": "Test: two melody cards, no names", "screen": "drills", "set": "melodies-c", "level": { "rung": 3, "onTime": "normal", "cards": 2, "start": "first" }, "names": false } }
+  ]
+}

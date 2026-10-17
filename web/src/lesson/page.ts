@@ -6,7 +6,8 @@
 import { $, type App } from '../app';
 import { button, el } from '../ui';
 import type { Activity } from '../activity';
-import { entries, putEntry, removeEntry, type LessonRef, type LogEntry } from '../log';
+import { endStep, entries, putEntry, removeEntry, takeEvidence, type LessonRef, type LogEntry } from '../log';
+import type { Command } from '../remote';
 import type { Sound } from '../sound';
 import { drawBlocks } from './blocks';
 import { helpLink } from '../help/page';
@@ -14,13 +15,17 @@ import { stopMiniScores } from './miniscore';
 import { activityOf, describe, lessonOrder, lessonState, loadPath, nextTodo, placeOf, stepStates, stepsOf, type PathData, type StepBlock } from './path';
 import { doneSteps, markDone, markTried, setCurrentLesson } from './progress';
 import { checkTarget, type Lesson, type Target } from './read';
-import { bestLine, outcome, type StepOutcome } from './result';
+import { bestLine, keepsNoRuns, outcome, through, type StepOutcome } from './result';
+import { edgeWords } from '../key-words';
+
+/** The result's bar note: the keyboard's edge keys, once set up (owner, 2026-10-16). */
+const keyWordsForResult = () => edgeWords({ high: 'Next', low: 'Again' });
 
 export interface LessonDeps {
   app: App;
   sound: Sound;
   prepare: () => Promise<void>;
-  /** Opens the step's activity on its screen (one more place on top); false when it could not open. */
+  /** Opens the step's activity on its screen (one more place on top), with the step's task; false when it could not open. */
   launch: (a: Activity, ref: LessonRef, task?: string) => Promise<boolean>;
   /** The Switch… sheet, for this lesson. */
   openSwitch: (lessonId: string) => void;
@@ -168,7 +173,7 @@ export function createLessonPage(d: LessonDeps) {
     pending = mine;
     keepSince({ lesson: lesson.id, step: b.id, since });
     // (a second Start while this one waits for its piece wins; this one, overtaken, leaves the second's step in place)
-    if (!await d.launch(a, ref, b.about) && pending === mine) pending = null; // (about: the step's task, which Free play shows)
+    if (!await d.launch(a, ref, b.about) && pending === mine) pending = null; // (about: the step's task, on the screen's task line)
   }
 
   /** Back from a step's screen: what happened, the step done if it was, and the feedback taps. */
@@ -176,9 +181,10 @@ export function createLessonPage(d: LessonDeps) {
     const p = pending;
     pending = null;
     keepSince(null);
+    endStep(); // (back on the lesson page: the step's screen is over)
     if (!p || !lesson || p.lesson !== lesson.id) { render(); return; }
     const runs = entries().filter((e) => e.screen !== 'lesson' && e.lesson?.lesson === p.lesson && e.lesson.step === p.step && e.at >= p.since);
-    const out = outcome(runs, p.activity, p.target, true);
+    const out = outcome(runs, p.activity, p.target, true, takeEvidence(p.ref));
     const wasDone = !lessonState(lesson).next;
     if (out.done) markDone(p.lesson, p.step, out.met && p.target ? 'target' : out.runs ? 'played' : 'opened');
     else if (out.runs) markTried(p.lesson, p.step);
@@ -200,12 +206,16 @@ export function createLessonPage(d: LessonDeps) {
     const done = doneSteps(lesson!.id)[b.id];
     // This attempt, in its own words; then the step's state; then the best of every attempt so far, kept apart.
     card.append(el('div', 'k', `Step ${no} · ${b.title}`), el('div', 'h', `This time: ${s.out.line}`));
-    // The step's state in honest words (review 2026-10-15, V18: a step with nothing to judge is "visited", not ✓).
+    // The step's state in honest words (review 2026-10-15, V18: a step with nothing to judge is "visited", not ✓), the
+    // same words as the step list (progress.ts stepWords), with what counts on this screen (result.ts through).
+    const act = s.pending.activity, why = through(act);
     const state = s.pending.target
       ? (s.out.met ? `Target met${b.doneWhen ? ` (${b.doneWhen})` : ''}: step done ✓` : `Target${b.doneWhen ? ` (${b.doneWhen})` : ''} not met this time${done ? '; the step was done before' : ''}. You can try again or move on.`)
-      : s.out.met ? (s.pending.activity.screen === 'score' ? 'Played through: step done ✓ (it has no target to meet)' : 'Played through: step done ✓ (not scored: the whole set played is what counts)')
-      : s.out.runs ? `Not through yet: the step is tried, not done${done ? ' (it was done before)' : ''}. You can try again or move on.`
-      : s.out.done ? 'Visited: nothing here is judged or kept' : 'Nothing was played, so nothing is marked. You can try again or move on.';
+      : s.out.met ? `Played through: step done ✓ (no target: ${why} is what counts)`
+      : s.out.runs ? `Not through yet: the step is tried, not done (${why} is what counts)${done ? '; it was done before' : ''}. You can try again or move on.`
+      : s.out.done ? `Visited: ${why}; nothing here is judged or kept`
+      : keepsNoRuns(act) ? `Opened, nothing played: not marked yet (${why} marks it visited). You can try again or move on.`
+      : 'Nothing was played, so nothing is marked. You can try again or move on.';
     card.append(el('div', 's', state));
     if (s.lessonDone) {
       const nextTitle = s.nextLesson ? data?.lessons.get(s.nextLesson)?.title : undefined;
@@ -245,14 +255,15 @@ export function createLessonPage(d: LessonDeps) {
     const nextStep = steps[no] ?? (firstLeft && firstLeft.id !== b.id ? firstLeft : undefined);
     const buttons = [button('Again', 'btn', () => void start(b)), button('Lesson', 'btn', () => d.back())];
     buttons[1].setAttribute('aria-label', 'Back to the lesson');
+    resultKeys = { again: () => void start(b), next: null };
     // The lesson's last step done: Next is the rest of this lesson first (Check yourself, If this happens), whose bottom
     // bar then offers the next lesson (the review ledger, 2026-10-16, A3: Next lesson skipped them).
-    if (s.lessonDone) buttons.push(button('Next ▶', 'btn main', () => { goTo = { after: b.id, to: b.id }; d.back(); }));
+    if (s.lessonDone) { const go = () => { goTo = { after: b.id, to: b.id }; d.back(); }; buttons.push(button('Next ▶', 'btn main', go)); resultKeys.next = go; }
     // Next is the lesson at the next part, not the next step's screen (owner, 2026-10-16, after ChatGPT's live review of
     // lesson 1: Next skipped the black-key map and the technique sections): the part after this step at the top, the
     // next step's Start below its text. After the lesson's last step (a step left earlier): that step's own part.
-    else if (nextStep) buttons.push(button('Next ▶', 'btn main', () => { goTo = { after: steps[no] ? b.id : undefined, to: nextStep.id }; d.back(); }));
-    setBar('', buttons);
+    else if (nextStep) { const go = () => { goTo = { after: steps[no] ? b.id : undefined, to: nextStep.id }; d.back(); }; buttons.push(button('Next ▶', 'btn main', go)); resultKeys.next = go; }
+    setBar(keyWordsForResult(), buttons);
     const column = el('div', 'les-column');
     column.append(card, el('div', 'lbl', 'How was it? (optional)'),
       choice<'hard' | 'ok' | 'easy'>([['hard', 'Hard'], ['ok', 'OK'], ['easy', 'Easy']], () => s.feedback.effort, (v) => { s.feedback.effort = v; }, 'How hard it was'),
@@ -261,9 +272,21 @@ export function createLessonPage(d: LessonDeps) {
     body.scrollTop = 0;
   }
 
+  /** The result page's keys (owner, 2026-10-16: the step's result only; not the lesson page, which is read): the
+   * keyboard's highest key is Next, its lowest Again (the edge keys, once learned in Settings → Keyboard controls). */
+  let resultKeys: { again: () => void; next: (() => void) | null } = { again: () => {}, next: null };
+  function resultCommand(c: Command): void {
+    if (!shown || !resultKeys) return;
+    if (c === 'high') resultKeys.next?.();
+    else if (c === 'low') resultKeys.again();
+  }
+
   return {
     show,
     returned,
+    resultCommand,
+    /** The step's result is on show. */
+    get resultShown() { return !!shown; },
     /** A step is being played (its screen open). */
     get pending() { return !!pending; },
     /** Leaving the page: what plays stops, the result shown goes. */
