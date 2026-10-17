@@ -43,7 +43,7 @@
   <p id="message" class="message" hidden></p>
   <!-- Once, when a MIDI keyboard first connects (owner, 2026-10-16): set up its lowest and highest keys as buttons. -->
   <div id="keys-hint" class="keys-hint" role="dialog" aria-labelledby="keys-hint-text" hidden>
-    <p id="keys-hint-text">Your keyboard is connected. Its lowest and highest keys can start, go on and go again, so your hands stay on the keys. Set them up now?</p>
+    <p id="keys-hint-text">Your keyboard is connected. Its lowest and highest keys can start, go on and go again, so your hands stay on the keys. Set them up now? (Or later: Settings → Keyboard controls.)</p>
     <div class="keys-hint-buttons"><button id="keys-hint-go" type="button" class="btn main">Set them up</button><button id="keys-hint-no" type="button" class="btn">Not now</button></div>
   </div>
   <!-- After a run (Play along, Rhythm, a loop's passes): how it went, over the bottom of the music, with the slips marked
@@ -116,7 +116,7 @@
 
   <!-- Free play: just the keys, named; nothing judged. -->
   <section id="freeplay" class="freeplay" aria-label="Free play" hidden>
-    <div class="fp-head"><button id="fp-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Free play</span><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button></div>
+    <div class="fp-head"><button id="fp-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Free play</span><button id="fp-click" type="button" class="btn" aria-pressed="false" hidden>Click</button><button id="fp-show" type="button" class="btn" aria-haspopup="dialog">Show</button></div>
     <p id="fp-task" class="step-task" hidden></p>
     <p id="fp-chord" class="fp-chord"></p>
     <p id="fp-notes" class="fp-notes"></p>
@@ -127,18 +127,23 @@
       <div class="fp-col" data-col="intervals"><h3>Intervals</h3><ol id="fp-intervals"></ol></div>
     </div>
     <!-- A phone: two octaves at a time, moved an octave each way. -->
-    <div id="fp-shift" class="fp-shift" hidden><button id="fp-down" type="button" class="btn" aria-label="An octave lower">‹</button><span id="fp-range"></span><button id="fp-up" type="button" class="btn" aria-label="An octave higher">›</button></div>
+    <!-- Where the keys shown are on the whole piano (owner, 2026-10-16): the 88 keys, the part shown marked, and a word. -->
+    <div id="fp-shift" class="fp-shift" hidden><button id="fp-down" type="button" class="btn" aria-label="An octave lower">‹</button><span class="fp-where"><span id="fp-mini" class="fp-mini"></span><span class="fp-where-words"><span id="fp-place"></span> <span id="fp-range"></span></span></span><button id="fp-up" type="button" class="btn" aria-label="An octave higher">›</button></div>
     <div class="keyboard fp-keyboard"></div>
   </section>
 
   <dialog id="fp-show-dialog" aria-labelledby="fp-show-title">
     <form method="dialog">
       <h2 id="fp-show-title">Show</h2>
-      <fieldset class="row"><legend>What you played lately</legend>
+      <fieldset class="row"><legend>On the keys</legend>
+        <label><input type="checkbox" name="fp-groups" value="groups"> The black keys' groups of two and three</label>
+      </fieldset>
+      <fieldset id="fp-cols" class="row"><legend>What you played lately</legend>
         <label><input type="checkbox" name="fp-col" value="chords"> Chords</label>
         <label><input type="checkbox" name="fp-col" value="notes"> Notes</label>
         <label><input type="checkbox" name="fp-col" value="intervals"> Intervals</label>
       </fieldset>
+      <p id="fp-cols-off" class="note" hidden>Names of notes, chords and intervals come in a later lesson: they are hidden here for now.</p>
       <p class="help-row"><button type="button" class="lnk" data-help="freeplay">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
@@ -152,6 +157,8 @@
     <p id="ex-task" class="step-task" hidden></p>
     <div class="ex-prompt">
       <div id="ex-notation" class="ex-notation off"></div>
+      <!-- A rhythm card's result with no music (help 0): the taps on a line of beats (exercise/beatline.ts, 2026-10-16). -->
+      <div id="ex-beatline" class="ex-beatline" hidden></div>
       <div id="ex-name" class="ex-name"></div>
       <div id="ex-chain" class="ex-chain"></div>
       <!-- What it says and the buttons: over the bottom of the music, frosted, when music is shown (it keeps its room). -->
@@ -180,7 +187,7 @@
     </div>
     <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
     <!-- A rhythm set: one big pad to tap, in place of the keys (owner, 2026-10-16; exercise/pad.ts). -->
-    <div id="ex-calib" class="ex-calib" hidden><span>Check your tap timing on this phone (a few clicks to tap along with)?</span><button id="ex-calib-go" type="button" class="btn main">Calibrate</button><button id="ex-calib-no" type="button" class="btn">Not now</button></div>
+    <div id="ex-calib" class="ex-calib" hidden><span>A timing check first? You tap along with 8 clicks, and your taps are judged with this device's delay allowed for.</span><button id="ex-calib-go" type="button" class="btn main">Timing check</button><button id="ex-calib-no" type="button" class="btn">Not now</button></div>
     <div id="ex-pad" class="ex-pad" aria-label="Rhythm pad: press for each note and hold it for its length" hidden><span>Press · hold each note its length</span></div>
   </section>
 
@@ -385,7 +392,7 @@
   <dialog id="calib-dialog" aria-labelledby="calib-title">
     <form method="dialog">
       <h2 id="calib-title">Timing check</h2>
-      <p class="note">On some phones and headphones the sound, or a tap, arrives a little late, so a tap on time can be called late. This measures it: the app plays a few clicks and you tap on each one. It is kept for this phone, separately for screen taps and a MIDI keyboard.</p>
+      <p class="note">On some phones, tablets and headphones the sound, or a tap, arrives a little late, so a tap on time can be called late. This measures it: the app plays 8 clicks and you tap on each one. The tap that starts it is not one of them. What it measures is your taps and this device together; it is kept for this device, separately for screen taps and a MIDI keyboard.</p>
       <div id="calib-pad" class="ex-pad calib-pad" aria-label="Tap pad for the timing check"><span>Tap here</span></div>
       <p id="calib-status" class="ex-status"></p>
       <p id="calib-sub" class="note"></p>
@@ -550,7 +557,9 @@
         <span id="r-keys" class="note"></span>
         <button id="r-learn" type="button">Learn them</button>
       </fieldset>
-      <p class="note">Lowest key: back / again (the score: to the loop's or the bar's start; Memorise: Hear it; Drills: Again, or Hear it; Simon: Hear it, or Again after a game; the lab, stopped: back to the steps; a step's result: Again). Hold it in Memorise: Peek. Highest key: start / next / carry on (the lab: its main button; a step's end: back to the lesson; a step's result: Next). Where any octave counts (the lab while the band plays; Drills by name; Simon in any octave) they are notes like the rest; a mash still stops.</p>
+      <p class="note">Lowest key: go back or again. Highest key: start or go on. Each screen says what they do there, in its own words.</p>
+      <details class="note"><summary>What they do on each screen</summary>
+      <p>Lowest key: back / again (the score: to the loop's or the bar's start; Memorise: Hear it; Drills: Again, or Hear it; a set done: a new set; Simon: Hear it, or Again after a game; the lab, stopped: back to the steps; a step's result: Again). Hold it in Memorise: Peek. Highest key: start / next / carry on (the lab: its main button; a step's end: back to the lesson; a step's result: Next). Where any octave counts (the lab while the band plays; Drills by name, and rhythm cards; Simon in any octave) they are notes like the rest; a mash still stops.</p></details>
       <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
@@ -728,7 +737,7 @@
             <button id="export-log" type="button" class="set-row"><span class="set-name">Export practice log<small id="export-log-count">For Claude to plan your next lesson</small></span><span class="set-go">›</span></button>
             <label class="set-row"><span class="set-name">Delete practice log entries older than a month</span><input id="log-autodelete" type="checkbox"></label>
             <button id="backup" type="button" class="set-row"><span class="set-name">Back up<small>Settings, progress and your library, in one file</small></span><span class="set-go">›</span></button>
-            <button id="restore" type="button" class="set-row"><span class="set-name">Restore from a backup…<small>Adds what this phone lacks; what it has stays</small></span><span class="set-go">›</span></button>
+            <button id="restore" type="button" class="set-row"><span class="set-name">Restore from a backup…<small>Adds what this device lacks; what it has stays</small></span><span class="set-go">›</span></button>
             <input id="restore-file" type="file" accept=".zip,.json,application/zip,application/json,application/octet-stream" hidden>
             <div class="set-row stack"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
             <div id="set-full" class="set-row" hidden><span class="set-name">Full PDMX set<small id="set-full-size"></small><small id="set-full-cleanup" class="set-warn" hidden></small></span><button id="set-full-remove" type="button" class="btn danger">Remove</button></div>

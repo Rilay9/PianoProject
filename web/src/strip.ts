@@ -116,6 +116,11 @@ export class UnderStrip {
   private wide = false; // chosen keys: the black keys wider, to be tapped (below)
   /** The octave labels (C4, C5) on the white keys; off where no note names are shown ("keys, no music"). */
   names = true;
+  /** Finger numbers on the keys (an activity's `fingers`, owner 2026-10-16): the finger for a key, or none. */
+  fingers: ((midi: number) => number | undefined) | null = null;
+  /** The black keys' groups of two and three outlined, with 2 and 3 above them (Free play, owner 2026-10-16: as the
+   * lesson's picture marks them), each group wholly on the keys drawn. */
+  groups = false;
 
   constructor(private readonly host: HTMLElement, private readonly keyboard: HTMLElement, private readonly line: HTMLElement) {}
 
@@ -209,19 +214,39 @@ export class UnderStrip {
     let whiteCount = 0;
     for (let m = from; m <= to; m++) if (!isBlack(m)) whiteCount++;
     let w = 0;
+    const at = new Map<number, number>(); // a black key: the white keys before it
     for (let m = from; m <= to; m++) {
       const key = document.createElement('div');
       if (isBlack(m)) {
         key.className = 'key black';
         key.style.left = `calc(${(w / whiteCount) * 100}% - var(--black-w) / 2)`;
+        at.set(m, w);
       } else {
         key.className = 'key white';
         if (m % 12 === 0 && this.names) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
         w++;
       }
+      const finger = this.fingers?.(m);
+      if (finger !== undefined) key.append(Object.assign(document.createElement('span'), { className: 'finger', textContent: String(finger) }));
       key.dataset.midi = String(m);
       whites.append(key);
       this.keys.set(m, key);
+    }
+    // The groups: C♯ D♯ (two) and F♯ G♯ A♯ (three), each outlined from its first black key to its last.
+    if (this.groups) {
+      for (let c = from - (((from % 12) + 12) % 12); c <= to; c += 12) {
+        for (const [cls, n, ks] of [['two', '2', [1, 3]], ['three', '3', [6, 8, 10]]] as const) {
+          const keys = ks.map((k) => c + k);
+          if (!keys.every((k) => at.has(k))) continue;
+          const a = at.get(keys[0])!, b = at.get(keys[keys.length - 1])!;
+          const g = Object.assign(document.createElement('div'), { className: `key-group ${cls}` });
+          g.style.left = `calc(${(a / whiteCount) * 100}% - var(--black-w) / 2 - 4px)`;
+          g.style.width = `calc(${((b - a) / whiteCount) * 100}% + var(--black-w) + 8px)`;
+          g.append(Object.assign(document.createElement('span'), { textContent: n }));
+          g.setAttribute('aria-hidden', 'true');
+          whites.append(g);
+        }
+      }
     }
     this.keyboard.replaceChildren(whites);
     // Black keys about 0.6 of a white key wide (the old app's 16 px on 26 px), whatever the range. Chosen keys (a lesson

@@ -24,6 +24,7 @@
 
 import { Chord, Interval, Note } from 'tonal';
 import { readRhythmSpec, rhythmPool, RHYTHM_PITCH, type RhythmSpec } from './rhythm.ts'; // (with .ts: the checks run this file in Node)
+import { findPool, readFindSpec, type FindSpec } from './find.ts';
 
 /** One thing to play: groups of keys in order (a chord is one group; an arpeggio or a melody is several). */
 export interface Item {
@@ -44,6 +45,8 @@ export interface Item {
   /** A MusicXML item's own time signature and key (sharps +, flats −), drawn as it has them. */
   meter?: { beats: number; beatType: number };
   fifths?: number;
+  /** A "find it" card (find.ts): the words that name the place, and the keys that count (any one of them). */
+  find?: { words: string; keys: number[] };
 }
 
 /** The score modes an exercise that is music can open in (Ladder needs a loop of bars, which a set does not give). */
@@ -63,7 +66,7 @@ export function readPlay(v: unknown): Play {
 }
 
 /** What kind of exercise a set is (owner, 2026-10-15: Exercises lists them by kind). */
-export const EXERCISE_KINDS = ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm'] as const;
+export const EXERCISE_KINDS = ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm', 'find'] as const;
 export type ExerciseKind = (typeof EXERCISE_KINDS)[number];
 
 export interface ItemSet {
@@ -76,6 +79,11 @@ export interface ItemSet {
   rhythm?: 'notes' | number;
   /** A rhythm set's cards generated from these values (its items are then the generated pool). */
   generate?: RhythmSpec;
+  /** A "find it" set's keys and what it asks for (find.ts; its items are the cards made from it). */
+  find?: FindSpec;
+  /** "letters" (owner, 2026-10-17: a tune before the staff, as the method books show it): its cards drawn on the one-line
+   * rhythm staff with each note's letter under it, played on the keys and judged for keys and timing (docs §4, §6). */
+  view?: 'letters';
 }
 
 const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.75 s a note)
@@ -84,7 +92,7 @@ interface ItemSource {
   notes?: string; chord?: string; octave?: number; arpeggio?: boolean;
   interval?: string; root?: string; together?: boolean; musicxml?: string; name?: string; short?: string;
 }
-interface SetFile { title: string; kind?: string; play?: unknown; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number }; generate?: unknown }
+interface SetFile { title: string; kind?: string; play?: unknown; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number }; generate?: unknown; find?: unknown; view?: unknown }
 
 export const midiOf = (spelled: string): number => Note.midi(spelled) ?? 60;
 /** A spelled pitch as a learner reads it: C#4 as C♯4, Bb3 as B♭3. */
@@ -274,7 +282,7 @@ async function buildItem(n: number, src: ItemSource, base: string, fetchText: (u
  */
 export async function readSet(id: string, file: SetFile, base: string, scoreXml: (score: string) => Promise<string>, fetchText: (url: string) => Promise<string>): Promise<ItemSet> {
   // The file's fields and values, checked (a typo is refused with the reason, never quietly read as something else).
-  const fields = ['title', 'kind', 'play', 'order', 'tempo', 'rhythm', 'items', 'from', 'generate'];
+  const fields = ['title', 'kind', 'play', 'order', 'tempo', 'rhythm', 'items', 'from', 'generate', 'find', 'view'];
   const odd = Object.keys(file).find((k) => !fields.includes(k));
   if (odd) throw new Error(`"${odd}" is not one of ${fields.join(', ')}`);
   if (typeof file.title !== 'string' || !file.title) throw new Error('it needs a "title"');
@@ -284,6 +292,21 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   if (file.order !== undefined && file.order !== 'pool' && file.order !== 'passage') throw new Error(`order "${file.order}" should be pool or passage`);
   if (file.tempo !== undefined && !(typeof file.tempo === 'number' && file.tempo >= 20 && file.tempo <= 300)) throw new Error(`tempo ${file.tempo} should be a number of beats a minute, 20 to 300`);
   if (file.rhythm !== undefined && file.rhythm !== 'notes' && !(typeof file.rhythm === 'number' && file.rhythm > 0)) throw new Error(`rhythm ${JSON.stringify(file.rhythm)} should be "notes" or a length in quarter notes (1, 0.5…)`);
+  // The letters view (owner, 2026-10-17): only "letters"; not on a rhythm or find set (they have their own); checked on the
+  // items below (written rhythm, one note at a time).
+  if (file.view !== undefined) {
+    if (file.view !== 'letters') throw new Error(`view ${JSON.stringify(file.view)} should be "letters" (or left out)`);
+    if (kind === 'rhythm' || kind === 'find') throw new Error(`a ${kind} set has no "view" (it is drawn its own way)`);
+    if (file.play !== undefined) throw new Error('a letters set is played in Drills: "play" is for sets of music opened on the score');
+  }
+  // A "find it" set (owner, 2026-10-16): its cards made from the keys and what it asks for; untimed, in words.
+  if (kind === 'find') {
+    const other = (['items', 'from', 'generate', 'rhythm', 'play', 'order'] as const).find((k) => file[k] !== undefined);
+    if (other) throw new Error(`a "find" set gives "find" only (its cards are made from it), not "${other}"`);
+    if (file.find === undefined) throw new Error('a "find" set needs "find": { "keys", "groups", "places" }');
+    const spec = readFindSpec(file.find);
+    return { id, title: file.title, kind, order: 'pool', items: findPool(spec), tempo: file.tempo ?? TEMPO, find: spec };
+  } else if (file.find !== undefined) throw new Error('"find" is for "find" sets (kind "find")');
   // A rhythm set (2026-10-16): its cards generated, or MusicXML items (written patterns); tapped, so no pitch is judged.
   if (kind === 'rhythm') {
     if (file.from) throw new Error('a rhythm set gives "generate" or MusicXML "items", not "from"');
@@ -313,13 +336,24 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
       if (!g.length && items.length) { const it = items.at(-1)!; it.groups.push([]); it.beats!.push(at.beats); it.bars!.push(at.bar); it.detached!.push(false); return; }
       if (g.length) items.push({ n: items.length + 1, name: g.map(shown).join(' '), short: letters(g[0]), groups: [g], beats: [at.beats], bars: [at.bar], detached: [at.detached] });
     });
-    return { id, title: file.title, kind, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths, rhythm: file.rhythm };
+    return lettersChecked({ id, title: file.title, kind, order: 'passage', items, tempo: file.tempo ?? parsed.tempo ?? TEMPO, meter: parsed.meter, fifths: parsed.fifths, rhythm: file.rhythm, ...(file.view ? { view: 'letters' as const } : {}) });
   }
   const entries = Object.entries(file.items ?? {}).map(([k, v]) => [Number(k), v] as const).sort((x, y) => x[0] - y[0]);
   let items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
   // A rhythm set's written patterns sound on one pitch and are named by number, not by their notes (no note names).
   if (kind === 'rhythm') items = items.map((it) => ({ ...it, groups: it.groups.map((g) => (g.length ? [RHYTHM_PITCH] : [])), name: entries.find(([n]) => n === it.n)?.[1].name ?? `Pattern ${it.n}` }));
-  return { id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm };
+  return lettersChecked({ id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm, ...(file.view ? { view: 'letters' as const } : {}) });
+}
+
+/** A letters set's cards: each with written rhythm (MusicXML, or bars from a piece) and one note at a time (a letter under
+ * each note; a chord would stack its letters). Refused with the reason otherwise. */
+function lettersChecked(set: ItemSet): ItemSet {
+  if (set.view !== 'letters') return set;
+  for (const it of set.items) {
+    if (!it.beats) throw new Error(`item ${it.n}: a letters card needs written rhythm (a MusicXML item, or bars from a piece)`);
+    if (it.groups.some((g) => g.length > 1)) throw new Error(`item ${it.n}: a letters card holds one note at a time (no chords)`);
+  }
+  return set;
 }
 
 /** Every set listed in content/sets/index.json; a set that cannot be read is left out and reported. */

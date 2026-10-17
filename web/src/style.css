@@ -176,8 +176,9 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
    under it when what the step set was changed. Two lines at most (the score and Memorise keep its room fixed). */
 .step-task { margin: 6px auto 0; padding: 0 12px; max-width: 34em; text-align: center; font-size: 0.95rem; line-height: 1.3; }
 .step-task[hidden] { display: none; }
-.step-task .t { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-weight: 600; }
-.step-task.practice .t { -webkit-line-clamp: 1; line-clamp: 1; }
+/* (three lines, two with the practice note: the walk-through, 2026-10-16, found lesson 2's tasks cut at 360 px) */
+.step-task .t { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; font-weight: 600; }
+.step-task.practice .t { -webkit-line-clamp: 2; line-clamp: 2; }
 .step-task .p { display: block; font-size: 0.85rem; color: var(--warn-fg); }
 .bar.top .step-task, .memo-head .step-task { flex: 1 0 100%; order: 9; margin: 0; padding: 0; max-width: none; color: inherit; }
 .bar.top:has(> .step-task:not([hidden])), .memo-head:has(> .step-task:not([hidden])) { flex-wrap: wrap; row-gap: 2px; }
@@ -198,7 +199,16 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
   .fp-recent { -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent); mask-image: linear-gradient(to bottom, #000 65%, transparent); }
 }
 .fp-shift { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 4px; color: var(--muted); font-size: 14px; }
-.fp-shift .btn { min-width: 44px; }
+.fp-shift .btn { min-width: 44px; min-height: 44px; font-size: 20px; color: var(--fg); }
+/* Where the keys shown are on the whole piano (2026-10-16): the 88 keys small, the part shown marked, and a word. */
+.fp-where { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; min-width: 0; max-width: 280px; }
+.fp-mini { display: block; width: 100%; height: 16px; }
+.fp-mini svg { display: block; width: 100%; height: 100%; }
+.fp-mini .mini-whites { fill: #fbfbfc; stroke: #9ca3af; stroke-width: 0.4; }
+.fp-mini .mini-line { fill: #c7cad1; }
+.fp-mini .mini-black { fill: #23262c; }
+.fp-mini .mini-here { fill: rgba(8, 145, 178, 0.28); stroke: var(--key-pressed); stroke-width: 1.2; }
+.fp-where-words { font-size: 13px; color: var(--muted); }
 /* Tall keys, easy to tap (.keyboard.fp-keyboard: the strip's own 108 px, set later in this file, had overridden this;
    fixed 2026-10-16, lesson 1). At most 360 px, so a tablet's keys are not half the screen (496 px at 820×1180); a phone
    on its side keeps 108 px, so the recent columns keep their room (owner, 2026-10-12; 42vh left them 53 px). */
@@ -253,6 +263,16 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
 .ex-result { text-align: left; width: 100%; max-width: 32rem; padding: 4px 6px; border-bottom: 1px solid var(--line); color: #b45309; font-size: 14px; }
 .ex-result.ok { color: var(--fg); }
 .ex-chain:has(.ex-result) { flex-direction: column; flex-wrap: nowrap; align-items: center; justify-content: flex-start; overflow-y: auto; min-height: 0; flex: 1 1 auto; }
+/* A set done: the pad (or keys) gives up room so every card's line shows (the walk-through, 2026-10-16: rows 4 and 5 hid
+   in an 88–125 px box); still there to tap (a tap goes back to the lesson in a step). */
+.exercise:has(#ex-chain .ex-result) .ex-pad { height: min(14vh, 110px); }
+.exercise:has(#ex-chain .ex-result) .ex-calib { display: none; }
+/* A rhythm card's taps on a line of beats (help 0: no music; exercise/beatline.ts). */
+.ex-beatline { width: 100%; max-width: 640px; flex: 0 0 auto; color: var(--fg); }
+.ex-beatline[hidden] { display: none; }
+.ex-beatline svg { display: block; width: 100%; height: auto; }
+/* A "find it" card's words: large, and wrapping as a sentence. */
+.ex-name.big.find { font-size: clamp(1.6rem, 7vmin, 3rem); overflow-wrap: normal; }
 /* Simon's dots sit above the frosted panel when it floats over the music, not under it (main.ts sets the height). */
 .ex-notation:not(.off) ~ .ex-chain:not(:empty) { margin-bottom: var(--ex-overlay-h, 0px); }
 .ex-tools { display: flex; justify-content: center; gap: 8px; min-height: 40px; padding: 4px; }
@@ -281,9 +301,17 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
     margin: 0 -12px -8px; padding: 5px 12px; background: var(--bar-bg); border-top: 1px solid var(--bar-line);
     -webkit-backdrop-filter: none; backdrop-filter: none;
   }
-  .ex-overlay .ex-status { flex: 0 1 auto; min-width: 0; font-size: 1rem; text-align: left; }
-  .ex-overlay .ex-sub { flex: 1 1 auto; min-width: 0; text-align: left; }
-  .ex-overlay :is(.ex-status, .ex-sub) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; line-height: 1.25; }
+  /* (the walk-through, 2026-10-16: "Not quite" broke into "Not / quit" and the line was cut: the status keeps its words on
+     one line, the sentence beside it smaller, up to three lines, and the key under them both) */
+  .ex-overlay .ex-status { flex: 0 0 auto; min-width: 0; font-size: 1rem; text-align: left; white-space: nowrap; }
+  .ex-overlay .ex-sub { flex: 1 1 auto; min-width: 0; text-align: left; font-size: 0.85rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; line-height: 1.2; }
+  .ex-overlay .ex-legend { flex: 0 1 12em; min-width: 0; font-size: 0.75rem; line-height: 1.2; text-align: left; }
+  /* The timing check's offer on one line beside its buttons, so it never sits over Start. */
+  .ex-calib { flex-wrap: nowrap; padding: 2px 12px; font-size: 13px; }
+  .ex-calib span { flex: 1 1 auto; }
+  .ex-calib .btn { min-height: 36px; padding: 4px 10px; }
+  #calib-dialog .calib-pad { height: 84px; margin: 6px 0; }
+  #calib-dialog .note { font-size: 13px; margin: 2px 0; }
   .ex-overlay :is(.ex-start, .ex-after, .ex-tools) { flex-shrink: 0; }
   .ex-overlay .ex-start { font-size: 1rem; padding: 6px 18px; }
   .ex-overlay .ex-after { flex-wrap: nowrap; }
@@ -489,6 +517,17 @@ dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--b
 .keyboard .key.black.next-l { background: #4d9a68; }
 /* Keys you are pressing: cyan, over whatever else the key shows (not orange: that is "off time"). */
 .keyboard .key.pressed { background: var(--key-pressed) !important; }
+/* Finger numbers on the keys (an activity's `fingers`, 2026-10-16): near the bottom of each key, white on a black key. */
+.keyboard .key { position: relative; }
+.keyboard .key.black { position: absolute; }
+.keyboard .key .finger { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 800 16px/1 system-ui, sans-serif; color: #1f2937; pointer-events: none; }
+.keyboard .key.black .finger { bottom: 6px; color: #fff; font-size: 14px; }
+/* The black keys' groups outlined (Free play, 2026-10-16): two in amber, three in blue, as the lesson's picture; the number
+   under each group, on the white keys. Never in the way of a tap. */
+.keyboard .key-group { position: absolute; top: 0; height: calc(62% + 20px); box-sizing: border-box; border: 3px solid; border-top: none; border-radius: 0 0 8px 8px; pointer-events: none; z-index: 3; }
+.keyboard .key-group.two { border-color: #d97706; color: #b45309; }
+.keyboard .key-group.three { border-color: #2563eb; color: #1d4ed8; }
+.keyboard .key-group span { position: absolute; left: 0; right: 0; bottom: 1px; text-align: center; font: 800 14px/1 system-ui, sans-serif; }
 
 dialog { max-width: min(480px, calc(100vw - 16px)); width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel-bg); color: var(--fg); }
 dialog a { color: var(--accent); }
@@ -803,9 +842,11 @@ body.in-shell .message { z-index: 7; bottom: calc(var(--tabs-h) + 8px + env(safe
 .les-vrow-play { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: rgba(0, 0, 0, .62); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; padding-left: 2px; box-sizing: border-box; }
 .les-vrow-words { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .les-vrow-open .les-vrow-title { font-weight: 600; font-size: 15px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.les-vrow-open .les-vrow-words.with-cap .les-vrow-title { -webkit-line-clamp: 1; }
+/* (with a caption: the title and the caption up to two lines each, so the title's end, "(Hoffman Academy, 7 min)", shows
+   at 360 px: the walk-through, 2026-10-16) */
+.les-vrow-open .les-vrow-words.with-cap .les-vrow-title { -webkit-line-clamp: 2; }
 .les-vrow-cap { font-size: 13px; line-height: 1.3; color: var(--muted); }
-.les-vrow-open .les-vrow-cap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.les-vrow-open .les-vrow-cap { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .les-vrow.open { padding: 10px 12px; }
 .les-vrow-under { flex-direction: column; gap: 2px; }
 .les-vrow-under .les-vrow-words { color: var(--fg); }
@@ -965,9 +1006,30 @@ body.in-shell .library { bottom: calc(var(--tabs-h) + env(safe-area-inset-bottom
 .les-done { margin-top: 6px; font-weight: 700; color: var(--ok); }
 .step.visited .m, .les-step.visited .les-step-mark { color: var(--muted); }
 .lesson-bar .btn { min-height: 44px; }
+/* A phone on its side: the lesson's header and bottom bar thinner, so more of the page is read between them (the
+   walk-through, 2026-10-16: 268 of 390 px; the buttons stay 44 px). */
+@media (orientation: landscape) and (max-height: 500px) {
+  #v-lesson > .view-head { padding-top: max(2px, env(safe-area-inset-top)); padding-bottom: 2px; }
+  .lesson-bar { padding-top: 2px; padding-bottom: calc(2px + env(safe-area-inset-bottom)); }
+}
+/* Every control tapped on the practice screens and in their panels 44 px tall, as the app's other controls are (the
+   walk-through, 2026-10-16: Show, Level, Simon▾ / Drills▾, the set menu, A−/A+, Hear it, Again ▶, ✕ and Done were 33–36 px). */
+.fp-head .btn, .exercise .fp-head select, .ex-tools .btn, .ex-after .btn, .ex-overlay > .btn, .les-step .btn, dialog .actions button, dialog .row button, .ex-calib .btn, #fp-show-dialog button { min-height: 44px; }
+dialog .dlg-x { width: 44px; height: 44px; }
+/* Radio buttons and tick boxes a finger's size (they were 13 px; the label is the target too). */
+dialog input[type="radio"], dialog input[type="checkbox"] { width: 22px; height: 22px; margin: 0 6px 0 0; vertical-align: middle; flex: none; }
+dialog fieldset.row > label { display: inline-flex; align-items: center; min-height: 40px; }
+/* A panel never taller than the screen: it scrolls inside, "How this screen works" and Done reachable (sideways the
+   Level panel was cut off). */
+dialog[open] { max-height: calc(100dvh - 16px); overflow-y: auto; }
+/* The set menu at 360 px: smaller words, so more of a set's name shows. */
+@media (max-width: 400px) { .exercise .fp-head select { font-size: 14px; padding-left: 4px; padding-right: 2px; } .ex-kind { padding-left: 6px !important; padding-right: 6px !important; } }
 body.in-shell.shell-no-tabs .message { bottom: calc(8px + env(safe-area-inset-bottom)); left: 8px; }
 /* Before the first tap after opening straight into a screen (V31): a plain "tap to start" over it; the tap starts all. */
-.tap-to-start { position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 24px; text-align: center; background: color-mix(in srgb, var(--bg) 72%, transparent); color: var(--fg); cursor: pointer; }
+/* Tap to start (V31): a tap on it that lands over a key or the pad is passed on to them (main.ts), so the first tap is played, not
+   swallowed (the walk-through, 2026-10-16: a reloaded drill's first pad tap did nothing); its words sit high, off the
+   screen's own Ready in the middle (on the tablet they hid it). */
+.tap-to-start { position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; padding: max(76px, 16vh) 24px 24px; text-align: center; background: color-mix(in srgb, var(--bg) 60%, transparent); color: var(--fg); cursor: pointer; }
 .tap-to-start p { margin: 0; padding: 14px 22px; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-size: 20px; font-weight: 700; }
 .tap-to-start small { max-width: 22em; padding: 8px 12px; border-radius: 10px; background: var(--bg); color: var(--fg); font-size: 14px; }
 /* Memorized marks on Music's rows (V34): wrapping, in the "done" green. */

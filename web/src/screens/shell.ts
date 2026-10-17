@@ -11,7 +11,7 @@ import { allRecords, load as loadLibrary } from '../library/store';
 import { loadCharts } from '../library/items';
 import * as nav from '../nav';
 import { createLessonPage, type LessonDeps } from '../lesson/page';
-import { allSets, currentOf, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepStates, stepsOf } from '../lesson/path';
+import { allSets, currentOf, earlierNotDone, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepStates, stepsOf } from '../lesson/path';
 import { currentLesson, doneSteps, setCurrentLesson } from '../lesson/progress';
 import { runLine } from '../lesson/result';
 import { stopMiniScores } from '../lesson/miniscore';
@@ -25,7 +25,7 @@ export type Tab = 'home' | 'music' | 'practice' | 'path';
 const TABS: Tab[] = ['home', 'music', 'practice', 'path'];
 type PageName = 'settings' | 'exercises' | 'lesson';
 
-export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' | 'showResult' | 'back'> {
+export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' | 'showResult' | 'back' | 'openPractice'> {
   library: LibraryScreen;
   openPiece(id: string, bars?: [number, number], again?: { mode?: string; bpm?: number; hands?: string }): void;
   openMemorise(id: string): void;
@@ -39,13 +39,15 @@ export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' 
 }
 
 const SCREEN_NAMES: Record<LogEntry['screen'], string> = { score: 'Score', memorise: 'Memorise', simon: 'Simon', drills: 'Drills', lab: 'Lab', lesson: 'Lesson' };
+/** A Simon or Drills run's help level, short, for the recent list. */
+const HELP_NAMES = ['heard, no music', 'music, sound, lit', 'music and sound', 'music only', 'name only', 'by ear'];
 const MODE_NAMES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me', along: 'Play along', ladder: 'Ladder', rhythm: 'Rhythm' };
 /** How each kind of exercise opens with one tap (owner, 2026-10-15: a default per kind, "Practise as…" to change):
  * flashcards (Drills) for things to play on sight, by name or by ear; Simon for a progression to build from memory. */
 export const DEFAULT_WAY: Record<ExerciseKind | 'other', 'drill' | 'simon'> = {
-  scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', other: 'drill',
+  scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', find: 'drill', other: 'drill',
 };
-const KIND_NAMES: Record<ExerciseKind | 'other', string> = { scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', other: 'Other' };
+const KIND_NAMES: Record<ExerciseKind | 'other', string> = { scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', find: 'Finding the keys', other: 'Other' };
 
 /** Something practised or opened lately, and how to carry on with it. */
 interface Recent { key: string; title: string; what: string; at: string; icon: IconName; open: () => void }
@@ -60,6 +62,7 @@ export function createShell(app: App, d: ShellDeps) {
     // The result after a step: its own place over the lesson page (V12), the address kept (a reload is the lesson page).
     showResult: () => { if (nav.top()?.name !== 'result') nav.push({ name: 'result', lesson: lessonPage.lessonId, leave: () => lessonPage.closeResult() }); },
     back: (then) => nav.back(then),
+    openPractice: () => goTab('practice'),
   });
 
   // ---- where we are --------------------------------------------------------------------------------------------
@@ -123,10 +126,11 @@ export function createShell(app: App, d: ShellDeps) {
     else if (view === 'settings') d.fillSettings();
     else if (view === 'exercises') void renderExercises();
     else if (view === 'lesson') {
-      const first = startFirst, resume = resumeFirst;
+      const first = startFirst, resume = resumeFirst, part = partFirst;
       startFirst = undefined;
       resumeFirst = false;
-      if (lessonPage.pending) lessonPage.returned(); else void lessonPage.show(page!.lesson!, first, resume);
+      partFirst = undefined;
+      if (lessonPage.pending) lessonPage.returned(); else void lessonPage.show(page!.lesson!, first, resume, part);
     }
   }
   /** A screen opened over the shell. */
@@ -158,7 +162,9 @@ export function createShell(app: App, d: ShellDeps) {
     const gone = (id?: string) => !!id && id.startsWith('u-') && !app.pieces.some((p) => p.id === id);
     const log = entries().filter((e) => e.screen !== 'lesson' && !gone(e.piece)).slice().reverse();
     for (const e of log) {
-      const key = e.screen === 'score' || e.screen === 'memorise' ? `${e.screen}:${e.piece}` : e.screen === 'lab' ? `chart:${e.chart}` : `${e.screen}:${e.set}`;
+      // (a set played at two help levels is two rows: two lesson steps share a set, and the walk-through, 2026-10-16, saw
+      // the by-ear run hide the 5 of 5 played with the clicks)
+      const key = e.screen === 'score' || e.screen === 'memorise' ? `${e.screen}:${e.piece}` : e.screen === 'lab' ? `chart:${e.chart}` : `${e.screen}:${e.set}:${String(e.settings.rung ?? '')}`;
       if (out.has(key)) continue;
       out.set(key, { key, title: e.title, what: entryWhat(e), at: e.at, icon: e.screen === 'lab' ? 'lab' : e.screen === 'drills' ? 'drills' : e.screen === 'simon' ? 'simon' : 'music', open: () => carryOn(e) });
     }
@@ -184,7 +190,8 @@ export function createShell(app: App, d: ShellDeps) {
     const loop = typeof s.loop === 'string' ? `bars ${s.loop.replace('-', '–')}` : e.bars ? `bars ${e.bars.replace('-', '–')}` : '';
     const how = e.screen === 'score' && typeof r.notes === 'number' && r.notes ? `${Math.round((Number(r.onTime) / Number(r.notes)) * 100)}% on time` : runLine(e);
     const mode = e.screen === 'score' ? MODE_NAMES[String(e.mode)] ?? 'Score' : SCREEN_NAMES[e.screen];
-    return [mode, loop, how].filter(Boolean).join(' · ');
+    const help = (e.screen === 'drills' || e.screen === 'simon') && typeof s.rung === 'number' ? HELP_NAMES[s.rung] ?? '' : '';
+    return [mode, help, loop, how].filter(Boolean).join(' · ');
   }
   function carryOn(e: LogEntry): void {
     if (e.screen === 'score' && e.piece) {
@@ -235,7 +242,8 @@ export function createShell(app: App, d: ShellDeps) {
       // Up next: its first step not done; a lesson all done (one you came back to) offers its steps again from the first.
       const up = st.next ?? steps[0], upNo = up ? steps.indexOf(up) + 1 : 0;
       card.append(el('div', 'k', up ? `${st.next ? 'Up next' : 'Again'} · Rung ${place.rungNo} · Lesson ${place.no} · step ${upNo} of ${st.total}` : `Rung ${place.rungNo} · Lesson ${place.no}`),
-        el('div', 'h', up?.title ?? lesson.title), el('div', 's', st.next ? lesson.title : `${lesson.title}: all ${st.total} steps done`));
+        // (every lesson done, the only time a done lesson is Up next: said plainly, no next lesson promised; 2026-10-16)
+        el('div', 'h', up?.title ?? lesson.title), el('div', 's', st.next ? lesson.title : `${lesson.title}: all ${st.total} steps done. The next lesson is not written yet.`));
       const go = el('div', 'go'), bar = el('span', 'pbar'), fill = el('i');
       fill.style.width = `${Math.round((st.done / Math.max(1, st.total)) * 100)}%`;
       bar.append(fill);
@@ -303,11 +311,14 @@ export function createShell(app: App, d: ShellDeps) {
     body.replaceChildren(grid, helpLink('home'));
   }
 
-  /** A step started from Home or the Path: its lesson page opens first, so you come back to it (and its feedback). */
+  /** A step reopened by a reload inside it (F15): its lesson page opens it again. */
   let startFirst: string | undefined;
   let resumeFirst = false; // (startFirst came from a reload inside the step: F15)
+  /** Home's Start or a step's row (owner, 2026-10-16, after the walk-through: "like Next"): the lesson page at that step's
+   * part, the text leading to it at the top and its Start below; the page's Start opens the step. */
+  let partFirst: string | undefined;
   function startStep(lessonId: string, stepId: string): void {
-    startFirst = stepId;
+    partFirst = stepId;
     openLesson(lessonId);
   }
 
@@ -363,6 +374,8 @@ export function createShell(app: App, d: ShellDeps) {
       const way = DEFAULT_WAY[s.kind ?? 'other'];
       // A rhythm set (2026-10-16): tapped on the pad in Drills only (Simon has no rhythm); generated ones are new patterns.
       if (s.kind === 'rhythm') return { kind: s.kind, title: s.title, id: s.id, how: `${s.generate ? 'rhythm patterns made from its note values' : `${s.items.length} rhythm ${s.items.length === 1 ? 'pattern' : 'patterns'}`} · tap them in Drills`, open: () => d.openExercise('drill', s.id) };
+      // A "find it" set (2026-10-16): cards that name a place on the keys in words, in Drills only.
+      if (s.kind === 'find') return { kind: s.kind, title: s.title, id: s.id, how: `${s.items.length} ${s.items.length === 1 ? 'card' : 'cards'} naming a place on the keys · find it in Drills`, open: () => d.openExercise('drill', s.id) };
       return { kind: s.kind ?? 'other', title: s.title, id: s.id, how: `${s.items.length} ${s.order === 'passage' ? 'in order' : s.items.length === 1 ? 'item' : 'items'} · cards: opens in ${way === 'drill' ? 'Drills' : 'Simon'} (also ${way === 'drill' ? 'Simon' : 'Drills'})`, open: () => d.openExercise(way, s.id) };
     });
     // An exercise that is MusicXML (a set's item given as a file) is music: it opens straight on the score (owner, 2026-10-15).
@@ -503,8 +516,9 @@ export function createShell(app: App, d: ShellDeps) {
       tx.append(el('span', 'tt', `${i + 1} · ${l.title}`), el('span', 'mm', [here ? 'you are here' : '', !st.next ? `all ${st.total} steps done` : `${st.done} of ${st.total} steps done`].filter(Boolean).join(' · ')));
       li.append(tx);
       // Revisit keeps what was done (review 2026-10-15: "Redo" sounded as if it were wiped); a lesson ahead opens too.
-      // "Skip ahead" only for a lesson after the one you are on, not started (V30); one behind you is "Open".
-      if (!onIt) li.append(button(!st.next ? 'Revisit' : !here && ahead && !st.done ? 'Skip ahead' : 'Open', `btn${here ? '' : ' main'}`, () => choose(id)));
+      // "Skip ahead" only for a lesson not started with an earlier one not done (V30; the walk-through, 2026-10-16: the very
+      // next lesson, just earned, was "Skip ahead"); otherwise "Open".
+      if (!onIt) li.append(button(!st.next ? 'Revisit' : !here && ahead && !st.done && earlierNotDone(path, id) ? 'Skip ahead' : 'Open', `btn${here ? '' : ' main'}`, () => choose(id)));
       list.append(li);
     });
     out.push(list);

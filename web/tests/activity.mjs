@@ -1,7 +1,7 @@
 // The activity format (src/activity.ts): every activity in public/content/activities reads, and mistakes are refused
 // with the reason rather than guessed (owner, 2026-10-13). Run: npm run check:activity.
 import { readFileSync, readdirSync } from 'node:fs';
-import { readActivity } from '../src/activity.ts';
+import { readActivity, fingerOn } from '../src/activity.ts';
 import { namedPieces } from './named-pieces.mjs';
 
 const dir = new URL('../public/content/activities/', import.meta.url);
@@ -108,6 +108,10 @@ for (const [name, raw, want] of [
   ['a ladder step with misspelt words', { screen: 'lab', chart: 'c', preset: { steps: { accompaniment: [{ kind: 'roots', nmae: 'x' }] } } }, /a step has "nmae"/],
 ]) ok(`refused by the content check: ${name}`, laxProblems(raw).some((p) => want.test(p)), laxProblems(raw).join('; ') || 'accepted');
 {
+  // (2026-10-16, after the walk-through) fingers per pitch in every octave or per key; Free play's groups off and its click
+  const fg = readActivity('t', { screen: 'freeplay', fingers: { 'C#': 2, 'D#': 3, 'F#4': 1 }, groups: false, click: { bpm: 72 } });
+  ok('fingers, groups and click read: C# 2 in every octave, F#4 1 on that key only; groups off; the click at 72 in 4', fingerOn(fg.fingers, 49) === 2 && fingerOn(fg.fingers, 73) === 2 && fingerOn(fg.fingers, 66) === 1 && fingerOn(fg.fingers, 54) === undefined && fg.groups === false && fg.click.bpm === 72 && fg.click.beats === 4
+    && readActivity('t', { screen: 'drills', set: 's', fingers: { Bb: 4 } }).fingers.pc[10] === 4 && readActivity('t', { screen: 'freeplay' }).groups === undefined, JSON.stringify(fg));
   const fp = readActivity('t', { screen: 'freeplay', names: false }), sm = readActivity('t', { screen: 'simon', set: 'x', level: { goal: 3 } });
   ok('Free play names: false reads (no note names until taught), and Simon goal: 3 (the game ends at a chain of 3)', fp.names === false && sm.level.goal === 3, JSON.stringify({ fp, sm }));
   // (the consistency pass, 2026-10-16: names: false on any activity, honoured on every screen that names notes)
@@ -173,6 +177,18 @@ for (const [name, file, want] of refused) {
     ['keys on Memorise (not offered)', { screen: 'memorise', piece: 'x', keys: 'C4-E5' }, /"keys" is not a field of a memorise activity/],
     ['keys on the lab (not offered)', { screen: 'lab', chart: 'c', keys: 'C4-E5' }, /"keys" is not a field of a lab activity/],
     ['keys on a score in a mode whose keys do not play', { screen: 'score', piece: 'x', settings: { mode: 'along' }, keys: 'C4-E5' }, /keys are for Wait for me/],
+    // After the beginner walk-through (2026-10-16): fingers, Free play's groups and click.
+    ['fingers 6', { screen: 'freeplay', fingers: { 'C#': 6 } }, /fingers.C# is 6; it should be a finger, a whole number 1 to 5/],
+    ['fingers on a note that is not one', { screen: 'drills', set: 's', fingers: { H: 2 } }, /fingers has "H"/],
+    ['fingers empty', { screen: 'freeplay', fingers: {} }, /fingers should be like/],
+    ['fingers on the score (not offered)', { screen: 'score', piece: 'x', fingers: { C: 1 } }, /"fingers" is not a field of a score activity/],
+    ['groups as text', { screen: 'freeplay', groups: 'no' }, /groups "no" should be true or false/],
+    ['groups on Simon (Free play only)', { screen: 'simon', set: 's', groups: false }, /"groups" is not a field of a simon activity/],
+    ['click without its tempo', { screen: 'freeplay', click: { beats: 4 } }, /click needs "bpm"/],
+    ['click at 400', { screen: 'freeplay', click: { bpm: 400 } }, /click.bpm is 400/],
+    ['click with 8 beats', { screen: 'freeplay', click: { bpm: 72, beats: 8 } }, /click.beats is 8/],
+    ['click misspelt', { screen: 'freeplay', click: { tempo: 72 } }, /click has "tempo"/],
+    ['click on Drills (Free play only)', { screen: 'drills', set: 's', click: { bpm: 72 } }, /"click" is not a field of a drills activity/],
   ]) {
     try { readActivity('t', raw); ok(`refused: ${name}`, false, 'it was accepted'); }
     catch (e) { ok(`refused: ${name}`, want.test(e.message), e.message); }

@@ -560,5 +560,112 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   s.close();
 }
 
+// ---- After the beginner walk-through (owner, 2026-10-16) ---------------------------------------------------------------
+// Rushing and dragging named (drift.ts): a straight line through the taps' times; named at 5% or more, when the line
+// accounts for at least half of how the taps moved; never from too few taps.
+{
+  const { drift, DRIFT_SHARE } = await import('../src/drift.ts');
+  const beat = 833, due = Array.from({ length: 8 }, (_, i) => i * beat);
+  const taps = (f) => due.map((d, i) => ({ due: d, at: f(d, i) }));
+  const wobble = [30, -40, 25, -35, 40, -20, 35, -30];
+  const cases = {
+    steady: drift(taps((d) => d), beat),
+    'steady with ±40 ms wobble': drift(taps((d, i) => d + wobble[i]), beat),
+    'sped up 7% (each beat 58 ms sooner)': drift(taps((d) => d * 0.93), beat),
+    'slowed down 7%': drift(taps((d) => d * 1.07), beat),
+    'sped up 3% (under the line)': drift(taps((d) => d * 0.97), beat),
+    'sped up 7% with ±40 ms wobble': drift(taps((d, i) => d * 0.93 + wobble[i]), beat),
+    'one late tap at the end only (not a trend over the card: the line explains little)': drift(taps((d, i) => d + (i === 7 ? 250 : 0) + wobble[i]), beat),
+    'three taps': drift(taps((d) => d * 0.9).slice(0, 3), beat),
+  };
+  check('drift: steady and wobbly playing is not named; 7% faster is "faster", 7% slower "slower"; 3% is not; three taps say nothing',
+    cases.steady === null && cases['steady with ±40 ms wobble'] === null && cases['sped up 7% (each beat 58 ms sooner)'] === 'faster' && cases['slowed down 7%'] === 'slower'
+    && cases['sped up 3% (under the line)'] === null && cases['sped up 7% with ±40 ms wobble'] === 'faster' && cases['three taps'] === null && DRIFT_SHARE === 0.05,
+    JSON.stringify(cases));
+  check('drift: a single late tap at the end is not called slowing down', cases['one late tap at the end only (not a trend over the card: the line explains little)'] === null, JSON.stringify(cases));
+}
+// "Find it" sets (find.ts): the cards made from the keys; refusals.
+{
+  const { readFindSpec, findPool, groupsOn } = await import('../src/exercise/find.ts');
+  const pool = findPool(readFindSpec({ keys: 'C3-B4', groups: ['two', 'three'], places: ['lower', 'higher', 'any'] }));
+  const byName = Object.fromEntries(pool.map((it) => [it.name, it.find.keys.join(' ')]));
+  check('find: C3–B4, two and three, lower / higher / any: 6 cards, each group the right keys, "any" both groups',
+    pool.length === 6 && byName['a group of two, lower down'] === '49 51' && byName['a group of two, higher up'] === '61 63' && byName['a group of three, lower down'] === '54 56 58'
+    && byName['a group of three, higher up'] === '66 68 70' && byName['a group of two'] === '49 51 61 63' && pool.every((it) => !/[A-G]\d/.test(it.name)), JSON.stringify(byName));
+  check('find: a group cut off by the range is not one of them (C4–E5 holds two pairs and one three)', JSON.stringify(groupsOn(60, 76).map((g) => g.kind)) === '["two","three","two"]', JSON.stringify(groupsOn(60, 76)));
+  const refused = (spec) => { try { readFindSpec(spec); return ''; } catch (e) { return e.message; } };
+  const bad = {
+    'keys on a black key': refused({ keys: 'C#3-B4', groups: ['two'], places: ['any'] }),
+    'a place misspelt': refused({ keys: 'C3-B4', groups: ['two'], places: ['top'] }),
+    'middle with two groups': refused({ keys: 'C3-B4', groups: ['two'], places: ['middle'] }),
+    'higher with one three': refused({ keys: 'C4-E5', groups: ['three'], places: ['higher'] }),
+    'a field misspelt': refused({ keys: 'C3-B4', groups: ['two'], places: ['any'], place: 'x' }),
+    'groups twice': refused({ keys: 'C3-B4', groups: ['two', 'two'], places: ['any'] }),
+  };
+  check('find: refused with a reason: keys on a black key, an unknown place, "middle" without an odd number, "higher" with one group, a misspelt field, a group twice', Object.values(bad).every(Boolean), JSON.stringify(bad));
+  // letters (2026-10-17, the C-D-E lesson): "a D, higher up", any key of that letter in that part of the keyboard
+  const lp = findPool(readFindSpec({ keys: 'C3-B5', letters: ['C', 'D', 'E'], places: ['lower', 'middle', 'higher', 'any'] }));
+  const lw = Object.fromEntries(lp.map((it) => [it.name, it.find.keys.join(' ')]));
+  check('find by letter: C3–B5, C D E at lower / middle / higher / any: 12 cards, "a D, higher up" is D5 (74), "an E, lower down" E3 (52), "a C" any of the three',
+    lp.length === 12 && lw['a D, higher up'] === '74' && lw['an E, lower down'] === '52' && lw['a C, in the middle'] === '60' && lw['a C'] === '48 60 72', JSON.stringify(lw));
+  const lbad = { 'a black key letter': refused({ keys: 'C3-B4', letters: ['C#'], places: ['any'] }), 'middle with two Ds': refused({ keys: 'C3-B4', letters: ['D'], places: ['middle'] }), 'neither groups nor letters': refused({ keys: 'C3-B4', places: ['any'] }) };
+  check('find by letter: refused: a letter that is not a white key\'s, "middle" with two of it, neither groups nor letters', Object.values(lbad).every(Boolean), JSON.stringify(lbad));
+  const middle = findPool(readFindSpec({ keys: 'C3-B5', groups: ['three'], places: ['middle'] }));
+  check('find: "middle" of three groups of three is the middle one', middle.length === 1 && middle[0].find.keys.join(' ') === '66 68 70', JSON.stringify(middle));
+}
+// A "find it" card in Drills: the key that starts the set is not an answer; a wrong key, then the right group; untimed.
+{
+  store.clear();
+  const { findPool, readFindSpec } = await import('../src/exercise/find.ts');
+  const spec = readFindSpec({ keys: 'C3-B4', groups: ['three'], places: ['higher'] });
+  const set = { id: 't-find', title: 'test', kind: 'find', order: 'pool', tempo: 80, items: findPool(spec), find: spec };
+  const marks = { wrong: [], want: [] };
+  const ui = parts(), d = new Drill(ui, { ...keysStub(), wrong(ms) { marks.wrong = ms; }, want(ms) { marks.want = ms; } }, notation, sound);
+  d.open([set], { set: 't-find', level: { cards: 2 } });
+  d.key(60, true, 1000); await settle(); await pass(100); // a key on Ready starts the set: the card is shown, not answered
+  const shown = { state: d.state, name: ui.name.textContent, results: d.results.length };
+  d.key(60, true, 2000); await settle(); // a white key: not that group
+  const miss = { status: ui.status.textContent, wrong: marks.wrong, want: marks.want, text: d.results.at(-1)?.text };
+  ui.again; d.command('low'); await settle(); await pass(100); // Again (the lowest key): the card again
+  d.key(68, true, 4000); await settle();
+  const hit = { text: d.results.at(-1)?.text, clean: d.results.at(-1)?.clean, n: d.results.length };
+  check('find card: the starting key is not an answer; a white key is "not that group" (red, the group outlined); Again then a key of the group: right on a retry',
+    shown.state === 'turn' && shown.name === 'Find a group of three, higher up' && shown.results === 0 && miss.status === 'Not quite' && miss.wrong.join() === '60' && miss.want.join() === '66,68,70' && hit.text === 'right on a retry' && hit.n === 1,
+    JSON.stringify({ shown, miss, hit }));
+  d.close();
+}
+// The letters view (owner, 2026-10-17): a set's `view: "letters"` is read; refused: another value, on a rhythm or find set,
+// with "play", and a card without written rhythm.
+{
+  const { readSet } = await import('../src/exercise/items.ts');
+  const read = async (f) => { try { return await readSet('l', { title: 't', ...f }, 'file:///x/', async () => '', async () => ''); } catch (e) { return e.message; } };
+  const bad = {
+    'view "staff"': await read({ view: 'staff', items: { 1: { notes: 'C4' } } }),
+    'on a rhythm set': await read({ kind: 'rhythm', view: 'letters', generate: { values: ['quarter'], meter: '4/4', bars: 1 } }),
+    'with play': await read({ view: 'letters', play: { mode: 'wait' }, items: { 1: { notes: 'C4' } } }),
+    'a card without written rhythm': await read({ view: 'letters', items: { 1: { notes: 'E4, D4, C4' } } }),
+  };
+  check('letters view: refused with a reason: another view, on a rhythm set, with "play", a card with no written rhythm',
+    /should be "letters"/.test(bad['view "staff"']) && /has no "view"/.test(bad['on a rhythm set']) && /played in Drills/.test(bad['with play']) && /needs written rhythm/.test(bad['a card without written rhythm']), JSON.stringify(bad));
+}
+// Simon by ear (help 5): a miss plays the note again and you keep trying; no try lost, nothing named, no game over.
+{
+  store.clear();
+  const set = { id: 't-ear', title: 'test', order: 'passage', tempo: 80, items: ['C#4', 'D#4', 'F#4'].map((n, i) => ({ n: i + 1, name: n, short: n, groups: [[n]] })) };
+  const played = [], marks = { wrong: [], want: [] };
+  const ui = parts(), s = new Simon(ui, { ...keysStub(), wrong(ms) { marks.wrong = ms; }, want(ms) { marks.want = ms; } }, notation, { ...sound, play(events) { if (events.length) played.push(events.map((e) => e.midi).join()); } });
+  s.open([set], { set: 't-ear', level: { rung: 5, match: 'same', miss: 'tries', speed: 'steady', onMiss: 'all', onNew: 'all' } });
+  const tap = async (m) => { s.key(m, true); s.key(m, false); await settle(); };
+  await tap(61); await pass(3000); // starts: chain 1 heard, your turn
+  for (const k of [63, 66, 68, 70]) await tap(k); // four wrong keys
+  const after = { state: s.state, status: ui.status.textContent, hearts: ui.right.textContent, want: marks.want.length, replayed: played.filter((p) => p === '61').length };
+  await tap(61); await pass(200);
+  const found = ui.status.textContent;
+  check('Simon by ear: four wrong keys keep your turn (no game over, no heart shown or lost), nothing outlined, no note named, the note played again each time; the right key then: found by trying, not a best',
+    after.state === 'turn' && /listen again, and try another key/.test(after.status) && !/[A-G][♯#]?\d/.test(after.status) && after.hearts === '' && after.want === 0 && after.replayed >= 5 && /Found by trying keys/.test(found),
+    JSON.stringify({ after, found }));
+  s.close();
+}
+
 console.log(failures.length ? `${failures.length} failed` : 'all passed');
 process.exit(failures.length ? 1 : 0);

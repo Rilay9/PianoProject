@@ -5,7 +5,8 @@
       "title": "Playing before reading",
       "lessons": [
         "r1-first-sounds",
-        "r1-the-beat"
+        "r1-the-beat",
+        "r1-note-lengths"
       ]
     },
     {
@@ -16,6 +17,7 @@
         "test-minuet-opening",
         "test-consistency",
         "test-catalogue-piece",
+        "test-walkfix",
         "test-chords-and-band"
       ]
     }

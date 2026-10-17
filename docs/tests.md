@@ -109,6 +109,22 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
 - **The main buttons' path skips what the page teaches.** A result's Next went straight to the next activity, past the
   explanation and picture before it (lesson 1, 2026-10-16). Follow the most prominent button at each step, as a learner
   would, and check what they actually get to read.
+- **A summary of the last run, not the one meant.** A step's result headline was its last run ("Longest chain 0 · 2 runs"
+  beside "Target met", a chain of 3 played before), and "the misses again" was logged "stopped early" and headed the
+  result; Drills' card counter counted a card again while Again replayed it ("Card 6 of 5"). The beginner walk-through
+  found both (2026-10-16); the checks had each run alone. Play two runs of different worth (and a retry) and check which
+  one the summary names.
+- **One slip marked twice.** On the pad a new tap ends the one before, so a note tapped early also cut the note before it,
+  which was then "let go early" too (2026-10-16). Where one input can end another (the pad, one key struck again), check
+  that a slip is marked on the note that made it only.
+- **A cover over the screen takes the first tap.** "Tap anywhere to start" took the tap meant for the pad, so a reloaded
+  drill started only on the second tap (2026-10-16), the kind of bug "the key that starts something, swallowed" names,
+  from a layer the checks always tapped away first. Tap the real target through the cover.
+- **A word read in one moment.** The count-in said "0" for its first 30 ms; a check that read the status once never saw
+  it (2026-10-16). Sample a changing line all the way through, not once.
+- **Where you are, rewritten by every visit.** Drawing a lesson page made it "the lesson you are on", so finishing a lesson
+  and pressing Next put the finished lesson back on Home ("Again · lesson 1") (2026-10-16). After a lesson's last step,
+  check Home, Path's Carry on and Switch as a learner would come back to them.
 
 ## Running checks
 
@@ -116,6 +132,7 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   changed, plus `check:notes` when anything about scores or drawing changed.
 - A file swapped in with `page.route` is answered by the offline cache instead once the app has cached the real one:
   give such a case a context with `serviceWorkers: 'block'` (check:notes drew the real song, 2026-10-14).
+- A second worktree running checks at the same time: `PIANO_PORT=5294 npm run check:browser` serves on that port instead of 5194 (2026-10-16).
 - Browser checks: build (`npx vite build`), serve the build (`npx vite preview --port 5192 --strictPort`), drive it
   with Playwright from a script in the session scratchpad. Use `--strictPort` so a port already taken fails loudly
   instead of quietly testing another server.

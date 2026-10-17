@@ -12,6 +12,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { Chord, Interval, Note, Scale } from 'tonal';
 import { EXERCISE_KINDS, readSet } from '../src/exercise/items.ts';
 import { readRhythmSpec } from '../src/exercise/rhythm.ts';
+import { readFindSpec } from '../src/exercise/find.ts';
 import { readChart, readStyle } from '../src/lab/music.ts';
 import { soundOf } from '../src/library/midi/band.ts';
 import { BUNDLED_PARTS } from '../src/sound.ts';
@@ -133,6 +134,19 @@ function setProblems(f, fileThere, bars) {
     for (const k of ['from', 'rhythm', 'play']) if (f[k] !== undefined) out.push(`a rhythm set has no "${k}"`);
     if (f.generate !== undefined && f.order !== undefined) out.push('a generated rhythm set is always a pool: leave "order" out');
   } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm")');
+  // "Find it" sets (2026-10-16, after the walk-through): "find" only, read by the app's own reader of it.
+  if (f.kind === 'find') {
+    if (f.find === undefined) out.push('a "find" set needs "find": { keys, groups, places }');
+    else { try { readFindSpec(f.find); } catch (e) { out.push(e.message); } }
+    for (const k of ['items', 'from', 'generate', 'rhythm', 'play', 'order']) if (f[k] !== undefined) out.push(`a "find" set has no "${k}"`);
+  } else if (f.find !== undefined) out.push('"find" is for "find" sets (kind "find")');
+  // The letters view (2026-10-17): "letters" only; not on a rhythm or find set; its cards MusicXML or bars of a piece (written rhythm).
+  if (f.view !== undefined) {
+    if (f.view !== 'letters') out.push(`view ${JSON.stringify(f.view)} should be "letters"`);
+    if (f.kind === 'rhythm' || f.kind === 'find') out.push(`a ${f.kind} set has no "view"`);
+    if (f.play !== undefined) out.push('a letters set has no "play" (it is played in Drills)');
+    if (isObj(f.items)) for (const [k, it] of Object.entries(f.items)) if (isObj(it) && it.musicxml === undefined) out.push(`item "${k}": a letters card needs written rhythm (MusicXML)`);
+  }
   if (f.from !== undefined) {
     if (!isObj(f.from)) out.push('from should be an object { score, bars, staff }');
     else {
@@ -189,6 +203,14 @@ const scoreBars = (id) => { const p = namedPieces().barsOf(id); return p && !id.
   refuses('rhythm: "generate" on a set of another kind', bad({ kind: 'chords', generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /"generate" is for rhythm sets/);
   refuses('rhythm: a notes item in a rhythm set', bad({ kind: 'rhythm', items: { 1: { notes: 'C4' } } }), /items are MusicXML patterns/);
   refuses('rhythm: "rhythm" on a rhythm set', bad({ kind: 'rhythm', rhythm: 1, generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /a rhythm set has no "rhythm"/);
+  // "Find it" sets (2026-10-16).
+  refuses('find: "find" on a set of another kind', bad({ kind: 'chords', items: { 1: { notes: 'C4' } }, find: { keys: 'C3-B4', groups: ['two'], places: ['any'] } }), /"find" is for "find" sets/);
+  refuses('find: items on a find set', bad({ kind: 'find', find: { keys: 'C3-B4', groups: ['two'], places: ['any'] }, items: { 1: { notes: 'C4' } } }), /a "find" set has no "items"/);
+  refuses('find: a place that is not one', bad({ kind: 'find', find: { keys: 'C3-B4', groups: ['two'], places: ['left'] } }), /"left" is not one of/);
+  refuses('find: no "find"', bad({ kind: 'find' }), /needs "find"/);
+  refuses('letters: a view that is not one', bad({ view: 'staff', items: { 1: { musicxml: '<note/>' } } }), /should be "letters"/);
+  refuses('letters: a notes item (no written rhythm)', bad({ view: 'letters', items: { 1: { notes: 'E4, D4' } } }), /needs written rhythm/);
+  refuses('letters: on a rhythm set', bad({ kind: 'rhythm', view: 'letters', generate: { values: ['quarter'], meter: '4/4', bars: 1 } }), /has no "view"/);
   refuses('together as text', bad({ items: { 1: { interval: 'M3', together: 'false' } } }), /together should be true or false/);
   refuses('arpeggio as text', bad({ items: { 1: { chord: 'C', arpeggio: 'yes' } } }), /arpeggio should be true or false/);
   refuses('no items', bad({ items: {} }), /items is empty/);

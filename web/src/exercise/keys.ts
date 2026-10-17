@@ -62,6 +62,12 @@ export class ExerciseKeys {
     this.drawn = r ? `${r.lo}-${r.hi}` : '';
     this.span = midis.length ? { lo: Math.min(...midis), hi: Math.max(...midis) } : null;
   }
+  /** Finger numbers on the keys (an activity's `fingers`), or none; drawn again. */
+  setFingers(f: ((midi: number) => number | undefined) | null): void {
+    if (this.strip.fingers === f) return;
+    this.strip.fingers = f;
+    this.setRange(this.notes);
+  }
   /** The octave labels on the keys (off at "keys, no music": no note names); drawn again if it changes. */
   setNames(on: boolean): void {
     if (this.strip.names === on) return;

@@ -1,0 +1,5 @@
+{
+  "title": "Test: find the groups",
+  "kind": "find",
+  "find": { "keys": "C3-B4", "groups": ["two", "three"], "places": ["lower", "higher"] }
+}

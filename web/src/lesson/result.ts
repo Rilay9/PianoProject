@@ -128,13 +128,14 @@ export function playedAsSet(e: Played, a: Activity): string {
  * the step list): the reason the result card gives for a step with no target.
  */
 export function through(a: Activity): string {
+  // (in the learner's words, not the builder's: the walk-through, 2026-10-16, read "(no target: … is what counts)")
   switch (a.screen) {
-    case 'drills': return 'the whole set played';
-    case 'simon': return 'a game played to its end';
-    case 'score': return a.settings.mode === 'watch' ? 'the music heard to its end' : a.bars ? `${range(a.bars[0], a.bars[1])} played to the end` : 'played to the end';
-    case 'memorise': return 'a chunk learned';
-    case 'lab': return 'a whole round of the chart';
-    case 'freeplay': return 'a key played';
+    case 'drills': return 'playing the whole set';
+    case 'simon': return 'playing a game to its end';
+    case 'score': return a.settings.mode === 'watch' ? 'hearing the music to its end' : a.bars ? `playing ${range(a.bars[0], a.bars[1])} to the end` : 'playing it to the end';
+    case 'memorise': return 'learning a chunk';
+    case 'lab': return 'playing a whole round of the chart';
+    case 'freeplay': return 'playing a key';
   }
   return '';
 }
@@ -151,7 +152,8 @@ export function ended(e: LogEntry): boolean {
     // A Drills step with no target (an introduction) is done when its whole set is played through, any result: real
     // practice, no pass mark (owner, 2026-10-16: one card "how do they learn anything from that?"); a set left part way
     // is tried (ChatGPT's review, F6: "left" had been called "played through").
-    case 'drills': return r.ended === 'set done';
+    // "The misses again" is practice, not the set (owner, 2026-10-16, after the walk-through).
+    case 'drills': return r.ended === 'set done' && r.missesAgain !== true;
     // A Simon game logs only once something was played: game over, all played or its goal is through; left part way, tried.
     case 'simon': return r.ended !== 'stopped';
     // Memorise (owner, 2026-10-16): a chunk learned (its clean passes), or a whole-piece test with every bar clean.
@@ -185,7 +187,8 @@ export function runLine(e: LogEntry): string {
   const r = e.result;
   const pct = (a: number, b: number) => `${Math.round((a / Math.max(1, b)) * 100)}%`;
   switch (e.screen) {
-    case 'drills': return `${num(r.clean)} of ${num(r.of)} cards clean${r.ended === 'set done' ? '' : ` (${String(r.ended)})`}`;
+    // (the misses again: said as practice, never "stopped early": the walk-through, 2026-10-16)
+    case 'drills': return `${num(r.clean)} of ${num(r.of)} cards clean${r.missesAgain === true ? ' (the misses again: practice)' : r.ended === 'set done' ? '' : ` (${String(r.ended)})`}`;
     case 'simon': return `Longest chain ${num(r.longestChain)}${num(r.helpedChains) ? ` · ${num(r.helpedChains)} helped` : ''}`;
     case 'lab': {
       const rounds = (r.rounds as Round[] | undefined) ?? [];
@@ -222,16 +225,28 @@ export interface StepOutcome { runs: number; done: boolean; met: boolean; line: 
 export function outcome(runs: LogEntry[], a: Activity, target: Target | undefined, returned: boolean, evidence = false): StepOutcome {
   if (!runs.length) {
     const done = returned && keepsNoRuns(a) && evidence;
-    const line = done ? (a.screen === 'freeplay' ? 'Free play: a key played' : 'Watched to the end') : keepsNoRuns(a) ? 'Opened, nothing played' : 'Nothing played';
+    const line = done ? (a.screen === 'freeplay' ? 'You played in Free play' : 'Watched to the end') : keepsNoRuns(a) ? 'Opened, nothing played' : 'Nothing counted yet'; // (not "Nothing played": a key while it plays to you counts nothing, but was played; the walk-through, 2026-10-16)
     return { runs: 0, done, met: false, line };
   }
   const counts = (e: LogEntry) => !playedAsSet(e, a);
   const met = target ? runs.some((e) => meets(e, target) && counts(e)) : runs.some((e) => ended(e) && counts(e));
-  const last = runLine(runs[runs.length - 1]);
+  // The headline: the best whole run played as the step sets it (owner, 2026-10-16, after the walk-through: "Longest
+  // chain 0 · 2 runs" beside "Target met" told of the last runs only); Simon's best chain. With none, the last run.
+  const shown = runs.filter((e) => counts(e) && whole(e));
+  const head = shown.length ? bestLine(shown) : runLine(runs[runs.length - 1]);
+  const practice = runs.length - shown.length;
   // A run that would have counted had it been played as the step sets it: said, as practice (not counted).
   const other = !met ? runs.map((e) => ((target ? meets(e, target) : ended(e)) ? playedAsSet(e, a) : '')).find(Boolean) : '';
-  const line = runs.length > 1 ? `${last} · ${runs.length} runs` : last;
+  const again = runs.some((e) => e.screen === 'drills' && e.result.missesAgain === true);
+  const line = [head, shown.length > 1 ? `the best of ${shown.length} runs` : '', shown.length && practice ? `and ${practice} ${practice === 1 ? 'run' : 'runs'} of practice${again ? ' (the misses again)' : ''}` : '']
+    .filter(Boolean).join(' · ');
   return { runs: runs.length, done: met, met, line: other ? `${line} · played with ${other}: practice, not counted for the step` : line };
+}
+
+/** A run of the whole of what its screen sets, to be the headline: a full Drills set (not the misses again); any other run. */
+function whole(e: LogEntry): boolean {
+  if (e.screen === 'drills') return e.result.ended === 'set done' && e.result.missesAgain !== true;
+  return true;
 }
 
 /** The best of a step's runs so far, in its screen's words (the most clean cards, the longest chain, the best share on

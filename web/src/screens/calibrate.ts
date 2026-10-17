@@ -35,7 +35,7 @@ export function createCalibration(app: App): CalibrationPanel {
   function ready(): void {
     state = 'ready';
     taps = [];
-    say('Tap the pad to start', `It plays ${CALIBRATION.clicks} clicks; tap on each one, steadily.`);
+    say('Tap the pad to start', `That tap starts it (it is not counted); then ${CALIBRATION.clicks} clicks: tap on each one, steadily.`);
   }
   async function start(): Promise<void> {
     const mine = ++run;
@@ -58,7 +58,8 @@ export function createCalibration(app: App): CalibrationPanel {
     const r = judgeCalibration(clicks, taps.filter((x) => x.input === input).map((x) => x.t));
     if (!r.ok) { say(r.reason, 'Tap the pad to try again.'); return; }
     saveCalibration(input, { ms: r.ms, at: new Date().toISOString(), taps: r.taps });
-    say(`${NAMES[input]}: ${r.ms} ms`, `${r.ms >= 0 ? 'Your taps arrive' : 'Your taps come'} ${Math.abs(r.ms)} ms ${r.ms >= 0 ? 'after' : 'before'} the click on this phone; kept, and used when your taps are judged.${r.large ? ' That is large: run it again to be sure.' : ''}`);
+    // (your taps and the device together: the walk-through, 2026-10-16, read a beginner's own lateness called the phone's)
+    say(`${NAMES[input]}: ${r.ms} ms`, `Your taps and this device together came ${Math.abs(r.ms)} ms ${r.ms >= 0 ? 'after' : 'before'} the clicks. Kept for this device, and allowed for when your taps are judged.${r.large ? ' That is large: run it again to be sure.' : ''}`);
     fill();
   }
   /** A tap or key: the one that starts a run starts the clicks (it is not measured); during a run each is measured. */

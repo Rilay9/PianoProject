@@ -21,6 +21,9 @@ export interface Judged {
   offSteps: number[]; wrongAt: number[];
   /** Each note not played on time: its step, key and what happened; each wrong press: when and which key. */
   offNotes: { k: number; midi: number; kind: NoteKind }[]; wrongKeys: { t: number; midi: number }[];
+  /** Each written note played (on time or not): its step, key, when it was due and when played (song ms), and how long it
+   * sounded (ms; Infinity still sounding; undefined: not known). For the drift line and the beat line (2026-10-16). */
+  matched: { k: number; midi: number; due: number; t: number; held?: number }[];
 }
 
 /**
@@ -50,11 +53,13 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
   let onTime = 0, early = 0, late = 0, short = 0;
   const offSteps: number[] = [];
   const offNotes: Judged['offNotes'] = [];
+  const matched: Judged['matched'] = [];
   for (const { note, press } of pairs) {
     if (noteUsed.has(note) || pressUsed.has(press)) continue;
     noteUsed.add(note);
     pressUsed.add(press);
     const p = played[press], offMs = (p.t - notes[note].t) / p.speed;
+    matched.push({ k: notes[note].k, midi: notes[note].midi, due: notes[note].t, t: p.t, ...(held ? { held: held(p) } : {}) });
     if (Math.abs(offMs) <= toleranceMs) {
       // On time; held its length? (A note already early or late is marked for that alone: one thing a note.)
       if (held && letGoEarly(held(p), notes[note].dur, p.speed)) {
@@ -72,7 +77,8 @@ export function judge(steps: ExpectedStep[], played: PlayedKey[], toleranceMs: n
   notes.forEach((n, i) => { if (!noteUsed.has(i)) { offSteps.push(n.k); offNotes.push({ k: n.k, midi: n.midi, kind: 'missed' }); } });
   const wrongKeys = played.filter((_, j) => !pressUsed.has(j)).map((p) => ({ t: p.t, midi: p.midi }));
   const wrongAt = wrongKeys.map((w) => w.t);
-  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, short, wrong: wrongAt.length, offSteps, wrongAt, offNotes, wrongKeys };
+  matched.sort((a, b) => a.due - b.due);
+  return { total: notes.length, onTime, early, late, missed: notes.length - noteUsed.size, short, wrong: wrongAt.length, offSteps, wrongAt, offNotes, wrongKeys, matched };
 }
 
 /** Keys pressed this close together are one tap (a chord's keys land within a few ms of each other). */
@@ -90,7 +96,13 @@ export function judgeRhythm(steps: ExpectedStep[], played: PlayedKey[], toleranc
     taps.push({ ...p, midi: 0, key: p });
   }
   // A tap is held as long as the moment's longest note, but never past the next moment (one tap cannot be held
-  // through the next one: review, 2026-10-13).
+  // through the next one: review, 2026-10-13). A tap still held when the next tap came was cut by it (on the pad a new
+  // tap ends the one before): it was not let go early, the next tap was early, and that one is marked (the walk-through,
+  // 2026-10-16: a quarter turned orange beside the half note tapped early after it).
+  const sounded = (tap: PlayedKey & { key: PlayedKey }): number => {
+    const h = held!(tap.key), next = taps[taps.indexOf(tap) + 1];
+    return next && tap.key.at !== undefined && next.key.at !== undefined && tap.key.at + h >= next.key.at - 5 ? Infinity : h;
+  };
   return judge(steps.map((s, i) => ({ t: s.t, keys: [0], durs: [Math.min(Math.max(0, ...(s.durs ?? [])), (steps[i + 1]?.t ?? Infinity) - s.t)] })), taps, toleranceMs,
-    held && ((tap) => held((tap as PlayedKey & { key: PlayedKey }).key)));
+    held && ((tap) => sounded(tap as PlayedKey & { key: PlayedKey })));
 }

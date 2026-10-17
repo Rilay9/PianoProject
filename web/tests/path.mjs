@@ -7,7 +7,7 @@ import { readActivity } from '../src/activity.ts';
 import * as read from '../src/lesson/read.ts';
 const { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } = read;
 import { readText } from '../src/lesson/text.ts';
-import { meets, outcome, playedAsSet } from '../src/lesson/result.ts';
+import { meets, outcome, playedAsSet, runLine, through } from '../src/lesson/result.ts';
 import * as log from '../src/log.ts';
 import { readPlay } from '../src/exercise/items.ts';
 import { namedPieces } from './named-pieces.mjs';
@@ -33,7 +33,9 @@ const charts = JSON.parse(readFileSync(pub('content/lab/index.json'), 'utf8')).c
  * screen plays these as rung 3 and normal timing; a step asking for them is a mistake). '' when fine. */
 const rhythmMisuse = (a) => {
   if (!('set' in a) || !sets.includes(`${a.set}.json`)) return '';
-  if (JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')).kind !== 'rhythm') return '';
+  const kind = JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')).kind;
+  if (kind === 'find' && a.screen === 'simon') return `set "${a.set}" is a "find it" set: Drills only`; // (2026-10-16)
+  if (kind !== 'rhythm') return '';
   if (a.screen === 'simon') return `set "${a.set}" is a rhythm set: Drills only (Simon has no rhythm)`;
   if (a.level?.rung === 4) return `set "${a.set}" is a rhythm set: no rung 4 (name only)`;
   if (a.level?.onTime === 'notes') return `set "${a.set}" is a rhythm set: no "notes only"`;
@@ -41,6 +43,7 @@ const rhythmMisuse = (a) => {
 };
 const contentProblem = (a) => ('set' in a ? (sets.includes(`${a.set}.json`) ? rhythmMisuse(a) : `no set "${a.set}" in content/sets/index.json`)
   : charts.includes(`charts/${a.chart}.json`) ? '' : `no chart "${a.chart}" in content/lab/index.json`);
+ok('a step’s "find it" set in Simon is refused, in Drills it is fine (2026-10-16, after the walk-through)', /Drills only/.test(contentProblem({ screen: 'simon', set: 'test-find-groups', level: {} })) && contentProblem({ screen: 'drills', set: 'test-find-groups', level: {} }) === '', contentProblem({ screen: 'simon', set: 'test-find-groups', level: {} }));
 ok("a step's rhythm set in Simon is refused (2026-10-16), in Drills at rung 3 is fine", /Drills only/.test(contentProblem({ screen: 'simon', set: 'rhythm-whole', level: {} })) && contentProblem({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }) === '', contentProblem({ screen: 'simon', set: 'rhythm-whole', level: {} }));
 /** A score block's set item: one the set has (''), else why not. A passage from a score (from) has one item a moment: not counted here. */
 function itemProblem(set, n) {
@@ -77,7 +80,7 @@ ok('the test content uses every block kind', BLOCK_KINDS.every((k) => kindsUsed.
 // The sets' kinds (Exercises lists by them): a kind is optional (none: listed under "Other"), and one given is known.
 for (const f of sets) {
   const k = JSON.parse(readFileSync(pub(`content/sets/${f}`), 'utf8')).kind;
-  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm'].includes(k), String(k));
+  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm', 'find'].includes(k), String(k));
 }
 
 // ---- what a lesson reads to --------------------------------------------------------------------------------------
@@ -155,7 +158,7 @@ for (const [name, f, want] of [
 {
   const raw = JSON.parse(readFileSync(pub('content/path/index.json'), 'utf8'));
   ok('the shipped index: every rung titled "Test:" is marked "test": true (hidden from the learner)', raw.rungs.every((r) => !/^Test:/.test(r.title) || r.test === true), JSON.stringify(raw.rungs.map((r) => [r.id, r.test])));
-  ok('the shipped index: the checks still read the test rung and its four lessons (test-consistency: 2026-10-16)', same(index.rungs.find((r) => r.id === 'test-app')?.lessons, ['test-minuet-opening', 'test-consistency', 'test-catalogue-piece', 'test-chords-and-band']), JSON.stringify(index.rungs));
+  ok('the shipped index: the checks still read the test rung and its five lessons (test-consistency, test-walkfix: 2026-10-16)', same(index.rungs.find((r) => r.id === 'test-app')?.lessons, ['test-minuet-opening', 'test-consistency', 'test-catalogue-piece', 'test-walkfix', 'test-chords-and-band']), JSON.stringify(index.rungs));
   const shownIndex = read.shownIndex;
   const two = typeof shownIndex === 'function' ? readIndex({ rungs: [{ id: 'test-app', title: 'Test: x', test: true, lessons: ['t1'] }, { id: 'first', title: 'Playing before reading', lessons: ['l1'] }] }) : null;
   ok('learner: a test rung is hidden, a real rung shown', !!two && same(shownIndex(two, false).rungs.map((r) => r.id), ['first']), two ? JSON.stringify(shownIndex(two, false)) : 'no shownIndex in lesson/read.ts');
@@ -277,7 +280,7 @@ ok('done without a target: a Simon game left part way is tried; one that ran its
   const watch = { id: 'w', title: 'w', screen: 'score', piece: 'p', settings: { mode: 'watch' } }, fp = { id: 'f', title: 'f', screen: 'freeplay' };
   const no = (a) => outcome([], a, undefined, true, false), yes = (a) => outcome([], a, undefined, true, true);
   ok('visited: Watch heard to its end, Free play with a key played: done; coming back without that: not done, "Opened, nothing played"',
-    yes(watch).done && yes(fp).done && !no(watch).done && !no(fp).done && no(fp).line === 'Opened, nothing played' && yes(fp).line === 'Free play: a key played' && yes(watch).line === 'Watched to the end'
+    yes(watch).done && yes(fp).done && !no(watch).done && !no(fp).done && no(fp).line === 'Opened, nothing played' && yes(fp).line === 'You played in Free play' && yes(watch).line === 'Watched to the end'
     && !outcome([], { id: 's', title: 's', screen: 'score', piece: 'p', settings: { mode: 'wait' } }, undefined, true, true).done, JSON.stringify([no(fp), yes(fp), no(watch), yes(watch)]));
 }
 // The log's evidence for it (log.ts): kept for the step the activity in force belongs to, read once on coming back.
@@ -356,6 +359,27 @@ ok('done without a target: a Simon game left part way is tried; one that ran its
   const step = { id: 'd', title: 'd', screen: 'drills', set: 's', level: {} };
   const o = outcome([E('simon', { longestChain: 3, ended: 'goal' }, { set: 's' })], step, undefined, true);
   ok('Practise as…: a Simon game for a Drills step is practice ("Simon, not Drills"), not through', !o.done && /played with Simon, not Drills: practice/.test(o.line), o.line);
+}
+
+// The step's headline after the beginner walk-through (owner, 2026-10-16): the best whole run played as the step sets it,
+// Simon's best chain; "the misses again" is practice, never "stopped early", never the headline nor "played through".
+{
+  const sStep = { id: 's', title: 's', screen: 'simon', set: 'bk', level: { rung: 0 } };
+  const chain = (n, rung, ended) => E('simon', { longestChain: n, ended }, { set: 'bk', settings: { rung } });
+  // a chain of 3 at help 0, then a game over at chain 0 by ear (help 5: harder, counted): the headline is the 3
+  const s = outcome([chain(3, 0, 'goal'), chain(0, 5, 'over')], sStep, { chain: 3 }, true);
+  ok('headline: Simon, a chain of 3 then a game over at 0: "Longest chain 3", not the last run (was "Longest chain 0 · 2 runs")', s.met && /^Longest chain 3/.test(s.line) && !/chain 0/.test(s.line), s.line);
+  const dStep = { id: 'd', title: 'd', screen: 'drills', set: 'qh', level: { rung: 3, cards: 5 } };
+  const set = (clean, of, extra = {}) => E('drills', { clean, of, ended: 'set done', ...extra }, { set: 'qh', settings: { rung: 3, cards: of === 5 ? 5 : 5 } });
+  // 3 of 5, then the 2 misses again, both clean
+  const d = outcome([set(3, 5), set(2, 2, { missesAgain: true })], dStep, { clean: 4 }, true);
+  ok('headline: Drills, 3 of 5 then the misses again 2 of 2: "3 of 5 cards clean", the misses again said as practice, no "stopped early"', !d.met && /^3 of 5 cards clean/.test(d.line) && /practice \(the misses again\)/.test(d.line) && !/stopped early/.test(d.line), d.line);
+  ok('the misses again, played to the end, is not "played through" for a step with no target', !outcome([set(2, 2, { missesAgain: true })], dStep, undefined, true).done && outcome([set(1, 5)], dStep, undefined, true).done);
+  ok('runLine: the misses again says practice, an older entry logged "stopped early" too', runLine(set(2, 2, { missesAgain: true })) === '2 of 2 cards clean (the misses again: practice)' && runLine(E('drills', { clean: 2, of: 2, ended: 'stopped early', missesAgain: true })) === '2 of 2 cards clean (the misses again: practice)');
+  // two full sets: the better one heads
+  const two = outcome([set(4, 5), set(2, 5)], dStep, { clean: 4 }, true);
+  ok('headline: two full sets, 4 then 2: "4 of 5 cards clean · the best of 2 runs"', two.met && two.line === '4 of 5 cards clean · the best of 2 runs', two.line);
+  ok('through(): in the learner’s words ("playing the whole set", "playing a game to its end")', through(dStep) === 'playing the whole set' && through(sStep) === 'playing a game to its end' && through({ id: 'f', title: 'f', screen: 'freeplay' }) === 'playing a key');
 }
 
 console.log(`${failed ? 'FAILED' : 'passed'}: ${ran - failed} of ${ran}`);

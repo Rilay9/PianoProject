@@ -36,6 +36,8 @@ export interface LessonDeps {
   showResult: () => void;
   /** ← from the result (the same as Back), and then something else (another lesson). */
   back: (then?: () => void) => void;
+  /** The Practice tab (after the last lesson there is: more practice). */
+  openPractice: () => void;
 }
 
 
@@ -59,8 +61,11 @@ export function createLessonPage(d: LessonDeps) {
 
   /** Shows the lesson; startStep: then starts that step at once (Start ▶ on Home: you come back here after it); resume:
    * the step was open when the page reloaded (its runs since it was first started still count). */
-  async function show(id: string, startStep?: string, resume = false): Promise<void> {
+  async function show(id: string, startStep?: string, resume = false, part?: string): Promise<void> {
     const n = ++drawn;
+    // Home's Start and a step row: the lesson page at that step's part (owner, 2026-10-16, after the walk-through: "like
+    // Next"; Start had opened the step's screen, past the lesson's teaching); the page's Start opens the step.
+    if (part) { shown = null; goTo = { to: part }; }
     data = await loadPath();
     if (n !== drawn) return;
     lesson = data.lessons.get(id) ?? null;
@@ -103,6 +108,9 @@ export function createLessonPage(d: LessonDeps) {
     } else {
       // The next lesson with steps to do (as the result's Next lesson was: wrapping round), else the next in order.
       const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), todo = nextTodo(data, lesson.id), after = todo ? { lesson: todo } : order[at + 1];
+      // No next lesson yet (owner, 2026-10-16, after the walk-through: the bar had nothing, while the text promised one):
+      // said plainly, with the way to keep practising.
+      if (!after && state.total) { setBar(`Lesson done: all ${state.total} steps. The next lesson is not written yet`, [button('Practice ›', 'btn main', () => d.openPractice())]); return; }
       setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : []);
     }
   }
@@ -209,17 +217,20 @@ export function createLessonPage(d: LessonDeps) {
     // The step's state in honest words (review 2026-10-15, V18: a step with nothing to judge is "visited", not ✓), the
     // same words as the step list (progress.ts stepWords), with what counts on this screen (result.ts through).
     const act = s.pending.activity, why = through(act);
+    // (no green tick for a step with no pass mark, and the learner's words, not the builder's: the walk-through, 2026-10-16)
     const state = s.pending.target
       ? (s.out.met ? `Target met${b.doneWhen ? ` (${b.doneWhen})` : ''}: step done ✓` : `Target${b.doneWhen ? ` (${b.doneWhen})` : ''} not met this time${done ? '; the step was done before' : ''}. You can try again or move on.`)
-      : s.out.met ? `Played through: step done ✓ (no target: ${why} is what counts)`
-      : s.out.runs ? `Not through yet: the step is tried, not done (${why} is what counts)${done ? '; it was done before' : ''}. You can try again or move on.`
-      : s.out.done ? `Visited: ${why}; nothing here is judged or kept`
+      : s.out.met ? `Played through: step done. There is no pass mark here: ${why} is the practice.`
+      : s.out.runs ? `Not through yet: ${why} is what counts here, so the step is tried, not done${done ? '; it was done before' : ''}. You can try again or move on.`
+      : s.out.done ? `Visited: ${act.screen === 'freeplay' ? 'you played here' : 'you heard it to its end'}. Nothing is scored on this screen.`
       : keepsNoRuns(act) ? `Opened, nothing played: not marked yet (${why} marks it visited). You can try again or move on.`
-      : 'Nothing was played, so nothing is marked. You can try again or move on.';
+      : 'Nothing was counted (a game, a card or a run is counted from your turn), so nothing is marked. You can try again or move on.';
     card.append(el('div', 's', state));
+    // What "clean" means, where the step's target counts clean cards (the walk-through: "never explained").
+    if (s.pending.target?.clean !== undefined) card.append(el('div', 's les-note', 'A clean card is one played right the first time, with no help (Hear it or Show me). A card right on Again counts as right, not clean.'));
     if (s.lessonDone) {
       const nextTitle = s.nextLesson ? data?.lessons.get(s.nextLesson)?.title : undefined;
-      card.append(el('div', 'les-done', `Lesson done: all ${steps.length} steps.${nextTitle ? ` Next: ${nextTitle}.` : ''}`));
+      card.append(el('div', 'les-done', `Lesson done: all ${steps.length} steps.${nextTitle ? ` Next: ${nextTitle}.` : ' The next lesson is not written yet; Practice has every exercise to keep going with.'}`));
     }
     const all = entries().filter((e) => e.screen !== 'lesson' && e.lesson?.lesson === s.pending.lesson && e.lesson.step === s.pending.step);
     if (all.length > s.out.runs) { const best = bestLine(all); if (best) card.append(el('div', 's', `Best so far: ${best}`)); }

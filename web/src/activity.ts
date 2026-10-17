@@ -39,14 +39,43 @@ export const DEVICES: Device[] = ['phone-upright', 'phone-sideways', 'tablet'];
 export type Activity = { id: string; title: string; names?: false } & (
   | { screen: 'score'; piece: string; bars?: [number, number]; settings: ScorePreset; keys?: ChosenKeys }
   | { screen: 'memorise'; piece: string; settings: MemorisePreset }
-  | { screen: 'simon'; set: string; level: Partial<SimonLevel>; keys?: ChosenKeys }
-  | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys }
+  | { screen: 'simon'; set: string; level: Partial<SimonLevel>; keys?: ChosenKeys; fingers?: Fingers }
+  | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys; fingers?: Fingers }
   | { screen: 'lab'; chart: string; preset: LabPreset }
-  | { screen: 'freeplay'; keys?: ChosenKeys }
+  | { screen: 'freeplay'; keys?: ChosenKeys; fingers?: Fingers; groups?: false; click?: FreeClick }
 );
+
+/**
+ * Finger numbers on the keys (owner, 2026-10-16, after the beginner walk-through: a step that asks for 2-3 on a pair
+ * and 2-3-4 on a three; the app judges keys, it cannot see fingers): a finger 1–5 per pitch in every octave ("C#") or
+ * per key ("C#4": that key only, over its pitch). Shown on Free play's, Simon's and Drills' keys.
+ */
+export interface Fingers { pc: Record<number, number>; key: Record<number, number> }
+/** The finger shown on a key (undefined: none). */
+export const fingerOn = (f: Fingers | null | undefined, midi: number): number | undefined => (f ? f.key[midi] ?? f.pc[((midi % 12) + 12) % 12] : undefined);
+/** Free play's click a step can turn on (owner, 2026-10-16: the rhythm tune step): its tempo and beats in a bar. */
+export interface FreeClick { bpm: number; beats: number }
 
 const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const isBlackKey = (m: number) => [1, 3, 6, 8, 10].includes(m % 12);
+/** "C#" → 1 (a pitch in every octave: "Bb", "E"); null when it is not one so written. */
+function pitchClass(s: string): number | null {
+  const m = /^([A-G])(#|b)?$/.exec(s);
+  return m ? (LETTER[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + 12) % 12 : null;
+}
+/** An activity's "fingers": { "C#": 2, "D#4": 3, … }, each a finger 1–5 (docs §8b). */
+export function readFingers(v: unknown): Fingers {
+  if (typeof v !== 'object' || v === null || Array.isArray(v) || !Object.keys(v).length) throw new Error('fingers should be like { "C#": 2, "D#": 3 }: a key ("C#4") or a pitch in every octave ("C#"), each with a finger 1 to 5');
+  const out: Fingers = { pc: {}, key: {} };
+  for (const [k, f] of Object.entries(v)) {
+    if (!(Number.isInteger(f) && (f as number) >= 1 && (f as number) <= 5)) throw new Error(`fingers.${k} is ${JSON.stringify(f)}; it should be a finger, a whole number 1 to 5`);
+    const pc = pitchClass(k), key = pitch(k);
+    if (pc !== null) out.pc[pc] = f as number;
+    else if (key !== null && key >= 21 && key <= 108) out.key[key] = f as number;
+    else throw new Error(`fingers has "${k}", which is not a key ("C#4", on the piano) or a pitch in every octave ("C#")`);
+  }
+  return out;
+}
 /** "C4" → 60 ("F#3", "Bb4"); null when it is not a note so written. */
 function pitch(s: string): number | null {
   const m = /^([A-G])(#|b)?(\d)$/.exec(s);
@@ -122,7 +151,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const screen = f.screen;
   // The file's own fields, by screen: anything else (a misspelt "setting", Memorise "bars") is refused, not ignored.
   const fields: Record<string, string[]> = {
-    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names'], drills: ['set', 'level', 'keys', 'names'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names'],
+    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names', 'fingers'], drills: ['set', 'level', 'keys', 'names', 'fingers'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names', 'fingers', 'groups', 'click'],
   };
   if (typeof screen === 'string' && fields[screen]) {
     for (const k of Object.keys(f)) {
@@ -133,6 +162,8 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const keys = f.keys === undefined || typeof screen !== 'string' || !fields[screen] ? undefined : readChosenKeys(f.keys);
   if (f.names !== undefined && typeof f.names !== 'boolean') throw new Error(`names ${JSON.stringify(f.names)} should be true or false`);
   const withKeys = { ...(keys ? { keys } : {}), ...(f.names === false ? { names: false as const } : {}) };
+  const fingers = f.fingers === undefined || typeof screen !== 'string' || !fields[screen]?.includes('fingers') ? undefined : readFingers(f.fingers);
+  const withFingers = fingers ? { fingers } : {};
   switch (screen) {
     case 'score': {
       let bars: [number, number] | undefined;
@@ -164,13 +195,13 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
         rung: [0, 1, 2, 3, 4, 5], match: ['same', 'octave', 'inversion'], miss: ['tries', 'over', 'endless'], speed: ['up', 'steady'],
         onMiss: ['all', 'from-miss'], onNew: ['all', 'new'], goal: whole(1, 50),
       }, 'level');
-      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys };
+      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys, ...withFingers };
     }
     case 'drills': {
       const level = check<Partial<DrillLevel>>(obj(f.level, 'level'), {
         rung: [0, 1, 2, 3, 4, 5], start: ['clicks', 'first'], metronome: 'bool', onTime: ['relaxed', 'normal', 'strict', 'notes'], cards: whole(0, 100),
       }, 'level');
-      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys };
+      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys, ...withFingers };
     }
     case 'lab': {
       const p = obj(f.preset, 'preset');
@@ -198,7 +229,17 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
       }
       return { id, title, screen, chart: str(f.chart, 'chart'), preset, ...(f.names === false ? { names: false as const } : {}) };
     }
-    case 'freeplay': return { id, title, screen, ...withKeys };
+    case 'freeplay': {
+      // groups: the black keys' groups of two and three marked on the keys (owner, 2026-10-16: on unless a step turns them off)
+      if (f.groups !== undefined && typeof f.groups !== 'boolean') throw new Error(`groups ${JSON.stringify(f.groups)} should be true or false`);
+      let click: FreeClick | undefined;
+      if (f.click !== undefined) {
+        const c = check<Partial<FreeClick>>(obj(f.click, 'click'), { bpm: whole(20, 300), beats: whole(1, 7) }, 'click');
+        if (c.bpm === undefined) throw new Error('click needs "bpm" (the tempo, 20 to 300 beats a minute)');
+        click = { bpm: c.bpm, beats: c.beats ?? 4 };
+      }
+      return { id, title, screen, ...withKeys, ...withFingers, ...(f.groups === false ? { groups: false as const } : {}), ...(click ? { click } : {}) };
+    }
     default:
       throw new Error(`screen "${String(screen)}" is not one of score, memorise, simon, drills, lab, freeplay`);
   }

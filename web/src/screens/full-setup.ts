@@ -39,13 +39,13 @@ export function createFullSetup(app: App, deps: { done(): void }): FullSetup {
     const addingParts = hasSet(state, 'pdmx-a');
     if (state?.want?.includes('pdmx-b') && !addingParts) choice = 'all';
     const out: HTMLElement[] = [];
-    out.push(el('div', 'lib-title', addingParts ? 'Add the several-part scores' : 'Put the full PDMX set on this phone'));
+    out.push(el('div', 'lib-title', addingParts ? 'Add the several-part scores' : 'Put the full PDMX set on this device'));
     // The copy's progress first, so it is in view while it runs, sideways too (P04).
     const progress = progressOf();
     if (copying || rows.length || said) out.push(...progress);
     // The steps, one a line (P13).
     const steps = el('ol', 'lib-steps');
-    for (const t of ['On the PC, Claude makes the zip files.', 'Copy them to this phone (a cable, or Google Drive).', 'Pick them here, once.']) steps.append(el('li', '', t));
+    for (const t of ['On the PC, Claude makes the zip files.', 'Copy them to this phone or tablet (a cable, or Google Drive).', 'Pick them here, once.']) steps.append(el('li', '', t));
     out.push(steps);
     if (addingParts) {
       out.push(el('p', 'note', 'Band and ensemble scores: the pdmx-b zips, about 1.2 GB. Several-part scores open with the usual warning (the top staff is taken as your right hand).'));
@@ -138,7 +138,7 @@ export function createFullSetup(app: App, deps: { done(): void }): FullSetup {
       state = await loadState();
       const left = want.flatMap((s) => missing(state, s));
       said = failed.length ? `${failed.length === 1 ? 'One zip' : `${failed.length} zips`} could not be copied: pick ${failed.length === 1 ? 'it' : 'them'} again to copy just ${failed.length === 1 ? 'that one' : 'those'}.`
-        : left.length ? `Copied. Still to copy: ${left.join(', ')}.` : 'Copied: the full set is on this phone.';
+        : left.length ? `Copied. Still to copy: ${left.join(', ')}.` : 'Copied: the full set is on this device.';
       bad = failed.length > 0;
     } catch (e) {
       said = e instanceof Error ? e.message : String(e);

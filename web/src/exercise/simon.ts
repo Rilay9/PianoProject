@@ -89,6 +89,7 @@ export class Simon {
   private token = 0; // bumps to cancel a showing in progress
   private helpedNow = false; // this chain was given again with Hear it / Show me
   private wholeNow = false; // this turn asks for the whole chain (not from a miss on): only then can it be a best
+  private triedNow = false; // by ear: a key tried that did not match on this chain (found by trying: not a best)
   private timers: number[] = [];
   // What it is giving you (the chain played and shown, or played again after a miss), to give again from its start when
   // a panel interrupted it (owner, 2026-10-15, A3); null on your turn, when it just waits for your keys.
@@ -210,7 +211,8 @@ export class Simon {
     this.ui.chain.replaceChildren();
     this.ui.status.textContent = '';
     this.ui.status.className = 'ex-status';
-    this.ui.sub.textContent = this.items.length ? startWords() : 'This set has nothing to play';
+    // (in a lesson step, what the top line's words mean: the walk-through, 2026-10-16, found Chain, Best and ♥ unexplained)
+    this.ui.sub.textContent = !this.items.length ? 'This set has nothing to play' : this.inStep() ? joinWords(startWords(), `Chain: how long the pattern is now · Best: your longest copied whole${this.level.miss === 'tries' && this.level.rung !== 5 ? ' · ♥: tries left' : ''}`) : startWords();
     this.readyLine();
     this.ui.start.textContent = 'Start';
     this.ui.start.hidden = !this.items.length;
@@ -317,6 +319,7 @@ export class Simon {
     this.giving = null;
     this.pos = from;
     this.wholeNow = from === 0;
+    this.triedNow = false;
     this.got.clear();
     this.pressed.clear();
     this.hidden = false;
@@ -330,7 +333,9 @@ export class Simon {
     } else this.ui.name.textContent = '';
     const left = this.chain.length - (this.flat[from]?.item ?? 0);
     const what = left === 1 ? 'play it' : `play these ${left}`;
-    this.ui.status.textContent = rung === 5 ? `Your turn: ${what}` : `Your turn: ${what} (it hides when you start)`;
+    // (by ear: try keys until one matches, as lesson 1 says; with the keys lit: where to start is lit, and goes when you
+    // start: the walk-through, 2026-10-16, asked what the lit key meant)
+    this.ui.status.textContent = rung === 5 ? `Your turn: ${what}, trying keys until each one matches` : keysLit(rung) ? `Your turn: ${what}, starting on the lit key (it goes when you start)` : `Your turn: ${what} (it hides when you start)`;
     this.ui.status.className = 'ex-status';
     this.ui.hear.textContent = rung === 3 || rung === 4 ? 'Show me' : 'Hear it';
     this.ui.hear.hidden = false;
@@ -354,6 +359,7 @@ export class Simon {
     if ((this.state === 'over' || this.state === 'done') && this.inStep()) { if (!this.waitRelease && !dialogOpen()) this.back(); return; }
     if (this.state === 'ready' || this.state === 'over' || this.state === 'done') { if (!this.waitRelease && !dialogOpen()) void this.begin(); return; }
     if (this.state !== 'turn') return;
+    if (this.level.rung === 5) this.keys.wrong([]); // (by ear: the last try's red goes with the next key)
     if (!this.hidden) { // your first key: from here it is from memory
       this.hidden = true;
       this.notation.clear();
@@ -394,10 +400,10 @@ export class Simon {
     const length = this.chain.length, key = this.bestKey();
     // A best (and the game's longest chain) is the whole chain played in one go, unhelped; carrying on from a miss
     // finishes the chain as practice, not as the whole of it from memory (review, 2026-10-15).
-    const counts = !this.helpedNow && this.wholeNow;
+    const counts = !this.helpedNow && this.wholeNow && !this.triedNow;
     if (counts && length > (this.best[key] ?? 0)) { this.best[key] = length; this.save(); }
     if (this.game) { if (this.helpedNow) this.game.helped++; else if (counts) this.game.longest = Math.max(this.game.longest, length); }
-    this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : counts ? '✓' : '✓ (from the miss on: not a best)';
+    this.ui.status.textContent = this.helpedNow ? '✓ (with help: not a best)' : counts ? '✓' : this.triedNow ? '✓ Found by trying keys (good practice: not a best)' : '✓ (from the miss on: not a best)';
     this.ui.status.className = 'ex-status ok';
     this.scoreLine();
     if (this.set.order === 'passage' && length >= this.items.length) {
@@ -427,6 +433,10 @@ export class Simon {
 
   private missed(midi: number): void {
     const group = this.flat[this.pos], item = this.chain[group.item];
+    // By ear (owner, 2026-10-16, after the walk-through: "keep trying"): a miss plays the note again and you try another
+    // key until it matches; no try is lost and the game never ends from a miss; the key you tried is red, the right one is
+    // not shown (that would give it away), and no note is named. The chain found that way is practice, not a best.
+    if (this.level.rung === 5) { this.byEarMiss(midi, group, item); return; }
     this.state = 'miss';
     if (withMusic(this.level.rung)) void this.drawChain([group.item]); // the music back, the missed item lit
     this.keys.light([]);
@@ -460,6 +470,21 @@ export class Simon {
     const token = ++this.token;
     const replay = this.giving = () => void this.showChain(fromMiss ? group.item : 0, turnFrom);
     this.later(REPLAY_MS, () => { if (token === this.token) replay(); });
+  }
+
+  private byEarMiss(midi: number, group: { item: number; keys: number[] }, item: Item): void {
+    this.triedNow = true;
+    this.keys.light([]);
+    this.keys.want([]);
+    this.keys.wrong([midi]);
+    this.got.clear();
+    this.pressed.clear();
+    if (this.game && this.game.misses.length < 40) this.game.misses.push({ item: item.name, n: item.n, wanted: group.keys.map((k) => shown(noteName(k))).join(' '), played: shown(noteName(midi)) });
+    this.ui.status.textContent = 'Not that one: listen again, and try another key';
+    this.ui.status.className = 'ex-status bad';
+    this.ui.sub.textContent = '';
+    const beat = this.beatMs();
+    this.sound.play(group.keys.map((k) => ({ t: 0, midi: k, dur: beat * 0.9, vel: 80 })), [], 0, 1);
   }
 
   /**
@@ -534,7 +559,8 @@ export class Simon {
     const n = this.chain.length;
     this.ui.left.innerHTML = this.set.order === 'passage' ? `Chain <b>${n}</b> of ${this.items.length}` : `Chain <b>${n}</b>`;
     this.ui.mid.innerHTML = `Best <b>${this.best[this.bestKey()] ?? 0}</b>`;
-    this.ui.right.textContent = this.level.miss === 'tries' ? '♥'.repeat(Math.max(0, this.tries)) + '♡'.repeat(TRIES - Math.max(0, this.tries)) : '';
+    // (by ear a miss costs nothing: no hearts)
+    this.ui.right.textContent = this.level.miss === 'tries' && this.level.rung !== 5 ? '♥'.repeat(Math.max(0, this.tries)) + '♡'.repeat(TRIES - Math.max(0, this.tries)) : '';
   }
 
   private later(ms: number, f: () => void): void { this.timers.push(window.setTimeout(f, ms)); }

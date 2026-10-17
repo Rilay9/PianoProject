@@ -1110,7 +1110,7 @@ export function createLibraryScreen(app: App, deps: LibraryDeps): LibraryScreen 
       try {
         await load();
         // A zip of the full PDMX set picked here (P06): said plainly, not "no MusicXML in it".
-        if (await readZip(file).then(() => true, () => false)) throw new Error('This is a Full PDMX zip: use Full PDMX → Pick the zip files… to put the set on this phone.');
+        if (await readZip(file).then(() => true, () => false)) throw new Error('This is a Full PDMX zip: use Full PDMX → Pick the zip files… to put the set on this device.');
         const p: Prepared = await prepare(file, checkMidi);
         // The same file (by its contents) is never added twice, even one that replaced another piece's file.
         const had = allRecords().find((r) => r.own?.hash === p.own.hash);

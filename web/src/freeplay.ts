@@ -8,7 +8,7 @@
 // chords held together (three or more notes that make a named chord), the notes (keys pressed together on one
 // line), and intervals (from each single note to the next, and two notes held together). Cleared on opening.
 
-import type { ChosenKeys } from './activity';
+import { fingerOn, type ChosenKeys, type FreeClick } from './activity';
 import { fillTaskLine } from './lesson/task-line';
 import { stepEvidence, stepFor } from './log';
 import type { KeyEvent } from './midi';
@@ -64,16 +64,62 @@ export class FreePlay {
     const dialog = document.getElementById('fp-show-dialog') as HTMLDialogElement;
     panel.querySelector('#fp-show')!.addEventListener('click', () => {
       const on = this.columnsOn();
-      for (const box of dialog.querySelectorAll<HTMLInputElement>('input[name="fp-col"]')) box.checked = on[box.value as Column];
+      for (const box of dialog.querySelectorAll<HTMLInputElement>('input[name="fp-col"]')) { box.checked = on[box.value as Column] && this.names; box.disabled = !this.names; }
+      // (no names of notes, chords or intervals while an activity hides them: the walk-through, 2026-10-16, found "G♯4" and
+      // "major 2nd ↑" here in lesson 1)
+      (dialog.querySelector('#fp-cols-off') as HTMLElement).hidden = this.names;
+      (dialog.querySelector('input[name="fp-groups"]') as HTMLInputElement).checked = this.groupsOn;
       dialog.showModal();
     });
     dialog.addEventListener('change', (e) => {
       const box = e.target as HTMLInputElement;
+      if (box.name === 'fp-groups') {
+        this.groupsOn = box.checked;
+        if (!stepFor('freeplay')) saveColumns({ ...shownColumns(), groups: box.checked }); // (your own Free play keeps it; a step's is for the visit)
+        this.drawKeys();
+        return;
+      }
+      if (!this.names) return;
       if (this.lessonColumns) this.lessonColumns = { ...this.lessonColumns, [box.value]: box.checked }; // (this visit only)
       else saveColumns({ ...shownColumns(), [box.value]: box.checked });
       this.showColumns();
     });
+    // The click a step can turn on (owner, 2026-10-16: the rhythm tune step): on while the button says so.
+    this.clickButton = panel.querySelector<HTMLButtonElement>('#fp-click')!;
+    this.clickButton.addEventListener('click', () => { if (this.clicking) this.stopClick(); else void this.startClick(); });
   }
+
+  // ---- the click (an activity's `click`: its tempo and beats in a bar; the app's own click, as the metronome's) ------
+  private click: FreeClick | null = null;
+  private clicking = false;
+  private clickButton!: HTMLButtonElement;
+  private clickRun = 0;
+  private async startClick(): Promise<void> {
+    const c = this.click;
+    if (!c) return;
+    const run = ++this.clickRun;
+    this.clicking = true;
+    this.fillClick();
+    await this.sound.prepare(false).catch(() => {});
+    if (run !== this.clickRun || !this.open) return;
+    // One beat a second at speed 1, so the speed is the tempo / 60; the first of each bar accented (screens/metronome.ts).
+    this.sound.play([], Array.from({ length: 20000 }, (_, k) => ({ t: k * 1000, accent: k % c.beats === 0 })), 0, c.bpm / 60);
+  }
+  private stopClick(): void {
+    this.clickRun++;
+    if (this.clicking) this.sound.stop();
+    this.clicking = false;
+    this.fillClick();
+  }
+  private fillClick(): void {
+    this.clickButton.hidden = !this.click;
+    this.clickButton.textContent = this.click ? `Click ♩${this.click.bpm}: ${this.clicking ? 'on' : 'off'}` : 'Click';
+    this.clickButton.setAttribute('aria-pressed', String(this.clicking));
+  }
+  /** For checks: the click (its tempo and whether it is on), the groups shown and the place word. */
+  debug(): { click: FreeClick | null; clicking: boolean; groups: boolean } { return { click: this.click, clicking: this.clicking, groups: this.groupsOn }; }
+  /** The black keys' groups outlined on the keys (owner, 2026-10-16): in a lesson step on unless the step turns them off; in your own Free play off unless you turn them on in Show (owner, 2026-10-17). */
+  private groupsOn = true;
 
   /**
    * Opened by a lesson's step (owner, 2026-10-16, after ChatGPT's live review of lesson 1): the step's task on the task
@@ -103,6 +149,11 @@ export class FreePlay {
     this.task = taskLine.hidden ? '' : taskLine.textContent ?? '';
     this.names = step?.names !== false;
     this.strip.names = this.names;
+    const act = step?.activity?.screen === 'freeplay' ? step.activity : undefined;
+    this.groupsOn = act ? act.groups !== false : shownColumns().groups === true; // (your own Free play: off unless you turn it on in Show; owner, 2026-10-17)
+    const fingers = act?.fingers;
+    this.strip.fingers = fingers ? (m) => fingerOn(fingers, m) : null;
+    this.click = act?.click ?? null;
     this.keyPlayed = false;
     this.lessonColumns = lesson ? { chords: false, notes: false, intervals: false } : null; // (opened by a lesson's step)
     this.chosen = keys ?? null;
@@ -118,9 +169,12 @@ export class FreePlay {
     this.lastChord = '';
     this.showColumns();
     this.update();
+    this.stopClick();
+    if (this.click) void this.startClick(); // (a step that turns the click on: it clicks from the start; the button turns it off)
   }
 
   close(): void {
+    this.stopClick();
     for (const t of this.touches.values()) void t.stop.then((stop) => stop());
     this.touches.clear();
     this.open = false;
@@ -156,6 +210,7 @@ export class FreePlay {
   }
   /** The keys: the chosen ones, or `span()` keys from `from`. */
   private drawKeys(): void {
+    this.strip.groups = this.groupsOn;
     const r = this.range();
     if (r) {
       this.strip.showRange(r.lo, r.hi);
@@ -164,6 +219,7 @@ export class FreePlay {
       (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = r.lo - 12 < 21;
       (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = r.hi + 12 > 108;
       this.strip.setPressed(this.down());
+      this.where(r.lo, r.hi);
       return;
     }
     this.from = Math.max(12, Math.min(108 - this.span(), this.from)); // (turned from a phone's two octaves to a tablet's three)
@@ -174,6 +230,23 @@ export class FreePlay {
     (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled = this.from <= 24;
     (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled = this.from + this.span() >= 108;
     this.strip.setPressed(this.down());
+    this.where(this.from, this.from + this.span() - 1);
+  }
+
+  /**
+   * Where the keys shown are on the whole piano (owner, 2026-10-16, after the walk-through: "the keyboard looks identical
+   * after › ‹; › stops silently at the top"): the 88 keys drawn small with the part shown marked, and a word for it in the
+   * lesson's own terms (the middle, higher, lower; the top or the bottom at an end), never a note name.
+   */
+  private where(lo: number, hi: number): void {
+    const mini = this.panel.querySelector<HTMLElement>('#fp-mini')!;
+    mini.replaceChildren(miniPiano(lo, hi));
+    const mid = (lo + hi) / 2;
+    // (at an end: the top or the bottom, as far as › or ‹ go)
+    const atTop = (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled, atBottom = (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled;
+    const word = atTop ? 'the top' : atBottom ? 'the bottom' : Math.abs(mid - 64) <= 6 ? 'the middle' : mid > 64 ? 'higher' : 'lower';
+    this.panel.querySelector('#fp-place')!.textContent = word;
+    mini.setAttribute('aria-label', `Where these keys are on the piano: ${word}`);
   }
   private shift(by: number): void { if (this.range()) { this.moved += by / 12; this.drawKeys(); return; } this.from = Math.max(12, Math.min(108 - this.span(), this.from + by)); this.drawKeys(); }
   /** The phone turned (a tablet shows them all). */
@@ -255,6 +328,22 @@ export class FreePlay {
   }
 }
 
+/** The 88 keys, small, with the part from lo to hi marked (the overview above Free play's keys). */
+function miniPiano(lo: number, hi: number): SVGSVGElement {
+  const NS = 'http://www.w3.org/2000/svg', isBlack = (m: number) => [1, 3, 6, 8, 10].includes(m % 12);
+  const whites: number[] = [];
+  for (let m = 21; m <= 108; m++) if (!isBlack(m)) whites.push(m);
+  const W = 3, H = 18, svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${whites.length * W} ${H}`);
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const rect = (x: number, y: number, w: number, h: number, cls: string) => { const r = document.createElementNS(NS, 'rect'); for (const [k, v] of Object.entries({ x, y, width: w, height: h })) r.setAttribute(k, String(v)); r.setAttribute('class', cls); svg.append(r); };
+  rect(0, 0, whites.length * W, H, 'mini-whites');
+  whites.forEach((m, i) => { if (i) rect(i * W, 0, 0.4, H, 'mini-line'); if (isBlack(m + 1) && m + 1 <= 108) rect(i * W + W * 0.65, 0, W * 0.7, H * 0.6, 'mini-black'); });
+  const a = whites.findIndex((m) => m >= lo), b = whites.reduce((last, m, i) => (m <= hi ? i : last), -1);
+  if (a >= 0 && b >= a) rect(a * W, 0, (b - a + 1) * W, H, 'mini-here');
+  return svg;
+}
+
 const NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 /** A white key's name with its octave (C4, E5): the ends of chosen keys. */
 const keyName = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
@@ -275,9 +364,10 @@ function intervalName(low: number, high: number, named: string): string {
 
 type Column = 'chords' | 'notes' | 'intervals';
 const COLUMNS_KEY = 'piano-web.freeplay.v1';
-function shownColumns(): Record<Column, boolean> {
+/** Your own Free play's choices: the columns, and (2026-10-16) the groups on the keys. */
+function shownColumns(): Record<Column, boolean> & { groups?: boolean } {
   try { return { chords: true, notes: true, intervals: true, ...JSON.parse(localStorage.getItem(COLUMNS_KEY) ?? '{}') }; } catch { return { chords: true, notes: true, intervals: true }; }
 }
-function saveColumns(on: Record<Column, boolean>): void {
+function saveColumns(on: Record<Column, boolean> & { groups?: boolean }): void {
   try { localStorage.setItem(COLUMNS_KEY, JSON.stringify(on)); } catch { /* this visit only */ }
 }

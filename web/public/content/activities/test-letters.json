@@ -1,0 +1,1 @@
+{ "title": "Test: a tune with its letters", "screen": "drills", "set": "test-letters", "level": { "rung": 3, "start": "clicks", "metronome": true, "onTime": "normal", "cards": 1 } }

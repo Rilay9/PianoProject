@@ -4,7 +4,9 @@
 // with no bars of its own: bars of four). One staff, treble or bass for the range, or both staves split at
 // middle C when it spans them. A highlighted item is drawn blue.
 // A rhythm card (owner, 2026-10-16) is drawn on a one-line rhythm staff instead (rhythmXml): a percussion clef, its time
-// signature and bar lines, notes with no pitch on the line, eighth pairs beamed, rests.
+// signature and bar lines, notes with no pitch on the line, eighth pairs beamed, rests. A letters card (owner, 2026-10-17:
+// a tune before the staff, as the method books print it) is drawn the same way with each note's letter under it, as a
+// lyric (OSMD draws lyrics in their own line under the notes, legible at 360 px; inside a notehead there is no room).
 
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { midiOf, type Item } from './items';
@@ -100,7 +102,7 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
  * pair within a beat beamed, rests as written; lengths the notation has no one value for are tied, as itemsXml does.
  * marks: "group:midi" -> colour, as itemsXml (a rhythm card's notes all have the one pitch they sound on).
  */
-export function rhythmXml(item: Item, marks: Record<string, string> = {}): string {
+export function rhythmXml(item: Item, marks: Record<string, string> = {}, letters = false): string {
   const meter = item.meter;
   const groups = item.groups.map((g, gi) => ({ g, gi, beats: item.beats?.[gi] ?? 1, bar: item.bars?.[gi] ?? 0 }));
   const bars: (typeof groups)[] = [];
@@ -128,7 +130,9 @@ export function rhythmXml(item: Item, marks: Record<string, string> = {}): strin
         const ties = parts.length > 1 ? `${first ? '' : '<tie type="stop"/>'}${last ? '' : '<tie type="start"/>'}` : '';
         const tied = parts.length > 1 ? `<notations>${first ? '' : '<tied type="stop"/>'}${last ? '' : '<tied type="start"/>'}</notations>` : '';
         const beam = begins ? '<beam number="1">begin</beam>' : ends ? '<beam number="1">end</beam>' : '';
-        return `<note${c ? ` color="${c}"` : ''}>${unpitched}${tail}${ties}${type}<stem>up</stem>${c ? `<notehead color="${c}">normal</notehead>` : ''}${beam}${tied}</note>`;
+        // (the letter under the note's first part: C, D, E, F♯, B♭; in the note's own colour when it is marked)
+        const letter = letters && first ? `<lyric number="1"><syllabic>single</syllabic><text>${x.g[0].replace(/-?\d+$/, '').replace('#', '♯').replace(/^([A-G])b/, '$1♭')}</text></lyric>` : '';
+        return `<note${c ? ` color="${c}"` : ''}>${unpitched}${tail}${ties}${type}<stem>up</stem>${c ? `<notehead color="${c}">normal</notehead>` : ''}${beam}${tied}${letter}</note>`;
       }).join('');
     }).join('');
     return `<measure number="${n + 1}">${attrs}${body}</measure>`;
@@ -178,13 +182,13 @@ export class ExerciseNotation {
     });
   }
 
-  /** rhythm: the first item as a rhythm card on a one-line staff (rhythmXml). */
-  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false): Promise<void> {
+  /** rhythm: the first item as a rhythm card on a one-line staff (rhythmXml); letters: with each note's letter under it. */
+  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false, letters = false): Promise<void> {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
     this.onShown(true);
-    await this.osmd.load(rhythm ? rhythmXml({ ...items[0], meter: meter ?? items[0].meter }, marks) : itemsXml(items, lit, passage, meter, fifths, marks));
+    await this.osmd.load(rhythm ? rhythmXml({ ...items[0], meter: meter ?? items[0].meter }, marks, letters) : itemsXml(items, lit, passage, meter, fifths, marks));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.loaded = true;
     this.draw();

@@ -3,7 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "By the end of this lesson you'll be able to tap a steady beat with clicks, and tap short rhythms of quarter and half notes that you read, in time. You'll also try keeping the beat on your own, meet the whole note, and hold a key for its length at a real keyboard; those come back next lesson."
+      "text": "By the end of this lesson you'll be able to tap a steady beat with clicks, counting out loud, and you'll have tried keeping it going on your own. Next lesson the beat gets notes of different lengths."
     },
     {
       "kind": "text",
@@ -34,11 +34,11 @@
     },
     {
       "kind": "text",
-      "text": "# Before you tap: a quick timing check\nEvery phone takes a moment to turn a sound into something you hear, and a moment to notice your tap. Bluetooth headphones add more. So the first time you open a rhythm drill, the app offers a short timing check: it plays eight clicks and you tap along. It uses the result to judge your taps fairly from then on. Say yes, tap as evenly as you can, and if you ever change headphones or phones, run it again from Settings."
+      "text": "# Before you tap: a quick timing check\nEvery phone or tablet takes a moment to turn a sound into something you hear, and a moment to notice your tap. Bluetooth headphones add more. So the first time you open a rhythm drill, the app offers a short timing check: it plays eight clicks and you tap along. It uses the result to judge your taps fairly from then on. Say yes, tap as evenly as you can, and if you ever change headphones or devices, run it again from Settings."
     },
     {
       "kind": "text",
-      "text": "# Tap with the clicks\nWhen you tap **Start**, you'll see a big pad where the keys usually are, and it makes a short sound when you tap it. First the app plays the beat, lighting the pad on each one. Then it counts you in with four clicks (1, 2, 3, 4) and keeps clicking, the pad still lighting on each beat. Press the pad on every click and keep your finger down until just before the next one, counting out loud: press, hold, let go, press. Every note on the pad lasts as long as your finger stays down. In this drill each note lasts one beat: press on the click, hold, and let go just before the next click.\n\nAim to press **exactly with** the click, so that your tap's sound and the click land together as one. If you hear two separate sounds, a tap and a click, you're a little early or late. Don't chase the click; keep your pressing even and let it settle onto the clicks. The app is lenient about timing in this lesson; it gets a little stricter later."
+      "text": "# Tap with the clicks\nWhen you tap **Start**, you'll see a big pad where the keys usually are, and it makes a short sound when you tap it. First the app plays the beat, lighting the pad on each one. Then it counts you in with four clicks (1, 2, 3, 4) and keeps clicking while you tap. From here the pad stays dark, so listen for the clicks. Press the pad on every click and keep your finger down until just before the next one, counting out loud: press, hold, let go, press. Every note on the pad lasts as long as your finger stays down. In this drill each note lasts one beat: press on the click, hold, and let go just before the next click. Holding for most of the beat is what counts; a quick dab is \"let go early\".\n\nWith a keyboard plugged in, any key works as the pad.\n\nAim to press **exactly with** the click, so that your tap's sound and the click land together as one. If you hear two separate sounds, a tap and a click, you're a little early or late. Don't chase the click; keep your pressing even and let it settle onto the clicks. The app is lenient about timing in this lesson; it gets a little stricter later."
     },
     {
       "kind": "step",
@@ -53,7 +53,7 @@
     },
     {
       "kind": "text",
-      "text": "# Keep it going on your own\nNow try it with no clicks while you tap, and the pad doesn't light. The app plays the beat once so you can hear its speed. Then you start when you're ready (your first tap starts it) and keep tapping at that speed, counting out loud. The usual thing is to speed up a little without noticing; counting aloud helps. This one is just to try: it comes back next lesson."
+      "text": "# Keep it going on your own\nNow try it with no clicks while you tap, and the pad doesn't light. The app plays the beat once so you can hear its speed. Then you start when you're ready (your first tap starts it) and keep tapping at that speed, counting out loud. The usual thing is to speed up a little without noticing; counting aloud helps. This one is just to try: keeping the beat on your own comes back in the lessons ahead."
     },
     {
       "kind": "step",
@@ -64,98 +64,11 @@
     },
     {
       "kind": "text",
-      "text": "# When, and how long\nEvery note has two things: *when* it starts, and *how long* it lasts. So far each note was one beat long: press on the beat, hold, let go as the next beat comes. Now some notes will last longer than a beat. On the pad, a longer note means keeping your finger down for its whole length, and letting go just as the beat after it comes. The app checks both: a note let go well before its time is \"let go early\"."
+      "text": "# Check yourself\n- Tap your thighs to the *Billie Jean* opening again without counting. Did you stay with it?\n- Count \"1, 2, 3, 4\" aloud and tap a steady beat on your thigh for a minute, no music. Did you speed up?\n- In the drill, did your tap and the click sound as one, or as two?"
     },
     {
       "kind": "text",
-      "text": "# Quarter notes and half notes\nIn the 4/4 music we're playing today, the shape of a note tells you how many beats it lasts.\n\nA **quarter note** is a filled-in note head with a stem: **one beat**. Press on the count, hold, and let go as the next count comes, just as you did with the clicks.\n\nA **half note** is an open (hollow) note head with a stem: **two beats**. Press on one count and keep your finger down through the next: count \"1, 2\" while you hold, and let go as the next beat arrives."
-    },
-    {
-      "kind": "image",
-      "src": "media/note-values.svg",
-      "alt": "In 4/4: a quarter note lasts 1 beat (filled head, stem), a half note 2 beats (open head, stem), a whole note 4 beats (open head, no stem)",
-      "caption": "The three notes of this lesson, and how many beats each lasts in 4/4. The whole note comes at the end."
-    },
-    {
-      "kind": "text",
-      "text": "Rhythms here are written on a single line. The beats are grouped into **bars** (also called measures), divided by **bar lines**, the thin upright lines. The **4 over 4** at the start says each bar holds four beats, and its bottom 4 says the quarter note is the beat: count \"1, 2, 3, 4\" in every bar, and start again at 1 after each bar line."
-    },
-    {
-      "kind": "image",
-      "src": "media/counting-a-bar.svg",
-      "alt": "One bar of 4/4 on a one-line staff: quarter note on 1, quarter note on 2, half note on 3 held through 4, then a bar line",
-      "caption": "Counting a bar: quarter, quarter, half. The half note starts on 3 and is held through 4."
-    },
-    {
-      "kind": "text",
-      "text": "The order that works for every new rhythm, the one Alfred's adult method asks for too: tap it and count it out loud first, then play it."
-    },
-    {
-      "kind": "text",
-      "text": "# Hear it, then tap it\nEach card plays a short rhythm while you see it written, the pad lighting as it sounds. Then it counts you in, and you tap it back, counting aloud and holding each note its length. Take your time; the next step asks you to read them on your own."
-    },
-    {
-      "kind": "step",
-      "id": "hear-then-tap",
-      "title": "Hear it, then tap it",
-      "activity": "r2-hear-then-tap",
-      "about": "Each card is played first, with the music in view; then you tap it back, holding each note its length."
-    },
-    {
-      "kind": "text",
-      "text": "# Read it, then tap it\nNow no sound first: each card appears and waits for you. Look across it and count it under your breath, \"1, 2, 3–4\" for instance, as long as you need. Then tap the pad (or press **Count in**): the app counts you in, and you tap the rhythm. A half note is easy to cut short: keep counting while you hold. If the app says a note was \"let go early\", that's the one to hold longer."
-    },
-    {
-      "kind": "step",
-      "id": "read-then-tap",
-      "title": "Read it, then tap it",
-      "activity": "r2-read-then-tap",
-      "target": {
-        "clean": 4
-      },
-      "doneWhen": "4 of 5 cards clean",
-      "about": "Read each card at your own pace, then tap the pad to start its count-in and tap the rhythm."
-    },
-    {
-      "kind": "text",
-      "text": "# The whole note\nOne more, just to meet it: the **whole note** is an open note head with no stem, and in 4/4 it lasts **four beats**, a whole bar. Press on \"1\" and keep your finger down through \"2, 3, 4\". The app plays each card first, with the music in view, then you tap it. We'll practise it properly next lesson."
-    },
-    {
-      "kind": "step",
-      "id": "whole-note",
-      "title": "Meet the whole note",
-      "activity": "r2-whole-note",
-      "about": "Each card is played first; then tap it, holding a whole note through all four counts."
-    },
-    {
-      "kind": "text",
-      "text": "# At a real keyboard: holding a note, letting it go on time\nLast time you learned to play a key with a firm fingertip and let it go, so the key lifts your finger. Rhythm adds *when* you let go. For a half note, play on \"1\", keep the key down through \"2\", and let it go just as \"3\" comes. A half note let go too soon sounds like a quarter note with a gap after it.\n\nTry it on a group of two black keys in the middle, right hand fingers 2 and 3 resting on the pair. Play finger 2 four times on \"1, 2, 3, 4\" (quarter notes); then finger 3 as two half notes (\"1–2, 3–4\"); then finger 2 as one whole note, held through all four counts. Count out loud. Then the same with your left hand's 2 and 3 on a pair further left. Keep the round hand from last time, and while you hold a long note keep your wrist soft rather than pressing harder."
-    },
-    {
-      "kind": "text",
-      "text": "# Make up a rhythm tune\nMake up a little tune on the black keys with short notes and long ones. Count \"1, 2, 3, 4\" as you play and make it two bars long. Play it a few times until it comes out the same way each time. Nothing is scored."
-    },
-    {
-      "kind": "step",
-      "id": "rhythm-tune",
-      "title": "Make up a rhythm tune",
-      "activity": "r2-rhythm-tune",
-      "about": "A two-bar tune on the black keys with short and long notes, counting 1 to 4. Nothing is scored."
-    },
-    {
-      "kind": "text",
-      "text": "# Check yourself\n- Count \"1, 2, 3, 4\" aloud and tap your thigh: a quarter, a quarter, then a half note, keeping your hand pressed down through \"3, 4\". Did the half note last its two counts?\n- In 4/4, how many beats does a half note last? A whole note?\n- Tap your thighs to the *Billie Jean* opening again without counting. Did you stay with it?\n- At a keyboard: play a half note and let it go exactly on \"3\". Did the key lift your finger, or did you pull it off?"
-    },
-    {
-      "kind": "text",
-      "text": "# If this happens\n- **The app says you're late (or early) every time, by about the same amount, though you were with the click.** Run the timing check again (Settings), especially after changing headphones; Bluetooth adds delay.\n- **You speed up without the clicks.** Count aloud, and listen to your counting rather than your fingers.\n- **The app says \"let go early\" on quarter notes.** Keep your finger down until just before the next beat: a press, not a dab.\n- **Half notes come out too short.** Keep saying the second count while you hold: \"1–2\". Your finger leaves the pad on the next number, not before.\n- **You lose your place in a card.** Look for the bar lines: each bar starts again on \"1\".\n- **A tap doesn't seem to register.** Press with the pad of your finger, and lift fully between notes."
-    },
-    {
-      "kind": "video",
-      "size": "row",
-      "youtube": "https://www.youtube.com/watch?v=YfT0irsgB3Q",
-      "title": "How to Count Basic Rhythms, Part 1 (The Mento Zone, 9 min)",
-      "caption": "Counting quarter, half and whole notes, with drills. It also shows rests, which come later, on the five-line staff."
+      "text": "# If this happens\n- **The app says you're late (or early) every time, by about the same amount, though you were with the click.** Run the timing check again (Settings), especially after changing headphones; Bluetooth adds delay.\n- **You speed up without the clicks.** Count aloud, and listen to your counting rather than your fingers.\n- **The app says \"let go early\".** Keep your finger down until just before the next beat: a press, not a dab.\n- **A tap doesn't seem to register.** Press with the pad of your finger, and lift fully between notes."
     }
   ]
 }

@@ -28,7 +28,9 @@ import { holds, HOLD_SHARE, phraseEndLength } from '../holds';
 import { judge, judgeRhythm, type PlayedKey } from '../matching';
 import { activityTag, addEntry, Run, type ActivityTag } from '../log';
 import { kindsOfColours, MARK, showLegend } from '../result-marks';
-import { joinWords, keyboardConnected, keyDoes } from '../key-words';
+import { joinWords, keyboardConnected, keyDoes, edgesReady } from '../key-words';
+import { drift, driftWords } from '../drift';
+import { drawBeatLine, type BeatLine, type BeatLineNote } from './beatline';
 import { midiOf, shown, type Item, type ItemSet } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
@@ -76,6 +78,8 @@ export interface DrillParts {
   back?: HTMLButtonElement;
   /** The one-line key to a card's marks (grey missed, orange early / late / let go early). */
   legend?: HTMLElement;
+  /** A rhythm card's result with no music on screen: the taps on a line of beats (beatline.ts; 2026-10-16). */
+  beatLine?: HTMLElement;
 }
 
 /** A card ready to play: its notes in order with when they are due (ms from the card's start) and how long they last. */
@@ -88,11 +92,16 @@ interface Card {
   timed: boolean;
   /** A rhythm set's card: tapped, any key counting (judgeRhythm), drawn on a one-line staff. */
   rhythm: boolean;
+  /** A "find it" card (find.ts): the keys that count, any one of them; untimed, no music, named in words. */
+  find?: number[];
+  /** A letters card (a set's `view: "letters"`, owner 2026-10-17): drawn on the one-line rhythm staff with each note's
+   * letter under it, played on the keys and judged as any card with written rhythm (which key, and when). */
+  letters?: boolean;
   end: number; // ms: when the last note's written length is over
   beatMs: number; barBeats: number; // the metre's beat, for the count-in and the clicks
 }
 /** right: played right (clean, with help, or on a retry); clean: right first time with no help. */
-type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean; helped: boolean; text: string };
+type CardResult = { item: Item; clean: boolean; right: boolean; retried: boolean; helped: boolean; text: string; drift?: 'faster' | 'slower' };
 /** A key played on a card: midi is the written note it counts for (name only: any octave), key the key pressed, whose hold is looked up. */
 type Press = PlayedKey & { key: number };
 /** The key that started the set or the next card (owner, 2026-10-16): the card's first note when the card waits for one. */
@@ -165,6 +174,8 @@ export class Drill {
   get levelNow(): DrillLevel { return { ...this.level }; }
   /** The set on screen is a rhythm set (the pad instead of the keys, no rung 4, no Simon). */
   get rhythmNow(): boolean { return this.set?.kind === 'rhythm'; }
+  /** The set on screen is a "find it" set (find.ts): cards in words, any key of the group named; no help rungs, no Simon. */
+  get findNow(): boolean { return this.set?.kind === 'find'; }
   /** Your turn at name only (any octave counts), or a rhythm card (any key is a tap): every key is music (the keyboard's edge keys are notes, not commands). */
   get anyOctaveNow(): boolean { return this.on && (this.state === 'turn' || this.state === 'countin') && (this.level.rung === 4 || this.rhythmNow); }
   /** An activity's preset level (owner, 2026-10-13): in force while it lasts, never saved over yours. */
@@ -214,7 +225,7 @@ export class Drill {
       result: {
         clean, of: this.results.length, ended: done ? (full ? 'set done' : 'stopped early') : 'left', missesAgain: this.redo,
         // n: the item's number in its set (interfaces review F10: items sharing a name can be told apart)
-        cards: this.results.map((r) => ({ item: r.item.name, n: r.item.n, clean: r.clean, right: r.right, retried: r.retried, helped: r.helped, result: r.text })),
+        cards: this.results.map((r) => ({ item: r.item.name, n: r.item.n, clean: r.clean, right: r.right, retried: r.retried, helped: r.helped, result: r.text, ...(r.drift ? { drift: r.drift } : {}) })),
       },
     }, r0.tag);
   }
@@ -239,7 +250,8 @@ export class Drill {
     // Your own choice: the activity's keys are over; a lesson step stays in force, its task line saying the practice
     // now is not counted (owner, 2026-10-16), and comes back counted if its set is chosen again.
     if (remember) { this.stored.set = this.set.id; this.save(); this.keys.choose(null); }
-    this.keys.setRange(this.set.items.flatMap((it) => it.groups.flat().map(midiOf)));
+    // (a "find it" set: its keys from end to end, so every group it names is there and none is given away)
+    this.keys.setRange(this.set.find ? [this.set.find.lo, this.set.find.hi] : this.set.items.flatMap((it) => it.groups.flat().map(midiOf)));
     this.reset();
   }
 
@@ -253,6 +265,7 @@ export class Drill {
     this.keys.clearMarks();
     this.notation.clear();
     this.legend('');
+    this.beats(null);
     this.ui.name.textContent = 'Ready';
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
@@ -329,20 +342,22 @@ export class Drill {
     // Bests from full sets only (docs §4): not a set stopped early (a mash, Finish) or endless, nor the misses again.
     const full = !this.redo && Number.isFinite(this.limit) && of >= this.limit;
     const newBest = full && clean > 0 && (!best || clean > best.clean); // (0 clean is no best to cheer: ChatGPT's review, 2026-10-16)
-    this.logSet(true, full);
+    this.logSet(true, full || (this.redo && of >= this.limit)); // (the misses again played through: "set done", marked missesAgain, never "stopped early")
     if (newBest) { this.stored.best[key] = { clean, of }; this.save(); }
     this.notation.clear();
     this.legend('');
+    this.beats(null);
     this.keys.clearMarks();
     this.ui.name.textContent = '';
     this.ui.chain.replaceChildren(...this.results.map((r, i) => Object.assign(document.createElement('div'), {
-      className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: this.level.rung === 0 || this.rhythmNow || !this.names() ? `${i + 1}. ${r.text}` : `${i + 1}. ${r.item.name}: ${r.text}`, // (no names at "keys, no music", for rhythm cards, or where names are hidden)
+      className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: (this.level.rung === 0 || this.rhythmNow || !this.names()) && !this.findNow ? `${i + 1}. ${r.text}` : `${i + 1}. ${r.item.name}: ${r.text}`, // (no names at "keys, no music", for rhythm cards, or where names are hidden)
     })));
     const was = this.stored.best[key];
     // A lesson step's set: "Back to the lesson ▶" is the main button and a key does it (owner, 2026-10-16).
     const step = this.inStep();
     this.doneAt = performance.now();
-    this.status(`Set done: ${clean} of ${of} clean`, joinWords(!full ? (this.redo ? '' : Number.isFinite(this.limit) ? 'Stopped early: not counted for a best' : 'Until you stop: no best kept') : newBest ? 'A new best at this level' : was ? `Best at this level: ${was.clean} of ${was.of}` : '', step && keyDoes('goes back to the lesson')));
+    // ("a new best" only over an earlier set: a first set at a level is no best beaten; the walk-through, 2026-10-16)
+    this.status(`Set done: ${clean} of ${of} clean`, joinWords(!full ? (this.redo ? 'The misses again: practice, not a set of its own' : Number.isFinite(this.limit) ? 'Stopped early: not counted for a best' : 'Until you stop: no best kept') : newBest && best ? 'A new best at this level' : !newBest && was ? `Best at this level: ${was.clean} of ${was.of}` : '', this.results.some((r) => r.right && !r.clean) && 'clean: right the first time, with no help', step && keyDoes('goes back to the lesson'), step && edgesReady() && 'lowest key: a new set'));
     this.ui.help.hidden = true;
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = true;
@@ -360,6 +375,8 @@ export class Drill {
 
   private makeCard(item: Item): Card {
     const set = this.set, lvl = this.level;
+    // A "find it" card: the group (or groups) named in words; any one of their keys counts, untimed.
+    if (item.find) return { item, shown: item, passage: false, fifths: 0, steps: [{ t: 0, dur: 0, keys: item.find.keys, gi: 0, hold: 0 }], timed: false, rhythm: false, find: item.find.keys, end: 0, beatMs: 60000 / this.tempo, barBeats: 4 };
     const meter = item.meter ?? set.meter ?? { beats: 4, beatType: 4 };
     const quarterMs = 60000 / this.tempo;
     const steady = typeof set.rhythm === 'number' ? set.rhythm : null;
@@ -386,7 +403,7 @@ export class Drill {
       if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? (beforeRest ? phraseEndLength(dur) : dur) : 0 });
       t += dur;
     });
-    return { item, shown: shownItem, passage, meter: passage || rhythm ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, rhythm, end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
+    return { item, shown: shownItem, passage, meter: passage || rhythm ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, rhythm, letters: set.view === 'letters', end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
   }
 
   /** first: the key that brought this card (Ready, or a result): its first note when it waits for one (no demo first). */
@@ -401,10 +418,14 @@ export class Drill {
     this.pos = 0;
     this.got.clear();
     this.wrong = [];
+    this.findPlayed = null;
     this.keys.clearMarks();
     this.ui.after.hidden = true;
     this.ui.chain.replaceChildren();
     this.legend('');
+    this.beats(null);
+    if (card.find) { this.findTurn(); return; } // (the key that brought it is not an answer: the card was not on screen yet)
+    this.demoAt = performance.now(); // (a key while it is drawn is the one that brought it: no skip)
     this.state = 'demo'; // the counter counts this card from now; keys wait until it is your turn (turn() or the demo below)
     this.scoreLine();
     await this.drawCard(withMusic(rung));
@@ -418,6 +439,23 @@ export class Drill {
     // 2026-10-16, after ChatGPT's review of lesson 2: the count-in started at once, about 3 s to read two bars).
     if (rung === 3 && card.timed && this.level.start !== 'first') { this.showToRead(); return; }
     this.turn(first);
+  }
+
+  /** A "find it" card: its words, and your turn at once (any key of the group named; no music, nothing lit). */
+  private findTurn(): void {
+    const c = this.card!;
+    this.notation.clear();
+    this.state = 'turn';
+    this.scoreLine();
+    this.ui.name.className = 'ex-name big find';
+    this.ui.name.textContent = `Find ${c.item.find!.words}`;
+    this.status('Your turn', /^a group/.test(c.item.find?.words ?? '') ? 'Play any key of it' : c.item.find!.keys.length > 1 ? 'Play any one' : 'Play it');
+    this.ui.help.hidden = false;
+    this.ui.help.textContent = 'Show me';
+    this.ui.after.hidden = false; // Skip, if you cannot find it
+    this.ui.again.hidden = this.ui.misses.hidden = this.ui.fresh.hidden = true;
+    this.ui.next.hidden = false;
+    this.ui.next.textContent = 'Skip';
   }
 
   /** The card shown, waiting: read it, then a key (not a note), a tap or Start counts it in. */
@@ -435,19 +473,34 @@ export class Drill {
   }
 
   /** It plays the card to you, then it is your turn. */
-  private demo(sub: string): void {
+  /** then: what follows: your turn (its count-in), or (a reading card's Hear it) the card waiting to be read again. */
+  private demo(sub: string, then: 'turn' | 'read' = 'turn'): void {
     const c = this.card!;
     this.stopAll();
     this.state = 'demo';
-    this.status('Listen…', sub);
+    this.demoAt = performance.now();
+    this.demoThen = then;
+    this.status('Listen…', joinWords(sub, this.canSkipDemo() && this.skipWords()));
     const ms = this.hear(keysLit(this.level.rung));
-    this.later(ms + DEMO_GAP_MS, () => { if (this.card === c) this.turn(); });
+    this.later(ms + DEMO_GAP_MS, () => { if (this.card === c && this.state === 'demo') { if (then === 'read') this.showToRead(); else this.turn(); } });
   }
+  private demoAt = 0;
+  private demoThen: 'turn' | 'read' = 'turn';
+  /**
+   * A key or a tap during the card's own demo skips to its count-in (owner, 2026-10-16, after the beginner walk-through:
+   * five steady-beat cards, 7 s of the same clicks before each): from the set's second card on (the first is always
+   * heard), where a count-in follows (help 0–2, starting after a bar of clicks), and not a demo asked for as help.
+   */
+  private canSkipDemo(): boolean {
+    const c = this.card, l = this.level;
+    return !!c && c.timed && this.results.length > 0 && l.rung <= 2 && l.start !== 'first' && this.demoThen === 'turn' && !this.helped;
+  }
+  private skipWords(): string { return this.rhythmNow ? (keyboardConnected() ? 'a tap or a key skips to the count-in' : 'a tap skips to the count-in') : 'a key skips to the count-in'; }
 
   private drawCard(withMusic: boolean, marks: Record<string, string> = {}): Promise<void> {
     const c = this.card!;
     if (!withMusic) { this.notation.clear(); return Promise.resolve(); }
-    return this.notation.show([c.shown], [], c.passage, c.meter, c.fifths, marks, c.rhythm);
+    return this.notation.show([c.shown], [], c.passage, c.meter, c.fifths, marks, c.rhythm || !!c.letters, !!c.letters);
   }
 
   /**
@@ -484,8 +537,12 @@ export class Drill {
     if (!this.card || !(this.state === 'turn' || this.state === 'demo' || this.state === 'countin' || this.state === 'read') || this.started) return;
     this.ui.start.hidden = true; // (from reading: the card is played, then its count-in)
     this.helped = true;
+    if (this.card.find) { this.keys.want(this.card.find); this.status('Your turn', `${/^a group/.test(this.card.item.find?.words ?? '') ? 'The group is' : 'It is'} outlined (counts as help)`); return; } // (a "find it" card: the group shown)
     if (this.level.rung === 4) { void this.drawCard(true); return; }
-    // During the count-in: it stops, the card is played, then the count-in starts again.
+    // A card to read (music only, counted in): it is played, then waits to be read again (owner, 2026-10-16: the walk-
+    // through's Hear it counted in and judged at once). Otherwise, during the count-in: it stops, the card is played,
+    // then the count-in starts again.
+    if (this.level.rung === 3 && this.card.timed && this.level.start !== 'first') { this.demo('', 'read'); return; }
     this.demo('');
   }
 
@@ -511,7 +568,7 @@ export class Drill {
     const p = this.paused;
     this.paused = null;
     if (!p || p.card !== this.card || p.state !== this.state) return; // started afresh meanwhile
-    if (p.state === 'demo') this.demo(this.level.rung === 5 ? 'Then play it back' : '');
+    if (p.state === 'demo') this.demo(this.level.rung === 5 ? 'Then play it back' : '', this.demoThen);
     else if (p.state === 'countin') this.turn();
     else if (p.state === 'turn' && !p.card.timed) this.armHint();
     else if (p.state === 'turn' && p.started) {
@@ -563,7 +620,8 @@ export class Drill {
     this.ticker = window.setInterval(() => {
       if (this.card !== c || this.state !== 'countin') { clearInterval(this.ticker); return; }
       const now = this.sound.songTime();
-      if (now < 0) { this.status(`Count-in… ${Math.min(c.barBeats, Math.floor((now + c.barBeats * c.beatMs) / c.beatMs) + 1)}`, ''); return; }
+      // (the clicks start a moment after the clock, so it reads a shade before the first click: 1 at the least, never 0)
+      if (now < 0) { this.status(`Count-in… ${Math.max(1, Math.min(c.barBeats, Math.floor((now + c.barBeats * c.beatMs) / c.beatMs) + 1))}`, ''); return; }
       this.state = 'turn';
       this.started = true;
       this.ui.help.hidden = true; // no help once the card's clock runs
@@ -610,7 +668,7 @@ export class Drill {
   private armHint(): void {
     clearTimeout(this.hintTimer);
     const c = this.card;
-    if (!c || c.timed || this.state !== 'turn') return;
+    if (!c || c.timed || c.find || this.state !== 'turn') return; // (a "find it" card gives nothing away by itself: Show me is there)
     this.hintTimer = window.setTimeout(() => {
       if (this.card !== c || this.state !== 'turn') return;
       this.helped = true;
@@ -640,6 +698,8 @@ export class Drill {
     // The set done: in a lesson step a key goes back to the lesson (not in the first moment: the last card's notes).
     if (this.state === 'done') { if (this.inStep() && !dialogOpen() && time - this.doneAt >= RESULT_SETTLE_MS) this.back(); return; }
     if (this.state === 'read') { if (!dialogOpen()) this.countIn(); return; } // (the key starts the count-in; it is not a note)
+    // The card's demo, from the second card on: a key skips to the count-in (not in its first moment: the key that brought it).
+    if (this.state === 'demo') { if (this.canSkipDemo() && !dialogOpen() && time - this.demoAt >= RESULT_SETTLE_MS) { this.stopAll(); this.turn(); } return; }
     // A card's result: the key goes on to the next card (and is its first note, if it waits for one): never swallowed.
     // (not in the first moment of the result: a finger still tapping the card's last beat would skip what it says)
     if (this.state === 'result') { if (!dialogOpen() && this.card && time - this.resultAt >= RESULT_SETTLE_MS && (this.ui.after.hidden || !this.ui.next.hidden)) this.nextCard({ midi, time, input }); return; }
@@ -648,6 +708,7 @@ export class Drill {
     // A first note a shade before the downbeat (within the on-time tolerance) still counts.
     if (this.state === 'countin' && songT() > -ON_TIME_MS[this.tolKey()]) { const t = songT(); this.played.push({ midi: this.asWanted(midi, t), key: midi, t, speed: 1, at: time }); return; }
     if (this.state !== 'turn') return;
+    if (c.find) { this.findPlayed = midi; this.finish(); return; }
     if (!c.timed) { this.noteOnly(midi); return; }
     if (!this.started) {
       // Your first note starts the card's clock: it counts as played on time; the clicks run from it.
@@ -698,7 +759,15 @@ export class Drill {
     const marks: Record<string, string> = {};
     let text: string, clean: boolean;
     let wrongKeys: number[];
-    if (c.timed) {
+    let sped: 'faster' | 'slower' | null = null;
+    let line: BeatLineNote[] | null = null, extra: number[] = [];
+    if (c.find) {
+      // A "find it" card: any key of the group named; another key is wrong, the group outlined (no names, no music).
+      const hit = this.findPlayed !== null && c.find.includes(this.findPlayed);
+      wrongKeys = hit || this.findPlayed === null ? [] : [this.findPlayed];
+      clean = hit;
+      text = hit ? 'clean' : this.findPlayed === null ? 'skipped' : `another key: not that ${/^a group/.test(c.item.find?.words ?? '') ? 'group' : 'one'}`;
+    } else if (c.timed) {
       // How long the key pressed sounded (name only: not the written note's octave it counts for; review 2026-10-15).
       const held = (p: PlayedKey) => (p.at === undefined ? Infinity : holds.heldFor((p as Press).key, p.at));
       const steps = c.steps.map((s) => ({ t: s.t, keys: s.keys, durs: s.keys.map(() => s.hold) }));
@@ -713,7 +782,17 @@ export class Drill {
       const named = this.level.rung !== 0 && !c.rhythm && this.names();
       const parts = [['early', say('early')], ['late', say('late')], ['let go early', say('short')], ['missed', say('missed')]].filter(([, l]) => l.length).map(([kind, l]) => `${named ? (l as string[]).join(' ') : `${l.length} ${l.length === 1 ? 'note' : 'notes'}`} ${kind}`);
       if (r.wrong) parts.push(c.rhythm ? `${r.wrong} extra ${r.wrong === 1 ? 'tap' : 'taps'}` : `${r.wrong} wrong ${r.wrong === 1 ? 'key' : 'keys'}`);
+      // Rushing or dragging through the card, named (drift.ts; owner, 2026-10-16): the notes played, as heard.
+      sped = drift(r.matched.map((m) => ({ due: m.due, at: m.t })), c.beatMs);
       text = clean ? 'clean' : `${r.onTime} of ${r.total} on time and held · ${parts.join(' · ')}`;
+      if (sped) text = `${text} · ${driftWords(sped).toLowerCase()}`;
+      // A rhythm card with no music on screen (help 0): its taps on the line of beats (beatline.ts; owner, 2026-10-16).
+      if (c.rhythm && this.level.rung === 0) {
+        const kindOf = new Map(r.offNotes.map((o) => [o.k, o.kind]));
+        const at = new Map(r.matched.map((m) => [m.k, m]));
+        line = c.steps.map((s, k) => { const m = at.get(k); return { due: s.t, dur: s.dur, kind: (kindOf.get(k) ?? 'ok') as BeatLineNote['kind'], ...(m ? { at: m.t, held: m.held } : {}) }; });
+        extra = r.wrongKeys.map((w) => w.t);
+      }
     } else {
       wrongKeys = this.wrong;
       const total = c.steps.reduce((n, s) => n + s.keys.length, 0);
@@ -725,27 +804,35 @@ export class Drill {
     if (this.helped) { text = clean ? 'clean, with help' : `${text} · with help`; }
     const retried = this.retrying;
     if (retried && clean) text = this.helped ? 'right on a retry, with help' : 'right on a retry';
-    const result: CardResult = { item: c.item, clean: clean && !this.helped && !retried, right: clean, retried, helped: this.helped, text };
+    const result: CardResult = { item: c.item, clean: clean && !this.helped && !retried, right: clean, retried, helped: this.helped, text, ...(sped ? { drift: sped } : {}) };
     if (retried && this.results.length) this.results[this.results.length - 1] = result; // Again: this try stands for the card
     else this.results.push(result);
     // The music (also for name and ear cards: now you see what it was), the missed notes ringed; at "keys, no music"
     // none: the keys say it.
-    void this.drawCard(this.level.rung !== 0, marks);
+    if (!c.find) void this.drawCard(this.level.rung !== 0, marks);
+    this.beats(line ? { notes: line, extra, beatMs: c.beatMs, barBeats: c.barBeats, end: c.end } : null);
     const shownKeys = this.keysShown() && !c.rhythm;
-    if (this.ui.legend) showLegend(this.ui.legend, this.level.rung === 0 ? null : kindsOfColours(Object.values(marks), shownKeys ? new Set(wrongKeys).size : 0));
-    this.ui.name.textContent = this.level.rung >= 4 && !c.rhythm ? c.item.name : ''; // (a rhythm card's name is its pattern written short: for the log)
+    if (this.ui.legend) {
+      const kinds = line
+        ? { missed: line.some((n) => n.kind === 'missed'), timing: line.some((n) => n.kind !== 'ok' && n.kind !== 'missed'), extra: extra.length > 0 }
+        : this.level.rung === 0 && !c.find ? null : kindsOfColours(Object.values(marks), shownKeys ? new Set(wrongKeys).size : 0);
+      showLegend(this.ui.legend, kinds);
+    }
+    this.ui.name.textContent = c.find ? `Find ${c.item.find!.words}` : this.level.rung >= 4 && !c.rhythm ? c.item.name : ''; // (a rhythm card's name is its pattern written short: for the log)
     this.ui.name.className = 'ex-name small';
     this.keys.light([]);
     this.keys.wrong([...new Set(wrongKeys)]);
-    this.keys.want(Object.keys(marks).filter((k) => marks[k] === MISSED).map((k) => Number(k.split(':')[1])));
+    this.keys.want(c.find ? (clean ? [] : c.find) : Object.keys(marks).filter((k) => marks[k] === MISSED).map((k) => Number(k.split(':')[1])));
     this.scoreLine();
+    const driftLine = driftWords(sped);
     if (clean) { // right; with help it is noted in the results but moves on all the same (owner)
-      this.status(retried ? '✓ Right this time' : this.helped ? '✓ Right, with help' : '✓ Clean', 'Next card…', 'ok');
+      this.status(retried ? '✓ Right this time' : this.helped ? '✓ Right, with help' : '✓ Clean', joinWords(driftLine, 'Next card…'), 'ok');
       const card = c;
-      this.later(CLEAN_NEXT_MS, () => { if (this.card === card && this.state === 'result') this.nextCard(); });
+      this.later(CLEAN_NEXT_MS + (driftLine ? 1200 : 0), () => { if (this.card === card && this.state === 'result') this.nextCard(); }); // (a line to read: a moment longer)
       return;
     }
-    this.status('Not quite', joinWords(text, this.rhythmNow ? `${keyboardConnected() ? 'a tap or a key' : 'a tap'} goes on to the next card` : keyDoes('goes on to the next card')), 'bad');
+    const goOn = this.rhythmNow ? `${keyboardConnected() ? 'a tap or a key' : 'a tap'} goes on to the next card` : keyDoes('goes on to the next card');
+    this.status('Not quite', joinWords(c.find ? (this.findPlayed === null ? 'skipped' : /^a group/.test(c.item.find?.words ?? '') ? 'not that group: it is outlined' : 'not that one: the key is outlined') : text.replace(/ · you (sped up|slowed down)$/, ''), driftLine, goOn), 'bad');
     this.ui.after.hidden = false;
     this.ui.again.hidden = this.ui.next.hidden = false;
     this.ui.next.textContent = 'Next';
@@ -763,6 +850,7 @@ export class Drill {
       return;
     }
     if (c === 'low') {
+      if (this.state === 'done') { void this.begin(); return; } // (the set done: a new set, as Simon's lowest key is Again after a game)
       if (this.state === 'result' && !this.ui.after.hidden && this.card) { this.retrying = true; void this.playCard(this.card.item); }
       else if (this.state === 'turn' || this.state === 'demo' || this.state === 'countin' || this.state === 'read') this.help();
       return;
@@ -781,6 +869,10 @@ export class Drill {
     return true;
   }
 
+  /** The key a "find it" card was answered with (null: none yet, or skipped). */
+  private findPlayed: number | null = null;
+  /** The beat line under a rhythm card's result (none: hidden). */
+  private beats(line: BeatLine | null): void { if (this.ui.beatLine) drawBeatLine(this.ui.beatLine, line); }
   private legend(text: string): void { if (this.ui.legend) { this.ui.legend.textContent = text; this.ui.legend.hidden = !text; } } // ('' clears it)
   private status(text: string, sub: string, kind: '' | 'ok' | 'bad' = ''): void {
     this.ui.status.textContent = text;
@@ -790,11 +882,13 @@ export class Drill {
 
   private scoreLine(): void {
     const n = this.limit < Infinity ? this.limit : this.level.cards;
-    const at = this.results.length + (this.state === 'demo' || this.state === 'read' || this.state === 'countin' || this.state === 'turn' ? 1 : 0);
+    // The card being played: the next one, or (Again) the one retried, whose result is already counted (the walk-through,
+    // 2026-10-16: "Card 3 of 5" while replaying card 2, "Card 6 of 5" on card 5).
+    const at = this.results.length + ((this.state === 'demo' || this.state === 'read' || this.state === 'countin' || this.state === 'turn') && !this.retrying ? 1 : 0);
     this.ui.left.innerHTML = n ? `Card <b>${at}</b> of ${n}` : `Card <b>${at}</b>`;
     this.ui.mid.innerHTML = `<b>${this.results.filter((r) => r.clean).length}</b> clean`;
     const names = this.rhythmNow ? PAD_RUNG_NAMES : RUNG_NAMES;
-    this.ui.right.textContent = this.level.onTime === 'notes' ? `${names[this.level.rung]} · notes only` : names[this.level.rung];
+    this.ui.right.textContent = this.findNow ? 'Find it' : this.level.onTime === 'notes' ? `${names[this.level.rung]} · notes only` : names[this.level.rung];
     // Endless sets: Finish while a set is going.
     this.ui.finish.hidden = !(this.on && this.limit === Infinity && this.state !== 'idle' && this.state !== 'done');
   }

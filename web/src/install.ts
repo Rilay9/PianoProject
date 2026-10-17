@@ -32,7 +32,7 @@ window.addEventListener('appinstalled', () => {
   fill();
 });
 
-export const INSTALL_WORDS = 'Install the app to keep your files and play offline.';
+export const INSTALL_WORDS = 'Install the app to keep your progress and the pieces you add safe on this device, and to play offline.'; // ("your files" meant nothing to a beginner: the walk-through, 2026-10-16)
 export const MENU_WORDS = 'Chrome menu ⋮ → Install app';
 
 /** Shown on Home: the card, or nothing (the installed app, installed from this tab, or ✕ pressed). */

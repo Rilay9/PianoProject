@@ -144,6 +144,18 @@ tapToStart.append(Object.assign(document.createElement('p'), { textContent: 'Tap
   Object.assign(document.createElement('small'), { textContent: 'The browser starts the sound and your MIDI keyboard only after a tap.' }));
 tapToStart.setAttribute('role', 'status');
 document.body.append(tapToStart);
+// The tap on it that lands over a key or the rhythm pad is that key or tap too (2026-10-16, after the walk-through: a
+// reloaded drill started only on the second tap): passed on to what is under it; anywhere else it only starts.
+tapToStart.addEventListener('pointerdown', (e) => {
+  const under = document.elementFromPoint(e.clientX, e.clientY); // (the cover is hidden by now: the document's first-tap listener)
+  const target = under?.closest<HTMLElement>('#ex-pad, .keyboard [data-midi]');
+  if (!target || target.closest('[hidden]')) return;
+  const pass = (type: string, x: number, y: number) => target.dispatchEvent(new PointerEvent(type, { pointerId: e.pointerId, pointerType: e.pointerType, isPrimary: true, bubbles: true, cancelable: true, clientX: x, clientY: y }));
+  pass('pointerdown', e.clientX, e.clientY);
+  const up = (u: PointerEvent) => { if (u.pointerId !== e.pointerId) return; window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true); if (u.target !== target && !target.contains(u.target as Node)) pass('pointerup', u.clientX, u.clientY); };
+  window.addEventListener('pointerup', up, true);
+  window.addEventListener('pointercancel', up, true);
+});
 
 /**
  * A screen opened over the tabs: one more place, the tabs hidden. Its address is the place under it plus its own
@@ -273,7 +285,8 @@ function offerKeyboardEnds(): void {
   tipShown(TIPS.keyboardEnds); // (once: Not now, or set up, and it is done; Settings → Keyboard controls keeps the setup)
   keysHint.hidden = false;
 }
-$('keys-hint-no').addEventListener('click', () => { keysHint.hidden = true; tipUsed(TIPS.keyboardEnds); });
+// (Not now: where to find it later is said once more as the card goes: the walk-through, 2026-10-16)
+$('keys-hint-no').addEventListener('click', () => { keysHint.hidden = true; tipUsed(TIPS.keyboardEnds); app.showMessage('You can set up the keyboard’s lowest and highest keys any time: Settings → Keyboard controls.', true); });
 $('keys-hint-go').addEventListener('click', () => {
   keysHint.hidden = true;
   tipUsed(TIPS.keyboardEnds);
@@ -395,8 +408,8 @@ async function fillFull(): Promise<void> {
   warn.textContent = CLEANUP;
 }
 $('set-full-remove').addEventListener('click', async () => {
-  if (!confirm('Remove the full PDMX set from this phone? Pieces you added from it stay in your library. To have it again, pick the zips again.')) return;
-  try { await removeFullSet(); app.pieces = app.pieces.filter((p) => !p.full); app.showMessage('Removed the full PDMX set from this phone.', true); }
+  if (!confirm('Remove the full PDMX set from this device? Pieces you added from it stay in your library. To have it again, pick the zips again.')) return;
+  try { await removeFullSet(); app.pieces = app.pieces.filter((p) => !p.full); app.showMessage('Removed the full PDMX set from this device.', true); }
   catch (cause) { app.showMessage(`Could not remove the full set: ${cause instanceof Error ? cause.message : String(cause)}`); }
   void fillFull();
 });
@@ -432,7 +445,7 @@ $('backup').addEventListener('click', async () => {
     const { zip, missing } = await makeBackup();
     downloadBlob(`piano-backup-${new Date().toISOString().slice(0, 10)}.zip`, zip);
     if (missing.length) {
-      app.showMessage(`Backed up, but without ${missing.join(', ')}: ${missing.length === 1 ? 'its file is' : 'their files are'} no longer on this phone.`);
+      app.showMessage(`Backed up, but without ${missing.join(', ')}: ${missing.length === 1 ? 'its file is' : 'their files are'} no longer on this device.`);
     }
   } catch (cause) {
     app.showMessage(`Could not back up: ${cause instanceof Error ? cause.message : String(cause)}`);
@@ -444,7 +457,7 @@ $<HTMLInputElement>('restore-file').addEventListener('change', async (e) => {
   input.value = ''; // the same file picked again (after Cancel, say) is a new choice
   if (!file) return;
   try {
-    if (!confirm('Add what is in the backup to this phone? Pieces, progress and settings missing here are added; what is already here stays as it is.')) return;
+    if (!confirm('Add what is in the backup to this device? Pieces, progress and settings missing here are added; what is already here stays as it is.')) return;
     await restoreBackup(file);
     location.reload();
   } catch (cause) {

@@ -1,0 +1,5 @@
+{
+  "title": "Test: find C, D and E",
+  "kind": "find",
+  "find": { "keys": "C3-B5", "letters": ["C", "D", "E"], "places": ["lower", "middle", "higher"] }
+}

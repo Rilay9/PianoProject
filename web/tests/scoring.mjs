@@ -102,6 +102,22 @@ const cases = [
     steps: [{ t: 0, keys: [60], durs: [2000] }], played: [{ midi: 50, t: 0, speed: 1, held: 150 }],
     tol: 100, want: { total: 1, onTime: 0, short: 1 },
   },
+  // (the walk-through, 2026-10-16, K16: a quarter turned orange beside the half note tapped early after it) On the pad a
+  // new tap ends the one before: a quarter still held when the next tap came 233 ms early was cut by it, not let go early.
+  {
+    name: 'hold, rhythm: a note still held when the next tap comes early is not let go early (the next one is early)',
+    rhythm: true,
+    steps: [{ t: 0, keys: [72], durs: [833] }, { t: 833, keys: [72], durs: [1666] }],
+    played: [{ midi: 72, t: 0, speed: 1, at: 1000, held: 600 }, { midi: 72, t: 600, speed: 1, at: 1600, held: 1500 }],
+    tol: 200, want: { total: 2, onTime: 1, early: 1 }, marks: { offNotes: ['1:0:early'] },
+  },
+  {
+    name: 'hold, rhythm: let go before the next tap (500 of 833 ms) is still let go early',
+    rhythm: true,
+    steps: [{ t: 0, keys: [72], durs: [833] }, { t: 833, keys: [72], durs: [1666] }],
+    played: [{ midi: 72, t: 0, speed: 1, at: 1000, held: 500 }, { midi: 72, t: 625, speed: 1, at: 1625, held: 1500 }],
+    tol: 200, want: { total: 2, onTime: 0, early: 1, short: 1 },
+  },
 ];
 
 let failed = 0;

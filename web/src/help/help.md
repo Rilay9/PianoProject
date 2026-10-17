@@ -79,6 +79,7 @@ A memory game. The app gives you a chain (notes, chords, intervals…), and you 
 - **Level:** how much help (0 keys and sound, with no music … 5 by ear), what must match, what a miss costs, the speed. Opening it pauses the game.
 - **0 Keys + sound, no music** is for before you read music: you hear each item and see its keys light up, and no notes are written or named anywhere. Copy what you see and hear. A miss shows the wrong key in red and the right one outlined in blue. From 1 on, the music is shown too.
 - You can play on the keys on the screen or on a MIDI keyboard. With *Nothing* under the music (help 2 to 5), play on a MIDI keyboard.
+- **By ear (help 5):** a miss plays the note again: try other keys until one matches. Nothing is named or shown, and a miss costs nothing; a chain found by trying is good practice, not a best.
 - **Simon ▾** switches to Drills, with the same set.
 
 # Drills {#drills}
@@ -91,6 +92,10 @@ Flashcards. Each card is one short thing to play at once: music to read, a name,
 - Play on a MIDI keyboard, or tap the keys on the screen (Level → Under the music: Keyboard). With neither, Ready says so.
 - **Level:** help, how a card starts, the metronome, On time, cards per set, tempo. Opening it pauses the card.
 - **Help 0, Keys + sound, no music:** each card is played to you with its keys lit, and no music is written, even after the card: the keys show what was wrong (red) and what was missed (outlined in blue).
+- From the second card of a set, a key or a tap while a card is played to you skips to its count-in.
+- When your taps get steadily faster or slower through a card, the result says **You sped up** or **You slowed down**.
+- **Rhythm cards at help 0** (no music): the result shows your taps on a line of beats, each one where it landed, ahead of or behind its click.
+- **Find it** cards name a place on the keys in words ("a group of three, higher up"): play any key of that group. Show me outlines it.
 - **Drills ▾** switches to Simon, with the same set.
 
 # The accompaniment lab {#lab}
@@ -108,7 +113,7 @@ Play with a band: the lead on top, or the chords underneath.
 # Free play {#freeplay}
 Play anything and see what it is. The keys you play light up and are named, with the chord or interval they make.
 
-Below, what you played lately, newest on top: chords, notes and intervals. **Show** turns those columns on or off. ‹ › move the keys an octave. Nothing is judged or kept.
+Below, what you played lately, newest on top: chords, notes and intervals. **Show** turns those columns on or off, and the black keys' groups (outlined, 2 and 3). ‹ › move the keys an octave; the small piano above the keys shows which part of the whole keyboard you see. A lesson step can show finger numbers on the keys, or turn on a click (its button turns it off). Nothing is judged or kept.
 
 # The metronome {#metronome}
 The click on its own, with no score.
@@ -155,7 +160,7 @@ The app's own settings, from ⚙ on Home.
 A piece's own choices (size, tempo, hands, fingering) stay on its screen.
 
 # Installing and offline {#install}
-Install the app (in Chrome: menu ⋮ → Install app, or the card on Home) to keep your files and play offline.
+Install the app (in Chrome: menu ⋮ → Install app, or the card on Home) to keep your progress and the pieces you add safe on this device, and to play offline.
 
 - The installed app saves everything it needs the first time it opens online. After that it works offline.
 - In a browser tab nothing extra is saved, and the browser may clear files you added when the phone runs low on space.

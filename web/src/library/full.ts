@@ -194,7 +194,7 @@ export async function roomFor(bytes: number): Promise<string | null> {
   let free = Infinity, quota = 0;
   try { const e = await navigator.storage.estimate(); quota = e.quota ?? 0; free = (e.quota ?? Infinity) - (e.usage ?? 0); } catch { /* no estimate: try */ }
   if (bytes <= free) return null;
-  return `Not enough room on this phone: the zips need ${gb(bytes)}, and the browser lets the app use ${gb(Math.max(0, free))} more${quota ? ` (of ${gb(quota)})` : ''}. Free some space (or pick fewer zips) and try again. Nothing was copied.`;
+  return `Not enough room on this device: the zips need ${gb(bytes)}, and the browser lets the app use ${gb(Math.max(0, free))} more${quota ? ` (of ${gb(quota)})` : ''}. Free some space (or pick fewer zips) and try again. Nothing was copied.`;
 }
 /** A size as a person reads it (P03: a 26-byte file was "1 MB"). */
 export const gb = (n: number) => (n >= 1e9 ? `${(n / 1e9).toFixed(2)} GB` : n >= 1e6 ? `${Math.round(n / 1e6)} MB` : n >= 1e3 ? `${Math.round(n / 1e3)} KB` : `${n} bytes`);
@@ -351,7 +351,7 @@ const files = new Map<string, Promise<File>>();
 function zipFile(name: string): Promise<File> {
   let f = files.get(name);
   if (!f) {
-    f = (async () => { const d = await dir(false); if (!d) throw new Error('the full set is not on this phone'); return (await d.getFileHandle(name)).getFile(); })();
+    f = (async () => { const d = await dir(false); if (!d) throw new Error('the full set is not on this device'); return (await d.getFileHandle(name)).getFile(); })();
     files.set(name, f);
     void f.catch(() => files.delete(name));
   }
@@ -363,6 +363,6 @@ export const refOf = (r: FullRow): FullRef => ({ zip: r.zip, offset: r.offset, b
 /** The piece's file (its .mxl), read from the copied zip by offset and length. */
 export async function fileOfRef(ref: FullRef): Promise<File> {
   let z: File;
-  try { z = await zipFile(ref.zip); } catch { throw new Error('the full PDMX set is no longer on this phone'); }
+  try { z = await zipFile(ref.zip); } catch { throw new Error('the full PDMX set is no longer on this device'); }
   return new File([z.slice(ref.offset, ref.offset + ref.bytes)], ref.file, { type: 'application/vnd.recordare.musicxml' });
 }

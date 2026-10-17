@@ -1,0 +1,25 @@
+{
+  "title": "Test: letters on the rhythm line",
+  "kind": "melodies",
+  "view": "letters",
+  "order": "passage",
+  "tempo": 72,
+  "items": {
+    "1": {
+      "musicxml": "test-letters-2.musicxml",
+      "name": "Two bars"
+    },
+    "2": {
+      "musicxml": "test-letters-4.musicxml",
+      "name": "Four bars (layout)"
+    },
+    "3": {
+      "musicxml": "test-letters-8.musicxml",
+      "name": "Eight bars (layout)"
+    },
+    "4": {
+      "musicxml": "test-letters-values.musicxml",
+      "name": "Quarter, half, whole (layout)"
+    }
+  }
+}

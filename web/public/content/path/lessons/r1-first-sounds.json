@@ -3,7 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the phone can't check it). The copying game is the one part the app scores; the rest you'll check for yourself at the end."
+      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the app can't see it). The copying game is the one part the app scores; the rest you'll check for yourself at the end."
     },
     {
       "kind": "text",
@@ -14,7 +14,7 @@
       "id": "first-sounds",
       "title": "Your first sounds",
       "activity": "r1-first-sounds",
-      "about": "Tap pairs of black keys: in the middle, far right, far left."
+      "about": "Tap a pair of black keys, then a pair far to the right (›), then one far to the left (‹)."
     },
     {
       "kind": "text",
@@ -35,11 +35,11 @@
       "id": "find-groups",
       "title": "Find the groups",
       "activity": "r1-find-groups",
-      "about": "Groups of two in three places, middle, higher, lower; then groups of three, high to low."
+      "about": "The groups of two here, then one octave higher (›), then lower (‹ past where you started); then the groups of three, high to low."
     },
     {
       "kind": "text",
-      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The phone can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video below shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall** and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them; on a portable keyboard, the edge of the case just behind the keys). Take this as a starting guide: then let your elbows bend and hang, and check that they sit a little in front of your body and that you can reach the keys comfortably.\n\nRest your **feet flat** on the floor."
+      "text": "# At a real keyboard: sitting\nThe next few sections are about your body at a real piano or keyboard. The app can't check any of this, so try it whenever you're at a keyboard, or practise it at a table now. How you sit decides how freely your arms and hands can move, so it's worth setting up carefully once. The video after this section shows each point.\n\nSit **toward the front of the seat**, not right on the edge, facing the middle of the keys. That leaves you free to lean a little left or right as your hands travel up and down the keyboard, without twisting.\n\nSit **tall** and let your arms **hang loosely** from your shoulders. With your fingers on the keys, your **elbows** should sit a little in front of your body, not tucked against your sides, and your **forearm** should be about level from elbow to knuckles. If your forearm slopes up to the keys, the seat is too low; if it slopes down, too high. (An ordinary chair is often too low.)\n\nTo check the **distance**, stretch your arms straight out with loose fists: your knuckles should just touch the panel behind the keys (on a piano, the fallboard: the lid that folds down over them; on a portable keyboard, the edge of the case just behind the keys). Take this as a starting guide: then let your elbows bend and hang, and check that they sit a little in front of your body and that you can reach the keys comfortably.\n\nRest your **feet flat** on the floor."
     },
     {
       "kind": "video",
@@ -56,12 +56,18 @@
       "text": "# Your finger numbers\nIn piano music, fingers are named by numbers, the same way in both hands:\n\n- **1**: thumb\n- **2**: pointer\n- **3**: middle finger\n- **4**: ring finger\n- **5**: little finger\n\nSo both thumbs are 1, and both little fingers are 5.\n\nTry this on the table: rest both hands in a round shape and tap each finger as you say its number out loud, 1 to 5 and back. Then try them out of order, naming the hand first: right hand 3, left hand 1, right hand 5, left hand 2, right hand 4. Saying the number while you move the finger is what makes it stick."
     },
     {
-      "kind": "text",
-      "text": "# Playing a key, and letting it go\nAt a real keyboard, play a key with a **firm fingertip**: the tip keeps its shape and the key goes down. Then **let it go**: the key comes back up by itself and lifts your finger with it. You don't need to pull your finger up, and you don't need to press hard. Keep your wrist loose, as if it were floating. Loose doesn't mean sagging: the wrist stays about level with your forearm and knuckles, as in the sitting section.\n\nOn the phone there's no key to push down, so it's simply a light tap with your fingertip, then lifting off.\n\nIf you're at a keyboard now, try travelling on the groups the way pianists first learn to: put your right hand's fingers **2 and 3** on a group of two black keys in the middle, play them together, softly, and let your hand float up to the next group of two to the right. Keep going to the top. Then your left hand's **2 and 3**, travelling down to the left. Then the groups of three, with fingers **2, 3 and 4**."
+      "kind": "video",
+      "youtube": "https://www.youtube.com/watch?v=zIO4VMEFybY",
+      "title": "Piano Finger Numbers for Beginners (Hoffman Academy, 7 min)",
+      "caption": "Made for children: finger numbers with games."
     },
     {
       "kind": "text",
-      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one. Once you've copied a pattern of three from memory, the game ends: that's the goal for today. **Hear again** is welcome whenever you want another listen; a pattern copied after it is good practice, but doesn't count toward the goal, so the game carries on.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
+      "text": "# Playing a key, and letting it go\nAt a real keyboard, play a key with a **firm fingertip**: the tip keeps its shape and the key goes down. Then **let it go**: the key comes back up by itself and lifts your finger with it. You don't need to pull your finger up, and you don't need to press hard. Keep your wrist loose, as if it were floating. Loose doesn't mean sagging: the wrist stays about level with your forearm and knuckles, as in the sitting section.\n\nOn a phone or tablet screen there's no key to push down, so it's simply a light tap with your fingertip, then lifting off.\n\nIf you're at a keyboard now, try travelling on the groups the way pianists first learn to: put your right hand's fingers **2 and 3** on a group of two black keys in the middle, play them together, softly, and let your hand float up to the next group of two to the right. Keep going to the top. Then your left hand's **2 and 3**, travelling down to the left. Then the groups of three, with fingers **2, 3 and 4**."
+    },
+    {
+      "kind": "text",
+      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one. Once you've copied a pattern of three from memory, the game ends: that's the goal for today. **Hear it** is welcome whenever you want another listen; a pattern copied after it is good practice, but doesn't count toward the goal, so the game carries on.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
     },
     {
       "kind": "step",
@@ -95,14 +101,7 @@
     },
     {
       "kind": "text",
-      "text": "# If this happens\n- **You can't tell a group of two from a group of three.** Find a gap first: a place where two white keys sit together with no black key between them. Then count the black keys up to the next gap: two or three.\n- **The key you want is off the edge of the screen.** Use the arrows beside the keys to move higher or lower.\n- **At a keyboard, your fingers flatten out.** That's common at first. Make the C shape again, then play more gently: soft playing makes it easier to keep the fingertips firm.\n- **Your shoulders or wrist feel tight.** Stop, let your arms hang, shake out your hands, and drop the apples.\n- **You hear nothing.** Turn the phone's volume up and check it isn't on silent. In Settings, *Piano plays through* should say **Phone** (unless a MIDI keyboard is plugged in and you want its sound).\n- **The copy game feels too quick.** The app waits for you; there's no clock. Listen and watch once more, then play."
-    },
-    {
-      "kind": "video",
-      "size": "row",
-      "youtube": "https://www.youtube.com/watch?v=zIO4VMEFybY",
-      "title": "Piano Finger Numbers for Beginners (Hoffman Academy, 7 min)",
-      "caption": "Made for children: finger numbers with games."
+      "text": "# If this happens\n- **You can't tell a group of two from a group of three.** Find a gap first: a place where two white keys sit together with no black key between them. Then count the black keys up to the next gap: two or three.\n- **The key you want is off the edge of the screen.** Use the arrows beside the keys to move higher or lower.\n- **At a keyboard, your fingers flatten out.** That's common at first. Make the C shape again, then play more gently: soft playing makes it easier to keep the fingertips firm.\n- **Your shoulders or wrist feel tight.** Stop, let your arms hang, shake out your hands, and drop the apples.\n- **You hear nothing.** Turn the volume up and check the device isn't on silent. In Settings, *Piano plays through* should say **Phone** (unless a MIDI keyboard is plugged in and you want its sound).\n- **The copy game feels too quick.** The app waits for you; there's no clock. Listen and watch once more, then play."
     }
   ]
 }

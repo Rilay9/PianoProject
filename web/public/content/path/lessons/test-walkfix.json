@@ -1,0 +1,20 @@
+{
+  "title": "Test: the walk-through's new pieces",
+  "blocks": [
+    { "kind": "text", "text": "**Test:** the pieces built after the beginner walk-through (2026-10-16), for the app's checks: a find-it card, finger numbers and the groups on Free play's keys, Free play's click, the steady beat's beat line, by ear that keeps trying. Not teaching." },
+    { "kind": "step", "id": "find", "title": "Find the groups", "about": "Find each group the card names; any key of it counts.", "doneWhen": "3 of the 4 cards clean", "target": { "clean": 3 },
+      "activity": { "title": "Test: find the groups", "screen": "drills", "set": "test-find-groups", "level": { "cards": 4 }, "names": false } },
+    { "kind": "text", "text": "## Fingers\nThe keys show the fingers." },
+    { "kind": "step", "id": "fingers", "title": "Fingers on the groups", "about": "Play 2-3 on a pair and 2-3-4 on a three.",
+      "activity": { "title": "Test: fingers on the groups", "screen": "freeplay", "keys": { "phone-upright": "C4-E5" }, "names": false, "fingers": { "C#": 2, "D#": 3, "F#": 2, "G#": 3, "A#": 4 } } },
+    { "kind": "text", "text": "## With a click\nFree play with a click." },
+    { "kind": "step", "id": "click", "title": "A tune with the click", "about": "A two-bar tune with the click.",
+      "activity": { "title": "Test: free play with a click", "screen": "freeplay", "names": false, "groups": false, "click": { "bpm": 72, "beats": 4 } } },
+    { "kind": "text", "text": "## The beat\nTap with the clicks." },
+    { "kind": "step", "id": "beat", "title": "Tap with the clicks", "about": "Tap the pad on every click.",
+      "activity": { "title": "Test: steady beat, pad lit", "screen": "drills", "set": "rhythm-steady-beat", "level": { "rung": 0, "start": "clicks", "metronome": true, "onTime": "relaxed", "cards": 3 } } },
+    { "kind": "text", "text": "## By ear\nCopy by ear." },
+    { "kind": "step", "id": "by-ear", "title": "By ear", "about": "Copy what you hear, trying keys until one matches.",
+      "activity": { "title": "Test: by ear", "screen": "simon", "set": "black-keys-middle", "level": { "rung": 5, "match": "same", "miss": "tries", "speed": "steady", "goal": 3 }, "names": false } }
+  ]
+}

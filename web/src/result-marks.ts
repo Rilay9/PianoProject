@@ -26,7 +26,8 @@ export function slipMarks(slips: { step: number; midi: number; kind: SlipKind }[
 }
 
 /** What a set of marks has in it, for the key: missed, off time, wrong keys. */
-export interface Kinds { missed?: boolean; timing?: boolean; wrong?: boolean }
+/** extra: a tap no note asked for (a rhythm card's beat line, 2026-10-16), red as a wrong key is. */
+export interface Kinds { missed?: boolean; timing?: boolean; wrong?: boolean; extra?: boolean }
 export function kindsOf(slips: { kind: SlipKind }[], wrongKeys = 0): Kinds {
   return { missed: slips.some((x) => x.kind === 'missed'), timing: slips.some((x) => x.kind !== 'missed'), wrong: wrongKeys > 0 };
 }
@@ -38,7 +39,7 @@ export function kindsOfColours(colours: Iterable<string>, wrongKeys = 0): Kinds 
 
 /** The one-line key, only for the kinds present: "grey: missed · orange: early, late or let go early · red: a wrong key". */
 export function legendLine(k: Kinds): string {
-  return [k.missed ? 'grey: missed' : '', k.timing ? 'orange: early, late or let go early' : '', k.wrong ? 'red: a wrong key' : ''].filter(Boolean).join(' · ');
+  return [k.missed ? 'grey: missed' : '', k.timing ? 'orange: early, late or let go early' : '', k.wrong ? 'red: a wrong key' : '', k.extra ? 'red: an extra tap' : ''].filter(Boolean).join(' · ');
 }
 /** Writes the key into its line (hidden when there is nothing to explain). */
 export function showLegend(el: HTMLElement | null | undefined, k: Kinds | null): void {

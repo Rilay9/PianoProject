@@ -85,12 +85,21 @@ export function stepStates(l: Lesson): Map<string, { mark: string; words: string
 }
 
 /**
- * The lesson you are on (owner, 2026-10-15): the one you last opened or switched to, even one done (Revisit); with
- * none chosen yet, the first with steps to do. None when there are no lessons, or none chosen and every one is done.
+ * The lesson you are on (owner, 2026-10-15): the one you last opened or switched to; with none chosen yet, the first
+ * with steps to do. A lesson done (finished, or one done that you came back to) is not where you are: Up next is the next
+ * lesson with steps to do after it, from the start of the path if none is after it (the walk-through, 2026-10-16: Home
+ * offered "Again · lesson 1" and Path's Carry on reopened it once it was done); it stays only when every lesson is done.
+ * None when there are no lessons, or none chosen and every one is done.
  */
 export function currentOf(d: PathData): Lesson | undefined {
   const order = lessonOrder(d), at = order.find((x) => x.lesson.id === currentLesson());
+  if (at && !lessonState(at.lesson).next) return nextTodo(d, at.lesson.id) ?? at.lesson;
   return at?.lesson ?? order.find((x) => !!lessonState(x.lesson).next)?.lesson;
+}
+/** Whether a lesson before this one on the path still has steps to do (Switch… says "Skip ahead" only then). */
+export function earlierNotDone(d: PathData, lessonId: string): boolean {
+  const order = lessonOrder(d), at = order.findIndex((x) => x.lesson.id === lessonId);
+  return order.slice(0, Math.max(0, at)).some((x) => !!lessonState(x.lesson).next);
 }
 /** The next lesson after this one with steps to do (then the first such from the start); none when all are done. */
 export function nextTodo(d: PathData, lessonId: string): Lesson | undefined {
@@ -115,6 +124,17 @@ export async function activityOf(step: StepBlock): Promise<Activity> {
   const a = readActivity(id, json as Record<string, unknown>);
   fetched.set(id, a);
   return a;
+}
+
+/** The exercise sets a lesson's steps use (Simon and Drills steps): what a step's set picker offers (owner, 2026-10-16). */
+export async function setsOfLesson(lessonId: string): Promise<string[]> {
+  const l = (await loadPath()).lessons.get(lessonId);
+  if (!l) return [];
+  const out = new Set<string>();
+  for (const s of stepsOf(l)) {
+    try { const a = await activityOf(s); if (a.screen === 'drills' || a.screen === 'simon') out.add(a.set); } catch { /* a step that cannot open offers nothing */ }
+  }
+  return [...out];
 }
 
 let sets: Promise<ItemSet[]> | null = null;
@@ -146,6 +166,7 @@ export function musicExercises(app: App): Promise<Piece[]> {
       const set = (await (await fetch(dir + f)).json()) as { title?: string; kind?: string; play?: unknown; items?: Record<string, { musicxml?: string; name?: string }> };
       let play: Play = { mode: 'wait' };
       if (set.kind === 'rhythm') continue; // (a rhythm set's MusicXML patterns are cards tapped in Drills, not music for the score)
+      if ((set as { view?: unknown }).view === 'letters') continue; // (a letters set's tunes are Drills cards drawn with their letters, 2026-10-17)
       try { if (set.play !== undefined) play = readPlay(set.play); } catch { continue; } // (a set whose play cannot be read: Exercises lists the reason)
       const items = Object.entries(set.items ?? {});
       const files = items.filter(([, it]) => typeof it.musicxml === 'string' && /\.(musicxml|xml)$/i.test(it.musicxml.trim()));
