@@ -11,5 +11,6 @@
     "miss": "tries",
     "speed": "steady",
     "goal": 3
-  }
+  },
+  "names": false
 }

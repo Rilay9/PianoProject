@@ -1,0 +1,38 @@
+{
+  "title": "Fingers on the black-key groups",
+  "order": "passage",
+  "items": {
+    "1": {
+      "notes": "C#4, D#4",
+      "name": "right hand, a pair: 2 3"
+    },
+    "2": {
+      "notes": "D#4, C#4",
+      "name": "right hand, a pair: 3 2"
+    },
+    "3": {
+      "notes": "F#4, G#4, A#4",
+      "name": "right hand, a three: 2 3 4"
+    },
+    "4": {
+      "notes": "A#4, G#4, F#4",
+      "name": "right hand, a three: 4 3 2"
+    },
+    "5": {
+      "notes": "D#3, C#3",
+      "name": "left hand, a pair: 2 3"
+    },
+    "6": {
+      "notes": "C#3, D#3",
+      "name": "left hand, a pair: 3 2"
+    },
+    "7": {
+      "notes": "A#3, G#3, F#3",
+      "name": "left hand, a three: 2 3 4"
+    },
+    "8": {
+      "notes": "F#3, G#3, A#3",
+      "name": "left hand, a three: 4 3 2"
+    }
+  }
+}

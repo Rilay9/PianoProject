@@ -277,6 +277,23 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
 .ex-notation:not(.off) ~ .ex-chain:not(:empty) { margin-bottom: var(--ex-overlay-h, 0px); }
 .ex-tools { display: flex; justify-content: center; gap: 8px; min-height: 40px; padding: 4px; }
 .ex-keyboard { touch-action: none; padding-bottom: env(safe-area-inset-bottom); } /* as tall as every keyboard strip (.keyboard: 108px) */
+/* The exercise screen's keys moved along the piano (owner, 2026-10-17; exercise/keys.ts): Free play's row above them
+   (‹, the small piano with the keys shown marked and the keys ‹ › reach shaded, ›); hidden with a MIDI keyboard, or when
+   every key to reach is on screen. Sideways the arrows stand at the keys' two ends and the small piano sits on one line
+   above the keys, so the music keeps its height. */
+.ex-keys { flex: none; }
+.ex-shift[hidden] { display: none; }
+.fp-mini .mini-reach { fill: rgba(8, 145, 178, 0.12); }
+@media (orientation: landscape) and (max-height: 599px) {
+  .ex-keys:has(> .ex-shift:not([hidden])) { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; grid-template-rows: auto auto; }
+  .ex-keys > .ex-shift:not([hidden]) { display: contents; }
+  .ex-shift > .btn { grid-row: 1 / 3; align-self: stretch; margin: 2px; }
+  .ex-shift > #ex-down { grid-column: 1; }
+  .ex-shift > #ex-up { grid-column: 3; }
+  .ex-shift > .fp-where { grid-column: 2; grid-row: 1; flex-direction: row; max-width: none; justify-content: center; gap: 8px; padding: 2px 0; }
+  .ex-shift .fp-mini { flex: 0 1 260px; height: 12px; }
+  .ex-keys > .ex-keyboard { grid-column: 2; grid-row: 2; }
+}
 /* A rhythm set's pad (owner, 2026-10-16): one big pad across the width, as tall as Free play's keys upright; it lights
    blue when the app plays a note (rungs 0 and 1) and orange while pressed, as the keys do. */
 .ex-pad { flex: none; height: min(42vh, 360px); margin: 0 8px calc(8px + env(safe-area-inset-bottom)); border: 2px solid var(--btn-line); border-radius: 16px; background: var(--btn-bg); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 15px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }

@@ -46,7 +46,7 @@ export interface Item {
   meter?: { beats: number; beatType: number };
   fifths?: number;
   /** A "find it" card (find.ts): the words that name the place, and the keys that count (any one of them). */
-  find?: { words: string; keys: number[] };
+  find?: { words: string; keys: number[]; where?: string };
 }
 
 /** The score modes an exercise that is music can open in (Ladder needs a loop of bars, which a set does not give). */

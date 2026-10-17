@@ -4,5 +4,9 @@
   "keys": {
     "phone-upright": "C4-E5"
   },
-  "names": false
+  "names": false,
+  "click": {
+    "bpm": 72,
+    "beats": 4
+  }
 }

@@ -39,7 +39,7 @@ const failures = [];
 const check = (name, ok, detail = '') => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : ` — ${detail}`}`); if (!ok) failures.push(name); };
 const el = () => ({ textContent: '', className: '', hidden: false, innerHTML: '', value: '', addEventListener() {}, replaceChildren() {}, prepend() {}, after() {}, classList: { toggle() {}, add() {}, remove() {} } });
 const parts = () => Object.fromEntries(['set', 'left', 'mid', 'right', 'name', 'chain', 'status', 'sub', 'start', 'hear', 'help', 'after', 'again', 'next', 'misses', 'fresh', 'finish', 'back'].map((k) => [k, el()]));
-const keysStub = () => ({ onKey: null, down: new Set(), setRange() {}, choose() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, release() {} });
+const keysStub = () => ({ onKey: null, down: new Set(), moving: false, setRange() {}, choose() {}, clearMarks() {}, light() {}, wrong() {}, want() {}, reveal() {}, scatter() {}, release() {} });
 const notation = { show: async () => {}, clear() {} };
 const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play() {}, stop() {}, prepare: async () => {} };
 
@@ -612,6 +612,10 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   check('find by letter: refused: a letter that is not a white key\'s, "middle" with two of it, neither groups nor letters', Object.values(lbad).every(Boolean), JSON.stringify(lbad));
   const middle = findPool(readFindSpec({ keys: 'C3-B5', groups: ['three'], places: ['middle'] }));
   check('find: "middle" of three groups of three is the middle one', middle.length === 1 && middle[0].find.keys.join(' ') === '66 68 70', JSON.stringify(middle));
+  // (2026-10-17: what a place means over all the keys, said under the card while only part of them shows with ‹ ›)
+  const wh = Object.fromEntries(lp.map((it) => [it.name, it.find.where]));
+  check('find: each card carries what its place means over all the keys ("the lowest D", "the middle one of the Cs", "any E", "the highest group of three")',
+    wh['a D, lower down'] === 'the lowest D' && wh['a C, in the middle'] === 'the middle one of the Cs' && wh['an E'] === 'any E' && pool.find((it) => it.name === 'a group of three, higher up')?.find.where === 'the highest group of three', JSON.stringify(wh));
 }
 // A "find it" card in Drills: the key that starts the set is not an answer; a wrong key, then the right group; untimed.
 {

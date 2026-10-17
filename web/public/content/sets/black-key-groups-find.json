@@ -1,0 +1,16 @@
+{
+  "title": "Find the black-key groups",
+  "kind": "find",
+  "find": {
+    "keys": "C2-B5",
+    "groups": [
+      "two",
+      "three"
+    ],
+    "places": [
+      "any",
+      "lower",
+      "higher"
+    ]
+  }
+}

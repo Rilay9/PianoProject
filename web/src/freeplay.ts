@@ -14,6 +14,7 @@ import { stepEvidence, stepFor } from './log';
 import type { KeyEvent } from './midi';
 import type { Sound } from './sound';
 import { currentDevice } from './settings';
+import { keyName, placeWord, shiftParts, showWhere } from './key-shift';
 import { keysChord, UnderStrip } from './strip';
 
 const PHONE_SPAN = 24; // two octaves (C to C)
@@ -236,17 +237,13 @@ export class FreePlay {
   /**
    * Where the keys shown are on the whole piano (owner, 2026-10-16, after the walk-through: "the keyboard looks identical
    * after › ‹; › stops silently at the top"): the 88 keys drawn small with the part shown marked, and a word for it in the
-   * lesson's own terms (the middle, higher, lower; the top or the bottom at an end), never a note name.
+   * lesson's own terms (the middle, higher, lower; the top or the bottom at an end), never a note name. The row and its
+   * drawing are key-shift.ts's, shared with the exercise screen's keys (2026-10-17).
    */
   private where(lo: number, hi: number): void {
-    const mini = this.panel.querySelector<HTMLElement>('#fp-mini')!;
-    mini.replaceChildren(miniPiano(lo, hi));
-    const mid = (lo + hi) / 2;
-    // (at an end: the top or the bottom, as far as › or ‹ go)
-    const atTop = (this.panel.querySelector('#fp-up') as HTMLButtonElement).disabled, atBottom = (this.panel.querySelector('#fp-down') as HTMLButtonElement).disabled;
-    const word = atTop ? 'the top' : atBottom ? 'the bottom' : Math.abs(mid - 64) <= 6 ? 'the middle' : mid > 64 ? 'higher' : 'lower';
-    this.panel.querySelector('#fp-place')!.textContent = word;
-    mini.setAttribute('aria-label', `Where these keys are on the piano: ${word}`);
+    const p = shiftParts('fp', this.panel);
+    // (at an end: the top or the bottom, as far as › or ‹ go; otherwise said against the piano's middle)
+    showWhere(p, lo, hi, placeWord(lo, hi, 64, p.down.disabled, p.up.disabled), p.range.textContent ?? '');
   }
   private shift(by: number): void { if (this.range()) { this.moved += by / 12; this.drawKeys(); return; } this.from = Math.max(12, Math.min(108 - this.span(), this.from + by)); this.drawKeys(); }
   /** The phone turned (a tablet shows them all). */
@@ -328,25 +325,6 @@ export class FreePlay {
   }
 }
 
-/** The 88 keys, small, with the part from lo to hi marked (the overview above Free play's keys). */
-function miniPiano(lo: number, hi: number): SVGSVGElement {
-  const NS = 'http://www.w3.org/2000/svg', isBlack = (m: number) => [1, 3, 6, 8, 10].includes(m % 12);
-  const whites: number[] = [];
-  for (let m = 21; m <= 108; m++) if (!isBlack(m)) whites.push(m);
-  const W = 3, H = 18, svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('viewBox', `0 0 ${whites.length * W} ${H}`);
-  svg.setAttribute('preserveAspectRatio', 'none');
-  const rect = (x: number, y: number, w: number, h: number, cls: string) => { const r = document.createElementNS(NS, 'rect'); for (const [k, v] of Object.entries({ x, y, width: w, height: h })) r.setAttribute(k, String(v)); r.setAttribute('class', cls); svg.append(r); };
-  rect(0, 0, whites.length * W, H, 'mini-whites');
-  whites.forEach((m, i) => { if (i) rect(i * W, 0, 0.4, H, 'mini-line'); if (isBlack(m + 1) && m + 1 <= 108) rect(i * W + W * 0.65, 0, W * 0.7, H * 0.6, 'mini-black'); });
-  const a = whites.findIndex((m) => m >= lo), b = whites.reduce((last, m, i) => (m <= hi ? i : last), -1);
-  if (a >= 0 && b >= a) rect(a * W, 0, (b - a + 1) * W, H, 'mini-here');
-  return svg;
-}
-
-const NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
-/** A white key's name with its octave (C4, E5): the ends of chosen keys. */
-const keyName = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
 
 const TOGETHER_MS = 80; // keys pressed this close (all still down) are one line: a hand's chord lands within a few tens of ms, and a quick melody's notes are further apart
 const FROM_START = 48; // C3: the keys start there (two octaves on a phone, three on a tablet)

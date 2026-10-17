@@ -1,0 +1,9 @@
+{
+  "title": "Find the groups",
+  "screen": "drills",
+  "set": "black-key-groups-find",
+  "names": false,
+  "level": {
+    "cards": 6
+  }
+}

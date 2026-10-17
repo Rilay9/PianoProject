@@ -87,14 +87,14 @@
     },
     {
       "kind": "text",
-      "text": "# Make up a rhythm tune\nMake up a little tune on the black keys with short notes and long ones. Count \"1, 2, 3, 4\" as you play and make it two bars long. Play it a few times until it comes out the same way each time. Nothing is scored."
+      "text": "# Make up a rhythm tune\nMake up a little tune on the black keys with short notes and long ones. Count \"1, 2, 3, 4\" as you play and make it two bars long. A click keeps the beat for you, four to a bar; the **Click** button at the top turns it off if you'd rather count on your own. Play it a few times until it comes out the same way each time. Nothing is scored."
     },
     {
       "kind": "step",
       "id": "rhythm-tune",
       "title": "Make up a rhythm tune",
       "activity": "r2-rhythm-tune",
-      "about": "A two-bar tune on the black keys with short and long notes, counting 1 to 4. Nothing is scored."
+      "about": "A two-bar tune on the black keys with short and long notes, with the click, counting 1 to 4. Nothing is scored."
     },
     {
       "kind": "text",

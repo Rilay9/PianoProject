@@ -404,7 +404,7 @@ it has notes: C4 and C5 are two keys). **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
 the new item (you always play it all). Display: size A−/A+ (fixed size, building from the left; long chains wrap and
 scroll; on a phone sideways one line that scrolls sideways, the dots in the bottom bar), keyboard or nothing under
-the music.
+the music. With no MIDI keyboard and more keys than fit, the keys move along the piano with ‹ › (§4 "Moving the keys"; at help 0 and 1 they move to show the chain before it is given).
 
 **Content:** item sets (§6). Small units only; passages from pieces belong in Memorise. Rhythm sets (§4) are never
 offered in Simon (it has no rhythm): its set menu leaves them out, and a link or step naming one in Simon says so.
@@ -545,11 +545,42 @@ higher up"), and any key of that group counts; untimed, no music, nothing lit, n
 or goes on to the next card is never taken as an answer. A key of the group: clean; another key: "Not quite", it is red
 and the group named is outlined in blue ("red: a wrong key"), with Again and Next. *Show me* outlines the group (help);
 *Skip*. A card may also name **a white key by letter and a place** (2026-10-17, for the C-D-E lesson: "Find a D, higher
-up"): any key of that letter in that part of the keyboard counts. The set's keys are drawn end to end (the whole `keys`
-range, so every place named is there); the exercise screen has no ‹ ›, so the range must be what the place words need: C3–B5
-(three octaves) at 360 px draws white keys 16 px and black keys 10 px wide, C3–B4 (two) about 24 px and 14 px; a step can
-widen them per kind of screen with `keys` (§8b). **No key names or octave labels on a find-it card's keys, whatever the
-help level or `names`** (they would give the answer away). Its Level panel shows only the cards per set; Simon has none (Practise as… offers Drills only; a step or link naming one in Simon says so).
+up"): any key of that letter in that part of the keyboard counts. **The places are counted over the set's whole `keys`**
+(exactly those keys: they had been rounded out to the next C, so C3–B5 drew a C6 above "a C, higher up", which is C5;
+fixed 2026-10-17). With a MIDI keyboard, or when they fit the screen's window, they are drawn end to end. **With no MIDI
+keyboard and more keys than the window** (owner, 2026-10-17; "Moving the keys" below): a window of them with ‹ ›, and **each
+card starts with the window at a place of its own** (a white key chosen at random among those whose window lies within
+the keys, never where the card before started nor where the keys are left), so the answer is never at one spot on the
+screen and is found by the black keys' pattern and the small whole piano above the keys, which marks the window and shades
+the keys ‹ › reach. The words stay the set's ("Find a D, lower down") and the line under them says what they mean when only
+part shows: "Lower down: the lowest D you can reach with ‹ ›" ("Higher up: the highest group of three you can reach with ‹ › ·
+any key of it", "In the middle: the middle one of the Cs you can reach with ‹ ›", "Any C you can reach with ‹ ›"). A key is
+the answer only by what it is: a lower D on screen when the lowest is off screen is "Not quite", and the D outlined is brought
+on screen. C3–B5 (three octaves, the C-D-E test set) at 360×780 is a window of two octaves (white keys 24 px, black 20 px);
+at 844×390 and on a tablet all three fit (38 / 37 px white keys), so they show whole. **No key names or octave labels on a
+find-it card's keys, whatever the help level or `names`** (they would give the answer away; the window's range is not named
+either). Its Level panel shows only the cards per set; Simon has none (Practise as… offers Drills only; a step or link naming one in Simon says so).
+
+**Moving the keys (Simon and Drills; owner, 2026-10-17: "Scrollable keyboard be possible when dragging on it? Or maybe
+arrow keys at the ends? Obviously this should only be of there's no midii"; read as arrows at the ends, as Free play has,
+not dragging, since a drag on the keys would also play them; `exercise/keys.ts`, `key-shift.ts`).** The exercise screen's
+keys **reach** the keys the set's notes need, rounded out to whole octaves (at least two), or an activity's `keys` for the
+screen grown to hold every note (§8b), or a find set's `keys` exactly. With a MIDI keyboard connected that reach is drawn
+whole, as before, and no arrows show (every key is on the real keyboard). With none, when the reach is wider than the
+screen's **window** (two octaves on a phone upright: 15 white keys, 24 px each at 360 px, black keys 20 px; three octaves on
+a phone sideways, 38 px at 844, and on a tablet, 37 px at 820), the keys show a window of it with Free play's row: **‹ ›**
+an octave at a time (stopping at the reach's ends), the piano's 88 keys drawn small with the window marked and the reach
+shaded, and a word for where the window is among the keys reached (the bottom, the top, the middle, lower, higher; the
+range's names, C3–C5, only where note names are shown). Upright the row sits above the keys; sideways the arrows stand at
+the keys' two ends, as tall as the keys, and the small piano is one thin line above them. A reach that fits shows whole,
+with no row (lesson 1's copying game, C4–B4 upright, is unchanged). **The window starts** on the C at or below the set's
+lowest note. **A lit or outlined key is never off screen:** at help 0 and 1 the window moves to show the card's (or the
+chain's) keys before it is played, and any key lit or outlined (a hint, Show me, the keys you missed, the group named after
+a miss) is brought on screen, moving by whole octaves from where it is when it can; keys further apart than the window
+widen it. At help 2–5 (music, name, by ear) the window stays where the learner left it: finding the notes is theirs.
+**An arrow is never a note**: it only moves the keys; it is not judged, starts no set, card or count-in, and plays no
+sound (checked: on Ready, during a card, while a card waits to be read). Moving the keys is the learner's tool and is not
+logged. A MIDI keyboard connected part way draws the reach whole at once; unplugged, the window comes back.
 
 **Inside a lesson step the set picker lists only the sets that lesson's Simon and Drills steps use** (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/); opened from
 Practice, every set. A step's own number of cards (5) shows ticked in the Level panel.
@@ -1158,7 +1189,7 @@ Faber's Primer prints them on p. 26 (E D C D | E E E-half, right hand, middle C'
 { "title": "Find the groups", "kind": "find", "find": { "keys": "C3-B4", "groups": ["two", "three"], "places": ["lower", "higher"] } }
 ```
 
-`keys`: the keys shown, from a white key to a higher white key on the piano; the groups of black keys wholly on them are
+`keys`: the keys the cards count places over (exactly these; with no MIDI keyboard and more of them than the screen's window, a window of them with ‹ ›, §4), from a white key to a higher white key on the piano; the groups of black keys wholly on them are
 its groups (two: C♯ D♯, three: F♯ G♯ A♯), each kind ordered low to high. `groups`: `two`, `three` (each once). `letters`
 (2026-10-17): white keys by letter, `C` to `B` (each once), each letter's keys on the range ordered low to high, so
 `{ "keys": "C3-B5", "letters": ["C", "D", "E"], "places": ["lower", "middle", "higher"] }` makes nine cards ("a C, lower
@@ -1257,7 +1288,7 @@ placeholders for checking the app, not lesson content.
   start / next / carry on (Drills: Start, Next, Skip, New set; the lab: Start, or its result's main button; a lesson
   step's end: Back to the lesson; a step's result page: Next ▶; §7e). Where any octave counts (the lab while the band plays, Drills by name, Simon in
   any octave) the music uses every key, so the edges are notes there; a mash still stops.
-- Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them), or the keys a lesson step's activity chose (§8b `keys`, 2026-10-16). A diminished 7th is named from its bass (Cdim7).
+- Free play shows two octaves at a time on a phone, three on a tablet (‹ › an octave; a MIDI key outside them moves them), or the keys a lesson step's activity chose (§8b `keys`, 2026-10-16). Simon and Drills with no MIDI keyboard: a window of two octaves upright, three sideways and on a tablet, with the same ‹ › and small piano, when the set reaches more keys (§4, 2026-10-17). A diminished 7th is named from its bass (Cdim7).
 - The full PDMX set (§5c) is the learner's own copy in the app's storage: offline in a tab too, not in the backup.
 - Offline (owner, 2026-10-15: only for the installed app): installed (Chrome ⋮ → Install app / Add to Home screen),
   the app saves everything (app, scores, sets and the files they point to, lessons and their files, the catalogue,
@@ -1676,7 +1707,7 @@ screen's own keys keep 0.6). **The music always fits:** Simon and Drills grow th
 the score's Wait for me fixes it when the run is set up: the range with every key your hands play in the bars of the
 run (the loop, else the whole piece), so it never changes while you play (decided 2026-10-16; K. 2's right hand, bars
 1–4, with C5–B5 shows E4–B5 from the start; it changes only when the bars, the hands or the kind of screen change), each end moved out to the next white key: a key the step asks for is never hidden. Free play shows the
-range and **‹ ›** move it an octave at a time from there (a MIDI key outside it moves it by octaves until it shows).
+range and **‹ ›** move it an octave at a time from there (a MIDI key outside it moves it by octaves until it shows). In Simon and Drills (2026-10-17) the range, grown to hold the set, is what the keys **reach**: with no MIDI keyboard and a range wider than the screen's window (two octaves on a phone upright, three sideways and on a tablet) a window of it shows with ‹ › (§4 "Moving the keys"); so a step that wants every key in view at once on a phone upright gives at most two octaves there. No new field: the window's size comes from the kind of screen.
 In force while the activity lasts: your own set chosen, another piece, or ← and the screen's own keys are back (a
 score activity's keys only in Wait for me, as its keys are only played there). Refused: a range not so written, off
 the piano (A0–C8), not going from lower to higher, starting or ending on a black key; a screen name that is not one of

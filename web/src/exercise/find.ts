@@ -91,6 +91,17 @@ const PLACE_WORDS: Record<FindPlace, string> = { any: '', lower: 'lower down', m
 export const findWords = (g: FindGroup | FindLetter, p: FindPlace): string => [g in GROUP_WORDS ? GROUP_WORDS[g as FindGroup] : `${g === 'A' || g === 'E' || g === 'F' ? 'an' : 'a'} ${g}`, PLACE_WORDS[p]].filter(Boolean).join(', ');
 
 /**
+ * What the place means, counted over all the set's keys (2026-10-17: when only some of them show at a time, with ‹ ›,
+ * "lower down" is still the lowest of all, not of those on screen): "the lowest D", "the middle one of the groups of
+ * three", "any group of two". Drills says it under the card while the keys can move: "Lower down: the lowest D you can
+ * reach with ‹ ›".
+ */
+export function whereWords(g: FindGroup | FindLetter, p: FindPlace): string {
+  const group = g in GROUP_WORDS, one = group ? `group of ${g}` : g, many = group ? `groups of ${g}` : `${g}s`;
+  return p === 'lower' ? `the lowest ${one}` : p === 'higher' ? `the highest ${one}` : p === 'middle' ? `the middle one of the ${many}` : `any ${one}`;
+}
+
+/**
  * The set's cards: one for each group at each place. Each item's groups are the groups that count (any key of any of
  * them), its `find` the keys that count; its name the words.
  */
@@ -101,7 +112,7 @@ export function findPool(spec: FindSpec): Item[] {
     for (const p of spec.places) {
       const chosen = p === 'any' ? mine : p === 'lower' ? [mine[0]] : p === 'higher' ? [mine[mine.length - 1]] : [mine[(mine.length - 1) / 2]];
       const words = findWords(g, p);
-      out.push({ n: out.length + 1, name: words, short: String(out.length + 1), groups: chosen.map((x) => x.keys.map(spelled)), find: { words, keys: chosen.flatMap((x) => x.keys) } });
+      out.push({ n: out.length + 1, name: words, short: String(out.length + 1), groups: chosen.map((x) => x.keys.map(spelled)), find: { words, keys: chosen.flatMap((x) => x.keys), where: whereWords(g, p) } });
     }
   }
   // Letters: any key of that letter in that part of the keyboard ("a D, higher up").
@@ -110,7 +121,7 @@ export function findPool(spec: FindSpec): Item[] {
     for (const p of spec.places) {
       const chosen = p === 'any' ? mine : p === 'lower' ? [mine[0]] : p === 'higher' ? [mine[mine.length - 1]] : [mine[(mine.length - 1) / 2]];
       const words = findWords(l, p);
-      out.push({ n: out.length + 1, name: words, short: String(out.length + 1), groups: chosen.map((k) => [spelled(k)]), find: { words, keys: chosen } });
+      out.push({ n: out.length + 1, name: words, short: String(out.length + 1), groups: chosen.map((k) => [spelled(k)]), find: { words, keys: chosen, where: whereWords(l, p) } });
     }
   }
   return out;

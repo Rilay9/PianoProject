@@ -122,6 +122,10 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   from a layer the checks always tapped away first. Tap the real target through the cover.
 - **A word read in one moment.** The count-in said "0" for its first 30 ms; a check that read the status once never saw
   it (2026-10-16). Sample a changing line all the way through, not once.
+- **More drawn than the words count.** A find set's keys C3–B5 were rounded out to the next C, so a C6 showed above "a C,
+  higher up", which counts C5 (the highest C of the set's keys): a learner pressing the highest C drawn was wrong. The
+  check allowed it (`hi >= 83`). Where words name a place among things on screen (highest, lowest, middle), check that
+  what is drawn or reachable is exactly what the words count, at its ends too (2026-10-17).
 - **Where you are, rewritten by every visit.** Drawing a lesson page made it "the lesson you are on", so finishing a lesson
   and pressing Next put the finished lesson back on Home ("Again · lesson 1") (2026-10-16). After a lesson's last step,
   check Home, Path's Carry on and Switch as a learner would come back to them.
@@ -142,5 +146,9 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   PDF open race or the double + Add; holding the big file's bytes back in the page, and blocking the offline cache
   (it answered before a slowed download ever ran), did. A check that also passes on the build before the fix proves
   nothing: build the old commit and run it there (`tests/browser.mjs --url`; 2026-10-14).
+- **A tap on the "Tap anywhere to start" cover reaches what is under it** (since 2026-10-16 the first tap is played as well as
+  starting the sound). A check that taps the cover and then taps Start can find Start already gone, when the cover's tap
+  landed on it; and the cover shows only sometimes in a headless browser, so the check crashes now and then (2026-10-17,
+  walkfix 12). Tap a button only while it shows, or tap the cover away from the button you mean.
 - Report what was run and what was not. Real phone, real keyboard, and anything heard are not covered by any of
   this; say so.

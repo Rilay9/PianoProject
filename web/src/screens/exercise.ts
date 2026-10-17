@@ -7,6 +7,7 @@ import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX
 import { Drill, NO_KEYBOARD, type DrillLevel } from '../exercise/drill';
 import { loadSets, type ItemSet } from '../exercise/items';
 import { ExerciseKeys } from '../exercise/keys';
+import { shiftParts } from '../key-shift';
 import { ExerciseNotation } from '../exercise/notation';
 import { PAD_KEY, RhythmPad } from '../exercise/pad';
 import { calibrationFor, calibrationOffered, markCalibrationOffered } from '../calibration';
@@ -27,7 +28,7 @@ export type ExerciseScreen = Screen & {
   close(): void;
   readonly isOpen: boolean;
   /** For checks. */
-  debug(): { simon: number[][]; drill: ReturnType<Drill['debug']>; pad: RhythmPad['lastTap'] };
+  debug(): { simon: number[][]; drill: ReturnType<Drill['debug']>; pad: RhythmPad['lastTap']; keys: ReturnType<ExerciseKeys['where']> };
 };
 
 /** An activity's set, its preset level and (2026-10-16) the keys it chose for each kind of screen. */
@@ -35,7 +36,10 @@ type ExerciseActivity = { set: string; level: object; title?: string; keys?: Cho
 
 export function createExerciseScreen(app: App, closed: () => void, calibrate: () => void = () => {}): ExerciseScreen {
   const { sound, midi } = app;
-  const exerciseKeys = new ExerciseKeys($('ex-keyboard'), sound);
+  // The keys move along the piano with ‹ › (Free play's row, key-shift.ts) when no MIDI keyboard is connected (owner,
+  // 2026-10-17): with one, every key is on it, and the keys the set reaches are drawn whole as before.
+  const exerciseKeys = new ExerciseKeys($('ex-keyboard'), sound, shiftParts('ex'));
+  exerciseKeys.movable = () => !inputs.length;
   const exerciseNotation = new ExerciseNotation($('ex-notation'));
   // A rhythm set's one big pad, in place of the keys (owner, 2026-10-16; exercise/pad.ts).
   const pad = new RhythmPad($('ex-pad'), sound);
@@ -73,7 +77,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     devicesBefore(names);
     inputs = names;
     if (names.length && isOpen() && $('ex-status').textContent === NO_KEYBOARD) { $('ex-status').textContent = ''; $('ex-status').className = 'ex-status'; }
-    if (isOpen()) { if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine(); }
+    if (isOpen()) { exerciseKeys.refresh(); if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine(); } // (a keyboard came or went: the keys drawn whole, or moving with ‹ ›)
   };
   // No music on screen (Ready, a name, by ear, the results): nothing for A−/A+ to size, so they go.
   exerciseNotation.onShown = (on) => $('exercise').classList.toggle('no-music', !on);
@@ -85,7 +89,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // Sideways the size and Hear tools join the one bar of what it says and its buttons; otherwise their own row.
     const tools = $('ex-tools'), sideways = currentDevice() === 'phone-sideways';
     if (sideways && tools.parentElement !== $('ex-overlay')) $('ex-overlay').append(tools);
-    if (!sideways && tools.parentElement !== $('exercise')) $('exercise').insertBefore(tools, $('ex-keyboard'));
+    if (!sideways && tools.parentElement !== $('exercise')) $('exercise').insertBefore(tools, $('ex-keys'));
     // And the score line (Card 2 of 10 · 1 clean · Music only) joins the header row.
     const head = $('exercise').querySelector<HTMLElement>('.fp-head')!, line = $('exercise').querySelector<HTMLElement>('.ex-score')!;
     if (sideways && line.parentElement !== head) head.insertBefore(line, $('ex-level'));
@@ -104,6 +108,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // A rhythm set: the pad instead of the keys, always (it is what you tap; owner, 2026-10-16).
     const rhythm = exerciseKind === 'drill' && drill.rhythmNow;
     $('ex-keyboard').classList.toggle('off', rhythm || (d.under === 'nothing' && rung > 1));
+    exerciseKeys.refresh(); // (the keys shown or hidden: their ‹ › with them)
     if ($('ex-pad').hidden !== !rhythm) { $('ex-pad').hidden = !rhythm; if (!rhythm) pad.release(); }
     // The timing check offered once, the first time a rhythm set opens (owner, 2026-10-16), unless one is kept already.
     $('ex-calib').hidden = !(rhythm && !calibrationOffered() && !calibrationFor('screen'));
@@ -348,6 +353,6 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // A panel (Level) over the game or the card: it pauses, and carries on when it closes (owner, 2026-10-15).
     panel: (open: boolean) => { if (exerciseKind === 'drill') drill.panel(open); else simon.panel(open); },
     get busy() { return isOpen(); },
-    debug: () => ({ simon: simon.expected(), drill: drill.debug(), pad: pad.lastTap }),
+    debug: () => ({ simon: simon.expected(), drill: drill.debug(), pad: pad.lastTap, keys: exerciseKeys.where() }),
   };
 }

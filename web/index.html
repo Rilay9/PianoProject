@@ -185,7 +185,12 @@
       <button id="ex-hear" type="button" class="btn" hidden>Hear it</button>
       <button id="ex-finish" type="button" class="btn" hidden>Finish</button>
     </div>
-    <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
+    <!-- The keys, moved along the piano with ‹ › when no MIDI keyboard is connected and more keys can be reached than fit
+         (owner, 2026-10-17; exercise/keys.ts): Free play's row (key-shift.ts); sideways the arrows at the keys' two ends. -->
+    <div id="ex-keys" class="ex-keys">
+      <div id="ex-shift" class="fp-shift ex-shift" hidden><button id="ex-down" type="button" class="btn" aria-label="The keys an octave lower">‹</button><span class="fp-where"><span id="ex-mini" class="fp-mini"></span><span class="fp-where-words"><span id="ex-place"></span> <span id="ex-range"></span></span></span><button id="ex-up" type="button" class="btn" aria-label="The keys an octave higher">›</button></div>
+      <div id="ex-keyboard" class="keyboard ex-keyboard"></div>
+    </div>
     <!-- A rhythm set: one big pad to tap, in place of the keys (owner, 2026-10-16; exercise/pad.ts). -->
     <div id="ex-calib" class="ex-calib" hidden><span>A timing check first? You tap along with 8 clicks, and your taps are judged with this device's delay allowed for.</span><button id="ex-calib-go" type="button" class="btn main">Timing check</button><button id="ex-calib-no" type="button" class="btn">Not now</button></div>
     <div id="ex-pad" class="ex-pad" aria-label="Rhythm pad: press for each note and hold it for its length" hidden><span>Press · hold each note its length</span></div>

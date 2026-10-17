@@ -298,6 +298,8 @@ export class Simon {
       });
       if (this.set.order !== 'passage') t += ITEM_GAP_MS; // a passage runs on in its own rhythm
     }
+    // Keys lit as it plays (help 0 and 1): the keys moved to show the chain before it is given (keys.ts; 2026-10-17).
+    if (keysLit(rung)) this.keys.reveal(steps.flatMap((s) => s.keys));
     if (sounds) this.sound.play(events, [], 0, 1);
     let lastItem = -1;
     for (const step of steps) {

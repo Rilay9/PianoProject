@@ -251,7 +251,8 @@ export class Drill {
     // now is not counted (owner, 2026-10-16), and comes back counted if its set is chosen again.
     if (remember) { this.stored.set = this.set.id; this.save(); this.keys.choose(null); }
     // (a "find it" set: its keys from end to end, so every group it names is there and none is given away)
-    this.keys.setRange(this.set.find ? [this.set.find.lo, this.set.find.hi] : this.set.items.flatMap((it) => it.groups.flat().map(midiOf)));
+    // (exactly those keys, 2026-10-17: rounded out to C6, C3–B5 drew a C above "a C, higher up", which is C5)
+    this.keys.setRange(this.set.find ? [this.set.find.lo, this.set.find.hi] : this.set.items.flatMap((it) => it.groups.flat().map(midiOf)), !!this.set.find);
     this.reset();
   }
 
@@ -425,6 +426,8 @@ export class Drill {
     this.legend('');
     this.beats(null);
     if (card.find) { this.findTurn(); return; } // (the key that brought it is not an answer: the card was not on screen yet)
+    // Keys lit as it plays (help 0 and 1): the keys moved to show the card's notes before it starts (keys.ts; 2026-10-17).
+    if (keysLit(rung) && !card.rhythm) this.keys.reveal(card.steps.flatMap((s) => s.keys));
     this.demoAt = performance.now(); // (a key while it is drawn is the one that brought it: no skip)
     this.state = 'demo'; // the counter counts this card from now; keys wait until it is your turn (turn() or the demo below)
     this.scoreLine();
@@ -449,7 +452,13 @@ export class Drill {
     this.scoreLine();
     this.ui.name.className = 'ex-name big find';
     this.ui.name.textContent = `Find ${c.item.find!.words}`;
-    this.status('Your turn', /^a group/.test(c.item.find?.words ?? '') ? 'Play any key of it' : c.item.find!.keys.length > 1 ? 'Play any one' : 'Play it');
+    // The keys start at a place of their own on each card when they can move (keys.ts scatter, owner 2026-10-17: found by
+    // the black keys' pattern, not a spot on the screen); the place is then said over all the keys ‹ › reach.
+    this.keys.scatter();
+    const f = c.item.find!, group = /^a group/.test(f.words);
+    const place = f.words.split(', ')[1] ?? '';
+    const reach = this.keys.moving && f.where ? `${place ? `${place[0].toUpperCase()}${place.slice(1)}: ${f.where}` : `${f.where[0].toUpperCase()}${f.where.slice(1)}`} you can reach with ‹ ›` : '';
+    this.status('Your turn', joinWords(reach, group ? (reach ? 'any key of it' : 'Play any key of it') : reach ? '' : f.keys.length > 1 ? 'Play any one' : 'Play it'));
     this.ui.help.hidden = false;
     this.ui.help.textContent = 'Show me';
     this.ui.after.hidden = false; // Skip, if you cannot find it

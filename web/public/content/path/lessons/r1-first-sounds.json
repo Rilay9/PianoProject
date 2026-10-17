@@ -3,18 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the app can't see it). The copying game is the one part the app scores; the rest you'll check for yourself at the end."
-    },
-    {
-      "kind": "text",
-      "text": "Let's start with a sound. Tap **Start** below to open the keys. Find two black keys sitting close together and tap them, one after the other. Now find another pair of black keys far over to the right and tap those (use the arrows beside the keys to reach higher and lower keys). Then one far over to the left. Hear how the sound goes up as you move right, and down as you move left? When you're done, come back here with ←."
-    },
-    {
-      "kind": "step",
-      "id": "first-sounds",
-      "title": "Your first sounds",
-      "activity": "r1-first-sounds",
-      "about": "Tap a pair of black keys, then a pair far to the right (›), then one far to the left (‹)."
+      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the app can't see it). Two parts are scored by the app, finding the groups and the copying game; the rest you'll check for yourself at the end."
     },
     {
       "kind": "text",
@@ -28,14 +17,29 @@
     },
     {
       "kind": "text",
-      "text": "# Find the groups\nTap each group of two black keys you can see, from left to right. Then tap › once to move an octave higher and tap the groups of two there too. Now come back down with ‹, past where you started, and do the same one octave lower. That's three places on the keyboard. Then do the same with the groups of three, starting high and working down.\n\nUse whichever finger is comfortable on the screen. Listen to the sound climbing as you go right, and falling as you go left."
+      "text": "# Your first sounds\nTap **Start** below to open the keys. On the screen the black keys are outlined in their groups, an orange line round each **two** and a blue one round each **three**. Tap the two black keys of a pair, one after the other. Then tap › to move higher up the piano and play a pair there, and ‹ to come back down, past where you started, and play a pair low down. The small drawing of the whole piano above the keys shows where you are. Then do the same with the groups of three.\n\nUse whichever finger is comfortable on the screen. Hear how the sound climbs as you go right and falls as you go left. When you're done, come back here with ←."
     },
     {
       "kind": "step",
-      "id": "find-groups",
+      "id": "first-sounds",
+      "title": "Your first sounds",
+      "activity": "r1-first-sounds",
+      "about": "Pairs, then threes: here, higher up (›) and lower down (‹). Nothing is scored."
+    },
+    {
+      "kind": "text",
+      "text": "# Find the groups\nNow a check of what you've found. Each card names a group, \"a group of three\" or \"a group of two, lower down\": find it and tap any key of it. The screen shows only part of the piano, so use ‹ and › to move along it; the small drawing above the keys shows where you are. Each card starts somewhere new, so look for the pattern, not for a spot you remember. \"Lower down\" means the lowest one you can reach, \"higher up\" the highest. There's no clock, and if you tap the wrong place the app shows you the right group."
+    },
+    {
+      "kind": "step",
+      "id": "find-the-groups",
       "title": "Find the groups",
-      "activity": "r1-find-groups",
-      "about": "The groups of two here, then one octave higher (›), then lower (‹ past where you started); then the groups of three, high to low."
+      "activity": "r1-find-the-groups",
+      "target": {
+        "clean": 5
+      },
+      "doneWhen": "5 of the 6 cards right first time",
+      "about": "Find the group each card names and tap any key of it; ‹ › move along the piano."
     },
     {
       "kind": "text",
@@ -62,6 +66,23 @@
       "caption": "Made for children: finger numbers with games."
     },
     {
+      "kind": "keys",
+      "notes": "C#4 D#4 F#4 G#4 A#4",
+      "fingers": "2 3 2 3 4",
+      "caption": "Right hand: fingers 2 and 3 on a pair, 2, 3 and 4 on a three."
+    },
+    {
+      "kind": "text",
+      "text": "# Fingers on the groups\nNow give the groups their fingers. Every black key on the screen now has a finger number on it. Each card plays a pair or a three, lighting the keys as they sound; then it's your turn, starting from the lit key: tap them one after the other and **say each finger number out loud** as you tap. The first cards are for the right hand, on the higher keys: 2 and 3 on a pair, 2, 3 and 4 on a three. Then the left hand, on the lower keys: its fingers are numbered from the thumb too, so on a pair it's 3 and 2 going up, on a three 4, 3 and 2.\n\nThe screen is too small for three real fingers and can't see which finger you use, so here it's the numbers you're learning. At a table or a keyboard, rest those fingers on the groups and play them with the right fingers."
+    },
+    {
+      "kind": "step",
+      "id": "fingers",
+      "title": "Fingers on the groups",
+      "activity": "r1-fingers",
+      "about": "Tap each lit key and say its finger number: right hand first, then left."
+    },
+    {
       "kind": "text",
       "text": "# Playing a key, and letting it go\nAt a real keyboard, play a key with a **firm fingertip**: the tip keeps its shape and the key goes down. Then **let it go**: the key comes back up by itself and lifts your finger with it. You don't need to pull your finger up, and you don't need to press hard. Keep your wrist loose, as if it were floating. Loose doesn't mean sagging: the wrist stays about level with your forearm and knuckles, as in the sitting section.\n\nOn a phone or tablet screen there's no key to push down, so it's simply a light tap with your fingertip, then lifting off.\n\nIf you're at a keyboard now, try travelling on the groups the way pianists first learn to: put your right hand's fingers **2 and 3** on a group of two black keys in the middle, play them together, softly, and let your hand float up to the next group of two to the right. Keep going to the top. Then your left hand's **2 and 3**, travelling down to the left. Then the groups of three, with fingers **2, 3 and 4**."
     },
@@ -78,7 +99,7 @@
       "target": {
         "chain": 3
       },
-      "about": "The black keys around middle C; the keys light up as you hear them."
+      "about": "The black keys around middle C: watch, listen, then play the pattern back."
     },
     {
       "kind": "text",
