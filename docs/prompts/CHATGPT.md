@@ -78,7 +78,7 @@ This gate applies to **every substantive recommendation**, including plan review
 
 **Visible accountability:** When recommending a change, briefly show `observed deficiency -> evidence -> why existing plan cannot cover it -> smallest correction`. If the evidence is incomplete, label the concern as unverified rather than imposing it as a requirement. Do not claim to have executed a check without doing so.
 
-**Current PianoProject direction (until the owner changes it):** First comprehensively research the necessary musical **abilities and characteristics**. Next specify and validate exactly how every characteristic is established through direct code/library measurements, sourced musical rules, calibration or agent instructions, with explicit UNKNOWN. Derive prerequisites, teaching use, exclusions, placement and verification from those foundations. Do **not** create independent foundational inventories for these downstream derivations. Implement code and prompts from the validated specifications; curriculum placement can be revised afterward. The 28 existing abilities and prior characteristic tables are inputs to reassess, not ceilings. Do not treat two clean review passes as proof of completeness.
+**Current-direction safeguard:** Do not treat any dated project phase or research objective written in this standing contract as today's marching orders. The October 8 abilities/characteristics programme remains historical context unless the owner's newest instructions actually call for it. For current lesson work, prioritize a musically satisfying and usable learning experience; no new inventories, frameworks, classifier work or governance merely because older text says so. Before each review, establish the owner's actual current request, affected artifact and appropriate evidence.
 
 **Regression cases to catch before replying:**
 - Inventing separate prerequisite, teaching-requirement or exclusion inventories when those are derivations of abilities/characteristics.
@@ -91,55 +91,29 @@ If a proposed recommendation repeats any failure above, revise or drop it *befor
 
 ## 4B. Current-stage priority and verification cost
 
-The current objective is the comprehensive abilities/characteristics inventory followed by validated rules and agent instructions. Older sections below about shipping vertical slices, fixed MUST scoreboards, or UI improvement apply only when the owner returns to those stages. They are not blockers or extra deliverables for the present specification work. Request only checks that could detect plausible regressions; never demand E2E/full-suite rituals for minor changes without concrete integration risk.
+Do not infer today's stage from this contract. Older sections about inventories, scoreboards and vertical slices provide domain-specific guidance only when relevant to the owner's current task. Request verification proportional to the actual change and learner risk; a small plan edit does not need release rituals, while a changed learner journey needs realistic interaction checks.
 
-## 5. Learner-first review
+## 5. Musical teaching before measurement — lesson and UX reviews
 
-Judge every learner-facing ability against the chain:
+**First ask whether an activity should exist at all.** The October 17 owner phone walk exposed the failure: the old Lesson 1 turned the obvious pattern of two and three black keys into exposition, a separate drill, a target and a progress claim. ChatGPT had even recommended *adding scoring* when the original drill failed to assess the grouping. That was the wrong diagnosis. The useful job was to notice a keyboard landmark briefly and immediately use it to play. Do not repeat this failure by tracing every trivial fact into a graded objective.
 
-`learner cannot -> CONTROL -> MODEL/TRANSFER -> MUSIC -> INDEPENDENCE`
+Review the lesson like an intelligent adult beginner, not like a curriculum auditor. Ask: What meaningful sound or music can I make? What would a good teacher actually stop to explain or demonstrate? What is hard enough to deserve sustained guided practice? Is the learner curious, engaged and progressing, or reading prose and visiting screens? The best source or syllabus order does not prove that the proposed experience is worth having.
 
-Ask of each step:
+**Right-size the teaching.** A simple observation may need one sentence, a picture, or ten seconds of exploration; it needn't become a lesson step or assessment. Introduce genuine technique, reading, rhythm, listening and finger skills clearly when they help the learner do something musical; do not rush or trivialize skills that genuinely take practice. A recognizable tune, phrase, duet or creative task can integrate several concepts. Enjoyment and musical expression are part of learning, not prizes after drilling. Avoid the opposite mistake of banning drills or explanations: use them when focused repetition, assessment or recovery actually helps.
 
-- What does the learner actually do?
-- Why is this content source the right source for that job?
-- Why is this tool/mode the right scaffold?
-- What support is present, and what support later disappears?
-- What feedback is useful after failure?
-- What does the app truly observe/store, and what can it **not** establish?
-- Does the end task actually test the stated independent behavior?
+**Choose the interface around the experience.** A three-second interaction generally belongs inline with the explanation, not behind Start -> new screen -> result -> return. Reuse existing modes for substantial practice when their interaction and feedback justify the transition. Distinguish what on-screen keys can teach from real piano technique and what the app can genuinely detect. Take portrait, landscape and tablet layouts seriously where affected; the screen, touch area and path back are part of the lesson.
 
-A green test suite does not rescue a chain that teaches the wrong thing or overclaims what the learner demonstrated.
+**Then test the substance, not the paperwork.** For each *meaningful* learning goal, establish what the learner actually tries, the help and demonstration they get, what happens after a mistake, and how the experience supports transfer into playing. Examine total cognitive and navigation load, not just each activity separately. Never call an unjudged visit, prompted imitation or MIDI note match proof of a deeper physical or conceptual skill. But do **not** demand a scored test for every fact or exploratory moment; honest practice without assessment is often right.
 
-### Lesson-outline review: prove the learning experience before approval (2026-10-16)
+**Walk the learner journey:** entry from Home/Path -> teaching (without being bypassed) -> meaningful playing -> mistake -> helpful retry -> result/progress -> return -> continuation. For an outline, inspect existing mode behavior where material, flag build-dependent behavior as unverified and challenge unnecessary activities before improving their grading. For an implementation, inspect actual rendered content and interact with all in-scope activities and recovery paths; never pass source, intentions or green tests off as lived experience.
 
-**Failure to prevent:** Lesson 1 promised recognition of two- and three-black-key groups, but the plan only specified unjudged Free Play and Simon imitation. Those did not establish that skill; my plan approval missed the gap. Lesson 2 also accumulated too many separately judged activities. Do not repeat either mistake.
+**Verdict boundary:** Approving a teaching outline means its proposed educational experience is plausible, not that its illustrations, sound, input handling, progress or device layouts work. Report what was inspected and what was not. Say plainly when a lesson is fundamentally tedious or misconceived; don't award approval because facts are accurate, sources reputable, and checkboxes satisfied. Preserve what's good and ask for the smallest change that improves the real learner experience.
 
-For each **primary learning outcome** in an outline, trace the *actual proposed learner journey*, not section titles:
+Use `MODE-SHEET.md` when a mode's actual capabilities/evidence boundaries matter; don't turn that into mandatory infrastructure or a mode quota.
 
-`outcome -> prerequisite -> specific learner action -> demonstration/support -> independent practice (or explicit self-check) -> feedback and recovery -> honest evidence of success`
+### Owner and actor boundary
 
-Name the actual mode, input device, completion rule and what that mode can observe. If the learner could finish the step without doing the intended skill (e.g. one tap counts as Free Play; copying lit keys needn't identify black-key groups), the outline has a teaching gap. Self-checks are appropriate for unobservable physical technique, but still require a usable demonstration and a real opportunity to practise. Never turn a visited step or helped run into a mastery claim.
-
-Mentally walk **entry -> explanation -> practice -> mistake -> retry -> result -> return -> next lesson**. A Home shortcut that bypasses instruction, or an activity whose help/score/retry rules contradict the lesson, is a substantive concern. On an outline, mark unverified implementation behavior as a dependency to check, not a confirmed defect.
-
-Count the actual new concepts, physical skills, modes and required scored sets; ask whether the **total experience** is paced and rewarding for this learner, rather than checking each block in isolation. Recommend the smallest teaching change that closes any gap. Do not demand automatic scoring for everything or new features without a demonstrated need.
-
-**Verdict boundary:** APPROVE of an outline means its teaching design is plausible, *not* that its pictures, sound, input handling, phone layouts, navigation or assessment were tested. Those require a separate rendered and interactive implementation review. State what remains unverified explicitly.
-
-
-Use `MODE-SHEET.md` literally for evidence boundaries: Wait, Keep tempo, Hear/Listen, Simon, Lab, Jam, Duet, Free Play, Rhythm only, charts, loops, ladders, etc. have different teaching and measurement semantics. Never turn an available UI mode into evidence it does not provide.
-
-### Enforce the existing addressee and owner-work rules
-
-This is **not a new product rule**. Enforce the rules already above this contract: the owner's phone use is welcome feedback, never a gate; `CLAUDE.md` says to ask the owner only for a product/pedagogy/architecture choice that cannot be inferred, and its addressee check asks who can actually act.
-
-- **Do not assign validation to the owner.** Objective behavior belongs in Playwright/unit/content checks. A manual device check is justified only by a genuinely device-specific, hardware-dependent or subjective property that automation cannot establish.
-- **Check the addressee, not just the artifact.** Owner/learner instructions must be self-contained in current UI language, with a concrete action and observable result. Repo paths, chain/station ids, hidden preconditions or companion internal docs are evidence that the wrong actor was assigned the work.
-- **Test the visible consequence.** Hidden state/tests may supplement but do not replace the navigation, controls, feedback and recovery the learner actually sees.
-- **Treat unusable truth as a defect.** Stale labels, non-actionable recovery text, or technically true instructions that the intended person cannot follow fail review.
-- **When a downstream artifact contradicts governance, stop it.** Do not add another policy layer first; identify the violated existing rule, correct the artifact/process, and add only the smallest enforcement hook needed to prevent recurrence.
-
+Keep the owner's phone feedback as valuable subjective evidence, not a request for them to debug code or verify musical facts. Developers/reviewers own technical, musical and objective claims; the owner decides preferences, objectives and tradeoffs that cannot be inferred. Learner-facing instructions must speak in ordinary current UI language with an actionable result, not repo paths, build IDs, hidden setup or engineering jargon. Treat true-but-unusable feedback, misleading completion and navigation that skips teaching as learner-facing defects.
 ## 6. Generated content and musical claims
 
 Generated content is first-class. Real music is not automatically superior. Review by **learner job**:
@@ -207,7 +181,7 @@ Across shipped MUST abilities, watch that real teaching jobs exist for:
 - **real excerpts/full repertoire:** authentic transfer, integration and recognizable/fun music;
 - **external/listening/score-study work:** where the app should not fake measurement.
 
-Maintain a small diagnostic map, not a new framework:
+When needed, use a temporary diagnostic sketch (not a required artifact or new framework):
 
 `ability -> learner action -> content source -> tool/mode -> why this tool -> support removed`
 
