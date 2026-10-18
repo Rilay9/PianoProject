@@ -350,6 +350,12 @@ point in the path:
 - **Worth it:** whether a beginner would feel it was worth doing, and whether anything in it would confuse them (a
   tap on a beat they haven't heard yet, a hold that was never taught, a sound that isn't the piano).
 
+These lines are for the owner to check, not a guard that works by itself. A five-agent beginner walk-through of lessons 1
+and 2 (2026-10-17) didn't catch any of the faults above: the walkers called steps "box-ticking" and "a 15-second
+game" but asked for more checking, which became a judged find-it step, drilling the obvious further. Agents playing a
+beginner find bugs and contradictions; they don't judge whether a step is worth having (`design/lesson-notes.md`).
+When a walker or I find a step thin, it goes to the owner as a question, never straight to a fix that adds a step.
+
 ---
 
 ## 7. Mapping to the app's modes, second
