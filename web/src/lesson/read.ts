@@ -27,7 +27,7 @@ export type Block =
   /** size "row": a compact line in a list of reference videos, played in place when tapped; left out, the full player. */
   | { kind: 'video'; youtube: string; title: string; start?: number; end?: number; caption?: string; size?: 'row' }
   | { kind: 'score'; source: ScoreSource; tempo?: number; keys: boolean; caption?: string }
-  | { kind: 'keys'; notes: string[]; fingers?: (number | null)[]; caption?: string }
+  | { kind: 'keys'; notes: string[]; fingers?: (number | null)[]; names?: false | 'letters'; caption?: string }
   | { kind: 'animation'; src: string; alt: string; caption?: string }
   | { kind: 'step'; id: string; title: string; activity: string | Activity; doneWhen?: string; target?: Target; about?: string;
       /** A target given with an activity named by id: checked against that activity once it is read (checkTarget). */
@@ -49,7 +49,7 @@ const BLOCKS: Record<Block['kind'], { need: string[]; may: string[] }> = {
   image: { need: ['src', 'alt'], may: ['caption'] },
   video: { need: ['youtube', 'title'], may: ['start', 'end', 'caption', 'size'] },
   score: { need: [], may: ['piece', 'bars', 'set', 'item', 'musicxml', 'tempo', 'keys', 'caption'] },
-  keys: { need: ['notes'], may: ['fingers', 'caption'] },
+  keys: { need: ['notes'], may: ['fingers', 'names', 'caption'] },
   animation: { need: ['src', 'alt'], may: ['caption'] },
   step: { need: ['id', 'title', 'activity'], may: ['doneWhen', 'target', 'about'] },
   tip: { need: ['text'], may: ['label'] },
@@ -193,7 +193,10 @@ function readBlock(b: unknown, i: number, lessonId: string, ids: Set<string>): B
         if (f.length !== notes.length) throw new Error(`${where}.fingers gives ${f.length} for ${notes.length} notes (one each; "-" for none)`);
         fingers = f.map((x) => { if (x === '-') return null; if (!/^[1-5]$/.test(x)) throw new Error(`${where}.fingers: "${x}" is not a finger 1 to 5 (or "-")`); return Number(x); });
       }
-      return { kind: 'keys', notes, fingers, caption };
+      // names (2026-10-17): false, no octave labels on the keys (a lesson before names are taught); "letters", the
+      // marked keys' letters on them (C, D, E: no octave numbers); left out, the octave labels as before.
+      if (b.names !== undefined && b.names !== false && b.names !== 'letters') throw new Error(`${where}.names should be false or "letters"`);
+      return { kind: 'keys', notes, fingers, ...(b.names !== undefined ? { names: b.names as false | 'letters' } : {}), caption };
     }
     case 'step': {
       const id = str(b.id, `${where}.id`);

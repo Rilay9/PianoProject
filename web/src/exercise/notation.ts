@@ -173,7 +173,7 @@ export class ExerciseNotation {
     box.append(this.small);
     new ResizeObserver(() => {
       if (!this.loaded || this.box.clientWidth <= 0) return;
-      if (this.mode === 'card') this.fitCard();
+      if (this.mode === 'card') { if (this.box.clientWidth !== this.width) this.draw(); else this.fitCard(); } // (a new width: one line or two chosen again)
       else if (this.box.clientWidth !== this.width) this.draw();
     }).observe(box);
     this.osmd = new OpenSheetMusicDisplay(this.small, {
@@ -246,38 +246,63 @@ export class ExerciseNotation {
     else if (bottom + margin > box.bottom - reserve) this.box.scrollTop += bottom + margin - (box.bottom - reserve);
   }
 
-  /** A card: drawn once on one line (a wide page), cropped to the music, then scaled to the room. */
+  /**
+   * A card: drawn on one line (a wide page), cropped to the music, then scaled to the room. A card of two bars or more
+   * is also drawn with its bars on two lines, and the way that comes out bigger in the room is kept (owner, 2026-10-17:
+   * a four-bar line was small on a phone upright; two lines of two there, one line sideways).
+   */
   private drawCard(): void {
+    this.width = this.box.clientWidth;
+    const bars = this.osmd.Sheet?.SourceMeasures.length ?? 0;
+    const one = this.renderCard(0);
+    if (bars >= 2 && one) {
+      // (a page about the width of half the line: OSMD spreads each line to the page's width)
+      const two = this.renderCard(Math.ceil(bars / 2), Math.ceil(one.w * 0.55) + 40);
+      if (two && this.scaleFor(two.w, two.h) > this.scaleFor(one.w, one.h) * 1.05) { this.fitCard(); return; } // (5%: not for a hair)
+      this.renderCard(0);
+    }
+    this.fitCard();
+  }
+
+  /** Renders the card with this many bars a line (0: all on one), cropped to the music; its size before scaling. */
+  private renderCard(perLine: number, page = 4000): { w: number; h: number } | null {
     this.osmd.EngravingRules.RenderSingleHorizontalStaffline = false;
-    this.small.style.width = '4000px'; // wide enough that a card's bars stay on one line
+    this.osmd.EngravingRules.RenderXMeasuresPerLineAkaSystem = perLine;
+    this.small.style.width = `${page}px`; // (4000: wide enough that a card's bars stay on one line)
     this.small.style.flex = 'none'; // (a flex item would shrink back to the room's width and wrap the card)
     this.osmd.zoom = 1.1;
     this.osmd.render(); ringMissed(this.small); // (missed notes ringed as well as grey: result-marks.ts)
+    this.osmd.EngravingRules.RenderXMeasuresPerLineAkaSystem = 0; // (Simon's build mode wraps by width as before)
     const svg = this.small.querySelector('svg');
     this.small.style.width = '';
     this.small.style.flex = '';
-    if (!svg) return;
+    if (!svg) return null;
     const r = svg.getBBox();
-    if (!(r.width > 0 && r.height > 0)) return;
+    if (!(r.width > 0 && r.height > 0)) return null;
     const pad = 4;
     svg.setAttribute('viewBox', `${r.x - pad} ${r.y - pad} ${r.width + 2 * pad} ${r.height + 2 * pad}`);
     svg.dataset.w = String(r.width + 2 * pad);
     svg.dataset.h = String(r.height + 2 * pad);
-    this.fitCard();
+    return { w: r.width + 2 * pad, h: r.height + 2 * pad };
+  }
+
+  /** The scale a card of this size is drawn at in the room (the room above what floats over the bottom). */
+  private scaleFor(w: number, h: number): number {
+    const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - this.reserve() - 8 };
+    // Drawn at OSMD zoom 1.1 = 11 px a staff space; the score's biggest size is 1.8 (18 px): never bigger.
+    const most = 1.8 / 1.1;
+    const fit = Math.min(room.w / w, room.h / h);
+    return Math.max(0.1, this.share > 1 ? Math.min(fit, most * this.share) : Math.min(fit, most) * this.share);
   }
 
   private fitCard(): void {
     const svg = this.small.querySelector('svg');
     if (!svg?.dataset.w) return;
     const w = Number(svg.dataset.w), h = Number(svg.dataset.h);
-    const reserve = this.reserve();
-    this.box.style.paddingBottom = `${reserve}px`; // centred in the room above what floats over the bottom
-    const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - reserve - 8 };
-    // Drawn at OSMD zoom 1.1 = 11 px a staff space; the score's biggest size is 1.8 (18 px): never bigger.
-    const most = 1.8 / 1.1;
-    const fit = Math.min(room.w / w, room.h / h);
-    const scale = Math.max(0.1, this.share > 1 ? Math.min(fit, most * this.share) : Math.min(fit, most) * this.share);
-    this.filled = scale >= fit - 1e-6;
+    this.box.style.paddingBottom = `${this.reserve()}px`; // centred in the room above what floats over the bottom
+    const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - this.reserve() - 8 };
+    const scale = this.scaleFor(w, h);
+    this.filled = scale >= Math.min(room.w / w, room.h / h) - 1e-6;
     svg.setAttribute('width', String(w * scale));
     svg.setAttribute('height', String(h * scale));
   }

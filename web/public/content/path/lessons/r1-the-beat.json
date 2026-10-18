@@ -7,17 +7,6 @@
     },
     {
       "kind": "text",
-      "text": "# Last time\nBefore anything new, a quick warm-up from lesson 1. Tap **Start** to play the copying game: watch which black keys light up, listen, and play the pattern back. A pattern of three is plenty; it's just to get your hands back on the groups."
-    },
-    {
-      "kind": "step",
-      "id": "warm-up",
-      "title": "Warm-up: copy black-key patterns",
-      "activity": "r1-copy-black-keys",
-      "about": "Copy the black-key patterns from lesson 1: a pattern of three is plenty."
-    },
-    {
-      "kind": "text",
       "text": "# What the beat is\nMusic has a **beat**: a steady pulse underneath it, like your footsteps when you walk or your heartbeat. In some music it's quick, in some it's slow, and the notes are measured against it. When you tap your foot to a song without thinking, you're tapping the beat. For now we'll practise keeping the beat perfectly steady; later you'll meet music that speeds up or slows down on purpose."
     },
     {

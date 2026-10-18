@@ -10,7 +10,7 @@
     "match": "same",
     "miss": "tries",
     "speed": "steady",
-    "goal": 3
+    "goal": 5
   },
   "names": false
 }

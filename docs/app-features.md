@@ -474,7 +474,8 @@ a retry or with help, Set done adds "clean: right the first time, with no help".
 up room so every card's line shows. A name to play
 is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
 make a card bigger than the score's biggest size, up to filling the room. A card never grows,
-so it is drawn on one line, centred and as big as the room allows (never past the score's biggest size, 180%);
+so it is drawn on one line, or on two when that comes out bigger (2026-10-17), centred and as big as the room allows
+(never past the score's biggest size, 180%);
 A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
 **The Level panel over a card** (owner, 2026-10-15): keys count nothing while it is open, and the card carries on when
 it closes: one waiting for your first note, or a notes-only card, waits on (the 8 s hint counts from the close); one
@@ -595,9 +596,10 @@ half note stays open and a whole note open with no stem (check:browser measures 
 keys** (the keyboard, not the pad) and judged as any card with written rhythm: which key and when, held ¾ of its length;
 the help levels as usual (0 keys lit and sound, no drawing; 1 this view + sound + keys lit; 2 this view + sound; 3 this view
 only, the card waiting to be read). The letters show whatever the step's `names` says: the view is the step's choice to
-show them. **Size:** a card is drawn on one line (Drills cards never wrap): two or four bars of 4/4 fit with no sideways
-scrolling at 360×780 and 844×390; **eight bars are not supported on a phone upright** (the letters would be 7 px, the heads
-3 px): give a long tune as four-bar cards.
+show them. **Size:** a card is drawn on one line, or its bars on two lines when that comes out bigger in the room
+(owner, 2026-10-17: a four-bar card is two lines of two on a phone upright, letters about 26 px; one line sideways); no
+sideways scrolling at 360×780 and 844×390. Eight bars on a phone upright stay small even on two lines: give a long tune
+as four-bar cards.
 
 **Content:** item sets (§6), one item per card; for sight-reading give MusicXML items with real rhythm; for
 name or scale cards give `notes`/`chord` items with a `name`, and `rhythm` in the set if timing should count. A rhythm
@@ -1796,7 +1798,7 @@ steps. The next lesson is not written yet" with *Practice ›* (the Practice tab
     { "kind": "video", "size": "row", "youtube": "…", "title": "…", "caption": "…" },   // a reference video: a compact row (end of the lesson)
     { "kind": "score", "piece": "mozart-k2", "bars": "1-4", "keys": true, "tempo": 100, "caption": "…" },  // piece: or a catalogue piece, "u-<catalogue id>"; or "set": "chords-c", "item": 1;
                                                                          // or "musicxml": a whole file written out, "<score-partwise …>…</score-partwise>", or "media/x.musicxml"
-    { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "caption": "…" },     // "-" for a key with no finger
+    { "kind": "keys", "notes": "C4 E4 G4", "fingers": "1 3 5", "names": "letters", "caption": "…" }, // "-": no finger; names false / "letters"
     { "kind": "animation", "src": "media/test-c-major.svg", "alt": "…", "caption": "…" },   // gif webp svg png (animated), mp4 webm
     { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill",
       "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 }, "about": "…" },   // activity: an id, or written out (§8b)
@@ -1843,7 +1845,10 @@ steps. The next lesson is not written yet" with *Practice ›* (the Practice tab
   fragment is refused, and so is a bar whose notes run past its time signature, or music with no time signature (V13;
   checked by the reader for inline music and when drawing a file). This is the **animation of music** built now: the
   marker moving and the keys lighting as it plays.
-- **keys**: a keyboard diagram (the app's keys) with the notes marked and their fingers (1–5) on them; up to 12 keys.
+- **keys**: a keyboard diagram (the app's keys) with the notes marked and their fingers (1–5) on them; up to 12 keys;
+  drawn over the whole octaves the notes need, C to B (2026-10-17). `names`: left out, the octave labels (C4, C5) as
+  on the screen's keys; `false`, none (a lesson before names are taught); `"letters"`, each marked key's letter on it
+  (C, D, E: no octave numbers).
 - **animation**: an animated picture (GIF, animated WebP or PNG, an SVG with its own animation) or a short video
   (mp4, webm: muted, looping; with controls instead of moving by itself when the phone asks for less motion). No new
   library; anything bigger is for the owner to ask for.
@@ -1926,7 +1931,7 @@ path, a step's once in its lesson. Text fields are non-empty text.
 | `image` | `src`, `alt` | `caption` | a `.png .jpg .jpeg .webp .svg .gif` file in the folder (no `..`, no leading `/`), or any `https://` link |
 | `video` | `youtube`, `title` | `start`, `end`, `caption`, `size` | a watch / youtu.be / embed / shorts / live link or the bare 11-character id; `start`, `end` whole seconds from 0, `end` after `start`; `size` only `"row"` (a compact row; left out, the full player) |
 | `score` | one of `piece` (with `bars`), `set` (with `item`), `musicxml` | `tempo`, `keys`, `caption` | `bars` "a-b" or "a", at most 16 bars (needed with a piece); `item` a whole number from 1 (one the set has: check:path); `musicxml` a whole file written out (`<score-partwise>`, a time signature, no bar over-full) or a `.musicxml` / `.xml` file in the folder; `tempo` 20–300 quarter notes a minute; `keys` true / false (default false) |
-| `keys` | `notes` | `fingers`, `caption` | 1–12 pitches like `C4 F#3 Bb4` (capital letter, one-digit octave); `fingers` one per note, 1–5 or `-` |
+| `keys` | `notes` | `fingers`, `names`, `caption` | 1–12 pitches like `C4 F#3 Bb4` (capital letter, one-digit octave); `fingers` one per note, 1–5 or `-` |
 | `animation` | `src`, `alt` | `caption` | as `image`, also `.mp4 .webm` |
 | `step` | `id`, `title`, `activity` | `doneWhen`, `target`, `about` | `activity` an activity's id (letters, digits, `-`, `_`) or one written out (§8b, its id `<lesson>.<step>`); `target` below |
 | `tip` | `text` | `label` | `label` default "Tip" |

@@ -3992,7 +3992,7 @@ try {
   // Free play opened by a step: the step's task on its own line, kept while a key is held; the columns hidden (Show for
   // this visit only); lesson 1's steps hide note names (keys' labels, the range, the notes held, chord and interval
   // names). Free play from Practice is as before. Simon from a step: the task above the music, and lesson 1's copying
-  // game ends at a chain of 3 ("You did it"). Lesson 1's shipped content, a plain phone tab, keys tapped by position.
+  // game ends at a chain of 5 (owner, 2026-10-17: every Simon at least 5) ("You did it"). Lesson 1's shipped content, a plain phone tab, keys tapped by position.
   {
     const ctx = await learnerContext({ viewport: { width: 360, height: 780 }, hasTouch: true, serviceWorkers: 'block' });
     const page = await ctx.newPage();
@@ -4028,7 +4028,7 @@ try {
     const own = await look();
     ok('Free play from Practice: "Play something", the names and all three columns, as before', own.line === 'Play something' && !own.task && own.cols.length === 3 && own.range !== '' && own.labels !== '', JSON.stringify(own));
     ok('Free play from Practice: no group outlines on the keys (off outside lessons unless turned on in Show; owner, 2026-10-17)', await page.evaluate(() => document.querySelectorAll('#freeplay .key-group').length) === 0, '');
-    // Simon from lesson 1's copying step: the task above the music; copied to a chain of 3, the game ends, done.
+    // Simon from lesson 1's copying step: the task above the music; copied to a chain of 5, the game ends, done.
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
     await page.locator('.les-step[data-step="copy"] .btn').click(); await page.waitForTimeout(2500);
     const task = await page.evaluate(() => { const t = document.getElementById('ex-task'); return t.hidden ? '' : t.textContent; });
@@ -4054,7 +4054,7 @@ try {
     await page.touchscreen.tap(180, 60); await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById('ex-start').click()); await page.waitForTimeout(300);
     const end = await play();
-    ok('lesson 1 Simon: copied to a chain of 3, the game ends: "You did it"', /You did it: a pattern of 3/.test(end.status), JSON.stringify(end));
+    ok('lesson 1 Simon: copied to a chain of 5, the game ends: "You did it"', /You did it: a pattern of 5/.test(end.status), JSON.stringify(end));
     ok('lesson steps after the reviews: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
@@ -4100,7 +4100,7 @@ try {
     const back = { top: await cardTop('first-sounds'), scrolled: await page.evaluate(() => document.getElementById('lesson-body').scrollTop) };
     ok('A4: Lesson from a step’s result: the lesson page at that step’s card (in view), not the top', back.scrolled > 0 && back.top !== null && back.top > 0 && back.top < 700, JSON.stringify(back));
     // the last step, with the others done: Next goes to the rest of the lesson, whose bar offers the next lesson
-    await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-first-sounds', done: { 'r1-first-sounds': { 'first-sounds': { at, how: 'opened' }, 'find-the-groups': { at, how: 'target' }, fingers: { at, how: 'opened' }, copy: { at, how: 'target' } } }, tried: {} })); });
+    await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-first-sounds', done: { 'r1-first-sounds': { 'first-sounds': { at, how: 'opened' }, fingers: { at, how: 'opened' }, copy: { at, how: 'target' } } }, tried: {} })); });
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
     await page.locator('.les-step[data-step="make-a-tune"] .btn').click(); await page.waitForTimeout(1200);
     await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)

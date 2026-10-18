@@ -3,7 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the app can't see it). Two parts are scored by the app, finding the groups and the copying game; the rest you'll check for yourself at the end."
+      "text": "# Welcome\nWelcome to your first lesson. Today is about getting your bearings: finding your way around the keys, learning how your fingers are numbered, and how to sit and hold your hands when you're at a real keyboard. You won't read any music yet, and you won't need any note names. Those come in the next lessons, once the keyboard feels familiar.\n\nBy the end of this lesson you'll be able to find any group of two or three black keys without hints, name your fingers 1 to 5, copy a short pattern you see and hear, and you'll have tried sitting and shaping your hand at a real keyboard (something to keep coming back to: the app can't see it). The copying game is the one part the app scores; the rest you'll check for yourself at the end."
     },
     {
       "kind": "text",
@@ -25,21 +25,6 @@
       "title": "Your first sounds",
       "activity": "r1-first-sounds",
       "about": "Pairs, then threes: here, higher up (›) and lower down (‹). Nothing is scored."
-    },
-    {
-      "kind": "text",
-      "text": "# Find the groups\nNow a check of what you've found. Each card names a group, \"a group of three\" or \"a group of two, lower down\": find it and tap any key of it. The screen shows only part of the piano, so use ‹ and › to move along it; the small drawing above the keys shows where you are. Each card starts somewhere new, so look for the pattern, not for a spot you remember. \"Lower down\" means the lowest one you can reach, \"higher up\" the highest. There's no clock, and if you tap the wrong place the app shows you the right group."
-    },
-    {
-      "kind": "step",
-      "id": "find-the-groups",
-      "title": "Find the groups",
-      "activity": "r1-find-the-groups",
-      "target": {
-        "clean": 5
-      },
-      "doneWhen": "5 of the 6 cards right first time",
-      "about": "Find the group each card names and tap any key of it; ‹ › move along the piano."
     },
     {
       "kind": "text",
@@ -69,7 +54,8 @@
       "kind": "keys",
       "notes": "C#4 D#4 F#4 G#4 A#4",
       "fingers": "2 3 2 3 4",
-      "caption": "Right hand: fingers 2 and 3 on a pair, 2, 3 and 4 on a three."
+      "caption": "Right hand: fingers 2 and 3 on a pair, 2, 3 and 4 on a three.",
+      "names": false
     },
     {
       "kind": "text",
@@ -88,16 +74,16 @@
     },
     {
       "kind": "text",
-      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one. Once you've copied a pattern of three from memory, the game ends: that's the goal for today. **Hear it** is welcome whenever you want another listen; a pattern copied after it is good practice, but doesn't count toward the goal, so the game carries on.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
+      "text": "# Copy what you see and hear\nNow for listening. The app plays a short pattern on the black keys, and the keys light up as you hear them. Then you play it back, with any finger. It starts with one note, and each time you get it right the pattern grows by one. Once you've copied a pattern of five from memory, the game ends: that's the goal for today. **Hear it** is welcome whenever you want another listen; a pattern copied after it is good practice, but doesn't count toward the goal, so the game carries on.\n\nWatch where the lit keys are within their group, the first key of a pair or the middle of three, and listen to whether the sound goes up or down."
     },
     {
       "kind": "step",
       "id": "copy",
       "title": "Copy what you see and hear",
       "activity": "r1-copy-black-keys",
-      "doneWhen": "a pattern of 3 copied whole",
+      "doneWhen": "a pattern of 5 copied whole",
       "target": {
-        "chain": 3
+        "chain": 5
       },
       "about": "The black keys around middle C: watch, listen, then play the pattern back."
     },

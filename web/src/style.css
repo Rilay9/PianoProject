@@ -882,6 +882,7 @@ body.in-shell .message { z-index: 7; bottom: calc(var(--tabs-h) + 8px + env(safe
 .les-diagram .key.white { position: relative; }
 .les-diagram .key .finger { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 700 15px/1 system-ui, sans-serif; color: #fff; }
 .les-diagram .key.black .finger { bottom: 6px; font-size: 12px; }
+.les-diagram .key .letter { position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; font: 700 12px/1 system-ui, sans-serif; color: #fff; pointer-events: none; }
 .les-tip { border-left: 4px solid var(--accent); background: var(--current-bg); padding: 10px 12px; border-radius: 8px; }
 .les-tip-label { display: block; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
 .les-step { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-bg); }

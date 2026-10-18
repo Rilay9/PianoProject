@@ -97,6 +97,7 @@ const twoBars = XML(`<measure number="1">${ATTR}${N('C', 1, 'quarter')}${N('D', 
 const chordBar = XML(`<measure number="1">${ATTR}${N('C', 4, 'whole')}<note><chord/><pitch><step>E</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure>`);
 ok('reads to: a MusicXML file / a whole file inline (two bars of 4/4; a chord takes no extra time)', same(one({ kind: 'score', musicxml: 'media/a.musicxml' }).source, { file: 'media/a.musicxml' }) && 'musicxml' in one({ kind: 'score', musicxml: twoBars }).source && 'musicxml' in one({ kind: 'score', musicxml: chordBar }).source);
 ok('reads to: keys with fingers ("-" for none)', same(one({ kind: 'keys', notes: 'C4 E4 G4', fingers: '1 - 5' }).fingers, [1, null, 5]));
+ok('reads to: keys with names false or "letters" (2026-10-17); left out, none given', one({ kind: 'keys', notes: 'C4', names: false }).names === false && one({ kind: 'keys', notes: 'C4', names: 'letters' }).names === 'letters' && one({ kind: 'keys', notes: 'C4' }).names === undefined);
 ok('reads to: an inline step activity, its target', (() => { const s = one({ kind: 'step', id: 'a', title: 'A', activity: { screen: 'drills', set: 's' }, target: { clean: 3 } }); return s.activity.screen === 'drills' && s.target.clean === 3; })());
 {
   let row, full, msg = '';
@@ -129,6 +130,7 @@ const refused = [
   ['keys that are not pitches', L([{ kind: 'keys', notes: 'C4 H4' }]), /"H4" is not a pitch/],
   ['fingers not one a note', L([{ kind: 'keys', notes: 'C4 E4', fingers: '1' }]), /gives 1 for 2 notes/],
   ['a finger 6', L([{ kind: 'keys', notes: 'C4', fingers: '6' }]), /not a finger/],
+  ['keys names other than false or "letters"', L([{ kind: 'keys', notes: 'C4', names: true }]), /names should be false or "letters"/],
   ['a step id used twice', L([{ kind: 'step', id: 'a', title: 'A', activity: 'x' }, { kind: 'step', id: 'a', title: 'B', activity: 'y' }]), /used twice/],
   ['an inline activity with a mistake', L([{ kind: 'step', id: 'a', title: 'A', activity: { screen: 'drills', set: 's', level: { rungs: 2 } } }]), /level has "rungs"/],
   ['a target its screen cannot judge', L([{ kind: 'step', id: 'a', title: 'A', activity: { screen: 'freeplay' }, target: { clean: 2 } }]), /cannot be judged/],

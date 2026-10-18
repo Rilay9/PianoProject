@@ -267,8 +267,11 @@ function drawKeys(b: Extract<Block, { kind: 'keys' }>): HTMLElement {
   const kb = el('div', 'keyboard les-keys les-diagram');
   const strip = new UnderStrip(kb, kb, document.createElement('div'));
   const midis = b.notes.map(midiOfName);
-  strip.setSong(midis);
+  strip.names = b.names === undefined; // (octave labels only when the block doesn't say otherwise)
+  // The whole octaves the notes need, C to B (2026-10-17: was at least two, the marked keys off at one end).
+  strip.showRange(Math.floor(Math.min(...midis) / 12) * 12, Math.floor(Math.max(...midis) / 12) * 12 + 11);
   strip.markKeys('now-r', midis);
+  if (b.names === 'letters') midis.forEach((m, i) => kb.querySelector(`[data-midi="${m}"]`)?.append(el('span', 'letter', b.notes[i][0])));
   b.fingers?.forEach((f, i) => {
     const key = kb.querySelector<HTMLElement>(`[data-midi="${midis[i]}"]`);
     if (key && f !== null) key.append(el('span', 'finger', String(f)));
