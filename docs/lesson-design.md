@@ -336,6 +336,20 @@ looks at those results, not only at "target met" the first day.
   beginner needs to know which key was wrong; lesson text doesn't add more commentary on top, and a step's summary
   after the run carries the main message.
 
+**Play every step as the learner, before the owner sees the spec.** The rules in this guide are aids, not the
+test. Applied by the letter, they produced lessons that drilled what a beginner already knew: a step that asks them
+to find the groups of two and three, a three-note Simon done in five seconds, a timing check that wanted a tap on
+the very first click (owner, 2026-10-17: "Wtf is the point of a Simon with 3 notes?? Its not even worth loading").
+So every spec gives each step three lines, written after playing it through in your head as this learner, at this
+point in the path:
+- **Time:** about how long it takes. A few seconds isn't worth opening a screen for: make it longer and growing
+  (Simon goals of 5 or more, with Keep going), fold it into another step, or drop it.
+- **New:** what it teaches that the learner can't already do. "Nothing" means it goes. Something a step teaches
+  once isn't repeated just because a later lesson has the same shape; whether it's needed is judged for each lesson
+  at its own stage.
+- **Worth it:** whether a beginner would feel it was worth doing, and whether anything in it would confuse them (a
+  tap on a beat they haven't heard yet, a hold that was never taught, a sound that isn't the piano).
+
 ---
 
 ## 7. Mapping to the app's modes, second
@@ -447,6 +461,8 @@ question" to hand on (owner, 2026-10-16: "You shouldn't be making the same mista
 14. **Truth**: every note, finger and key name checked against the notation and the keyboard; every teaching claim
     linked to a source that was read; anything unverified marked UNKNOWN?
 15. **Videos**: relevant videos at the bottom (reference size unless central), and the lesson complete without them?
+16. **Played as the learner**: does every step in the spec have its Time, New and Worth it lines (§6), written after
+    playing it through, and does none of them say "a few seconds", "nothing" or "no"?
 
 ---
 
