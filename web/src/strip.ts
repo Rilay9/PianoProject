@@ -116,6 +116,9 @@ export class UnderStrip {
   private wide = false; // chosen keys: the black keys wider, to be tapped (below)
   /** The octave labels (C4, C5) on the white keys; off where no note names are shown ("keys, no music"). */
   names = true;
+  /** Every white key's letter on it (C, D, E… with no octave number; owner's lesson 2 spec, 2026-10-18: key names), in
+   * place of the octave labels. */
+  letters = false;
   /** Finger numbers on the keys (an activity's `fingers`, owner 2026-10-16): the finger for a key, or none. */
   fingers: ((midi: number) => number | undefined) | null = null;
   /** The black keys' groups of two and three outlined, with 2 and 3 above them (Free play, owner 2026-10-16: as the
@@ -223,7 +226,8 @@ export class UnderStrip {
         at.set(m, w);
       } else {
         key.className = 'key white';
-        if (m % 12 === 0 && this.names) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
+        if (this.letters) key.append(Object.assign(document.createElement('span'), { className: 'letter', textContent: 'C D EF G A B'[m % 12] }));
+        else if (m % 12 === 0 && this.names) key.textContent = `C${m / 12 - 1}`; // the octave labels a learner counts by
         w++;
       }
       const finger = this.fingers?.(m);

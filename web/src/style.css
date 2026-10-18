@@ -280,7 +280,7 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
 .ex-fingers { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 0.08em; overflow: auto; font-size: clamp(1.3rem, min(11vw, 7vh), 3.6rem); font-weight: 800; line-height: 1.1; }
 .ex-fingers[hidden] { display: none; }
 .ex-fingers .fc-hand { font-size: max(0.45em, 15px); font-weight: 700; color: var(--muted); margin-bottom: 0.15em; }
-.ex-fingers .fc-phrase { display: flex; flex-wrap: nowrap; justify-content: center; gap: 0 0.3em; } /* (one line a phrase: FingerCard.fit shrinks the numbers to fit) */
+.ex-fingers .fc-phrase { cursor: pointer; display: flex; flex-wrap: nowrap; justify-content: center; gap: 0 0.3em; } /* (one line a phrase: FingerCard.fit shrinks the numbers to fit) */
 .ex-fingers .fc-n { min-width: 1.05em; padding: 0 0.06em; text-align: center; border-radius: 0.22em; color: var(--fg); }
 .ex-fingers .fc-n.done { color: var(--muted); opacity: 0.55; }
 .ex-fingers .fc-n:is(.next, .sounding) { background: var(--accent); color: var(--on-accent); opacity: 1; }
@@ -553,6 +553,11 @@ dialog .row button { font: inherit; padding: 6px 12px; border: 1px solid var(--b
 .keyboard .key.black { position: absolute; }
 .keyboard .key .finger { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 800 16px/1 system-ui, sans-serif; color: #1f2937; pointer-events: none; }
 .keyboard .key.black .finger { bottom: 6px; color: #fff; font-size: 14px; }
+/* Letters on the white keys (key names, owner's lesson 2 spec 2026-10-18): at the foot of each key, under any finger number. */
+.keyboard .key .letter { position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; font: 700 15px/1 system-ui, sans-serif; color: #1f2937; pointer-events: none; }
+.keyboard .key.now-r .letter, .keyboard .key.wrong .letter, .keyboard .key.pressed .letter { color: #fff; }
+/* A key found (the lesson keyboard's Find a key): green, briefly. */
+.keyboard .key.ok { background: var(--ok, #16a34a) !important; }
 /* The black keys' groups outlined (Free play, 2026-10-16): two in amber, three in blue, as the lesson's picture; the number
    under each group, on the white keys. Never in the way of a tap. */
 .keyboard .key-group { position: absolute; top: 0; height: calc(62% + 20px); box-sizing: border-box; border: 3px solid; border-top: none; border-radius: 0 0 8px 8px; pointer-events: none; z-index: 3; }
@@ -904,6 +909,18 @@ body.in-shell .message { z-index: 7; bottom: calc(var(--tabs-h) + 8px + env(safe
 .les-rw-panel .les-video-fig { margin-top: 10px; }
 /* A keyboard to play in the page (owner, 2026-10-17): tall enough to tap, the groups outlined. */
 .keyboard.les-keys.les-playkeys { height: clamp(120px, 26vh, 200px); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+/* The page keyboard's own buttons (owner's lesson 2 spec, 2026-10-18): the Finger numbers | Key names switch, Hide names,
+   Hear it, Find a key; and the find prompt over the keys. */
+.les-kb-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.les-kb-tools .btn, .les-kb-askbtns .btn { min-height: 44px; }
+.les-kb-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.les-kb-switch .btn { border: 0; border-radius: 0; background: var(--btn-bg); color: var(--muted); }
+.les-kb-switch .btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.les-kb-find { text-align: center; margin-bottom: 8px; }
+.les-kb-find[hidden] { display: none; }
+.les-kb-ask { margin: 0; font-size: 2rem; font-weight: 800; }
+.les-kb-sub { margin: 2px 0 6px; min-height: 1.4em; color: var(--muted); }
+.les-kb-askbtns { display: flex; gap: 8px; justify-content: center; }
 .les-diagram { max-width: 520px; margin: 0 auto; }
 .les-diagram .key.white { position: relative; }
 .les-diagram .key .finger { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 700 15px/1 system-ui, sans-serif; color: #fff; }
@@ -1164,3 +1181,4 @@ body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !impo
   .q-hands-wrap { flex-direction: column; align-items: flex-start; gap: 0; }
   .q-hands-label { font-size: 11px; line-height: 13px; margin: -4px 0 0 2px; }
 }
+#ex-letters[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }

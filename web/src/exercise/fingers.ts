@@ -8,16 +8,19 @@ import { fingerOn, type Fingers } from '../activity.ts'; // (with .ts: the check
 
 /** What the card view does (the page's, or a stand-in in the checks). */
 export interface FingerView {
-  /** The card: its hand and its phrases of finger numbers. */
-  show(hand: 'right' | 'left', phrases: number[][]): void;
+  /** The card: its hand and its phrases of finger numbers (or, a letter-name card, letters). */
+  show(hand: 'right' | 'left', phrases: (number | string)[][]): void;
   /** The numbers so far: `done` played, `at` the next to play (highlighted), `sounding` the one sounding while it plays. */
   mark(at: { done: number; next: number | null; sounding: number | null }): void;
   clear(): void;
+  /** A line tapped: heard on its own (Drill.hearLine). */
+  onLine?: (i: number) => void;
 }
 
 /** The card drawn into an element of the exercise screen. */
 export class FingerCard implements FingerView {
   private nums: HTMLElement[] = [];
+  onLine?: (i: number) => void;
   constructor(private readonly box: HTMLElement) {
     // (drawn again to the room when the screen turns or the bars around it change size)
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => this.fit()).observe(box);
@@ -34,16 +37,19 @@ export class FingerCard implements FingerView {
     const s = Math.min(1, (this.box.clientWidth - 8) / wide, this.box.clientHeight / this.box.scrollHeight);
     if (s < 1) this.box.style.fontSize = `${Math.max(14, Math.floor(base * s * 0.98))}px`;
   }
-  show(hand: 'right' | 'left', phrases: number[][]): void {
+  show(hand: 'right' | 'left', phrases: (number | string)[][]): void {
     this.nums = [];
     const head = Object.assign(document.createElement('div'), { className: 'fc-hand', textContent: hand === 'right' ? 'Right hand' : 'Left hand' });
-    const rows = phrases.map((p) => {
+    const rows = phrases.map((p, i) => {
       const row = Object.assign(document.createElement('div'), { className: 'fc-phrase' });
+      // (a line tapped is heard on its own: owner's lesson 2 spec, 2026-10-18)
+      row.addEventListener('click', () => this.onLine?.(i));
       for (const f of p) { const n = Object.assign(document.createElement('span'), { className: 'fc-n', textContent: String(f) }); this.nums.push(n); row.append(n); }
       return row;
     });
     this.box.replaceChildren(head, ...rows);
-    this.box.setAttribute('aria-label', `${head.textContent}: fingers ${phrases.map((p) => p.join(' ')).join(', then ')}`);
+    const letters = phrases.some((p) => p.some((x) => typeof x === 'string'));
+    this.box.setAttribute('aria-label', `${head.textContent}: ${letters ? 'notes' : 'fingers'} ${phrases.map((p) => p.join(' ')).join(', then ')}`);
     this.box.hidden = false;
     this.fit();
   }

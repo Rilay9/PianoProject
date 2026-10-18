@@ -92,9 +92,22 @@ export interface DrillParts {
   legend?: HTMLElement;
   /** A rhythm card's result with no music on screen: the taps on a line of beats (beatline.ts; 2026-10-16). */
   beatLine?: HTMLElement;
-  /** A finger-number card's numbers (fingers.ts). */
+  /** A finger-number or letter-name card's numbers or letters (fingers.ts). */
   fingers?: FingerView;
+  /** A phrase card's Show key and Names (an activity's `help`, owner's lesson 2 spec 2026-10-18). */
+  showKey?: HTMLButtonElement;
+  letters?: HTMLButtonElement;
 }
+
+/**
+ * What a phrase card (finger numbers or letter names) does on a miss and which help it offers (an activity's `miss` and
+ * `help`, owner's lesson 2 spec 2026-10-18): "outline", the right key outlined at once (Mary, lesson 1), or "quiet",
+ * nothing outlined, the key you played named ("That's D: find E"); Show key outlines the right key until you play it;
+ * Names puts the letters on the keys, on or off. On a letter-name card, a card is clean only with no wrong key, no Show
+ * key and the names off throughout; hearing it (or a line of it) is not help there, as its letters are what you read.
+ */
+export interface PhraseHelp { miss: 'outline' | 'quiet'; showKey: boolean; names: boolean }
+const PHRASE_HELP: PhraseHelp = { miss: 'outline', showKey: false, names: false };
 
 /** A card ready to play: its notes in order with when they are due (ms from the card's start) and how long they last. */
 interface Card {
@@ -111,8 +124,9 @@ interface Card {
   /** A letters card (a set's `view: "letters"`, owner 2026-10-17): drawn on the one-line rhythm staff with each note's
    * letter under it, played on the keys and judged as any card with written rhythm (which key, and when). */
   letters?: boolean;
-  /** A finger-number card (a set's `view: "fingers"`): its hand, its phrases, and the finger of each step in order. */
-  fingers?: { hand: 'right' | 'left'; phrases: number[][]; flat: number[] };
+  /** A finger-number or letter-name card (a set's `view: "fingers"` or `"names"`): its hand, its phrases (the numbers or
+   * the letters), and (finger numbers) the finger of each step in order. */
+  phrase?: { hand: 'right' | 'left'; phrases: (number | string)[][]; flat: number[] | null; letters: boolean };
   end: number; // ms: when the last note's written length is over
   beatMs: number; barBeats: number; // the metre's beat, for the count-in and the clicks
 }
@@ -188,6 +202,9 @@ export class Drill {
     ui.finish.addEventListener('click', () => { if (this.on) this.finishSet(); });
     ui.misses.addEventListener('click', () => { if (this.on) this.missesAgain(); });
     ui.fresh.addEventListener('click', () => { if (this.on) void this.begin(); });
+    ui.showKey?.addEventListener('click', () => { if (this.on) this.showKey(); });
+    ui.letters?.addEventListener('click', () => { if (this.on) this.toggleLetters(); });
+    if (ui.fingers) ui.fingers.onLine = (i) => { if (this.on) this.hearLine(i); };
   }
 
   get levelNow(): DrillLevel { return { ...this.level }; }
@@ -197,6 +214,12 @@ export class Drill {
   get findNow(): boolean { return this.set?.kind === 'find'; }
   /** The set on screen gives finger-number cards (fingers.ts): no help rungs, untimed, no Simon. */
   get fingersNow(): boolean { return this.set?.view === 'fingers'; }
+  /** Finger-number or letter-name cards (fingers.ts): no help rungs, untimed, no Simon. */
+  get phrasesNow(): boolean { return this.set?.view === 'fingers' || this.set?.view === 'names'; }
+  /** A phrase card's miss and help (the activity's; PhraseHelp), set by the screen as it opens. */
+  phraseHelp: PhraseHelp = PHRASE_HELP;
+  private shownKeyTimes = 0; // Show key on this card
+  private namesSeen = false; // the letters on the keys at some moment of this card
   /** Your turn at name only (any octave counts), or a rhythm card (any key is a tap): every key is music (the keyboard's edge keys are notes, not commands). */
   get anyOctaveNow(): boolean { return this.on && (this.state === 'turn' || this.state === 'countin') && (this.level.rung === 4 || this.rhythmNow); }
   /** An activity's preset level (owner, 2026-10-13): in force while it lasts, never saved over yours. */
@@ -206,7 +229,7 @@ export class Drill {
   private get level(): DrillLevel {
     const l = { ...this.stored.level, ...this.preset };
     if (this.rhythmNow) { if (l.rung === 4) l.rung = 3; if (l.onTime === 'notes') l.onTime = 'normal'; }
-    if (this.fingersNow) l.onTime = 'notes'; // (finger-number cards: the notes in order, no timing)
+    if (this.phrasesNow) l.onTime = 'notes'; // (finger-number and letter-name cards: the notes in order, no timing)
     return l;
   }
   /** For checks: where it is, the card's notes (ms from its start) and how late the sound is heard (ms; tap at now + that to be on time). */
@@ -229,7 +252,7 @@ export class Drill {
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.logSet(false); this.request++; this.stopAll(); this.pad?.light(false); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; this.ui.fingers?.clear(); this.handOn(null, []); }
+  close(): void { this.logSet(false); this.request++; this.stopAll(); this.pad?.light(false); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; this.ui.fingers?.clear(); this.handOn(null, []); this.keys.setLetters?.(false); this.phraseTools(); }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
   /** The set being played, and what it is played as (its set, level, tempo and activity, kept from its start: final
@@ -289,6 +312,7 @@ export class Drill {
     this.notation.clear();
     this.ui.fingers?.clear();
     this.handOn(null, []);
+    this.phraseTools();
     this.legend('');
     this.beats(null);
     this.ui.name.textContent = 'Ready';
@@ -372,13 +396,14 @@ export class Drill {
     this.notation.clear();
     this.ui.fingers?.clear();
     this.handOn(null, []);
+    this.phraseTools();
     this.legend('');
     this.beats(null);
     this.keys.clearMarks();
     this.ui.name.textContent = '';
     // (no names at "keys, no music" or by ear, for rhythm cards, or where names are hidden; a find or finger-number card's
     // name is its words, "Right hand", never a note's)
-    const unnamed = (this.level.rung === 0 || this.level.rung === 5 || this.rhythmNow || !this.names()) && !this.findNow && !this.fingersNow;
+    const unnamed = (this.level.rung === 0 || this.level.rung === 5 || this.rhythmNow || !this.names()) && !this.findNow && !this.phrasesNow;
     this.ui.chain.replaceChildren(...this.results.map((r, i) => Object.assign(document.createElement('div'), {
       className: `ex-result${isMiss(r) ? '' : ' ok'}`, textContent: unnamed ? `${i + 1}. ${r.text}` : `${i + 1}. ${r.item.name}: ${r.text}`,
     })));
@@ -433,8 +458,9 @@ export class Drill {
       if (g.length) steps.push({ t, dur, keys: g.map(midiOf), gi, hold: written && !item.detached?.[gi] ? (beforeRest ? phraseEndLength(dur) : dur) : 0 });
       t += dur;
     });
-    const fingers = item.fingering ? { hand: item.fingering.hand, phrases: item.fingering.phrases, flat: item.fingering.phrases.flat() } : undefined;
-    return { item, shown: shownItem, passage, meter: passage || rhythm ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, rhythm, letters: set.view === 'letters', ...(fingers ? { fingers } : {}), end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
+    const phrase = item.fingering ? { hand: item.fingering.hand, phrases: item.fingering.phrases, flat: item.fingering.phrases.flat(), letters: false }
+      : item.lettering ? { hand: item.lettering.hand, phrases: item.lettering.phrases, flat: null, letters: true } : undefined;
+    return { item, shown: shownItem, passage, meter: passage || rhythm ? meter : undefined, fifths: item.fifths ?? set.fifths ?? 0, steps, timed, rhythm, letters: set.view === 'letters', ...(phrase ? { phrase } : {}), end: t, beatMs: quarterMs * (4 / meter.beatType), barBeats: meter.beats };
   }
 
   /** first: the key that brought this card (Ready, or a result): its first note when it waits for one (no demo first). */
@@ -450,13 +476,15 @@ export class Drill {
     this.got.clear();
     this.wrong = [];
     this.findPlayed = null;
+    this.shownKeyTimes = 0;
+    this.namesSeen = !!this.keys.lettersOn;
     this.keys.clearMarks();
     this.ui.after.hidden = true;
     this.ui.chain.replaceChildren();
     this.legend('');
     this.beats(null);
     if (card.find) { this.findTurn(); return; } // (the key that brought it is not an answer: the card was not on screen yet)
-    if (card.fingers) { this.fingerCard(); return; }
+    if (card.phrase) { this.fingerCard(); return; }
     // Keys lit as it plays (help 0 and 1): the keys moved to show the card's notes before it starts (keys.ts; 2026-10-17).
     if (keysLit(rung) && !card.rhythm) this.keys.reveal(card.steps.flatMap((s) => s.keys));
     this.demoAt = performance.now(); // (a key while it is drawn is the one that brought it: no skip)
@@ -500,19 +528,55 @@ export class Drill {
 
   /**
    * A finger-number card (owner, 2026-10-17): its numbers by phrase in the music area (no staff), the hand's keys shaded
-   * and numbered (nothing lit), and it is played to you at once, each number lit as it sounds; then your turn.
+   * and numbered (nothing lit), and it is played to you at once, each number lit as it sounds; then your turn. A
+   * letter-name card (owner, 2026-10-18): its letters by phrase, nothing on the keys; played to you with each letter and
+   * its key lit as it sounds (a line tapped plays that line).
    */
   private fingerCard(): void {
     const c = this.card!;
     this.notation.clear();
     this.ui.name.textContent = '';
     this.ui.name.className = 'ex-name';
-    this.ui.fingers?.show(c.fingers!.hand, c.fingers!.phrases);
+    this.ui.fingers?.show(c.phrase!.hand, c.phrase!.phrases);
     this.ui.fingers?.mark({ done: 0, next: null, sounding: null });
-    this.handOn(c.steps.map((s) => s.keys[0]), c.fingers!.flat);
+    if (c.phrase!.flat) this.handOn(c.steps.map((s) => s.keys[0]), c.phrase!.flat); else this.handOn(null, []);
     this.ui.help.hidden = false;
     this.ui.help.textContent = 'Hear it';
     this.demo('');
+  }
+
+  /** A phrase card's Show key and Names buttons: there while its card is played to you or waits for you, where the activity offers them. */
+  private phraseTools(): void {
+    const on = this.on && !!this.card?.phrase && (this.state === 'demo' || this.state === 'turn');
+    if (this.ui.showKey) this.ui.showKey.hidden = !(on && this.phraseHelp.showKey);
+    if (this.ui.letters) { this.ui.letters.hidden = !(on && this.phraseHelp.names); this.ui.letters.setAttribute('aria-pressed', String(!!this.keys.lettersOn)); }
+  }
+  /** Show key: the right key outlined until you play it (counted on the card). */
+  private showKey(): void {
+    const c = this.card;
+    if (!c?.phrase || this.state !== 'turn' || !this.phraseHelp.showKey) return;
+    const step = c.steps[this.pos];
+    if (!step) return;
+    this.shownKeyTimes++;
+    this.keys.want(step.keys);
+    this.status('Your turn', 'The key is outlined');
+  }
+  /** Names: the letters on the keys, on or off (they stay as you leave them, for the cards after). */
+  private toggleLetters(): void {
+    if (!this.card?.phrase || !this.phraseHelp.names) return;
+    const on = !this.keys.lettersOn;
+    this.keys.setLetters?.(on);
+    if (on) this.namesSeen = true;
+    this.phraseTools();
+  }
+  /** A line of a phrase card heard (tapped): played with its letters (and on a letter card its keys) lit; where you are stays. */
+  private hearLine(i: number): void {
+    const c = this.card;
+    if (!c?.phrase || !(this.state === 'turn' || this.state === 'demo') || this.started) return;
+    const from = c.phrase.phrases.slice(0, i).reduce((n, p) => n + p.length, 0), to = from + (c.phrase.phrases[i]?.length ?? 0);
+    if (to <= from) return;
+    if (!c.phrase.letters) this.helped = true; // (finger numbers: hearing it is help, as Hear it is)
+    this.demo('', 'turn', [from, to]);
   }
 
   /** The card shown, waiting: read it, then a key (not a note), a tap or Start counts it in. */
@@ -531,14 +595,16 @@ export class Drill {
 
   /** It plays the card to you, then it is your turn. */
   /** then: what follows: your turn (its count-in), or (a reading card's Hear it) the card waiting to be read again. */
-  private demo(sub: string, then: 'turn' | 'read' = 'turn'): void {
+  /** range: a phrase card's steps [from, to) only (a line tapped). */
+  private demo(sub: string, then: 'turn' | 'read' = 'turn', range?: [number, number]): void {
     const c = this.card!;
     this.stopAll();
     this.state = 'demo';
     this.demoAt = performance.now();
     this.demoThen = then;
-    this.status('Listen…', joinWords(sub, this.canSkipDemo() && this.skipWords(), c.fingers && (keyboardConnected() ? 'a key starts your turn' : 'a tap on a key starts your turn')));
-    const ms = this.hear(keysLit(this.level.rung) && !c.fingers);
+    this.phraseTools();
+    this.status('Listen…', joinWords(sub, this.canSkipDemo() && this.skipWords(), c.phrase && (keyboardConnected() ? 'a key starts your turn' : 'a tap on a key starts your turn')));
+    const ms = this.hear(keysLit(this.level.rung) && !c.phrase, range);
     this.later(ms + DEMO_GAP_MS, () => { if (this.card === c && this.state === 'demo') { if (then === 'read') this.showToRead(); else this.turn(); } });
   }
   private demoAt = 0;
@@ -565,23 +631,30 @@ export class Drill {
    * card: the pad, each note most of its length, so a half note is a long light and two quarters two flashes). The
    * lights follow the sound as heard (the clock less heardDelayMs; 2026-10-16), so the eye sees them with the ear.
    */
-  private hear(light: boolean): number {
+  private hear(light: boolean, range?: [number, number]): number {
     const c = this.card!;
-    const events: NoteEvent[] = c.steps.flatMap((s) => s.keys.map((midi) => ({ t: s.t, midi, dur: s.dur * 0.9, vel: 80 })));
+    const [from, to] = range ?? [0, c.steps.length];
+    const t0 = c.steps[from]?.t ?? 0, end = to < c.steps.length ? c.steps[to].t : c.end;
+    const events: NoteEvent[] = c.steps.slice(from, to).flatMap((s) => s.keys.map((midi) => ({ t: s.t - t0, midi, dur: s.dur * 0.9, vel: 80 })));
     this.sound.play(events, [], 0, 1);
     clearInterval(this.lightTicker);
-    if (c.fingers) {
-      // A finger-number card: each number lit as it sounds (as heard), the keys never.
-      const delay = this.sound.heardDelayMs();
+    if (c.phrase) {
+      // A phrase card: each number or letter lit as it sounds (as heard); a letter card's key too, a finger card's never.
+      const delay = this.sound.heardDelayMs(), keysToo = c.phrase.letters;
       let last = -2;
+      const done = range ? this.pos : 0; // (a line heard in your turn: what you have played stays marked)
       this.lightTicker = window.setInterval(() => {
         if (this.card !== c) { clearInterval(this.lightTicker); return; }
-        const heard = this.sound.songTime() - delay;
-        const i = heard >= c.end ? -1 : c.steps.reduce((at, s, k) => (heard >= s.t ? k : at), -1);
-        if (i !== last) { last = i; this.ui.fingers?.mark({ done: 0, next: null, sounding: i >= 0 ? i : null }); }
-        if (heard >= c.end) clearInterval(this.lightTicker);
+        const heard = this.sound.songTime() - delay + t0;
+        const i = heard >= end ? -1 : c.steps.reduce((at, s, k) => (k >= from && k < to && heard >= s.t ? k : at), -1);
+        if (i !== last) {
+          last = i;
+          this.ui.fingers?.mark({ done, next: null, sounding: i >= 0 ? i : null });
+          if (keysToo) this.keys.light(i >= 0 ? c.steps[i].keys : []);
+        }
+        if (heard >= end) clearInterval(this.lightTicker);
       }, 15);
-      return c.end;
+      return end - t0;
     }
     if (!light) return c.end;
     const delay = this.sound.heardDelayMs();
@@ -606,7 +679,7 @@ export class Drill {
   private help(): void {
     if (!this.card || !(this.state === 'turn' || this.state === 'demo' || this.state === 'countin' || this.state === 'read') || this.started) return;
     this.ui.start.hidden = true; // (from reading: the card is played, then its count-in)
-    this.helped = true;
+    if (!this.card.phrase?.letters) this.helped = true; // (a letter card: hearing it is not help, its letters are what you read)
     if (this.card.find) { this.keys.want(this.card.find); this.status('Your turn', `${/^a group/.test(this.card.item.find?.words ?? '') ? 'The group is' : 'It is'} outlined (counts as help)`); return; } // (a "find it" card: the group shown)
     if (this.level.rung === 4) { void this.drawCard(true); return; }
     // A card to read (music only, counted in): it is played, then waits to be read again (owner, 2026-10-16: the walk-
@@ -659,13 +732,14 @@ export class Drill {
     if (!c.timed) {
       this.state = 'turn';
       this.scoreLine();
-      this.status('Your turn', c.fingers ? 'Each number in order, with its finger (no timing)' : 'The right notes in order (no timing)');
+      this.status('Your turn', c.phrase ? this.phraseWords() : 'The right notes in order (no timing)');
       this.lightNext();
+      this.phraseTools();
       this.armHint();
-      // Skip, if you cannot get it (not on a finger-number card: it waits for the right key, which a miss outlines)
-      this.ui.after.hidden = !!c.fingers;
+      // Skip, if you cannot get it (not on a phrase card: it waits for the right key)
+      this.ui.after.hidden = !!c.phrase;
       this.ui.again.hidden = this.ui.misses.hidden = this.ui.fresh.hidden = true;
-      this.ui.next.hidden = !!c.fingers;
+      this.ui.next.hidden = !!c.phrase;
       this.ui.next.textContent = 'Skip';
       playFirst();
       return;
@@ -723,6 +797,8 @@ export class Drill {
     }, 40);
   }
 
+  /** A phrase card's turn, in words. */
+  private phraseWords(): string { return this.card?.phrase?.letters ? 'Each letter in order (no timing)' : 'Each number in order, with its finger (no timing)'; }
   private tolKey(): 'relaxed' | 'normal' | 'strict' { const o = this.level.onTime; return o === 'notes' ? 'normal' : o; }
 
   /** Rungs 0 and 1: the keys due now (timed) or next (notes only) are lit. */
@@ -733,7 +809,7 @@ export class Drill {
   }
   private lightNext(): void {
     if (!this.card) return;
-    if (this.card.fingers) { this.keys.light([]); this.ui.fingers?.mark({ done: this.pos, next: this.pos < this.card.steps.length ? this.pos : null, sounding: null }); return; }
+    if (this.card.phrase) { this.keys.light([]); this.ui.fingers?.mark({ done: this.pos, next: this.pos < this.card.steps.length ? this.pos : null, sounding: null }); return; }
     this.keys.light(keysLit(this.level.rung) ? this.card.steps[this.pos]?.keys ?? [] : []); // (a hint's lit keys go too)
   }
   /**
@@ -745,7 +821,7 @@ export class Drill {
   private armHint(): void {
     clearTimeout(this.hintTimer);
     const c = this.card, r = this.level.rung;
-    if (!c || c.timed || c.find || c.fingers || this.state !== 'turn' || r <= 1 || r === 5 || !this.names()) return;
+    if (!c || c.timed || c.find || c.phrase || this.state !== 'turn' || r <= 1 || r === 5 || !this.names()) return;
     this.hintTimer = window.setTimeout(() => {
       if (this.card !== c || this.state !== 'turn') return;
       this.helped = true;
@@ -776,7 +852,7 @@ export class Drill {
     if (this.state === 'read') { if (!dialogOpen()) this.countIn(); return; } // (the key starts the count-in; it is not a note)
     // A finger-number card played to you: a key stops it and starts your turn, as its first note (owner, 2026-10-17: no
     // waiting; not in its first moment: the key that brought the card).
-    if (this.state === 'demo' && this.card?.fingers && this.demoThen === 'turn') {
+    if (this.state === 'demo' && this.card?.phrase && this.demoThen === 'turn') {
       if (!dialogOpen() && time - this.demoAt >= RESULT_SETTLE_MS) { this.stopAll(); this.turn(); if ((this.state as State) === 'turn') this.noteOnly(midi); }
       return;
     }
@@ -816,17 +892,21 @@ export class Drill {
     this.armHint();
     if (!step.keys.includes(k)) {
       this.wrong.push(midi);
-      // A finger-number card: the wrong key flashes red and the right key is outlined; it waits for the right one.
-      if (c.fingers) {
+      // A phrase card: the wrong key flashes red; it waits for the right one, which is outlined at once ("outline") or
+      // only on Show key ("quiet": the key you played named instead, owner 2026-10-18).
+      if (c.phrase) {
         clearTimeout(this.flashTimer);
         this.keys.wrong([midi]);
-        this.keys.want(step.keys);
         this.flashTimer = window.setTimeout(() => { if (this.card === c) this.keys.wrong([]); }, FLASH_MS);
-        this.status('Your turn', 'Not that one: the right key is outlined');
+        if (this.phraseHelp.miss === 'outline') { this.keys.want(step.keys); this.status('Your turn', 'Not that one: the right key is outlined'); }
+        else {
+          const played = 'C D EF G A B'[midi % 12].trim(), wanted = c.item.groups[step.gi].map((p) => p.replace(/-?\d+$/, '').replace('#', '♯').replace(/^([A-G])b/, '$1♭')).join(' ');
+          this.status('Your turn', `That’s ${played || 'a black key'}: find ${wanted}`);
+        }
       }
       return;
     }
-    if (c.fingers) { clearTimeout(this.flashTimer); this.keys.wrong([]); this.keys.want([]); this.status('Your turn', 'Each number in order, with its finger (no timing)'); }
+    if (c.phrase) { clearTimeout(this.flashTimer); this.keys.wrong([]); this.keys.want([]); this.status('Your turn', this.phraseWords()); }
     this.got.add(k);
     if (!step.keys.every((x) => this.got.has(x))) return;
     if (step.keys.length > 1) {
@@ -888,9 +968,11 @@ export class Drill {
         line = c.steps.map((s, k) => { const m = at.get(k); return { due: s.t, dur: s.dur, kind: (kindOf.get(k) ?? 'ok') as BeatLineNote['kind'], ...(m ? { at: m.t, held: m.held } : {}) }; });
         extra = r.wrongKeys.map((w) => w.t);
       }
-    } else if (c.fingers) {
-      // A finger-number card: played through to its last number (it waits for each); its wrong keys counted.
+    } else if (c.phrase) {
+      // A phrase card: played through to its last note (it waits for each); its wrong keys counted, and on a letter card
+      // the help used (Show key, the names on the keys).
       wrongKeys = [];
+      if (c.phrase.letters && (this.shownKeyTimes || this.namesSeen)) this.helped = true;
       clean = !this.wrong.length;
       text = clean ? 'clean' : `${this.wrong.length} wrong ${this.wrong.length === 1 ? 'key' : 'keys'}`;
     } else {
@@ -909,14 +991,14 @@ export class Drill {
     else this.results.push(result);
     // The music (also for name cards: now you see what it was), the missed notes ringed; at "keys, no music" none (the keys
     // say it), and by ear none either (owner, 2026-10-17: no staff at that level, ever; the counts say it).
-    const ear = this.level.rung === 5 && !c.find && !c.fingers;
-    if (!c.find) void this.drawCard(this.level.rung !== 0 && this.level.rung !== 5 && !c.fingers, marks);
+    const ear = this.level.rung === 5 && !c.find && !c.phrase;
+    if (!c.find) void this.drawCard(this.level.rung !== 0 && this.level.rung !== 5 && !c.phrase, marks);
     this.beats(line ? { notes: line, extra, beatMs: c.beatMs, barBeats: c.barBeats, end: c.end } : null);
     const shownKeys = this.keysShown() && !c.rhythm;
     if (this.ui.legend) {
       const kinds = line
         ? { missed: line.some((n) => n.kind === 'missed'), timing: line.some((n) => n.kind !== 'ok' && n.kind !== 'missed'), extra: extra.length > 0 }
-        : (this.level.rung === 0 || ear) && !c.find ? null : c.fingers ? null : kindsOfColours(Object.values(marks), shownKeys ? new Set(wrongKeys).size : 0);
+        : (this.level.rung === 0 || ear) && !c.find ? null : c.phrase ? null : kindsOfColours(Object.values(marks), shownKeys ? new Set(wrongKeys).size : 0);
       showLegend(this.ui.legend, kinds);
     }
     this.ui.name.textContent = c.find ? `Find ${c.item.find!.words}` : this.level.rung === 4 && !c.rhythm ? c.item.name : ''; // (a rhythm card's name is its pattern written short: for the log; by ear no name)
@@ -930,10 +1012,15 @@ export class Drill {
     const driftLine = driftWords(sped);
     // A finger-number card (owner, 2026-10-17): "✓ Clean" or "✓ Done, n wrong keys", then Next or Again (it waits: no
     // moving on by itself).
-    if (c.fingers) {
+    if (c.phrase) {
       this.ui.fingers?.mark({ done: c.steps.length, next: null, sounding: null });
+      this.phraseTools();
       const n = this.wrong.length;
-      this.status(`✓ ${!n && !this.helped ? 'Clean' : `Done${n ? `, ${n} wrong ${n === 1 ? 'key' : 'keys'}` : ''}${this.helped ? ', with Hear it' : ''}`}`, keyDoes('goes on to the next card'), 'ok');
+      const wrongWords = n ? `${n} wrong ${n === 1 ? 'key' : 'keys'}` : '';
+      const said = c.phrase.letters
+        ? (!n && !this.helped ? 'Clean' : `Played through: ${[wrongWords, this.shownKeyTimes ? `Show key ${this.shownKeyTimes === 1 ? 'once' : `${this.shownKeyTimes} times`}` : '', this.namesSeen ? 'names shown' : ''].filter(Boolean).join(', ')}`)
+        : (!n && !this.helped ? 'Clean' : `Done${n ? `, ${wrongWords}` : ''}${this.helped ? ', with Hear it' : ''}`);
+      this.status(`✓ ${said}`, keyDoes('goes on to the next card'), 'ok');
       this.ui.after.hidden = false;
       this.ui.again.hidden = this.ui.next.hidden = false;
       this.ui.next.textContent = 'Next';
@@ -974,7 +1061,7 @@ export class Drill {
     else if (this.state === 'idle' || this.state === 'done') void this.begin();
     else if (this.state === 'read') this.countIn();
     else if (this.state === 'result' && !this.ui.after.hidden) this.nextCard();
-    else if (this.state === 'turn' && !this.card?.timed && !this.card?.fingers) this.skip();
+    else if (this.state === 'turn' && !this.card?.timed && !this.card?.phrase) this.skip();
   }
 
   /** Next while a notes-only card waits for you: what is left counts as missed. */
@@ -1003,7 +1090,7 @@ export class Drill {
     this.ui.left.innerHTML = n ? `Card <b>${at}</b> of ${n}` : `Card <b>${at}</b>`;
     this.ui.mid.innerHTML = `<b>${this.results.filter((r) => r.clean).length}</b> clean`;
     const names = this.rhythmNow ? PAD_RUNG_NAMES : RUNG_NAMES;
-    this.ui.right.textContent = this.findNow ? 'Find it' : this.fingersNow ? 'Finger numbers' : this.level.onTime === 'notes' ? `${names[this.level.rung]} · notes only` : names[this.level.rung];
+    this.ui.right.textContent = this.findNow ? 'Find it' : this.fingersNow ? 'Finger numbers' : this.phrasesNow ? 'Key names' : this.level.onTime === 'notes' ? `${names[this.level.rung]} · notes only` : names[this.level.rung];
     // Endless sets: Finish while a set is going.
     this.ui.finish.hidden = !(this.on && this.limit === Infinity && this.state !== 'idle' && this.state !== 'done');
   }

@@ -438,6 +438,16 @@ The six capabilities the owner's lesson 1 spec lists (app-features §3, §4, §6
   before the start, a keyboard on a black key, with no keys, `groups` not true / false, a misspelt field; the test lesson's
   finger step agrees with its map; the test rung's six lessons; Simon's headline "Longest pattern 3".
 - content.mjs: the finger set's fields; refused: one finger too many, no hand, a chord, `fingers` without the view.
+- (2026-10-18, lesson 2) exercise.mjs: letter-name cards: the shipped `ode-to-joy-names` reads (right then left, two
+  lines of 15 letters, the lengths 1.5 0.5 2 at each line's end, 32 beats a card, the left an octave lower); refused:
+  fingers on a card, a beat short, an empty phrase, no hand; a card played with `miss: "quiet"` and Show key / Names:
+  "Key names" on the score line, Hear it lighting each letter and its key, a wrong key named with nothing outlined, Show
+  key outlining E4, "✓ Played through: 1 wrong key, Show key once", the names on for a moment counting ("names shown"),
+  Hear it then a clean try "✓ Clean", no staff, letters on the keys only when asked (each case seen failing on a
+  deliberately broken drill.ts). path.mjs: the keyboard's `names: "letters"`, `fingers`, `play`, `tempo`, `hide`, `find`
+  read; refused: names another word, hide without letters, play off its keys or not pitches, tempo with no play, find of
+  a letter not on its keys, of one letter, of a black key, fingers not a map. content.mjs: the names set's fields and
+  `beats`; refused: fingers on a names card, a beat short, an empty phrase.
 - browser.mjs `--only lesson1caps` (45), on the test lesson `test-lesson1-caps`, touch taps by position, at 360×780 and
   844×390, screenshots to `web/r3shots-lesson1/` (not committed): Read / Watch (Read first, no video in the page; Watch puts
   the player in, Read takes it out; offline the title and "needs the internet"); the keyboard (C3–B4, the groups 2 3 2 3,

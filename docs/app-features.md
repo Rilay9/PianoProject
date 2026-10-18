@@ -543,7 +543,27 @@ for the right one (no Skip). *Hear it* plays it again (noted as help; the card t
 ends **"✓ Clean"** (no wrong keys) or **"✓ Done, n wrong keys"**, then *Next* or *Again* (it does not move on by itself;
 a key goes on after 0.8 s). A set is played through when every card is (wrong keys or not). The Level panel shows only
 the cards per set; the keys always show (Nothing under the music does not hide them); no note names anywhere; Simon has
-none (Practise as… offers Drills only; a step or link naming one in Simon says so).
+none (Practise as… offers Drills only; a step or link naming one in Simon says so). *A line tapped* is heard on its own
+(owner's lesson 2 spec, 2026-10-18; noted as help on a finger-number card, as Hear it is).
+
+**Letter-name cards** (owner's lesson 2 spec, 2026-10-18: Ode to Joy by key names; `exercise/fingers.ts`, `drill.ts`): a
+set with `"view": "names"` (§6). The same card as a finger-number one, with **each note's letter in place of its finger**
+(C, F♯; no octave), by phrase, the hand said once. **Nothing is shaded or numbered on the keys**, and no octave labels.
+Start (or Hear it) plays it in the set's rhythm (its `beats`, at the set's tempo) with **each letter and its key lit as
+it sounds**; a line tapped plays that line (where you are stays). Your turn as on a finger-number card: untimed, notes in
+order, the next letter highlighted. What a miss does and the help offered are the **activity's** (§8b `miss`, `help`;
+`PhraseHelp` in drill.ts), for either kind of phrase card:
+- `miss: "outline"` (the default; lesson 1's Mary): the wrong key flashes red and the right key is outlined.
+- `miss: "quiet"`: the wrong key flashes red and is **named**, "That's G: find E" (a black key: "a black key"), and
+  **nothing is outlined**.
+- `help: ["show-key"]`: a **Show key** button (under the music, beside Hear it) outlines the right key until you play it.
+- `help: ["names"]`: a **Names** button puts every white key's letter on the keys, on or off; it opens off and stays as
+  you leave it for the cards after, until the screen closes.
+
+On a letter-name card, hearing it (Hear it, a line) is **not** help: its letters are what you read. A card ends **"✓
+Clean"** only with no wrong key, no Show key and the names off throughout; otherwise **"✓ Played through: 1 wrong key,
+Show key once, names shown"** (what applies), then *Next* or *Again*. "Key names" on the score line; the Level panel
+shows only the cards per set; Simon has none.
 
 **Rhythm sets** (owner, 2026-10-16, decided with options: inside Drills, one big pad, a one-line rhythm staff, echo and
 read, patterns generated from the values taught; `exercise/rhythm.ts`, `pad.ts`): cards of rhythm alone, a set of kind
@@ -1256,6 +1276,22 @@ without the view. check:activity and check:path also refuse a card whose finger 
 note, and a finger-number set in Simon. The test set `test-finger-cards` (two cards, right and left hand, four phrases
 of 7, 6, 8 and 5) is a placeholder for the checks.
 
+**A letter-name set** (owner's lesson 2 spec, 2026-10-18; §4 "Letter-name cards"): `"view": "names"`; each card a `notes`
+item, one note after another, **`/` between phrases** in the notes, and `hand`; no `fingers`. Either kind of phrase set
+(this and `"fingers"`) may give **`beats`**: each note's length in quarter notes (`/` allowed between phrases), used only
+when the card is played to you. Example (lesson 2's tune, from the score on Wikipedia's "Ode to Joy" page moved to C; the
+real set is `ode-to-joy-names`):
+
+```json
+{ "title": "Ode to Joy, by key names", "kind": "melodies", "view": "names", "order": "passage", "tempo": 100,
+  "items": {
+    "1": { "notes": "E4, E4, F4, G4, G4, F4, E4, D4, C4, C4, D4, E4, E4, D4, D4 / E4, E4, F4, G4, …, D4, C4, C4",
+           "beats": "1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2 / 1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2", "hand": "right" } } }
+```
+
+Refused (the reader and check:content): `fingers` on a card, an empty phrase, no `hand`, a chord, `beats` not one a note
+(or not a length 0.25–16), `rhythm` or `from` on the set, and `hand` / `beats` on a set without a phrase view.
+
 **A "find it" set** (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/); `exercise/find.ts`, §4): `"kind": "find"` and `find` instead of `items`:
 
 ```json
@@ -1302,7 +1338,7 @@ are read in the browser, and the check only finds their files).
 | `title` | text | yes | the one name it has everywhere ("Test:" marks a placeholder) |
 | `kind` | scales, five-finger, arpeggios, chords, intervals, cadences, melodies, rhythm, find | no | none: listed under Other |
 | `find` | `{ keys, groups, letters, places }` (above) | a find set: yes | find sets only |
-| `view` | "letters" / "fingers" | no | letters: MusicXML cards drawn on the one-line staff with their letters (§4); fingers: `notes` cards with `fingers` and `hand`, drawn as finger numbers by phrase (above) |
+| `view` | "letters" / "fingers" / "names" | no | letters: MusicXML cards drawn on the one-line staff with their letters (§4); fingers: `notes` cards with `fingers` and `hand`, drawn as finger numbers by phrase; names: `notes` cards ("/" between phrases) with `hand`, drawn as letter names by phrase (above) |
 | `generate` | `{ values, meter, bars, feature }` (above) | a rhythm set: this or `items` | rhythm sets only; `feature` optional |
 | `items` | `{ "1": item, "2": item, … }`: numbered from 1, at least one | this or `from` | |
 | `from` | `{ "score": <id in scores/index.json>, "bars": "5-8", "staff": 1 }` | this or `items` | `bars` "1-4" (printed bar numbers; one bar "5" too), `staff` 1 (a whole number) |
@@ -1816,6 +1852,10 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
 - freeplay: `keys` (above); `groups` false: the black keys' groups not outlined (on by default in a step; off in your own Free play; §5); `click`
   `{ "bpm": 72, "beats": 4 }`: a click from the screen's start, `bpm` a whole number 20–300 (needed), `beats` in a bar 1–7
   (default 4, the first accented), with its on / off button (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/).
+- drills: `miss` and `help`, for finger-number and letter-name cards (owner's lesson 2 spec, 2026-10-18; §4 "Letter-name
+  cards"): `miss` "outline" (the default: a wrong key's right key outlined at once) or "quiet" (nothing outlined; the key
+  played named); `help` a list of "show-key" (a Show key button) and "names" (a Names button: letters on the keys). Refused:
+  any other value. Other cards ignore them.
 - freeplay, simon, drills: `fingers`: finger numbers on the keys (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/): `{ "C#": 2, "D#": 3, "F#": 2, "G#": 3, "A#": 4 }`,
   each a finger 1–5 for a pitch in every octave ("C#", "Bb", "E") or for one key ("C#4", over its pitch's number). The app
   judges keys, not fingers: the numbers only show which to use. Refused: a finger outside 1–5, a name that is not a pitch
@@ -2029,7 +2069,15 @@ path, a step's once in its lesson. Text fields are non-empty text.
 | `step` | `id`, `title`, `activity` | `doneWhen`, `target`, `about`, `optional` | `activity` an activity's id (letters, digits, `-`, `_`) or one written out (§8b, its id `<lesson>.<step>`); `target` below |
 | `tip` | `text` | `label` | `label` default "Tip" |
 | `read-watch` | `text`, `youtube`, `title` | `start`, `end`, `caption` | `text` as a text block; the video fields as a video block's |
-| `keyboard` | `keys` | `groups`, `names`, `caption` | `keys` a range "C3-B4" (white keys at both ends, on the piano); `groups`, `names` true / false (default true) |
+| `keyboard` | `keys` | `groups`, `names`, `fingers`, `hide`, `play`, `tempo`, `find`, `caption` | `keys` a range "C3-B4" (white keys at both ends, on the piano); `groups` true / false (default true); `names` true (octave labels, the default) / false / `"letters"` (every white key's letter); `fingers` a finger map as an activity's (§8b), shown on the keys, and with `"letters"` a **Finger numbers \| Key names** switch opening on the numbers; `hide` true (with `"letters"`): a Hide names / Show names button; `play` up to 32 pitches on its keys ("E4 D4 C4"): a ▶ Hear it, each key lit as it sounds, at `tempo` (default 100); `find` true (all seven letters) or letters ("F A B", two or more, each on its keys): **Find a key** (below) |
+
+**The keyboard block's Find a key** (owner's lesson 2 spec, 2026-10-18; `lesson/blocks.ts`): the names hidden and "Find F"
+above the keys, the letters in a random order, each once before any comes again and never one twice running. The right
+key (any key of that letter; on a MIDI keyboard any octave) lights green, "✓ That's F", and the next letter comes after a
+moment; a wrong key sounds and is named ("That's D. Find F."; a black key "a black key", their names not taught yet) and
+the prompt stays. **Show me** outlines every key of that letter until a key is pressed; **Stop** brings the names back.
+Endless; nothing judged, saved or ticked: it isn't a step. Hear it on any page keyboard stops a playing mini score, and
+the other way round; leaving the page stops it.
 
 `target` by its activity's screen, one or both fields: score `onTime` (0.05–1) and `bpm` (a whole number, 20–300);
 drills `clean` (whole, 1–100); simon `chain` (whole, 5–100: owner, 2026-10-17, every Simon at least 5); lab `cleanRounds` (whole, 1–40; not a lead activity).

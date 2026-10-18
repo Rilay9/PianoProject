@@ -26,3 +26,8 @@ export function ago(iso: string | undefined, now = new Date()): string {
   if (days < 7) return `${days} days ago`;
   return t.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 }
+
+/** "all 3 steps", or (a lesson with one) "its one step": never "all 1 steps" (lesson 2, 2026-10-18). */
+export const allSteps = (n: number): string => (n === 1 ? 'its one step' : `all ${n} steps`);
+/** "steps", or "step" for one ("0 of 1 step done"). */
+export const stepsWord = (n: number): string => (n === 1 ? 'step' : 'steps');

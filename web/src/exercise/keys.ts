@@ -117,6 +117,14 @@ export class ExerciseKeys {
     this.shown = '';
     this.draw();
   }
+  /** Every white key's letter on it (a phrase card's Names button: owner's lesson 2 spec, 2026-10-18); drawn again if it changes. */
+  setLetters(on: boolean): void {
+    if (this.strip.letters === on) return;
+    this.strip.letters = on;
+    this.shown = '';
+    this.draw();
+  }
+  get lettersOn(): boolean { return this.strip.letters; }
   /** Turned (or resized into another kind of screen): its own chosen keys, if they differ, and its own window size. */
   resized(): void {
     const r = keysToShow(this.chosen, currentDevice(), this.notes);

@@ -16,7 +16,7 @@ import { currentLesson, doneSteps, setCurrentLesson } from '../lesson/progress';
 import { runLine } from '../lesson/result';
 import { stopMiniScores } from '../lesson/miniscore';
 import { pageKeyboardKey } from '../lesson/blocks';
-import { ago, button, el } from '../ui';
+import { ago, allSteps, button, el, stepsWord } from '../ui';
 import { icon, type IconName } from '../icons';
 import type { LibraryScreen } from './library';
 import { helpLink } from '../help/page';
@@ -246,12 +246,12 @@ export function createShell(app: App, d: ShellDeps) {
       const upWords = up ? (up.optional ? 'optional step' : `${stepName(lesson, up).toLowerCase()} of ${st.total}`) : '';
       card.append(el('div', 'k', up ? `${st.next || st.optionalLeft ? 'Up next' : 'Again'} · Rung ${place.rungNo} · Lesson ${place.no} · ${upWords}` : `Rung ${place.rungNo} · Lesson ${place.no}`),
         // (every lesson done, the only time a done lesson is Up next: said plainly, no next lesson promised; 2026-10-16)
-        el('div', 'h', up?.title ?? lesson.title), el('div', 's', st.next ? lesson.title : `${lesson.title}: all ${st.total} steps done. The next lesson is not written yet.`));
+        el('div', 'h', up?.title ?? lesson.title), el('div', 's', st.next ? lesson.title : `${lesson.title}: ${allSteps(st.total)} done. The next lesson is not written yet.`));
       const go = el('div', 'go'), bar = el('span', 'pbar'), fill = el('i');
       fill.style.width = `${Math.round((st.done / Math.max(1, st.total)) * 100)}%`;
       bar.append(fill);
       bar.setAttribute('aria-hidden', 'true');
-      go.append(el('span', 's', `${st.done} of ${st.total} steps done`), bar, up ? button('Start ▶', 'btn main', () => startStep(lesson.id, up.id)) : button('Open ▶', 'btn main', () => openLesson(lesson.id)));
+      go.append(el('span', 's', `${st.done} of ${st.total} ${stepsWord(st.total)} done`), bar, up ? button('Start ▶', 'btn main', () => startStep(lesson.id, up.id)) : button('Open ▶', 'btn main', () => openLesson(lesson.id)));
       card.append(go);
       left.append(card);
       const inst = installCard(); // (in a browser tab: install to keep your files and play offline; owner, 2026-10-15)
@@ -443,12 +443,12 @@ export function createShell(app: App, d: ShellDeps) {
     const here = lesson ? placeOf(path, lesson.id)! : undefined;
     if (lesson && here) {
       const st = lessonState(lesson), card = el('div', 'today');
-      card.append(el('div', 'k', `You are here · Rung ${here.rungNo} · Lesson ${here.no}`), el('div', 'h', lesson.title), el('div', 's', st.next ? `Step ${st.nextNo} of ${st.total}: ${st.next.title}` : `All ${st.total} steps done`));
+      card.append(el('div', 'k', `You are here · Rung ${here.rungNo} · Lesson ${here.no}`), el('div', 'h', lesson.title), el('div', 's', st.next ? `Step ${st.nextNo} of ${st.total}: ${st.next.title}` : `${allSteps(st.total)[0].toUpperCase()}${allSteps(st.total).slice(1)} done`));
       const go = el('div', 'go'), bar = el('span', 'pbar'), fill = el('i');
       fill.style.width = `${Math.round((st.done / Math.max(1, st.total)) * 100)}%`;
       bar.append(fill);
       bar.setAttribute('aria-hidden', 'true');
-      go.append(el('span', 's', `${st.done} of ${st.total} steps done`), bar);
+      go.append(el('span', 's', `${st.done} of ${st.total} ${stepsWord(st.total)} done`), bar);
       const go2 = el('div', 'go');
       go2.append(button('Switch…', 'btn', () => void openSwitch(lesson.id)), button('Carry on ▶', 'btn main', () => openLesson(lesson.id)));
       card.append(go, go2);
@@ -479,7 +479,7 @@ export function createShell(app: App, d: ShellDeps) {
         const row = button('', `les${!st.next ? ' done' : ''}${isNow ? ' now' : ''}`, () => openLesson(l.id));
         const tx = el('span', 'tx');
         const done = Object.values(doneSteps(l.id)).map((x) => x.at).sort().pop();
-        tx.append(el('span', 'tt', `${li + 1} · ${l.title}`), el('span', 'mm', !st.next ? `all ${st.total} steps done · ${ago(done)}` : `${st.done} of ${st.total} steps done${isNow ? ' · you are here' : ''}`));
+        tx.append(el('span', 'tt', `${li + 1} · ${l.title}`), el('span', 'mm', !st.next ? `${allSteps(st.total)} done · ${ago(done)}` : `${st.done} of ${st.total} ${stepsWord(st.total)} done${isNow ? ' · you are here' : ''}`));
         const m = el('span', 'm', !st.next ? '✓' : isNow ? '▶' : '○');
         m.setAttribute('aria-hidden', 'true');
         row.append(m, tx);
@@ -516,7 +516,7 @@ export function createShell(app: App, d: ShellDeps) {
       const onIt = here && pageOnTop()?.name === 'lesson' && pageOnTop()?.lesson === id; // (this lesson's own page, or its step's result: no button to open it; F13)
       const li = el('div', 'li');
       const tx = el('span', 'tx');
-      tx.append(el('span', 'tt', `${i + 1} · ${l.title}`), el('span', 'mm', [here ? 'you are here' : '', !st.next ? `all ${st.total} steps done` : `${st.done} of ${st.total} steps done`].filter(Boolean).join(' · ')));
+      tx.append(el('span', 'tt', `${i + 1} · ${l.title}`), el('span', 'mm', [here ? 'you are here' : '', !st.next ? `${allSteps(st.total)} done` : `${st.done} of ${st.total} ${stepsWord(st.total)} done`].filter(Boolean).join(' · ')));
       li.append(tx);
       // Revisit keeps what was done (review 2026-10-15: "Redo" sounded as if it were wiped); a lesson ahead opens too.
       // "Skip ahead" only for a lesson not started with an earlier one not done (V30; the walk-through, 2026-10-16: the very

@@ -4,7 +4,7 @@
 // practice log with the step, lesson and rung. Steps never lock: every step has its Start, done or not.
 
 import { $, type App } from '../app';
-import { button, el } from '../ui';
+import { allSteps, button, el, stepsWord } from '../ui';
 import type { Activity } from '../activity';
 import { endStep, entries, putEntry, removeEntry, takeEvidence, type LessonRef, type LogEntry } from '../log';
 import type { Command } from '../remote';
@@ -105,7 +105,7 @@ export function createLessonPage(d: LessonDeps) {
     if (state.next) {
       const go = button(`Start step ${state.nextNo} ▶`, 'btn main', () => void start(state.next!));
       go.id = 'lesson-next';
-      setBar(`${state.done} of ${state.total} steps done`, [go]);
+      setBar(`${state.done} of ${state.total} ${stepsWord(state.total)} done`, [go]);
     } else {
       // An optional step not played is offered once nothing needed is left (owner's lesson 1 spec, 2026-10-17), beside the way on.
       const extra = state.optionalLeft ? [button('Optional step ▶', 'btn', () => void start(state.optionalLeft!))] : [];
@@ -113,8 +113,8 @@ export function createLessonPage(d: LessonDeps) {
       const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), todo = nextTodo(data, lesson.id), after = todo ? { lesson: todo } : order[at + 1];
       // No next lesson yet (owner, 2026-10-16, after the walk-through: the bar had nothing, while the text promised one):
       // said plainly, with the way to keep practising.
-      if (!after && state.total) { setBar(`Lesson done: all ${state.total} steps. The next lesson is not written yet`, [...extra, button('Practice ›', 'btn main', () => d.openPractice())]); return; }
-      setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', [...extra, ...(after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : [])]);
+      if (!after && state.total) { setBar(`Lesson done: ${allSteps(state.total)}. The next lesson is not written yet`, [...extra, button('Practice ›', 'btn main', () => d.openPractice())]); return; }
+      setBar(state.total ? `Lesson done: ${allSteps(state.total)}` : 'No steps in this lesson', [...extra, ...(after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : [])]);
     }
   }
 
@@ -234,7 +234,7 @@ export function createLessonPage(d: LessonDeps) {
     if (s.pending.target?.clean !== undefined) card.append(el('div', 's les-note', 'A clean card is one played right the first time, with no help (Hear it or Show me). A card right on Again counts as right, not clean.'));
     if (s.lessonDone) {
       const nextTitle = s.nextLesson ? data?.lessons.get(s.nextLesson)?.title : undefined;
-      card.append(el('div', 'les-done', `Lesson done: all ${lessonState(lesson!).total} steps.${nextTitle ? ` Next: ${nextTitle}.` : ' The next lesson is not written yet; Practice has every exercise to keep going with.'}`));
+      card.append(el('div', 'les-done', `Lesson done: ${allSteps(lessonState(lesson!).total)}.${nextTitle ? ` Next: ${nextTitle}.` : ' The next lesson is not written yet; Practice has every exercise to keep going with.'}`));
     }
     const all = entries().filter((e) => e.screen !== 'lesson' && e.lesson?.lesson === s.pending.lesson && e.lesson.step === s.pending.step);
     if (all.length > s.out.runs) { const best = bestLine(all); if (best) card.append(el('div', 's', `Best so far: ${best}`)); }

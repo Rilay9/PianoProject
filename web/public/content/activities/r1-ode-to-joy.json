@@ -1,0 +1,17 @@
+{
+  "title": "Ode to Joy",
+  "screen": "drills",
+  "set": "ode-to-joy-names",
+  "keys": {
+    "phone-upright": "C3-B4"
+  },
+  "names": false,
+  "miss": "quiet",
+  "help": [
+    "show-key",
+    "names"
+  ],
+  "level": {
+    "cards": 2
+  }
+}

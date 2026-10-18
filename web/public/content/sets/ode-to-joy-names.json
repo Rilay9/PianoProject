@@ -1,0 +1,21 @@
+{
+  "title": "Ode to Joy, by key names",
+  "kind": "melodies",
+  "view": "names",
+  "order": "passage",
+  "tempo": 100,
+  "items": {
+    "1": {
+      "notes": "E4, E4, F4, G4, G4, F4, E4, D4, C4, C4, D4, E4, E4, D4, D4 / E4, E4, F4, G4, G4, F4, E4, D4, C4, C4, D4, E4, D4, C4, C4",
+      "beats": "1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2 / 1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2",
+      "hand": "right",
+      "name": "Right hand"
+    },
+    "2": {
+      "notes": "E3, E3, F3, G3, G3, F3, E3, D3, C3, C3, D3, E3, E3, D3, D3 / E3, E3, F3, G3, G3, F3, E3, D3, C3, C3, D3, E3, D3, C3, C3",
+      "beats": "1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2 / 1 1 1 1 1 1 1 1 1 1 1 1 1.5 0.5 2",
+      "hand": "left",
+      "name": "Left hand"
+    }
+  }
+}

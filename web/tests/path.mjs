@@ -117,6 +117,12 @@ ok('reads to: an inline step activity, its target', (() => { const s = one({ kin
     kb2 = one({ kind: 'keyboard', keys: 'C4-B4', groups: false, names: false, caption: 'Try the black keys' });
   } catch (e) { msg = e.message; }
   ok('reads to: Read / Watch, its text, video, title, start and caption', rw?.text?.[0]?.t === 'h' && rw.youtube === 'https://youtu.be/ZD_sAWAlWq0' && rw.title === 'Posture' && rw.start === 5 && rw.caption === 'c', msg || JSON.stringify(rw));
+  {
+    const k3 = one({ kind: 'keyboard', keys: 'C4-G4', names: 'letters', fingers: { C4: 1, D4: 2, E4: 3, F4: 4, G4: 5 }, play: 'E4 D4 C4 D4 E4', tempo: 90 });
+    const k4 = one({ kind: 'keyboard', keys: 'C4-C5', names: 'letters', hide: true, find: true });
+    const k5 = one({ kind: 'keyboard', keys: 'C4-C5', find: 'F A B' });
+    ok('reads to: a keyboard with letters, a finger map (the switch), Hear it at its tempo; one with Hide names and Find a key (all seven letters, or those given)', k3?.names === 'letters' && k3.fingers?.key?.[60] === 1 && k3.play?.join(' ') === 'E4 D4 C4 D4 E4' && k3.tempo === 90 && k4?.hide === true && k4.find?.join('') === 'CDEFGAB' && k5?.find?.join('') === 'FAB' && k5.names === true, JSON.stringify({ k3, k4, k5 }));
+  }
   ok('reads to: a keyboard to play, its keys (C3 48 to B4 71), the groups and labels on unless false', same(kb?.keys, { lo: 48, hi: 71 }) && kb.groups === true && kb.names === true && kb2.groups === false && kb2.names === false && kb2.caption === 'Try the black keys', msg || JSON.stringify({ kb, kb2 }));
 }
 {
@@ -147,6 +153,16 @@ const refused = [
   ['a keyboard with no keys', L([{ kind: 'keyboard' }]), /\(keyboard\) needs "keys"/],
   ['a keyboard\'s groups that are not true or false', L([{ kind: 'keyboard', keys: 'C3-B4', groups: 'no' }]), /groups should be true or false/],
   ['a keyboard with a misspelt field', L([{ kind: 'keyboard', keys: 'C3-B4', group: false }]), /has "group"/],
+  // (2026-10-18, lesson 2) the keyboard's letters, switch, Hear it and Find a key
+  ['a keyboard’s names as another word', L([{ kind: 'keyboard', keys: 'C4-C5', names: 'abc' }]), /names should be true, false or "letters"/],
+  ['a keyboard’s hide without letters', L([{ kind: 'keyboard', keys: 'C4-C5', hide: true }]), /hide is for names: "letters"/],
+  ['a keyboard’s play off its keys', L([{ kind: 'keyboard', keys: 'C4-G4', play: 'E4 D4 A4' }]), /A4 is not on its keys/],
+  ['a keyboard’s play that is not pitches', L([{ kind: 'keyboard', keys: 'C4-G4', play: 'E4 X' }]), /"X" is not a pitch/],
+  ['a keyboard’s tempo with nothing to play', L([{ kind: 'keyboard', keys: 'C4-G4', tempo: 90 }]), /tempo is for "play"/],
+  ['a keyboard’s find of a letter not on its keys', L([{ kind: 'keyboard', keys: 'C4-G4', find: 'F A' }]), /no A on its keys/],
+  ['a keyboard’s find of one letter', L([{ kind: 'keyboard', keys: 'C4-G4', find: 'F F' }]), /at least two different letters/],
+  ['a keyboard’s find of a black key', L([{ kind: 'keyboard', keys: 'C4-G4', find: 'C# D' }]), /"C#" is not a white key/],
+  ['a keyboard’s fingers that are not a map', L([{ kind: 'keyboard', keys: 'C4-G4', fingers: '1 2 3' }]), /fingers should be like/],
   ['a misspelt field', L([{ kind: 'text', txt: 'x' }]), /has "txt"/],
   ['a missing field', L([{ kind: 'image', src: 'media/a.png' }]), /needs "alt"/],
   ['raw HTML in text', L([{ kind: 'text', text: 'a <b>b</b>' }]), /HTML/],

@@ -1,0 +1,60 @@
+{
+  "title": "Names on the keys",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You played a tune by finger numbers. Today you'll learn what the keys are called, and use their names to play a new tune."
+    },
+    {
+      "kind": "text",
+      "text": "# The same tune, two ways\nRemember the start of *Mary Had a Little Lamb*, **3 2 1 2 3**? Those keys have names too: **E D C D E**. A finger number tells you which finger to use; a letter tells you which key. Move your hand and the finger numbers land on different keys, but each key keeps its letter."
+    },
+    {
+      "kind": "keyboard",
+      "keys": "C4-G4",
+      "groups": false,
+      "names": "letters",
+      "fingers": {
+        "C4": 1,
+        "D4": 2,
+        "E4": 3,
+        "F4": 4,
+        "G4": 5
+      },
+      "play": "E4 D4 C4 D4 E4",
+      "caption": "Switch between the finger numbers and the key names, and tap Hear it for the start of Mary."
+    },
+    {
+      "kind": "text",
+      "text": "# The musical alphabet\nThe white keys use just seven letters: **A B C D E F G**. After G it starts again at A. The black keys show you where you are: **C** is just left of a pair of black keys, **D** is between the two, and **E** just right of them. **F** is just left of a group of three, **G** and **A** are between its keys, and **B** is just right of them. Then comes C again."
+    },
+    {
+      "kind": "keyboard",
+      "keys": "C4-C5",
+      "groups": false,
+      "names": "letters",
+      "hide": true,
+      "find": true,
+      "caption": "Try C D E again. Then play G A B and on up to the next C: hear how it climbs? Come back down, or make up a few notes of your own."
+    },
+    {
+      "kind": "text",
+      "text": "# Find them without the names\nNow hide the names and find the keys yourself: tap **Find a key** on the keyboard above. It names a letter; play that key. If you're stuck, **Show me** outlines it. Keep going as long as you like, and **Stop** brings the names back."
+    },
+    {
+      "kind": "text",
+      "text": "# Ode to Joy, by letter names\nHere's a tune that uses five of those keys: the opening of Beethoven's *Ode to Joy*. Put your right hand in C position, as for Mary (thumb on middle C), then play it from the letters: find each key by its name. Take your time; there's no clock. Then the left hand plays the same letters lower down, little finger on the C below. The keys are different, the letters are the same."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy",
+      "activity": "r1-ode-to-joy",
+      "about": "Play the tune from its letters: right hand, then left hand."
+    },
+    {
+      "kind": "text",
+      "text": "Play it again if you like and see if it feels smoother, or change the ending on the keyboard above and hear what happens."
+    }
+  ]
+}

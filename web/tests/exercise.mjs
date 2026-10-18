@@ -906,5 +906,68 @@ try {
   d.close();
 } catch (e) { check(`a lesson-1 section ran to its end (${String(e).slice(0, 90)})`, false, String(e.stack).split('\n').slice(0, 3).join(' | ')); }
 
+// 7. Letter-name cards (owner's lesson 2 spec, 2026-10-18): the set that ships read (phrases from "/", the rhythm it is
+// played in), a card played with the activity's quiet misses, Show key and Names, and what counts as clean.
+try {
+  const { readFileSync } = await import('node:fs');
+  const { readSet } = await import('../src/exercise/items.ts');
+  const file = JSON.parse(readFileSync(new URL('../public/content/sets/ode-to-joy-names.json', import.meta.url), 'utf8'));
+  const set = await readSet('ode-to-joy-names', file, 'file:///x/', async () => '', async () => '');
+  const [r, l] = set.items;
+  const line = 'E E F G G F E D C C D E E D D|E E F G G F E D C C D E D C C';
+  check('letter-name set reads: right then left, two lines of 15 letters (Ode to Joy in C), each note\'s length (1.5 + 0.5 + 2 at each line\'s end, 32 beats a card), the left an octave lower', set.view === 'names' && r.lettering.hand === 'right' && l.lettering.hand === 'left' && r.lettering.phrases.map((p) => p.join(' ')).join('|') === line && l.lettering.phrases.map((p) => p.join(' ')).join('|') === line && r.beats.reduce((a, b) => a + b, 0) === 32 && r.beats.slice(12, 15).join() === '1.5,0.5,2' && r.groups[0][0] === 'E4' && l.groups[0][0] === 'E3', JSON.stringify({ r: r.lettering, beats: r.beats }));
+  const read = async (f) => { try { await readSet('f', { title: 't', view: 'names', ...f }, 'file:///x/', async () => '', async () => ''); return 'ACCEPTED'; } catch (e) { return e.message; } };
+  const bad = {
+    fingers: await read({ items: { 1: { notes: 'C4, D4', fingers: '1 2', hand: 'right' } } }),
+    beats: await read({ items: { 1: { notes: 'C4, D4 / E4', beats: '1 1', hand: 'right' } } }),
+    phrase: await read({ items: { 1: { notes: 'C4, D4 /', hand: 'right' } } }),
+    hand: await read({ items: { 1: { notes: 'C4, D4' } } }),
+  };
+  check('letter-name cards refused with a reason: fingers on one, a beat short, an empty phrase, no hand', /shows letters, not fingers/.test(bad.fingers) && /2 lengths for 3 notes/.test(bad.beats) && /empty phrase/.test(bad.phrase) && /"hand" should be/.test(bad.hand), JSON.stringify(bad));
+
+  // Played: Hear it lights each letter and its key; a key during it starts your turn as the first note; a wrong key is
+  // named and nothing outlined; Show key outlines the right one; the card played through says what help was used.
+  store.clear();
+  const seen = { lit: [], wrong: [], want: [], drawn: 0, marks: [], letters: [] };
+  const fv = { show() {}, mark(m) { seen.marks.push(m); }, clear() {} };
+  let lettersOn = false;
+  const keys = { ...keysStub(), light(ms) { if (ms.length) seen.lit.push(...ms); }, wrong(ms) { seen.wrong.push(ms.join()); }, want(ms) { seen.want.push(ms.join()); }, setLetters(on) { lettersOn = on; seen.letters.push(on); }, get lettersOn() { return lettersOn; } };
+  const btn = () => { const run = []; return { ...el(), setAttribute() {}, addEventListener(_t, f) { run.push(f); }, click() { for (const f of run) f(); } }; }; // (a button whose click runs)
+  const ui = { ...parts(), help: btn(), again: btn(), fingers: fv, showKey: btn(), letters: btn() };
+  const d = new Drill(ui, keys, { show: async () => { seen.drawn++; }, clear() {} }, sound);
+  d.phraseHelp = { miss: 'quiet', showKey: true, names: true };
+  d.open([set], { set: set.id, level: { cards: 2 } });
+  const label = ui.right.textContent;
+  d.key(64, true, performance.now()); await settle();
+  await pass(30);
+  const demo = { state: d.state, keyLit: seen.lit.includes(64), sounding: seen.marks.some((m) => m.sounding === 0), tools: !ui.showKey.hidden && !ui.letters.hidden };
+  await new Promise((res) => setTimeout(res, 900));
+  d.key(64, true, performance.now()); await settle(); // the first E: your turn
+  d.key(67, true, performance.now()); await settle(); // G, where E is next
+  const miss = { sub: ui.sub.textContent, want: seen.want.filter(Boolean).length, wrong: seen.wrong.at(-1) };
+  ui.showKey.click(); await settle();
+  const shown = { want: seen.want.at(-1), sub: ui.sub.textContent };
+  for (const k of d.debug().steps.slice(1).map((s) => s.keys[0])) { d.key(k, true, performance.now()); await settle(); }
+  const done1 = ui.status.textContent;
+  d.nextCard(); await settle();
+  ui.letters.click(); await settle(); // the names on, for this card
+  ui.letters.click(); await settle(); // and off again before a key: still counted (seen)
+  await new Promise((res) => setTimeout(res, 900));
+  for (const k of d.debug().steps.map((s) => s.keys[0])) { d.key(k, true, performance.now()); await settle(); }
+  const done2 = ui.status.textContent;
+  // A third time round (Again on the left card), hearing it and playing it with no help: clean.
+  ui.again.click(); await settle();
+  ui.help.click(); await settle(); // Hear it: not help on a letter card
+  await new Promise((res) => setTimeout(res, 900));
+  for (const k of d.debug().steps.map((s) => s.keys[0])) { d.key(k, true, performance.now()); await settle(); }
+  const done3 = ui.status.textContent;
+  check('letter card: "Key names" on the score line; Hear it lights each letter and its key; Show key and Names there while it plays', label === 'Key names' && demo.state === 'demo' && demo.keyLit && demo.sounding && demo.tools, JSON.stringify({ label, demo }));
+  check('letter card (miss "quiet"): a wrong key flashes red, is named ("That’s G: find E") and nothing is outlined', miss.sub === 'That’s G: find E' && miss.want === 0 && miss.wrong === '67', JSON.stringify(miss));
+  check('letter card: Show key outlines the right key (E4)', shown.want === '64' && /outlined/.test(shown.sub), JSON.stringify(shown));
+  check('letter card: played through, "✓ Played through: 1 wrong key, Show key once"; the names shown for a moment count ("names shown"); heard and played with no help: "✓ Clean"', done1 === '✓ Played through: 1 wrong key, Show key once' && done2 === '✓ Played through: names shown' && done3 === '✓ Clean', JSON.stringify({ done1, done2, done3 }));
+  check('letter card: no staff drawn; the letters on the keys only when asked', seen.drawn === 0 && seen.letters.join() === 'true,false', JSON.stringify({ drawn: seen.drawn, letters: seen.letters }));
+  d.close();
+} catch (e) { check(`the letter-name section ran to its end (${String(e).slice(0, 90)})`, false, String(e.stack).split('\n').slice(0, 3).join(' | ')); }
+
 console.log(failures.length ? `${failures.length} failed` : 'all passed');
 process.exit(failures.length ? 1 : 0);

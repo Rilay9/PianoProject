@@ -40,7 +40,7 @@ export type Activity = { id: string; title: string; names?: false } & (
   | { screen: 'score'; piece: string; bars?: [number, number]; settings: ScorePreset; keys?: ChosenKeys }
   | { screen: 'memorise'; piece: string; settings: MemorisePreset }
   | { screen: 'simon'; set: string; level: Partial<SimonLevel>; keys?: ChosenKeys; fingers?: Fingers }
-  | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys; fingers?: Fingers }
+  | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys; fingers?: Fingers; miss?: 'outline' | 'quiet'; help?: ('show-key' | 'names')[] }
   | { screen: 'lab'; chart: string; preset: LabPreset }
   | { screen: 'freeplay'; keys?: ChosenKeys; fingers?: Fingers; groups?: false; click?: FreeClick }
 );
@@ -151,7 +151,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const screen = f.screen;
   // The file's own fields, by screen: anything else (a misspelt "setting", Memorise "bars") is refused, not ignored.
   const fields: Record<string, string[]> = {
-    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names', 'fingers'], drills: ['set', 'level', 'keys', 'names', 'fingers'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names', 'fingers', 'groups', 'click'],
+    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names', 'fingers'], drills: ['set', 'level', 'keys', 'names', 'fingers', 'miss', 'help'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names', 'fingers', 'groups', 'click'],
   };
   if (typeof screen === 'string' && fields[screen]) {
     for (const k of Object.keys(f)) {
@@ -201,7 +201,11 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
       const level = check<Partial<DrillLevel>>(obj(f.level, 'level'), {
         rung: [0, 1, 2, 3, 4, 5], start: ['clicks', 'first'], metronome: 'bool', onTime: ['relaxed', 'normal', 'strict', 'notes'], cards: whole(0, 100),
       }, 'level');
-      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys, ...withFingers };
+      // A phrase card's miss and help (owner's lesson 2 spec, 2026-10-18; exercise/drill.ts PhraseHelp): "outline" (the
+      // right key outlined on a miss: the default) or "quiet"; Show key and Names buttons.
+      if (f.miss !== undefined && f.miss !== 'outline' && f.miss !== 'quiet') throw new Error(`miss ${JSON.stringify(f.miss)} should be "outline" (the right key outlined on a miss) or "quiet" (nothing outlined; Show key does it)`);
+      if (f.help !== undefined && !(Array.isArray(f.help) && f.help.every((h) => h === 'show-key' || h === 'names'))) throw new Error(`help ${JSON.stringify(f.help)} should be a list of "show-key" and "names"`);
+      return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys, ...withFingers, ...(f.miss !== undefined ? { miss: f.miss as 'outline' | 'quiet' } : {}), ...(f.help !== undefined ? { help: [...new Set(f.help as ('show-key' | 'names')[])] } : {}) };
     }
     case 'lab': {
       const p = obj(f.preset, 'preset');

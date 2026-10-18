@@ -10,9 +10,10 @@ import { itemsXml } from '../exercise/notation';
 import { readSet } from '../exercise/items';
 import type { Sound } from '../sound';
 import { UnderStrip } from '../strip';
-import { excerptXml, MiniScore } from './miniscore';
+import { excerptXml, MiniScore, stopMiniScores } from './miniscore';
 import { PATH_DIR, type StepBlock } from './path';
-import { barProblem, youtubeId, type Block, type ScoreSource } from './read';
+import { barProblem, midiOfPitch, youtubeId, type Block, type ScoreSource } from './read';
+import { fingerOn } from '../activity';
 import type { Inline, TextBlock } from './text';
 
 export interface DrawContext {
@@ -250,33 +251,146 @@ function drawReadWatch(b: Extract<Block, { kind: 'read-watch' }>): HTMLElement {
  * the black keys' groups outlined (unless `groups: false`), the octave labels unless `names: false`; every key sounds on
  * the app's piano when tapped, and the keys pressed on a MIDI keyboard show on it while the page is open (the keyboard
  * sounds itself, as everywhere in the app). Nothing is judged or recorded; it is not a step.
+ *
+ * Its options (owner's lesson 2 spec, 2026-10-18), each turned on by the lesson's content:
+ * - `names: "letters"`: every white key's letter on it; `fingers`: finger numbers; both: a Finger numbers | Key names
+ *   switch above it, opening on the numbers.
+ * - `hide`: a Hide names / Show names button (the letters).
+ * - `play`: Hear it plays those notes, each key lighting as it sounds; a mini score playing stops (one sound at a time).
+ * - `find`: Find a key: the names hidden, "Find F" above the keys, the letters in a random order (each once before any
+ *   comes again, never one twice running). The right key (any of that letter, a MIDI keyboard's in any octave) lights
+ *   green and the next letter comes; a wrong one sounds and is named ("That's D", a black key "a black key": their names
+ *   aren't taught yet), the prompt stays. Show me outlines the keys of that letter until a key is pressed. Stop brings the
+ *   names back. Endless; nothing scored or saved.
  */
-interface PageKeys { kb: HTMLElement; strip: UnderStrip; touches: Map<number, { midi: number; stop: Promise<() => void> }> }
+interface PageKeys { kb: HTMLElement; strip: UnderStrip; touches: Map<number, { midi: number; stop: Promise<() => void> }>; onKey?: (midi: number) => void }
 const pageKeys = new Set<PageKeys>();
 const midiDown = new Set<number>();
 const showPressed = (p: PageKeys) => p.strip.setPressed(new Set([...midiDown, ...[...p.touches.values()].map((t) => t.midi)]));
 /** A key on the MIDI keyboard, while the lesson pages are showing (screens/shell.ts). */
 export function pageKeyboardKey(midi: number, on: boolean): void {
   if (on) midiDown.add(midi); else midiDown.delete(midi);
-  for (const p of [...pageKeys]) { if (!p.kb.isConnected) { pageKeys.delete(p); continue; } showPressed(p); }
+  for (const p of [...pageKeys]) { if (!p.kb.isConnected) { pageKeys.delete(p); continue; } showPressed(p); if (on) p.onKey?.(midi); }
 }
+/** A keyboard's Hear it sounding now (one at a time, as mini scores): stopped by another, or by leaving the page. */
+let hearingNow: (() => void) | null = null;
 /** Leaving the page (or drawing it again): any key still held on the screen stops sounding. */
 export function releasePageKeyboards(): void {
+  hearingNow?.();
   for (const p of [...pageKeys]) {
     for (const t of p.touches.values()) void t.stop.then((stop) => stop());
     p.touches.clear();
     if (!p.kb.isConnected) pageKeys.delete(p); else showPressed(p);
   }
 }
+/** A white key's letter (C to B); null for a black key. */
+const letterOf = (m: number): string | null => 'C D EF G A B'[((m % 12) + 12) % 12].trim() || null;
 function drawKeyboard(b: Extract<Block, { kind: 'keyboard' }>, ctx: DrawContext): HTMLElement {
   const kb = el('div', 'keyboard les-keys les-playkeys');
   const strip = new UnderStrip(kb, kb, document.createElement('div'));
-  strip.names = b.names;
+  strip.names = b.names === true;
   strip.groups = b.groups;
-  strip.showRange(b.keys.lo, b.keys.hi);
   const me: PageKeys = { kb, strip, touches: new Map() };
   pageKeys.add(me);
-  showPressed(me);
+  // What the keys say: finger numbers or letters (the switch), the letters hidden (Hide names, or while finding).
+  let view: 'fingers' | 'letters' | 'plain' = b.fingers ? 'fingers' : b.names === 'letters' ? 'letters' : 'plain';
+  let hidden = false, finding = false;
+  const fingerOf = b.fingers ? (m: number) => fingerOn(b.fingers, m) : null;
+  const draw = () => {
+    strip.fingers = view === 'fingers' ? fingerOf : null;
+    strip.letters = view === 'letters' && !hidden && !finding;
+    strip.showRange(b.keys.lo, b.keys.hi);
+    showPressed(me);
+  };
+  draw();
+  const wrap = el('div', 'les-kb');
+  const tools = el('div', 'les-kb-tools');
+  // Finger numbers | Key names (both given): one shown at a time.
+  const views: [HTMLButtonElement, 'fingers' | 'letters'][] = [];
+  if (b.fingers && b.names === 'letters') {
+    const sw = el('div', 'les-kb-switch');
+    sw.setAttribute('role', 'group');
+    sw.setAttribute('aria-label', 'What the keys show');
+    for (const [text, v] of [['Finger numbers', 'fingers'], ['Key names', 'letters']] as const) {
+      const btn = button(text, 'btn', () => { if (finding) return; view = v; hidden = false; draw(); sync(); });
+      views.push([btn, v]);
+      sw.append(btn);
+    }
+    tools.append(sw);
+  }
+  const hide = b.hide ? button('Hide names', 'btn', () => { hidden = !hidden; draw(); sync(); }) : null;
+  if (hide) tools.append(hide);
+  const hear = b.play ? button('▶ Hear it', 'btn', () => void hearIt()) : null;
+  if (hear) tools.append(hear);
+  const findBtn = b.find ? button('Find a key', 'btn main', () => startFind()) : null;
+  if (findBtn) tools.append(findBtn);
+  // The find prompt: above the keys while finding.
+  const ask = el('div', 'les-kb-find');
+  ask.hidden = true;
+  const askLine = el('p', 'les-kb-ask'), askSub = el('p', 'les-kb-sub');
+  askSub.setAttribute('aria-live', 'polite');
+  const showMe = button('Show me', 'btn', () => { if (want) strip.markKeys('want', keysOf(want)); });
+  const stopFind = button('Stop', 'btn', () => endFind());
+  const askBtns = el('div', 'les-kb-askbtns');
+  askBtns.append(showMe, stopFind);
+  ask.append(askLine, askSub, askBtns);
+  const sync = () => {
+    for (const [btn, v] of views) { btn.setAttribute('aria-pressed', String(view === v)); btn.disabled = finding; }
+    if (hide) { hide.hidden = view !== 'letters' || finding; hide.textContent = hidden ? 'Show names' : 'Hide names'; }
+    if (findBtn) findBtn.hidden = finding;
+    ask.hidden = !finding;
+  };
+  sync();
+
+  // Hear it: the notes at the block's tempo, each key lit as it is heard.
+  let ticker = 0;
+  const stopHear = () => { clearInterval(ticker); strip.markKeys('now-r', []); if (hearingNow === stopHear) { hearingNow = null; ctx.sound.stop(); } };
+  async function hearIt(): Promise<void> {
+    hearingNow?.();
+    stopMiniScores();
+    await ctx.prepare().catch(() => {});
+    if (!kb.isConnected) return;
+    const q = 60000 / (b.tempo ?? 100), notes = b.play!.map(midiOfPitch);
+    hearingNow = stopHear;
+    ctx.sound.play(notes.map((midi, i) => ({ t: i * q, midi, dur: q * 0.9, vel: 80 })), [], -150, 1);
+    let last = -2;
+    ticker = window.setInterval(() => {
+      if (hearingNow !== stopHear || !kb.isConnected) { stopHear(); return; }
+      const t = ctx.sound.songTime() - ctx.sound.heardDelayMs();
+      if (t > notes.length * q + 100 || !ctx.sound.playing) { stopHear(); return; }
+      const i = t < 0 ? -1 : Math.min(notes.length - 1, Math.floor(t / q));
+      if (i !== last) { last = i; strip.markKeys('now-r', i >= 0 ? [notes[i]] : []); }
+    }, 15);
+  }
+
+  // Find a key.
+  let want: string | null = null, lastAsked: string | null = null, deck: string[] = [], settling = 0;
+  const keysOf = (l: string) => { const out: number[] = []; for (let m = b.keys.lo; m <= b.keys.hi; m++) if (letterOf(m) === l) out.push(m); return out; };
+  const nextLetter = () => {
+    if (!deck.length) {
+      deck = [...new Set(b.find!)];
+      for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+      if (deck[0] === lastAsked) deck.push(deck.shift()!); // (never the same letter twice running across a reshuffle)
+    }
+    want = lastAsked = deck.shift()!;
+    askLine.textContent = `Find ${want}`;
+    askSub.textContent = '';
+    strip.markKeys('want', []);
+    strip.markKeys('ok', []);
+  };
+  function startFind(): void { hearingNow?.(); finding = true; deck = []; draw(); sync(); nextLetter(); }
+  function endFind(): void { finding = false; want = null; clearTimeout(settling); settling = 0; draw(); sync(); }
+  me.onKey = (midi) => {
+    if (!finding || !want || !kb.isConnected || settling) return; // (settling: the moment a found key shows green)
+    strip.markKeys('want', []);
+    const l = letterOf(midi);
+    if (l === want) {
+      strip.markKeys('ok', [midi]);
+      askSub.textContent = `✓ That’s ${want}`;
+      settling = window.setTimeout(() => { settling = 0; if (finding) nextLetter(); }, 900);
+    } else askSub.textContent = `That’s ${l ?? 'a black key'}. Find ${want}.`;
+  };
+
   let woken = false;
   kb.addEventListener('pointerdown', (e) => {
     const key = (e.target as HTMLElement).closest<HTMLElement>('[data-midi]');
@@ -288,6 +402,7 @@ function drawKeyboard(b: Extract<Block, { kind: 'keyboard' }>, ctx: DrawContext)
     me.touches.get(id)?.stop.then((stop) => stop());
     me.touches.set(id, { midi, stop: ctx.sound.noteNow(midi, 90, () => me.touches.get(id)?.midi === midi) });
     showPressed(me);
+    me.onKey?.(midi);
   });
   const lift = (e: PointerEvent) => {
     const t = me.touches.get(e.pointerId);
@@ -301,7 +416,9 @@ function drawKeyboard(b: Extract<Block, { kind: 'keyboard' }>, ctx: DrawContext)
   kb.addEventListener('lostpointercapture', lift);
   kb.addEventListener('contextmenu', (e) => e.preventDefault());
   kb.setAttribute('aria-label', 'A keyboard to play: tap the keys');
-  return figure(kb, b.caption, 'les-playkeys-fig');
+  if (tools.childElementCount) wrap.append(tools);
+  wrap.append(ask, kb);
+  return figure(wrap, b.caption, 'les-playkeys-fig');
 }
 
 /** The MusicXML a score block draws. */

@@ -11,7 +11,7 @@
 // Adding a block kind: its fields here (BLOCKS and readBlock), its drawing in lesson/blocks.ts (DRAW), and a line
 // in docs/app-features.md §8c.
 
-import { readActivity, readKeyRange, type Activity, type KeyRange } from '../activity.ts'; // (with .ts: the checks run this file in Node)
+import { readActivity, readFingers, readKeyRange, type Activity, type Fingers, type KeyRange } from '../activity.ts'; // (with .ts: the checks run this file in Node)
 import { readText, type TextBlock } from './text.ts';
 
 /** test: a rung of placeholder lessons for the checks, hidden from the learner (lesson/path.ts; 2026-10-16). */
@@ -39,8 +39,11 @@ export type Block =
   /** Read / Watch (owner, 2026-10-17): a text and a video in one box with two tabs, Read open first, one shown at a time. */
   | { kind: 'read-watch'; text: TextBlock[]; youtube: string; title: string; start?: number; end?: number; caption?: string }
   /** A keyboard to play in the page (owner, 2026-10-17): these keys, the black keys' groups outlined (unless `groups:
-   * false`), every key sounding when tapped, a MIDI keyboard's keys shown on it; nothing judged or recorded. */
-  | { kind: 'keyboard'; keys: KeyRange; groups: boolean; names: boolean; caption?: string };
+   * false`), every key sounding when tapped, a MIDI keyboard's keys shown on it; nothing judged or recorded. Its options
+   * (owner's lesson 2 spec, 2026-10-18): `names` "letters" (every white key's letter), `fingers` (finger numbers; with
+   * letters too, a Finger numbers | Key names switch, opening on the numbers), `hide` (a Hide names / Show names button),
+   * `play` (a Hear it for a few notes, at `tempo`), `find` (a Find a key prompt cycling through these letters). */
+  | { kind: 'keyboard'; keys: KeyRange; groups: boolean; names: boolean | 'letters'; fingers?: Fingers; hide?: true; play?: string[]; tempo?: number; find?: string[]; caption?: string };
 
 /** Where a score block's music comes from: bars of a piece, an item of a set, or MusicXML (inline, or a file). */
 export type ScoreSource =
@@ -62,7 +65,7 @@ const BLOCKS: Record<Block['kind'], { need: string[]; may: string[] }> = {
   step: { need: ['id', 'title', 'activity'], may: ['doneWhen', 'target', 'about', 'optional'] },
   tip: { need: ['text'], may: ['label'] },
   'read-watch': { need: ['text', 'youtube', 'title'], may: ['start', 'end', 'caption'] },
-  keyboard: { need: ['keys'], may: ['groups', 'names', 'caption'] },
+  keyboard: { need: ['keys'], may: ['groups', 'names', 'fingers', 'hide', 'play', 'tempo', 'find', 'caption'] },
 };
 export const BLOCK_KINDS = Object.keys(BLOCKS) as Block['kind'][];
 
@@ -111,6 +114,12 @@ function readBars(v: unknown, what: string): [number, number] {
 }
 
 const PITCH = /^[A-G](#{1,2}|b{1,2})?-?\d$/;
+/** "F#3" → 54: a PITCH as a key (MIDI number). */
+export function midiOfPitch(n: string): number {
+  const m = /^([A-G])(#{1,2}|b{1,2})?(-?\d)$/.exec(n)!;
+  const acc = m[2] ? (m[2][0] === '#' ? 1 : -1) * m[2].length : 0;
+  return (Number(m[3]) + 1) * 12 + { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1] as 'C'] + acc;
+}
 
 /** The target's fields each step's screen can judge (the rest of the screens: done when a run of it ended). */
 const TARGETS: Record<string, Record<string, { min: number; max: number; whole: boolean; say: string }>> = {
@@ -168,8 +177,38 @@ function readBlock(b: unknown, i: number, lessonId: string, ids: Set<string>): B
     case 'keyboard': {
       // The keys as an activity's `keys` range ("C3-B4": white keys at both ends, on the piano); groups and names true / false.
       const keys = readKeyRange(b.keys, `${where}.keys`);
-      for (const k of ['groups', 'names'] as const) if (b[k] !== undefined && typeof b[k] !== 'boolean') throw new Error(`${where}.${k} should be true or false`);
-      return { kind: 'keyboard', keys, groups: b.groups !== false, names: b.names !== false, caption };
+      if (b.groups !== undefined && typeof b.groups !== 'boolean') throw new Error(`${where}.groups should be true or false`);
+      if (b.names !== undefined && typeof b.names !== 'boolean' && b.names !== 'letters') throw new Error(`${where}.names should be true, false or "letters" (every white key's letter)`);
+      const letters = b.names === 'letters';
+      const fingers = b.fingers === undefined ? undefined : readFingers(b.fingers);
+      if (b.hide !== undefined && b.hide !== true) throw new Error(`${where}.hide should be true (a Hide names button), or left out`);
+      if (b.hide && !letters) throw new Error(`${where}.hide is for names: "letters" (the names it hides)`);
+      // A few notes to hear, as the keys block writes them ("E4 D4 C4"), each on these keys.
+      let play: string[] | undefined;
+      if (b.play !== undefined) {
+        play = str(b.play, `${where}.play`).trim().split(/\s+/);
+        for (const n of play) {
+          if (!PITCH.test(n)) throw new Error(`${where}.play: "${n}" is not a pitch like C4, F#3 or Bb4`);
+          const m = midiOfPitch(n);
+          if (m < keys.lo || m > keys.hi) throw new Error(`${where}.play: ${n} is not on its keys (${b.keys})`);
+        }
+        if (play.length > 32) throw new Error(`${where}.play: at most 32 notes`);
+      }
+      if (b.tempo !== undefined && !(typeof b.tempo === 'number' && b.tempo >= 20 && b.tempo <= 300)) throw new Error(`${where}.tempo should be beats a minute, 20 to 300`);
+      if (b.tempo !== undefined && !play) throw new Error(`${where}.tempo is for "play"`);
+      // Find a key: true (all seven letters) or the letters to ask for ("F A B"); each must be on its keys.
+      let find: string[] | undefined;
+      if (b.find !== undefined) {
+        find = b.find === true ? ['C', 'D', 'E', 'F', 'G', 'A', 'B'] : str(b.find, `${where}.find`).trim().split(/\s+/);
+        for (const l of find) {
+          if (!/^[A-G]$/.test(l)) throw new Error(`${where}.find: "${l}" is not a white key's letter A to G (or give true for all seven)`);
+          let on = false;
+          for (let m = keys.lo; m <= keys.hi; m++) if ('C D EF G A B'[m % 12] === l) on = true;
+          if (!on) throw new Error(`${where}.find: there is no ${l} on its keys (${b.keys})`);
+        }
+        if (new Set(find).size < 2) throw new Error(`${where}.find: give at least two different letters`);
+      }
+      return { kind: 'keyboard', keys, groups: b.groups !== false, names: letters ? 'letters' : b.names !== false, ...(fingers ? { fingers } : {}), ...(b.hide ? { hide: true as const } : {}), ...(play ? { play } : {}), ...(b.tempo !== undefined ? { tempo: b.tempo as number } : {}), ...(find ? { find } : {}), caption };
     }
     case 'video': {
       const link = str(b.youtube, `${where}.youtube`);
