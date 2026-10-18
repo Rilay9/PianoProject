@@ -4,7 +4,7 @@
 //
 // usage: npm run check:browser              (builds, serves on :5194, runs every case)
 //        node tests/browser.mjs --url http://localhost:5196/PianoProject/   (a build served elsewhere: no build, no server)
-//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills; also lessons, consistency)
+//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills; also lessons, consistency, walkfix, movekeys, lesson1caps)
 // PIANO_CHROMIUM names a Chromium when Playwright's own build is not installed (a cloud session: /opt/pw-browsers/chromium).
 // Not here: the library store's lost update (F03; shown with the store module through the dev server, 0 of 10 before,
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
@@ -3547,7 +3547,7 @@ try {
         });
         const home = await homeText(page), path = await pathText(page);
         const saved = await page.evaluate(() => localStorage.getItem('piano-web.path.v1'));
-        ok('test rungs, the learner whose saved lesson is a hidden test lesson: Home’s Up next is the first real lesson (the path’s own first since lesson 1 shipped: First sounds)', /First sounds/.test(home) && !/Test:/.test(home), home.slice(0, 200).replace(/\n/g, ' / '));
+        ok('test rungs, the learner whose saved lesson is a hidden test lesson: Home’s Up next is the first real lesson (the path’s own first since lesson 1 shipped: Intro to the piano, since the owner’s lesson 1)', /Intro to the piano/.test(home) && !/Test:/.test(home), home.slice(0, 200).replace(/\n/g, ' / '));
         ok('test rungs, the learner: Path shows the real rungs only', /Playing before reading/.test(path) && /Check: a real rung/.test(path) && !/Test:/.test(path), path.slice(0, 200).replace(/\n/g, ' / '));
         ok('test rungs, the learner: their saved progress stays as it was', saved === SAVED, saved ?? 'gone');
         ok('test rungs, the learner with a real rung: no page errors', errors.length === 0, errors.join(' | '));
@@ -3577,7 +3577,7 @@ try {
     const page = await ctx.newPage();
     const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    const at = await page.evaluate(() => { const b = [...document.querySelectorAll('.les-step button')].find((x) => x.closest('.les-step').textContent.includes('Copy what you see')); if (!b) return null; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
+    const at = await page.evaluate(() => { const b = [...document.querySelectorAll('.les-step button')].find((x) => x.closest('.les-step').textContent.includes('Copy the keys')); if (!b) return null; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
     if (at) { await page.mouse.click(at[0], at[1]); await page.waitForTimeout(3000); }
     const simonOpen = await page.evaluate(() => !document.getElementById('exercise').hidden && document.querySelector('#exercise .ex-name')?.textContent === 'Ready');
     ok('MIDI prompt unanswered: lesson 1’s copying step opens Simon (Ready) all the same', !!at && simonOpen, at ? `exercise hidden: ${await page.evaluate(() => document.getElementById('exercise').hidden)}` : 'no Start button');
@@ -4003,12 +4003,15 @@ try {
         range: document.getElementById('fp-range').textContent, labels: [...document.querySelectorAll('#freeplay .fp-keyboard .key')].map((k) => k.textContent).join(''),
         cols: [...document.querySelectorAll('#freeplay .fp-col')].filter((c) => !c.hidden).map((c) => c.dataset.col) };
     });
-    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    await page.locator('.les-step[data-step="first-sounds"] .btn').click(); await page.waitForTimeout(1500);
+    // (lesson 1 has no Free play step since the owner's lesson 1, 2026-10-17: a test lesson's Free play step with names hidden;
+    // test lessons show only with the test flag)
+    await ctx.addInitScript(() => { window.__pianoTestContent = true; });
+    await page.goto(`${BASE}?page=lesson&lesson=test-walkfix`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="fingers"] .btn').click(); await page.waitForTimeout(1500);
     const first = await look();
-    ok('lesson Free play: the step’s task on its own line, no "Play something"', /Pairs, then threes/.test(first.task) && first.line === '', JSON.stringify(first));
+    ok('lesson Free play: the step’s task on its own line, no "Play something"', /Play 2-3 on a pair/.test(first.task) && first.line === '', JSON.stringify(first));
     ok('lesson Free play: the chord, notes and interval columns start hidden', first.cols.length === 0, JSON.stringify(first.cols));
-    ok('lesson 1 Free play: no note names (no key labels, no range)', first.labels === '' && first.range === '', JSON.stringify({ labels: first.labels, range: first.range }));
+    ok('lesson Free play with names hidden: no note names (no key labels but finger numbers, no range)', first.labels.replace(/[0-9]/g, '') === '' && first.range === '', JSON.stringify({ labels: first.labels, range: first.range }));
     // two black keys held together, by position: the task stays, and no interval or note name appears
     const two = await page.evaluate(() => [...document.querySelectorAll('#freeplay .fp-keyboard .key.black')].slice(0, 2).map((k) => { const r = k.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }));
     await page.touchscreen.tap(180, 60); await page.waitForTimeout(200); // (the first tap starts the sound, where nothing is)
@@ -4016,7 +4019,7 @@ try {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: two.map(([x, y], i) => ({ x, y, id: i })) }); await page.waitForTimeout(250);
     const held = { ...(await look()), pressed: await page.evaluate(() => document.querySelectorAll('#freeplay .fp-keyboard .key.pressed').length) };
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await page.waitForTimeout(200);
-    ok('lesson 1 Free play, two keys held: the task stays in view and nothing is named', held.pressed === 2 && /Pairs, then threes/.test(held.task) && held.line === '' && held.notes === '', JSON.stringify(held));
+    ok('lesson Free play with names hidden, two keys held: the task stays in view and nothing is named', held.pressed === 2 && /Play 2-3 on a pair/.test(held.task) && held.line === '' && held.notes === '', JSON.stringify(held));
     await page.evaluate(() => document.getElementById('fp-show').click()); await page.waitForTimeout(300);
     await page.evaluate(() => { const box = document.querySelector('#fp-show-dialog input[value="intervals"]'); box.checked = true; box.dispatchEvent(new Event('change', { bubbles: true })); document.getElementById('fp-show-dialog').close(); });
     await page.waitForTimeout(200);
@@ -4028,14 +4031,14 @@ try {
     const own = await look();
     ok('Free play from Practice: "Play something", the names and all three columns, as before', own.line === 'Play something' && !own.task && own.cols.length === 3 && own.range !== '' && own.labels !== '', JSON.stringify(own));
     ok('Free play from Practice: no group outlines on the keys (off outside lessons unless turned on in Show; owner, 2026-10-17)', await page.evaluate(() => document.querySelectorAll('#freeplay .key-group').length) === 0, '');
-    // Simon from lesson 1's copying step: the task above the music; copied to a chain of 5, the game ends, done.
+    // Simon from lesson 1's copying step: the task above the music; copied to a pattern of 6, "You did it" (owner's lesson 1, 2026-10-17).
     await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
     await page.locator('.les-step[data-step="copy"] .btn').click(); await page.waitForTimeout(2500);
     const task = await page.evaluate(() => { const t = document.getElementById('ex-task'); return t.hidden ? '' : t.textContent; });
-    ok('lesson Simon: the step’s task above the music', /black keys around middle C/i.test(task), JSON.stringify(task));
+    ok('lesson Simon: the step’s task above the music', /Watch and listen, then play the pattern back/.test(task), JSON.stringify(task));
     const play = async () => {
       // On each turn, the keys Simon expects (its own hook) tapped by position, until the game ends (8 turns at most).
-      for (let turn = 0; turn < 8; turn++) {
+      for (let turn = 0; turn < 10; turn++) {
         let want = [];
         for (let i = 0; i < 150; i++) {
           const st = await page.evaluate(() => ({ want: window.__pianoDebug.simon(), status: document.getElementById('ex-status').textContent }));
@@ -4054,7 +4057,7 @@ try {
     await page.touchscreen.tap(180, 60); await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById('ex-start').click()); await page.waitForTimeout(300);
     const end = await play();
-    ok('lesson 1 Simon: copied to a chain of 5, the game ends: "You did it"', /You did it: a pattern of 5/.test(end.status), JSON.stringify(end));
+    ok('lesson 1 Simon: copied to a pattern of 6: "You did it"', /You did it: a pattern of 6/.test(end.status), JSON.stringify(end));
     ok('lesson steps after the reviews: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
@@ -4064,12 +4067,14 @@ try {
     const ctx = await learnerContext({ viewport: { width: 1363, height: 936 }, serviceWorkers: 'block' });
     const page = await ctx.newPage();
     const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
-    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    await page.locator('.les-step[data-step="first-sounds"] .btn').click(); await page.waitForTimeout(1500);
+    // (since the owner's lesson 1, 2026-10-17, its two Free play steps are the test lesson's; shown with the test flag)
+    await ctx.addInitScript(() => { window.__pianoTestContent = true; });
+    await page.goto(`${BASE}?page=lesson&lesson=test-walkfix`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="fingers"] .btn').click(); await page.waitForTimeout(1500);
     for (let i = 0; i < 8; i++) { if (await page.evaluate(() => document.getElementById('fp-down').disabled)) break; await page.evaluate(() => document.getElementById('fp-down').click()); await page.waitForTimeout(150); }
     const bottom = await page.evaluate(() => document.getElementById('fp-down').disabled);
-    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    await page.locator('.les-step[data-step="make-a-tune"] .btn').click(); await page.waitForTimeout(1500);
+    await page.goto(`${BASE}?page=lesson&lesson=test-walkfix`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="click"] .btn').click(); await page.waitForTimeout(1500);
     const next = await page.evaluate(() => ({ down: !document.getElementById('fp-down').disabled, up: !document.getElementById('fp-up').disabled }));
     ok('F5: left at the bottom of Free play, the next lesson step opens in the middle (both ‹ and › free)', bottom && next.down && next.up, JSON.stringify({ bottom, next }));
     // a reading card with nothing played: its notes grey (not green), and the key under it says so
@@ -4093,22 +4098,23 @@ try {
     const page = await ctx.newPage();
     const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
     const cardTop = (id) => page.evaluate((id) => { const c = document.querySelector(`.les-step[data-step="${id}"]`); return c ? Math.round(c.getBoundingClientRect().top) : null; }, id);
-    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    await page.locator('.les-step[data-step="first-sounds"] .btn').click(); await page.waitForTimeout(1200);
+    // (since the owner's lesson 1, 2026-10-17: How long notes last, whose last step is Free play with Check yourself after it)
+    await page.goto(`${BASE}?page=lesson&lesson=r1-note-lengths`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="rhythm-tune"] .btn').click(); await page.waitForTimeout(1200);
     await page.evaluate(() => document.getElementById('fp-done').click()); await page.waitForTimeout(800);
     await page.locator('#lesson-bar button', { hasText: 'Lesson' }).click(); await page.waitForTimeout(1200);
-    const back = { top: await cardTop('first-sounds'), scrolled: await page.evaluate(() => document.getElementById('lesson-body').scrollTop) };
+    const back = { top: await cardTop('rhythm-tune'), scrolled: await page.evaluate(() => document.getElementById('lesson-body').scrollTop) };
     ok('A4: Lesson from a step’s result: the lesson page at that step’s card (in view), not the top', back.scrolled > 0 && back.top !== null && back.top > 0 && back.top < 700, JSON.stringify(back));
     // the last step, with the others done: Next goes to the rest of the lesson, whose bar offers the next lesson
-    await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-first-sounds', done: { 'r1-first-sounds': { 'first-sounds': { at, how: 'opened' }, fingers: { at, how: 'opened' }, copy: { at, how: 'target' } } }, tried: {} })); });
-    await page.goto(`${BASE}?page=lesson&lesson=r1-first-sounds`); await page.waitForTimeout(2500);
-    await page.locator('.les-step[data-step="make-a-tune"] .btn').click(); await page.waitForTimeout(1200);
+    await page.evaluate(() => { const at = new Date().toISOString(); localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'r1-note-lengths', done: { 'r1-note-lengths': { 'warm-up': { at, how: 'opened' }, 'hear-then-tap': { at, how: 'opened' }, 'read-then-tap': { at, how: 'target' }, 'whole-note': { at, how: 'opened' } } }, tried: {} })); });
+    await page.goto(`${BASE}?page=lesson&lesson=r1-note-lengths`); await page.waitForTimeout(2500);
+    await page.locator('.les-step[data-step="rhythm-tune"] .btn').click(); await page.waitForTimeout(1200);
     await page.locator('#freeplay .fp-keyboard .key.white').nth(3).click(); await page.waitForTimeout(200); // (visited once a key is played: the consistency pass, 2026-10-16)
     await page.evaluate(() => document.getElementById('fp-done').click()); await page.waitForTimeout(800);
     const done = await page.evaluate(() => document.getElementById('lesson-body').innerText);
     await page.locator('#lesson-bar button', { hasText: 'Next' }).click(); await page.waitForTimeout(1200);
     const rest = await page.evaluate(() => { const h = [...document.querySelectorAll('#lesson-body h1, #lesson-body h2, #lesson-body h3')].find((x) => /Check yourself/.test(x.textContent)); const top = h ? Math.round(h.getBoundingClientRect().top - document.getElementById('lesson-body').getBoundingClientRect().top) : null; return { top, bar: [...document.querySelectorAll('#lesson-bar button')].map((b) => b.textContent.trim()) }; });
-    ok('A3: after the lesson’s last step, Next shows the rest of the lesson (Check yourself near the top) and its bar offers Next lesson', /Lesson done/.test(done) && rest.top !== null && rest.top >= 0 && rest.top < 120 && rest.bar.some((t) => /Next lesson/.test(t)), JSON.stringify(rest));
+    ok('A3: after the lesson’s last step, Next shows the rest of the lesson (Check yourself near the top) and its bar offers Next lesson (or Practice, when no next lesson is written)', /Lesson done/.test(done) && rest.top !== null && rest.top >= 0 && rest.top < 120 && rest.bar.some((t) => /Next lesson|Practice/.test(t)), JSON.stringify(rest));
     ok('A3/A4: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
@@ -4255,7 +4261,8 @@ try {
     await ctx.close();
   }
 
-  // 5. Simon by ear (item 36): wrong keys keep your turn; no heart lost or shown, nothing outlined, no note named.
+  // 5. Simon by ear (item 36; owner, 2026-10-17: a miss plays the whole pattern again): wrong keys: no game over, no heart
+  //    lost or shown, nothing red or outlined, no note named.
   {
     const { ctx, page, errors } = await wfTab();
     await openStep(page, 'by-ear');
@@ -4263,8 +4270,8 @@ try {
     for (let i = 0; i < 80 && !(await page.evaluate(() => window.__pianoDebug.simon().length)); i++) await page.waitForTimeout(100);
     const want = (await page.evaluate(() => window.__pianoDebug.simon()))[0][0];
     for (const k of [61, 63, 66, 68, 70].filter((k) => k !== want).slice(0, 3)) { await tapBy(page, `#ex-keyboard .key[data-midi="${k}"]`, 0, 10); await page.waitForTimeout(400); }
-    const s = await page.evaluate(() => ({ status: document.getElementById('ex-status').textContent, hearts: document.getElementById('ex-right').textContent, outlined: document.querySelectorAll('#ex-keyboard .key.want').length, turn: window.__pianoDebug.simon().length > 0 }));
-    ok('walkfix: Simon by ear: three wrong keys keep your turn ("listen again, and try another key"), no game over, no hearts, nothing outlined, no note named', s.turn && /try another key/.test(s.status) && !/[A-G][♯#]?\d/.test(s.status) && s.hearts === '' && s.outlined === 0, JSON.stringify(s));
+    const s = await page.evaluate(() => ({ status: document.getElementById('ex-status').textContent, hearts: document.getElementById('ex-right').textContent, outlined: document.querySelectorAll('#ex-keyboard .key.want, #ex-keyboard .key.wrong').length, over: !document.getElementById('ex-start').hidden }));
+    ok('walkfix: Simon by ear: three wrong keys: "Not that one: listen again", no game over, no hearts, nothing red or outlined, no note named', /Not that one: listen again/.test(s.status) && !s.over && !/[A-G][♯#]?\d/.test(s.status) && s.hearts === '' && s.outlined === 0, JSON.stringify(s));
     ok('walkfix: by ear: no page errors', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }
@@ -4602,6 +4609,253 @@ try {
     }
   }
   } // (end of `--only movekeys`)
+  if (!only || only === 'lesson1caps') { // (`--only lesson1caps` runs this section alone)
+  // ---- Lesson 1's capabilities (owner, 2026-10-17; design/2026-10-17-lesson1-owner/spec.md) ----------------------------
+  // The test lesson "test-lesson1-caps": Read / Watch tabs, a keyboard to play in the page, Simon with a goal and Keep
+  // going at "keys, no music", Simon by ear, finger-number cards. Phone contexts with touch and no MIDI permission (a
+  // stand-in keyboard where MIDI is checked), every tap by position. Screenshots to web/r3shots-lesson1/ (not committed).
+  const L1 = '?page=lesson&lesson=test-lesson1-caps';
+  const L1SHOTS = here('../r3shots-lesson1/');
+  mkdirSync(L1SHOTS, { recursive: true });
+  const l1Shot = (page, name, vp) => page.screenshot({ path: join(L1SHOTS, `${name}-${vp.width}x${vp.height}.png`) });
+  const l1Fake = () => {
+    const input = { id: 'test-keys', name: 'Test keys', state: 'connected', onmidimessage: null };
+    const access = { inputs: new Map([[input.id, input]]), outputs: new Map(), onstatechange: null };
+    Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+    window.__key = (midi, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, midi, on ? 90 : 0]), timeStamp: performance.now() });
+  };
+  async function l1Tab(viewport, { midi = false } = {}) {
+    const ctx = await browser.newContext({ viewport, hasTouch: true, serviceWorkers: 'block' });
+    if (midi) await ctx.addInitScript(l1Fake);
+    await ctx.addInitScript(() => { try { localStorage.setItem('piano-web.calibration.v1', JSON.stringify({ offered: true })); } catch { /* first visit */ } });
+    const page = await ctx.newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(BASE + L1); await page.waitForTimeout(2200);
+    return { ctx, page, errors };
+  }
+  /** A tap by position (where a finger lands: fy down the element, dx off centre), on whatever lies there. */
+  const l1Tap = async (page, sel, fy = 0.5, dx = 0) => { const b = await page.locator(sel).first().boundingBox(); if (!b) return false; await page.touchscreen.tap(b.x + b.width / 2 + dx, b.y + b.height * fy); return true; };
+  const l1Key = (page, midi, dx = 3) => l1Tap(page, `#ex-keyboard .key[data-midi="${midi}"]`, [1, 3, 6, 8, 10].includes(midi % 12) ? 0.75 : 0.85, dx);
+  const l1Step = async (page, step) => { await page.locator(`.les-step[data-step="${step}"]`).scrollIntoViewIfNeeded(); await page.locator(`.les-step[data-step="${step}"] .btn`).click(); await page.waitForTimeout(1800); };
+  /** What the exercise screen shows: staff, lit / red / outlined keys, labels on the keys, the words. */
+  const l1Look = (page) => page.evaluate(() => ({
+    staff: !!document.querySelector('#ex-notation svg') && !document.getElementById('ex-notation').classList.contains('off'),
+    lit: [...document.querySelectorAll('#ex-keyboard .key.now-r')].map((k) => Number(k.dataset.midi)),
+    wrong: [...document.querySelectorAll('#ex-keyboard .key.wrong')].map((k) => Number(k.dataset.midi)),
+    want: [...document.querySelectorAll('#ex-keyboard .key.want')].map((k) => Number(k.dataset.midi)),
+    labels: [...document.querySelectorAll('#ex-keyboard .key.white')].map((k) => k.childNodes[0]?.nodeType === 3 ? k.childNodes[0].textContent : '').join(''),
+    status: document.getElementById('ex-status').textContent, sub: document.getElementById('ex-sub').textContent,
+    name: document.getElementById('ex-name').textContent, chain: document.getElementById('ex-chain').textContent, hearts: document.getElementById('ex-right').textContent,
+    keep: !document.getElementById('ex-keep').hidden, back: !document.getElementById('ex-back').hidden, again: !document.getElementById('ex-start').hidden ? document.getElementById('ex-start').textContent : '',
+    want1: window.__pianoDebug.simon(),
+  }));
+  const NAMED = /[A-G][♯#♭b]?\d|first of|second of|middle of|last of/;
+  const VPS = [{ width: 360, height: 780 }, { width: 844, height: 390 }];
+
+  for (const vp of VPS) {
+    const W = `${vp.width}×${vp.height}`;
+    // 1. Read / Watch: Read open first, one panel at a time; Watch puts the video in, Read takes it out; offline the
+    //    video's title and that it needs the internet.
+    try {
+      const { ctx, page, errors } = await l1Tab(vp);
+      const rw = (p) => p.evaluate(() => { const b = document.querySelector('.les-rw'), [read, watch] = b.querySelectorAll('.les-rw-panel'), tabs = [...b.querySelectorAll('[role="tab"]')]; return { tabs: tabs.map((t) => `${t.textContent}:${t.getAttribute('aria-selected')}`), read: !read.hidden && read.innerText.includes('A short text to read'), watch: !watch.hidden, video: !!watch.querySelector('.les-video'), iframe: !!watch.querySelector('iframe'), off: watch.querySelector('.les-video-off')?.innerText ?? '' }; });
+      const first = await rw(page);
+      await page.evaluate(() => document.querySelector('.les-rw').scrollIntoView({ block: 'start' })); await page.waitForTimeout(200);
+      await l1Shot(page, 'tabs-read', vp);
+      await l1Tap(page, '.les-rw [role="tab"]:nth-child(2)'); await page.waitForTimeout(600);
+      const watch = await rw(page);
+      await l1Shot(page, 'tabs-watch', vp);
+      await l1Tap(page, '.les-rw [role="tab"]:nth-child(1)'); await page.waitForTimeout(300);
+      const back = await rw(page);
+      await ctx.setOffline(true); await page.waitForTimeout(300);
+      await l1Tap(page, '.les-rw [role="tab"]:nth-child(2)'); await page.waitForTimeout(400);
+      const offline = await rw(page);
+      await l1Shot(page, 'tabs-watch-offline', vp);
+      await ctx.setOffline(false);
+      ok(`lesson1 ${W}: Read / Watch: two tabs, Read open first, its text shown and no video in the page`, first.tabs.join() === 'Read:true,Watch:false' && first.read && !first.watch && !first.video, JSON.stringify(first));
+      ok(`lesson1 ${W}: a tap on Watch: the video in its place, the text hidden; Read again: the text, the video taken out (it stops)`, watch.tabs.join() === 'Read:false,Watch:true' && !watch.read && watch.watch && watch.video && back.read && !back.watch && !back.video && !back.iframe, JSON.stringify({ watch, back }));
+      ok(`lesson1 ${W}: Watch offline: the video's title and that it needs the internet (no player)`, offline.watch && !offline.iframe && /Test: a public video/.test(offline.off) && /needs the internet/.test(offline.off), JSON.stringify(offline));
+      ok(`lesson1 ${W}: Read / Watch: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    } catch (e) { ok(`lesson1 ${W}: a section ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+    // 2. The keyboard in the page: its keys, the groups outlined, no labels (names: false); a key held by touch sounds and
+    //    looks pressed; a MIDI keyboard's key shows on it; nothing is logged.
+    try {
+      const { ctx, page, errors } = await l1Tab(vp, { midi: true });
+      await page.evaluate(() => document.querySelector('.les-playkeys').scrollIntoView({ block: 'center' })); await page.waitForTimeout(300);
+      const drawn = await page.evaluate(() => { const ks = [...document.querySelectorAll('.les-playkeys .key')]; return { lo: Number(ks[0].dataset.midi), hi: Number(ks.at(-1).dataset.midi), groups: [...document.querySelectorAll('.les-playkeys .key-group')].map((g) => g.textContent).join(''), labels: ks.filter((k) => k.classList.contains('white')).map((k) => k.childNodes[0]?.nodeType === 3 ? k.childNodes[0].textContent : '').join(''), black: Math.round(ks.find((k) => k.classList.contains('black')).getBoundingClientRect().width) }; });
+      const logBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries.length);
+      const notes0 = await page.evaluate(() => window.__pianoDebug.sound().nowNotes);
+      const kb = await page.locator('.les-playkeys .key[data-midi="61"]').boundingBox();
+      const cdp = await ctx.newCDPSession(page);
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: kb.x + kb.width / 2 + 4, y: kb.y + kb.height * 0.75 }] });
+      let held = null;
+      for (let i = 0; i < 40; i++) { await page.waitForTimeout(100); held = await page.evaluate(() => ({ pressed: document.querySelector('.les-playkeys .key[data-midi="61"]').classList.contains('pressed'), notes: window.__pianoDebug.sound().nowNotes })); if (held.notes > 0) break; }
+      await l1Shot(page, 'keyboard', vp);
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await page.waitForTimeout(200);
+      const up = await page.evaluate(() => document.querySelector('.les-playkeys .key[data-midi="61"]').classList.contains('pressed'));
+      await page.evaluate(() => window.__key(60, true)); await page.waitForTimeout(150);
+      const midiDown = await page.evaluate(() => document.querySelector('.les-playkeys .key[data-midi="60"]').classList.contains('pressed'));
+      await page.evaluate(() => window.__key(60, false)); await page.waitForTimeout(150);
+      const midiUp = await page.evaluate(() => document.querySelector('.les-playkeys .key[data-midi="60"]').classList.contains('pressed'));
+      const logAfter = await page.evaluate(() => JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries.length);
+      ok(`lesson1 ${W}: the keyboard in the page: C3–B4, the groups outlined (2 3 2 3), no labels (names: false), black keys ${drawn.black} px`, drawn.lo === 48 && drawn.hi === 71 && drawn.groups === '2323' && drawn.labels === '' && drawn.black >= 20, JSON.stringify(drawn));
+      ok(`lesson1 ${W}: a black key held by touch (off centre) sounds on the app's piano and looks pressed; let go, not`, held.pressed && held.notes > notes0 && !up, JSON.stringify({ held, notes0, up }));
+      ok(`lesson1 ${W}: a MIDI keyboard's key shows on the keyboard while the page is open; nothing is logged (not a step)`, midiDown && !midiUp && logAfter === logBefore, JSON.stringify({ midiDown, midiUp, logBefore, logAfter }));
+      ok(`lesson1 ${W}: keyboard: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    } catch (e) { ok(`lesson1 ${W}: a section ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+    // 3. Simon, keys and sound, no music, goal 6, every key of the octave: a miss before the goal is free (the whole
+    //    pattern again); a key while a pattern plays cuts it short and is the first note; at 6 "You did it", Keep going
+    //    and Back; Keep going to the first miss: "Game over: longest pattern n"; Back: the step's result. No staff, no
+    //    name and no key label at any point.
+    try {
+      const { ctx, page, errors } = await l1Tab(vp);
+      await l1Step(page, 'copy');
+      await l1Tap(page, '#ex-start'); await page.waitForTimeout(300);
+      const seen = { staff: 0, named: [], labels: '', hearts: '', cut: 0, missFree: null, keys: new Set() };
+      const watch = async () => { const l = await l1Look(page); if (l.staff) seen.staff++; for (const w of [l.status, l.sub, l.name, l.chain]) if (NAMED.test(w)) seen.named.push(w); seen.labels += l.labels; seen.hearts += l.hearts; return l; };
+      const turn = async () => { for (let i = 0; i < 120; i++) { const l = await watch(); if (l.want1.length) return l.want1.map((g) => g[0]); if (l.keep || /Game over/.test(l.status)) return null; await page.waitForTimeout(100); } return null; };
+      let pattern = null; // the last pattern copied (the next one is it and one more)
+      for (let round = 0; round < 10; round++) {
+        let want, first = [];
+        if (pattern?.length === 2) {
+          // the pattern of 3: a miss before the goal: free, and the whole pattern is given again
+          want = await turn();
+          if (!want) break;
+          const wrongKey = [60, 62, 64].find((k) => k !== want[0]);
+          await l1Key(page, wrongKey); await page.waitForTimeout(250);
+          const m = await watch();
+          await l1Shot(page, 'simon-keys-miss', vp);
+          want = await turn();
+          seen.missFree = { status: m.status, wrong: m.wrong, want: m.want, hearts: m.hearts, again: want?.length };
+        } else if (pattern?.length >= 3) {
+          // from the pattern of 4 on, a key while it plays (its first key, known from the last): no waiting
+          for (let i = 0; i < 60 && !/Listen/.test((await watch()).status); i++) await page.waitForTimeout(50);
+          await page.waitForTimeout(300);
+          const playing = /Listen/.test((await watch()).status);
+          await l1Key(page, pattern[0]); await page.waitForTimeout(150);
+          const after = await watch();
+          if (playing && after.want1.length === pattern.length) { seen.cut++; first = [pattern[0]]; want = after.want1.map((g) => g[0]); }
+          else want = await turn();
+        } else want = await turn();
+        if (!want) break;
+        for (const k of want) { seen.keys.add(k); await l1Key(page, k); await page.waitForTimeout(160); }
+        pattern = [...first, ...want];
+        await page.waitForTimeout(150);
+        if ((await watch()).keep) break;
+      }
+      const goal = await watch();
+      await l1Shot(page, 'simon-goal', vp);
+      ok(`lesson1 ${W}: Simon keys, no music: a miss before the goal: "Not that one…", the key red and the right one outlined, no hearts, the whole pattern of 3 again`, seen.missFree && /Not that one: the right key is outlined/.test(seen.missFree.status) && seen.missFree.wrong.length === 1 && seen.missFree.want.length === 1 && seen.missFree.hearts === '' && seen.missFree.again === 3, JSON.stringify(seen.missFree));
+      ok(`lesson1 ${W}: Simon: a key while a pattern plays cuts it short and is the try's first note (${seen.cut} times)`, seen.cut >= 2, String(seen.cut));
+      ok(`lesson1 ${W}: Simon at 6: "You did it: a pattern of 6", Keep going and Back to the lesson (no Again)`, goal.status === 'You did it: a pattern of 6' && goal.keep && goal.back && goal.again === '', JSON.stringify(goal));
+      if (vp.width === 360) {
+        // a key at the goal is Keep going (owner, 2026-10-17: "let them keep going as long as they like"), not Back
+        await l1Key(page, 60); await page.waitForTimeout(300);
+        const keyKeep = { url: await page.evaluate(() => location.search), screen: await page.evaluate(() => !document.getElementById('exercise').hidden), keep: (await watch()).keep };
+        ok(`lesson1 ${W}: at the goal a key on the screen's keys is Keep going (the game goes on), not Back to the lesson`, keyKeep.screen && !keyKeep.keep, JSON.stringify(keyKeep));
+        let w = await turn();
+        if (w) { for (const k of w) { await l1Key(page, k); await page.waitForTimeout(160); } }
+        w = await turn();
+        if (w) await l1Key(page, [60, 62, 64].find((k) => k !== w[0]));
+        await page.waitForTimeout(400);
+        const over = await watch();
+        await l1Shot(page, 'simon-game-over', vp);
+        ok(`lesson1 ${W}: Keep going: the pattern grows on; the first miss ends it: "Game over: longest pattern 7", Again and Back`, over.status === 'Game over: longest pattern 7' && over.back && over.again === 'Again' && !over.keep, JSON.stringify(over));
+        await l1Tap(page, '#ex-back'); await page.waitForTimeout(1500);
+        const res = await page.evaluate(() => document.getElementById('lesson-body').innerText);
+        ok(`lesson1 ${W}: Back to the lesson: the result says what was reached ("Longest pattern 7") and the step done`, /Longest pattern 7/.test(res) && /Target met.*step done ✓/.test(res), res.slice(0, 220));
+      }
+      ok(`lesson1 ${W}: Simon keys, no music: no staff, no note name and no key label at any point; the keys that came up include black and white ones`, seen.staff === 0 && !seen.named.length && seen.labels === '' && [...seen.keys].some((k) => [1, 3, 6, 8, 10].includes(k % 12)) && [...seen.keys].some((k) => ![1, 3, 6, 8, 10].includes(k % 12)), JSON.stringify({ staff: seen.staff, named: seen.named.slice(0, 3), labels: seen.labels.slice(0, 20), keys: [...seen.keys] }));
+      ok(`lesson1 ${W}: Simon goal: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    } catch (e) { ok(`lesson1 ${W}: a section ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+    // 4. Simon by ear on the black keys: nothing lit, marked, drawn or named, ever: given, Hear it, a miss (the whole
+    //    pattern again), its retry.
+    try {
+      const { ctx, page, errors } = await l1Tab(vp);
+      await l1Step(page, 'by-ear');
+      await l1Tap(page, '#ex-start');
+      const shown = { staff: 0, lit: 0, marked: 0, named: [], labels: '' };
+      const watch = async () => { const l = await l1Look(page); if (l.staff) shown.staff++; if (l.lit.length) shown.lit++; if (l.wrong.length || l.want.length) shown.marked++; for (const w of [l.status, l.sub, l.name, l.chain]) if (NAMED.test(w)) shown.named.push(w); shown.labels += l.labels; return l; };
+      const turn = async () => { for (let i = 0; i < 120; i++) { const l = await watch(); if (l.want1.length) return l.want1.map((g) => g[0]); await page.waitForTimeout(100); } return null; };
+      let want = await turn();
+      for (const k of want) await l1Key(page, k);
+      want = await turn();
+      await l1Tap(page, '#ex-hear'); // Hear it: sound only
+      for (let i = 0; i < 25; i++) { await watch(); await page.waitForTimeout(80); }
+      want = await turn();
+      await l1Key(page, 60); await page.waitForTimeout(120); // a white key: wrong
+      const miss = await watch();
+      await l1Shot(page, 'byear-miss', vp);
+      for (let i = 0; i < 20; i++) { await watch(); await page.waitForTimeout(100); }
+      const again = await turn();
+      ok(`lesson1 ${W}: by ear, a miss: "Not that one: listen again", nothing red, outlined or lit, no staff; the whole pattern (2) played again, then your try`, miss.status === 'Not that one: listen again' && !miss.wrong.length && !miss.want.length && !miss.lit.length && !miss.staff && again?.length === 2, JSON.stringify({ miss, again }));
+      ok(`lesson1 ${W}: by ear: nothing lit or marked, no staff, no note named, no key label, at any point (given, Hear it, a miss, again)`, !shown.staff && !shown.lit && !shown.marked && !shown.named.length && shown.labels === '', JSON.stringify(shown));
+      ok(`lesson1 ${W}: by ear: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    } catch (e) { ok(`lesson1 ${W}: a section ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+    // 5. Finger-number cards: the numbers by phrase (no staff), the hand once; its five keys shaded and numbered, nothing
+    //    lit; played to you with each number lit as it sounds (a key cuts it short and is the first note); the next
+    //    number highlighted; a wrong key flashes red with the right one outlined, then it waits; "✓ Done, 1 wrong key".
+    try {
+      const { ctx, page, errors } = await l1Tab(vp);
+      await l1Step(page, 'fingers');
+      const card = () => page.evaluate(() => { const b = document.getElementById('ex-fingers'); return { shown: !b.hidden, hand: b.querySelector('.fc-hand')?.textContent, phrases: [...b.querySelectorAll('.fc-phrase')].map((p) => p.textContent.length), n: b.querySelectorAll('.fc-n').length, sounding: [...b.querySelectorAll('.fc-n')].findIndex((x) => x.classList.contains('sounding')), next: [...b.querySelectorAll('.fc-n')].findIndex((x) => x.classList.contains('next')), hand5: [...document.querySelectorAll('#ex-keyboard .key.hand')].map((k) => `${k.dataset.midi}:${k.querySelector('.finger')?.textContent}`).join(' '), fingersShown: document.querySelectorAll('#ex-keyboard .key .finger').length, fits: b.scrollHeight <= b.clientHeight + 1 && b.scrollWidth <= b.clientWidth + 1, oneLine: [...b.querySelectorAll('.fc-phrase')].every((p) => p.getBoundingClientRect().height < parseFloat(getComputedStyle(b).fontSize) * 1.6), bigPx: Math.round(parseFloat(getComputedStyle(b).fontSize)) }; });
+      await l1Tap(page, '#ex-start');
+      const sounded = new Set(); let lit = 0, staff = 0;
+      for (let i = 0; i < 20; i++) { const c = await card(); if (c.sounding >= 0) sounded.add(c.sounding); const l = await l1Look(page); if (l.lit.length) lit++; if (l.staff) staff++; await page.waitForTimeout(90); }
+      const during = await card();
+      await l1Key(page, 60); await page.waitForTimeout(150); // a key while it plays: your turn, this its first note (C4, finger 1)
+      const cut = await card();
+      for (const k of [62, 64, 65]) { await l1Key(page, k); await page.waitForTimeout(150); }
+      await l1Shot(page, 'fingers-mid', vp);
+      await l1Key(page, 71); await page.waitForTimeout(80); // wrong (G4 is next)
+      const wrong = await l1Look(page);
+      await l1Shot(page, 'fingers-wrong', vp);
+      await page.waitForTimeout(800);
+      const later = await l1Look(page);
+      ok(`lesson1 ${W}: finger card: "Right hand", 4 phrases of 7 6 8 5 numbers (26), no staff; its numbers lit as it is played to you (${sounded.size} seen), no key lit`, during.shown && during.hand === 'Right hand' && during.phrases.join() === '7,6,8,5' && during.n === 26 && sounded.size >= 2 && !lit && !staff, JSON.stringify({ during, sounded: [...sounded], lit, staff }));
+      ok(`lesson1 ${W}: finger card: the hand's five keys shaded with 1–5 on them, no other numbers; the card fits its room, each phrase on one line, at ${during.bigPx} px`, during.hand5 === '60:1 62:2 64:3 65:4 67:5' && during.fingersShown === 5 && during.fits && during.oneLine && during.bigPx >= 24, JSON.stringify(during));
+      ok(`lesson1 ${W}: finger card: a key while it plays starts your turn as its first note (the next number highlighted is the second)`, cut.next === 1 && cut.sounding === -1, JSON.stringify(cut));
+      ok(`lesson1 ${W}: finger card: a wrong key flashes red with the right key outlined, then the red goes and the outline stays (it waits)`, wrong.wrong.join() === '71' && wrong.want.join() === '67' && later.wrong.length === 0 && later.want.join() === '67' && /right key is outlined/.test(wrong.sub), JSON.stringify({ wrong: [wrong.wrong, wrong.want, wrong.sub], later: [later.wrong, later.want] }));
+      if (vp.width === 360) {
+        const steps = await page.evaluate(() => window.__pianoDebug.drill().steps.map((s) => s.keys[0]));
+        for (const k of steps.slice(4)) { await l1Key(page, k); await page.waitForTimeout(110); }
+        await page.waitForTimeout(400);
+        const end = await l1Look(page);
+        const after = await page.evaluate(() => ({ next: !document.getElementById('ex-next').hidden, again: !document.getElementById('ex-again').hidden }));
+        await page.waitForTimeout(2500);
+        const still = await page.evaluate(() => window.__pianoDebug.drill().state);
+        ok(`lesson1 ${W}: finger card's end: "✓ Done, 1 wrong key", with Next and Again, and it waits`, end.status === '✓ Done, 1 wrong key' && after.next && after.again && still === 'result', JSON.stringify({ end: end.status, after, still }));
+      }
+      ok(`lesson1 ${W}: finger cards: no page errors`, errors.length === 0, errors.join(' | '));
+      await ctx.close();
+    } catch (e) { ok(`lesson1 ${W}: a section ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+  }
+  // 6. An optional step (owner's lesson 1 spec, item 5: "Step (optional): Extra challenge"): its card says Optional, it is
+  //    not counted in the lesson's steps, the bar's next step skips it; the needed ones done, "Lesson done" with the optional
+  //    step offered beside the way on.
+  try {
+    const vp = VPS[0];
+    const { ctx, page, errors } = await l1Tab(vp);
+    const look = () => page.evaluate(() => ({ title: document.querySelector('.les-step[data-step="by-ear"] .les-step-title')?.textContent, state: document.querySelector('.les-step[data-step="by-ear"] .les-step-state')?.textContent, titles: [...document.querySelectorAll('.les-step-title')].map((t) => t.textContent.split(' · ')[0]), bar: document.getElementById('lesson-bar').innerText.replace(/\s+/g, ' ') }));
+    const first = await look();
+    const at = new Date().toISOString();
+    await page.evaluate((at) => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-lesson1-caps', done: { 'test-lesson1-caps': { copy: { at, how: 'target' }, fingers: { at, how: 'played' } } }, tried: {} })), at);
+    await page.reload(); await page.waitForTimeout(2200);
+    const needed = await look();
+    await page.evaluate((at) => localStorage.setItem('piano-web.path.v1', JSON.stringify({ version: 1, current: 'test-lesson1-caps', done: { 'test-lesson1-caps': { copy: { at, how: 'target' }, fingers: { at, how: 'played' }, 'by-ear': { at, how: 'target' } } }, tried: {} })), at);
+    await page.reload(); await page.waitForTimeout(2200);
+    const all = await look();
+    ok('lesson1: an optional step: its card "Optional · …", "optional"; the others numbered Step 1, Step 2; the bar "0 of 2 steps done", Start step 1', first.title === 'Optional · By ear on the black keys' && first.state === 'optional' && first.titles.join() === 'Step 1,Optional,Step 2' && /0 of 2 steps done/.test(first.bar) && /Start step 1/.test(first.bar), JSON.stringify(first));
+    ok('lesson1: the needed steps done: "Lesson done: all 2 steps", the optional step offered (Optional step ▶) beside the way on, still "optional"', /Lesson done: all 2 steps/.test(needed.bar) && /Optional step/.test(needed.bar) && needed.state === 'optional', JSON.stringify(needed));
+    ok('lesson1: the optional step done too: shown done ("target met"), no longer offered', /Lesson done: all 2 steps/.test(all.bar) && !/Optional step/.test(all.bar) && /target met/.test(all.state), JSON.stringify(all));
+    ok('lesson1: optional step: no page errors', errors.length === 0, errors.join(' | '));
+    await ctx.close();
+  } catch (e) { ok('lesson1: the optional-step part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
+  } // (end of `--only lesson1caps`)
 } finally {
   await browser?.close();
   stop();

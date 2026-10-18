@@ -372,11 +372,31 @@ header's **Simon▾** is *Practise as…*: the same set in Drills (owner, 2026-1
 **How it works:** the app gives the chain (as the help level says), it stays shown until your first key, then you
 play the whole chain from memory; right → one more item; a miss shows the wrong key red and the wanted keys
 outlined in blue (the "play this" colour; §7e), names what was due, and replays (the whole chain or from the missed item) after a try is used (3 tries /
-game over / keep going). **By ear (help 5) you keep trying** (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/): a miss plays the wanted note again and you try
-another key until one matches: the key tried is red, the right one is not shown and no note is named, no try is lost
-(no hearts at help 5) and a miss never ends the game; a chain found by trying is "✓ Found by trying keys (good practice:
-not a best)", not a best, so a goal is met only by a chain copied with no wrong key. The turn line says "trying keys
-until each one matches"; with the keys lit (help 0–1) "starting on the lit key (it goes when you start)". In a lesson
+game over / keep going). **By ear (help 5) a miss plays the whole pattern again** (owner, 2026-10-17: "it plays back
+the whole sequence not just the miss"; it had replayed only the missed note, 2026-10-16): the key you pressed sounds,
+nothing is shown (no red, no outline, no name, no staff: "Not that one: listen again"), the whole pattern plays again
+after 0.9 s (once the wrong key's note has died away) and you try it again from its start; no try is lost (no hearts at
+help 5) and a miss never ends the game (except after a goal, in Keep going, below). With the keys lit (help 0–1) the turn
+line says "starting on the lit key (it goes when you start)".
+**A goal, and Keep going** (owner, 2026-10-17; `design/2026-10-17-lesson1-owner/spec.md`): an activity's `goal` (5–50,
+§8b: at least 5 everywhere). **Before the goal a missed pattern is retried with no limit**: whatever the level's miss
+choice (tries, game over) and replay choice (from the miss), a miss costs nothing and the whole pattern plays again
+(no hearts are shown in a game with a goal). At the goal, a pattern that long copied whole without help: "You did it: a
+pattern of n", the game's entry is logged at once (`ended: "goal"`: the step is done, whatever follows), and two buttons:
+**Keep going** and, in a lesson step, **Back to the lesson ▶** (outside a step, Keep going and *Again*). **Any key is Keep
+going** (owner, 2026-10-17: "if the user wants more practice it should just let them keep going as long as they like"; a
+learner still playing as the goal is reached is never thrown out of the game): a key on the screen's keys, or any MIDI
+key but the highest, once the keys are let go; the MIDI keyboard's highest key is Back to the lesson (outside a step,
+*Again*), once the edge keys are set up; the lowest is Keep going too. **Keep going** carries on growing; the first miss ends it: "Game over: longest pattern n" (the longest
+copied whole in the game), with *Again* and Back to the lesson ▶. The same log entry is then written again: still
+`ended: "goal"` (done stays done), with the longest chain, `keptGoing: true` and `afterGoal` (`over`, or `stopped` when
+left part way). *Again* starts a new game, the goal before it again. A step's result (and Home's recent list) says what
+was reached in the same words: "Longest pattern n" (it said "Longest chain n"; a mash: "Stopped by a mash: longest pattern n").
+**No waiting** (owner, 2026-10-17: "if they tap a key to start their try at the sequence it doesn't bother finishing so
+they dont have to wait"; every Simon, every level): whenever a pattern is being given (the first time, after a miss
+(also in the pause before it plays again), Hear it, and the pause before the next pattern), a key stops it and starts
+your try, that key counting as its first note. Only a fresh press: the key that started the game, or the one that just
+missed, must be let go first (a chord's other keys, still landing, are not a first note). In a lesson
 step, Ready explains the top line: "Chain: how long the pattern is now · Best: your longest copied whole · ♥: tries left". Pools add a random item each round; passages grow in their own order; a completed passage
 is drawn whole; an activity's `goal` ends the game, done, at a chain that long played whole without help (§8b). Best chain kept per set and level (help rung, matching, what a miss costs): the whole chain played in
 one go without help (a chain finished from the miss on is practice, "not a best"; so is one helped; review, 2026-10-15).
@@ -390,7 +410,14 @@ a chain being given when it opens (played, shown, or again after a miss) stops a
 it closes. A level changed there starts afresh.
 
 **Help levels** (shared with Drills): 0 keys + sound, no music; 1 music + sound + keys lit, 2 music + sound, 3 music
-only, 4 name only, 5 by ear. **0, "keys, no music"** (2026-10-16, for lessons before the staff is taught, Faber's
+only, 4 name only, 5 by ear. **Each level is cohesive across the whole mode** (owner, 2026-10-17: "the whole entire mode at
+a certain level is cohesive for that level"; the owner had seen Hear it bring up the staff at a no-music level): the level
+decides what every element shows in every state (given, your turn, Hear it / Show me, a miss, the end, Keep going). *Hear
+it* gives the pattern again **the level's own way**: 0 keys lit and sound, 1 music, sound and keys lit, 2 music and sound
+(no keys lit), 5 sound only; at 3 and 4 the button is *Show me*: the music, to read, not played (it used to give every
+level help 1's music, sound and lit keys, so Hear it by ear drew the staff). **At 0 and 5 never a staff and never a note
+name** (words, the dots, the keys' octave labels); **at 5 nothing is lit or marked on the keys, ever**. A completed
+passage is drawn whole only at levels that read music (1–4). **0, "keys, no music"** (2026-10-16, for lessons before the staff is taught, Faber's
 order): the chain is heard and its keys light as it plays, with no staff or notation at any point (given, your turn,
 after a miss, Hear it); your turn lights where to start, as at 1. It is numbered 0, before 1, rather than renumbering
 the ladder: saved levels, bests (kept per rung) and the practice log's `settings.rung` keep 1–5 meaning what they meant.
@@ -493,6 +520,30 @@ rung 3 or 4 starting on your first note, or a notes-only card) the same key is i
 running from the moment it was pressed. Where the card is played to you first (rungs 0–2, 5) or a count-in comes first,
 the key starts that ("Listen…", "Count-in…"). At the end of a set (*Set done*) keys do nothing: *New set* or *the
 misses again*.
+
+**Each help level cohesive** (owner, 2026-10-17; as Simon, §3): **by ear (5) no staff, no name and nothing on the keys,
+the result too** (it had drawn the music with an ear card's result, named the notes in it and outlined the missed keys):
+the slips are counted in words ("2 notes late · 1 wrong key"), the set's results are numbered without names, and the
+keys have no octave labels; a rhythm card by ear shows its taps on the beat line, as at 0. At 0 as before (no staff or
+name; the keys show the result). The **8 s hint** on a notes-only card is given only where it adds what the level allows:
+at 2–4, with names shown, "Next: E4 (counts as help)"; at 0 and 1 the next keys are lit already (it had marked such a card
+"with help" for being slow), by ear nothing is shown (Hear it is there), and it never lights keys at 2–5 any more.
+
+**Finger-number cards** (owner, 2026-10-17: lesson 1's tune by finger numbers; `exercise/fingers.ts`): a set with `"view":
+"fingers"` (§6). Each card is drawn as **the finger numbers of its notes, by phrase**, one line a phrase (never broken),
+big (as big as the music's room allows: 30 px at 360×780, 27 px at 844×390 for four phrases of up to eight), in the music
+area with no staff, the hand said once above them ("Right hand"). On the keys **the hand's five keys are shaded with their
+finger numbers on them**, from the activity's `fingers` (the card's own notes, and for a finger the card does not use, the
+key the map gives that finger nearest the card's notes; no map: the card's notes only); the activity's other numbers are
+off meanwhile, and **no key is ever lit**. Start (or a key on Ready, or Next) plays the card at the set's tempo with **each
+number lit as it sounds**; then "Your turn" (a key while it plays stops it and is your first note, as in Simon; not in its
+first 0.8 s, the key that brought the card). **Untimed, notes in order:** the number to play next is highlighted, the ones
+played paler; the right key moves it on; **a wrong key flashes red (0.6 s) and the right key is outlined**, and it waits
+for the right one (no Skip). *Hear it* plays it again (noted as help; the card then ends "✓ Done, with Hear it"). The card
+ends **"✓ Clean"** (no wrong keys) or **"✓ Done, n wrong keys"**, then *Next* or *Again* (it does not move on by itself;
+a key goes on after 0.8 s). A set is played through when every card is (wrong keys or not). The Level panel shows only
+the cards per set; the keys always show (Nothing under the music does not hide them); no note names anywhere; Simon has
+none (Practise as… offers Drills only; a step or link naming one in Simon says so).
 
 **Rhythm sets** (owner, 2026-10-16, decided with options: inside Drills, one big pad, a one-line rhythm staff, echo and
 read, patterns generated from the values taught; `exercise/rhythm.ts`, `pad.ts`): cards of rhythm alone, a set of kind
@@ -1185,6 +1236,26 @@ files are not listed in Exercises as music for the score), a card with no writte
 `interval` item), a card with a chord. The test set `test-letters` holds the first two bars of Merrily We Roll Along as
 Faber's Primer prints them on p. 26 (E D C D | E E E-half, right hand, middle C's octave; as Claude verified from the publisher's PDF, not re-checked by the build) and layout cards (four, eight bars; quarter, half, whole).
 
+**A finger-number set** (owner, 2026-10-17; §4 "Finger-number cards"): `"view": "fingers"`; each card a `notes` item, one
+note after another, with `fingers` (a finger 1–5 for each note, `/` between phrases) and `hand` ("right" or "left"); its
+name, left out, is "Right hand" / "Left hand". Example (lesson 1's tune as the spec gives it, right hand, middle C's
+octave; the real set is lesson content):
+
+```json
+{ "title": "Mary Had a Little Lamb, by finger numbers", "kind": "melodies", "view": "fingers", "order": "passage", "tempo": 100,
+  "items": {
+    "1": { "notes": "E4, D4, C4, D4, E4, E4, E4, D4, D4, D4, E4, G4, G4, E4, D4, C4, D4, E4, E4, E4, E4, D4, D4, E4, D4, C4",
+           "fingers": "3 2 1 2 3 3 3 / 2 2 2 3 5 5 / 3 2 1 2 3 3 3 3 / 2 2 3 2 1", "hand": "right", "name": "Right hand" } } }
+```
+
+The activity that plays it gives the hand's keys their numbers with `fingers` (§8b), e.g. `{ "C4": 1, "D4": 2, "E4": 3,
+"F4": 4, "G4": 5, "C3": 5, "D3": 4, "E3": 3, "F3": 2, "G3": 1 }` for both hands' C positions. Refused (the reader and
+check:content): fingers not one a note, a finger outside 1–5, an empty phrase, no `hand` or another word, a chord, a card
+that is not `notes` (MusicXML, chord, interval), `rhythm` or `from` on the set, `play`, and `fingers` / `hand` on a set
+without the view. check:activity and check:path also refuse a card whose finger differs from the activity's map on any
+note, and a finger-number set in Simon. The test set `test-finger-cards` (two cards, right and left hand, four phrases
+of 7, 6, 8 and 5) is a placeholder for the checks.
+
 **A "find it" set** (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/); `exercise/find.ts`, §4): `"kind": "find"` and `find` instead of `items`:
 
 ```json
@@ -1231,7 +1302,7 @@ are read in the browser, and the check only finds their files).
 | `title` | text | yes | the one name it has everywhere ("Test:" marks a placeholder) |
 | `kind` | scales, five-finger, arpeggios, chords, intervals, cadences, melodies, rhythm, find | no | none: listed under Other |
 | `find` | `{ keys, groups, letters, places }` (above) | a find set: yes | find sets only |
-| `view` | "letters" | no | MusicXML cards drawn on the one-line staff with their letters (§4) |
+| `view` | "letters" / "fingers" | no | letters: MusicXML cards drawn on the one-line staff with their letters (§4); fingers: `notes` cards with `fingers` and `hand`, drawn as finger numbers by phrase (above) |
 | `generate` | `{ values, meter, bars, feature }` (above) | a rhythm set: this or `items` | rhythm sets only; `feature` optional |
 | `items` | `{ "1": item, "2": item, … }`: numbered from 1, at least one | this or `from` | |
 | `from` | `{ "score": <id in scores/index.json>, "bars": "5-8", "staff": 1 }` | this or `items` | `bars` "1-4" (printed bar numbers; one bar "5" too), `staff` 1 (a whole number) |
@@ -1739,8 +1810,9 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
   no rung 4 and no `notes` (played as 3 and normal), and is never a simon activity's set: check:activity and check:path
   refuse those.
 - simon: `rung` 0–5; `match` same / octave / inversion; `miss` tries / over / endless; `speed` up / steady; `onMiss` all /
-  from-miss; `onNew` all / new; `goal` a whole number 1–50: the game ends, "You did it: a pattern of n copied whole", once
-  a chain that long is played whole without help (owner, 2026-10-16: lesson 1's copying game stops at 3).
+  from-miss; `onNew` all / new; `goal` a whole number 5–50 (owner, 2026-10-17: at least 5 everywhere; it was 1–50, lesson
+  1's game had stopped at 3): before it a miss is retried with no limit, at it "You did it: a pattern of n", the step done,
+  Keep going or Back (§3).
 - freeplay: `keys` (above); `groups` false: the black keys' groups not outlined (on by default in a step; off in your own Free play; §5); `click`
   `{ "bpm": 72, "beats": 4 }`: a click from the screen's start, `bpm` a whole number 20–300 (needed), `beats` in a bar 1–7
   (default 4, the first accented), with its on / off button (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/).
@@ -1802,7 +1874,9 @@ steps. The next lesson is not written yet" with *Practice ›* (the Practice tab
     { "kind": "animation", "src": "media/test-c-major.svg", "alt": "…", "caption": "…" },   // gif webp svg png (animated), mp4 webm
     { "kind": "step", "id": "melody-cards", "title": "Melody cards, music only", "activity": "melodies-drill",
       "doneWhen": "4 of the 5 cards clean in one set", "target": { "clean": 4 }, "about": "…" },   // activity: an id, or written out (§8b)
-    { "kind": "tip", "label": "Note", "text": "…" }                                   // label: "Tip" when left out
+    { "kind": "tip", "label": "Note", "text": "…" },                                  // label: "Tip" when left out
+    { "kind": "read-watch", "text": "# Sitting\n…", "youtube": "https://www.youtube.com/watch?v=BmTcXlfT1OE", "title": "… (14 min)", "start": 0, "caption": "…" },
+    { "kind": "keyboard", "keys": "C3-B4", "names": false, "caption": "Try the black keys: …" }   // groups: false hides the groups' outlines
   ] }
 ```
 
@@ -1860,7 +1934,26 @@ steps. The next lesson is not written yet" with *Practice ›* (the Practice tab
   owner 2026-10-15) adds it to your library on Start if it is not there (§5c: offline too, one line says so; a file that
   can't be had is said and the step marks nothing); its card names the piece by its catalogue title meanwhile. Two
   Starts at once: the later one opens the step, and the step still gets its result.
+- **step, optional** (owner's lesson 1 spec, 2026-10-17: "Step (optional): Extra challenge"): `"optional": true` marks an
+  extra. Its card says **Optional · title** (no number: the others are numbered among the needed steps, Step 1, Step 2…)
+  and "optional" until it is played; it is never needed for "Lesson done: all n steps" (n counts the needed steps; done,
+  it shows done as any step); the next step suggested (the lesson bar's Start step, Home's Up next) skips it while a
+  needed step is left; once none is, the lesson bar offers **Optional step ▶** beside the way on, and Home's Up next (when
+  that lesson is the one shown) offers it before "Again".
 - **tip**: a callout (`label`: "Tip" by default, e.g. "Note").
+- **read-watch** (owner, 2026-10-17: "here's a video or here's a text description if you want to read"): one box with two
+  tabs at its top, **Read** (open first) and **Watch**; only one shows, a tap (or ← →) on the other switches; the page
+  remembers nothing of the choice. Read is `text` (the text format above); Watch is `youtube`, `title`, `start`, `end`,
+  `caption`, the full player as a video block. The player is put in when Watch is chosen and taken out when Read is, so a
+  video playing stops; **offline** the tab shows the video's title, "The video needs the internet: it plays here when you
+  are online." and the link (online but YouTube unreachable: the same card, as the video block).
+- **keyboard** (owner, 2026-10-17: "an inline keyboard in the page they can press"): a keyboard to play in the page:
+  `keys` a range as an activity's (`"C3-B4"`: white keys at both ends), the black keys' groups outlined with 2 and 3
+  (`groups: false` turns them off), the octave labels unless `names: false`. **Every key sounds on the app's piano when
+  tapped** (held, it sounds until let go; a finger slid off still lets go), black keys at least 30 px where the white keys
+  allow (two octaves at 360 px: white keys 25 px); keys pressed on a MIDI keyboard show on it while the lesson page is
+  open (the keyboard sounds itself, as everywhere in the app). Nothing is judged or recorded: it is not a step. A caption
+  under it (e.g. "Try the black keys…").
 
 **A step counts as done** (shown in words, never one green tick for all: *target met*, *played through*, *visited*; or
 *tried, target not met yet* / *tried, not through yet*; *skipped* when a later step was played; review 2026-10-15; the
@@ -1933,11 +2026,13 @@ path, a step's once in its lesson. Text fields are non-empty text.
 | `score` | one of `piece` (with `bars`), `set` (with `item`), `musicxml` | `tempo`, `keys`, `caption` | `bars` "a-b" or "a", at most 16 bars (needed with a piece); `item` a whole number from 1 (one the set has: check:path); `musicxml` a whole file written out (`<score-partwise>`, a time signature, no bar over-full) or a `.musicxml` / `.xml` file in the folder; `tempo` 20–300 quarter notes a minute; `keys` true / false (default false) |
 | `keys` | `notes` | `fingers`, `names`, `caption` | 1–12 pitches like `C4 F#3 Bb4` (capital letter, one-digit octave); `fingers` one per note, 1–5 or `-` |
 | `animation` | `src`, `alt` | `caption` | as `image`, also `.mp4 .webm` |
-| `step` | `id`, `title`, `activity` | `doneWhen`, `target`, `about` | `activity` an activity's id (letters, digits, `-`, `_`) or one written out (§8b, its id `<lesson>.<step>`); `target` below |
+| `step` | `id`, `title`, `activity` | `doneWhen`, `target`, `about`, `optional` | `activity` an activity's id (letters, digits, `-`, `_`) or one written out (§8b, its id `<lesson>.<step>`); `target` below |
 | `tip` | `text` | `label` | `label` default "Tip" |
+| `read-watch` | `text`, `youtube`, `title` | `start`, `end`, `caption` | `text` as a text block; the video fields as a video block's |
+| `keyboard` | `keys` | `groups`, `names`, `caption` | `keys` a range "C3-B4" (white keys at both ends, on the piano); `groups`, `names` true / false (default true) |
 
 `target` by its activity's screen, one or both fields: score `onTime` (0.05–1) and `bpm` (a whole number, 20–300);
-drills `clean` (whole, 1–100); simon `chain` (whole, 1–100); lab `cleanRounds` (whole, 1–40; not a lead activity).
+drills `clean` (whole, 1–100); simon `chain` (whole, 5–100: owner, 2026-10-17, every Simon at least 5); lab `cleanRounds` (whole, 1–40; not a lead activity).
 
 **Checked** (strictly, as activities are): an unknown kind or field, a missing field, raw HTML, a link that is not https,
 a file outside the folder or of the wrong type, a video link that is not YouTube or ends before it starts, a video `size` other than `"row"`, a score with
@@ -1961,6 +2056,9 @@ lesson leans on into the app's own scores, with its notes checked, is Claude's p
 The test rung's "Test: a piece from the catalogue" (`test-catalogue-piece`) has one step naming the catalogue's
 "Mary Had A Little Lamb" (`u-de5f6a78874c`: CC0, piano on two staves, 8 bars, chosen as a short piano piece): a
 placeholder for the checks, saying nothing about the music.
+The test lesson "Test: lesson 1's new pieces" (`test-lesson1-caps`, 2026-10-17) holds a Read / Watch block, a keyboard,
+Simon at keys-no-music with a goal of 6 on every key of an octave, Simon by ear with a goal of 5, and finger-number cards,
+for check:browser `--only lesson1caps`.
 The test lesson "Test: the walk-through's new pieces" (`test-walkfix`, 2026-10-16) holds a find-it step, a fingers step, a Free play step with a click, the steady beat at help 0 and Simon by ear, for check:browser `--only walkfix`.
 The test lesson "Test: the Minuet's opening" ends with two video rows (the same public video as its full-size video,
 from 2:00 and from 4:00): placeholders for the row checks.

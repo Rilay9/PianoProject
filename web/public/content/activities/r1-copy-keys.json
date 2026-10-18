@@ -1,0 +1,18 @@
+{
+  "title": "Copy the keys",
+  "screen": "simon",
+  "set": "keys-middle-octave",
+  "keys": {
+    "phone-upright": "C4-B4",
+    "phone-sideways": "C4-B4",
+    "tablet": "C4-B4"
+  },
+  "names": false,
+  "level": {
+    "rung": 0,
+    "match": "same",
+    "miss": "tries",
+    "speed": "steady",
+    "goal": 6
+  }
+}

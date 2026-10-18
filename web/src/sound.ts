@@ -58,6 +58,8 @@ export class Sound {
   playing = false;
   /** For checks: how many notes each band part was given to play since the last play() (nothing about the sound). */
   started: Record<string, number> = {};
+  /** For checks: how many notes noteNow (a key tapped on the screen) has started on the phone's piano. */
+  nowNotes = 0;
   /** When set, piano notes go to the MIDI keyboard instead of the phone (the metronome stays on the phone). */
   keyboard: MidiInput | null = null;
 
@@ -116,6 +118,7 @@ export class Sound {
     await this.prepare(true);
     if (!stillDown()) return () => {}; // let go while the piano was loading: no late blip
     const stop = this.piano!.start({ note: midi, velocity });
+    this.nowNotes++;
     return () => stop();
   }
 

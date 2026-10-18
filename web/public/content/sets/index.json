@@ -13,5 +13,9 @@
   "rhythm-whole.json",
   "test-find-groups.json",
   "test-letters.json",
-  "test-find-letters.json"
+  "test-find-letters.json",
+  "test-octave-keys.json",
+  "test-finger-cards.json",
+  "keys-middle-octave.json",
+  "mary-fingers.json"
 ]

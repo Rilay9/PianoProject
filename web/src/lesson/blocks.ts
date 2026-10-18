@@ -205,6 +205,105 @@ function drawVideoRow(b: VideoBlock): HTMLElement {
 }
 const isRow = (b: Block) => b.kind === 'video' && b.size === 'row';
 
+/**
+ * Read / Watch (owner, 2026-10-17: "here's a video or here's a text description if you want to read"): one box with two
+ * tabs at its top, Read open first; only one shows, a tap on the other switches (the page remembers nothing of it). The
+ * video is the full player (offline: its title and that it needs the internet), put in when Watch is chosen and taken
+ * out when Read is, so a video playing stops when you go back to reading.
+ */
+let tabsMade = 0;
+function drawReadWatch(b: Extract<Block, { kind: 'read-watch' }>): HTMLElement {
+  const box = el('section', 'les-rw');
+  const id = `les-rw-${++tabsMade}`;
+  const list = el('div', 'les-rw-tabs');
+  list.setAttribute('role', 'tablist');
+  const read = el('div', 'les-rw-panel'), watch = el('div', 'les-rw-panel');
+  read.append(drawText(b.text));
+  const tab = (name: 'read' | 'watch', words: string, panel: HTMLElement) => {
+    const t = button(words, 'les-rw-tab', () => choose(name));
+    t.setAttribute('role', 'tab');
+    t.id = `${id}-${name}`;
+    panel.id = `${id}-${name}-panel`;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', t.id);
+    t.setAttribute('aria-controls', panel.id);
+    return t;
+  };
+  const tabs = { read: tab('read', 'Read', read), watch: tab('watch', 'Watch', watch) };
+  const choose = (name: 'read' | 'watch', focus = false) => {
+    for (const [k, t] of Object.entries(tabs)) { const on = k === name; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; }
+    read.hidden = name !== 'read';
+    watch.hidden = name !== 'watch';
+    watch.replaceChildren(...(name === 'watch' ? [drawVideo({ kind: 'video', youtube: b.youtube, title: b.title, start: b.start, end: b.end, caption: b.caption })] : []));
+    if (focus) tabs[name].focus();
+  };
+  // (the tabs' own keys, as the ARIA tabs pattern has them: ← and → move between them)
+  list.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); choose(read.hidden ? 'read' : 'watch', true); } });
+  list.append(tabs.read, tabs.watch);
+  box.append(list, read, watch);
+  choose('read');
+  return box;
+}
+
+/**
+ * A keyboard to play in the page (owner, 2026-10-17: "an inline keyboard in the page they can press"): the block's keys,
+ * the black keys' groups outlined (unless `groups: false`), the octave labels unless `names: false`; every key sounds on
+ * the app's piano when tapped, and the keys pressed on a MIDI keyboard show on it while the page is open (the keyboard
+ * sounds itself, as everywhere in the app). Nothing is judged or recorded; it is not a step.
+ */
+interface PageKeys { kb: HTMLElement; strip: UnderStrip; touches: Map<number, { midi: number; stop: Promise<() => void> }> }
+const pageKeys = new Set<PageKeys>();
+const midiDown = new Set<number>();
+const showPressed = (p: PageKeys) => p.strip.setPressed(new Set([...midiDown, ...[...p.touches.values()].map((t) => t.midi)]));
+/** A key on the MIDI keyboard, while the lesson pages are showing (screens/shell.ts). */
+export function pageKeyboardKey(midi: number, on: boolean): void {
+  if (on) midiDown.add(midi); else midiDown.delete(midi);
+  for (const p of [...pageKeys]) { if (!p.kb.isConnected) { pageKeys.delete(p); continue; } showPressed(p); }
+}
+/** Leaving the page (or drawing it again): any key still held on the screen stops sounding. */
+export function releasePageKeyboards(): void {
+  for (const p of [...pageKeys]) {
+    for (const t of p.touches.values()) void t.stop.then((stop) => stop());
+    p.touches.clear();
+    if (!p.kb.isConnected) pageKeys.delete(p); else showPressed(p);
+  }
+}
+function drawKeyboard(b: Extract<Block, { kind: 'keyboard' }>, ctx: DrawContext): HTMLElement {
+  const kb = el('div', 'keyboard les-keys les-playkeys');
+  const strip = new UnderStrip(kb, kb, document.createElement('div'));
+  strip.names = b.names;
+  strip.groups = b.groups;
+  strip.showRange(b.keys.lo, b.keys.hi);
+  const me: PageKeys = { kb, strip, touches: new Map() };
+  pageKeys.add(me);
+  showPressed(me);
+  let woken = false;
+  kb.addEventListener('pointerdown', (e) => {
+    const key = (e.target as HTMLElement).closest<HTMLElement>('[data-midi]');
+    if (!key) return;
+    e.preventDefault();
+    if (!woken) { woken = true; void ctx.prepare().catch(() => {}); } // (the app's volumes and piano, as a little score plays)
+    const midi = Number(key.dataset.midi), id = e.pointerId;
+    try { kb.setPointerCapture(id); } catch { /* not a live pointer */ } // (let go off the keys, it still stops)
+    me.touches.get(id)?.stop.then((stop) => stop());
+    me.touches.set(id, { midi, stop: ctx.sound.noteNow(midi, 90, () => me.touches.get(id)?.midi === midi) });
+    showPressed(me);
+  });
+  const lift = (e: PointerEvent) => {
+    const t = me.touches.get(e.pointerId);
+    if (!t) return;
+    me.touches.delete(e.pointerId);
+    void t.stop.then((stop) => stop());
+    showPressed(me);
+  };
+  kb.addEventListener('pointerup', lift);
+  kb.addEventListener('pointercancel', lift);
+  kb.addEventListener('lostpointercapture', lift);
+  kb.addEventListener('contextmenu', (e) => e.preventDefault());
+  kb.setAttribute('aria-label', 'A keyboard to play: tap the keys');
+  return figure(kb, b.caption, 'les-playkeys-fig');
+}
+
 /** The MusicXML a score block draws. */
 async function scoreXml(src: ScoreSource, app: App): Promise<string> {
   const fetchText = async (url: string) => { const r = await fetch(url); if (!r.ok) throw new Error(`${r.status} for ${url}`); return r.text(); };
@@ -319,6 +418,8 @@ export const DRAW: { [K in Block['kind']]: (b: Extract<Block, { kind: K }>, ctx:
   keys: (b) => drawKeys(b),
   animation: (b) => drawAnimation(b),
   step: (b, ctx) => ctx.step(b),
+  'read-watch': (b) => drawReadWatch(b),
+  keyboard: (b, ctx) => drawKeyboard(b, ctx),
 };
 
 export function drawBlock(b: Block, ctx: DrawContext): HTMLElement {

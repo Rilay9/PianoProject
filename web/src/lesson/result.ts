@@ -189,7 +189,7 @@ export function runLine(e: LogEntry): string {
   switch (e.screen) {
     // (the misses again: said as practice, never "stopped early": the walk-through, 2026-10-16)
     case 'drills': return `${num(r.clean)} of ${num(r.of)} cards clean${r.missesAgain === true ? ' (the misses again: practice)' : r.ended === 'set done' ? '' : ` (${String(r.ended)})`}`;
-    case 'simon': return `Longest chain ${num(r.longestChain)}${num(r.helpedChains) ? ` · ${num(r.helpedChains)} helped` : ''}`;
+    case 'simon': return `Longest pattern ${num(r.longestChain)}${num(r.helpedChains) ? ` · ${num(r.helpedChains)} helped` : ''}`;
     case 'lab': {
       const rounds = (r.rounds as Round[] | undefined) ?? [];
       const clean = rounds.filter((x) => typeof x.bars === 'string' && x.bars.trim() !== '' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok'))).length;

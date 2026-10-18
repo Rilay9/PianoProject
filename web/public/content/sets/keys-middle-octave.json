@@ -1,0 +1,42 @@
+{
+  "title": "Every key of the middle octave",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "C4"
+    },
+    "2": {
+      "notes": "C#4"
+    },
+    "3": {
+      "notes": "D4"
+    },
+    "4": {
+      "notes": "D#4"
+    },
+    "5": {
+      "notes": "E4"
+    },
+    "6": {
+      "notes": "F4"
+    },
+    "7": {
+      "notes": "F#4"
+    },
+    "8": {
+      "notes": "G4"
+    },
+    "9": {
+      "notes": "G#4"
+    },
+    "10": {
+      "notes": "A4"
+    },
+    "11": {
+      "notes": "A#4"
+    },
+    "12": {
+      "notes": "B4"
+    }
+  }
+}

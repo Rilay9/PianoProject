@@ -103,13 +103,16 @@ export function takeEvidence(r: LessonRef): boolean { const k = stepKey(r); cons
 /**
  * Adds a run (nothing is added for a run with nothing in it: the caller decides). tag: the activity the run was played
  * with, kept from its start (final review 2026-10-15, F06: a set left by choosing another was logged after the choice
- * had ended the activity); left out, the activity in force now.
+ * had ended the activity); left out, the activity in force now. replace: in place of the entry with the same time, screen
+ * and step (a Simon game logged at its goal and played on with Keep going: owner, 2026-10-17), or added if there is none.
  */
-export function addEntry(e: LogEntry, tag?: ActivityTag): void {
+export function addEntry(e: LogEntry, tag?: ActivityTag, replace = false): void {
   const s = read();
   const t = tag === undefined ? activityTag(e.screen) : tag;
   const a = t && sameScreen(t.screen, e.screen) ? t : null;
-  s.entries.push({ ...e, ...(e.activity === undefined && a ? { activity: a.id } : {}), ...(e.lesson === undefined && a?.lesson ? { lesson: a.lesson } : {}) });
+  const full: LogEntry = { ...e, ...(e.activity === undefined && a ? { activity: a.id } : {}), ...(e.lesson === undefined && a?.lesson ? { lesson: a.lesson } : {}) };
+  const i = replace ? s.entries.findIndex((x) => sameEntry(x, full)) : -1;
+  if (i >= 0) s.entries[i] = full; else s.entries.push(full);
   prune(s);
   write(s);
 }

@@ -3,6 +3,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { readActivity, fingerOn } from '../src/activity.ts';
 import { namedPieces } from './named-pieces.mjs';
+import { fingerCardProblems } from './finger-cards.mjs';
 
 const dir = new URL('../public/content/activities/', import.meta.url);
 const pub = (p) => new URL(`../public/${p}`, import.meta.url);
@@ -54,6 +55,8 @@ for (const f of index) {
   }
   if ('set' in a) ok(`${f}: its set "${a.set}" is in the sets`, sets.includes(`${a.set}.json`), `sets: ${sets.join(', ')}`);
   if ('set' in a) ok(`${f}: a rhythm set only in Drills, not at rung 4 or notes only`, !rhythmMisuse(a), rhythmMisuse(a));
+  const setFile = 'set' in a && sets.includes(`${a.set}.json`) ? JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')) : null;
+  if (setFile?.view === 'fingers') { const bad = fingerCardProblems(a, setFile); ok(`${f}: a finger-number set only in Drills, its cards' fingers as the activity's finger map says`, !bad.length, bad.join('; ')); }
   if ('chart' in a) ok(`${f}: its chart "${a.chart}" is in the Lab`, charts.includes(`charts/${a.chart}.json`), `charts: ${charts.join(', ')}`);
 }
 
@@ -62,6 +65,16 @@ for (const [what, a, want] of [
   ['a rhythm set at rung 4', { screen: 'drills', set: 'rhythm-quarter-half', level: { rung: 4 } }, /no rung 4/],
   ['a rhythm set judged on notes only', { screen: 'drills', set: 'rhythm-whole', level: { onTime: 'notes' } }, /no "notes only"/],
 ]) ok(`refused by the content check: ${what}`, want.test(rhythmMisuse(a)), rhythmMisuse(a) || 'accepted');
+{
+  // Finger-number cards (owner, 2026-10-17): the card's numbers and the activity's finger map must agree; Drills only.
+  const set = { view: 'fingers', items: { 1: { notes: 'C4, D4', fingers: '1 / 3', hand: 'right' } } };
+  const off = fingerCardProblems(readActivity('t', { screen: 'drills', set: 's', fingers: { C4: 1, D4: 2 } }), set);
+  ok('refused by the content check: a finger card whose number differs from the activity\'s finger map', off.some((p) => /card 1, note 2 \(D4\): finger 3 on the card, 2 in the activity's fingers/.test(p)), off.join('; ') || 'accepted');
+  const inSimon = fingerCardProblems({ screen: 'simon', set: 's' }, set);
+  ok('refused by the content check: a finger-number set in Simon', inSimon.some((p) => /Drills only/.test(p)), inSimon.join('; ') || 'accepted');
+  const agree = fingerCardProblems(readActivity('t', { screen: 'drills', set: 's', fingers: { C4: 1, D: 3 } }), set);
+  ok('a finger card agreeing with the map (a key\'s or a pitch\'s finger) passes the content check', !agree.length, agree.join('; '));
+}
 ok('a rhythm set in Drills at rung 3 is fine', rhythmMisuse({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }) === '', rhythmMisuse({ screen: 'drills', set: 'rhythm-whole', level: { rung: 3 } }));
 
 // A2: what an activity reads to, one of each kind that carries more than a name (not only that it does not throw).
@@ -79,6 +92,8 @@ const refused = [
   ['Free play names that are not true or false', { screen: 'freeplay', names: 'no' }, /names "no" should be true or false/],
   ['Drills names that are not true or false', { screen: 'drills', set: 's', names: 'false' }, /names "false" should be true or false/],
   ['a Simon goal of 0', { screen: 'simon', set: 'x', level: { goal: 0 } }, /goal/],
+  // (owner, 2026-10-17: every Simon's goal at least 5)
+  ['a Simon goal of 4 (at least 5 everywhere)', { screen: 'simon', set: 'x', level: { goal: 4 } }, /level.goal is 4; it should be a whole number, 5 to 50/],
   ['a score without its piece', { screen: 'score' }, /needs "piece"/],
   ['a typo in a setting', { screen: 'score', piece: 'x', settings: { hand: 'right' } }, /settings has "hand"/],
   ['a mode that is not one', { screen: 'score', piece: 'x', settings: { mode: 'fast' } }, /settings.mode is "fast"/],
@@ -112,8 +127,8 @@ for (const [name, raw, want] of [
   const fg = readActivity('t', { screen: 'freeplay', fingers: { 'C#': 2, 'D#': 3, 'F#4': 1 }, groups: false, click: { bpm: 72 } });
   ok('fingers, groups and click read: C# 2 in every octave, F#4 1 on that key only; groups off; the click at 72 in 4', fingerOn(fg.fingers, 49) === 2 && fingerOn(fg.fingers, 73) === 2 && fingerOn(fg.fingers, 66) === 1 && fingerOn(fg.fingers, 54) === undefined && fg.groups === false && fg.click.bpm === 72 && fg.click.beats === 4
     && readActivity('t', { screen: 'drills', set: 's', fingers: { Bb: 4 } }).fingers.pc[10] === 4 && readActivity('t', { screen: 'freeplay' }).groups === undefined, JSON.stringify(fg));
-  const fp = readActivity('t', { screen: 'freeplay', names: false }), sm = readActivity('t', { screen: 'simon', set: 'x', level: { goal: 3 } });
-  ok('Free play names: false reads (no note names until taught), and Simon goal: 3 (the game ends at a chain of 3)', fp.names === false && sm.level.goal === 3, JSON.stringify({ fp, sm }));
+  const fp = readActivity('t', { screen: 'freeplay', names: false }), sm = readActivity('t', { screen: 'simon', set: 'x', level: { goal: 5 } });
+  ok('Free play names: false reads (no note names until taught), and Simon goal: 5 (the least: owner, 2026-10-17)', fp.names === false && sm.level.goal === 5, JSON.stringify({ fp, sm }));
   // (the consistency pass, 2026-10-16: names: false on any activity, honoured on every screen that names notes)
   const every = [{ screen: 'score', piece: 'x' }, { screen: 'memorise', piece: 'x' }, { screen: 'simon', set: 's' }, { screen: 'drills', set: 's' }, { screen: 'lab', chart: 'c' }, { screen: 'freeplay' }]
     .map((raw) => readActivity('t', { ...raw, names: false }));

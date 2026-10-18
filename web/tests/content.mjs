@@ -102,7 +102,9 @@ function setProblems(f, fileThere, bars) {
         if (!isObj(it)) { out.push(`${at} should be an object`); continue; }
         const kind = ['notes', 'chord', 'interval', 'musicxml'].filter((x) => it[x] !== undefined);
         if (kind.length !== 1) continue; // (the reader says this one itself)
-        for (const o of Object.keys(it)) if (o !== kind[0] && !OPTIONS[kind[0]].includes(o)) out.push(`${at}: "${o}" is not an option of a ${kind[0]} item (${OPTIONS[kind[0]].join(', ')})`);
+        // (a finger-number set's cards, view "fingers": notes with "fingers" and "hand"; 2026-10-17)
+        const opts = f.view === 'fingers' && kind[0] === 'notes' ? [...OPTIONS.notes, 'fingers', 'hand'] : OPTIONS[kind[0]];
+        for (const o of Object.keys(it)) if (o !== kind[0] && !opts.includes(o)) out.push(`${at}: "${o}" is not an option of a ${kind[0]} item${f.view === 'fingers' ? ' on a finger-number card' : ''} (${opts.join(', ')})`);
         for (const o of ['name', 'short']) if (it[o] !== undefined && !text(it[o])) out.push(`${at}: ${o} should be some text`);
         if (kind[0] === 'notes' && !(typeof it.notes === 'string' && it.notes.split(/[\s,]+/).filter(Boolean).every((p) => PITCH.test(p)))) out.push(`${at}: notes should be pitches like "C4 E4 G4" or "C4, E4, G4"`);
         if (kind[0] === 'chord') {
@@ -141,12 +143,25 @@ function setProblems(f, fileThere, bars) {
     for (const k of ['items', 'from', 'generate', 'rhythm', 'play', 'order']) if (f[k] !== undefined) out.push(`a "find" set has no "${k}"`);
   } else if (f.find !== undefined) out.push('"find" is for "find" sets (kind "find")');
   // The letters view (2026-10-17): "letters" only; not on a rhythm or find set; its cards MusicXML or bars of a piece (written rhythm).
+  // The fingers view (2026-10-17): its cards notes one after another, a finger 1–5 for each ("/" between phrases), a hand.
   if (f.view !== undefined) {
-    if (f.view !== 'letters') out.push(`view ${JSON.stringify(f.view)} should be "letters"`);
+    if (f.view !== 'letters' && f.view !== 'fingers') out.push(`view ${JSON.stringify(f.view)} should be "letters" or "fingers"`);
     if (f.kind === 'rhythm' || f.kind === 'find') out.push(`a ${f.kind} set has no "view"`);
-    if (f.play !== undefined) out.push('a letters set has no "play" (it is played in Drills)');
-    if (isObj(f.items)) for (const [k, it] of Object.entries(f.items)) if (isObj(it) && it.musicxml === undefined) out.push(`item "${k}": a letters card needs written rhythm (MusicXML)`);
-  }
+    if (f.play !== undefined) out.push(`a ${f.view} set has no "play" (it is played in Drills)`);
+    if (f.view === 'letters' && isObj(f.items)) for (const [k, it] of Object.entries(f.items)) if (isObj(it) && it.musicxml === undefined) out.push(`item "${k}": a letters card needs written rhythm (MusicXML)`);
+    if (f.view === 'fingers') {
+      for (const k of ['from', 'rhythm']) if (f[k] !== undefined) out.push(`a fingers set has no "${k}"`);
+      if (isObj(f.items)) for (const [k, it] of Object.entries(f.items)) {
+        if (!isObj(it)) continue;
+        const notes = typeof it.notes === 'string' ? it.notes.split(',').map((p) => p.trim()) : null;
+        const fingers = typeof it.fingers === 'string' ? it.fingers.split('/').map((p) => p.trim().split(/\s+/)) : null;
+        if (!notes || notes.some((p) => !PITCH.test(p))) out.push(`item "${k}": a finger-number card's notes are single pitches one after another, "E4, D4, C4"`);
+        if (!fingers || fingers.some((p) => !p.length || p.some((x) => !/^[1-5]$/.test(x)))) out.push(`item "${k}": fingers should be fingers 1 to 5 by phrase, "3 2 1 / 2 3"`);
+        else if (notes && fingers.flat().length !== notes.length) out.push(`item "${k}": ${fingers.flat().length} fingers for ${notes.length} notes`);
+        if (it.hand !== 'right' && it.hand !== 'left') out.push(`item "${k}": hand should be "right" or "left"`);
+      }
+    }
+  } else if (isObj(f.items) && Object.values(f.items).some((it) => isObj(it) && (it.fingers !== undefined || it.hand !== undefined))) out.push('"fingers" and "hand" are for finger-number cards (view "fingers")');
   if (f.from !== undefined) {
     if (!isObj(f.from)) out.push('from should be an object { score, bars, staff }');
     else {
@@ -210,6 +225,10 @@ const scoreBars = (id) => { const p = namedPieces().barsOf(id); return p && !id.
   refuses('find: no "find"', bad({ kind: 'find' }), /needs "find"/);
   refuses('letters: a view that is not one', bad({ view: 'staff', items: { 1: { musicxml: '<note/>' } } }), /should be "letters"/);
   refuses('letters: a notes item (no written rhythm)', bad({ view: 'letters', items: { 1: { notes: 'E4, D4' } } }), /needs written rhythm/);
+  refuses('fingers: a card with one finger too many', bad({ view: 'fingers', items: { 1: { notes: 'E4, D4', fingers: '3 2 1', hand: 'right' } } }), /3 fingers for 2 notes/);
+  refuses('fingers: a card with no hand', bad({ view: 'fingers', items: { 1: { notes: 'E4, D4', fingers: '3 2' } } }), /hand should be "right" or "left"/);
+  refuses('fingers: a chord on a card', bad({ view: 'fingers', items: { 1: { notes: 'E4 G4, D4', fingers: '3 2', hand: 'right' } } }), /single pitches/);
+  refuses('fingers: "fingers" on a set without the view', bad({ items: { 1: { notes: 'E4', fingers: '3', hand: 'right' } } }), /are for finger-number cards/);
   refuses('letters: on a rhythm set', bad({ kind: 'rhythm', view: 'letters', generate: { values: ['quarter'], meter: '4/4', bars: 1 } }), /has no "view"/);
   refuses('together as text', bad({ items: { 1: { interval: 'M3', together: 'false' } } }), /together should be true or false/);
   refuses('arpeggio as text', bad({ items: { 1: { chord: 'C', arpeggio: 'yes' } } }), /arpeggio should be true or false/);

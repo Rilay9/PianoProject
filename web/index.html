@@ -159,6 +159,8 @@
       <div id="ex-notation" class="ex-notation off"></div>
       <!-- A rhythm card's result with no music (help 0): the taps on a line of beats (exercise/beatline.ts, 2026-10-16). -->
       <div id="ex-beatline" class="ex-beatline" hidden></div>
+      <!-- A finger-number card: its numbers by phrase, in place of music (owner, 2026-10-17; exercise/fingers.ts). -->
+      <div id="ex-fingers" class="ex-fingers" role="img" hidden></div>
       <div id="ex-name" class="ex-name"></div>
       <div id="ex-chain" class="ex-chain"></div>
       <!-- What it says and the buttons: over the bottom of the music, frosted, when music is shown (it keeps its room). -->
@@ -167,6 +169,8 @@
         <p id="ex-sub" class="ex-sub"></p>
         <p id="ex-legend" class="ex-legend" hidden></p>
         <button id="ex-start" type="button" class="btn ex-start">Start</button>
+        <!-- Simon at a game's goal: Keep going (owner, 2026-10-17); the first miss after it ends the game. -->
+        <button id="ex-keep" type="button" class="btn ex-start" hidden>Keep going</button>
         <!-- A lesson step's set or game at its end: back to the step's result (owner, 2026-10-16); a key does it too. -->
         <button id="ex-back" type="button" class="btn main ex-start" hidden>Back to the lesson ▶</button>
         <!-- Drills: after a card with slips, and at the end of a set. -->
@@ -413,7 +417,7 @@
         <button type="button" data-as="drill">Drills<small>flashcards: each item a card to play, judged as it is played</small></button>
         <button type="button" data-as="simon">Simon<small>a chain that grows by one each round, played from memory</small></button>
       </div>
-      <p id="ex-as-rhythm" class="note" hidden>A rhythm set is practised in Drills: Simon has no rhythm.</p>
+      <p id="ex-as-rhythm" class="note" hidden>This set is practised in Drills only (a rhythm, find-it or finger-number set has no Simon).</p>
       <div class="actions"><button value="close">Close</button></div>
     </form>
   </dialog>

@@ -15,6 +15,6 @@
       "activity": { "title": "Test: steady beat, pad lit", "screen": "drills", "set": "rhythm-steady-beat", "level": { "rung": 0, "start": "clicks", "metronome": true, "onTime": "relaxed", "cards": 3 } } },
     { "kind": "text", "text": "## By ear\nCopy by ear." },
     { "kind": "step", "id": "by-ear", "title": "By ear", "about": "Copy what you hear, trying keys until one matches.",
-      "activity": { "title": "Test: by ear", "screen": "simon", "set": "black-keys-middle", "level": { "rung": 5, "match": "same", "miss": "tries", "speed": "steady", "goal": 3 }, "names": false } }
+      "activity": { "title": "Test: by ear", "screen": "simon", "set": "black-keys-middle", "level": { "rung": 5, "match": "same", "miss": "tries", "speed": "steady", "goal": 5 }, "names": false } }
   ]
 }

@@ -21,6 +21,10 @@
 // steady quavers. Items with written rhythm (MusicXML, bars from a piece) are always judged in time.
 // A rhythm set (kind "rhythm", owner 2026-10-16) is rhythm alone, tapped on one pad: its cards are generated
 // ("generate", exercise/rhythm.ts) or given as MusicXML items, whose pitches are not judged (read as one sound).
+// A finger-number set (`"view": "fingers"`, owner 2026-10-17: lesson 1's tune by finger numbers) gives each card as its
+// notes one after another, the finger for each, phrases parted by "/", and the hand once:
+//   { "notes": "E4, D4, C4, D4, E4", "fingers": "3 2 1 / 2 3", "hand": "right", "name": "Right hand" }
+// drawn as the numbers by phrase (no staff), played in order with no timing (Drills; docs §4, §6).
 
 import { Chord, Interval, Note } from 'tonal';
 import { readRhythmSpec, rhythmPool, RHYTHM_PITCH, type RhythmSpec } from './rhythm.ts'; // (with .ts: the checks run this file in Node)
@@ -47,6 +51,8 @@ export interface Item {
   fifths?: number;
   /** A "find it" card (find.ts): the words that name the place, and the keys that count (any one of them). */
   find?: { words: string; keys: number[]; where?: string };
+  /** A finger-number card (a set's `view: "fingers"`): the hand, and the finger for each note (one note a group) by phrase. */
+  fingering?: { hand: 'right' | 'left'; phrases: number[][] };
 }
 
 /** The score modes an exercise that is music can open in (Ladder needs a loop of bars, which a set does not give). */
@@ -82,8 +88,9 @@ export interface ItemSet {
   /** A "find it" set's keys and what it asks for (find.ts; its items are the cards made from it). */
   find?: FindSpec;
   /** "letters" (owner, 2026-10-17: a tune before the staff, as the method books show it): its cards drawn on the one-line
-   * rhythm staff with each note's letter under it, played on the keys and judged for keys and timing (docs §4, §6). */
-  view?: 'letters';
+   * rhythm staff with each note's letter under it, played on the keys and judged for keys and timing (docs §4, §6).
+   * "fingers" (owner, 2026-10-17): each card its finger numbers by phrase, no staff, played in order with no timing. */
+  view?: 'letters' | 'fingers';
 }
 
 const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.75 s a note)
@@ -91,6 +98,8 @@ const TEMPO = 80; // when a set gives none: about the old app's steady pace (0.7
 interface ItemSource {
   notes?: string; chord?: string; octave?: number; arpeggio?: boolean;
   interval?: string; root?: string; together?: boolean; musicxml?: string; name?: string; short?: string;
+  /** A finger-number card's (view "fingers"): a finger 1–5 for each note, "/" between phrases; and the hand. */
+  fingers?: string; hand?: string;
 }
 interface SetFile { title: string; kind?: string; play?: unknown; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number }; generate?: unknown; find?: unknown; view?: unknown }
 
@@ -233,7 +242,7 @@ export function groupsFromXml(xml: string, staff?: number, bars?: [number, numbe
 /** One item from its source. fetchText: for a MusicXML item given as a file. */
 async function buildItem(n: number, src: ItemSource, base: string, fetchText: (url: string) => Promise<string>): Promise<Item> {
   // Its fields: one kind of source (notes, chord, interval or musicxml) and that kind's options; anything else is refused.
-  const allowed = ['notes', 'chord', 'octave', 'arpeggio', 'interval', 'root', 'together', 'musicxml', 'name', 'short'];
+  const allowed = ['notes', 'chord', 'octave', 'arpeggio', 'interval', 'root', 'together', 'musicxml', 'name', 'short', 'fingers', 'hand'];
   const odd = Object.keys(src).find((k) => !allowed.includes(k));
   if (odd) throw new Error(`item ${n}: "${odd}" is not one of ${allowed.join(', ')}`);
   const kinds = (['notes', 'chord', 'interval', 'musicxml'] as const).filter((k) => src[k] !== undefined);
@@ -295,10 +304,19 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   // The letters view (owner, 2026-10-17): only "letters"; not on a rhythm or find set (they have their own); checked on the
   // items below (written rhythm, one note at a time).
   if (file.view !== undefined) {
-    if (file.view !== 'letters') throw new Error(`view ${JSON.stringify(file.view)} should be "letters" (or left out)`);
+    if (file.view !== 'letters' && file.view !== 'fingers') throw new Error(`view ${JSON.stringify(file.view)} should be "letters" or "fingers" (or left out)`);
     if (kind === 'rhythm' || kind === 'find') throw new Error(`a ${kind} set has no "view" (it is drawn its own way)`);
-    if (file.play !== undefined) throw new Error('a letters set is played in Drills: "play" is for sets of music opened on the score');
+    if (file.play !== undefined) throw new Error(`a ${file.view} set is played in Drills: "play" is for sets of music opened on the score`);
   }
+  // Finger-number cards (2026-10-17): untimed (no "rhythm"), each card notes + fingers + hand (fingeringOf checks them).
+  if (file.view === 'fingers') {
+    if (file.from) throw new Error('a fingers set gives its cards as "items" (notes, fingers and hand), not "from"');
+    if (file.rhythm !== undefined) throw new Error('a fingers set is played in order with no timing: leave "rhythm" out');
+    const other = Object.entries(file.items ?? {}).find(([, it]) => typeof it !== 'object' || it === null || it.notes === undefined);
+    if (other) throw new Error(`item ${other[0]}: a finger-number card gives "notes" (one after another), "fingers" and "hand"`);
+  }
+  const fingerItems = Object.entries(file.items ?? {}).filter(([, it]) => typeof it === 'object' && it !== null && (it.fingers !== undefined || it.hand !== undefined));
+  if (file.view !== 'fingers' && fingerItems.length) throw new Error(`item ${fingerItems[0][0]}: "fingers" and "hand" are for a set with "view": "fingers"`);
   // A "find it" set (owner, 2026-10-16): its cards made from the keys and what it asks for; untimed, in words.
   if (kind === 'find') {
     const other = (['items', 'from', 'generate', 'rhythm', 'play', 'order'] as const).find((k) => file[k] !== undefined);
@@ -342,7 +360,27 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   let items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
   // A rhythm set's written patterns sound on one pitch and are named by number, not by their notes (no note names).
   if (kind === 'rhythm') items = items.map((it) => ({ ...it, groups: it.groups.map((g) => (g.length ? [RHYTHM_PITCH] : [])), name: entries.find(([n]) => n === it.n)?.[1].name ?? `Pattern ${it.n}` }));
-  return lettersChecked({ id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm, ...(file.view ? { view: 'letters' as const } : {}) });
+  if (file.view === 'fingers') items = items.map((it) => { const src = entries.find(([n]) => n === it.n)![1]; const fingering = fingeringOf(it, src); return { ...it, fingering, name: src.name ?? `${fingering.hand === 'right' ? 'Right' : 'Left'} hand` }; });
+  return lettersChecked({ id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm, ...(file.view ? { view: file.view } : {}) });
+}
+
+/**
+ * A finger-number card's fingering (owner, 2026-10-17): `notes` one after another (no chords, no MusicXML: a card is
+ * played in order, untimed), `fingers` a finger 1–5 for each note with "/" between phrases (no phrase empty), and
+ * `hand` "right" or "left". Refused with the reason otherwise.
+ */
+function fingeringOf(it: Item, src: ItemSource): NonNullable<Item['fingering']> {
+  const at = `item ${it.n}`;
+  if (src.notes === undefined) throw new Error(`${at}: a finger-number card gives "notes" (one after another), "fingers" and "hand"`);
+  if (it.groups.some((g) => g.length !== 1)) throw new Error(`${at}: a finger-number card plays one note at a time (no chords): "E4, D4, C4"`);
+  if (src.hand !== 'right' && src.hand !== 'left') throw new Error(`${at}: "hand" should be "right" or "left"`);
+  if (typeof src.fingers !== 'string' || !src.fingers.trim()) throw new Error(`${at}: "fingers" should be the finger for each note, like "3 2 1 / 2 3"`);
+  const phrases = src.fingers.split('/').map((p) => p.trim());
+  if (phrases.some((p) => !p)) throw new Error(`${at}: "fingers" has an empty phrase (a "/" at an end, or two together)`);
+  const out = phrases.map((p) => p.split(/\s+/).map((f) => { if (!/^[1-5]$/.test(f)) throw new Error(`${at}: "${f}" in "fingers" is not a finger 1 to 5`); return Number(f); }));
+  const n = out.flat().length;
+  if (n !== it.groups.length) throw new Error(`${at}: "fingers" gives ${n} fingers for ${it.groups.length} notes (one each)`);
+  return { hand: src.hand, phrases: out };
 }
 
 /** A letters set's cards: each with written rhythm (MusicXML, or bars from a piece) and one note at a time (a letter under

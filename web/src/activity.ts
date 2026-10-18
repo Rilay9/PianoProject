@@ -193,7 +193,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
     case 'simon': {
       const level = check<Partial<SimonLevel>>(obj(f.level, 'level'), {
         rung: [0, 1, 2, 3, 4, 5], match: ['same', 'octave', 'inversion'], miss: ['tries', 'over', 'endless'], speed: ['up', 'steady'],
-        onMiss: ['all', 'from-miss'], onNew: ['all', 'new'], goal: whole(1, 50),
+        onMiss: ['all', 'from-miss'], onNew: ['all', 'new'], goal: whole(5, 50), // (goal: at least 5 everywhere, owner 2026-10-17)
       }, 'level');
       return { id, title, screen, set: str(f.set, 'set'), level, ...withKeys, ...withFingers };
     }

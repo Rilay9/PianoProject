@@ -126,6 +126,11 @@ What each committed check covers, case by case, is in `web/tests/README.md`.
   higher up", which counts C5 (the highest C of the set's keys): a learner pressing the highest C drawn was wrong. The
   check allowed it (`hi >= 83`). Where words name a place among things on screen (highest, lowest, middle), check that
   what is drawn or reachable is exactly what the words count, at its ends too (2026-10-17).
+- **Help that shows more than its level.** Hear it gave every help level help 1's way (music, sound, lit keys), so by ear
+  it drew the staff and lit the keys; a by-ear card's result drew its music and named its notes; the 8 s hint lit keys at
+  every level (owner, 2026-10-17: "the whole entire mode at a certain level is cohesive for that level"). The checks had
+  looked at a level's main state only. Walk each level through every state (given, Hear it / Show me, a miss, the result,
+  Keep going) and record what is drawn, lit, marked and named (tests/exercise.mjs and `--only lesson1caps`).
 - **Where you are, rewritten by every visit.** Drawing a lesson page made it "the lesson you are on", so finishing a lesson
   and pressing Next put the finished lesson back on Home ("Again · lesson 1") (2026-10-16). After a lesson's last step,
   check Home, Path's Carry on and Switch as a learner would come back to them.

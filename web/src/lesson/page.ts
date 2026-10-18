@@ -9,10 +9,10 @@ import type { Activity } from '../activity';
 import { endStep, entries, putEntry, removeEntry, takeEvidence, type LessonRef, type LogEntry } from '../log';
 import type { Command } from '../remote';
 import type { Sound } from '../sound';
-import { drawBlocks } from './blocks';
+import { drawBlocks, releasePageKeyboards } from './blocks';
 import { helpLink } from '../help/page';
 import { stopMiniScores } from './miniscore';
-import { activityOf, describe, lessonOrder, lessonState, loadPath, nextTodo, placeOf, stepStates, stepsOf, type PathData, type StepBlock } from './path';
+import { activityOf, describe, lessonOrder, lessonState, loadPath, nextTodo, placeOf, stepName, stepStates, stepsOf, type PathData, type StepBlock } from './path';
 import { doneSteps, markDone, markTried, setCurrentLesson } from './progress';
 import { checkTarget, type Lesson, type Target } from './read';
 import { bestLine, keepsNoRuns, outcome, through, type StepOutcome } from './result';
@@ -85,12 +85,13 @@ export function createLessonPage(d: LessonDeps) {
   function render(keepPlace = false): void {
     if (!lesson || !data) return;
     stopMiniScores();
+    releasePageKeyboards();
     const place = placeOf(data, lesson.id)!;
     where.textContent = `Rung ${place.rungNo} · Lesson ${place.no}`;
     if (shown) { renderResult(); return; }
-    const steps = stepsOf(lesson), state = lessonState(lesson);
+    const state = lessonState(lesson);
     const states = stepStates(lesson);
-    const ctx = { app: d.app, sound: d.sound, prepare: d.prepare, step: (b: StepBlock) => stepCard(b, steps.indexOf(b) + 1, states.get(b.id)!) };
+    const ctx = { app: d.app, sound: d.sound, prepare: d.prepare, step: (b: StepBlock) => stepCard(b, stepName(lesson!, b), states.get(b.id)!) };
     const out: HTMLElement[] = [el('h2', 'les-title', lesson.title)];
     out.push(...drawBlocks(lesson.blocks, ctx));
     const column = el('div', 'les-column');
@@ -106,12 +107,14 @@ export function createLessonPage(d: LessonDeps) {
       go.id = 'lesson-next';
       setBar(`${state.done} of ${state.total} steps done`, [go]);
     } else {
+      // An optional step not played is offered once nothing needed is left (owner's lesson 1 spec, 2026-10-17), beside the way on.
+      const extra = state.optionalLeft ? [button('Optional step ▶', 'btn', () => void start(state.optionalLeft!))] : [];
       // The next lesson with steps to do (as the result's Next lesson was: wrapping round), else the next in order.
       const order = lessonOrder(data), at = order.findIndex((x) => x.lesson.id === lesson!.id), todo = nextTodo(data, lesson.id), after = todo ? { lesson: todo } : order[at + 1];
       // No next lesson yet (owner, 2026-10-16, after the walk-through: the bar had nothing, while the text promised one):
       // said plainly, with the way to keep practising.
-      if (!after && state.total) { setBar(`Lesson done: all ${state.total} steps. The next lesson is not written yet`, [button('Practice ›', 'btn main', () => d.openPractice())]); return; }
-      setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : []);
+      if (!after && state.total) { setBar(`Lesson done: all ${state.total} steps. The next lesson is not written yet`, [...extra, button('Practice ›', 'btn main', () => d.openPractice())]); return; }
+      setBar(state.total ? `Lesson done: all ${state.total} steps` : 'No steps in this lesson', [...extra, ...(after ? [button('Next lesson ▶', 'btn main', () => d.openLesson(after.lesson.id))] : [])]);
     }
   }
 
@@ -136,7 +139,7 @@ export function createLessonPage(d: LessonDeps) {
   }
 
   /** A step: its state in words (target met, played, tried, skipped, up next, to come), what it is, what "done" means, and its Start (never locked). */
-  function stepCard(b: StepBlock, no: number, st: { mark: string; words: string; cls: string; at?: string }): HTMLElement {
+  function stepCard(b: StepBlock, label: string, st: { mark: string; words: string; cls: string; at?: string }): HTMLElement {
     const doneAt = doneSteps(lesson!.id)[b.id];
     const isNext = st.cls.includes('next');
     const card = el('div', `les-step ${st.cls}`.trim());
@@ -146,7 +149,7 @@ export function createLessonPage(d: LessonDeps) {
     const text = el('div', 'les-step-text');
     const what = el('div', 'les-step-what', ' ');
     const date = st.at ? ` · ${new Date(st.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}` : '';
-    text.append(el('div', 'les-step-title', `Step ${no} · ${b.title}`), el('div', `les-step-state ${st.cls}`, `${st.words}${date}`), what);
+    text.append(el('div', 'les-step-title', `${label} · ${b.title}`), el('div', `les-step-state ${st.cls}`, `${st.words}${date}`), what);
     if (b.about) text.append(el('div', 'les-step-about', b.about));
     if (b.doneWhen) text.append(el('div', 'les-step-when', `Done when: ${b.doneWhen}`));
     void activityOf(b).then((a) => describe(a, d.app)).then((s) => { what.textContent = s; }, (e) => { what.textContent = `Cannot open: ${e instanceof Error ? e.message : String(e)}`; what.classList.add('les-bad'); });
@@ -176,6 +179,7 @@ export function createLessonPage(d: LessonDeps) {
     const ref: LessonRef = { rung: place.rung.id, lesson: lesson.id, step: b.id };
     shown = null;
     stopMiniScores();
+    releasePageKeyboards();
     const since = (resume ? keptSince(lesson.id, b.id) : undefined) ?? new Date(Date.now() - 1000).toISOString();
     const mine = { lesson: lesson.id, step: b.id, ref, since, activity: a, target };
     pending = mine;
@@ -213,7 +217,7 @@ export function createLessonPage(d: LessonDeps) {
     const card = el('div', 'today les-result');
     const done = doneSteps(lesson!.id)[b.id];
     // This attempt, in its own words; then the step's state; then the best of every attempt so far, kept apart.
-    card.append(el('div', 'k', `Step ${no} · ${b.title}`), el('div', 'h', `This time: ${s.out.line}`));
+    card.append(el('div', 'k', `${stepName(lesson!, b)} · ${b.title}`), el('div', 'h', `This time: ${s.out.line}`));
     // The step's state in honest words (review 2026-10-15, V18: a step with nothing to judge is "visited", not ✓), the
     // same words as the step list (progress.ts stepWords), with what counts on this screen (result.ts through).
     const act = s.pending.activity, why = through(act);
@@ -230,7 +234,7 @@ export function createLessonPage(d: LessonDeps) {
     if (s.pending.target?.clean !== undefined) card.append(el('div', 's les-note', 'A clean card is one played right the first time, with no help (Hear it or Show me). A card right on Again counts as right, not clean.'));
     if (s.lessonDone) {
       const nextTitle = s.nextLesson ? data?.lessons.get(s.nextLesson)?.title : undefined;
-      card.append(el('div', 'les-done', `Lesson done: all ${steps.length} steps.${nextTitle ? ` Next: ${nextTitle}.` : ' The next lesson is not written yet; Practice has every exercise to keep going with.'}`));
+      card.append(el('div', 'les-done', `Lesson done: all ${lessonState(lesson!).total} steps.${nextTitle ? ` Next: ${nextTitle}.` : ' The next lesson is not written yet; Practice has every exercise to keep going with.'}`));
     }
     const all = entries().filter((e) => e.screen !== 'lesson' && e.lesson?.lesson === s.pending.lesson && e.lesson.step === s.pending.step);
     if (all.length > s.out.runs) { const best = bestLine(all); if (best) card.append(el('div', 's', `Best so far: ${best}`)); }
@@ -301,7 +305,7 @@ export function createLessonPage(d: LessonDeps) {
     /** A step is being played (its screen open). */
     get pending() { return !!pending; },
     /** Leaving the page: what plays stops, the result shown goes. */
-    leave(): void { stopMiniScores(); shown = null; drawn++; },
+    leave(): void { stopMiniScores(); releasePageKeyboards(); shown = null; drawn++; },
     /** The result's place was taken off (←, Back): the lesson page again. */
     closeResult(): void { if (shown && !goTo) goTo = { to: shown.pending.step, card: true }; shown = null; render(); }, // (Lesson or ←: back at the step's card, not the top: ChatGPT's review, A4)
     get lessonId() { return lesson?.id ?? ''; },

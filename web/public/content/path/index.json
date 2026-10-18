@@ -18,6 +18,7 @@
         "test-consistency",
         "test-catalogue-piece",
         "test-walkfix",
+        "test-lesson1-caps",
         "test-chords-and-band"
       ]
     }

@@ -5,12 +5,13 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { readActivity } from '../src/activity.ts';
 import * as read from '../src/lesson/read.ts';
-const { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId } = read;
+const { BLOCK_KINDS, checkTarget, readIndex, readLesson, youtubeId, stepProgress, stepLabel } = read;
 import { readText } from '../src/lesson/text.ts';
 import { meets, outcome, playedAsSet, runLine, through } from '../src/lesson/result.ts';
 import * as log from '../src/log.ts';
 import { readPlay } from '../src/exercise/items.ts';
 import { namedPieces } from './named-pieces.mjs';
+import { fingerCardProblems } from './finger-cards.mjs';
 
 const pub = (p) => new URL(`../public/${p}`, import.meta.url);
 let failed = 0, ran = 0;
@@ -72,6 +73,9 @@ for (const id of ids) {
       if ('piece' in a) ok(`${id}: step "${b.id}"'s piece "${a.piece}"${a.bars ? ` and bars ${a.bars.join('-')}` : ''} are there`, !named.problem(a.piece, a.bars), named.problem(a.piece, a.bars));
       // (2026-10-15, interfaces review: a written-out activity's set or chart was not looked for; activity.mjs does it for files)
       if ('set' in a || 'chart' in a) ok(`${id}: step "${b.id}"'s ${'set' in a ? `set "${a.set}"` : `chart "${a.chart}"`} is there`, !contentProblem(a), contentProblem(a));
+      // (2026-10-17) a finger-number set: Drills only, its cards' numbers as the step's finger map gives them
+      const setFile = 'set' in a && sets.includes(`${a.set}.json`) ? JSON.parse(readFileSync(pub(`content/sets/${a.set}.json`), 'utf8')) : null;
+      if (setFile?.view === 'fingers') ok(`${id}: step "${b.id}"'s finger-number cards agree with its fingers, in Drills`, !fingerCardProblems(a, setFile).length, fingerCardProblems(a, setFile).join('; '));
       try { checkTarget(b, a); ok(`${id}: step "${b.id}"'s target fits its ${a.screen} activity`, true); } catch (e) { ok(`${id}: step "${b.id}"'s target`, false, e.message); }
     }
   }
@@ -104,6 +108,25 @@ ok('reads to: an inline step activity, its target', (() => { const s = one({ kin
   try { row = one({ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v', size: 'row' }); full = one({ kind: 'video', youtube: 'ZD_sAWAlWq0', title: 'v' }); } catch (e) { msg = e.message; }
   ok('reads to: a video as a row ("size": "row"); left out, the full player', row?.size === 'row' && full && full.size === undefined, msg || JSON.stringify({ row, full }));
 }
+{
+  // Read / Watch and a keyboard to play (owner, 2026-10-17)
+  let rw, kb, kb2, msg = '';
+  try {
+    rw = one({ kind: 'read-watch', text: '# Sitting\nSit tall.', youtube: 'https://youtu.be/ZD_sAWAlWq0', title: 'Posture', start: 5, caption: 'c' });
+    kb = one({ kind: 'keyboard', keys: 'C3-B4' });
+    kb2 = one({ kind: 'keyboard', keys: 'C4-B4', groups: false, names: false, caption: 'Try the black keys' });
+  } catch (e) { msg = e.message; }
+  ok('reads to: Read / Watch, its text, video, title, start and caption', rw?.text?.[0]?.t === 'h' && rw.youtube === 'https://youtu.be/ZD_sAWAlWq0' && rw.title === 'Posture' && rw.start === 5 && rw.caption === 'c', msg || JSON.stringify(rw));
+  ok('reads to: a keyboard to play, its keys (C3 48 to B4 71), the groups and labels on unless false', same(kb?.keys, { lo: 48, hi: 71 }) && kb.groups === true && kb.names === true && kb2.groups === false && kb2.names === false && kb2.caption === 'Try the black keys', msg || JSON.stringify({ kb, kb2 }));
+}
+{
+  // An optional step (owner's lesson 1 spec, 2026-10-17): not counted, never the next step while a needed one is left.
+  const [a, b, c] = readLesson('x', L([{ kind: 'step', id: 'a', title: 'A', activity: 'x' }, { kind: 'step', id: 'b', title: 'B', activity: 'x', optional: true }, { kind: 'step', id: 'c', title: 'C', activity: 'x' }])).blocks;
+  const steps = [a, b, c], p0 = stepProgress(steps, {}), p1 = stepProgress(steps, { a: 1 }), p2 = stepProgress(steps, { a: 1, c: 1 }), p3 = stepProgress(steps, { a: 1, b: 1, c: 1 });
+  ok('optional steps: read; not counted (0 of 2); the next step skips it (a, then c); the needed done: the lesson done (no next) with it left to offer; done too: none left; named Step 1, Optional, Step 2',
+    b.optional === true && a.optional === undefined && p0.total === 2 && p0.next === a && p1.next === c && p1.nextNo === 2 && p2.next === undefined && p2.done === 2 && p2.optionalLeft === b && p3.optionalLeft === undefined && p3.done === 2
+    && [a, b, c].map((s) => stepLabel(steps, s)).join() === 'Step 1,Optional,Step 2', JSON.stringify({ p0: p0.total, p1: p1.next?.id, p2: [p2.next, p2.optionalLeft?.id] }));
+}
 ok('reads to: a tip with its own label, default "Tip"', one({ kind: 'tip', label: 'Note', text: 'x' }).label === 'Note' && one({ kind: 'tip', text: 'x' }).label === 'Tip');
 ok('youtube ids: watch, youtu.be, embed, shorts, bare; not another site', youtubeId('https://www.youtube.com/watch?v=ZD_sAWAlWq0&t=5') === 'ZD_sAWAlWq0' && youtubeId('https://youtu.be/ZD_sAWAlWq0') === 'ZD_sAWAlWq0'
   && youtubeId('https://www.youtube-nocookie.com/embed/ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('https://youtube.com/shorts/ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('ZD_sAWAlWq0') === 'ZD_sAWAlWq0' && youtubeId('https://vimeo.com/123') === null);
@@ -113,6 +136,17 @@ ok('text: heading, paragraph with bold, italics and a link, a list, a numbered l
 // ---- refused, with the reason ------------------------------------------------------------------------------------
 const refused = [
   ['an unknown block kind', L([{ kind: 'quiz' }]), /kind "quiz" is not one of/],
+  // (owner, 2026-10-17: "every simon should have at least 5 notes")
+  ['a step\'s optional that is not true or false', L([{ kind: 'step', id: 's', title: 'S', activity: 'x', optional: 'yes' }]), /optional should be true or false/],
+  ['a Simon step\'s target chain of 4', L([{ kind: 'step', id: 's', title: 'S', activity: { screen: 'simon', set: 's' }, target: { chain: 4 } }]), /target.chain is 4; it should be a chain this long, 5 to 100/],
+  // (2026-10-17) Read / Watch and the keyboard to play
+  ['Read / Watch with a video link that is not YouTube', L([{ kind: 'read-watch', text: 'x', youtube: 'https://vimeo.com/1', title: 't' }]), /is not a YouTube video link/],
+  ['Read / Watch with no title', L([{ kind: 'read-watch', text: 'x', youtube: 'ZD_sAWAlWq0' }]), /\(read-watch\) needs "title"/],
+  ['Read / Watch ending before it starts', L([{ kind: 'read-watch', text: 'x', youtube: 'ZD_sAWAlWq0', title: 't', start: 9, end: 3 }]), /end 3 is not after start 9/],
+  ['a keyboard ending on a black key', L([{ kind: 'keyboard', keys: 'C3-A#4' }]), /starts or ends on a black key/],
+  ['a keyboard with no keys', L([{ kind: 'keyboard' }]), /\(keyboard\) needs "keys"/],
+  ['a keyboard\'s groups that are not true or false', L([{ kind: 'keyboard', keys: 'C3-B4', groups: 'no' }]), /groups should be true or false/],
+  ['a keyboard with a misspelt field', L([{ kind: 'keyboard', keys: 'C3-B4', group: false }]), /has "group"/],
   ['a misspelt field', L([{ kind: 'text', txt: 'x' }]), /has "txt"/],
   ['a missing field', L([{ kind: 'image', src: 'media/a.png' }]), /needs "alt"/],
   ['raw HTML in text', L([{ kind: 'text', text: 'a <b>b</b>' }]), /HTML/],
@@ -160,7 +194,7 @@ for (const [name, f, want] of [
 {
   const raw = JSON.parse(readFileSync(pub('content/path/index.json'), 'utf8'));
   ok('the shipped index: every rung titled "Test:" is marked "test": true (hidden from the learner)', raw.rungs.every((r) => !/^Test:/.test(r.title) || r.test === true), JSON.stringify(raw.rungs.map((r) => [r.id, r.test])));
-  ok('the shipped index: the checks still read the test rung and its five lessons (test-consistency, test-walkfix: 2026-10-16)', same(index.rungs.find((r) => r.id === 'test-app')?.lessons, ['test-minuet-opening', 'test-consistency', 'test-catalogue-piece', 'test-walkfix', 'test-chords-and-band']), JSON.stringify(index.rungs));
+  ok('the shipped index: the checks still read the test rung and its six lessons (test-consistency, test-walkfix: 2026-10-16; test-lesson1-caps: 2026-10-17, before the last: the checks lead on from that one)', same(index.rungs.find((r) => r.id === 'test-app')?.lessons, ['test-minuet-opening', 'test-consistency', 'test-catalogue-piece', 'test-walkfix', 'test-lesson1-caps', 'test-chords-and-band']), JSON.stringify(index.rungs));
   const shownIndex = read.shownIndex;
   const two = typeof shownIndex === 'function' ? readIndex({ rungs: [{ id: 'test-app', title: 'Test: x', test: true, lessons: ['t1'] }, { id: 'first', title: 'Playing before reading', lessons: ['l1'] }] }) : null;
   ok('learner: a test rung is hidden, a real rung shown', !!two && same(shownIndex(two, false).rungs.map((r) => r.id), ['first']), two ? JSON.stringify(shownIndex(two, false)) : 'no shownIndex in lesson/read.ts');
@@ -257,9 +291,9 @@ ok('done without a target: a Simon game left part way is tried; one that ran its
     ok(`a target counts runs played as the step sets them: ${what} → ${met ? 'met' : `not met (${why})`}`, o.met === met && (met || o.line.includes(`played with ${why}: practice`)) && playedAsSet(e, step) === why, JSON.stringify({ o, why: playedAsSet(e, step) }));
   }
   const simonStep = { id: 's', title: 's', screen: 'simon', set: 'bk', level: { rung: 0, match: 'same' } };
-  const sRun = (rung) => E('simon', { longestChain: 3, ended: 'goal' }, { set: 'bk', settings: { rung, match: 'same' } });
-  ok('a Simon step at keys-and-sound (0): a chain of 3 at 0 or by ear (5) counts; with music shown (1) is another help level',
-    outcome([sRun(0)], simonStep, { chain: 3 }, true).met && outcome([sRun(5)], simonStep, { chain: 3 }, true).met && !outcome([sRun(1)], simonStep, { chain: 3 }, true).met);
+  const sRun = (rung) => E('simon', { longestChain: 5, ended: 'goal' }, { set: 'bk', settings: { rung, match: 'same' } });
+  ok('a Simon step at keys-and-sound (0): a chain of 5 at 0 or by ear (5) counts; with music shown (1) is another help level',
+    outcome([sRun(0)], simonStep, { chain: 5 }, true).met && outcome([sRun(5)], simonStep, { chain: 5 }, true).met && !outcome([sRun(1)], simonStep, { chain: 5 }, true).met);
 }
 // Owner, 2026-10-15 (Q5): a score step with no target counts only a run in the step's own mode that reached the end
 // of its bars (Wait for me: round its loop; the timed modes: a pass round the loop, or the piece's last note).
@@ -368,9 +402,9 @@ ok('done without a target: a Simon game left part way is tried; one that ran its
 {
   const sStep = { id: 's', title: 's', screen: 'simon', set: 'bk', level: { rung: 0 } };
   const chain = (n, rung, ended) => E('simon', { longestChain: n, ended }, { set: 'bk', settings: { rung } });
-  // a chain of 3 at help 0, then a game over at chain 0 by ear (help 5: harder, counted): the headline is the 3
-  const s = outcome([chain(3, 0, 'goal'), chain(0, 5, 'over')], sStep, { chain: 3 }, true);
-  ok('headline: Simon, a chain of 3 then a game over at 0: "Longest chain 3", not the last run (was "Longest chain 0 · 2 runs")', s.met && /^Longest chain 3/.test(s.line) && !/chain 0/.test(s.line), s.line);
+  // a chain of 5 at help 0, then a game over at chain 0 by ear (help 5: harder, counted): the headline is the 5
+  const s = outcome([chain(5, 0, 'goal'), chain(0, 5, 'over')], sStep, { chain: 5 }, true);
+  ok('headline: Simon, a chain of 5 then a game over at 0: "Longest pattern 5" (owner, 2026-10-17: "longest pattern"), not the last run (was "Longest chain 0 · 2 runs")', s.met && /^Longest pattern 5/.test(s.line) && !/pattern 0/.test(s.line), s.line);
   const dStep = { id: 'd', title: 'd', screen: 'drills', set: 'qh', level: { rung: 3, cards: 5 } };
   const set = (clean, of, extra = {}) => E('drills', { clean, of, ended: 'set done', ...extra }, { set: 'qh', settings: { rung: 3, cards: of === 5 ? 5 : 5 } });
   // 3 of 5, then the 2 misses again, both clean

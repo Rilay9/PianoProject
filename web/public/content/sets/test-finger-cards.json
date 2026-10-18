@@ -1,0 +1,21 @@
+{
+  "title": "Test: finger-number cards",
+  "kind": "five-finger",
+  "view": "fingers",
+  "order": "passage",
+  "tempo": 120,
+  "items": {
+    "1": {
+      "notes": "C4, D4, E4, F4, G4, F4, E4, D4, E4, F4, G4, F4, E4, C4, D4, E4, F4, G4, G4, F4, E4, D4, C4, D4, E4, C4",
+      "fingers": "1 2 3 4 5 4 3 / 2 3 4 5 4 3 / 1 2 3 4 5 5 4 3 / 2 1 2 3 1",
+      "hand": "right",
+      "name": "Right hand"
+    },
+    "2": {
+      "notes": "C3, D3, E3, F3, G3, F3, E3, D3, E3, F3, G3, F3, E3, C3, D3, E3, F3, G3, G3, F3, E3, D3, C3, D3, E3, C3",
+      "fingers": "5 4 3 2 1 2 3 / 4 3 2 1 2 3 / 5 4 3 2 1 1 2 3 / 4 5 4 3 5",
+      "hand": "left",
+      "name": "Left hand"
+    }
+  }
+}

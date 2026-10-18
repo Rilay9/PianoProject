@@ -11,7 +11,7 @@
 // Adding a block kind: its fields here (BLOCKS and readBlock), its drawing in lesson/blocks.ts (DRAW), and a line
 // in docs/app-features.md §8c.
 
-import { readActivity, type Activity } from '../activity.ts'; // (with .ts: the checks run this file in Node)
+import { readActivity, readKeyRange, type Activity, type KeyRange } from '../activity.ts'; // (with .ts: the checks run this file in Node)
 import { readText, type TextBlock } from './text.ts';
 
 /** test: a rung of placeholder lessons for the checks, hidden from the learner (lesson/path.ts; 2026-10-16). */
@@ -30,9 +30,17 @@ export type Block =
   | { kind: 'keys'; notes: string[]; fingers?: (number | null)[]; names?: false | 'letters'; caption?: string }
   | { kind: 'animation'; src: string; alt: string; caption?: string }
   | { kind: 'step'; id: string; title: string; activity: string | Activity; doneWhen?: string; target?: Target; about?: string;
+      /** An extra the lesson offers (owner's lesson 1 spec, 2026-10-17: "Step (optional): Extra challenge"): marked
+       * Optional, never needed for the lesson to be done, never the next step suggested while a needed one is left. */
+      optional?: true;
       /** A target given with an activity named by id: checked against that activity once it is read (checkTarget). */
       pendingTarget?: unknown }
-  | { kind: 'tip'; label: string; text: TextBlock[] };
+  | { kind: 'tip'; label: string; text: TextBlock[] }
+  /** Read / Watch (owner, 2026-10-17): a text and a video in one box with two tabs, Read open first, one shown at a time. */
+  | { kind: 'read-watch'; text: TextBlock[]; youtube: string; title: string; start?: number; end?: number; caption?: string }
+  /** A keyboard to play in the page (owner, 2026-10-17): these keys, the black keys' groups outlined (unless `groups:
+   * false`), every key sounding when tapped, a MIDI keyboard's keys shown on it; nothing judged or recorded. */
+  | { kind: 'keyboard'; keys: KeyRange; groups: boolean; names: boolean; caption?: string };
 
 /** Where a score block's music comes from: bars of a piece, an item of a set, or MusicXML (inline, or a file). */
 export type ScoreSource =
@@ -51,8 +59,10 @@ const BLOCKS: Record<Block['kind'], { need: string[]; may: string[] }> = {
   score: { need: [], may: ['piece', 'bars', 'set', 'item', 'musicxml', 'tempo', 'keys', 'caption'] },
   keys: { need: ['notes'], may: ['fingers', 'names', 'caption'] },
   animation: { need: ['src', 'alt'], may: ['caption'] },
-  step: { need: ['id', 'title', 'activity'], may: ['doneWhen', 'target', 'about'] },
+  step: { need: ['id', 'title', 'activity'], may: ['doneWhen', 'target', 'about', 'optional'] },
   tip: { need: ['text'], may: ['label'] },
+  'read-watch': { need: ['text', 'youtube', 'title'], may: ['start', 'end', 'caption'] },
+  keyboard: { need: ['keys'], may: ['groups', 'names', 'caption'] },
 };
 export const BLOCK_KINDS = Object.keys(BLOCKS) as Block['kind'][];
 
@@ -109,7 +119,7 @@ const TARGETS: Record<string, Record<string, { min: number; max: number; whole: 
     bpm: { min: 20, max: 300, whole: true, say: 'beats a minute, 20 to 300' },
   },
   drills: { clean: { min: 1, max: 100, whole: true, say: 'clean cards in one set, 1 to 100' } },
-  simon: { chain: { min: 1, max: 100, whole: true, say: 'a chain this long, 1 to 100' } },
+  simon: { chain: { min: 5, max: 100, whole: true, say: 'a chain this long, 5 to 100 (owner, 2026-10-17: every Simon at least 5)' } },
   lab: { cleanRounds: { min: 1, max: 40, whole: true, say: 'rounds with every bar right, 1 to 40' } },
 };
 
@@ -148,6 +158,19 @@ function readBlock(b: unknown, i: number, lessonId: string, ids: Set<string>): B
     case 'tip': return { kind: 'tip', label: optStr(b.label, `${where}.label`) ?? 'Tip', text: readText(str(b.text, `${where}.text`), where) };
     case 'image': return { kind: 'image', src: fileOrLink(b.src, `${where}.src`, /\.(png|jpe?g|webp|svg|gif)$/i), alt: str(b.alt, `${where}.alt`), caption };
     case 'animation': return { kind: 'animation', src: fileOrLink(b.src, `${where}.src`, /\.(gif|webp|svg|png|mp4|webm)$/i), alt: str(b.alt, `${where}.alt`), caption };
+    case 'read-watch': {
+      const link = str(b.youtube, `${where}.youtube`);
+      if (!youtubeId(link)) throw new Error(`${where}.youtube "${link}" is not a YouTube video link`);
+      const start = seconds(b.start, `${where}.start`), end = seconds(b.end, `${where}.end`);
+      if (start !== undefined && end !== undefined && end <= start) throw new Error(`${where}: end ${end} is not after start ${start}`);
+      return { kind: 'read-watch', text: readText(str(b.text, `${where}.text`), where), youtube: link, title: str(b.title, `${where}.title`), start, end, caption };
+    }
+    case 'keyboard': {
+      // The keys as an activity's `keys` range ("C3-B4": white keys at both ends, on the piano); groups and names true / false.
+      const keys = readKeyRange(b.keys, `${where}.keys`);
+      for (const k of ['groups', 'names'] as const) if (b[k] !== undefined && typeof b[k] !== 'boolean') throw new Error(`${where}.${k} should be true or false`);
+      return { kind: 'keyboard', keys, groups: b.groups !== false, names: b.names !== false, caption };
+    }
     case 'video': {
       const link = str(b.youtube, `${where}.youtube`);
       if (!youtubeId(link)) throw new Error(`${where}.youtube "${link}" is not a YouTube video link`);
@@ -210,7 +233,8 @@ function readBlock(b: unknown, i: number, lessonId: string, ids: Set<string>): B
       } else if (isObj(b.activity)) {
         try { activity = readActivity(`${lessonId}.${id}`, b.activity); } catch (e) { throw new Error(`${where}.activity: ${e instanceof Error ? e.message : String(e)}`); }
       } else throw new Error(`${where}.activity should be an activity's id or an activity written out`);
-      const out: Block = { kind: 'step', id, title: str(b.title, `${where}.title`), activity, doneWhen: optStr(b.doneWhen, `${where}.doneWhen`), about: optStr(b.about, `${where}.about`) };
+      if (b.optional !== undefined && typeof b.optional !== 'boolean') throw new Error(`${where}.optional should be true or false`);
+      const out: Block = { kind: 'step', id, title: str(b.title, `${where}.title`), activity, doneWhen: optStr(b.doneWhen, `${where}.doneWhen`), about: optStr(b.about, `${where}.about`), ...(b.optional === true ? { optional: true as const } : {}) };
       if (b.target !== undefined) {
         if (typeof activity === 'string') out.pendingTarget = b.target; // checked once its activity is read (checkTarget)
         else out.target = readTarget(b.target, activity.screen, where, activity);
@@ -245,6 +269,22 @@ export function barProblem(xml: string): string {
     if (most > room + 1e-9) return `bar ${number} holds ${most / divisions} quarter notes, but its time signature (${beats}/${beatType}) has room for ${room / divisions}`;
   }
   return '';
+}
+
+type StepOf = Extract<Block, { kind: 'step' }>;
+/**
+ * How far a lesson's steps are (owner, 2026-10-17: optional steps): the steps needed done and how many there are (an
+ * optional step never counts toward the lesson being done), the first needed step not done and its number among the
+ * needed ones, and the first optional step not done (suggested only when nothing needed is left).
+ */
+export function stepProgress(steps: StepOf[], done: Record<string, unknown>): { done: number; total: number; next?: StepOf; nextNo: number; optionalLeft?: StepOf } {
+  const needed = steps.filter((s) => !s.optional);
+  const i = needed.findIndex((s) => !done[s.id]);
+  return { done: needed.filter((s) => done[s.id]).length, total: needed.length, next: i >= 0 ? needed[i] : undefined, nextNo: i + 1, optionalLeft: steps.find((s) => s.optional && !done[s.id]) };
+}
+/** A step's name on its card and result: "Step n", numbered among the needed steps, or "Optional". */
+export function stepLabel(steps: StepOf[], s: StepOf): string {
+  return s.optional ? 'Optional' : `Step ${steps.filter((x) => !x.optional).indexOf(s) + 1}`;
 }
 
 /** A step naming an activity by id has its target checked once that activity is read. */

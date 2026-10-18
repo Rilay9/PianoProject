@@ -8,7 +8,7 @@ import { loadSets, readPlay, type ItemSet, type Play } from '../exercise/items';
 import { loadCharts } from '../library/items';
 import { loadCatalogue } from '../library/catalogue';
 import { currentLesson, doneSteps, stepWords, triedSteps } from './progress';
-import { readIndex, readLesson, shownIndex, type Block, type Lesson, type PathIndex, type Rung } from './read';
+import { readIndex, readLesson, shownIndex, stepLabel, stepProgress, type Block, type Lesson, type PathIndex, type Rung } from './read';
 
 export type StepBlock = Extract<Block, { kind: 'step' }>;
 export interface PathData { index: PathIndex; lessons: Map<string, Lesson>; problems: string[] }
@@ -65,12 +65,12 @@ export function placeOf(d: PathData, lessonId: string): { rung: Rung; rungNo: nu
   return lessonOrder(d).find((x) => x.lesson.id === lessonId);
 }
 
-/** How far a lesson is: its steps done, and the first not done (in order). */
-export function lessonState(l: Lesson): { done: number; total: number; next?: StepBlock; nextNo: number } {
-  const steps = stepsOf(l), done = doneSteps(l.id);
-  const i = steps.findIndex((s) => !done[s.id]);
-  return { done: steps.filter((s) => done[s.id]).length, total: steps.length, next: i >= 0 ? steps[i] : undefined, nextNo: i + 1 };
+/** How far a lesson is: its needed steps done, and the first not done (in order); optional steps apart (read.ts stepProgress). */
+export function lessonState(l: Lesson): { done: number; total: number; next?: StepBlock; nextNo: number; optionalLeft?: StepBlock } {
+  return stepProgress(stepsOf(l), doneSteps(l.id));
 }
+/** "Step n" (among the needed steps) or "Optional". */
+export const stepName = (l: Lesson, s: StepBlock): string => stepLabel(stepsOf(l), s);
 
 /** Each step's state in words (done and how, tried, skipped, to come); `next` marks the first not done. */
 export function stepStates(l: Lesson): Map<string, { mark: string; words: string; cls: string; at?: string }> {
@@ -79,6 +79,8 @@ export function stepStates(l: Lesson): Map<string, { mark: string; words: string
   steps.forEach((s, i) => {
     const later = steps.slice(i + 1).some((x) => done[x.id] || tried[x.id]);
     const w = stepWords(done[s.id], tried[s.id], later, !!s.target);
+    // (an optional step not played: "optional", never "skipped" or "to come")
+    if (s.optional && !done[s.id] && !tried[s.id]) { out.set(s.id, { mark: '○', words: 'optional', cls: 'optional' }); return; }
     out.set(s.id, s === next && !tried[s.id] ? { mark: '▶', words: later ? 'skipped: up next' : 'up next', cls: 'next' } : { ...w, cls: `${w.cls}${s === next ? ' next' : ''}`.trim(), at: done[s.id]?.at ?? tried[s.id] });
   });
   return out;

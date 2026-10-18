@@ -7,6 +7,7 @@ import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX
 import { Drill, NO_KEYBOARD, type DrillLevel } from '../exercise/drill';
 import { loadSets, type ItemSet } from '../exercise/items';
 import { ExerciseKeys } from '../exercise/keys';
+import { FingerCard, handKeys } from '../exercise/fingers';
 import { shiftParts } from '../key-shift';
 import { ExerciseNotation } from '../exercise/notation';
 import { PAD_KEY, RhythmPad } from '../exercise/pad';
@@ -16,7 +17,7 @@ import { activityOf, namesShown, stepFor } from '../log';
 import { fingerOn } from '../activity';
 import { setsOfLesson } from '../lesson/path';
 import { fillTaskLine } from '../lesson/task-line';
-import type { ChosenKeys } from '../activity';
+import type { ChosenKeys, Fingers } from '../activity';
 import type { KeyEvent } from '../midi';
 import * as nav from '../nav';
 import type { Command } from '../remote';
@@ -46,14 +47,26 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   const simon = new Simon({
     set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
     status: $('ex-status'), sub: $('ex-sub'), start: $<HTMLButtonElement>('ex-start'), hear: $<HTMLButtonElement>('ex-hear'), back: $<HTMLButtonElement>('ex-back'),
+    keep: $<HTMLButtonElement>('ex-keep'),
   }, exerciseKeys, exerciseNotation, sound);
   // Drills (owner, 2026-10-12): flashcards on the same screen, from the same sets.
   const drill = new Drill({
     set: $<HTMLSelectElement>('ex-set'), left: $('ex-left'), mid: $('ex-mid'), right: $('ex-right'), name: $('ex-name'), chain: $('ex-chain'),
     status: $('ex-status'), sub: $('ex-sub'), legend: $('ex-legend'), beatLine: $('ex-beatline'), start: $<HTMLButtonElement>('ex-start'), help: $<HTMLButtonElement>('ex-hear'),
     after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
-    finish: $<HTMLButtonElement>('ex-finish'), back: $<HTMLButtonElement>('ex-back'),
+    finish: $<HTMLButtonElement>('ex-finish'), back: $<HTMLButtonElement>('ex-back'), fingers: new FingerCard($('ex-fingers')),
   }, exerciseKeys, exerciseNotation, sound, pad);
+  // The activity's finger numbers on the keys (its `fingers`, 2026-10-16); a finger-number card's hand (owner, 2026-10-17):
+  // its five keys shaded with their numbers (fingers.ts handKeys, from this map), the other keys' numbers off meanwhile.
+  let actFingers: Fingers | undefined;
+  const ownFingers = () => { exerciseKeys.setFingers(actFingers ? (m) => fingerOn(actFingers, m) : null); exerciseKeys.mark('hand', []); };
+  drill.handOn = (notes, fingers) => {
+    if (!notes) { ownFingers(); return; }
+    const hand = handKeys(notes, fingers, actFingers);
+    exerciseKeys.setFingers((m) => hand.get(m));
+    exerciseKeys.mark('hand', [...hand.keys()]);
+    exerciseKeys.reveal([...hand.keys()]);
+  };
   $('ex-calib-go').addEventListener('click', () => { markCalibrationOffered(); $('ex-calib').hidden = true; calibrate(); });
   $('ex-calib-no').addEventListener('click', () => { markCalibrationOffered(); $('ex-calib').hidden = true; });
   pad.onKey = (down, time) => { if (isOpen() && exerciseKind === 'drill') drill.key(PAD_KEY, down, time, 'screen'); };
@@ -107,14 +120,16 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
     // A rhythm set: the pad instead of the keys, always (it is what you tap; owner, 2026-10-16).
     const rhythm = exerciseKind === 'drill' && drill.rhythmNow;
-    $('ex-keyboard').classList.toggle('off', rhythm || (d.under === 'nothing' && rung > 1));
+    // (a finger-number card's keys always show: its hand's keys are shaded on them, owner 2026-10-17)
+    const fingerCards = exerciseKind === 'drill' && drill.fingersNow;
+    $('ex-keyboard').classList.toggle('off', rhythm || (d.under === 'nothing' && rung > 1 && !fingerCards));
     exerciseKeys.refresh(); // (the keys shown or hidden: their ‹ › with them)
     if ($('ex-pad').hidden !== !rhythm) { $('ex-pad').hidden = !rhythm; if (!rhythm) pad.release(); }
     // The timing check offered once, the first time a rhythm set opens (owner, 2026-10-16), unless one is kept already.
     $('ex-calib').hidden = !(rhythm && !calibrationOffered() && !calibrationFor('screen'));
-    // (no octave labels at "keys, no music", nor where an activity hides names, nor on a find-it card: they would give the
-    // answer away, 2026-10-17)
-    exerciseKeys.setNames(rung !== 0 && namesShown(exerciseKind === 'drill' ? 'drills' : 'simon') && !(exerciseKind === 'drill' && drill.findNow));
+    // (no octave labels at "keys, no music" or by ear (no note names at either: owner, 2026-10-17), nor where an activity
+    // hides names, nor on a find-it card (they would give the answer away, 2026-10-17), nor on finger-number cards)
+    exerciseKeys.setNames(rung !== 0 && rung !== 5 && namesShown(exerciseKind === 'drill' ? 'drills' : 'simon') && !(exerciseKind === 'drill' && (drill.findNow || drill.fingersNow)));
     if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine();
     fillTask();
     // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
@@ -193,7 +208,8 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // Simon has no rhythm: rhythm sets are played in Drills only (owner, 2026-10-16), never offered in Simon.
     if (kind === 'simon' && activity && sets.find((s) => s.id === activity.set)?.kind === 'rhythm') { app.showMessage('A rhythm set is practised in Drills (Simon has no rhythm).'); return; }
     if (kind === 'simon' && activity && sets.find((s) => s.id === activity.set)?.kind === 'find') { app.showMessage('A "find it" set is practised in Drills.'); return; }
-    let offered = kind === 'simon' ? sets.filter((s) => s.kind !== 'rhythm' && s.kind !== 'find') : sets;
+    if (kind === 'simon' && activity && sets.find((s) => s.id === activity.set)?.view === 'fingers') { app.showMessage('A finger-number set is practised in Drills.'); return; }
+    let offered = kind === 'simon' ? sets.filter((s) => s.kind !== 'rhythm' && s.kind !== 'find' && s.view !== 'fingers') : sets;
     // Inside a lesson step, the set picker lists only the sets that lesson's steps use (owner, 2026-10-16, after the
     // walk-through: seven "Test:" sets in a lesson-1 step); opened from Practice, every set as before.
     const lessonId = stepFor(kind === 'drill' ? 'drills' : 'simon')?.lesson?.lesson;
@@ -214,8 +230,8 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     exerciseKeys.choose(activity?.keys); // (the activity's keys while it lasts; your own set, or none, the screen's own)
     // Finger numbers on the keys while the activity lasts (its `fingers`, 2026-10-16).
     const fingers = stepFor(kind === 'drill' ? 'drills' : 'simon')?.activity;
-    const f = fingers && (fingers.screen === 'drills' || fingers.screen === 'simon') ? fingers.fingers : undefined;
-    exerciseKeys.setFingers(f ? (m) => fingerOn(f, m) : null);
+    actFingers = fingers && (fingers.screen === 'drills' || fingers.screen === 'simon') ? fingers.fingers : undefined;
+    ownFingers();
     if (kind === 'drill') drill.open(offered, activity as { set: string; level: Partial<DrillLevel> } | undefined); else simon.open(offered, activity as { set: string; level: Partial<SimonLevel> } | undefined);
     fillExerciseDisplay(); // (again with the level just opened: an activity's help rung decides whether the keys show)
     if (setProblems) { $('ex-status').textContent = setProblems; $('ex-status').className = 'ex-status bad'; } // until it says something else
@@ -236,7 +252,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   $('ex-kind').addEventListener('click', () => {
     // A rhythm set is not offered in Simon (Simon has no rhythm; owner, 2026-10-16): only Drills, and a line why. Nor a
     // "find it" set (its cards are words to find on the keys).
-    const rhythm = exerciseKind === 'drill' && (drill.rhythmNow || drill.findNow);
+    const rhythm = exerciseKind === 'drill' && (drill.rhythmNow || drill.findNow || drill.fingersNow);
     for (const b of asDialog.querySelectorAll<HTMLButtonElement>('[data-as]')) { b.setAttribute('aria-current', String(b.dataset.as === exerciseKind)); b.hidden = rhythm && b.dataset.as === 'simon'; }
     $('ex-as-rhythm').hidden = !rhythm;
     asDialog.showModal();
@@ -272,8 +288,10 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // A rhythm set: no rung 4 (no name to give), no "notes only" (timing is the point), no keyboard choice (the pad shows).
     const rhythm = drill.rhythmNow;
     // A "find it" set: no help rungs, timing, start or tempo (its cards are untimed words); only how many cards.
-    const find = drill.findNow;
-    for (const name of ['d-rung', 'd-start', 'd-metronome', 'd-onTime']) drillDialog.querySelector<HTMLInputElement>(`input[name="${name}"]`)!.closest('fieldset')!.hidden = find;
+    // A finger-number set the same: its cards are the numbers in order, untimed (owner, 2026-10-17); its tempo stays (it
+    // plays the card at it).
+    const find = drill.findNow, fingers = drill.fingersNow;
+    for (const name of ['d-rung', 'd-start', 'd-metronome', 'd-onTime']) drillDialog.querySelector<HTMLInputElement>(`input[name="${name}"]`)!.closest('fieldset')!.hidden = find || fingers;
     $('d-slower').parentElement!.hidden = find;
     // A step's own number of cards (5) is one of the choices too, so the panel shows what is set (the walk-through: none
     // was ticked).
@@ -291,9 +309,11 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
       label.hidden = rhythm && r.value === '4';
     }
     drillDialog.querySelector<HTMLInputElement>('input[name="d-onTime"][value="notes"]')!.parentElement!.hidden = rhythm;
-    $('d-under-set').hidden = rhythm || find;
+    $('d-under-set').hidden = rhythm || find || fingers;
     $('d-note').textContent = find
       ? 'A "find it" card names a place on the keys in words; any key of the group it names counts. There is no clock.'
+      : fingers
+      ? 'A finger-number card: it plays the tune, then you play each number\'s key in order with that finger. There is no clock; a wrong key is counted and the right one outlined.'
       : rhythm
       ? 'A rhythm card: tap the pad (or any key) for each note, and keep your finger down for a long note (a half or whole note is held). Taps are judged in time.'
       : 'A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app\'s.';

@@ -11,10 +11,11 @@ import { allRecords, load as loadLibrary } from '../library/store';
 import { loadCharts } from '../library/items';
 import * as nav from '../nav';
 import { createLessonPage, type LessonDeps } from '../lesson/page';
-import { allSets, currentOf, earlierNotDone, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepStates, stepsOf } from '../lesson/path';
+import { allSets, currentOf, earlierNotDone, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepName, stepStates, stepsOf } from '../lesson/path';
 import { currentLesson, doneSteps, setCurrentLesson } from '../lesson/progress';
 import { runLine } from '../lesson/result';
 import { stopMiniScores } from '../lesson/miniscore';
+import { pageKeyboardKey } from '../lesson/blocks';
 import { ago, button, el } from '../ui';
 import { icon, type IconName } from '../icons';
 import type { LibraryScreen } from './library';
@@ -240,8 +241,10 @@ export function createShell(app: App, d: ShellDeps) {
       const place = placeOf(path, lesson.id)!, st = lessonState(lesson), steps = stepsOf(lesson), states = stepStates(lesson);
       const card = el('div', 'today');
       // Up next: its first step not done; a lesson all done (one you came back to) offers its steps again from the first.
-      const up = st.next ?? steps[0], upNo = up ? steps.indexOf(up) + 1 : 0;
-      card.append(el('div', 'k', up ? `${st.next ? 'Up next' : 'Again'} · Rung ${place.rungNo} · Lesson ${place.no} · step ${upNo} of ${st.total}` : `Rung ${place.rungNo} · Lesson ${place.no}`),
+      // (an optional step only when nothing needed is left: owner's lesson 1 spec, 2026-10-17)
+      const up = st.next ?? st.optionalLeft ?? steps[0];
+      const upWords = up ? (up.optional ? 'optional step' : `${stepName(lesson, up).toLowerCase()} of ${st.total}`) : '';
+      card.append(el('div', 'k', up ? `${st.next || st.optionalLeft ? 'Up next' : 'Again'} · Rung ${place.rungNo} · Lesson ${place.no} · ${upWords}` : `Rung ${place.rungNo} · Lesson ${place.no}`),
         // (every lesson done, the only time a done lesson is Up next: said plainly, no next lesson promised; 2026-10-16)
         el('div', 'h', up?.title ?? lesson.title), el('div', 's', st.next ? lesson.title : `${lesson.title}: all ${st.total} steps done. The next lesson is not written yet.`));
       const go = el('div', 'go'), bar = el('span', 'pbar'), fill = el('i');
@@ -546,9 +549,10 @@ export function createShell(app: App, d: ShellDeps) {
   }
 
   // Keys on the tabs and pages do nothing, but on a step's result (owner, 2026-10-16) the keyboard's highest key is
-  // Next and its lowest Again; the lesson page itself is read, and takes no keys.
+  // Next and its lowest Again; the lesson page itself is read, and its keys judge nothing: a keyboard block in it shows
+  // the keys pressed (owner, 2026-10-17: "on a MIDI keyboard, your keys play too").
   const screen: Screen = {
-    key: () => {},
+    key: (e) => pageKeyboardKey(e.midi, e.on),
     command: (c) => { if (showing && nav.top()?.name === 'result' && lessonPage.resultShown) lessonPage.resultCommand(c); },
     musicRange: () => null, resized: () => {}, get busy() { return false; },
   };

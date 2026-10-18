@@ -1,0 +1,18 @@
+{
+  "title": "Test: lesson 1's new pieces",
+  "blocks": [
+    { "kind": "text", "text": "**Test:** the capabilities built for the new lesson 1 (2026-10-17), for the app's checks: Read / Watch tabs, a keyboard to play in the page, Simon with a goal and Keep going (keys, no music), Simon by ear, finger-number cards. Not teaching." },
+    { "kind": "text", "text": "# Read or watch" },
+    { "kind": "read-watch", "text": "## Test text\nA short text to read, in the Read tab.\n\n- one point\n- another point", "youtube": "https://www.youtube.com/watch?v=ZD_sAWAlWq0", "title": "Test: a public video (the Minuet's test lesson uses it too)", "caption": "Test: the Watch tab's video." },
+    { "kind": "text", "text": "# A keyboard to play" },
+    { "kind": "keyboard", "keys": "C3-B4", "names": false, "caption": "Test: tap any key; nothing is scored." },
+    { "kind": "step", "id": "copy", "title": "Copy the keys", "about": "Watch, listen, then play the pattern back.", "doneWhen": "a pattern of 6 copied whole", "target": { "chain": 6 },
+      "activity": { "title": "Test: copy the keys", "screen": "simon", "set": "test-octave-keys", "keys": "C4-B4", "level": { "rung": 0, "match": "same", "miss": "tries", "speed": "steady", "goal": 6 }, "names": false } },
+    { "kind": "step", "id": "by-ear", "title": "By ear on the black keys", "optional": true, "about": "Listen, then play it back.", "doneWhen": "a pattern of 5 copied whole", "target": { "chain": 5 },
+      "activity": { "title": "Test: by ear", "screen": "simon", "set": "black-keys-middle", "keys": "C4-B4", "level": { "rung": 5, "match": "same", "miss": "tries", "speed": "steady", "goal": 5 }, "names": false } },
+    { "kind": "step", "id": "fingers", "title": "By finger numbers", "about": "Play each number with that finger: right hand, then left.", "doneWhen": "both cards played through",
+      "activity": { "title": "Test: finger-number cards", "screen": "drills", "set": "test-finger-cards", "keys": "C3-B4", "names": false,
+        "fingers": { "C4": 1, "D4": 2, "E4": 3, "F4": 4, "G4": 5, "C3": 5, "D3": 4, "E3": 3, "F3": 2, "G3": 1 },
+        "level": { "cards": 2 } } }
+  ]
+}

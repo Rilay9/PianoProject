@@ -650,7 +650,7 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   durations: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.durationsAt(i, hands),
   graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
-  sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()), started: { ...sound.started } }),
+  sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()), started: { ...sound.started }, nowNotes: sound.nowNotes }),
   simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, pad: () => exerciseScreen.debug().pad, exKeys: () => exerciseScreen.debug().keys, calibration: () => calibration.debug(), lab: () => labScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
   readScore: (xml: string, name?: string) => readScore(xml, name),
   pieces: () => app.pieces.map((p) => ({ id: p.id, title: p.title })),

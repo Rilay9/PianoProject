@@ -1,0 +1,24 @@
+{
+  "title": "Mary Had a Little Lamb",
+  "screen": "drills",
+  "set": "mary-fingers",
+  "keys": {
+    "phone-upright": "C3-B4"
+  },
+  "names": false,
+  "fingers": {
+    "C4": 1,
+    "D4": 2,
+    "E4": 3,
+    "F4": 4,
+    "G4": 5,
+    "C3": 5,
+    "D3": 4,
+    "E3": 3,
+    "F3": 2,
+    "G3": 1
+  },
+  "level": {
+    "cards": 2
+  }
+}

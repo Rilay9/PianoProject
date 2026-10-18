@@ -273,6 +273,20 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
 .ex-beatline svg { display: block; width: 100%; height: auto; }
 /* A "find it" card's words: large, and wrapping as a sentence. */
 .ex-name.big.find { font-size: clamp(1.6rem, 7vmin, 3rem); overflow-wrap: normal; }
+/* A finger-number card (owner, 2026-10-17; exercise/fingers.ts): the hand once, then a line of big numbers per phrase,
+   in the music's room; the number to play next (or sounding while it is played to you) in the "play this" blue, the ones
+   played paler. Sized to the screen so four phrases of up to eight fit upright (11vw: 40 px at 360) and sideways (7vh:
+   27 px at 390 high, where the room between the bars is about 165 px); never cut at the top when it is taller (safe). */
+.ex-fingers { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 0.08em; overflow: auto; font-size: clamp(1.3rem, min(11vw, 7vh), 3.6rem); font-weight: 800; line-height: 1.1; }
+.ex-fingers[hidden] { display: none; }
+.ex-fingers .fc-hand { font-size: max(0.45em, 15px); font-weight: 700; color: var(--muted); margin-bottom: 0.15em; }
+.ex-fingers .fc-phrase { display: flex; flex-wrap: nowrap; justify-content: center; gap: 0 0.3em; } /* (one line a phrase: FingerCard.fit shrinks the numbers to fit) */
+.ex-fingers .fc-n { min-width: 1.05em; padding: 0 0.06em; text-align: center; border-radius: 0.22em; color: var(--fg); }
+.ex-fingers .fc-n.done { color: var(--muted); opacity: 0.55; }
+.ex-fingers .fc-n:is(.next, .sounding) { background: var(--accent); color: var(--on-accent); opacity: 1; }
+/* The hand's five keys on a finger-number card, shaded (their finger numbers on them). */
+.keyboard .key.white.hand { background: #dbe4f5; }
+.keyboard .key.black.hand { background: #4b5873; }
 /* Simon's dots sit above the frosted panel when it floats over the music, not under it (main.ts sets the height). */
 .ex-notation:not(.off) ~ .ex-chain:not(:empty) { margin-bottom: var(--ex-overlay-h, 0px); }
 .ex-tools { display: flex; justify-content: center; gap: 8px; min-height: 40px; padding: 4px; }
@@ -878,6 +892,18 @@ body.in-shell .message { z-index: 7; bottom: calc(var(--tabs-h) + 8px + env(safe
 .les-score-music svg { filter: var(--music-filter); }
 .les-score-bar { display: flex; gap: 8px; padding: 8px; border-top: 1px solid var(--line); background: var(--bg); }
 .keyboard.les-keys { height: 84px; }
+/* An optional step's state (owner's lesson 1 spec, 2026-10-17): said quietly. */
+.les-step-state.optional { color: var(--muted); font-style: italic; }
+/* Read / Watch (owner, 2026-10-17): two tabs at the top of one box, Read first; the chosen one joined to its panel. */
+.les-rw { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--bg); }
+.les-rw-tabs { display: flex; border-bottom: 1px solid var(--line); background: var(--btn-bg); }
+.les-rw-tab { flex: 1; min-height: 44px; font: inherit; font-weight: 600; border: 0; border-bottom: 3px solid transparent; background: none; color: var(--muted); cursor: pointer; }
+.les-rw-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+.les-rw-panel { padding: 4px 12px 12px; }
+.les-rw-panel[hidden] { display: none; }
+.les-rw-panel .les-video-fig { margin-top: 10px; }
+/* A keyboard to play in the page (owner, 2026-10-17): tall enough to tap, the groups outlined. */
+.keyboard.les-keys.les-playkeys { height: clamp(120px, 26vh, 200px); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .les-diagram { max-width: 520px; margin: 0 auto; }
 .les-diagram .key.white { position: relative; }
 .les-diagram .key .finger { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 700 15px/1 system-ui, sans-serif; color: #fff; }

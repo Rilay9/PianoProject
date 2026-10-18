@@ -1,0 +1,18 @@
+{
+  "title": "By ear, on the black keys",
+  "screen": "simon",
+  "set": "black-keys-middle",
+  "keys": {
+    "phone-upright": "C4-B4",
+    "phone-sideways": "C4-B4",
+    "tablet": "C4-B4"
+  },
+  "names": false,
+  "level": {
+    "rung": 5,
+    "match": "same",
+    "miss": "tries",
+    "speed": "steady",
+    "goal": 5
+  }
+}
