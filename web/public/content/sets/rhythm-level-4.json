@@ -1,0 +1,30 @@
+{
+  "title": "Rhythm 4: everything, 3/4 and 4/4",
+  "kind": "rhythm",
+  "tempo": 72,
+  "generate": [
+    {
+      "values": [
+        "quarter",
+        "eighths",
+        "half",
+        "dotted-half",
+        "quarter-rest",
+        "half-rest"
+      ],
+      "meter": "4/4",
+      "bars": 2
+    },
+    {
+      "values": [
+        "quarter",
+        "eighths",
+        "half",
+        "dotted-half",
+        "quarter-rest"
+      ],
+      "meter": "3/4",
+      "bars": 2
+    }
+  ]
+}

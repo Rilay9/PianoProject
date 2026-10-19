@@ -56,6 +56,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     after: $('ex-after'), again: $<HTMLButtonElement>('ex-again'), next: $<HTMLButtonElement>('ex-next'), misses: $<HTMLButtonElement>('ex-misses'), fresh: $<HTMLButtonElement>('ex-fresh'),
     finish: $<HTMLButtonElement>('ex-finish'), back: $<HTMLButtonElement>('ex-back'), fingers: new FingerCard($('ex-fingers')),
     showKey: $<HTMLButtonElement>('ex-showkey'), letters: $<HTMLButtonElement>('ex-letters'),
+    keep: $<HTMLButtonElement>('ex-keep'),
   }, exerciseKeys, exerciseNotation, sound, pad);
   // The activity's finger numbers on the keys (its `fingers`, 2026-10-16); a finger-number card's hand (owner, 2026-10-17):
   // its five keys shaded with their numbers (fingers.ts handKeys, from this map), the other keys' numbers off meanwhile.

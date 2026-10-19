@@ -97,6 +97,8 @@ export interface DrillParts {
   /** A phrase card's Show key and Names (an activity's `help`, owner's lesson 2 spec 2026-10-18). */
   showKey?: HTMLButtonElement;
   letters?: HTMLButtonElement;
+  /** A set done: Keep going, more cards until you stop (owner, 2026-10-18: "Always have drills give the option to keep going"). */
+  keep?: HTMLButtonElement;
 }
 
 /**
@@ -203,6 +205,7 @@ export class Drill {
     ui.misses.addEventListener('click', () => { if (this.on) this.missesAgain(); });
     ui.fresh.addEventListener('click', () => { if (this.on) void this.begin(); });
     ui.showKey?.addEventListener('click', () => { if (this.on) this.showKey(); });
+    ui.keep?.addEventListener('click', () => { if (this.on && this.state === 'done') void this.begin(undefined, undefined, true); });
     ui.letters?.addEventListener('click', () => { if (this.on) this.toggleLetters(); });
     if (ui.fingers) ui.fingers.onLine = (i) => { if (this.on) this.hearLine(i); };
   }
@@ -252,7 +255,7 @@ export class Drill {
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }
 
-  close(): void { this.logSet(false); this.request++; this.stopAll(); this.pad?.light(false); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; this.ui.fingers?.clear(); this.handOn(null, []); this.keys.setLetters?.(false); this.phraseTools(); }
+  close(): void { this.logSet(false); this.request++; this.stopAll(); this.pad?.light(false); this.on = false; this.paused = null; this.keys.release(); this.ui.after.hidden = true; this.ui.finish.hidden = true; this.ui.fingers?.clear(); this.handOn(null, []); this.keys.setLetters?.(false); this.phraseTools(); if (this.ui.keep) this.ui.keep.hidden = true; }
 
   // ---- the practice log (log.ts; owner, 2026-10-13): one entry per set, finished or left part way ------------------
   /** The set being played, and what it is played as (its set, level, tempo and activity, kept from its start: final
@@ -315,6 +318,7 @@ export class Drill {
     this.phraseTools();
     this.legend('');
     this.beats(null);
+    if (this.ui.keep) this.ui.keep.hidden = true;
     this.ui.name.textContent = 'Ready';
     this.ui.name.className = 'ex-name';
     this.ui.chain.replaceChildren();
@@ -336,7 +340,8 @@ export class Drill {
 
   // ---- a set -----------------------------------------------------------------------------------------
 
-  private async begin(items?: Item[], first?: StartKey): Promise<void> {
+  /** endless: Keep going after a set: cards until you press Finish (the set before is logged; this run is practice). */
+  private async begin(items?: Item[], first?: StartKey, endless = false): Promise<void> {
     if (!this.set.items.length) return;
     const request = ++this.request;
     await this.sound.prepare(!this.sound.keyboard).catch(() => {});
@@ -349,8 +354,9 @@ export class Drill {
     this.retrying = false;
     this.deck = [];
     this.queue = items ? [...items] : [];
-    this.limit = items ? items.length : this.level.cards || Infinity; // the misses again: just those
+    this.limit = items ? items.length : endless ? Infinity : this.level.cards || Infinity; // the misses again: just those
     this.ui.start.hidden = true;
+    if (this.ui.keep) this.ui.keep.hidden = true;
     if (this.ui.back) this.ui.back.hidden = true;
     this.nextCard(first);
   }
@@ -421,6 +427,7 @@ export class Drill {
     this.ui.misses.textContent = `The ${misses === 1 ? 'miss' : `${misses} misses`} again`;
     this.ui.fresh.hidden = false;
     this.ui.fresh.classList.toggle('main', !step);
+    if (this.ui.keep) this.ui.keep.hidden = false; // (Keep going: more cards, as long as you like)
     if (this.ui.back) this.ui.back.hidden = !step;
     this.scoreLine();
   }

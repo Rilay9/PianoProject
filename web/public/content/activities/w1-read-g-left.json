@@ -1,0 +1,10 @@
+{
+  "title": "G position, left hand",
+  "screen": "drills",
+  "set": "read-g-bass",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

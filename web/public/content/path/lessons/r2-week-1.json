@@ -1,0 +1,269 @@
+{
+  "title": "This week: G position, chords and rhythm",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "A week's work: a new hand position, the chords that go with it, rhythm and reading practice, and some songs. Do the parts in order, a part or two a day, and come back to the warm-up and rhythm steps every day. Every practice step keeps going as long as you like."
+    },
+    {
+      "kind": "text",
+      "text": "# Part 1. Warm-up: reading in C position, bass clef first\nMost music gives the left hand fewer notes than the right, so the bass clef gets read less and stays slower. A few minutes a day fixes that. Your landmarks: **middle C** sits just above the bass staff (on its own short line); **bass C** is the second space up; and the **G on the bottom line** is where your left hand goes later this week.\n\nThe tunes in these steps are made up fresh for every card, so you read them instead of remembering them."
+    },
+    {
+      "kind": "video",
+      "youtube": "https://www.youtube.com/watch?v=Q-9wiH8GJRQ",
+      "title": "Unit 5: More Bass Clef Note Reading (Faber Piano Adventures, 5 min)",
+      "size": "row"
+    },
+    {
+      "kind": "step",
+      "id": "read-c-bass",
+      "title": "Bass clef, C position",
+      "activity": "w1-read-c-bass",
+      "about": "Read each short tune and play it with your left hand in C position. No clock: play each note when you have read it."
+    },
+    {
+      "kind": "text",
+      "text": "Then the same in time. One bar of clicks counts you in; after that the click keeps going and the cards keep coming, one in the treble clef and one in the bass at random, with a bar between them to look at the next one (it's shown faded underneath while you play). Each note gets a dot as you play it: green on time, orange early or late, red for a wrong key. Start at 60; use **+** when it feels easy."
+    },
+    {
+      "kind": "step",
+      "id": "read-c-time",
+      "title": "Both clefs, C position, in time",
+      "activity": "w1-read-c-time",
+      "about": "Read and play in time with the click, card after card. Stop when you like."
+    },
+    {
+      "kind": "text",
+      "text": "# Part 2. G position\nThe same shape as C position, moved: the right hand up so its thumb is on G, the left hand down so its little finger is on G."
+    },
+    {
+      "kind": "read-watch",
+      "youtube": "https://www.youtube.com/watch?v=Q0RTieix0MY",
+      "title": "Unit 9: G Pentascales (Faber Piano Adventures, 4 min)",
+      "text": "**Right hand:** thumb (1) on the G above middle C, then fingers 2, 3, 4, 5 on A, B, C and D. On the treble staff that G is the second line up; the five notes run line, space, line, space, line, up to the D on the fourth line.\n\n**Left hand:** little finger (5) on the G two below middle C, then 4, 3, 2, 1 on A, B, C and D. On the bass staff that G is the bottom line; the five notes run up to the D on the middle line.\n\nEverything you do in C position carries over: curved fingers, one finger to a key, and the hand moves as a whole when it moves to a new position. None of the five notes needs a black key."
+    },
+    {
+      "kind": "keys",
+      "notes": "G4 A4 B4 C5 D5",
+      "fingers": "1 2 3 4 5",
+      "names": "letters",
+      "caption": "Right hand in G position."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 A2 B2 C3 D3",
+      "fingers": "5 4 3 2 1",
+      "names": "letters",
+      "caption": "Left hand in G position."
+    },
+    {
+      "kind": "keyboard",
+      "keys": "G4-D5",
+      "groups": false,
+      "names": "letters",
+      "fingers": {
+        "G4": 1,
+        "A4": 2,
+        "B4": 3,
+        "C5": 4,
+        "D5": 5
+      },
+      "caption": "Try the right hand: switch between finger numbers and key names."
+    },
+    {
+      "kind": "keyboard",
+      "keys": "G2-D3",
+      "groups": false,
+      "names": "letters",
+      "fingers": {
+        "G2": 5,
+        "A2": 4,
+        "B2": 3,
+        "C3": 2,
+        "D3": 1
+      },
+      "caption": "And the left hand."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-right",
+      "title": "G position, right hand",
+      "activity": "w1-read-g-right",
+      "about": "Read each tune in the treble clef and play it in G position. No clock."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-left",
+      "title": "G position, left hand",
+      "activity": "w1-read-g-left",
+      "about": "Read each tune in the bass clef (bottom line to middle line) and play it in G position. No clock."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-time",
+      "title": "G position, in time",
+      "activity": "w1-read-g-time",
+      "about": "G position in either hand, in time with the click, card after card."
+    },
+    {
+      "kind": "text",
+      "text": "# Part 3. Rhythm\nTen minutes a day. This screen works like a rhythm trainer: one bar counts in, then exercises keep coming on a click that doesn't stop. Tap the big pad (or any key) for each note. Every tap gets a dot over its note: **green** on time, **orange** early (←) or late (→), **grey** missed, and a grey tick for a tap where there's no note. Under the music: how that exercise went; at the top, your share on time and how many in a row.\n\n- **Tap along** plays the rhythm with you; **Read** gives you only the click. Start a level with Tap along if it's new, then switch to Read: reading it is the skill.\n- **− / +** change the tempo; **Speed up by itself** adds 5 after three good exercises in a row.\n- **Loop this one** repeats the exercise you're on until you switch it off.\n- **Judge note lengths** also marks a note let go too soon (off unless you want it).\n- Count in your head, *1 2 3 4*. A round is 8 exercises; stop whenever you like, or just stop tapping."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-1",
+      "title": "Rhythm 1: quarters, halves, wholes and rests",
+      "activity": "w1-rhythm-1",
+      "about": "Tap each note in time. Rests: stay still and keep counting."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-2",
+      "title": "Rhythm 2: dotted halves and 3/4",
+      "activity": "w1-rhythm-2",
+      "about": "A dotted half lasts three beats; in 3/4 a bar has three."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-3",
+      "title": "Rhythm 3: eighth notes",
+      "activity": "w1-rhythm-3",
+      "about": "Two eighths share a beat: count \"1 and 2 and\"."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-4",
+      "title": "Rhythm 4: everything, 3/4 and 4/4",
+      "activity": "w1-rhythm-4",
+      "about": "All of it mixed, both time signatures."
+    },
+    {
+      "kind": "text",
+      "text": "# Part 4. Chords\nYou know three chords in C with your left hand. In G the same three jobs are done by G, C and D7, played from G position."
+    },
+    {
+      "kind": "read-watch",
+      "youtube": "https://www.youtube.com/watch?v=8felen8rZ0I",
+      "title": "Unit 16: Primary Chords in G Major (Faber Piano Adventures, 4 min)",
+      "text": "**In C (review):** C is C–E–G (fingers 5 3 1). F is C–F–A (5 2 1). G7 is B–F–G (5 2 1).\n\n**In G:** **G** is G–B–D (5 3 1), the left hand's G position with fingers 5, 3 and 1. **C** is G–C–E (5 2 1): the little finger stays on G, 2 moves up to C, and the thumb reaches up to E. **D7** is F♯–C–D (5 2 1).\n\n**The ♯ (sharp):** it means the black key just above. F♯ is the black key just to the right of F. A sharp written in a bar counts for the rest of that bar.\n\nWhy these three? Each key has a **home** chord (C in C, G in G), a chord that **leans away** (F in C, C in G) and one that **pulls back home** (G7 in C, D7 in G). Notice the pattern: the home chord's notes in G position are the same finger shape as C in C position. Many simple songs need only these three."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 B2 D3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "G"
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 C3 E3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "C (in G position)"
+    },
+    {
+      "kind": "keys",
+      "notes": "F#2 C3 D3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "D7"
+    },
+    {
+      "kind": "step",
+      "id": "chords-c",
+      "title": "Chords in C, by name",
+      "activity": "w1-chords-c",
+      "about": "A name comes up (C, F or G7): play that chord with your left hand, all three notes together."
+    },
+    {
+      "kind": "step",
+      "id": "chords-g",
+      "title": "Chords in G, by name",
+      "activity": "w1-chords-g",
+      "about": "A name comes up (G, C or D7): play that chord with your left hand, all three notes together."
+    },
+    {
+      "kind": "text",
+      "text": "Now change chords on the beat. Each card is four bars, one chord a bar, written on the bass staff; it counts in a bar of clicks, then play each chord on beat 1 and hold it through the bar. Get your hand to the next chord during the last beat, not after the click."
+    },
+    {
+      "kind": "step",
+      "id": "chord-changes",
+      "title": "Changing chords in time",
+      "activity": "w1-chord-changes",
+      "about": "One chord a bar, on beat 1, held for the whole bar. In C and in G."
+    },
+    {
+      "kind": "text",
+      "text": "One more chord, and the best-known four chords in pop: **C – G – Am – F**. **Am** (A minor) is A–C–E; with your left hand in C position, play C–E and move your thumb up to A, or play A–C–E with fingers 5 3 1 from the A below. A great many 2000s songs run on these four chords, in this order or close to it. The band plays along; you play the chords on beat 1 of each bar."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 E3 A3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "Am from C position: C and E, thumb up to A"
+    },
+    {
+      "kind": "step",
+      "id": "four-chords",
+      "title": "Four chords with the band",
+      "activity": "w1-four-chords",
+      "about": "Play C, G, Am, F on beat 1 of each bar with the band. Keep going as long as you like."
+    },
+    {
+      "kind": "text",
+      "text": "# Part 5. Songs\nEach song opens in **Wait for me**: the music waits for your right notes, so take it as slowly as you need. When it goes smoothly, switch the mode to **Play along** and play it in time (start slow with −). Right hand first, then left, then together."
+    },
+    {
+      "kind": "text",
+      "text": "## Ode to Joy in G\nYou know this tune. Now in G position, with G and D7 under it."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy in G",
+      "activity": "w1-ode",
+      "about": "Right hand in G position, left hand G and D7."
+    },
+    {
+      "kind": "text",
+      "text": "## When the Saints Go Marching In\nAll three G chords: G, C and D7. The right hand never leaves G position."
+    },
+    {
+      "kind": "step",
+      "id": "saints",
+      "title": "When the Saints Go Marching In",
+      "activity": "w1-saints",
+      "about": "Right hand in G position; left hand G, C and D7."
+    },
+    {
+      "kind": "text",
+      "text": "## Seven Nation Army\n*The White Stripes, 2003.* The riff, in your left hand, low in the bass clef: **E E G E D C B**. Fingers: B 5, C 4, D 3, E 2, G 1 (no finger on F). Learn the notes in Wait for me, then switch to Play along at a slow tempo: the rhythm is the fun part. A long E, a short E, G on beat 3, then E and D just off the beat, and two long notes, C and B."
+    },
+    {
+      "kind": "step",
+      "id": "seven-nation-army",
+      "title": "Seven Nation Army",
+      "activity": "w1-seven-nation-army",
+      "about": "The riff in your left hand. Notes first (Wait for me), then in time."
+    },
+    {
+      "kind": "text",
+      "text": "## A stretch (optional): Someone You Loved\n*Lewis Capaldi, 2019.* A melody with eighth notes over the four chords from Part 4 (C, G, Am, F). It's a stretch: it moves around more than this week's songs. Learn the right hand in Wait for me at a slow tempo, a few bars at a time; the intro (the first four bars) is the hardest part, so you can start at bar 5."
+    },
+    {
+      "kind": "step",
+      "id": "someone-you-loved",
+      "title": "Someone You Loved",
+      "activity": "w1-someone-you-loved",
+      "about": "Right hand first, slowly. A stretch, for when the rest is going well.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# To finish\nKeep the warm-up and a rhythm level as a daily habit. Next week: more songs in G, and the G major scale."
+    }
+  ]
+}

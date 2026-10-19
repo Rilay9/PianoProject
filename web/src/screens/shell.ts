@@ -32,6 +32,8 @@ export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' 
   openMemorise(id: string): void;
   openExercise(kind: 'simon' | 'drill', set?: string): void;
   openLab(chart?: string): void;
+  /** Read in time with a set (owner, 2026-10-18). */
+  openFlow(set?: string): void;
   openPdf(id: string, title: string): void;
   openFreePlay(): void;
   openMetronome(): void;
@@ -39,7 +41,7 @@ export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' 
   fillSettings(): void;
 }
 
-const SCREEN_NAMES: Record<LogEntry['screen'], string> = { score: 'Score', memorise: 'Memorise', simon: 'Simon', drills: 'Drills', lab: 'Lab', lesson: 'Lesson' };
+const SCREEN_NAMES: Record<LogEntry['screen'], string> = { score: 'Score', memorise: 'Memorise', simon: 'Simon', drills: 'Drills', lab: 'Lab', flow: 'Read in time', lesson: 'Lesson' };
 /** A Simon or Drills run's help level, short, for the recent list. */
 const HELP_NAMES = ['heard, no music', 'music, sound, lit', 'music and sound', 'music only', 'name only', 'by ear'];
 const MODE_NAMES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me', along: 'Play along', ladder: 'Ladder', rhythm: 'Rhythm' };
@@ -165,9 +167,9 @@ export function createShell(app: App, d: ShellDeps) {
     for (const e of log) {
       // (a set played at two help levels is two rows: two lesson steps share a set, and the walk-through, 2026-10-16, saw
       // the by-ear run hide the 5 of 5 played with the clicks)
-      const key = e.screen === 'score' || e.screen === 'memorise' ? `${e.screen}:${e.piece}` : e.screen === 'lab' ? `chart:${e.chart}` : `${e.screen}:${e.set}:${String(e.settings.rung ?? '')}`;
+      const key = e.screen === 'score' || e.screen === 'memorise' ? `${e.screen}:${e.piece}` : e.screen === 'lab' ? `chart:${e.chart}` : e.screen === 'flow' ? `flow:${e.set}` : `${e.screen}:${e.set}:${String(e.settings.rung ?? '')}`;
       if (out.has(key)) continue;
-      out.set(key, { key, title: e.title, what: entryWhat(e), at: e.at, icon: e.screen === 'lab' ? 'lab' : e.screen === 'drills' ? 'drills' : e.screen === 'simon' ? 'simon' : 'music', open: () => carryOn(e) });
+      out.set(key, { key, title: e.title, what: entryWhat(e), at: e.at, icon: e.screen === 'lab' ? 'lab' : e.screen === 'drills' || e.screen === 'flow' ? 'drills' : e.screen === 'simon' ? 'simon' : 'music', open: () => carryOn(e) });
     }
     // Opened from the library without a run kept (Watch, a PDF): as recently opened.
     try {
@@ -202,6 +204,7 @@ export function createShell(app: App, d: ShellDeps) {
     } else if (e.screen === 'memorise' && e.piece) d.openMemorise(e.piece);
     else if ((e.screen === 'drills' || e.screen === 'simon') && e.set) d.openExercise(e.screen === 'drills' ? 'drill' : 'simon', e.set);
     else if (e.screen === 'lab') d.openLab(e.chart);
+    else if (e.screen === 'flow' && e.set) d.openFlow(e.set);
   }
   function recentList(items: Recent[], cards: boolean): HTMLElement {
     if (cards) {
@@ -375,8 +378,11 @@ export function createShell(app: App, d: ShellDeps) {
     if (n !== exN) return;
     const rows: Row[] = got.sets.filter((s) => !music.some((p) => p.exerciseOf === s.id && p.allOfSet)).map((s) => {
       const way = DEFAULT_WAY[s.kind ?? 'other'];
-      // A rhythm set (2026-10-16): tapped on the pad in Drills only (Simon has no rhythm); generated ones are new patterns.
-      if (s.kind === 'rhythm') return { kind: s.kind, title: s.title, id: s.id, how: `${s.generate ? 'rhythm patterns made from its note values' : `${s.items.length} rhythm ${s.items.length === 1 ? 'pattern' : 'patterns'}`} · tap them in Drills`, open: () => d.openExercise('drill', s.id) };
+      // A rhythm set: tapped in Read in time (owner, 2026-10-18: rebuilt as rhythm trainers work; Drills plays it too, from
+      // Practise as… there); generated ones are new patterns.
+      if (s.kind === 'rhythm') return { kind: s.kind, title: s.title, id: s.id, how: `${s.generate ? 'rhythm patterns made from its note values' : `${s.items.length} rhythm ${s.items.length === 1 ? 'pattern' : 'patterns'}`} · tap them in Read in time`, open: () => d.openFlow(s.id) };
+      // Made-up tunes (2026-10-18): new cards every time, read in Drills (untimed); in time from a lesson's step.
+      if (s.melody) return { kind: s.kind ?? 'melodies', title: s.title, id: s.id, how: 'tunes made up fresh every card · read them in Drills', open: () => d.openExercise('drill', s.id) };
       // A "find it" set (2026-10-16): cards that name a place on the keys in words, in Drills only.
       if (s.kind === 'find') return { kind: s.kind, title: s.title, id: s.id, how: `${s.items.length} ${s.items.length === 1 ? 'card' : 'cards'} naming a place on the keys · find it in Drills`, open: () => d.openExercise('drill', s.id) };
       return { kind: s.kind ?? 'other', title: s.title, id: s.id, how: `${s.items.length} ${s.order === 'passage' ? 'in order' : s.items.length === 1 ? 'item' : 'items'} · cards: opens in ${way === 'drill' ? 'Drills' : 'Simon'} (also ${way === 'drill' ? 'Simon' : 'Drills'})`, open: () => d.openExercise(way, s.id) };

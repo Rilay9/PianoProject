@@ -12,6 +12,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { Chord, Interval, Note, Scale } from 'tonal';
 import { EXERCISE_KINDS, readSet } from '../src/exercise/items.ts';
 import { readRhythmSpec } from '../src/exercise/rhythm.ts';
+import { readMelodySpec } from '../src/exercise/melody.ts';
 import { readFindSpec } from '../src/exercise/find.ts';
 import { readChart, readStyle } from '../src/lab/music.ts';
 import { soundOf } from '../src/library/midi/band.ts';
@@ -131,12 +132,16 @@ function setProblems(f, fileThere, bars) {
   // Rhythm sets (2026-10-16): "generate" (checked by the app's own reader of it, which refuses with the reason) or
   // MusicXML items; "generate" on any other kind, and the fields a rhythm set has no use for, refused.
   if (f.kind === 'rhythm') {
-    if (f.generate !== undefined) { try { readRhythmSpec(f.generate); } catch (e) { out.push(e.message); } }
+    if (f.generate !== undefined) for (const g of Array.isArray(f.generate) ? f.generate : [f.generate]) { try { readRhythmSpec(g); } catch (e) { out.push(e.message); } }
     if ((f.generate === undefined) === (f.items === undefined)) out.push('a rhythm set gives either "generate" or MusicXML "items"');
     if (isObj(f.items)) for (const [k, it] of Object.entries(f.items)) if (isObj(it) && it.musicxml === undefined) out.push(`item "${k}": a rhythm set's items are MusicXML patterns ("musicxml")`);
     for (const k of ['from', 'rhythm', 'play']) if (f[k] !== undefined) out.push(`a rhythm set has no "${k}"`);
     if (f.generate !== undefined && f.order !== undefined) out.push('a generated rhythm set is always a pool: leave "order" out');
-  } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm")');
+  } else if (f.kind === 'melodies' && f.generate !== undefined) {
+    // Made-up tunes (2026-10-18, melody.ts): "generate" read by the app's own reader; nothing a generated set has no use for.
+    for (const g of Array.isArray(f.generate) ? f.generate : [f.generate]) { try { readMelodySpec(g); } catch (e) { out.push(e.message); } }
+    for (const k of ['items', 'from', 'rhythm', 'order', 'view']) if (f[k] !== undefined) out.push(`a generated melodies set has no "${k}"`);
+  } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm") and made-up tunes (kind "melodies")');
   // "Find it" sets (2026-10-16, after the walk-through): "find" only, read by the app's own reader of it.
   if (f.kind === 'find') {
     if (f.find === undefined) out.push('a "find" set needs "find": { keys, groups, places }');
@@ -235,6 +240,8 @@ const scoreBars = (id) => { const p = namedPieces().barsOf(id); return p && !id.
   refuses('rhythm: a feature not in its values', rhythm({ values: ['quarter', 'half'], meter: '4/4', bars: 2, feature: 'whole' }), /feature "whole" should be one of its values/);
   refuses('rhythm: bars 0', rhythm({ values: ['quarter'], meter: '4/4', bars: 0 }), /bars 0 should be a whole number 1 to 4/);
   refuses('rhythm: bars 5', rhythm({ values: ['quarter'], meter: '4/4', bars: 5 }), /bars 5 should be a whole number 1 to 4/);
+  refuses('melodies: a generated set with a black-key position', bad({ kind: 'melodies', generate: { position: 'D4', values: ['quarter'], meter: '4/4', bars: 2 } }), /need a black key/);
+  refuses('melodies: a generated set with items too', bad({ kind: 'melodies', generate: { position: 'C4', values: ['quarter'], meter: '4/4', bars: 2 }, items: { 1: { notes: 'C4' } } }), /has no "items"/);
   refuses('rhythm: "generate" on a set of another kind', bad({ kind: 'chords', generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /"generate" is for rhythm sets/);
   refuses('rhythm: a notes item in a rhythm set', bad({ kind: 'rhythm', items: { 1: { notes: 'C4' } } }), /items are MusicXML patterns/);
   refuses('rhythm: "rhythm" on a rhythm set', bad({ kind: 'rhythm', rhythm: 1, generate: { values: ['quarter'], meter: '4/4', bars: 2 } }), /a rhythm set has no "rhythm"/);

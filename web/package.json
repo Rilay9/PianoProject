@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:path && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability && npm run check:exercise && npm run check:content",
+    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:path && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability && npm run check:exercise && npm run check:flow && npm run check:content",
     "check:notes": "vite build && node tests/notes-match.mjs",
     "check:browser": "vite build && node tests/browser.mjs",
     "check:scoring": "node tests/scoring.mjs",
@@ -20,7 +20,8 @@
     "check:readability": "node tests/readability.mjs",
     "check:wake": "node tests/wake.mjs",
     "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs",
-    "check:exercise": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/exercise.mjs"
+    "check:exercise": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/exercise.mjs",
+    "check:flow": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/flow.mjs"
   },
   "dependencies": {
     "@tonejs/midi": "2.0.28",
@@ -28,7 +29,8 @@
     "opensheetmusicdisplay": "2.2.0",
     "pdfjs-dist": "5.4.394",
     "smplr": "1.0.0",
-    "tonal": "6.4.3"
+    "tonal": "6.4.3",
+    "vexflow": "1.2.93"
   },
   "devDependencies": {
     "playwright": "1.63.0",

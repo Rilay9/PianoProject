@@ -1,0 +1,9 @@
+{
+  "title": "Both clefs, C position, in time",
+  "screen": "flow",
+  "set": "read-c-both",
+  "settings": {
+    "tempo": 60,
+    "mode": "read"
+  }
+}

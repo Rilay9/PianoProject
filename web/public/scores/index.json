@@ -40,5 +40,26 @@
     "license": "cc-zero",
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "status": "engine test score; notes not verified against a printed edition"
+  },
+  {
+    "id": "ode-to-joy-g",
+    "title": "Ode to Joy (in G)",
+    "composer": "L. van Beethoven",
+    "file": "ode-to-joy-g.musicxml",
+    "status": "Theme of the finale of Symphony No. 9, moved to G; left-hand chords G and D7 added. Pitches checked against the app’s C version (Wikipedia’s score) and two catalogue copies."
+  },
+  {
+    "id": "saints-g",
+    "title": "When the Saints Go Marching In (in G)",
+    "composer": "Traditional",
+    "file": "saints-g.musicxml",
+    "status": "Melody as three catalogue copies agree, moved to G; left-hand chords G, C and D7 added."
+  },
+  {
+    "id": "seven-nation-army-riff",
+    "title": "Seven Nation Army: the riff",
+    "composer": "The White Stripes",
+    "file": "seven-nation-army-riff.musicxml",
+    "status": "The riff E E G E D C B in the left hand, the guitar’s octave; the common teaching rhythm (some write the middle three notes as a triplet)."
   }
 ]

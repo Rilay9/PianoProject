@@ -1,0 +1,10 @@
+{
+  "title": "G position, right hand",
+  "screen": "drills",
+  "set": "read-g-treble",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

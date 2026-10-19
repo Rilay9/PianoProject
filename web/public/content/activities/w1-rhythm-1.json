@@ -1,0 +1,8 @@
+{
+  "title": "Rhythm 1",
+  "screen": "flow",
+  "set": "rhythm-level-1",
+  "settings": {
+    "mode": "along"
+  }
+}

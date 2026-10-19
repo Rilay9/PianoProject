@@ -11,6 +11,9 @@ import { readLadder } from './lab/music.ts'; // (with .ts: the checks run this f
 
 /** The score's playing choices an activity can preset (tempo in beats a minute; the rest as the Tempo panel's). */
 export interface ScorePreset { mode?: Mode; hands?: Hands; tempo?: number; metronome?: boolean; clickOn?: ClickOn; onTime?: OnTime; ladderStep?: number }
+/** Read in time's choices an activity can preset (owner, 2026-10-18; screens/flow.ts): tempo (quarter notes a minute),
+ * Tap along or Read, Speed up by itself, and whether how long notes are held is judged. */
+export interface FlowPreset { tempo?: number; mode?: 'along' | 'read'; autoSpeed?: boolean; holds?: boolean }
 /** Memorise's choices an activity can preset: its options, the hands and the tempo (beats a minute). */
 export type MemorisePreset = Partial<MemoriseOptions> & { hands?: 'both' | 'right' | 'left'; tempo?: number };
 /** A step of the lab's ladder: its kind (what the app judges) and, if wanted, its own words. */
@@ -43,6 +46,7 @@ export type Activity = { id: string; title: string; names?: false } & (
   | { screen: 'drills'; set: string; level: Partial<DrillLevel>; keys?: ChosenKeys; fingers?: Fingers; miss?: 'outline' | 'quiet'; help?: ('show-key' | 'names')[] }
   | { screen: 'lab'; chart: string; preset: LabPreset }
   | { screen: 'freeplay'; keys?: ChosenKeys; fingers?: Fingers; groups?: false; click?: FreeClick }
+  | { screen: 'flow'; set: string; settings: FlowPreset }
 );
 
 /**
@@ -151,7 +155,7 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
   const screen = f.screen;
   // The file's own fields, by screen: anything else (a misspelt "setting", Memorise "bars") is refused, not ignored.
   const fields: Record<string, string[]> = {
-    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names', 'fingers'], drills: ['set', 'level', 'keys', 'names', 'fingers', 'miss', 'help'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names', 'fingers', 'groups', 'click'],
+    score: ['piece', 'bars', 'settings', 'keys', 'names'], memorise: ['piece', 'settings', 'names'], simon: ['set', 'level', 'keys', 'names', 'fingers'], drills: ['set', 'level', 'keys', 'names', 'fingers', 'miss', 'help'], lab: ['chart', 'preset', 'names'], freeplay: ['keys', 'names', 'fingers', 'groups', 'click'], flow: ['set', 'settings', 'names'],
   };
   if (typeof screen === 'string' && fields[screen]) {
     for (const k of Object.keys(f)) {
@@ -189,6 +193,11 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
         join: ['ask', 'previous', 'all', 'none'], metronome: 'bool', onTime: ['relaxed', 'normal', 'strict'],
       }, 'settings');
       return { id, title, screen, piece: str(f.piece, 'piece'), settings, ...(f.names === false ? { names: false as const } : {}) };
+    }
+    case 'flow': {
+      // Read in time (owner, 2026-10-18): a rhythm set or a set of melodies with written rhythm, and its choices.
+      const settings = check<FlowPreset>(obj(f.settings ?? {}, 'settings'), { tempo: range(40, 200), mode: ['along', 'read'], autoSpeed: 'bool', holds: 'bool' }, 'settings');
+      return { id, title, screen, set: str(f.set, 'set'), settings, ...(f.names === false ? { names: false as const } : {}) };
     }
     case 'simon': {
       const level = check<Partial<SimonLevel>>(obj(f.level, 'level'), {
@@ -245,6 +254,6 @@ export function readActivity(id: string, f: Record<string, unknown>): Activity {
       return { id, title, screen, ...withKeys, ...withFingers, ...(f.groups === false ? { groups: false as const } : {}), ...(click ? { click } : {}) };
     }
     default:
-      throw new Error(`screen "${String(screen)}" is not one of score, memorise, simon, drills, lab, freeplay`);
+      throw new Error(`screen "${String(screen)}" is not one of score, memorise, simon, drills, lab, freeplay, flow`);
   }
 }

@@ -1,0 +1,73 @@
+{
+  "title": "Changing chords in time (C and G)",
+  "kind": "chords",
+  "order": "pool",
+  "tempo": 72,
+  "rhythm": 4,
+  "items": {
+    "1": {
+      "notes": "C3 E3 G3, C3 F3 A3, B2 F3 G3, C3 E3 G3",
+      "name": "C – F – G7 – C"
+    },
+    "2": {
+      "notes": "C3 E3 G3, C3 E3 G3, B2 F3 G3, C3 E3 G3",
+      "name": "C – C – G7 – C"
+    },
+    "3": {
+      "notes": "C3 E3 G3, C3 E3 G3, C3 F3 A3, C3 E3 G3",
+      "name": "C – C – F – C"
+    },
+    "4": {
+      "notes": "C3 F3 A3, C3 E3 G3, B2 F3 G3, C3 E3 G3",
+      "name": "F – C – G7 – C"
+    },
+    "5": {
+      "notes": "C3 E3 G3, B2 F3 G3, C3 F3 A3, C3 E3 G3",
+      "name": "C – G7 – F – C"
+    },
+    "6": {
+      "notes": "C3 E3 G3, C3 F3 A3, C3 F3 A3, C3 E3 G3",
+      "name": "C – F – F – C"
+    },
+    "7": {
+      "notes": "C3 E3 G3, B2 F3 G3, B2 F3 G3, C3 E3 G3",
+      "name": "C – G7 – G7 – C"
+    },
+    "8": {
+      "notes": "C3 F3 A3, B2 F3 G3, C3 E3 G3, C3 E3 G3",
+      "name": "F – G7 – C – C"
+    },
+    "9": {
+      "notes": "G2 B2 D3, G2 C3 E3, F#2 C3 D3, G2 B2 D3",
+      "name": "G – C – D7 – G"
+    },
+    "10": {
+      "notes": "G2 B2 D3, G2 B2 D3, F#2 C3 D3, G2 B2 D3",
+      "name": "G – G – D7 – G"
+    },
+    "11": {
+      "notes": "G2 B2 D3, G2 B2 D3, G2 C3 E3, G2 B2 D3",
+      "name": "G – G – C – G"
+    },
+    "12": {
+      "notes": "G2 C3 E3, G2 B2 D3, F#2 C3 D3, G2 B2 D3",
+      "name": "C – G – D7 – G"
+    },
+    "13": {
+      "notes": "G2 B2 D3, F#2 C3 D3, G2 C3 E3, G2 B2 D3",
+      "name": "G – D7 – C – G"
+    },
+    "14": {
+      "notes": "G2 B2 D3, G2 C3 E3, G2 C3 E3, G2 B2 D3",
+      "name": "G – C – C – G"
+    },
+    "15": {
+      "notes": "G2 B2 D3, F#2 C3 D3, F#2 C3 D3, G2 B2 D3",
+      "name": "G – D7 – D7 – G"
+    },
+    "16": {
+      "notes": "G2 C3 E3, F#2 C3 D3, G2 B2 D3, G2 B2 D3",
+      "name": "C – D7 – G – G"
+    }
+  }
+}

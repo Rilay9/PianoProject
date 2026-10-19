@@ -213,5 +213,6 @@ export async function describe(a: Activity, app: App): Promise<string> {
       return ['Accompaniment lab', chart, a.preset.role === 'lead' ? 'lead' : a.preset.role === 'accomp' ? 'accompaniment' : ''].filter(Boolean).join(' · ');
     }
     case 'freeplay': return 'Free play';
+    case 'flow': return ['Read in time', await setTitle(a.set), a.settings.mode === 'read' ? 'read' : a.settings.mode === 'along' ? 'tap along' : '', a.settings.tempo ? `♩ ${a.settings.tempo}` : ''].filter(Boolean).join(' · ');
   }
 }

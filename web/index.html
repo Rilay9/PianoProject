@@ -205,6 +205,34 @@
 
   <!-- The accompaniment lab (screens/lab.ts): Lead or Accompaniment, a step, then the beat, the chord now and next,
        the box of chords and the keys to use. -->
+  <!-- Read in time (owner, 2026-10-18; screens/flow.ts): rhythm and reading exercises one after another on a running
+       click, each tap marked as it lands. -->
+  <section id="flow" class="flow" aria-label="Read in time" hidden>
+    <div class="fp-head"><button id="fl-done" type="button" class="btn back" aria-label="Back">←</button><span id="fl-title" class="title"></span><span class="fl-sp"></span><button id="fl-slower" type="button" class="btn" aria-label="Slower">−</button><output id="fl-bpm"></output><button id="fl-faster" type="button" class="btn" aria-label="Faster">+</button></div>
+    <p id="fl-task" class="step-task" hidden></p>
+    <div id="fl-music" class="fl-music"></div>
+    <!-- (sideways: a column beside the music; upright it is laid out in the page's own order) -->
+    <div class="fl-side">
+      <div class="fl-tools">
+        <span id="fl-mode" class="fl-switch" role="group" aria-label="How to practise"><button type="button" class="btn" data-mode="along">Tap along</button><button type="button" class="btn" data-mode="read">Read</button></span>
+        <button id="fl-auto" type="button" class="btn fl-toggle" aria-pressed="false">Speed up by itself</button>
+        <button id="fl-holds" type="button" class="btn fl-toggle" aria-pressed="false">Judge note lengths</button>
+        <button id="fl-loop" type="button" class="btn fl-toggle" aria-pressed="false" hidden>Loop this one</button>
+      </div>
+      <div class="fl-stats"><span id="fl-count"></span><span id="fl-acc"></span><span id="fl-streak"></span><span id="fl-flash" class="fl-flash" aria-live="polite"></span></div>
+      <p id="fl-last" class="fl-last" aria-live="polite"></p>
+      <div id="fl-say" class="fl-say"><span id="fl-say-big" class="big"></span><span id="fl-say-small" class="small"></span></div>
+      <div id="fl-result" class="fl-result" hidden>
+        <p id="fl-result-line" class="line"></p>
+        <p id="fl-result-sub" class="sub"></p>
+        <div class="fl-result-btns"><button id="fl-keep" type="button" class="btn">Keep going</button><button id="fl-back" type="button" class="btn main" hidden>Back to the lesson ▶</button></div>
+      </div>
+      <div class="fl-actions"><button id="fl-go" type="button" class="btn main">▶ Start</button><span id="fl-help" class="fl-help"></span></div>
+      <div id="fl-pad" class="ex-pad fl-pad" aria-label="Rhythm pad: tap for each note" hidden><span>Tap</span></div>
+    </div>
+    <div id="fl-keyboard" class="keyboard fl-keyboard"></div>
+  </section>
+
   <section id="lab" class="lab" aria-label="Accompaniment lab" hidden>
     <div class="fp-head"><button id="lab-done" type="button" class="btn back" aria-label="Back">←</button><span class="title">Lab</span><span class="lab-sp"></span><button id="lab-band" type="button" class="btn" aria-haspopup="dialog" aria-label="The band">⚙</button><button id="lab-stop" type="button" class="btn" hidden aria-label="Stop">■</button></div>
     <p id="lab-task" class="step-task" hidden></p>

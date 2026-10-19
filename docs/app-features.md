@@ -497,7 +497,10 @@ lesson ▶** is the main button there, and a key does it after 0.8 s (outside a 
 one), shown on the Ready screen and at the end; tempo per set. "A new best at this level" only over an earlier full set
 (a first set is no best beaten). "The misses again" played through is logged `ended: "set done"` with `missesAgain:
 true` (it was "stopped early") and said "The misses again: practice, not a set of its own". When a card was right only on
-a retry or with help, Set done adds "clean: right the first time, with no help". At Set done the pad (or the keys) gives
+a retry or with help, Set done adds "clean: right the first time, with no help". **Keep going** (owner, 2026-10-18:
+"Always have drills give the option to keep going"): at every Set done, more cards with the same set and level until you
+press *Finish* (an endless run: practice, logged as such; the set before is already logged, and a lesson step already
+counted it). At Set done the pad (or the keys) gives
 up room so every card's line shows. A name to play
 is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
 make a card bigger than the score's biggest size, up to filling the room. A card never grows,
@@ -828,6 +831,41 @@ along, and the accompaniment under a real tune) and several-part MusicXML files 
 one); examples to copy written into a chart.
 
 ---
+
+## 5e. Read in time (rhythm and reading, one after another; owner, 2026-10-18; `screens/flow.ts`, `flow/`)
+
+Built the way dedicated rhythm trainers work (owner: "Look up how rhythm practice apps do it and follow good ux
+procedure"; Rhythm Sight Reading Trainer, Melodics, CrossBeat; design/2026-10-18-week1/spec.md). It plays a rhythm set
+(tapped on one big pad, or any key) or a set of melodies with written rhythm, made-up tunes included (played on the keys
+or a MIDI keyboard).
+- **Count-in once**, one bar ("1 2 3 4" big on screen), then **it keeps going**: the click never stops, a rhythm
+  exercise follows the last with no gap, a melody after one bar's gap. The exercise being played is drawn on its own
+  line (a one-line staff for rhythm, a treble or bass staff for a melody, whichever its notes need), with **the next one
+  faded under it** to read ahead; a line moves through the notes with the clock. Drawn with VexFlow.
+- **A mark on every tap, as it lands**: a dot over its note, green on time (±100 ms), orange early (←) or late (→) up to
+  its window (260 ms, never past 45 % of the gap to a neighbour), red a wrong key, a grey ring missed; a grey tick for a
+  tap near no note (an extra tap, counted for the exercise whose stretch it fell in). Only *when* is judged unless
+  **Judge note lengths** is on (owner, 2026-10-18: "Yes, as an option"; off by default): then a note let go before ¾ of
+  its length, and before the next tap, is "let go early" (an orange dash); an exercise's last note is never asked.
+- **Scores**: under the music the last exercise's line ("7 of 8 on time · 1 late · 1 extra tap"), scored once its last
+  note's window has closed; at the top the exercise's number, the session's share on time and how many in a row.
+- **Choices** (kept per phone; an activity can preset them for its visit): **Tap along** (the rhythm sounds with you,
+  each note on the piano) or **Read** (the click only); **− / +** tempo by 5 (40–200; while running, from the next
+  exercise); **Speed up by itself** (+5 after three exercises in a row at 90 % or better with no extra taps); **Loop this
+  one** (while running: the exercise being played again and again until switched off); **Judge note lengths** (changed
+  while stopped).
+- **Ends**: Stop, a mash, a panel opened, or nothing played for two bars ("Stopped: nothing played for two bars"). The
+  summary: exercises, share on time, the best run, the tempo; **Keep going** (a new count-in) and, in a lesson step,
+  **Back to the lesson ▶**. A tap on Ready starts it; the keyboard's highest key starts it when stopped.
+- **Keys**: a melody's card shows its own notes' octaves only (two octaves on a phone; they change in the bar between
+  cards), no names on them; the pad for rhythm. Sideways on a phone: the music on the left, the choices and a tall pad on
+  the right, the keys along the bottom.
+- **Logged** (§7b) as `screen: "flow"`, the set, `settings` bpm / mode / holds / autoSpeed, `result` exercises, onTime,
+  notes, percent, bestStreak, each exercise's line, and `ended` "round played" (8 exercises or more in one go) or
+  "stopped early". A lesson step with no target is done with a round played; a target `onTime` (a share) counts too.
+  Read counts for a Tap along step, not the other way round.
+- Opened from a lesson step (activity `screen: "flow"`, §8b), from Practice (a rhythm set), or `?tool=flow&set=…`.
+  Practice lists rhythm sets as "tap them in Read in time".
 
 ## 5c. Library: the Music tab (owner, 2026-10-13, 2026-10-15; mockups `web/mockups/library.html`, option A)
 
@@ -1218,7 +1256,10 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 
 (The `//` notes are for explanation only: a real set file is plain JSON.)
 
-**A rhythm set** (owner, 2026-10-16; §4; `exercise/rhythm.ts`): `"kind": "rhythm"` and `generate` instead of `items`:
+**A rhythm set** (owner, 2026-10-16; §4; `exercise/rhythm.ts`): `"kind": "rhythm"` and `generate` instead of `items`
+(since 2026-10-18 `generate` may be a **list** of these, their cards together: 3/4 and 4/4 in one set, say; and a card never
+has two rests running, nor rests over half a bar, unless a rest is its `feature`). From Practice a rhythm set opens in
+**Read in time** (§5e); Drills still plays it:
 
 ```json
 { "title": "Quarter and half notes", "kind": "rhythm", "tempo": 72,
@@ -1291,6 +1332,22 @@ real set is `ode-to-joy-names`):
 
 Refused (the reader and check:content): `fingers` on a card, an empty phrase, no `hand`, a chord, `beats` not one a note
 (or not a length 0.25–16), `rhythm` or `from` on the set, and `hand` / `beats` on a set without a phrase view.
+
+**Made-up tunes** (owner, 2026-10-18: the week's lesson, "generate way more than needed"; `exercise/melody.ts`): a
+`"kind": "melodies"` set with `generate` instead of `items` (or a list of them, their cards together: both hands):
+
+```json
+{ "title": "Made-up tunes: G position, left hand", "kind": "melodies", "tempo": 60,
+  "generate": { "position": "G2", "values": ["quarter", "half", "whole"], "meter": "4/4", "bars": 2, "skips": 0.3 } }
+```
+
+`position` the lowest key of a five-finger position whose five notes (the major scale's first five) need no black key:
+a C or G position (F needs B♭) from C2 to C5 (C3 / G2 the left hand's, C4 / G4 the right's); `values`, `meter`, `bars`,
+`feature` as a rhythm set's (the card's rhythm comes from the same generator); `skips` the share of moves by a third
+(0–1, default 0.3), the rest steps and now and then a repeated note; never outside the five, the last note the home key.
+Up to 200 different cards (split between the specs of a list). Read in Drills (untimed: "music only, notes only") or in
+time in Read in time (§5e). Refused: a position that needs a black key or is off C2–C5, `skips` outside 0–1, an unknown
+field, `items` / `from` / `rhythm` / `order` / `view` beside it. Practice lists it as "tunes made up fresh every card".
 
 **A "find it" set** (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/); `exercise/find.ts`, §4): `"kind": "find"` and `find` instead of `items`:
 
@@ -1852,6 +1909,9 @@ inside its bar count (a catalogue piece's from the index: bars as printed). Ever
 - freeplay: `keys` (above); `groups` false: the black keys' groups not outlined (on by default in a step; off in your own Free play; §5); `click`
   `{ "bpm": 72, "beats": 4 }`: a click from the screen's start, `bpm` a whole number 20–300 (needed), `beats` in a bar 1–7
   (default 4, the first accented), with its on / off button (owner, 2026-10-16, after the beginner walk-through; design/2026-10-17-walkthrough/).
+- flow (Read in time, §5e; owner, 2026-10-18): `{ "screen": "flow", "set": "rhythm-level-1", "settings": { "tempo": 72,
+  "mode": "along" | "read", "autoSpeed": true, "holds": false } }`; `settings` optional, each field optional (tempo
+  40–200). The set must be a rhythm set or one whose items have written rhythm (made-up tunes, MusicXML items).
 - drills: `miss` and `help`, for finger-number and letter-name cards (owner's lesson 2 spec, 2026-10-18; §4 "Letter-name
   cards"): `miss` "outline" (the default: a wrong key's right key outlined at once) or "quiet" (nothing outlined; the key
   played named); `help` a list of "show-key" (a Show key button) and "names" (a Names button: letters on the keys). Refused:

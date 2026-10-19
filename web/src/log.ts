@@ -18,7 +18,7 @@ export interface Slip { bar: number; note: string; what: 'missed' | 'early' | 'l
 export interface LogEntry {
   at: string; seconds: number;
   /** 'lesson': not a run but how a lesson's step went for you (the feedback taps after it; owner, 2026-10-15). */
-  screen: 'score' | 'memorise' | 'simon' | 'drills' | 'lab' | 'lesson';
+  screen: 'score' | 'memorise' | 'simon' | 'drills' | 'lab' | 'flow' | 'lesson';
   mode?: string;
   /** What was played: a piece (and bars), a set, or a chart; its title as shown. */
   piece?: string; set?: string; chart?: string; title: string; bars?: string;

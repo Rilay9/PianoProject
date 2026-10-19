@@ -18,5 +18,18 @@
   "test-finger-cards.json",
   "keys-middle-octave.json",
   "mary-fingers.json",
-  "ode-to-joy-names.json"
+  "ode-to-joy-names.json",
+  "read-c-bass.json",
+  "read-c-treble.json",
+  "read-c-both.json",
+  "read-g-treble.json",
+  "read-g-bass.json",
+  "read-g-both.json",
+  "rhythm-level-1.json",
+  "rhythm-level-2.json",
+  "rhythm-level-3.json",
+  "rhythm-level-4.json",
+  "chords-c-left.json",
+  "chords-g-left.json",
+  "chord-changes.json"
 ]

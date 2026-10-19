@@ -1,0 +1,16 @@
+{
+  "title": "Rhythm 1: quarters, halves, wholes and rests",
+  "kind": "rhythm",
+  "tempo": 72,
+  "generate": {
+    "values": [
+      "quarter",
+      "half",
+      "whole",
+      "quarter-rest",
+      "half-rest"
+    ],
+    "meter": "4/4",
+    "bars": 2
+  }
+}

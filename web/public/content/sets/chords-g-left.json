@@ -1,0 +1,22 @@
+{
+  "title": "Chords in G, left hand: G, C, D7",
+  "kind": "chords",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "G2 B2 D3",
+      "name": "G",
+      "short": "G"
+    },
+    "2": {
+      "notes": "G2 C3 E3",
+      "name": "C",
+      "short": "C"
+    },
+    "3": {
+      "notes": "F#2 C3 D3",
+      "name": "D7",
+      "short": "D7"
+    }
+  }
+}

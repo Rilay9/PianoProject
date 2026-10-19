@@ -1,0 +1,9 @@
+{
+  "title": "G position, in time",
+  "screen": "flow",
+  "set": "read-g-both",
+  "settings": {
+    "tempo": 60,
+    "mode": "read"
+  }
+}

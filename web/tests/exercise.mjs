@@ -318,9 +318,10 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   const samples = [];
   for (const [name, file] of specs) {
     const set = await readSet(name, file, 'file:///x/', async () => '', async () => '');
-    const spec = file.generate;
+    // (a list of specs, 2026-10-18: each card answers to one of them)
+    const all = Array.isArray(file.generate) ? file.generate : [file.generate], spec = all[0];
     const cards = await deal500(set);
-    const bad = cards.map((c) => [c, cardProblem(c, spec)]).find(([, p]) => p);
+    const bad = cards.map((c) => [c, all.map((sp) => cardProblem(c, sp)).find((p) => !p) === '' ? '' : cardProblem(c, spec)]).find(([, p]) => p);
     const twice = cards.findIndex((c, i) => i > 0 && c.name === cards[i - 1].name);
     const distinct = new Set(cards.map((c) => c.name)).size;
     check(`rhythm ${name}: 500 cards dealt, every bar adds up, only its values, ${spec.feature ? `${spec.feature} in every card, ` : ''}a note first`, cards.length === 500 && !bad, bad ? `${bad[1]}: ${bad[0].name}` : `${cards.length} cards`);
@@ -354,7 +355,7 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
     ['rests only', { values: ['quarter-rest'], meter: '4/4', bars: 2 }, /only rests/],
     ['halves alone in 3/4 (a bar cannot be filled)', { values: ['half'], meter: '3/4', bars: 1 }, /cannot fill a bar of 3\/4/],
     ['a whole rest as the feature of a 1-bar card (it starts with a note)', { values: ['quarter', 'whole-rest'], meter: '4/4', bars: 1, feature: 'whole-rest' }, /feature whole-rest cannot be placed in 1 bar/],
-    ['generate on a set that is not rhythm', { values: ['quarter'], meter: '4/4', bars: 2 }, /"generate" is for rhythm sets/, { kind: 'melodies' }],
+    ['generate on a set that is not rhythm', { values: ['quarter'], meter: '4/4', bars: 2 }, /"generate" is for rhythm sets/, { kind: 'chords' }],
     ['a rhythm set with notes items', null, /a rhythm set's items are MusicXML patterns/, { items: { 1: { notes: 'C4' } } }],
     ['a rhythm set with neither', null, /should give either "generate" or "items"/],
   ]) {
@@ -968,6 +969,37 @@ try {
   check('letter card: no staff drawn; the letters on the keys only when asked', seen.drawn === 0 && seen.letters.join() === 'true,false', JSON.stringify({ drawn: seen.drawn, letters: seen.letters }));
   d.close();
 } catch (e) { check(`the letter-name section ran to its end (${String(e).slice(0, 90)})`, false, String(e.stack).split('\n').slice(0, 3).join(' | ')); }
+
+// 8. Made-up reading tunes (owner, 2026-10-18; melody.ts): every card in its position, bars exact, ending on home.
+try {
+  const { readSet, midiOf } = await import('../src/exercise/items.ts');
+  const make = async (g) => readSet('t', { title: 't', kind: 'melodies', generate: g }, 'file:///x/', async () => '', async () => '');
+  const cases = [{ position: 'C3', values: ['quarter', 'half', 'whole'], meter: '4/4', bars: 2 }, { position: 'G2', values: ['quarter', 'half'], meter: '4/4', bars: 2 }, { position: 'G4', values: ['quarter', 'half', 'dotted-half', 'eighths'], meter: '3/4', bars: 2, skips: 0.5 }, { position: 'C4', values: ['quarter', 'quarter-rest', 'half'], meter: '4/4', bars: 4, skips: 0 }];
+  const bad = [];
+  let sizes = [], steps = 0, thirds = 0, others = 0;
+  for (const g of cases) {
+    const set = await make(g);
+    sizes.push(set.items.length);
+    const home = { C3: 48, G2: 43, G4: 67, C4: 60 }[g.position], five = [0, 2, 4, 5, 7].map((x) => home + x);
+    const barLen = g.meter === '3/4' ? 3 : 4;
+    const codes = new Set();
+    for (const it of set.items) {
+      const ms = it.groups.filter((x) => x.length).map((x) => midiOf(x[0]));
+      if (ms.some((m) => !five.includes(m))) bad.push(`${g.position} card ${it.n} leaves the position: ${it.name}`);
+      if (ms.at(-1) !== home) bad.push(`${g.position} card ${it.n} ends on ${ms.at(-1)}`);
+      if (!it.groups[0].length) bad.push(`${g.position} card ${it.n} starts with a rest`);
+      for (let b = 0; b < g.bars; b++) { const sum = it.beats.filter((_, i) => it.bars[i] === b).reduce((a, x) => a + x, 0); if (Math.abs(sum - barLen) > 1e-9) bad.push(`${g.position} card ${it.n} bar ${b + 1} has ${sum} beats`); }
+      for (let i = 1; i < ms.length; i++) { const d = Math.abs(five.indexOf(ms[i]) - five.indexOf(ms[i - 1])); if (d === 1) steps++; else if (d === 2) thirds++; else if (d > 2) { others++; bad.push(`${g.position} card ${it.n}: a leap of ${d} positions`); } }
+      codes.add(it.groups.map((x, i) => `${x.join('') || 'r'}${it.beats[i]}`).join(' '));
+      if (g.skips === 0 && ms.some((m, i) => i && Math.abs(five.indexOf(m) - five.indexOf(ms[i - 1])) === 2)) bad.push(`${g.position} card ${it.n}: a third with skips 0`);
+    }
+    if (codes.size !== set.items.length) bad.push(`${g.position}: ${set.items.length - codes.size} cards the same as another`);
+  }
+  check(`made-up tunes: 200 different cards a set; every note in its five-finger position (C3, G2, G4, C4), every bar exact, a note first, the home key last, only steps, thirds and repeats (thirds with skips 0: none) — ${steps} steps, ${thirds} thirds`, sizes.every((n) => n === 200) && !bad.length && !others && thirds > 0, JSON.stringify({ sizes, bad: bad.slice(0, 5) }));
+  const refused = async (g) => { try { await make(g); return 'ACCEPTED'; } catch (e) { return e.message; } };
+  const r = { black: await refused({ position: 'E4', values: ['quarter'], meter: '4/4', bars: 2 }), low: await refused({ position: 'C1', values: ['quarter'], meter: '4/4', bars: 2 }), skips: await refused({ position: 'C4', values: ['quarter'], meter: '4/4', bars: 2, skips: 2 }), odd: await refused({ position: 'C4', values: ['quarter'], meter: '4/4', bars: 2, hand: 'left' }) };
+  check('made-up tunes refused with a reason: a position needing a black key, one off C2–C5, skips above 1, an unknown field', /need a black key/.test(r.black) && /should be a white key/.test(r.low) && /share from 0 to 1/.test(r.skips) && /"hand", which is not one/.test(r.odd), JSON.stringify(r));
+} catch (e) { check(`the made-up tunes section ran to its end (${String(e).slice(0, 90)})`, false, String(e.stack).split('\n').slice(0, 3).join(' | ')); }
 
 console.log(failures.length ? `${failures.length} failed` : 'all passed');
 process.exit(failures.length ? 1 : 0);

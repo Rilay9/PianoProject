@@ -34,6 +34,7 @@ import { createShell } from './screens/shell';
 import { createExerciseScreen } from './screens/exercise';
 import { createCalibration } from './screens/calibrate';
 import { createLabScreen } from './screens/lab';
+import { createFlowScreen } from './screens/flow';
 import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
 import { createPdfScreen } from './screens/pdf';
 import { createMemoriseScreen } from './screens/memorise-screen';
@@ -80,6 +81,8 @@ const freePlayScreen: Screen = {
 };
 // The accompaniment lab (owner, 2026-10-13): play along with a band.
 const labScreen = createLabScreen(app, () => nav.closedItself('lab'));
+// Read in time (owner, 2026-10-18): rhythm and reading exercises one after another on a running click.
+const flowScreen = createFlowScreen(app, () => nav.closedItself('flow'));
 // The metronome on its own (owner, 2026-10-15: Practice → Metronome).
 const metronome = createMetronomeScreen(app, () => nav.closedItself('metronome'));
 // The PDF reader (owner, 2026-10-14), opened from the library (Music): it keeps its own history steps; closed, the
@@ -104,12 +107,13 @@ const shell = createShell(app, {
   openMemorise: (id) => void openMemorise(id),
   openExercise: (kind, set) => void openExercise(kind, set),
   openLab: (chart) => void openLab(chart),
+  openFlow: (set) => void openFlow(set),
   openPdf: (id, title) => openPdf(id, title),
   openFreePlay: () => openFreePlay(),
   openMetronome: () => { wanted(); metronome.open(); enter({ name: 'metronome', params: { tool: 'metronome' }, leave: () => metronome.close() }); },
   fillSettings,
 });
-app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, libraryScreen, pdfScreen, metronome.screen, shell.screen];
+app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, flowScreen, libraryScreen, pdfScreen, metronome.screen, shell.screen];
 
 /** The screen showing (keys and the keyboard remote go to it). */
 function showing(): Screen {
@@ -117,6 +121,7 @@ function showing(): Screen {
   if (pdfScreen.isOpen) return pdfScreen;
   if (metronome.isOpen) return metronome.screen;
   if (labScreen.isOpen) return labScreen;
+  if (flowScreen.isOpen) return flowScreen;
   if (exerciseScreen.isOpen) return exerciseScreen;
   if (memoriseScreen.isOpen) return memoriseScreen;
   if (libraryScreen.isOpen) return libraryScreen;
@@ -222,6 +227,11 @@ async function openLab(chart?: string): Promise<void> {
   const still = wanted();
   await labScreen.open(still, undefined, chart);
   if (still() && labScreen.isOpen) enter({ name: 'lab', params: { tool: 'lab', ...(chart ? { chart } : {}) }, leave: () => labScreen.close() });
+}
+async function openFlow(set?: string): Promise<void> {
+  const still = wanted();
+  await flowScreen.open(still, undefined, set);
+  if (still() && flowScreen.isOpen) enter({ name: 'flow', params: { tool: 'flow', ...(set ? { set } : {}) }, leave: () => flowScreen.close() });
 }
 function openFreePlay(): void { wanted(); showFreePlay(); }
 /** keys: an activity's chosen keys (2026-10-16); params: its address (a lesson's step with it). The task, names and
@@ -519,6 +529,7 @@ async function start(): Promise<void> {
   else if (tool === 'memorise' && wantedPiece) await openMemorise(wantedPiece);
   else if (tool === 'drill' || tool === 'simon') await openExercise(tool, set);
   else if (tool === 'lab') await openLab(chart);
+  else if (tool === 'flow') await openFlow(set);
   else if (tool === 'freeplay') openFreePlay();
   else if (tool === 'metronome') { wanted(); metronome.open(); enter({ name: 'metronome', params: { tool: 'metronome' }, leave: () => metronome.close() }); }
   else if (tool === 'pdf' && wantedPiece) await reopenPdf(wantedPiece);
@@ -627,6 +638,12 @@ async function launchScreen(a: Activity, still: () => boolean, step?: string): P
       showFreePlay(a.keys, withStep({ tool: 'freeplay' }));
       return () => still() && freePlay.open;
     }
+    case 'flow': {
+      await flowScreen.open(still, a);
+      if (!still() || !flowScreen.isOpen) return no;
+      enter({ name: 'flow', params: withStep({ tool: 'flow', set: a.set }), leave: () => flowScreen.close() });
+      return () => still() && flowScreen.isOpen;
+    }
   }
 }
 
@@ -651,9 +668,9 @@ setUpOffline(import.meta.env.BASE_URL, (done, total) => {
   graces: (i: number, hands: 'both' | 'right' | 'left' = 'both') => view.gracesAt(i, hands),
   keysShown: () => [...document.querySelectorAll<HTMLElement>('#keyboard [data-midi]')].map((k) => Number(k.dataset.midi)),
   sound: () => ({ playing: sound.playing, t: Math.round(sound.songTime()), started: { ...sound.started }, nowNotes: sound.nowNotes }),
-  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, pad: () => exerciseScreen.debug().pad, exKeys: () => exerciseScreen.debug().keys, calibration: () => calibration.debug(), lab: () => labScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
+  simon: () => exerciseScreen.debug().simon, drill: () => exerciseScreen.debug().drill, pad: () => exerciseScreen.debug().pad, exKeys: () => exerciseScreen.debug().keys, calibration: () => calibration.debug(), lab: () => labScreen.debug(), flow: () => flowScreen.debug(), library: () => libraryScreen.debug(), pdf: () => pdfScreen.debug(),
   readScore: (xml: string, name?: string) => readScore(xml, name),
   pieces: () => app.pieces.map((p) => ({ id: p.id, title: p.title })),
   nav: () => nav.places().map((p) => p.name), shell: () => ({ showing: shell.showing, tab: shell.tab, view: [...document.querySelectorAll<HTMLElement>('#shell .view')].find((v) => !v.hidden)?.id ?? null }),
-  metronome: () => metronome.debug(), showing: () => (showing() === shell.screen ? 'shell' : showing() === scoreScreen ? 'score' : showing() === libraryScreen ? 'library' : showing() === exerciseScreen ? 'exercise' : showing() === labScreen ? 'lab' : showing() === memoriseScreen ? 'memorise' : showing() === pdfScreen ? 'pdf' : showing() === freePlayScreen ? 'freeplay' : 'metronome'), // (the catalogue builder reads files with the app's own reader)
+  metronome: () => metronome.debug(), showing: () => (showing() === shell.screen ? 'shell' : showing() === scoreScreen ? 'score' : showing() === libraryScreen ? 'library' : showing() === exerciseScreen ? 'exercise' : showing() === labScreen ? 'lab' : showing() === flowScreen ? 'flow' : showing() === memoriseScreen ? 'memorise' : showing() === pdfScreen ? 'pdf' : showing() === freePlayScreen ? 'freeplay' : 'metronome'), // (the catalogue builder reads files with the app's own reader)
 };

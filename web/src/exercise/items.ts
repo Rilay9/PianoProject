@@ -32,8 +32,9 @@
 // that rhythm, and your try stays untimed.
 
 import { Chord, Interval, Note } from 'tonal';
-import { readRhythmSpec, rhythmPool, RHYTHM_PITCH, type RhythmSpec } from './rhythm.ts'; // (with .ts: the checks run this file in Node)
+import { readRhythmSpec, rhythmPool, RHYTHM_PITCH, METERS, type RhythmSpec } from './rhythm.ts'; // (with .ts: the checks run this file in Node)
 import { findPool, readFindSpec, type FindSpec } from './find.ts';
+import { melodyPool, readMelodySpec, MELODY_POOL, type MelodySpec } from './melody.ts';
 
 /** One thing to play: groups of keys in order (a chord is one group; an arpeggio or a melody is several). */
 export interface Item {
@@ -94,6 +95,8 @@ export interface ItemSet {
   generate?: RhythmSpec;
   /** A "find it" set's keys and what it asks for (find.ts; its items are the cards made from it). */
   find?: FindSpec;
+  /** A made-up tunes set's spec (melody.ts; its items are the cards made from it). */
+  melody?: MelodySpec;
   /** "letters" (owner, 2026-10-17: a tune before the staff, as the method books show it): its cards drawn on the one-line
    * rhythm staff with each note's letter under it, played on the keys and judged for keys and timing (docs §4, §6).
    * "fingers" (owner, 2026-10-17): each card its finger numbers by phrase, no staff, played in order with no timing.
@@ -345,12 +348,25 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
     if (!!file.generate === !!file.items) throw new Error('a rhythm set should give either "generate" or "items" (MusicXML patterns)');
     if (file.generate) {
       if (file.order !== undefined) throw new Error('a generated rhythm set is always a pool: leave "order" out');
-      const spec = readRhythmSpec(file.generate);
-      return { id, title: file.title, kind, order: 'pool', items: rhythmPool(spec), tempo: file.tempo ?? TEMPO, generate: spec };
+      // (a list of specs: their cards together, e.g. 3/4 and 4/4 in one set; owner 2026-10-18, the week's lesson)
+      const specs = (Array.isArray(file.generate) ? file.generate : [file.generate]).map((g, k, all) => { try { return readRhythmSpec(g); } catch (e) { throw new Error(all.length > 1 ? `generate ${k + 1}: ${e instanceof Error ? e.message : String(e)}` : e instanceof Error ? e.message : String(e)); } });
+      if (!specs.length) throw new Error('generate is an empty list');
+      const items = specs.flatMap((sp) => rhythmPool(sp)).map((it, i) => ({ ...it, n: i + 1, short: String(i + 1) }));
+      return { id, title: file.title, kind, order: 'pool', items, tempo: file.tempo ?? TEMPO, generate: specs[0] };
     }
     const odd = Object.entries(file.items ?? {}).find(([, it]) => typeof it !== 'object' || it === null || it.musicxml === undefined);
     if (odd) throw new Error(`item ${odd[0]}: a rhythm set's items are MusicXML patterns ("musicxml")`);
-  } else if (file.generate !== undefined) throw new Error('"generate" is for rhythm sets (kind "rhythm")');
+  } else if (file.generate !== undefined) {
+    // Made-up reading tunes (melody.ts, owner 2026-10-18): a melodies set with "generate" { position, values, meter, bars, skips }.
+    if (kind !== 'melodies') throw new Error('"generate" is for rhythm sets (kind "rhythm") and made-up tunes (kind "melodies")');
+    const other = (['items', 'from', 'rhythm', 'order', 'view'] as const).find((k) => file[k] !== undefined);
+    if (other) throw new Error(`a generated melodies set gives "generate" only (its cards are made from it), not "${other}"`);
+    // (a list of specs: their cards together, e.g. both hands' positions in one set)
+    const specs = (Array.isArray(file.generate) ? file.generate : [file.generate]).map((g, k, all) => { try { return readMelodySpec(g); } catch (e) { throw new Error(all.length > 1 ? `generate ${k + 1}: ${e instanceof Error ? e.message : String(e)}` : e instanceof Error ? e.message : String(e)); } });
+    if (!specs.length) throw new Error('generate is an empty list');
+    const items = specs.flatMap((sp) => melodyPool(sp, Math.random, Math.ceil(MELODY_POOL / specs.length))).map((it, i) => ({ ...it, n: i + 1, short: String(i + 1) }));
+    return { id, title: file.title, kind, order: 'pool', items, tempo: file.tempo ?? TEMPO, meter: { ...METERS[specs[0].rhythm.meter] }, melody: specs[0] };
+  }
   if (!!file.from === !!file.items) throw new Error('it should give either "items" or "from" (a passage of a score)');
   if (file.from) {
     const m = /^(\d+)(?:-(\d+))?$/.exec(file.from.bars ?? '1-4');

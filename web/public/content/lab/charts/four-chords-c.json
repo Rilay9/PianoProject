@@ -1,0 +1,19 @@
+{
+  "title": "Four chords: C – G – Am – F",
+  "meter": "4/4",
+  "tempo": 80,
+  "style": "pop",
+  "bars": [
+    "C",
+    "G",
+    "Am",
+    "F",
+    "C",
+    "G",
+    "Am",
+    "F"
+  ],
+  "improvise": {
+    "scale": "C major pentatonic"
+  }
+}

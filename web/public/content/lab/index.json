@@ -1,4 +1,11 @@
 {
-  "charts": ["charts/blues-c.json", "charts/pop-c.json"],
-  "styles": ["styles/shuffle.json", "styles/pop.json"]
+  "charts": [
+    "charts/blues-c.json",
+    "charts/pop-c.json",
+    "charts/four-chords-c.json"
+  ],
+  "styles": [
+    "styles/shuffle.json",
+    "styles/pop.json"
+  ]
 }

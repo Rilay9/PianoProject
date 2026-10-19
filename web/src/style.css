@@ -1182,3 +1182,61 @@ body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !impo
   .q-hands-label { font-size: 11px; line-height: 13px; margin: -4px 0 0 2px; }
 }
 #ex-letters[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* Read in time (owner, 2026-10-18; screens/flow.ts): the choices, the two lines of music (now, and next faded), what it
+   says, the pad or the keys. */
+.flow { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); }
+.flow[hidden] { display: none; }
+.flow .fp-head .title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700; }
+.flow .fl-sp { flex: none; }
+#fl-bpm { min-width: 3.4em; text-align: center; font-variant-numeric: tabular-nums; }
+.fl-tools { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 10px; }
+.fl-tools .btn { min-height: 40px; font-size: 14px; }
+.fl-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.fl-switch .btn { border: 0; border-radius: 0; background: var(--btn-bg); color: var(--muted); }
+.fl-switch .btn[aria-pressed="true"], .fl-toggle[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.fl-stats { display: flex; gap: 14px; padding: 0 12px; min-height: 22px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.fl-stats #fl-acc { color: var(--fg); font-weight: 600; }
+.fl-flash { color: var(--accent); font-weight: 700; }
+.fl-music { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 4px 8px; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: var(--paper, #fff); }
+.fl-line { position: relative; }
+.fl-line.next { opacity: 0.38; }
+.fl-line svg { display: block; }
+.fl-line > div svg { filter: var(--music-filter); } /* (the music inverted in the dark theme, as everywhere; the marks over it keep their colours) */
+.fl-overlay { position: absolute; left: 0; top: 0; pointer-events: none; }
+.fl-cursor { stroke: var(--accent); stroke-width: 2; opacity: 0.55; }
+.fl-last { margin: 2px 12px; min-height: 1.3em; font-size: 14px; text-align: center; color: var(--muted); }
+.fl-say { display: flex; flex-direction: column; align-items: center; min-height: 2.4em; }
+.fl-say .big { font-size: 2rem; font-weight: 800; line-height: 1; }
+.fl-say .small { font-size: 14px; color: var(--muted); text-align: center; padding: 0 12px; }
+.fl-result { margin: 4px 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-bg); text-align: center; }
+.fl-result[hidden] { display: none; }
+.fl-result .line { margin: 0; font-weight: 700; }
+.fl-result .sub { margin: 2px 0 8px; font-size: 14px; color: var(--muted); }
+.fl-result-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.fl-result-btns .btn, .fl-actions .btn { min-height: 44px; }
+.fl-actions { display: flex; align-items: center; gap: 10px; padding: 6px 10px; }
+.fl-help { font-size: 13px; color: var(--muted); }
+.fl-pad { height: min(30vh, 260px); }
+.keyboard.fl-keyboard { flex: none; height: clamp(110px, 22vh, 180px); }
+.keyboard.fl-keyboard[hidden] { display: none; }
+/* Upright: one column in the page's order (the side column's parts placed by order around the music). */
+.fl-side { display: contents; }
+.flow .fp-head { order: 0; } #fl-task { order: 1; } .fl-tools { order: 2; } .fl-stats { order: 3; } .fl-music { order: 4; }
+.fl-last { order: 5; } .fl-say { order: 6; } .fl-result { order: 7; } .fl-actions { order: 8; } .fl-pad { order: 9; } .keyboard.fl-keyboard { order: 10; }
+/* Sideways on a phone: the music on the left, the choices, scores and a tall pad on the right, the keys along the bottom. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .flow { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); grid-template-rows: auto auto minmax(0, 1fr) auto; grid-template-areas: "head head" "task task" "music side" "keys keys"; }
+  .flow .fp-head { grid-area: head; } #fl-task { grid-area: task; }
+  .fl-music { grid-area: music; }
+  .fl-side { grid-area: side; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .keyboard.fl-keyboard { grid-area: keys; height: 30vh; }
+  .fl-tools { padding: 3px 6px; gap: 4px; } .fl-tools .btn { min-height: 34px; font-size: 13px; padding: 4px 8px; }
+  .fl-stats { padding: 0 8px; font-size: 13px; gap: 8px; }
+  .fl-last { margin: 0 8px; font-size: 13px; }
+  .fl-say { min-height: 0; } .fl-say .big { font-size: 1.4rem; } .fl-say .small { font-size: 12px; }
+  .fl-actions { padding: 3px 8px; } .fl-help { display: none; }
+  .fl-result { margin: 2px 8px; padding: 6px 8px; }
+  .fl-pad { flex: 1 1 auto; height: auto; min-height: 70px; margin: 4px 8px calc(6px + env(safe-area-inset-bottom)); }
+}
+

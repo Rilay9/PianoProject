@@ -97,6 +97,11 @@ export function randomCard(spec: RhythmSpec, rng: () => number = Math.random): R
       }
       card.push(bar);
     }
+    // (mostly notes: never two rests running, and rests at most half of a bar; owner 2026-10-18, the week's
+    // lesson: a generated card that was nearly all rest was nothing to read)
+    const flat = card.flat();
+    const restsOk = flat.every((v, i) => !(isRest(v) && i > 0 && isRest(flat[i - 1]))) && card.every((bar) => bar.filter(isRest).reduce((n, v) => n + VALUE_BEATS[v], 0) <= beats / 2 + 1e-9);
+    if (!restsOk && !(spec.feature && isRest(spec.feature)) && tries < 900) continue; // (a rest asked for in every card: as it comes)
     if (!spec.feature || card.some((bar) => bar.includes(spec.feature!))) return card;
   }
   throw new Error(`no card with ${spec.feature} came in 1000 tries`); // (readRhythmSpec refuses a feature that cannot be placed)

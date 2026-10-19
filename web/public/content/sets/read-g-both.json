@@ -1,0 +1,31 @@
+{
+  "title": "Made-up tunes: G position, either hand",
+  "kind": "melodies",
+  "tempo": 60,
+  "generate": [
+    {
+      "position": "G2",
+      "values": [
+        "quarter",
+        "half",
+        "whole",
+        "dotted-half"
+      ],
+      "meter": "4/4",
+      "bars": 2,
+      "skips": 0.3
+    },
+    {
+      "position": "G4",
+      "values": [
+        "quarter",
+        "half",
+        "whole",
+        "dotted-half"
+      ],
+      "meter": "4/4",
+      "bars": 2,
+      "skips": 0.3
+    }
+  ]
+}

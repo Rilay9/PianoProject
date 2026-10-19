@@ -1,0 +1,16 @@
+{
+  "title": "Rhythm 3: eighth notes",
+  "kind": "rhythm",
+  "tempo": 66,
+  "generate": {
+    "values": [
+      "quarter",
+      "eighths",
+      "half",
+      "quarter-rest"
+    ],
+    "meter": "4/4",
+    "bars": 2,
+    "feature": "eighths"
+  }
+}

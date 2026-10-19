@@ -1,0 +1,16 @@
+{
+  "title": "Made-up tunes: C position, left hand",
+  "kind": "melodies",
+  "tempo": 60,
+  "generate": {
+    "position": "C3",
+    "values": [
+      "quarter",
+      "half",
+      "whole"
+    ],
+    "meter": "4/4",
+    "bars": 2,
+    "skips": 0.3
+  }
+}

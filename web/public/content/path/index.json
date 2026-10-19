@@ -11,6 +11,13 @@
       ]
     },
     {
+      "id": "r2",
+      "title": "C and G positions",
+      "lessons": [
+        "r2-week-1"
+      ]
+    },
+    {
       "id": "test-app",
       "title": "Test: the app's lesson pages",
       "test": true,

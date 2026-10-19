@@ -1,0 +1,8 @@
+{
+  "title": "Rhythm 4",
+  "screen": "flow",
+  "set": "rhythm-level-4",
+  "settings": {
+    "mode": "read"
+  }
+}

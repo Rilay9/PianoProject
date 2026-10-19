@@ -113,6 +113,12 @@ export function playedAsSet(e: Played, a: Activity): string {
       if (e.bars) return 'some bars looped'; // (a loop is practice, as the lab says: only rounds of the whole chart count)
       return '';
     }
+    case 'flow': {
+      // Read in time (owner, 2026-10-18): its set; Read counts for a Tap along step (harder), not the other way round.
+      if (e.set !== a.set) return 'another set';
+      if (a.settings.mode === 'read' && s.mode === 'along') return 'Tap along, not Read';
+      return '';
+    }
     case 'memorise': {
       if (e.piece !== undefined && e.piece !== a.piece) return 'another piece';
       const want = a.settings.hands;
@@ -136,6 +142,7 @@ export function through(a: Activity): string {
     case 'memorise': return 'learning a chunk';
     case 'lab': return 'playing a whole round of the chart';
     case 'freeplay': return 'playing a key';
+    case 'flow': return 'playing a round of 8 exercises';
   }
   return '';
 }
@@ -171,6 +178,8 @@ export function ended(e: LogEntry): boolean {
       if (e.mode === 'wait') return r.rounds === undefined || num(r.rounds) >= 1;
       return (Array.isArray(r.passes) && r.passes.length > 0) || r.reachedEnd === true;
     }
+    // Read in time: a round (8 exercises) played in one go.
+    case 'flow': return r.ended === 'round played';
     default: return true;
   }
 }
@@ -196,6 +205,7 @@ export function runLine(e: LogEntry): string {
       const loop = e.bars ? ` (looping ${range(e.bars.split('-')[0], e.bars.split('-')[1] ?? e.bars.split('-')[0])}: practice)` : '';
       return r.roundsPlayed !== undefined ? `${num(r.roundsPlayed)} rounds played${loop}` : `${rounds.length} round${rounds.length === 1 ? '' : 's'}, ${clean} with every bar right${loop}`;
     }
+    case 'flow': return `${num(r.percent)}% on time over ${num(r.exercises)} ${num(r.exercises) === 1 ? 'exercise' : 'exercises'} at ♩ ${num(e.settings.bpm)}${r.ended === 'round played' ? '' : ' (stopped before a round of 8)'}`;
     case 'memorise': {
       const passes = (r.passes as { clean?: boolean }[] | undefined) ?? [];
       return `${passes.length} pass${passes.length === 1 ? '' : 'es'}, ${passes.filter((p) => p.clean).length} clean${r.mark ? ` · ${String(r.mark)}` : ''}`;
@@ -257,6 +267,7 @@ export function bestLine(runs: LogEntry[]): string {
     const r = e.result;
     if (e.screen === 'drills') return num(r.clean);
     if (e.screen === 'simon') return num(r.longestChain);
+    if (e.screen === 'flow') return r.ended === 'round played' ? num(r.percent) + num(e.settings.bpm) / 1000 : 0;
     if (e.screen === 'lab') return e.bars ? 0 : ((r.rounds as Round[] | undefined) ?? []).filter((x) => typeof x.bars === 'string' && x.bars.trim().split(/\s+/).every((b) => b.endsWith(':ok'))).length;
     if (e.screen === 'score') {
       const runs: Pass[] = [...(num(r.notes) ? [{ notes: num(r.notes), onTime: num(r.onTime) }] : []), ...((r.passes as Pass[] | undefined) ?? [])];

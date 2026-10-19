@@ -1,0 +1,9 @@
+{
+  "title": "Four chords with the band",
+  "screen": "lab",
+  "chart": "four-chords-c",
+  "preset": {
+    "role": "accomp",
+    "step": "beat1"
+  }
+}

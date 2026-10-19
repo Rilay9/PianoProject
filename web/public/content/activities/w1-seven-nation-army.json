@@ -1,0 +1,9 @@
+{
+  "title": "Seven Nation Army",
+  "screen": "score",
+  "piece": "seven-nation-army-riff",
+  "settings": {
+    "mode": "wait",
+    "hands": "left"
+  }
+}
