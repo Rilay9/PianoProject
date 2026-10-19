@@ -1,5 +1,5 @@
-// Read in time, drawn (flow/engine.ts says what it is): the exercise being played on its own line, the next one faded
-// under it to read ahead, a line moving through the notes with the clock, and a mark over each note as it is judged
+// Read in time, drawn (flow/engine.ts says what it is): the exercise being played on one line (the next is no longer
+// drawn: owner, 2026-10-18), as big as fits without stretching, a line moving through the notes with the clock, and a mark over each note as it is judged
 // (a dot: green on time, orange early or late with an arrow, red a wrong key, grey missed; "let go early" an orange
 // dash) and a grey tick for a tap near no note. Drawn with VexFlow (the library OpenSheetMusicDisplay draws with), whose
 // notes give their places at once, so each mark is added as it comes without drawing the music again.
@@ -29,6 +29,10 @@ export function clefOf(p: Placed | null, rhythm: boolean): Clef {
   const ks = p?.notes.map((n) => n.key ?? 60) ?? [];
   return ks.length && ks.reduce((a, b) => a + b, 0) / ks.length < 60 ? 'bass' : 'treble';
 }
+
+/** A quarter note's room on the line (staff units; a staff space is 10) and a bar's own padding: engravers give a quarter
+ * about 3½–4½ staff spaces; a little more here, as each note is tapped. The line is never drawn bigger than MAX_SCALE. */
+const QUARTER_ROOM = 48, BAR_PAD = 22, MAX_SCALE = 2.4;
 
 const COLOUR: Record<Mark, string> = { ok: '#16a34a', early: '#d97706', late: '#d97706', short: '#d97706', wrong: '#dc2626', missed: '#9ca3af' };
 
@@ -60,20 +64,24 @@ class Line {
     this.notesAt.clear();
     if (!p || width < 50) return;
     const h = clef === 'rhythm' ? 78 : 116;
-    const scale = Math.max(0.6, Math.min(1.5, Math.max(1, width / 330), maxH / h));
-    const w = width / scale;
-    const host = document.createElement('div');
-    this.el.append(host);
-    const renderer = new VF.Renderer(host, VF.Renderer.Backends.SVG);
-    renderer.resize(width, h * scale);
-    const ctx = renderer.getContext();
-    ctx.scale(scale, scale);
     const it = p.item, meter = it.meter ?? { beats: 4, beatType: 4 };
     const beats = it.beats ?? it.groups.map(() => 1);
     const barOf = it.bars ?? it.groups.map(() => 0);
     const bars = Math.max(...barOf) + 1;
     const head = clef === 'rhythm' ? 30 : 62; // clef and time signature in the first bar
-    const barW = (w - 8 - head) / bars;
+    // As big as the room allows without pulling it wide (owner, 2026-10-18: "as visible as possible without making it
+    // hard to read due to stretching"): each bar its natural width, a beat's room as engravers space a quarter note (a
+    // little more, for tapping), so a bar of four quarters reads the same at any screen width; the line as tall as the
+    // height allows, made smaller only when its natural width would not fit across, and centred.
+    const barW = (meter.beats * (4 / meter.beatType)) * QUARTER_ROOM + BAR_PAD;
+    const w = 8 + head + bars * barW;
+    const scale = Math.max(0.5, Math.min(MAX_SCALE, Number.isFinite(maxH) ? maxH / h : 1.5, width / w));
+    const host = document.createElement('div');
+    this.el.append(host);
+    const renderer = new VF.Renderer(host, VF.Renderer.Backends.SVG);
+    renderer.resize(w * scale, h * scale);
+    const ctx = renderer.getContext();
+    ctx.scale(scale, scale);
     const quarterMs = p.beatMs * (meter.beatType / 4);
     let at = 0;
     const timeAt: number[] = [];
@@ -115,7 +123,7 @@ class Line {
     // The overlay: same size, scaled the same way, over the music.
     this.overlay.replaceChildren();
     this.overlay.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    this.overlay.setAttribute('width', String(width));
+    this.overlay.setAttribute('width', String(w * scale));
     this.overlay.setAttribute('height', String(h * scale));
     this.cursorLine.setAttribute('y1', '2');
     this.cursorLine.setAttribute('y2', String(h - 2));
@@ -188,7 +196,7 @@ class Line {
   }
 }
 
-/** The two lines: now (with marks and the moving line) and next (faded, to read ahead). */
+/** The line: now (with marks and the moving line); `next` is kept empty (one line since 2026-10-18). */
 export class FlowView {
   private now = new Line('now');
   private next = new Line('next');
@@ -197,20 +205,21 @@ export class FlowView {
     box.replaceChildren(this.now.el, this.next.el);
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => this.redraw()).observe(box);
   }
-  private width(): number { const cs = getComputedStyle(this.box); return Math.min(this.box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), 720); }
-  /** Shows these cards: the one being played and the next; rhythm: one line, else each card in the clef its notes need. */
-  show(current: Placed | null, upcoming: Placed | null, rhythm: boolean): void {
+  private width(): number { const cs = getComputedStyle(this.box); return Math.min(this.box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), 1100); }
+  /** Shows the card being played, one line as big as the room allows (owner, 2026-10-18: "the line should be much larger,
+   * why do we need to see the next exercise": the next is no longer drawn); rhythm: a one-line staff, else the clef its
+   * notes need. (upcoming: kept for the screen's call; not drawn.) */
+  show(current: Placed | null, _upcoming: Placed | null, rhythm: boolean): void {
     this.rhythm = rhythm;
     this.now.draw(current, clefOf(current, rhythm), this.width(), this.lineHeight());
-    this.next.draw(upcoming, clefOf(upcoming, rhythm), this.width(), this.lineHeight());
+    this.next.draw(null, 'treble', 0);
   }
-  /** Each line's share of the box's height (two lines and the gap between). */
-  private lineHeight(): number { const cs = getComputedStyle(this.box); const inner = this.box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom); return inner > 40 ? (inner - 6) / 2 : Infinity; }
+  /** The line's height: the whole box. */
+  private lineHeight(): number { const cs = getComputedStyle(this.box); const inner = this.box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom); return inner > 40 ? inner - 6 : Infinity; }
   private redraw(): void {
     // (a turn or a resize: drawn again at the new width; the marks so far are kept by the screen and put back)
-    const cur = this.now.placed, nxt = this.next.placed;
+    const cur = this.now.placed;
     this.now.draw(cur, clefOf(cur, this.rhythm), this.width(), this.lineHeight());
-    this.next.draw(nxt, clefOf(nxt, this.rhythm), this.width(), this.lineHeight());
     this.onRedraw?.();
   }
   onRedraw?: () => void;

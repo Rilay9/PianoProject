@@ -46,7 +46,7 @@
     },
     {
       "kind": "text",
-      "text": "Then the same in time. One bar of clicks counts you in; after that the click keeps going and the cards keep coming, one in the treble clef and one in the bass at random, with a bar between them to look at the next one (it's shown faded underneath while you play). Each note gets a dot as you play it: green on time, orange early or late, red for a wrong key. Start at 60; use **+** when it feels easy."
+      "text": "Then the same in time. Play the card's first note to start (or press Start for a bar of clicks first); after that the click keeps going and the cards keep coming, one in the treble clef and one in the bass at random, each new card showing as the bar between them starts, so you have a bar to read it. Each note gets a dot as you play it: green on time, orange early or late, red for a wrong key (named for you). Start at 60; use **+** when it feels easy."
     },
     {
       "kind": "step",
@@ -155,7 +155,7 @@
     },
     {
       "kind": "text",
-      "text": "# Part 3. Rhythm\nTen minutes a day. This screen works like a rhythm trainer: one bar counts in, then exercises keep coming on a click that doesn't stop. Tap the big pad (or any key) for each note. Every tap gets a dot over its note: **green** on time, **orange** early (←) or late (→), **grey** missed, and a grey tick for a tap where there's no note. Under the music: how that exercise went; at the top, your share on time and how many in a row.\n\n- **Tap along** plays the rhythm with you; **Read** gives you only the click. Start a level with Tap along if it's new, then switch to Read: reading it is the skill.\n- **− / +** change the tempo; **Speed up by itself** adds 5 after three good exercises in a row.\n- **Loop this one** repeats the exercise you're on until you switch it off.\n- **Judge note lengths** also marks a note let go too soon (off unless you want it).\n- Count in your head, *1 2 3 4*. A round is 8 exercises; stop whenever you like, or just stop tapping."
+      "text": "# Part 3. Rhythm\nTen minutes a day. This screen works like a rhythm trainer: your first tap starts it (or **Start** counts in a bar), then exercises keep coming on a click that doesn't stop. Tap for each note: any key on a keyboard; without one, the pad (on a phone held sideways, the music itself). Every tap gets a dot over its note: **green** on time, **orange** early (←) or late (→), **grey** missed, and a grey tick for a tap where there's no note. The scores show how the last exercise went, your share on time and how many in a row.\n\n- **Tap along** plays the rhythm with you; **Read** gives you only the click. Start a level with Tap along if it's new, then switch to Read: reading it is the skill.\n- **− / +** at the top change the tempo.\n- **Speed up by itself** adds 5 after three good exercises in a row; **Loop this one** repeats the exercise you're on until you switch it off; **Judge note lengths** also marks a note let go too soon (off unless you want it). On a phone held sideways these three are under **⋯**.\n- Count in your head, *1 2 3 4*. A round is 8 exercises; stop whenever you like, or just stop tapping."
     },
     {
       "kind": "step",

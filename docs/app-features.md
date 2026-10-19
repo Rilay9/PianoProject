@@ -875,7 +875,12 @@ or a MIDI keyboard).
 - **Count-in once**, one bar ("1 2 3 4" big on screen), then **it keeps going**: the click never stops, a rhythm
   exercise follows the last with no gap, a melody after one bar's gap. The exercise being played is drawn on its own
   line (a one-line staff for rhythm, a treble or bass staff for a melody, whichever its notes need), with **the next one
-  faded under it** to read ahead; a line moves through the notes with the clock. Drawn with VexFlow.
+  faded under it** to read ahead; a line moves through the notes with the clock. Drawn with VexFlow. **Since 2026-10-18 one
+  line only** (owner: "the line should be much larger, why do we need to see the next exercise"): a tune's next card shows
+  as the bar between cards starts (a bar to read it), a rhythm's a beat before it. **Size** (owner: "as visible as possible
+  without making it hard to read due to stretching"): each bar at its natural width (a quarter note's room as engravers
+  space it, a little more for tapping), the line as tall as the height allows, smaller only when that width would not fit
+  across, centred: never pulled wide to fill the screen.
 - **A mark on every tap, as it lands**: a dot over its note, green on time (±100 ms), orange early (←) or late (→) up to
   its window (260 ms, never past 45 % of the gap to a neighbour), red a wrong key, a grey ring missed; a grey tick for a
   tap near no note (an extra tap, counted for the exercise whose stretch it fell in). Only *when* is judged unless
@@ -900,7 +905,7 @@ or a MIDI keyboard).
 - **Keys**: a melody's card shows its own notes' octaves only (two octaves on a phone; they change in the bar between
   cards), no names on them. Rhythm: the pad, **none with a keyboard connected** (any key taps; owner, 2026-10-18).
 - **Sideways on a phone** (owner, 2026-10-18, asked with options: "Its one line you can fit things on the bottom"): the
-  music across the whole width, the next exercise faded under it; **one bar of controls under the music**: Start,
+  music across the whole width (one line, as above); **one bar of controls under the music**: Start,
   Tap along / Read, **⋯** (Speed up by itself, Judge note lengths, Loop this one, as a small popover that doesn't stop
   the run), then what it says and the scores; the keys along the bottom for a tune. A rhythm set with no keyboard: **the
   music itself is the pad** (tap anywhere on it). The summary after a run sits over the music. The task line is left out
@@ -1305,6 +1310,11 @@ Files in `web/public/content/sets/`, listed in `index.json`; read by `web/src/ex
 (since 2026-10-18 `generate` may be a **list** of these, their cards together: 3/4 and 4/4 in one set, say; and a card never
 has two rests running, nor rests over half a bar, unless a rest is its `feature`). From Practice a rhythm set opens in
 **Read in time** (§5e); Drills still plays it:
+
+**How often each value comes** (owner, 2026-10-18: "Make rests and whole notes much rarer"; `rhythm.ts` VALUE_WEIGHT): a
+card's values are picked by weight where they fit: quarters and eighth pairs 1, halves 0.6, dotted halves 0.5, whole
+notes 0.1, quarter rests 0.12, half rests 0.08, whole rests 0.03 (level 1's cards: about 64 % quarters, 27 % halves,
+8 % rests, 2 % whole notes). Made-up tunes take their rhythm from the same picker.
 
 ```json
 { "title": "Quarter and half notes", "kind": "rhythm", "tempo": 72,

@@ -81,6 +81,19 @@ function placeable(values: RhythmValue[], beats: number, bars: number, f: Rhythm
 }
 
 /** One random card: its bars, each a list of values that adds up to the bar, the first a note. */
+/**
+ * How often each value is picked where it fits (owner, 2026-10-18: "Make rests and whole notes much rarer"): notes that
+ * keep the hand busy most, a whole note or a rest now and then. Relative weights; a value the spec doesn't give is never
+ * picked.
+ */
+export const VALUE_WEIGHT: Record<RhythmValue, number> = { quarter: 1, eighths: 1, half: 0.6, 'dotted-half': 0.5, whole: 0.1, 'quarter-rest': 0.12, 'half-rest': 0.08, 'whole-rest': 0.03 };
+function pick(options: RhythmValue[], rng: () => number): RhythmValue {
+  const total = options.reduce((n, v) => n + VALUE_WEIGHT[v], 0);
+  let r = rng() * total;
+  for (const v of options) { r -= VALUE_WEIGHT[v]; if (r < 0) return v; }
+  return options[options.length - 1];
+}
+
 export function randomCard(spec: RhythmSpec, rng: () => number = Math.random): RhythmValue[][] {
   const beats = METERS[spec.meter].beats, can = fillable(spec.values, beats);
   for (let tries = 0; tries < 1000; tries++) {
@@ -91,7 +104,7 @@ export function randomCard(spec: RhythmSpec, rng: () => number = Math.random): R
       while (left > 0) {
         const first = b === 0 && !bar.length;
         const options = spec.values.filter((v) => VALUE_BEATS[v] <= left && can[left - VALUE_BEATS[v]] && !(first && isRest(v)));
-        const v = options[Math.floor(rng() * options.length)];
+        const v = pick(options, rng);
         bar.push(v);
         left -= VALUE_BEATS[v];
       }

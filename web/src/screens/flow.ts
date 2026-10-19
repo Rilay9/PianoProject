@@ -1,7 +1,7 @@
 // Read in time: the screen (flow/engine.ts says what it is and why; flow/view.ts draws it). A rhythm set is tapped on
 // one big pad (or any key); a set of melodies is played on the keys (or a MIDI keyboard). One bar counts in, then the
 // exercises follow one another on a click that never stops: a rhythm's straight after the last, a melody's after one bar
-// to look at it (the next card is shown faded the whole time). Each tap is marked as it lands; each exercise gets a line
+// to look at it (the card shows as that bar starts; one line only, since 2026-10-18). Each tap is marked as it lands; each exercise gets a line
 // of score; Stop (or nothing played for two bars) ends the session with its summary, Keep going, and in a lesson step
 // Back to the lesson. Choices: Tap along / Read, tempo − +, Speed up by itself, Loop this one, Judge note lengths.
 // Starting (owner, 2026-10-18: "start the drill at any time by pressing the first key in the sequence I dont want to have
@@ -138,10 +138,11 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
       say(beat >= 1 ? `${beat}` : '', 'Count in', 'count');
     }
     for (const n of judge.tick(now)) marked(n, { mark: 'missed' });
-    // An exercise over (its end and its gap, less half a beat: the next one shows a moment early, to read): the next on
-    // screen. Its score waits until its last note's window has closed too (a late last note, or an extra tap in its last
-    // half beat, still counts for it).
-    while (placed.length && now >= placed[0].end + gapBars() * placed[0].beatMs * placed[0].barBeats - placed[0].beatMs * 0.5) {
+    // An exercise over: the next on screen, one line only (owner, 2026-10-18: "the line should be much larger, why do we
+    // need to see the next exercise"). A tune's comes as the bar between them starts (a bar to read it); a rhythm's, with
+    // no bar between, a beat before it. Its score waits until its last note's window has closed too (a late last note,
+    // or an extra tap in its last beat, still counts for it).
+    while (placed.length && now >= placed[0].end - (gapBars() ? 0 : placed[0].beatMs)) {
       ending.push(placed.shift()!);
       fill(placed.at(-1)!.end + gapBars() * placed.at(-1)!.beatMs * placed.at(-1)!.barBeats);
       schedule();

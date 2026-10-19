@@ -1201,7 +1201,7 @@ body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !impo
 .fl-stats #fl-acc { color: var(--fg); font-weight: 600; }
 .fl-flash { color: var(--accent); font-weight: 700; }
 .fl-music { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 4px 8px; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: var(--paper, #fff); }
-.fl-line { position: relative; }
+.fl-line { position: relative; width: fit-content; max-width: 100%; margin: 0 auto; } /* (the line at its own width, centred: never stretched) */
 .fl-line.next { opacity: 0.38; }
 .fl-line svg { display: block; }
 .fl-line > div svg { filter: var(--music-filter); } /* (the music inverted in the dark theme, as everywhere; the marks over it keep their colours) */
