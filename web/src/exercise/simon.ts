@@ -17,7 +17,7 @@
 //   gives the pattern again as the level gives it (Show me, at 3 and 4: the music, which those levels read).
 
 import type { Sound, NoteEvent } from '../sound';
-import { midiOf, shown, type Item, type ItemSet } from './items';
+import { midiOf, shown, type Item, type ItemSet, setOptions } from './items';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
 import { activityTag, addEntry, Run, type ActivityTag } from '../log';
@@ -173,7 +173,7 @@ export class Simon {
     this.sets = sets;
     this.preset = { ...activity?.level };
     this.level = { ...this.mine, ...this.preset };
-    this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
+    this.ui.set.replaceChildren(...setOptions(sets));
     if (activity) this.chooseSet(activity.set, false);
     else this.chooseSet(sets.some((s) => s.id === this.mySet) ? this.mySet! : sets[0].id);
   }

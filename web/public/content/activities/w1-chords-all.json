@@ -1,0 +1,10 @@
+{
+  "title": "All five chords, by name",
+  "screen": "drills",
+  "set": "chords-c-g-left",
+  "level": {
+    "rung": 4,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

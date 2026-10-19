@@ -127,7 +127,7 @@ The click on its own, with no score.
 - Its volume is the click volume in Settings.
 
 # Practice and Exercises {#practice}
-Practice lists the tools: Look it up, Exercises, Drills, Simon, the accompaniment lab, Free play and the metronome. **Look it up** (also 📖 on the exercise screens) has pictures of every line and space of both clefs, landmarks, hand positions, intervals, chords, note values and sharps and flats; tap a picture to hear it.
+At the top, **This week** lists your lesson's drills: one tap goes straight in (it counts for the lesson), the one you played last first. Below, Practice lists the tools: Look it up, Exercises, Drills, Simon, the accompaniment lab, Free play and the metronome. **Look it up** (also 📖 on the exercise screens) has pictures of every line and space of both clefs, landmarks, hand positions, intervals, chords, note values and sharps and flats; tap a picture to hear it.
 
 **Exercises** lists every exercise by kind; the chips at the top filter them. One tap opens an exercise its usual way: cards in Drills or Simon, music on the score. Inside, ▾ next to Drills or Simon switches the way.
 

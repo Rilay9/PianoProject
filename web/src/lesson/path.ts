@@ -151,7 +151,9 @@ export function allSets(app: App): Promise<{ sets: ItemSet[]; problems: string[]
   });
   sets = p.then((x) => x.sets, () => { sets = null; return []; });
   // (kept once every set read; one that failed, perhaps offline, is asked for again next time)
-  return p.then((x) => { if (!x.problems.length) setsKept = x; return x; });
+  // ("Test: …" sets are the checks' content: not in the learner's menus and lists, as the test rungs are not; 2026-10-18)
+  const learner = (x: { sets: ItemSet[]; problems: string[] }) => (showTestContent() ? x : { ...x, sets: x.sets.filter((s) => !/^Test:/.test(s.title)) });
+  return p.then((x) => { const y = learner(x); if (!x.problems.length) setsKept = y; return y; });
 }
 let musicKept: Promise<Piece[]> | null = null;
 /**

@@ -47,7 +47,7 @@ import { kindsOfColours, MARK, showLegend } from '../result-marks';
 import { joinWords, keyboardConnected, keyDoes, edgesReady } from '../key-words';
 import { drift, driftWords } from '../drift';
 import { drawBeatLine, type BeatLine, type BeatLineNote } from './beatline';
-import { midiOf, shown, clefOf, staffOfNote, type Item, type ItemSet } from './items';
+import { midiOf, shown, clefOf, staffOfNote, setOptions, type Item, type ItemSet } from './items';
 import { wrongWords, letterOf, keyName, playedWords, lookBetween } from '../staff-words';
 import type { ExerciseKeys } from './keys';
 import type { ExerciseNotation } from './notation';
@@ -270,7 +270,7 @@ export class Drill {
     this.keys.onKey = (midi, down, time, input) => this.key(midi, down, time, input);
     this.sets = sets;
     this.preset = { ...activity?.level };
-    this.ui.set.replaceChildren(...sets.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
+    this.ui.set.replaceChildren(...setOptions(sets));
     if (activity) this.chooseSet(activity.set, false);
     else this.chooseSet(sets.some((s) => s.id === this.stored.set) ? this.stored.set! : sets[0].id);
   }

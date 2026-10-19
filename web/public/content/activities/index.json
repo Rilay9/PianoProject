@@ -39,5 +39,8 @@
   "w1-notes-middle-c.json",
   "w1-intervals-bass-2-3.json",
   "w1-intervals-treble-2-3.json",
-  "w1-intervals-treble-4-5.json"
+  "w1-intervals-treble-4-5.json",
+  "w1-notes-ledger.json",
+  "w1-intervals-bass-4-5.json",
+  "w1-chords-all.json"
 ]

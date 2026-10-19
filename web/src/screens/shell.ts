@@ -5,13 +5,13 @@
 // open over all of it with no tabs (main.ts); ← and Android Back come back here (nav.ts).
 
 import { $, base, type App, type Piece, type Screen } from '../app';
-import { EXERCISE_KINDS, type ExerciseKind } from '../exercise/items';
+import { EXERCISE_KINDS, KIND_NAMES, type ExerciseKind } from '../exercise/items';
 import { entries, type LogEntry } from '../log';
 import { allRecords, load as loadLibrary } from '../library/store';
 import { loadCharts } from '../library/items';
 import * as nav from '../nav';
 import { createLessonPage, type LessonDeps } from '../lesson/page';
-import { allSets, currentOf, earlierNotDone, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepName, stepStates, stepsOf } from '../lesson/path';
+import { activityOf, allSets, currentOf, earlierNotDone, lessonOrder, lessonState, loadPath, musicExercises, placeOf, stepName, stepStates, stepsOf } from '../lesson/path';
 import { currentLesson, doneSteps, setCurrentLesson } from '../lesson/progress';
 import { runLine } from '../lesson/result';
 import { stopMiniScores } from '../lesson/miniscore';
@@ -52,7 +52,6 @@ const MODE_NAMES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me'
 export const DEFAULT_WAY: Record<ExerciseKind | 'other', 'drill' | 'simon'> = {
   notes: 'drill', scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', find: 'drill', other: 'drill',
 };
-const KIND_NAMES: Record<ExerciseKind | 'other', string> = { notes: 'Note reading', scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', find: 'Finding the keys', other: 'Other' };
 
 /** Something practised or opened lately, and how to carry on with it. */
 interface Recent { key: string; title: string; what: string; at: string; icon: IconName; open: () => void }
@@ -361,7 +360,44 @@ export function createShell(app: App, d: ShellDeps) {
       li.append(ic, tx, el('span', 'r', '›'));
       list.append(li);
     }
-    $('practice-body').replaceChildren(list, el('p', 'note', 'Memorise stays with each piece: Music → a piece → Memorise.'), helpLink('practice'));
+    const week = el('div', 'week-drills');
+    $('practice-body').replaceChildren(week, list, el('p', 'note', 'Memorise stays with each piece: Music → a piece → Memorise.'), helpLink('practice'));
+    void fillThisWeek(week);
+  }
+
+  /**
+   * This week (owner, 2026-10-18: "make sure there's enough good stuff (and an easy and fast ux) for me to keep going on
+   * the drills"; asked with options: a row at the top of Practice): the lesson you are on's practice steps (Drills and
+   * Read in time), one tap each straight into it, as from the lesson page (counted for its step), the one played last
+   * first. Hidden when the lesson has none.
+   */
+  let weekN = 0;
+  async function fillThisWeek(box: HTMLElement): Promise<void> {
+    const n = ++weekN;
+    const path = await loadPath();
+    if (n !== weekN) return;
+    const lesson = currentOf(path), place = lesson ? placeOf(path, lesson.id) : undefined;
+    if (!lesson || !place) return;
+    const steps = stepsOf(lesson);
+    const acts = await Promise.all(steps.map((s) => activityOf(s).catch(() => null)));
+    if (n !== weekN) return;
+    const done = doneSteps(lesson.id);
+    const lastAt = (id: string) => entries().filter((e) => e.lesson?.lesson === lesson.id && e.lesson.step === id).map((e) => e.at).sort().at(-1) ?? '';
+    const rows = steps.map((s, i) => ({ s, a: acts[i] })).filter((x) => x.a && (x.a.screen === 'drills' || x.a.screen === 'flow'));
+    if (!rows.length) return;
+    const last = rows.map((x) => ({ x, at: lastAt(x.s.id) })).filter((y) => y.at).sort((p, q) => (p.at < q.at ? 1 : -1))[0]?.x;
+    const ordered = last ? [last, ...rows.filter((x) => x !== last)] : rows;
+    const list = el('div', 'list');
+    for (const { s, a } of ordered) {
+      const li = button('', 'li', () => void d.launch(a!, { rung: place.rung.id, lesson: lesson.id, step: s.id }, s.about));
+      li.dataset.week = s.id;
+      const tx = el('span', 'tx');
+      tx.append(el('span', 'tt', s.title), el('span', 'mm', [a!.screen === 'flow' ? 'Read in time' : 'Drills', s === last?.s ? 'played last' : '', done[s.id] ? 'done' : ''].filter(Boolean).join(' · ')));
+      const ic = el('span', 'ic'); ic.append(icon(a!.screen === 'flow' ? 'metronome' : 'drills'));
+      li.append(ic, tx, el('span', 'r', '›'));
+      list.append(li);
+    }
+    box.replaceChildren(el('div', 'grp', /^this week/i.test(lesson.title) ? lesson.title : `This week · ${lesson.title}`), list);
   }
 
   // ---- Exercises -------------------------------------------------------------------------------------------------

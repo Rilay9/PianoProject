@@ -5012,12 +5012,12 @@ try {
     await ctx.close();
   } catch (e) { ok('week: the Keep going part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
 
-  // 5. The lesson page: every block drawn, 23 steps (one optional), no page errors; screenshots top to bottom.
+  // 5. The lesson page: every block drawn, 26 steps (one optional), no page errors; screenshots top to bottom.
   try {
     const { ctx, page, errors } = await wkTab('?page=lesson&lesson=r2-week-1', { width: 360, height: 780 });
     const look = await page.evaluate(() => ({ steps: document.querySelectorAll('.les-step').length, optional: document.querySelectorAll('.les-step-state.optional').length, rw: document.querySelectorAll('.les-rw').length, keys: document.querySelectorAll('.les-diagram').length, kb: document.querySelectorAll('.les-playkeys').length, bad: [...document.querySelectorAll('.les-bad')].map((e) => e.textContent), h: document.scrollingElement.scrollHeight }));
     await page.screenshot({ path: join(WK, 'lesson-top-360x780.png') });
-    ok('week: the lesson page: 23 steps (1 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 23 && look.optional === 1 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
+    ok('week: the lesson page: 26 steps (4 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 26 && look.optional === 4 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
     await ctx.close();
   } catch (e) { ok('week: the lesson page part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
   } // (end of `--only week`)

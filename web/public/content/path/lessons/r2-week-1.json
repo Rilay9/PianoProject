@@ -34,6 +34,14 @@
       "about": "One note a card, every line and space of the treble staff. Play it."
     },
     {
+      "kind": "step",
+      "id": "notes-ledger",
+      "title": "Single notes: ledger lines, both clefs",
+      "activity": "w1-notes-ledger",
+      "optional": true,
+      "about": "Extra: the notes just above and below each staff, middle C both ways included."
+    },
+    {
       "kind": "text",
       "text": "Now short tunes in C position, made up fresh for every card. The blue note is the one to play next; notes you have played turn green. **Hear it** plays the card with every note's letter written under it (the letters go when you start playing)."
     },
@@ -154,6 +162,14 @@
       "about": "Bigger gaps: a 4th line to space (or space to line), a 5th line to the line two up (or space to the space two up)."
     },
     {
+      "kind": "step",
+      "id": "intervals-bass-4-5",
+      "title": "Intervals: 4ths and 5ths, bass clef",
+      "activity": "w1-intervals-bass-4-5",
+      "optional": true,
+      "about": "Extra: the same bigger gaps in the bass clef."
+    },
+    {
       "kind": "text",
       "text": "# Part 3. Rhythm\nTen minutes a day. This screen works like a rhythm trainer: your first tap starts it (or **Start** counts in a bar), then exercises keep coming on a click that doesn't stop. Tap for each note: any key on a keyboard; without one, the pad (on a phone held sideways, the music itself). Every tap gets a dot over its note: **green** on time, **orange** early (←) or late (→), **grey** missed, and a grey tick for a tap where there's no note. The scores show how the last exercise went, your share on time and how many in a row.\n\n- **Tap along** plays the rhythm with you; **Read** gives you only the click. Start a level with Tap along if it's new, then switch to Read: reading it is the skill.\n- **− / +** at the top change the tempo.\n- **Speed up by itself** adds 5 after three good exercises in a row; **Loop this one** repeats the exercise you're on until you switch it off; **Judge note lengths** also marks a note let go too soon (off unless you want it). On a phone held sideways these three are under **⋯**.\n- Count in your head, *1 2 3 4*. A round is 8 exercises; stop whenever you like, or just stop tapping."
     },
@@ -229,6 +245,14 @@
       "title": "Chords in G, by name",
       "activity": "w1-chords-g",
       "about": "A name comes up (G, C or D7): play that chord with your left hand, all three notes together."
+    },
+    {
+      "kind": "step",
+      "id": "chords-all",
+      "title": "All five chords, by name",
+      "activity": "w1-chords-all",
+      "optional": true,
+      "about": "Extra: C, F, G7, G and D7 mixed. Any C chord counts for C, in C position or G position."
     },
     {
       "kind": "text",

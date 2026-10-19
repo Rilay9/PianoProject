@@ -103,6 +103,12 @@ scrolling and honest states.
   G major's key signature). Every letter and place is worked out from the pitches; a picture plays when tapped. Opened
   from Practice (first in the list), and **📖** on Drills, Simon and Read in time (over the screen: a panel pauses what
   runs, as any panel). The section last looked at opens again.
+- **This week** (owner, 2026-10-18: "make sure there's enough good stuff (and an easy and fast ux) for me to keep going
+  on the drills"; asked with options: a row at the top of Practice): the lesson you are on's practice steps (Drills and
+  Read in time, optional extras included), one tap each straight into the step's activity as from the lesson page (it
+  counts for the step), the one played last first, "done" on those done. Not shown when that lesson has none.
+- **The set menus** (Drills, Simon) are grouped by kind (Note reading, Intervals, Chords, Melodies, Rhythm…), and the
+  checks' "Test: …" sets are left out of every learner list and menu (as the test rungs are; the checks still see them).
 - **Practice:** Look it up, Exercises, Drills, Simon, Accompaniment lab, Free play, Metronome, each with its icon, one line on what it
   is and the last thing done there (Drills, Simon, the lab); two columns of cards on a tablet (V02).
 - **Icons** (owner, 2026-10-15: one consistent line-icon set; `web/src/icons.ts`): simple outline drawings as inline SVG,

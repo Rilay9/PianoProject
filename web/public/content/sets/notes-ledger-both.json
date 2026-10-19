@@ -1,0 +1,16 @@
+{
+  "title": "Single notes: ledger lines, both clefs",
+  "kind": "notes",
+  "generate": [
+    {
+      "clef": "treble",
+      "from": "A3",
+      "to": "C6"
+    },
+    {
+      "clef": "bass",
+      "from": "C2",
+      "to": "E4"
+    }
+  ]
+}

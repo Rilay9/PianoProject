@@ -43,5 +43,7 @@
   "intervals-treble-4-5.json",
   "intervals-bass-4-5.json",
   "intervals-all.json",
-  "intervals-together.json"
+  "intervals-together.json",
+  "notes-ledger-both.json",
+  "chords-c-g-left.json"
 ]

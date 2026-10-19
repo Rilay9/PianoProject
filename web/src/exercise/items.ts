@@ -88,6 +88,21 @@ export function readPlay(v: unknown): Play {
 /** What kind of exercise a set is (owner, 2026-10-15: Exercises lists them by kind). */
 export const EXERCISE_KINDS = ['notes', 'intervals', 'scales', 'five-finger', 'arpeggios', 'chords', 'cadences', 'melodies', 'rhythm', 'find'] as const;
 export type ExerciseKind = (typeof EXERCISE_KINDS)[number];
+/** Each kind's name, as Exercises and the set menus group them. */
+export const KIND_NAMES: Record<ExerciseKind | 'other', string> = { notes: 'Note reading', intervals: 'Intervals', scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', find: 'Finding the keys', other: 'Other' };
+/** A set menu's options grouped by kind, in the kinds' order (2026-10-18: one list of 40-odd sets was slow to find in). */
+export function setOptions(sets: ItemSet[]): HTMLElement[] {
+  const out: HTMLElement[] = [];
+  for (const k of [...EXERCISE_KINDS, 'other' as const]) {
+    const these = sets.filter((s) => (s.kind ?? 'other') === k);
+    if (!these.length) continue;
+    const g = document.createElement('optgroup');
+    g.label = KIND_NAMES[k];
+    g.append(...these.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.title })));
+    out.push(g);
+  }
+  return out;
+}
 
 export interface ItemSet {
   id: string; title: string; order: 'pool' | 'passage'; items: Item[]; /** quarter notes a minute */ tempo: number;

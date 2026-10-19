@@ -1,0 +1,32 @@
+{
+  "title": "Chords in C and G, left hand: C, F, G7, G, D7",
+  "kind": "chords",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "C3 E3 G3",
+      "name": "C",
+      "short": "C"
+    },
+    "2": {
+      "notes": "C3 F3 A3",
+      "name": "F",
+      "short": "F"
+    },
+    "3": {
+      "notes": "B2 F3 G3",
+      "name": "G7",
+      "short": "G7"
+    },
+    "4": {
+      "notes": "G2 B2 D3",
+      "name": "G",
+      "short": "G"
+    },
+    "5": {
+      "notes": "F#2 C3 D3",
+      "name": "D7",
+      "short": "D7"
+    }
+  }
+}

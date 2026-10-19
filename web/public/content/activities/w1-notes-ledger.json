@@ -1,0 +1,10 @@
+{
+  "title": "Single notes: ledger lines, both clefs",
+  "screen": "drills",
+  "set": "notes-ledger-both",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

@@ -16,7 +16,7 @@ globalThis.clearTimeout = cancel;
 globalThis.clearInterval = cancel;
 const store = new Map();
 globalThis.localStorage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k) };
-globalThis.document = { createElement: () => ({}) };
+globalThis.document = { createElement: () => ({ append() {} }) }; // (append: the set menus are grouped, items.ts setOptions)
 /** Runs the timers due in the next `ms` (one-shot: an interval is not run again). */
 async function pass(ms) {
   clock += ms;
