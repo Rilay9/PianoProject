@@ -4910,18 +4910,20 @@ try {
     const W = `${vp.width}×${vp.height}`;
     try {
       const { ctx, page, errors } = await wkTab('?tool=flow&set=rhythm-level-1', vp);
-      const layout = await page.evaluate(() => {
+      // (sideways the music itself is the pad: owner, 2026-10-18; upright the pad under it)
+      const PAD = vp.width > vp.height ? 'fl-music' : 'fl-pad';
+      const layout = await page.evaluate((PAD) => {
         const r = (id) => document.getElementById(id).getBoundingClientRect();
         const svgs = [...document.querySelectorAll('#fl-music svg')].map((s) => s.getBoundingClientRect());
-        return { pad: r('fl-pad'), go: r('fl-go'), keysHidden: document.getElementById('fl-keyboard').hidden, widest: Math.max(0, ...svgs.map((s) => s.right)), lines: svgs.length, h: innerHeight, w: innerWidth };
-      });
+        return { pad: r(PAD), padShown: getComputedStyle(document.getElementById('fl-pad')).display !== 'none' && !document.getElementById('fl-pad').hidden, go: r('fl-go'), keysHidden: document.getElementById('fl-keyboard').hidden, widest: Math.max(0, ...svgs.map((s) => s.right)), lines: svgs.length, h: innerHeight, w: innerWidth };
+      }, PAD);
       await page.screenshot({ path: join(WK, `rhythm-ready-${vp.width}x${vp.height}.png`) });
       await wkTapSel(page, '#fl-go');
       await page.waitForFunction(() => window.__pianoDebug.flow().running, null, { timeout: 8000 });
       // In the page, by position (elementFromPoint, so nothing over the pad is skipped), at the clock's own times as heard.
-      const run = await page.evaluate(async () => {
-        const D = () => window.__pianoDebug.flow(), pad = document.getElementById('fl-pad');
-        const tap = () => { const b = pad.getBoundingClientRect(), x = b.left + b.width / 2 + 7, y = b.top + b.height * 0.6, t = document.elementFromPoint(x, y); t.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: x, clientY: y, pointerId: 9, isPrimary: true, pointerType: 'touch' })); setTimeout(() => t.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: x, clientY: y, pointerId: 9, isPrimary: true, pointerType: 'touch' })), 90); return t.id; };
+      const run = await page.evaluate(async (PAD) => {
+        const D = () => window.__pianoDebug.flow(), pad = document.getElementById(PAD);
+        const tap = () => { const b = pad.getBoundingClientRect(), x = b.left + b.width / 2 + 7, y = b.top + b.height * 0.6, t = document.elementFromPoint(x, y); t.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: x, clientY: y, pointerId: 9, isPrimary: true, pointerType: 'touch' })); setTimeout(() => t.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: x, clientY: y, pointerId: 9, isPrimary: true, pointerType: 'touch' })), 90); return t.closest(`#${PAD}`) ? PAD : t.id; };
         const d0 = D(), ex = d0.placed.slice(0, 2), notes = ex.flatMap((p) => p.notes);
         // the first exercise's 2nd note early by 170, its 3rd late by 170, its 4th missed (where it has them); the rest on
         // time; then one extra tap in the second's last stretch
@@ -4940,7 +4942,7 @@ try {
         while (D().now - D().heard < end + 400) await new Promise((r) => setTimeout(r, 20));
         const d = D();
         return { hit: [...new Set(hit)], first: n0, says: [...says], scores: d.scores.slice(0, 2), line: document.getElementById('fl-last').textContent, acc: document.getElementById('fl-acc').textContent };
-      });
+      }, PAD);
       await page.screenshot({ path: join(WK, `rhythm-running-${vp.width}x${vp.height}.png`) });
       await wkTapSel(page, '#fl-go'); await page.waitForTimeout(500); // Stop
       const after = await page.evaluate(() => ({ result: !document.getElementById('fl-result').hidden, line: document.getElementById('fl-result-line').textContent, keep: document.getElementById('fl-keep').textContent, log: JSON.parse(localStorage.getItem('piano-web.log.v1') ?? '{"entries":[]}').entries.filter((e) => e.screen === 'flow') }));
@@ -4950,8 +4952,8 @@ try {
       const again = await page.evaluate(() => ({ running: window.__pianoDebug.flow().running, scores: window.__pianoDebug.flow().scores.length, result: !document.getElementById('fl-result').hidden }));
       await wkTapSel(page, '#fl-go');
       const [s0, s1] = run.scores;
-      ok(`week ${W}: Read in time (rhythm): the pad on screen and under the music, the keys hidden, the two lines of music inside the screen`, layout.pad.bottom <= layout.h + 1 && layout.pad.height > 80 && layout.keysHidden && layout.widest <= layout.w + 1 && layout.lines === 2, JSON.stringify(layout));
-      ok(`week ${W}: the count-in counts 1 2 3 4 on screen; taps on the pad (by position) judged as they land: the first exercise's 2nd note early, 3rd late, 4th missed (where it has them), the rest on time`, ['1', '2', '3', '4'].every((x) => run.says.includes(x)) && run.hit.every((h) => h === 'fl-pad') && s0?.total === run.first && s0.early === (run.first > 1 ? 1 : 0) && s0.late === (run.first > 2 ? 1 : 0) && s0.missed === (run.first > 3 ? 1 : 0) && s0.onTime === run.first - s0.early - s0.late - s0.missed, JSON.stringify(run));
+      ok(`week ${W}: Read in time (rhythm): the pad on screen (upright under the music; sideways the music itself, the pad gone), the keys hidden, the two lines of music inside the screen`, layout.pad.bottom <= layout.h + 1 && layout.pad.height > 80 && layout.padShown === (PAD === 'fl-pad') && layout.keysHidden && layout.widest <= layout.w + 1 && layout.lines === 2, JSON.stringify(layout));
+      ok(`week ${W}: the count-in counts 1 2 3 4 on screen; taps on the pad (by position) judged as they land: the first exercise's 2nd note early, 3rd late, 4th missed (where it has them), the rest on time`, ['1', '2', '3', '4'].every((x) => run.says.includes(x)) && run.hit.every((h) => h === PAD) && s0?.total === run.first && s0.early === (run.first > 1 ? 1 : 0) && s0.late === (run.first > 2 ? 1 : 0) && s0.missed === (run.first > 3 ? 1 : 0) && s0.onTime === run.first - s0.early - s0.late - s0.missed, JSON.stringify(run));
       ok(`week ${W}: the second exercise all on time with one extra tap ("… on time · 1 extra tap" under the music), the share at the top`, s1 && s1.onTime === s1.total && s1.extra === 1 && /on time · 1 extra tap/.test(run.line) && /% on time/.test(run.acc), JSON.stringify({ s1, line: run.line, acc: run.acc }));
       ok(`week ${W}: Stop: the summary ("2 exercises · …% on time"), logged as a flow run "stopped early"; Keep going counts in again from nothing`, after.result && /exercises · \d+% on time/.test(after.line) && after.log.length === 1 && after.log[0].result.ended === 'stopped early' && after.log[0].result.exercises >= 2 && again.running && again.scores === 0 && !again.result, JSON.stringify({ after: { ...after, log: after.log.map((e) => e.result) }, again }));
       ok(`week ${W}: Read in time (rhythm): no page errors`, errors.length === 0, errors.join(' | '));
@@ -5009,12 +5011,12 @@ try {
     await ctx.close();
   } catch (e) { ok('week: the Keep going part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
 
-  // 5. The lesson page: every block drawn, 18 steps (one optional), no page errors; screenshots top to bottom.
+  // 5. The lesson page: every block drawn, 23 steps (one optional), no page errors; screenshots top to bottom.
   try {
     const { ctx, page, errors } = await wkTab('?page=lesson&lesson=r2-week-1', { width: 360, height: 780 });
     const look = await page.evaluate(() => ({ steps: document.querySelectorAll('.les-step').length, optional: document.querySelectorAll('.les-step-state.optional').length, rw: document.querySelectorAll('.les-rw').length, keys: document.querySelectorAll('.les-diagram').length, kb: document.querySelectorAll('.les-playkeys').length, bad: [...document.querySelectorAll('.les-bad')].map((e) => e.textContent), h: document.scrollingElement.scrollHeight }));
     await page.screenshot({ path: join(WK, 'lesson-top-360x780.png') });
-    ok('week: the lesson page: 18 steps (1 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 18 && look.optional === 1 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
+    ok('week: the lesson page: 23 steps (1 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 23 && look.optional === 1 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
     await ctx.close();
   } catch (e) { ok('week: the lesson page part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
   } // (end of `--only week`)

@@ -1,0 +1,14 @@
+{
+  "title": "Intervals: 2nds and 3rds, treble clef",
+  "kind": "intervals",
+  "generate": {
+    "clef": "treble",
+    "from": "C4",
+    "to": "G5",
+    "sizes": [
+      2,
+      3
+    ],
+    "direction": "both"
+  }
+}

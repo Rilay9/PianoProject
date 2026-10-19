@@ -1,0 +1,16 @@
+{
+  "title": "Single notes: around middle C, both clefs",
+  "kind": "notes",
+  "generate": [
+    {
+      "clef": "treble",
+      "from": "A3",
+      "to": "E4"
+    },
+    {
+      "clef": "bass",
+      "from": "A3",
+      "to": "E4"
+    }
+  ]
+}

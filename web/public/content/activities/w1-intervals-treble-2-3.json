@@ -1,0 +1,10 @@
+{
+  "title": "Intervals: 2nds and 3rds, treble clef",
+  "screen": "drills",
+  "set": "intervals-treble-2-3",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

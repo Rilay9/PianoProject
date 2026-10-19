@@ -13,6 +13,7 @@ import { Chord, Interval, Note, Scale } from 'tonal';
 import { EXERCISE_KINDS, readSet } from '../src/exercise/items.ts';
 import { readRhythmSpec } from '../src/exercise/rhythm.ts';
 import { readMelodySpec } from '../src/exercise/melody.ts';
+import { readNoteSpec } from '../src/exercise/notecards.ts';
 import { readFindSpec } from '../src/exercise/find.ts';
 import { readChart, readStyle } from '../src/lab/music.ts';
 import { soundOf } from '../src/library/midi/band.ts';
@@ -141,7 +142,11 @@ function setProblems(f, fileThere, bars) {
     // Made-up tunes (2026-10-18, melody.ts): "generate" read by the app's own reader; nothing a generated set has no use for.
     for (const g of Array.isArray(f.generate) ? f.generate : [f.generate]) { try { readMelodySpec(g); } catch (e) { out.push(e.message); } }
     for (const k of ['items', 'from', 'rhythm', 'order', 'view']) if (f[k] !== undefined) out.push(`a generated melodies set has no "${k}"`);
-  } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm") and made-up tunes (kind "melodies")');
+  } else if ((f.kind === 'notes' || f.kind === 'intervals') && f.generate !== undefined) {
+    // Single notes and intervals (2026-10-18, notecards.ts): "generate" read by the app's own reader.
+    for (const g of Array.isArray(f.generate) ? f.generate : [f.generate]) { try { readNoteSpec(g, f.kind === 'intervals'); } catch (e) { out.push(e.message); } }
+    for (const k of ['items', 'from', 'rhythm', 'order', 'view']) if (f[k] !== undefined) out.push(`a generated ${f.kind} set has no "${k}"`);
+  } else if (f.generate !== undefined) out.push('"generate" is for rhythm sets (kind "rhythm"), made-up tunes (kind "melodies"), single notes (kind "notes") and intervals (kind "intervals")');
   // "Find it" sets (2026-10-16, after the walk-through): "find" only, read by the app's own reader of it.
   if (f.kind === 'find') {
     if (f.find === undefined) out.push('a "find" set needs "find": { keys, groups, places }');

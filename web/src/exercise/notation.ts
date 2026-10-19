@@ -9,7 +9,7 @@
 // lyric (OSMD draws lyrics in their own line under the notes, legible at 360 px; inside a notehead there is no room).
 
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
-import { midiOf, type Item } from './items';
+import { midiOf, clefOf, CHORD_SYMBOL, type Item } from './items';
 
 import { MARK, ringMissed } from '../result-marks';
 
@@ -37,8 +37,21 @@ function pitchXml(p: string): string {
   return `<pitch><step>${m[1]}</step>${alter ? `<alter>${alter}</alter>` : ''}<octave>${m[3]}</octave></pitch>`;
 }
 
-/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour; staccato: drawn with its dot. */
-function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null, staccato = false): string {
+/** A note's letter as a lyric under it (C, F♯, B♭): a card's names (owner, 2026-10-18: "tell me what the notes were in key names"). */
+const lyric = (text: string) => `<lyric number="1"><syllabic>single</syllabic><text>${text}</text></lyric>`;
+const letterText = (p: string) => p.replace(/-?\d+$/, '').replace('#', '♯').replace(/^([A-G])b/, '$1♭');
+
+/** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour; staccato: drawn with its dot; named: its letters under it. */
+/** A chord symbol over the music (MusicXML harmony): C, Am, G7, Cmaj7, F♯m7. */
+function harmonyXml(name: string, staff: number): string {
+  const m = CHORD_SYMBOL.exec(name);
+  if (!m) return '';
+  const alter = m[2] === '#' || m[2] === '♯' ? 1 : m[2] === 'b' || m[2] === '♭' ? -1 : 0;
+  const kind = { '': 'major', m: 'minor', '7': 'dominant', m7: 'minor-seventh', maj7: 'major-seventh' }[m[3] ?? ''];
+  return `<harmony print-frame="no"><root><root-step>${m[1]}</root-step>${alter ? `<root-alter>${alter}</root-alter>` : ''}</root><kind>${kind}</kind><staff>${staff}</staff></harmony>`;
+}
+
+function groupXml(group: string[], beats: number, staff: number, color: string | null, colorOf: (p: string) => string | null = () => null, staccato = false, named = false, chordName: string | null = null): string {
   const parts = values(beats);
   return parts.map((v, k) => {
     const first = k === 0, last = k === parts.length - 1;
@@ -48,10 +61,13 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
     const tied = marks ? `<notations>${marks}</notations>` : '';
     const tail = `<duration>${Math.round(v.beats * DIVISIONS)}</duration>${ties}<voice>${staff}</voice><type>${v.type}</type>${v.dot ? '<dot/>' : ''}`;
     if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
-    return group.map((p, i) => {
+    // (a chord's letters, low to high, under its first note: one lyric a note would be drawn on top of each other)
+    const letters = named && first ? lyric([...group].sort((a, b) => midiOf(a) - midiOf(b)).map(letterText).join(' ')) : '';
+    const symbol = named && first && chordName ? harmonyXml(chordName, staff) : '';
+    return symbol + group.map((p, i) => {
       const c = colorOf(p) ?? color;
       return `<note${c ? ` color="${c}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
-        `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff>${tied}</note>`;
+        `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff>${tied}${i ? '' : letters}</note>`;
     }).join('');
   }).join('');
 }
@@ -60,15 +76,13 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
  * MusicXML for these items, items `lit` drawn blue. passage: one run of music (bars as it had them); meter and
  * fifths: its time signature and key, drawn (otherwise each bar is as long as what is in it, no signature shown).
  */
-export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}): string {
+/** named: the groups (numbered across all the items, as marks are) whose letters are written under them, or 'all'. */
+export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, named: Set<number> | 'all' = new Set()): string {
   let gi = 0; // each group's number across all the items, for marks ("group:midi" -> colour)
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
-    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? MARK.want : null, item: i, gi: gi++, staccato: !!it.detached?.[k],
+    g, beats: it.beats?.[k] ?? 1, bar: it.bars?.[k], color: lit.includes(i) ? MARK.want : null, item: i, gi: gi++, staccato: !!it.detached?.[k], chord: it.chordNames?.[k] ?? null,
   })));
-  const all = groups.flatMap((x) => x.g.map(midiOf));
-  const low = Math.min(...all, 72), high = Math.max(...all, 48);
-  const grand = low < SPLIT - 5 && high > SPLIT + 7; // both staves only when the notes really spread across them
-  const treble = !grand && (low >= SPLIT - 5 || (low + high) / 2 >= SPLIT);
+  const clef = clefOf(items), grand = clef === 'grand', treble = clef === 'treble';
   const bars: (typeof groups)[] = [];
   if (passage && groups.every((x) => x.bar !== undefined)) {
     for (const x of groups) { if (!bars.length || bars.at(-1)![0].bar !== x.bar) bars.push([]); bars.at(-1)!.push(x); }
@@ -87,7 +101,7 @@ export function itemsXml(items: Item[], lit: number[] = [], passage = false, met
         (grand ? '<staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
           : treble ? '<clef><sign>G</sign><line>2</line></clef>' : '<clef><sign>F</sign><line>4</line></clef>') + '</attributes>'
       : time ? `<attributes>${time}</attributes>` : '';
-    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color, (p) => marks[`${x.gi}:${midiOf(p)}`] ?? null, x.staccato)).join('');
+    const staff = (k: number, pick: (m: number) => boolean) => bar.map((x) => groupXml(x.g.filter((p) => pick(midiOf(p))), x.beats, k, x.color, (p) => marks[`${x.gi}:${midiOf(p)}`] ?? null, x.staccato, named === 'all' || named.has(x.gi), x.chord && (k === 1 || !x.g.some((p) => midiOf(p) >= SPLIT)) ? x.chord : null)).join(''); // (a chord's name once, over its top staff)
     const body = grand
       ? staff(1, (m) => m >= SPLIT) + `<backup><duration>${length}</duration></backup>` + staff(2, (m) => m < SPLIT)
       : staff(1, () => true);
@@ -183,12 +197,12 @@ export class ExerciseNotation {
   }
 
   /** rhythm: the first item as a rhythm card on a one-line staff (rhythmXml); letters: with each note's letter under it. */
-  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false, letters = false): Promise<void> {
+  async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false, letters = false, named: Set<number> | 'all' = new Set()): Promise<void> {
     const request = ++this.request;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
     this.onShown(true);
-    await this.osmd.load(rhythm ? rhythmXml({ ...items[0], meter: meter ?? items[0].meter }, marks, letters) : itemsXml(items, lit, passage, meter, fifths, marks));
+    await this.osmd.load(rhythm ? rhythmXml({ ...items[0], meter: meter ?? items[0].meter }, marks, letters) : itemsXml(items, lit, passage, meter, fifths, marks, named));
     if (request !== this.request) return; // a newer picture was asked for meanwhile
     this.loaded = true;
     this.draw();

@@ -1,0 +1,30 @@
+{
+  "title": "Intervals together: 2nds to 5ths, both clefs",
+  "kind": "intervals",
+  "generate": [
+    {
+      "clef": "treble",
+      "from": "C4",
+      "to": "G5",
+      "sizes": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "together": true
+    },
+    {
+      "clef": "bass",
+      "from": "F2",
+      "to": "C4",
+      "sizes": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "together": true
+    }
+  ]
+}

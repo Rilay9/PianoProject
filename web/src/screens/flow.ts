@@ -4,6 +4,9 @@
 // to look at it (the next card is shown faded the whole time). Each tap is marked as it lands; each exercise gets a line
 // of score; Stop (or nothing played for two bars) ends the session with its summary, Keep going, and in a lesson step
 // Back to the lesson. Choices: Tap along / Read, tempo − +, Speed up by itself, Loop this one, Judge note lengths.
+// Starting (owner, 2026-10-18: "start the drill at any time by pressing the first key in the sequence I dont want to have
+// to wait"): the first card's first note (a rhythm card: any tap) starts it there and then, as its first note, the click
+// following from it; another key is named against that note and starts nothing; Start gives a bar of count-in instead.
 
 import { $, type App, type KeyRange, type Screen } from '../app';
 import type { FlowPreset } from '../activity';
@@ -21,7 +24,9 @@ import type { Command } from '../remote';
 import type { NoteEvent, Beat } from '../sound';
 import type { TapInput } from '../calibration';
 import { clicksBetween, FlowJudge, place, scoreWords, shouldSpeedUp, TEMPO_MAX, TEMPO_MIN, TEMPO_STEP, WINDOW_MS, type ExerciseScore, type FlowNote, type NoteResult, type Placed } from '../flow/engine';
-import { FlowView } from '../flow/view';
+import { FlowView, clefOf as flowClef } from '../flow/view';
+import { wrongWords } from '../staff-words';
+import { midiOf } from '../exercise/items';
 
 export type FlowScreen = Screen & { open(stillWanted?: () => boolean, activity?: { set: string; settings: FlowPreset; title?: string }, setId?: string): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
 
@@ -37,6 +42,11 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
   const view = new FlowView($('fl-music'));
   const keys = new ExerciseKeys($('fl-keyboard'), sound);
   const pad = new RhythmPad($('fl-pad'), sound);
+  // Sideways the music itself is the pad (owner, 2026-10-18), and with a keyboard connected there is no pad at all (any
+  // key taps: "Don't bother with the tap if a midi keyboard is connected").
+  const sidewaysQuery = window.matchMedia('(max-height: 599px) and (orientation: landscape)');
+  const musicPad = new RhythmPad($('fl-music'), sound);
+  sidewaysQuery.addEventListener?.('change', () => { if (isOpen) tools(); });
   let stored = read();
   let sets: ItemSet[] = [], set: ItemSet | null = null, preset: FlowPreset | null = null;
   let isOpen = false, running = false, session = 0, ticker = 0;
@@ -89,7 +99,8 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     sound.play(notes, beats, sound.songTime(), 1, true, true);
   }
 
-  async function start(): Promise<void> {
+  /** first: the first card's first note, played to start (no count-in: the clock runs from it, and it is judged on time). */
+  async function start(first?: { key: number | null; time: number }): Promise<void> {
     if (!set || running) return;
     const mine = ++session;
     await sound.prepare(!sound.keyboard).catch(() => {});
@@ -103,10 +114,13 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     // One bar of count-in from 0, then the first exercise.
     const meter = set.items[0]?.meter ?? set.meter ?? { beats: 4, beatType: 4 };
     const beatMs = (60000 / tempo) * (4 / meter.beatType);
-    countInEnd = beatMs * meter.beats;
+    countInEnd = first ? 0 : beatMs * meter.beats;
     fill(countInEnd);
-    sound.play([], [], -150, 1); // (the clock from just before the count-in; schedule() gives it the clicks)
+    // (the clock from just before the count-in; schedule() gives it the clicks. Started on the first note: the clock as
+    // if that note fell on 0, however long getting the sound ready took, up to a second)
+    if (first) sound.play([], [], Math.min(1000, Math.max(0, performance.now() - first.time)), 1); else sound.play([], [], -150, 1);
     schedule();
+    if (first) { const r = judge.tap(0, first.key); if (r) marked(r.note, r.result); }
     shownEx = -1;
     showCards();
     $('fl-result').hidden = true;
@@ -213,7 +227,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     session++;
     clearInterval(ticker);
     sound.stop();
-    pad.release();
+    pad.release(); musicPad.release();
     keys.release();
     view.cursor(-1);
     for (const p of ending) { judge.tick(Infinity); exerciseDone(p); }
@@ -249,15 +263,30 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
   // ---- input -----------------------------------------------------------------------------------------------------
   /** A key or a pad tap at `time` (performance.now()), as heard: the clock less the sound's delay for this input. */
   function input(key: number | null, down: boolean, time: number, how: TapInput): void {
-    if (!running) { if (down && !$('fl-result').hidden) return; if (down && isOpen && $('fl-result').hidden) void start(); return; }
+    if (!running) {
+      if (!down || !isOpen || !$('fl-result').hidden || !firstItem) return;
+      // The first card's first note starts it (a rhythm card: any tap); another key is named, and nothing starts.
+      const want = place(0, firstItem, 0, 60, rhythm()).notes[0];
+      if (!want || key === null || want.key === null || key === want.key) { void start({ key, time }); return; }
+      const pitch = firstItem.groups.find((g) => g.length)!;
+      const w = wrongWords(key, [pitch[0]], (flowClef(place(0, firstItem, 0, 60, false), false) as 'treble' | 'bass'), midiOf);
+      say(w.head, `The first note is ${w.sub.replace(/^This note is /, '')} · or Start for a bar of count-in`, 'wrong');
+      return;
+    }
     const t = sound.songTime() - Math.min(1000, Math.max(0, performance.now() - time)) - sound.heardDelayMs('clicks', how);
     if (!down) { const r = judge.release(t, key); if (r) marked(r.note, r.result); return; }
     if (t < countInEnd - (placed[0]?.beatMs ?? 500) * 0.5) return; // (a tap in the count-in is not a note)
     const r = judge.tap(t, key);
     if (r) marked(r.note, r.result);
+    // A wrong key, named as it lands (owner, 2026-10-18): what you played and the note it was, for a moment.
+    if (r?.result.mark === 'wrong' && key !== null) {
+      const p = [...placed, ...ending].find((x) => x.n === r.note.ex), pitch = p?.item.groups[r.note.i]?.[0];
+      if (pitch) { const w = wrongWords(key, [pitch], null, midiOf); say(w.head, `${w.sub.replace(/^This note is /, 'That note is ')}`, 'wrong'); clearTimeout(sayTimer); sayTimer = window.setTimeout(() => { if (running) status(); }, 1800); }
+    }
     else { view.extra(t, judge.extras.at(-1)?.ex ?? -1); streak = 0; status(); }
   }
   pad.onKey = (down, time) => { if (isOpen && rhythm()) input(null, down, time, 'screen'); };
+  musicPad.onKey = (down, time) => { if (isOpen && rhythm() && sidewaysQuery.matches && !keyboardConnected()) input(null, down, time, 'screen'); };
   keys.onKey = (m, down, time, how) => { if (isOpen) input(rhythm() ? null : m, down, time, how); };
 
   // ---- what it says ----------------------------------------------------------------------------------------------
@@ -267,7 +296,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-say-big').textContent = big;
     $('fl-say-small').textContent = small;
   }
-  let flashTimer = 0;
+  let flashTimer = 0, sayTimer = 0;
   function flash(text: string): void { clearTimeout(flashTimer); $('fl-flash').textContent = text; flashTimer = window.setTimeout(() => { $('fl-flash').textContent = ''; }, 2500); }
   function status(): void {
     const played = scores.filter((s) => s.total > 0);
@@ -275,7 +304,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-acc').textContent = total ? `${Math.round((on / total) * 100)}% on time` : '';
     $('fl-streak').textContent = streak > 1 ? `${streak} in a row` : '';
     $('fl-count').textContent = running ? `Exercise ${played.length + 1}` : '';
-    if (running && sound.songTime() >= countInEnd) say('', mode() === 'along' ? 'Tap along' : 'Read and play', '');
+    if (running && sound.songTime() >= countInEnd) say('', '', ''); // (the switch says Tap along or Read: nothing to repeat)
   }
   function tools(): void {
     $('fl-bpm').textContent = `♩ ${preset?.tempo !== undefined && !running ? preset.tempo : running ? tempo : stored.tempo[set?.id ?? ''] ?? set?.tempo ?? 80}`;
@@ -286,10 +315,10 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-holds').hidden = false;
     $('fl-go').textContent = running ? '■ Stop' : '▶ Start';
     $('fl-loop').hidden = !running;
-    $('fl-pad').hidden = !rhythm();
+    $('fl-pad').hidden = !rhythm() || keyboardConnected();
     $('fl-keyboard').hidden = rhythm();
     $('fl-help').textContent = rhythm()
-      ? `${keyboardConnected() ? 'Tap the pad or any key' : 'Tap the pad'} for each note. Dots: green on time, orange early ← or late →, grey missed.`
+      ? `${keyboardConnected() ? 'Play any key' : 'Tap the pad'} for each note. Dots: green on time, orange early ← or late →, grey missed.`
       : 'Play each note in time with the click. Dots: green on time, orange early ← or late →, red a wrong key, grey missed.';
   }
   function changeTempo(d: number): void {
@@ -306,6 +335,9 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
   $('fl-slower').addEventListener('click', () => { if (isOpen) changeTempo(-TEMPO_STEP); });
   $('fl-faster').addEventListener('click', () => { if (isOpen) changeTempo(TEMPO_STEP); });
   for (const b of document.querySelectorAll<HTMLButtonElement>('#fl-mode button')) b.addEventListener('click', () => { if (!isOpen) return; setChoice('mode', b.dataset.mode as 'along' | 'read'); if (running) schedule(); });
+  $('fl-more').addEventListener('click', () => { const on = $('flow').classList.toggle('more'); $('fl-more').setAttribute('aria-expanded', String(on)); });
+  // (the ⋯ choices close on a tap anywhere else)
+  document.addEventListener('pointerdown', (e) => { if ($('flow').classList.contains('more') && !(e.target as HTMLElement).closest?.('.fl-tools')) { $('flow').classList.remove('more'); $('fl-more').setAttribute('aria-expanded', 'false'); } });
   $('fl-auto').addEventListener('click', () => { if (isOpen) setChoice('autoSpeed', !autoSpeed()); });
   $('fl-holds').addEventListener('click', () => { if (isOpen && !running) setChoice('holds', !holdsOn()); else if (running) flash('Stop first to change this'); });
   $('fl-loop').addEventListener('click', () => {
@@ -328,6 +360,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('flow').hidden = false;
     $('fl-title').textContent = activity?.title ?? set.title;
     fillTaskLine($('fl-task'), 'flow');
+    if ($('fl-task').textContent === $('fl-title').textContent) $('fl-task').hidden = true; // (the title says it already: the room is the music's)
     keys.setNames(false);
     view.clear();
     // The first card shown before Start, to read (and played first).
@@ -341,7 +374,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-result').hidden = true;
     $('fl-last').textContent = '';
     status();
-    say('', `${rhythm() ? (keyboardConnected() ? 'Tap the pad or any key' : 'Tap the pad') : 'Play a key'} or press Start: one bar counts in, then it keeps going`, '');
+    say('', rhythm() ? `${keyboardConnected() ? 'Any key' : sidewaysQuery.matches ? 'A tap on the music' : 'A tap on the pad'} for its first note starts it there; Start gives a bar of count-in first` : 'Its first note starts it there; Start gives a bar of count-in first', '');
     tools();
     app.stayAwake();
   }
@@ -352,7 +385,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     isOpen = false;
     preset = null;
     keys.release();
-    pad.release();
+    pad.release(); musicPad.release();
     $('flow').hidden = true;
     app.stayAwake();
     closed();
@@ -374,7 +407,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
       else if (c === 'high') { if (!running) void start(); }
     },
     musicRange: (): KeyRange | null => (running ? { lo: 0, hi: 127 } : null),
-    resized: () => {},
+    resized: () => { if (isOpen) tools(); },
     panel: (opened: boolean) => { if (opened && running) stop('Stopped'); },
     get busy() { return running; },
     debug: () => ({

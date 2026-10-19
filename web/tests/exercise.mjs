@@ -164,9 +164,11 @@ const sound = { keyboard: null, songTime: () => 0, heardDelayMs: () => 0, play()
   // Drills: the step's set at its level (5 cards), two cards played (skipped), then set B chosen from the menu.
   store.clear();
   const d = new Drill(parts(), keysStub(), notation, sound);
-  d.open([A, B], { set: 'set-a', level: { rung: 3, start: 'first', onTime: 'notes', metronome: false, cards: 5 } });
+  // (the step in force before the screen opens, as main.ts launch() does: since 2026-10-18 a reading set's first card is
+  // dealt as it opens, its first note the start, so there is no key to press first)
   setActivity({ id: 'step-drill', screen: 'drills', lesson });
-  d.key(60, true, 1); await settle();
+  d.open([A, B], { set: 'set-a', level: { rung: 3, start: 'first', onTime: 'notes', metronome: false, cards: 5 } });
+  await settle();
   for (let k = 0; k < 2; k++) { d.skip(); d.nextCard(); await settle(); }
   d.chooseSet('set-b'); // (as the set menu does: your own choice; the step stays in force)
   const left = log().at(-1);

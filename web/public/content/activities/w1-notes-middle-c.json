@@ -1,0 +1,10 @@
+{
+  "title": "Single notes: Around middle C, both clefs",
+  "screen": "drills",
+  "set": "notes-middle-c",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

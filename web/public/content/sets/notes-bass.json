@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: bass clef, lines and spaces",
+  "kind": "notes",
+  "generate": {
+    "clef": "bass",
+    "from": "G2",
+    "to": "A3"
+  }
+}

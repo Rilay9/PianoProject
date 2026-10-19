@@ -152,7 +152,7 @@
   <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
        the keyboard at the bottom. -->
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
-    <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-level" type="button" class="btn">Level</button></div>
+    <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button><button id="ex-level" type="button" class="btn">Level</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
     <p id="ex-task" class="step-task" hidden></p>
     <div class="ex-prompt">
@@ -208,16 +208,20 @@
   <!-- Read in time (owner, 2026-10-18; screens/flow.ts): rhythm and reading exercises one after another on a running
        click, each tap marked as it lands. -->
   <section id="flow" class="flow" aria-label="Read in time" hidden>
-    <div class="fp-head"><button id="fl-done" type="button" class="btn back" aria-label="Back">←</button><span id="fl-title" class="title"></span><span class="fl-sp"></span><button id="fl-slower" type="button" class="btn" aria-label="Slower">−</button><output id="fl-bpm"></output><button id="fl-faster" type="button" class="btn" aria-label="Faster">+</button></div>
+    <div class="fp-head"><button id="fl-done" type="button" class="btn back" aria-label="Back">←</button><span id="fl-title" class="title"></span><span class="fl-sp"></span><button id="fl-slower" type="button" class="btn" aria-label="Slower">−</button><output id="fl-bpm"></output><button id="fl-faster" type="button" class="btn" aria-label="Faster">+</button><button id="fl-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button></div>
     <p id="fl-task" class="step-task" hidden></p>
     <div id="fl-music" class="fl-music"></div>
     <!-- (sideways: a column beside the music; upright it is laid out in the page's own order) -->
     <div class="fl-side">
       <div class="fl-tools">
         <span id="fl-mode" class="fl-switch" role="group" aria-label="How to practise"><button type="button" class="btn" data-mode="along">Tap along</button><button type="button" class="btn" data-mode="read">Read</button></span>
+        <!-- (sideways the three choices are behind ⋯, a popover over the bar: owner, 2026-10-18) -->
+        <button id="fl-more" type="button" class="btn fl-more" aria-expanded="false" aria-label="More choices">⋯</button>
+        <span class="fl-toggles">
         <button id="fl-auto" type="button" class="btn fl-toggle" aria-pressed="false">Speed up by itself</button>
         <button id="fl-holds" type="button" class="btn fl-toggle" aria-pressed="false">Judge note lengths</button>
         <button id="fl-loop" type="button" class="btn fl-toggle" aria-pressed="false" hidden>Loop this one</button>
+        </span>
       </div>
       <div class="fl-stats"><span id="fl-count"></span><span id="fl-acc"></span><span id="fl-streak"></span><span id="fl-flash" class="fl-flash" aria-live="polite"></span></div>
       <p id="fl-last" class="fl-last" aria-live="polite"></p>
@@ -453,6 +457,13 @@
     </form>
   </dialog>
 
+  <!-- Look it up (owner, 2026-10-18; lookup.ts): reference pictures by section, opened over a card (which waits). -->
+  <dialog id="lookup" class="lookup" aria-labelledby="lookup-title">
+    <form method="dialog" class="lk-top"><h2 id="lookup-title">Look it up</h2><button class="dlg-x" aria-label="Close">✕</button></form>
+    <div id="lookup-chips" class="chips lk-chips"></div>
+    <div id="lookup-body" class="lk-body"></div>
+    <p class="lk-tip note">Tap a picture to hear it.</p>
+  </dialog>
   <dialog id="ex-level-dialog" aria-labelledby="ex-level-title">
     <form method="dialog">
       <h2 id="ex-level-title">Level</h2>

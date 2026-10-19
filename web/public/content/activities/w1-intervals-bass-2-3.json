@@ -1,0 +1,10 @@
+{
+  "title": "Intervals: 2nds and 3rds, bass clef",
+  "screen": "drills",
+  "set": "intervals-bass-2-3",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

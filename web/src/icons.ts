@@ -14,6 +14,7 @@ const PATHS = {
   lab: '<ellipse cx="12" cy="7" rx="8" ry="3"/><path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7"/><path d="M8 3.5 11 7M16 3.5 13 7"/>',
   freeplay: '<path d="M3 12h3l2-6 3 12 3-9 2 3h5"/>',
   metronome: '<path d="M8.5 21 11 3h2l2.5 18z"/><path d="M12 16l5-8"/><path d="M7 17h10"/>',
+  lookup: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M8 7h7M8 11h7"/>',
   document: '<path d="M6 2.5h8l4 4V21.5H6z"/><path d="M14 2.5v4h4"/><path d="M9 12h6M9 16h6"/>',
   sound: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
   look: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/>',

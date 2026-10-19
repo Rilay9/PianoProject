@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: treble clef, lines and spaces",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "E4",
+    "to": "F5"
+  }
+}

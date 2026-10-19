@@ -93,7 +93,17 @@ scrolling and honest states.
   Exercises as ways in. **Carry on** (and a recent row) reopens a score run as it was played (V27): its loop, mode, tempo
   and hands, for that visit (an activity's preset: never saved over your own). A piece of yours since deleted is not
   offered (F19).
-- **Practice:** Exercises, Drills, Simon, Accompaniment lab, Free play, Metronome, each with its icon, one line on what it
+- **Look it up** (owner, 2026-10-18: "reference diagrams somewhere of the basics. All the lines and all the spaces of
+  both clefs, the intervals, the chords, etc. Some place to look stuff up"; `lookup.ts`, its content `lookup-content.ts`):
+  a panel with section chips: Treble clef, Bass clef (the lines bottom to top with their saying, the spaces, the ledger
+  notes below and above, each placed in words, every white key step by step), Middle C and landmarks, Hand positions (C
+  and G, each hand, on the staff and on keys with fingers), Intervals (2nd to octave from middle C, bass C and E, the
+  line/space rule), Chords (C, F, G7, Am; G, C, D7 as the left hand plays them, name over, letters under, keys with
+  fingers; root position all lines or all spaces), Note values (and rests, dots, time signatures), Sharps and flats (and
+  G major's key signature). Every letter and place is worked out from the pitches; a picture plays when tapped. Opened
+  from Practice (first in the list), and **📖** on Drills, Simon and Read in time (over the screen: a panel pauses what
+  runs, as any panel). The section last looked at opens again.
+- **Practice:** Look it up, Exercises, Drills, Simon, Accompaniment lab, Free play, Metronome, each with its icon, one line on what it
   is and the last thing done there (Drills, Simon, the lab); two columns of cards on a tablet (V02).
 - **Icons** (owner, 2026-10-15: one consistent line-icon set; `web/src/icons.ts`): simple outline drawings as inline SVG,
   one meaning each wherever they appear: home, music (a piece), practice (the keys), path, settings (the gear), exercises,
@@ -453,6 +463,30 @@ Keyboard under the music (Level) to play on the screen, or plug one in." until a
 which was false). Simon says the same in the same case (§7d). **A MIDI prompt not answered** (ChatGPT's live review of lesson 1, 2026-10-16): Simon, Drills, Memorise and the lab
 never wait on the browser still asking to allow MIDI (`midi.ts` `startSoon`): after 1.5 s they open as with no keyboard,
 and a keyboard allowed later is heard (it was: lesson 1's copying step never opened, and said nothing). A set file that could not be read is read again the next time Drills or Simon opens (F20).
+
+**Reading cards** (owner, 2026-10-18, after the week's first step: "when I get things wrong it should tell me what the
+notes were in key names … I had no idea"; "I should be able to start the drill at any time by pressing the first key in
+the sequence I dont want to have to wait"; then "Maybe even show the note names on hear it", "And cord names", "they
+dont have to stay there when i start playing"). A card with notes to read on a staff (not rhythm, "find it", finger,
+letter-name or letters cards):
+- **Nothing counts before the card is on screen**: a key that brings a card (from Ready, or a result) is never one of
+  its notes. At **Ready** of a set read at help 3 (music only) or 4 (name only), the first card is already drawn
+  ("Play this note" / "Play the notes in order: the blue one is next"), so your first note is the start.
+- **As you go** (notes only): the notes played turn green on the staff, the one due blue.
+- **A wrong key, at once**: the key flashes red and the line says both in key names and where the note sits: "That's D ·
+  This note is F: on the 4th line up of the bass staff" (the right letter in the wrong octave: "That's E, an octave too
+  high"; a black key: "That's C♯ (a black key)"; a chord: "This chord is C E G"); the due note's letter is written under
+  it; a second miss on the same note outlines its key. (Help 0, or names not taught: "Not that one"; by ear: nothing on
+  the keys.) Worked out from the pitch (`staff-words.ts`).
+- **The result** writes every note's letter under it (and a chord set's chord names over its chords), and names the
+  slips: "F: you played D · A: you played G"; a timed card's wrong keys by letter, a chord card's slips by chord ("F late
+  · C missed", "D7 (F♯ C) late").
+- **Hear it** writes every letter under the card (and the chord names over it) while it plays; they go at your first key.
+- **No waiting**: a clean reading card goes straight on (0.45 s); single-note and interval cards go on by themselves
+  even after a slip (it was named as it happened), an interval card saying its name ("E up to G: a 3rd, space to space").
+- **Music only, counted**: the card waits to be read; **its first note starts it**, the clock from that note (a wrong
+  first key is named and starts nothing); *Count in* gives a bar of clicks first.
+- **📖 Look it up** in the header opens the reference panel (§0) over the card, which waits.
 
 **How it works:** a card appears at the chosen help level (0 keys, no music: it plays the card with its keys lit and
 no music is drawn, not even with the result, where the keys show the wrong keys red and the missed ones outlined, and
@@ -854,12 +888,23 @@ or a MIDI keyboard).
   exercise); **Speed up by itself** (+5 after three exercises in a row at 90 % or better with no extra taps); **Loop this
   one** (while running: the exercise being played again and again until switched off); **Judge note lengths** (changed
   while stopped).
+- **Starting** (owner, 2026-10-18: "start … by pressing the first key in the sequence I dont want to have to wait"): the
+  first card's **first note starts it there and then**, as its first note, judged on time, the click following from it
+  (a rhythm set: any tap or key); another key is named against that note ("That's C♯ · The first note is F: in the
+  bottom space of the treble staff") and starts nothing; **Start** gives a bar of count-in first. The keyboard's highest
+  key starts it with a count-in when stopped.
+- **A wrong key while it runs** is named for a moment as it lands ("That's D · That note is E").
 - **Ends**: Stop, a mash, a panel opened, or nothing played for two bars ("Stopped: nothing played for two bars"). The
   summary: exercises, share on time, the best run, the tempo; **Keep going** (a new count-in) and, in a lesson step,
-  **Back to the lesson ▶**. A tap on Ready starts it; the keyboard's highest key starts it when stopped.
+  **Back to the lesson ▶**.
 - **Keys**: a melody's card shows its own notes' octaves only (two octaves on a phone; they change in the bar between
-  cards), no names on them; the pad for rhythm. Sideways on a phone: the music on the left, the choices and a tall pad on
-  the right, the keys along the bottom.
+  cards), no names on them. Rhythm: the pad, **none with a keyboard connected** (any key taps; owner, 2026-10-18).
+- **Sideways on a phone** (owner, 2026-10-18, asked with options: "Its one line you can fit things on the bottom"): the
+  music across the whole width, the next exercise faded under it; **one bar of controls under the music**: Start,
+  Tap along / Read, **⋯** (Speed up by itself, Judge note lengths, Loop this one, as a small popover that doesn't stop
+  the run), then what it says and the scores; the keys along the bottom for a tune. A rhythm set with no keyboard: **the
+  music itself is the pad** (tap anywhere on it). The summary after a run sits over the music. The task line is left out
+  where it only repeats the title. **📖** in the header opens Look it up (a panel: the run stops, as for any panel).
 - **Logged** (§7b) as `screen: "flow"`, the set, `settings` bpm / mode / holds / autoSpeed, `result` exercises, onTime,
   notes, percent, bestStreak, each exercise's line, and `ended` "round played" (8 exercises or more in one go) or
   "stopped early". A lesson step with no target is done with a round played; a target `onTime` (a share) counts too.
@@ -1332,6 +1377,32 @@ real set is `ode-to-joy-names`):
 
 Refused (the reader and check:content): `fingers` on a card, an empty phrase, no `hand`, a chord, `beats` not one a note
 (or not a length 0.25–16), `rhythm` or `from` on the set, and `hand` / `beats` on a set without a phrase view.
+
+**Single notes and intervals** (owner, 2026-10-18: "single note flash cards and interval drills somewhere. Extensive, so
+I can practice all I want"; `exercise/notecards.ts`): a `"kind": "notes"` or `"kind": "intervals"` set with `generate`
+instead of `items` (or a list of them, their cards together: both clefs):
+
+```json
+{ "title": "Single notes: bass clef, lines and spaces", "kind": "notes", "generate": { "clef": "bass", "from": "G2", "to": "A3" } }
+{ "title": "Intervals: 2nds and 3rds, treble clef", "kind": "intervals",
+  "generate": { "clef": "treble", "from": "C4", "to": "G5", "sizes": [2, 3], "direction": "both", "together": false } }
+```
+
+Every white key from `from` to `to` (both white keys, C1–B7) is a card on the staff named (`clef`: the item's own, so
+middle C can be a bass-clef card); intervals: every interval of `sizes` (2 a 2nd … 8 an octave; default 2–5) with both
+notes in the range, counted by letters, one after the other `up`, `down` or `both` ways (default up), or `together` (one
+chord a card). Drawn as whole notes, read untimed in Drills (with every reading card's feedback, §4: named at once,
+going on by themselves); dealt as a pool, every card before any comes again; Keep going after a set. Named by its notes
+("F3"; "E up to G: a 3rd"). Refused: an unknown field or clef, an end that is not a white key, a range upside down, a
+size outside 2–8, sizes none of which fit the range, `items` / `from` / `rhythm` / `order` / `view` beside it. Exercises
+lists them under "Note reading" and "Intervals" as "… dealt again and again · read them in Drills". The sets:
+`notes-treble`, `notes-bass` (lines and spaces), `notes-treble-ledger`, `notes-bass-ledger`, `notes-both`,
+`notes-middle-c`; `intervals-treble-2-3`, `intervals-bass-2-3`, `intervals-treble-4-5`, `intervals-bass-4-5`,
+`intervals-all` (2nds to octaves, both clefs), `intervals-together`.
+
+**Chord names over chords** (2026-10-18): a `"kind": "chords"` set's item whose name gives one chord symbol per chord
+("C – F – G7 – C", or "Am" for one chord; a root, ♯ or ♭, and m, 7, m7 or maj7) has those names written over its chords
+wherever its letters are written (Hear it, a wrong key, the result).
 
 **Made-up tunes** (owner, 2026-10-18: the week's lesson, "generate way more than needed"; `exercise/melody.ts`): a
 `"kind": "melodies"` set with `generate` instead of `items` (or a list of them, their cards together: both hands):

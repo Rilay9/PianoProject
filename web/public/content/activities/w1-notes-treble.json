@@ -1,0 +1,10 @@
+{
+  "title": "Single notes: Treble clef, lines and spaces",
+  "screen": "drills",
+  "set": "notes-treble",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

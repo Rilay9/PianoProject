@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: bass clef, with ledger lines",
+  "kind": "notes",
+  "generate": {
+    "clef": "bass",
+    "from": "C2",
+    "to": "E4"
+  }
+}

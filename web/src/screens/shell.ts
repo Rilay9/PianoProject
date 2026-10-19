@@ -37,6 +37,8 @@ export interface ShellDeps extends Omit<LessonDeps, 'openSwitch' | 'openLesson' 
   openPdf(id: string, title: string): void;
   openFreePlay(): void;
   openMetronome(): void;
+  /** Look it up: the reference panel (lookup.ts). */
+  openLookup(): void;
   /** Settings shown: its values filled in (main.ts holds the app-wide stores' wiring). */
   fillSettings(): void;
 }
@@ -48,9 +50,9 @@ const MODE_NAMES: Record<string, string> = { watch: 'Watch', wait: 'Wait for me'
 /** How each kind of exercise opens with one tap (owner, 2026-10-15: a default per kind, "Practise as…" to change):
  * flashcards (Drills) for things to play on sight, by name or by ear; Simon for a progression to build from memory. */
 export const DEFAULT_WAY: Record<ExerciseKind | 'other', 'drill' | 'simon'> = {
-  scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', find: 'drill', other: 'drill',
+  notes: 'drill', scales: 'drill', 'five-finger': 'drill', arpeggios: 'drill', chords: 'drill', intervals: 'drill', cadences: 'simon', melodies: 'drill', rhythm: 'drill', find: 'drill', other: 'drill',
 };
-const KIND_NAMES: Record<ExerciseKind | 'other', string> = { scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', find: 'Finding the keys', other: 'Other' };
+const KIND_NAMES: Record<ExerciseKind | 'other', string> = { notes: 'Note reading', scales: 'Scales', 'five-finger': 'Five-finger patterns', arpeggios: 'Arpeggios', chords: 'Chords', intervals: 'Intervals', cadences: 'Cadences', melodies: 'Melodies', rhythm: 'Rhythm', find: 'Finding the keys', other: 'Other' };
 
 /** Something practised or opened lately, and how to carry on with it. */
 interface Recent { key: string; title: string; what: string; at: string; icon: IconName; open: () => void }
@@ -341,6 +343,7 @@ export function createShell(app: App, d: ShellDeps) {
     const log = entries().slice().reverse();
     const last = (screen: LogEntry['screen']) => { const e = log.find((x) => x.screen === screen); return e ? ` · last: ${e.title.replace(/^Test:\s*/, '')}, ${ago(e.at)}` : ''; };
     const rows: [IconName, string, string, () => void][] = [
+      ['lookup', 'Look it up', 'Every line and space of both clefs, landmarks, hand positions, intervals, chords, note values, sharps and flats', () => d.openLookup()],
       ['exercises', 'Exercises', 'Every exercise by kind: scales, chords, intervals, melodies…', () => openPage('exercises')],
       ['drills', 'Drills', `Flashcards: one short thing to play on each card, read, by name or by ear${last('drills')}`, () => d.openExercise('drill')],
       ['simon', 'Simon', `A chain that grows by one each round, played from memory${last('simon')}`, () => d.openExercise('simon')],
@@ -383,6 +386,8 @@ export function createShell(app: App, d: ShellDeps) {
       if (s.kind === 'rhythm') return { kind: s.kind, title: s.title, id: s.id, how: `${s.generate ? 'rhythm patterns made from its note values' : `${s.items.length} rhythm ${s.items.length === 1 ? 'pattern' : 'patterns'}`} · tap them in Read in time`, open: () => d.openFlow(s.id) };
       // Made-up tunes (2026-10-18): new cards every time, read in Drills (untimed); in time from a lesson's step.
       if (s.melody) return { kind: s.kind ?? 'melodies', title: s.title, id: s.id, how: 'tunes made up fresh every card · read them in Drills', open: () => d.openExercise('drill', s.id) };
+      // Single notes and intervals (2026-10-18): cards made from a range, dealt again and again; Keep going after a set.
+      if (s.cards) return { kind: s.kind ?? 'notes', title: s.title, id: s.id, how: `${s.items.length} ${s.kind === 'intervals' ? 'intervals' : 'notes'}, dealt again and again · read them in Drills`, open: () => d.openExercise('drill', s.id) };
       // A "find it" set (2026-10-16): cards that name a place on the keys in words, in Drills only.
       if (s.kind === 'find') return { kind: s.kind, title: s.title, id: s.id, how: `${s.items.length} ${s.items.length === 1 ? 'card' : 'cards'} naming a place on the keys · find it in Drills`, open: () => d.openExercise('drill', s.id) };
       return { kind: s.kind ?? 'other', title: s.title, id: s.id, how: `${s.items.length} ${s.order === 'passage' ? 'in order' : s.items.length === 1 ? 'item' : 'items'} · cards: opens in ${way === 'drill' ? 'Drills' : 'Simon'} (also ${way === 'drill' ? 'Simon' : 'Drills'})`, open: () => d.openExercise(way, s.id) };

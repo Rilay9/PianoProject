@@ -39,6 +39,7 @@ import { createLibraryScreen, takeShared, yourPieces } from './screens/library';
 import { createPdfScreen } from './screens/pdf';
 import { createMemoriseScreen } from './screens/memorise-screen';
 import { createScoreScreen } from './screens/score';
+import { buildLookup } from './lookup';
 import { openHelp } from './help/page';
 import { HELP_IDS, type HelpId } from './help/read';
 import { resetTips, TIPS, tipDue, tipShown, tipUsed } from './hints';
@@ -111,8 +112,26 @@ const shell = createShell(app, {
   openPdf: (id, title) => openPdf(id, title),
   openFreePlay: () => openFreePlay(),
   openMetronome: () => { wanted(); metronome.open(); enter({ name: 'metronome', params: { tool: 'metronome' }, leave: () => metronome.close() }); },
+  openLookup: () => openLookup(),
   fillSettings,
 });
+
+// Look it up (owner, 2026-10-18; lookup.ts): the reference panel, from the 📖 on Drills and Read in time (a panel: what
+// runs under it waits) and from Practice. Its pictures play when tapped; the section last looked at opens again.
+let lookupAt = 'treble';
+function openLookup(section?: string): void {
+  if (section) lookupAt = section;
+  buildLookup($('lookup-body'), $('lookup-chips'), {
+    play: (ns) => void (async () => {
+      await sound.prepare().catch(() => {});
+      app.appSound();
+      sound.play(ns.flatMap((n) => n.midi.map((m) => ({ t: n.t, midi: m, dur: n.dur ?? 900, vel: 80 }))), [], 0, 1);
+    })(),
+  }, lookupAt, (id) => { lookupAt = id; });
+  $<HTMLDialogElement>('lookup').showModal();
+}
+$('ex-lookup').addEventListener('click', () => openLookup());
+$('fl-lookup').addEventListener('click', () => openLookup());
 app.screens = [scoreScreen, memoriseScreen, exerciseScreen, freePlayScreen, labScreen, flowScreen, libraryScreen, pdfScreen, metronome.screen, shell.screen];
 
 /** The screen showing (keys and the keyboard remote go to it). */

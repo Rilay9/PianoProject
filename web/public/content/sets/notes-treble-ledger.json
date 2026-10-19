@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: treble clef, with ledger lines",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "A3",
+    "to": "C6"
+  }
+}

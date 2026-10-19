@@ -35,6 +35,7 @@ import { Chord, Interval, Note } from 'tonal';
 import { readRhythmSpec, rhythmPool, RHYTHM_PITCH, METERS, type RhythmSpec } from './rhythm.ts'; // (with .ts: the checks run this file in Node)
 import { findPool, readFindSpec, type FindSpec } from './find.ts';
 import { melodyPool, readMelodySpec, MELODY_POOL, type MelodySpec } from './melody.ts';
+import { readNoteSpec, notePool, intervalPool, type NoteSpec, type IntervalSpec } from './notecards.ts';
 
 /** One thing to play: groups of keys in order (a chord is one group; an arpeggio or a melody is several). */
 export interface Item {
@@ -61,6 +62,11 @@ export interface Item {
   fingering?: { hand: 'right' | 'left'; phrases: number[][] };
   /** A letter-name card (a set's `view: "names"`): the hand, and each note's letter (C, F♯) by phrase. */
   lettering?: { hand: 'right' | 'left'; phrases: string[][] };
+  /** The staff it is drawn on, when the notes alone don't settle it (a single-note card of middle C: bass or treble). */
+  clef?: 'treble' | 'bass';
+  /** A chord set's names for its chords, one a group ("C – F – G7 – C" over four chords), written over them when the
+   * card's letters are shown (owner, 2026-10-18: "And cord names"); none where the name doesn't give one each. */
+  chordNames?: (string | null)[];
 }
 
 /** The score modes an exercise that is music can open in (Ladder needs a loop of bars, which a set does not give). */
@@ -80,7 +86,7 @@ export function readPlay(v: unknown): Play {
 }
 
 /** What kind of exercise a set is (owner, 2026-10-15: Exercises lists them by kind). */
-export const EXERCISE_KINDS = ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm', 'find'] as const;
+export const EXERCISE_KINDS = ['notes', 'intervals', 'scales', 'five-finger', 'arpeggios', 'chords', 'cadences', 'melodies', 'rhythm', 'find'] as const;
 export type ExerciseKind = (typeof EXERCISE_KINDS)[number];
 
 export interface ItemSet {
@@ -97,6 +103,8 @@ export interface ItemSet {
   find?: FindSpec;
   /** A made-up tunes set's spec (melody.ts; its items are the cards made from it). */
   melody?: MelodySpec;
+  /** A single-note or interval set's spec (notecards.ts; its items are the cards made from it). */
+  cards?: NoteSpec;
   /** "letters" (owner, 2026-10-17: a tune before the staff, as the method books show it): its cards drawn on the one-line
    * rhythm staff with each note's letter under it, played on the keys and judged for keys and timing (docs §4, §6).
    * "fingers" (owner, 2026-10-17): each card its finger numbers by phrase, no staff, played in order with no timing.
@@ -117,6 +125,18 @@ interface ItemSource {
 interface SetFile { title: string; kind?: string; play?: unknown; order?: 'pool' | 'passage'; tempo?: number; rhythm?: 'notes' | number; items?: Record<string, ItemSource>; from?: { score: string; bars?: string; staff?: number }; generate?: unknown; find?: unknown; view?: unknown }
 
 export const midiOf = (spelled: string): number => Note.midi(spelled) ?? 60;
+/** The staff a set of items is drawn on: one staff, treble or bass for the range, or both split at middle C when the notes
+ * really spread across them; an item's own `clef` decides when every item gives one. */
+export function clefOf(items: Item[]): 'treble' | 'bass' | 'grand' {
+  if (items.length && items.every((it) => it.clef)) return items.every((it) => it.clef === 'treble') ? 'treble' : items.every((it) => it.clef === 'bass') ? 'bass' : 'grand';
+  const all = items.flatMap((it) => it.groups.flat().map(midiOf));
+  const low = Math.min(...all, 72), high = Math.max(...all, 48);
+  if (low < 60 - 5 && high > 60 + 7) return 'grand';
+  return low >= 60 - 5 || (low + high) / 2 >= 60 ? 'treble' : 'bass';
+}
+/** The staff one note is on, on a card drawn with this clef (both staves: middle C and up on the treble). */
+export const staffOfNote = (clef: 'treble' | 'bass' | 'grand', midi: number): 'treble' | 'bass' => (clef === 'grand' ? (midi >= 60 ? 'treble' : 'bass') : clef);
+
 /** A spelled pitch as a learner reads it: C#4 as C♯4, Bb3 as B♭3. */
 export const shown = (spelled: string): string => spelled.replace('#', '♯').replace(/^([A-G])b/, '$1♭');
 const letters = (spelled: string) => shown(spelled).replace(/-?\d+$/, '');
@@ -356,9 +376,20 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
     }
     const odd = Object.entries(file.items ?? {}).find(([, it]) => typeof it !== 'object' || it === null || it.musicxml === undefined);
     if (odd) throw new Error(`item ${odd[0]}: a rhythm set's items are MusicXML patterns ("musicxml")`);
+  } else if (file.generate !== undefined && (kind === 'notes' || kind === 'intervals')) {
+    // Single notes and intervals (notecards.ts, owner 2026-10-18): every white key of a range, or every interval of the
+    // sizes asked for in it, on the staff named; a list of specs puts their cards together (both clefs in one set).
+    const other = (['items', 'from', 'rhythm', 'order', 'view'] as const).find((k) => file[k] !== undefined);
+    if (other) throw new Error(`a generated ${kind} set gives "generate" only (its cards are made from it), not "${other}"`);
+    const list = Array.isArray(file.generate) ? file.generate : [file.generate];
+    if (!list.length) throw new Error('generate is an empty list');
+    const wrap = <T,>(k: number, f: () => T): T => { try { return f(); } catch (e) { const m = e instanceof Error ? e.message : String(e); throw new Error(list.length > 1 ? `generate ${k + 1}: ${m}` : m); } };
+    const specs = list.map((g, k) => wrap(k, () => (kind === 'notes' ? readNoteSpec(g, false) : readNoteSpec(g, true))));
+    const items = specs.flatMap((sp) => (kind === 'notes' ? notePool(sp) : intervalPool(sp as IntervalSpec))).map((it, i) => ({ ...it, n: i + 1 }));
+    return { id, title: file.title, kind, order: 'pool', items, tempo: file.tempo ?? TEMPO, cards: specs[0] };
   } else if (file.generate !== undefined) {
     // Made-up reading tunes (melody.ts, owner 2026-10-18): a melodies set with "generate" { position, values, meter, bars, skips }.
-    if (kind !== 'melodies') throw new Error('"generate" is for rhythm sets (kind "rhythm") and made-up tunes (kind "melodies")');
+    if (kind !== 'melodies') throw new Error('"generate" is for rhythm sets (kind "rhythm"), made-up tunes (kind "melodies"), single notes (kind "notes") and intervals (kind "intervals")');
     const other = (['items', 'from', 'rhythm', 'order', 'view'] as const).find((k) => file[k] !== undefined);
     if (other) throw new Error(`a generated melodies set gives "generate" only (its cards are made from it), not "${other}"`);
     // (a list of specs: their cards together, e.g. both hands' positions in one set)
@@ -394,6 +425,7 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
     return [Number(k), { ...v, notes: parts.join(', ') }] as const;
   }).sort((x, y) => x[0] - y[0]);
   let items = await Promise.all(entries.map(([n, src]) => buildItem(n, src, base, fetchText)));
+  if (kind === 'chords') items = items.map(withChordNames);
   // A rhythm set's written patterns sound on one pitch and are named by number, not by their notes (no note names).
   if (kind === 'rhythm') items = items.map((it) => ({ ...it, groups: it.groups.map((g) => (g.length ? [RHYTHM_PITCH] : [])), name: entries.find(([n]) => n === it.n)?.[1].name ?? `Pattern ${it.n}` }));
   if (file.view === 'fingers') items = items.map((it) => { const src = entries.find(([n]) => n === it.n)![1]; const fingering = fingeringOf(it, src); return { ...it, fingering, name: src.name ?? `${fingering.hand === 'right' ? 'Right' : 'Left'} hand` }; });
@@ -401,6 +433,17 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   if (phrased) items = items.map((it) => { const src = entries.find(([n]) => n === it.n)![1]; return src.beats === undefined ? it : { ...it, beats: beatsOf(it, src.beats) }; });
   return lettersChecked({ id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm, ...(file.view ? { view: file.view } : {}) });
 }
+
+/** A chord card's names, one a chord, from its name ("C – F – G7 – C", or "C" for one chord): only names a chord symbol
+ * reads as (a root, ♯ or ♭, and m, 7, m7 or maj7), and only when there are as many as chords. */
+export function withChordNames(it: Item): Item {
+  const chords = it.groups.filter((g) => g.length);
+  const names = it.name.split(/\s+[–-]\s+/).map((x) => x.trim());
+  if (!chords.length || names.length !== chords.length || !names.every((x) => CHORD_SYMBOL.test(x))) return it;
+  let k = 0;
+  return { ...it, chordNames: it.groups.map((g) => (g.length ? names[k++] : null)) };
+}
+export const CHORD_SYMBOL = /^([A-G])([#b♯♭]?)(m|7|m7|maj7)?$/;
 
 /**
  * A finger-number card's fingering (owner, 2026-10-17): `notes` one after another (no chords, no MusicXML: a card is

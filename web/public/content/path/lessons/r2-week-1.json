@@ -16,6 +16,28 @@
       "size": "row"
     },
     {
+      "kind": "text",
+      "text": "Start with single notes: one note a card, play it. A wrong key tells you which key you played and which note it was, with where it sits on the staff. 20 cards make a set; **Keep going** at the end deals more for as long as you like. A minute or two of these every day is the fastest way to read the bass clef as easily as the treble."
+    },
+    {
+      "kind": "step",
+      "id": "notes-bass",
+      "title": "Single notes: bass clef",
+      "activity": "w1-notes-bass",
+      "about": "One note a card, every line and space of the bass staff. Play it."
+    },
+    {
+      "kind": "step",
+      "id": "notes-treble",
+      "title": "Single notes: treble clef",
+      "activity": "w1-notes-treble",
+      "about": "One note a card, every line and space of the treble staff. Play it."
+    },
+    {
+      "kind": "text",
+      "text": "Now short tunes in C position, made up fresh for every card. The blue note is the one to play next; notes you have played turn green. **Hear it** plays the card with every note's letter written under it (the letters go when you start playing)."
+    },
+    {
       "kind": "step",
       "id": "read-c-bass",
       "title": "Bass clef, C position",
@@ -105,6 +127,31 @@
       "title": "G position, in time",
       "activity": "w1-read-g-time",
       "about": "G position in either hand, in time with the click, card after card."
+    },
+    {
+      "kind": "text",
+      "text": "# Intervals\nAn **interval** is the distance between two notes, counted by letters with both ends included: C to D is a **2nd**, C to E a **3rd**, C to F a **4th**, C to G a **5th**. On the staff you can see it without naming every note:\n\n- a **2nd** goes from a line to the space next to it, or a space to the line next to it (a step);\n- a **3rd** from a line to the next line, or a space to the next space (a skip);\n- a **4th** from a line to a space, or a space to a line, further apart;\n- a **5th** from a line to the line two up, or a space to the space two up.\n\nReading the distance instead of naming every note is how players read fast. Each card is two notes, going up or down; when it's done, its name. **Look it up** (📖) has them all drawn."
+    },
+    {
+      "kind": "step",
+      "id": "intervals-bass-2-3",
+      "title": "Intervals: 2nds and 3rds, bass clef",
+      "activity": "w1-intervals-bass-2-3",
+      "about": "Two notes a card, a step or a skip apart, up or down. Play both."
+    },
+    {
+      "kind": "step",
+      "id": "intervals-treble-2-3",
+      "title": "Intervals: 2nds and 3rds, treble clef",
+      "activity": "w1-intervals-treble-2-3",
+      "about": "The same in the treble clef."
+    },
+    {
+      "kind": "step",
+      "id": "intervals-treble-4-5",
+      "title": "Intervals: 4ths and 5ths",
+      "activity": "w1-intervals-treble-4-5",
+      "about": "Bigger gaps: a 4th line to space (or space to line), a 5th line to the line two up (or space to the space two up)."
     },
     {
       "kind": "text",

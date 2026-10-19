@@ -96,6 +96,9 @@ Flashcards. Each card is one short thing to play at once: music to read, a name,
 - When your taps get steadily faster or slower through a card, the result says **You sped up** or **You slowed down**.
 - **Rhythm cards at help 0** (no music): the result shows your taps on a line of beats, each one where it landed, ahead of or behind its click.
 - **Find it** cards name a place on the keys in words ("a group of three, higher up"): play any key of that group. Show me outlines it.
+- **Reading cards:** a card of music to read is shown straight away; your first note starts it. Notes you've played turn green and the next is blue. A wrong key is named at once with the note it should be and where it sits ("That's D · This note is F: on the 4th line up of the bass staff"); a second miss on that note outlines its key. After the card every note's letter is written under it. **Hear it** writes the letters (and chord names) while it plays; they go when you start.
+- **Single notes** and **Intervals** sets deal one note or two at a time, as long as you like (**Keep going** at the end).
+- **📖** opens Look it up: every line and space of both clefs, landmarks, hand positions, intervals, chords, note values, sharps and flats.
 - **Drills ▾** switches to Simon, with the same set.
 
 # The accompaniment lab {#lab}
@@ -124,7 +127,7 @@ The click on its own, with no score.
 - Its volume is the click volume in Settings.
 
 # Practice and Exercises {#practice}
-Practice lists the tools: Exercises, Drills, Simon, the accompaniment lab, Free play and the metronome.
+Practice lists the tools: Look it up, Exercises, Drills, Simon, the accompaniment lab, Free play and the metronome. **Look it up** (also 📖 on the exercise screens) has pictures of every line and space of both clefs, landmarks, hand positions, intervals, chords, note values and sharps and flats; tap a picture to hear it.
 
 **Exercises** lists every exercise by kind; the chips at the top filter them. One tap opens an exercise its usual way: cards in Drills or Simon, music on the score. Inside, ▾ next to Drills or Simon switches the way.
 

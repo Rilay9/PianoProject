@@ -84,7 +84,7 @@ ok('the test content uses every block kind', BLOCK_KINDS.every((k) => kindsUsed.
 // The sets' kinds (Exercises lists by them): a kind is optional (none: listed under "Other"), and one given is known.
 for (const f of sets) {
   const k = JSON.parse(readFileSync(pub(`content/sets/${f}`), 'utf8')).kind;
-  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm', 'find'].includes(k), String(k));
+  ok(`set ${f}: its kind is known, or left out (${k})`, k === undefined || ['notes', 'scales', 'five-finger', 'arpeggios', 'chords', 'intervals', 'cadences', 'melodies', 'rhythm', 'find'].includes(k), String(k));
 }
 
 // ---- what a lesson reads to --------------------------------------------------------------------------------------

@@ -12,6 +12,8 @@ export const MARK = {
   timing: '#d97706',
   wrong: '#dc2626',
   want: '#2563eb',
+  /** a reading card's notes played right so far (owner, 2026-10-18: where you are on the card), green: right */
+  done: '#16a34a',
 } as const;
 
 /** A slip's kind as the judges name it (matching.ts, practice.ts, the lab): missed, early, late, short (let go early). */

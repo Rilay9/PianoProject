@@ -1,0 +1,16 @@
+{
+  "title": "Single notes: both clefs",
+  "kind": "notes",
+  "generate": [
+    {
+      "clef": "treble",
+      "from": "C4",
+      "to": "G5"
+    },
+    {
+      "clef": "bass",
+      "from": "F2",
+      "to": "C4"
+    }
+  ]
+}

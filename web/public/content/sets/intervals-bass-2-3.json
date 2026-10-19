@@ -1,0 +1,14 @@
+{
+  "title": "Intervals: 2nds and 3rds, bass clef",
+  "kind": "intervals",
+  "generate": {
+    "clef": "bass",
+    "from": "F2",
+    "to": "C4",
+    "sizes": [
+      2,
+      3
+    ],
+    "direction": "both"
+  }
+}

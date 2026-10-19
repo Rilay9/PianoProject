@@ -31,5 +31,17 @@
   "rhythm-level-4.json",
   "chords-c-left.json",
   "chords-g-left.json",
-  "chord-changes.json"
+  "chord-changes.json",
+  "notes-treble.json",
+  "notes-bass.json",
+  "notes-treble-ledger.json",
+  "notes-bass-ledger.json",
+  "notes-both.json",
+  "notes-middle-c.json",
+  "intervals-treble-2-3.json",
+  "intervals-bass-2-3.json",
+  "intervals-treble-4-5.json",
+  "intervals-bass-4-5.json",
+  "intervals-all.json",
+  "intervals-together.json"
 ]

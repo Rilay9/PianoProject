@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:path && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability && npm run check:exercise && npm run check:flow && npm run check:content",
+    "check": "npm run check:scoring && npm run check:lab && npm run check:activity && npm run check:path && npm run check:midi && npm run check:pdf && npm run check:wake && npm run check:practice && npm run check:readability && npm run check:exercise && npm run check:flow && npm run check:notecards && npm run check:content",
     "check:notes": "vite build && node tests/notes-match.mjs",
     "check:browser": "vite build && node tests/browser.mjs",
     "check:scoring": "node tests/scoring.mjs",
@@ -21,7 +21,8 @@
     "check:wake": "node tests/wake.mjs",
     "check:practice": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/practice.mjs",
     "check:exercise": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/exercise.mjs",
-    "check:flow": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/flow.mjs"
+    "check:flow": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/flow.mjs",
+    "check:notecards": "node --import ./tests/ts-ext.mjs --experimental-transform-types --no-warnings tests/notecards.mjs"
   },
   "dependencies": {
     "@tonejs/midi": "2.0.28",

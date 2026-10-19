@@ -32,6 +32,7 @@
   --mark-timing: #d97706;
   --mark-wrong: #dc2626;
   --mark-want: #2563eb;
+  --mark-done: #16a34a; /* a reading card's notes played right so far (2026-10-18) */
   /* A key held down: cyan, kept apart from the timing orange (the pressed key was amber, read as "late") and from the
      lit keys' blue and green (CIE Lab distance about 70 or more from each; consistency pass 2026-10-16). */
   --key-pressed: #0891b2;
@@ -336,7 +337,8 @@ body.keys-play .run-strip { bottom: calc(var(--under-h, 0px) + var(--bottom-bar-
      one line, the sentence beside it smaller, up to three lines, and the key under them both) */
   .ex-overlay .ex-status { flex: 0 0 auto; min-width: 0; font-size: 1rem; text-align: left; white-space: nowrap; }
   .ex-overlay .ex-sub { flex: 1 1 auto; min-width: 0; text-align: left; font-size: 0.85rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; line-height: 1.2; }
-  .ex-overlay .ex-legend { flex: 0 1 12em; min-width: 0; font-size: 0.75rem; line-height: 1.2; text-align: left; }
+  /* (the colours' key in the music's top corner, not a narrow column in the bar: 2026-10-18, it wrapped to six lines) */
+  .ex-overlay .ex-legend { position: absolute; top: 6px; right: 12px; max-width: 45%; margin: 0; font-size: 0.75rem; line-height: 1.2; text-align: right; }
   /* The timing check's offer on one line beside its buttons, so it never sits over Start. */
   .ex-calib { flex-wrap: nowrap; padding: 2px 12px; font-size: 13px; }
   .ex-calib span { flex: 1 1 auto; }
@@ -1209,6 +1211,7 @@ body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !impo
 .fl-say { display: flex; flex-direction: column; align-items: center; min-height: 2.4em; }
 .fl-say .big { font-size: 2rem; font-weight: 800; line-height: 1; }
 .fl-say .small { font-size: 14px; color: var(--muted); text-align: center; padding: 0 12px; }
+.fl-say.wrong .big { color: var(--mark-wrong); }
 .fl-result { margin: 4px 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-bg); text-align: center; }
 .fl-result[hidden] { display: none; }
 .fl-result .line { margin: 0; font-weight: 700; }
@@ -1224,19 +1227,60 @@ body.draw-failed #bottom-bar, body.draw-failed #memo-panel { display: none !impo
 .fl-side { display: contents; }
 .flow .fp-head { order: 0; } #fl-task { order: 1; } .fl-tools { order: 2; } .fl-stats { order: 3; } .fl-music { order: 4; }
 .fl-last { order: 5; } .fl-say { order: 6; } .fl-result { order: 7; } .fl-actions { order: 8; } .fl-pad { order: 9; } .keyboard.fl-keyboard { order: 10; }
-/* Sideways on a phone: the music on the left, the choices, scores and a tall pad on the right, the keys along the bottom. */
-@media (max-height: 480px) and (orientation: landscape) {
-  .flow { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); grid-template-rows: auto auto minmax(0, 1fr) auto; grid-template-areas: "head head" "task task" "music side" "keys keys"; }
+/* The choices behind ⋯ only sideways; upright they sit in the row. */
+.fl-more { display: none; }
+.fl-toggles { display: contents; }
+.fl-music.pressed { background: color-mix(in srgb, var(--accent) 10%, var(--paper, #fff)); }
+/* Sideways on a phone (owner, 2026-10-18: "Its one line you can fit things on the bottom"): the music across the whole
+   width (it is the tap pad for a rhythm set when no keyboard is connected), one bar of controls and words under it —
+   Start, Tap along / Read, ⋯ (Speed up, Judge note lengths, Loop), then what it says — and the keys along the bottom for
+   a tune. The summary after a run sits over the music. */
+@media (max-height: 599px) and (orientation: landscape) {
+  .flow { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; grid-template-areas: "head" "task" "music" "bar" "keys"; }
   .flow .fp-head { grid-area: head; } #fl-task { grid-area: task; }
   .fl-music { grid-area: music; }
-  .fl-side { grid-area: side; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-  .keyboard.fl-keyboard { grid-area: keys; height: 30vh; }
-  .fl-tools { padding: 3px 6px; gap: 4px; } .fl-tools .btn { min-height: 34px; font-size: 13px; padding: 4px 8px; }
-  .fl-stats { padding: 0 8px; font-size: 13px; gap: 8px; }
-  .fl-last { margin: 0 8px; font-size: 13px; }
-  .fl-say { min-height: 0; } .fl-say .big { font-size: 1.4rem; } .fl-say .small { font-size: 12px; }
-  .fl-actions { padding: 3px 8px; } .fl-help { display: none; }
-  .fl-result { margin: 2px 8px; padding: 6px 8px; }
-  .fl-pad { flex: 1 1 auto; height: auto; min-height: 70px; margin: 4px 8px calc(6px + env(safe-area-inset-bottom)); }
+  .fl-side { grid-area: bar; display: flex; flex-direction: row; align-items: center; gap: 8px; min-height: 0; padding: 4px 10px; background: var(--bar-bg); border-top: 1px solid var(--bar-line); }
+  .fl-side > * { flex-shrink: 0; }
+  .keyboard.fl-keyboard { grid-area: keys; height: 22vh; }
+  .flow .fp-head { padding-top: 4px; padding-bottom: 4px; } .flow .fp-head .btn { min-height: 40px; }
+  .fl-actions { order: 1; padding: 0; } .fl-actions .btn { min-height: 40px; padding: 4px 14px; } .fl-help { display: none; }
+  .fl-tools { order: 2; position: relative; padding: 0; gap: 6px; flex-wrap: nowrap; } .fl-tools .btn { min-height: 40px; font-size: 14px; padding: 4px 10px; }
+  .fl-more { display: inline-flex; align-items: center; }
+  .fl-toggles { display: none; position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 4; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-bg); box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); }
+  .flow.more .fl-toggles { display: flex; }
+  .fl-say { order: 3; flex: 1 1 auto; min-width: 0; min-height: 0; flex-direction: row; align-items: baseline; gap: 8px; overflow: hidden; }
+  .fl-say .big { font-size: 1.15rem; white-space: nowrap; } .fl-say .small { font-size: 13px; text-align: left; padding: 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .fl-last { order: 4; flex: 0 1 auto; min-width: 0; margin: 0; font-size: 13px; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 34%; }
+  .fl-stats { order: 5; padding: 0; font-size: 13px; gap: 8px; min-height: 0; }
+  .fl-result { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); z-index: 3; margin: 0; max-width: calc(100% - 32px); box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); }
+  .fl-pad { display: none; } /* (the music is the pad sideways) */
 }
 
+
+/* Look it up (lookup.ts; owner, 2026-10-18): a wide panel, section chips on top, the pictures as wide as it is. */
+dialog.lookup { max-width: min(900px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); padding: 0; display: none; flex-direction: column; overflow: hidden; }
+dialog.lookup[open] { display: flex; }
+.lk-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 4px; margin: 0; }
+.lk-top .dlg-x { float: none; margin: 0; }
+.lk-chips { display: flex; gap: 6px; overflow-x: auto; padding: 4px 12px 8px; flex: none; scrollbar-width: none; }
+.lk-chips .chip { white-space: nowrap; }
+.lk-body { overflow-y: auto; padding: 0 12px 8px; flex: 1 1 auto; min-height: 0; }
+.lk-body h3 { margin: 14px 0 2px; font-size: 1rem; }
+.lk-body p { margin: 4px 0 10px; line-height: 1.4; }
+.lk-fig { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.lk-row { display: block; flex: 0 1 auto; min-width: 0; max-width: 100%; padding: 4px; border: 1px solid transparent; border-radius: 8px; background: none; color: inherit; cursor: pointer; text-align: left; }
+.lk-row:active { border-color: var(--accent); }
+.lk-staff { display: block; height: auto; }
+.lk-body .lk-chords { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.lk-keys { display: block; flex: none; max-width: 100%; height: auto; }
+.lk-chords .lk-fig { flex-direction: column; align-items: center; gap: 2px; }
+.lk-tip { margin: 0; padding: 6px 12px 10px; flex: none; }
+.lk-open { min-width: 44px; padding-left: 8px; padding-right: 8px; }
+@media (orientation: landscape) and (max-height: 599px) {
+  dialog.lookup { width: calc(100vw - 16px); }
+  .lk-top { padding: 6px 12px 0; }
+  .lk-top h2 { font-size: 16px; }
+  .lk-tip { display: none; }
+  .lk-body { font-size: 0.92rem; }
+  .lk-body h3 { margin-top: 8px; }
+}
