@@ -4990,7 +4990,8 @@ try {
     await page.waitForTimeout(800);
     const played = await page.evaluate(async () => {
       const D = () => window.__pianoDebug.drill();
-      document.getElementById('ex-start').click();
+      // (since 2026-10-18 a name-only set deals its first card as it opens: Start only if it shows)
+      if (!document.getElementById('ex-start').hidden) document.getElementById('ex-start').click();
       for (let i = 0; i < 60 && D().state !== 'turn'; i++) await new Promise((r) => setTimeout(r, 50));
       let cards = 0;
       for (let c = 0; c < 9; c++) {
