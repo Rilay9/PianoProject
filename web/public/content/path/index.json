@@ -11,6 +11,17 @@
       ]
     },
     {
+      "id": "foundations",
+      "title": "Foundations: from zero to both hands in C",
+      "lessons": [
+        "f1-keyboard",
+        "f2-rhythm",
+        "f3-treble",
+        "f4-bass",
+        "f5-hands"
+      ]
+    },
+    {
       "id": "r2",
       "title": "C and G positions",
       "lessons": [

@@ -1,0 +1,10 @@
+{
+  "title": "Warm-up: treble notes",
+  "screen": "drills",
+  "set": "notes-c-pos-treble",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

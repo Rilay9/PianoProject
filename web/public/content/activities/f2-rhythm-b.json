@@ -1,0 +1,9 @@
+{
+  "title": "Rhythm: whole notes too",
+  "screen": "flow",
+  "set": "rhythm-whole",
+  "settings": {
+    "tempo": 66,
+    "mode": "read"
+  }
+}

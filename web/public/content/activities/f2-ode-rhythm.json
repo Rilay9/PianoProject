@@ -1,0 +1,12 @@
+{
+  "title": "Ode to Joy in rhythm",
+  "screen": "drills",
+  "set": "ode-c-letters",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "relaxed",
+    "cards": 4
+  }
+}

@@ -68,5 +68,26 @@
     "composer": "Snow Patrol",
     "file": "chasing-cars-chorus.musicxml",
     "status": "The chorus’s first half, moved from A to C; pitches agree in Hooktheory’s piano roll and three kalimba tabs (“just” a step up, as three give); rhythm from Hooktheory only, the lead-in’s as the next phrase’s. Left-hand chords C, G7, F added."
+  },
+  {
+    "id": "ode-to-joy-c",
+    "title": "Ode to Joy (in C)",
+    "composer": "L. van Beethoven",
+    "file": "ode-to-joy-c.musicxml",
+    "status": "Theme of the finale of Symphony No. 9 in C position; left-hand chords C and G7 added. The week’s checked G version moved down a fifth; letters checked by hand."
+  },
+  {
+    "id": "ode-to-joy-c-left",
+    "title": "Ode to Joy (left hand)",
+    "composer": "L. van Beethoven",
+    "file": "ode-to-joy-c-left.musicxml",
+    "status": "The same melody an octave lower, for the left hand in C position (bass clef)."
+  },
+  {
+    "id": "saints-c",
+    "title": "When the Saints Go Marching In (in C)",
+    "composer": "Traditional",
+    "file": "saints-c.musicxml",
+    "status": "The week’s checked G version moved down a fifth; left-hand chords C, F and G7."
   }
 ]

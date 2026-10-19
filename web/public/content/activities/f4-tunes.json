@@ -1,0 +1,10 @@
+{
+  "title": "Tunes in C position, left hand",
+  "screen": "drills",
+  "set": "read-c-bass",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

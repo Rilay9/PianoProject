@@ -1,0 +1,83 @@
+{
+  "title": "Foundations 3: reading music, the treble staff",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You can find the keys by letter and keep a beat. Now you'll read notes from music, the way most music is written.\n\n**By the end** you can read and play every note of C position on the treble staff at sight, and play *Ode to Joy*'s right hand from the music."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm-up"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Warm-up: rhythm with rests",
+      "activity": "f3-warmup",
+      "about": "A round of rhythm, rests included."
+    },
+    {
+      "kind": "text",
+      "text": "# The staff\nMusic is written on a **staff**: five lines and the four spaces between them, counted from the bottom up. A note sits either **on a line** (the line runs through it) or **in a space**. The higher a note sits on the staff, the higher it sounds: one step up the staff, line to the next space or space to the next line, is one white key to the right.\n\nThe sign at the start, the **clef**, says which notes the lines and spaces are. The **treble clef** (also called the G clef) curls round the second line up: a note on that line is the **G** above middle C. The right hand usually reads the treble staff."
+    },
+    {
+      "kind": "text",
+      "text": "# C position on the treble staff\nYour right hand's five notes, from the bottom:\n\n- **C** (middle C) sits on its own short line under the staff, a *ledger line*.\n- **D** hangs just under the bottom line.\n- **E** is on the bottom line.\n- **F** is in the bottom space.\n- **G** is on the second line, where the clef curls.\n\nMiddle C and G are your landmarks: from either one, count steps up or down."
+    },
+    {
+      "kind": "score",
+      "musicxml": "media/f-c-position-treble.musicxml",
+      "tempo": 60,
+      "keys": true,
+      "caption": "C D E F G in the treble clef, the right hand's C position. ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# One note at a time\nA note comes up on the staff; play it. A wrong key tells you what you played and which note it was, with its place on the staff, so you learn from every miss. Aim to know each note on sight, without counting up from C. The 📖 at the top of the screen has every line and space if you want to look something up."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "Single notes: C position, treble clef",
+      "activity": "f3-notes",
+      "about": "Twenty cards; Keep going for more.",
+      "target": {
+        "clean": 16
+      }
+    },
+    {
+      "kind": "text",
+      "text": "# Reading a tune: direction first\nGood readers don't name every note. They read the **shape**: does the next note go up, down or stay the same? By a **step** (line to the next space, or space to the next line: the next key) or a **skip** (line to the next line, or space to the next space: skipping one key)? Name the first note, then follow the shape.\n\nThese tunes are made up fresh for every card, so you read them rather than remember them. The blue note is next; the ones you've played turn green. There's no clock: play each note when you've read it."
+    },
+    {
+      "kind": "step",
+      "id": "tunes",
+      "title": "Tunes in C position, right hand",
+      "activity": "f3-tunes",
+      "about": "Ten two-bar tunes, untimed. Hear it plays a card with its letters if you're stuck."
+    },
+    {
+      "kind": "text",
+      "text": "# Ode to Joy from the music\nNow a real score: *Ode to Joy*, right hand only, in **Wait for me**: the music waits for you to play each note, and the marker moves on when you do. It's the tune you already know, so let the music confirm what your ear expects.\n\nOn a phone, hold it upright to play on the screen's keys, or connect a keyboard."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy, right hand, from the music",
+      "activity": "f3-ode",
+      "about": "Wait for me, right hand: the score waits for each note."
+    },
+    {
+      "kind": "step",
+      "id": "tunes-time",
+      "title": "Right-hand tunes in time",
+      "activity": "f3-tunes-time",
+      "about": "Optional: the same kind of tunes, one after another with the click.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You mix up E and F.** E is *on* the bottom line (the line through it); F is *in* the space above it.\n- **You count up from C for every note.** That's fine at first. Then learn the landmarks (middle C below the staff, G on the second line) and step from the nearer one.\n- **Your eyes go to your hands.** Your hand is in position, so the keys are where your fingers are: keep your eyes on the music and feel for the next finger.\n\n**Until the next lesson:** a set of single notes and a few tunes every day."
+    }
+  ]
+}

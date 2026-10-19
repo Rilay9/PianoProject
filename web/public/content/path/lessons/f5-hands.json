@@ -1,0 +1,107 @@
+{
+  "title": "Foundations 5: chords and both hands",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You can read C position in both clefs and keep a beat. Now the hands play together: the right hand the tune, the left hand chords.\n\n**By the end** you can play the chords C, F and G7 with your left hand, change between them on the beat, and play *Ode to Joy* and *When the Saints Go Marching In* with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm-up"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Warm-up: tunes in either hand",
+      "activity": "f5-warmup",
+      "about": "Six tunes, treble or bass at random, untimed."
+    },
+    {
+      "kind": "text",
+      "text": "# The C chord\nA **chord** is several notes played together. The **C chord** is C, E and G: in C position that's your left hand's little finger (5), middle finger (3) and thumb (1), every other key. Press all three at the same moment, as one sound; on the screen, tap with three fingers at once."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 E3 G3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "C: C E G, fingers 5 3 1."
+    },
+    {
+      "kind": "text",
+      "text": "# F and G7: the shape moves a little\nTwo more chords make the rest of the songs in this lesson, and each is a small move from C:\n\n- **F** (its notes are F, A and C) is played here as C, F, A: the little finger stays on C, finger 2 moves up to F, and the thumb reaches up to A.\n- **G7** (G, B, D and F) is played here as B, F, G, three of its four notes: the little finger moves down to B (the white key just left of C), finger 2 is on F, the thumb on G.\n\nThe notes are rearranged so the hand hardly moves from chord to chord; they're still F and G7.\n\n**C** sounds like home; **F** leans away from it; **G7** pulls back home. Simple songs are made from these three, and your ear will start to expect which comes next."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 F3 A3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "F: C F A, fingers 5 2 1."
+    },
+    {
+      "kind": "keys",
+      "notes": "B2 F3 G3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "G7: B F G, fingers 5 2 1."
+    },
+    {
+      "kind": "score",
+      "musicxml": "media/f-chords-c.musicxml",
+      "tempo": 60,
+      "keys": true,
+      "caption": "The three chords on the bass staff: C, F, G7, back to C. ▶ to hear how G7 pulls home."
+    },
+    {
+      "kind": "text",
+      "text": "# Chords by name\nA chord name comes up; play it, all three notes together. A wrong key names the chord's notes, and **Show me** draws it on the staff."
+    },
+    {
+      "kind": "step",
+      "id": "chords",
+      "title": "Chords C, F and G7, by name",
+      "activity": "f5-chords",
+      "about": "Nine cards, then Keep going if you like.",
+      "target": {
+        "clean": 8
+      }
+    },
+    {
+      "kind": "text",
+      "text": "# Changing chords on the beat\nEach card is four bars, one chord a bar, written on the bass staff. Play each chord on beat 1 and hold it through the bar; move to the next chord during beat 4, so you land on the next 1 on time. Your first chord starts the card, or **Count in** gives a bar of clicks first; the click keeps going while you play."
+    },
+    {
+      "kind": "step",
+      "id": "changes",
+      "title": "Changing chords in time",
+      "activity": "f5-changes",
+      "about": "Eight four-bar cards: C, F and G7 on the beat."
+    },
+    {
+      "kind": "text",
+      "text": "# Both hands together\nPractise a new piece in three passes: the **right hand alone**, the **left hand alone**, then **both**, slowly. **Wait for me** helps: it waits until every note due at that moment is down, so you can take your time to put the chord and the tune note down together. Then hold the chord through its bar while the right hand goes on.\n\nIn *Ode to Joy* the left hand changes every bar, C then G7, back and forth; in the last bar it's G7 for two beats and C for two. (The **R**, **L** and **Both** buttons under the music choose which hands you play: practise each alone first.)\n\nOn a phone, hold it upright to play on the screen's keys, or connect a keyboard."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy, both hands",
+      "activity": "f5-ode",
+      "about": "Wait for me, both hands: right-hand tune, left-hand chords."
+    },
+    {
+      "kind": "text",
+      "text": "# When the Saints Go Marching In\nThe tune starts with a rest: the left hand's chord comes on 1, and the right hand comes in on 2. The long notes are held for a whole bar, so count through them. The left hand plays C most of the way, G7 in bars 8 and 9, and F in bars 12 and 13."
+    },
+    {
+      "kind": "step",
+      "id": "saints",
+      "title": "When the Saints Go Marching In, both hands",
+      "activity": "f5-saints",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **The chord's notes don't sound together.** Shape the hand over all three keys first, then press them as one.\n- **One hand waits for the other.** Slow down: Wait for me is there so both can be right before you speed up.\n- **You're late after a chord change.** Move your hand during the last beat of the bar, not on the 1.\n\n# What's next\nThat's the ground the next lesson stands on: **This week: G position, chords and rhythm** moves both hands to a new position, adds eighth notes and the chords in G, and brings in pop songs."
+    }
+  ]
+}

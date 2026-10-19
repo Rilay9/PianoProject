@@ -1,0 +1,10 @@
+{
+  "title": "Single notes: C position, bass clef",
+  "screen": "drills",
+  "set": "notes-c-pos-bass",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

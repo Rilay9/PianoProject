@@ -1,0 +1,96 @@
+{
+  "title": "Foundations 4: the bass staff and the left hand",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You can read the right hand's five notes on the treble staff. The left hand reads its own staff, with a different clef.\n\n**By the end** you can read and play C position on the bass staff, play a tune with your left hand from the music, and read both staves mixed."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm-up"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Warm-up: treble notes",
+      "activity": "f4-warmup",
+      "about": "A set of treble notes, to keep them fresh."
+    },
+    {
+      "kind": "text",
+      "text": "# The bass clef\nThe **bass clef** (also called the F clef) begins with a round head on the fourth line up, and its two small dots sit just above and just below that line: a note on that line is the **F below middle C**. It's for the lower notes, and the left hand usually reads it.\n\nThe lines and spaces mean different notes from the treble staff, so learn this staff as its own thing rather than translating from the treble."
+    },
+    {
+      "kind": "text",
+      "text": "# C position on the bass staff\nYour left hand's five notes, from the bottom:\n\n- **C** is in the second space.\n- **D** is on the middle line.\n- **E** is in the third space.\n- **F** is on the fourth line, between the clef's two dots.\n- **G** is in the top space.\n\nThe landmarks: **F** between the dots, and **C** in the second space."
+    },
+    {
+      "kind": "score",
+      "musicxml": "media/f-c-position-bass.musicxml",
+      "tempo": 60,
+      "keys": true,
+      "caption": "C D E F G in the bass clef, the left hand's C position. ▶ to hear it."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "Single notes: C position, bass clef",
+      "activity": "f4-notes",
+      "about": "Twenty cards; Keep going for more.",
+      "target": {
+        "clean": 16
+      }
+    },
+    {
+      "kind": "text",
+      "text": "# Left-hand tunes\nRead them the same way as in the treble: the first note, then the shape, steps and skips. Your little finger is on C and your thumb on G, so going *up* the staff means moving toward your thumb."
+    },
+    {
+      "kind": "step",
+      "id": "tunes",
+      "title": "Tunes in C position, left hand",
+      "activity": "f4-tunes",
+      "about": "Ten two-bar tunes in the bass clef, untimed."
+    },
+    {
+      "kind": "text",
+      "text": "# Ode to Joy with your left hand\nThe same melody, an octave lower in the bass clef, for your left hand alone, in Wait for me. It starts on E, with your middle finger (3)."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy, left hand, from the music",
+      "activity": "f4-ode",
+      "about": "Wait for me: the score waits for each note."
+    },
+    {
+      "kind": "text",
+      "text": "# The grand staff\nPiano music joins the two staves with a brace: the **treble** on top for the right hand, the **bass** below for the left. **Middle C** sits between them: the same key, written on a short line under the treble staff or over the bass staff, whichever hand plays it.\n\nNow the two mixed: a note on either staff, at random. Mixing them is harder than one staff at a time, and that's the point: it's what real music asks of you."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Single notes: both clefs",
+      "activity": "f4-both",
+      "about": "Treble and bass at random. Twenty cards; Keep going for more."
+    },
+    {
+      "kind": "step",
+      "id": "time",
+      "title": "Tunes in time, both clefs",
+      "activity": "f4-time",
+      "about": "Optional: tunes in either hand, one after another with the click.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You read bass notes as if they were treble.** Start from F between the dots, or C in the second space, and step from there; it settles with a few days of single-note sets.\n- **Your left hand feels clumsy.** It's normal for the hand you don't write with. Play softly, keep the fingers curved, and go slower than you think you need to.\n\n**Until the next lesson:** single notes in both clefs daily, and a few left-hand tunes."
+    },
+    {
+      "kind": "video",
+      "youtube": "https://www.youtube.com/watch?v=Q-9wiH8GJRQ",
+      "title": "Unit 5: More Bass Clef Note Reading (Faber Piano Adventures, 5 min)",
+      "size": "row"
+    }
+  ]
+}

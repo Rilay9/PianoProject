@@ -1,0 +1,9 @@
+{
+  "title": "When the Saints Go Marching In, both hands",
+  "screen": "score",
+  "piece": "saints-c",
+  "settings": {
+    "mode": "wait",
+    "hands": "both"
+  }
+}

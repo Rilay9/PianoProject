@@ -1,0 +1,17 @@
+{
+  "title": "Ode to Joy in rhythm, by letters",
+  "kind": "melodies",
+  "view": "letters",
+  "order": "passage",
+  "tempo": 80,
+  "items": {
+    "1": {
+      "musicxml": "ode-c-letters-1.musicxml",
+      "name": "Bars 1–4"
+    },
+    "2": {
+      "musicxml": "ode-c-letters-2.musicxml",
+      "name": "Bars 5–8"
+    }
+  }
+}

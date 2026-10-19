@@ -45,5 +45,11 @@
   "intervals-all.json",
   "intervals-together.json",
   "notes-ledger-both.json",
-  "chords-c-g-left.json"
+  "chords-c-g-left.json",
+  "find-letters-all.json",
+  "notes-c-pos-treble.json",
+  "notes-c-pos-bass.json",
+  "notes-c-pos-both.json",
+  "ode-c-letters.json",
+  "chord-changes-c.json"
 ]

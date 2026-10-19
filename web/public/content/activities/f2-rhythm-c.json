@@ -1,0 +1,9 @@
+{
+  "title": "Rhythm: rests",
+  "screen": "flow",
+  "set": "rhythm-level-1",
+  "settings": {
+    "tempo": 66,
+    "mode": "read"
+  }
+}

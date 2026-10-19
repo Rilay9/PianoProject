@@ -1,0 +1,9 @@
+{
+  "title": "Ode to Joy, both hands",
+  "screen": "score",
+  "piece": "ode-to-joy-c",
+  "settings": {
+    "mode": "wait",
+    "hands": "both"
+  }
+}

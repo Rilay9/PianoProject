@@ -1,0 +1,12 @@
+{
+  "title": "Changing chords in time",
+  "screen": "drills",
+  "set": "chord-changes-c",
+  "level": {
+    "rung": 3,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "relaxed",
+    "cards": 8
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Foundations 2: the beat and how long notes last",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You can find the keys and play two tunes, one note at a time with no clock. Music has a clock, though, and this lesson is about it.\n\n**By the end** you can keep a steady beat, read quarter, half and whole notes and rests in 4/4 and tap them on time, and play *Ode to Joy* in its real rhythm."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm-up\nOde to Joy by letters once more, both hands: you'll play it in time at the end of this lesson."
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Warm-up: Ode to Joy by letters",
+      "activity": "r1-ode-to-joy",
+      "about": "Once through, both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# The beat\nUnder most music there's a steady pulse, like a slow clock or a walking pace: the **beat**. Counting it is how musicians keep together and how you'll know how long to hold each note. In most of this lesson's music the beats are counted in groups of four, **1 2 3 4, 1 2 3 4**, with a little more weight on each 1.\n\nEach group is a **bar**, and a **bar line** (a thin upright line through the staff) marks where one ends and the next begins. The **4/4** at the start (the *time signature*) says so: four beats in every bar, and a quarter note lasts one of them. For now the beat stays steady from start to end."
+    },
+    {
+      "kind": "text",
+      "text": "# How long each note lasts\nA note's shape tells you how many beats to hold it (in 4/4):\n\n- **Quarter note**: a filled head with a stem: **1 beat**.\n- **Half note**: a hollow head with a stem: **2 beats**.\n- **Whole note**: a hollow head, no stem: **4 beats**, a whole bar.\n\nSilence is counted the same way, with **rests**: a **quarter rest** (a squiggle) is one beat of silence; a **half rest** is a small block sitting *on* the middle line, two beats; a **whole rest** is a block hanging *under* the fourth line, a whole bar. During a rest you keep counting; your hand just stays still.\n\nHold each note for its full length: on the screen, keep your finger down until the next note's count."
+    },
+    {
+      "kind": "score",
+      "musicxml": "media/f-note-values.musicxml",
+      "tempo": 60,
+      "keys": false,
+      "caption": "Four quarter notes, two half notes, a whole note, then quarter notes with quarter rests between. The counts are under the notes. ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# Tapping rhythms, bar after bar\nThe rhythm steps use **Read in time**, which works like a rhythm trainer. You see one rhythm at a time on a single line (no pitches: any key or tap is the note). Tap for each note: on the pad, on the music itself when the phone is held sideways, or any key on a keyboard.\n\n- **Your first tap starts it**, as the first note, and the click carries on from there. Or press **Start** for a bar of clicks first.\n- The exercises keep coming, one after another, with the click never stopping. Each tap gets a dot: **green** on time, **orange** early or late, and a **grey** ring for a note you missed.\n- **Tap along** plays the rhythm with you; **Read** gives you only the click. A round is 8 exercises; stop when you like, or just stop tapping.\n\nCount out loud as you tap, \"1, 2, 3, 4\", and hold the half and whole notes for their counts."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-a",
+      "title": "Rhythm: quarter and half notes",
+      "activity": "f2-rhythm-a",
+      "about": "With Tap along on, so you hear the rhythm as you tap it. A round of 8."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-b",
+      "title": "Rhythm: whole notes too",
+      "activity": "f2-rhythm-b",
+      "about": "Read: the click only. Hold the whole notes through all four counts."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-c",
+      "title": "Rhythm: rests",
+      "activity": "f2-rhythm-c",
+      "about": "Read. On a rest, stay still and keep counting."
+    },
+    {
+      "kind": "text",
+      "text": "# Three beats in a bar (optional)\nSome music counts in threes, **1 2 3**: that's **3/4**, three beats in a bar. A **dot** after a note adds half its length again, so a **dotted half note** is 2 + 1 = **3 beats**, a whole bar of 3/4. The next lesson's tunes stay in 4/4; this is here for when you want more."
+    },
+    {
+      "kind": "score",
+      "musicxml": "media/f-three-four.musicxml",
+      "tempo": 60,
+      "keys": false,
+      "caption": "3/4: a dotted half note (3 beats), a quarter and a half, then three quarters."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-d",
+      "title": "Rhythm: dotted halves and 3/4",
+      "activity": "f2-rhythm-d",
+      "about": "Optional: 3/4 and 4/4 mixed. Watch the time signature on each line.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# Ode to Joy in its rhythm\nNow the tune with its rhythm. Each card is four bars on a single line with the letter under every note, and it's judged for both: the right key, at the right time. It plays the card first, then counts in a bar of clicks, then it's your turn, with the click going.\n\nNearly every note is a quarter note. In bar 4, the E lasts a beat and a half and the D after it only half a beat, then a half note: a long–short pair you'll hear in the demo. Play it as you hear it."
+    },
+    {
+      "kind": "step",
+      "id": "ode-rhythm",
+      "title": "Ode to Joy in rhythm",
+      "activity": "f2-ode-rhythm",
+      "about": "Heard first, then played with the click: right key, right time."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **Your taps get faster as you go.** Almost everyone rushes at first. Count out loud, and let the click lead.\n- **Half and whole notes come out short.** Keep the finger down and keep counting under your breath: \"one-two\", \"one-two-three-four\".\n- **Rests trip you up.** Say the rest's counts out loud too: \"1, (2), 3, (4)\".\n\n**Until the next lesson:** a round of each rhythm step daily, then Ode to Joy in rhythm."
+    }
+  ]
+}

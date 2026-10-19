@@ -1,0 +1,10 @@
+{
+  "title": "Chords C, F and G7, by name",
+  "screen": "drills",
+  "set": "chords-c-left",
+  "level": {
+    "rung": 4,
+    "onTime": "notes",
+    "cards": 9
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: C position, treble clef",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "C4",
+    "to": "G4"
+  }
+}

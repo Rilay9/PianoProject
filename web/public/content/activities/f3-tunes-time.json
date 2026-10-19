@@ -1,0 +1,9 @@
+{
+  "title": "Right-hand tunes in time",
+  "screen": "flow",
+  "set": "read-c-treble",
+  "settings": {
+    "tempo": 60,
+    "mode": "read"
+  }
+}

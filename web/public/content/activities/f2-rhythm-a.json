@@ -1,0 +1,9 @@
+{
+  "title": "Rhythm: quarter and half notes",
+  "screen": "flow",
+  "set": "rhythm-quarter-half",
+  "settings": {
+    "tempo": 66,
+    "mode": "along"
+  }
+}

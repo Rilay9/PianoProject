@@ -1,0 +1,10 @@
+{
+  "title": "Warm-up: tunes in either hand",
+  "screen": "drills",
+  "set": "read-c-both",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 6
+  }
+}

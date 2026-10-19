@@ -1,0 +1,10 @@
+{
+  "title": "Single notes: both clefs",
+  "screen": "drills",
+  "set": "notes-c-pos-both",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

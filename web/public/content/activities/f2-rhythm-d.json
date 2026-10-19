@@ -1,0 +1,9 @@
+{
+  "title": "Rhythm: dotted halves and 3/4",
+  "screen": "flow",
+  "set": "rhythm-level-2",
+  "settings": {
+    "tempo": 66,
+    "mode": "read"
+  }
+}

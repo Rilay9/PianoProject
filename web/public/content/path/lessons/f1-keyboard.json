@@ -1,0 +1,112 @@
+{
+  "title": "Foundations 1: the keyboard, your hands, your first tunes",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "This course takes you from never having touched a piano to reading music in both clefs and playing with both hands, in five lessons. Each is a sitting or two of real work; the practice steps go on for as long as you want them to.\n\nEverything here works on the app's keys on the screen. A keyboard connected to your phone or computer makes it much better: real keys train your fingers in a way glass can't, so use one if you have it.\n\n**By the end of this lesson** you can find any white key by its letter, put either hand in C position, and play *Mary Had a Little Lamb* and the opening of *Ode to Joy*."
+    },
+    {
+      "kind": "text",
+      "text": "# Sitting and your hands"
+    },
+    {
+      "kind": "read-watch",
+      "text": "**How to sit.** Sit toward the front of the seat, not right on the edge, facing the middle of the keys: that leaves you free to lean a little left or right as your hands travel, without twisting. Sit tall and let your arms hang loosely from your shoulders. With your fingers on the keys, your elbows sit a little in front of your body, and your forearm is about level from elbow to knuckles: if it slopes up to the keys the seat is too low, if it slopes down, too high. To check the distance, stretch your arms straight out with loose fists: your knuckles should just reach the back of the keys. Then let your elbows bend and hang. Rest your feet flat on the floor.\n\n**How to hold your hands.** Let your arms hang by your sides and relax your hands completely: they curve on their own. Lift one hand onto the keys (or a table) without changing that shape: the fingers make a letter C, landing on their tips, the thumb resting lightly beside them, the wrist loose and level with your forearm. If your hand feels stiff, imagine holding an apple in each hand, then drop the apples: the wrists go soft and the fingers stay curved.",
+      "youtube": "https://www.youtube.com/watch?v=BmTcXlfT1OE",
+      "title": "What Is Proper Piano Posture? Tips for Hand, Arm, and Seat Position (Hoffman Academy, 14 min)",
+      "caption": "Made for children; it covers where to sit, how far away and how high, and the shape of the hand."
+    },
+    {
+      "kind": "text",
+      "text": "# The black keys are your map\nLook at the black keys: they aren't spread evenly. They come in groups of **two** and **three**, with a gap between each group, where two white keys sit side by side with no black key between them. The pattern repeats all the way along, and every key on the piano is found from it.\n\nKeys to the **left** sound **lower**; keys to the **right** sound **higher**."
+    },
+    {
+      "kind": "image",
+      "src": "media/black-key-groups.svg",
+      "alt": "Two octaves of piano keys: groups of two black keys outlined in orange and labelled 2, groups of three outlined in blue and labelled 3, a gap between two white keys marked \"no black key here\", and arrows showing lower to the left and higher to the right",
+      "caption": "Groups of two (orange) and three (blue), with a gap between them."
+    },
+    {
+      "kind": "text",
+      "text": "# Seven letters\nThe white keys are named with just seven letters, **A B C D E F G**, and after G it starts again at A. You find each one from the black keys beside it:\n\n- **C** is just left of a group of **two** black keys, **D** sits between the two, **E** just right of them.\n- **F** is just left of a group of **three**, **G** and **A** sit between them, **B** just right of them.\n\nThen C again, at the next group of two. So there's a C at every group of two, all the way along. The C nearest the middle of the keyboard is **middle C**: you'll use it as home base from now on.\n\nTry it below: play C D E F G A B C going up and listen to it climb. Then tap **Hide names** and **Find a key**: it names a letter, you play it."
+    },
+    {
+      "kind": "keyboard",
+      "keys": "C3-B4",
+      "groups": false,
+      "names": "letters",
+      "hide": true,
+      "find": true,
+      "caption": "Every white key named. Hide the names to test yourself."
+    },
+    {
+      "kind": "text",
+      "text": "# Find them anywhere\nNow the real test: a letter and a place come up, \"an F, higher up\" or \"a B, in the middle\", and you play that key, with no names on the keys. Find the right group of black keys first, then the letter beside it. The keys start in a different place on each card (move them with ‹ ›), so you're reading the pattern, not remembering a spot on the screen. With a keyboard, use the whole keyboard."
+    },
+    {
+      "kind": "step",
+      "id": "find",
+      "title": "Find each key by letter",
+      "activity": "f1-find",
+      "about": "A letter and a place: play that key. Show me outlines it if you're stuck (the card then doesn't count as clean).",
+      "target": {
+        "clean": 10
+      }
+    },
+    {
+      "kind": "text",
+      "text": "# Finger numbers"
+    },
+    {
+      "kind": "read-watch",
+      "text": "Fingers are numbered the same way in both hands:\n\n- **1**: thumb\n- **2**: pointer\n- **3**: middle finger\n- **4**: ring finger\n- **5**: little finger\n\nTry it on a table: rest both hands in a round shape and tap each finger as you say its number out loud, 1 to 5 and back. Then out of order, naming the hand first: right hand 3, left hand 1, right hand 5. Saying the number as the finger moves is what makes it stick.",
+      "youtube": "https://www.youtube.com/watch?v=zIO4VMEFybY",
+      "title": "Piano Finger Numbers for Beginners (Hoffman Academy, 7 min)",
+      "caption": "Made for children: finger numbers with games."
+    },
+    {
+      "kind": "text",
+      "text": "# C position\nYour hands get a home on the keys. **Right hand:** thumb (1) on middle C, then fingers 2, 3, 4 and 5 on D, E, F and G, one finger on each key. **Left hand:** little finger (5) on the C below middle C, then 4, 3, 2 and 1 on D, E, F and G. That's **C position**. Five keys, five fingers: a hand in position never has to look for a key, only decide which finger plays."
+    },
+    {
+      "kind": "keys",
+      "notes": "C4 D4 E4 F4 G4",
+      "fingers": "1 2 3 4 5",
+      "names": "letters",
+      "caption": "Right hand in C position: thumb on middle C."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 D3 E3 F3 G3",
+      "fingers": "5 4 3 2 1",
+      "names": "letters",
+      "caption": "Left hand in C position: little finger on the C below."
+    },
+    {
+      "kind": "text",
+      "text": "# Mary Had a Little Lamb, by finger numbers\nYour first tune. The numbers on the screen say which finger plays next, and the keys under your hand show the numbers too. The right hand first; then the left hand plays the same tune an octave lower, with its own fingers (its 3 is on E too, but its 2 is on F). There's no clock: take each note as it comes. If you play a wrong key it flashes red and the right one is outlined."
+    },
+    {
+      "kind": "step",
+      "id": "mary",
+      "title": "Mary Had a Little Lamb",
+      "activity": "r1-mary",
+      "about": "By finger numbers: right hand, then left hand. No clock."
+    },
+    {
+      "kind": "text",
+      "text": "# Ode to Joy, by letters\nNow letters instead of numbers: the opening of Beethoven's *Ode to Joy*. Keep your right hand in C position and find each key by its name; **Hear it** plays it with each letter lit. A wrong key tells you what you played. Then the left hand plays the same letters an octave lower."
+    },
+    {
+      "kind": "step",
+      "id": "ode",
+      "title": "Ode to Joy, by letters",
+      "activity": "r1-ode-to-joy",
+      "about": "By letter names: right hand, then left hand. No clock."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You lose track of which C is middle C.** On a full 88-key piano it's the fourth C from the left. On a smaller keyboard, use the C nearest the middle.\n- **Your fingers flatten or your wrist drops.** Stop, let your hands hang, lift them back to the keys in their curved shape, and play more softly: a soft, firm fingertip keeps its shape better than a hard press.\n- **You're not sure which one a find card means.** The cards use three octaves: \"in the middle\" is the one in middle C's octave, \"lower down\" the one in the octave below, \"higher up\" the one in the octave above. On the screen, \"lower down\" is the lowest one you can reach with ‹ ›.\n\n**Until the next lesson:** play Mary and Ode once each day with each hand, and a round of Find each key. Five minutes is enough."
+    }
+  ]
+}

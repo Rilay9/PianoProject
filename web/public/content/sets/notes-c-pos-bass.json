@@ -1,0 +1,9 @@
+{
+  "title": "Single notes: C position, bass clef",
+  "kind": "notes",
+  "generate": {
+    "clef": "bass",
+    "from": "C3",
+    "to": "G3"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Tunes in C position, right hand",
+  "screen": "drills",
+  "set": "read-c-treble",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

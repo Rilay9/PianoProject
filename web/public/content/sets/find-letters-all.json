@@ -1,0 +1,21 @@
+{
+  "title": "Find the keys by letter",
+  "kind": "find",
+  "find": {
+    "keys": "C3-B5",
+    "letters": [
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "A",
+      "B"
+    ],
+    "places": [
+      "lower",
+      "middle",
+      "higher"
+    ]
+  }
+}
