@@ -63,7 +63,7 @@ class Line {
     this.groups = [];
     this.notesAt.clear();
     if (!p || width < 50) return;
-    const h = clef === 'rhythm' ? 78 : 116;
+    const h = clef === 'rhythm' ? 92 : 116; // (rhythm: room for the whole time signature, which spans the five lines' height: its lower figure was cut, 2026-10-18)
     const it = p.item, meter = it.meter ?? { beats: 4, beatType: 4 };
     const beats = it.beats ?? it.groups.map(() => 1);
     const barOf = it.bars ?? it.groups.map(() => 0);
@@ -108,7 +108,9 @@ class Line {
       if (!notes.length) continue;
       const voice = new VF.Voice({ num_beats: meter.beats, beat_value: meter.beatType }).setMode(VF.Voice.Mode.SOFT);
       voice.addTickables(notes);
-      const beams = VF.Beam.generateBeams(notes);
+      // (rhythm: every stem up, beams over the line: left to itself VexFlow turned a beamed pair's stems down, beams under
+      // the line and outside the picture, so eighths looked like quarters; 2026-10-18. A tune: as its notes need.)
+      const beams = VF.Beam.generateBeams(notes, clef === 'rhythm' ? { stem_direction: 1 } : {});
       new VF.Formatter().joinVoices([voice]).format([voice], barW - 20);
       voice.draw(ctx, stave);
       for (const beam of beams) beam.setContext(ctx).draw();

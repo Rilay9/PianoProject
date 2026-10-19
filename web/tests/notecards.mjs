@@ -57,7 +57,7 @@ check('intervals refused: a size of 9, none fitting the range', (() => { try { r
 const four = withChordNames({ n: 1, name: 'C – F – G7 – C', short: '1', groups: [['C3', 'E3', 'G3'], ['C3', 'F3', 'A3'], ['B2', 'F3', 'G3'], ['C3', 'E3', 'G3']] });
 const one = withChordNames({ n: 1, name: 'Am', short: 'Am', groups: [['A2', 'C3', 'E3']] });
 const odd = withChordNames({ n: 1, name: 'C – F', short: '1', groups: [['C3', 'E3', 'G3'], ['C3', 'F3', 'A3'], ['B2', 'F3', 'G3']] });
-check('chord names: one a chord from "C – F – G7 – C"; "Am" for one chord; none when the count differs', JSON.stringify(four.chordNames) === '["C","F","G7","C"]' && JSON.stringify(one.chordNames) === '["Am"]' && !odd.chordNames, JSON.stringify([four.chordNames, one.chordNames, odd.chordNames]));
+check('chord names: one a chord from "C – F – G7 – C"; none for a card of one chord (its name is said already); none when the count differs', JSON.stringify(four.chordNames) === '["C","F","G7","C"]' && !one.chordNames && !odd.chordNames, JSON.stringify([four.chordNames, one.chordNames, odd.chordNames]));
 
 // ---- Look it up: its pictures against the staff and tonal ------------------------------------------------------------
 const secs = sections();

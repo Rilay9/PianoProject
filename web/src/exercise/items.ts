@@ -434,12 +434,13 @@ export async function readSet(id: string, file: SetFile, base: string, scoreXml:
   return lettersChecked({ id, title: file.title, kind, order: file.order === 'passage' ? 'passage' : 'pool', items, tempo: file.tempo ?? TEMPO, rhythm: file.rhythm, ...(file.view ? { view: file.view } : {}) });
 }
 
-/** A chord card's names, one a chord, from its name ("C – F – G7 – C", or "C" for one chord): only names a chord symbol
+/** A chord card's names, one a chord, from its name ("C – F – G7 – C"; a card of one chord has none): only names a chord symbol
  * reads as (a root, ♯ or ♭, and m, 7, m7 or maj7), and only when there are as many as chords. */
 export function withChordNames(it: Item): Item {
   const chords = it.groups.filter((g) => g.length);
   const names = it.name.split(/\s+[–-]\s+/).map((x) => x.trim());
-  if (!chords.length || names.length !== chords.length || !names.every((x) => CHORD_SYMBOL.test(x))) return it;
+  // (one chord: none; its name is the card's own, said already: the tour, 2026-10-18, "G7" three times on one card)
+  if (chords.length < 2 || names.length !== chords.length || !names.every((x) => CHORD_SYMBOL.test(x))) return it;
   let k = 0;
   return { ...it, chordNames: it.groups.map((g) => (g.length ? names[k++] : null)) };
 }

@@ -61,7 +61,7 @@ function drawRow(r: Row): SVGSVGElement {
   svg.setAttribute('viewBox', `0 ${from} ${W} ${to - from}`);
   svg.setAttribute('width', String(W)); svg.setAttribute('height', String(to - from));
   svg.style.maxWidth = '100%';
-  svg.style.color = 'var(--fg)';
+  svg.style.color = '#000'; // (drawn black like all the app's music; the dark theme inverts it as it does the rest: style.css --music-filter)
   svg.classList.add('lk-staff');
   return svg;
 }

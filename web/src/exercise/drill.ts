@@ -169,7 +169,7 @@ export class Drill {
   /** A reading card's slips by note: the step, the note asked for, the key played (owner, 2026-10-18: named). */
   private slips: { pos: number; want: string[]; played: number }[] = [];
   private named = new Set<number>(); // groups whose letters are written under them (a wrong key there)
-  private heardNamed = false; // Hear it: every letter written under its note until your next key
+  private heardNamed = false; // Hear it: every note's letter in its head until your next key
   private timers: number[] = [];
   private ticker = 0;
   private hintTimer = 0;
@@ -471,7 +471,8 @@ export class Drill {
     const beats = item.beats ?? item.groups.map(() => steady ?? 1);
     // Drawn with the rhythm it is judged by; steady beats get bars of the metre so they read as music.
     // (single notes and intervals, notecards.ts: drawn as whole notes, as flash cards are; untimed all the same)
-    let shownItem: Item = { ...item, beats: set.cards ? item.groups.map(() => 4) : beats };
+    // (a card of one chord or note with no written rhythm too: whole notes, no stem through the letters under it)
+    let shownItem: Item = { ...item, beats: set.cards || (!item.beats && item.groups.length === 1) ? item.groups.map(() => 4) : beats };
     let passage = !!item.bars;
     if (!item.bars && steady !== null) {
       const barQ = meter.beats * (4 / meter.beatType);
@@ -658,7 +659,7 @@ export class Drill {
     const again = this.slips.filter((x) => x.pos === pos).length >= 2;
     if (again) this.keys.want(step.keys);
     this.status(w.head, again ? `${w.sub} · its key is outlined` : w.sub, 'bad');
-    if (music && !this.named.has(step.gi)) { this.named.add(step.gi); this.drawProgress(); }
+    if (music && !this.named.has(step.gi)) { this.named.add(step.gi); this.drawProgress(); } // (its letter in its head)
   }
   /** What a reading card asks, in words. */
   private readWords(): string {
@@ -771,9 +772,9 @@ export class Drill {
     if (!this.card.phrase?.letters) this.helped = true; // (a letter card: hearing it is not help, its letters are what you read)
     if (this.card.find) { this.keys.want(this.card.find); this.status('Your turn', `${/^a group/.test(this.card.item.find?.words ?? '') ? 'The group is' : 'It is'} outlined (counts as help)`); return; } // (a "find it" card: the group shown)
     if (this.level.rung === 4) { void this.drawCard(true, {}, this.names() ? 'all' : new Set()); return; }
-    // A reading card heard: every note's letter written under it while it plays and after, for this card (owner,
-    // 2026-10-18: "Maybe even show the note names on hear it").
-    // (gone again at your first key: "they dont have to stay there when i start playing")
+    // A reading card heard: each note's letter in its head while it plays and after (owner, 2026-10-18: "Maybe even show
+    // the note names on hear it"; then "just put them smaller in a standout color in the regular sized note heads").
+    // Gone again at your first key ("they dont have to stay there when i start playing").
     if (this.reading() && this.names() && withMusic(this.level.rung)) {
       this.heardNamed = true;
       if (this.card.timed || this.state === 'read') void this.drawCard(true, {}, 'all'); else this.drawProgress();
@@ -958,6 +959,17 @@ export class Drill {
       if (!dialogOpen() && time - this.demoAt >= RESULT_SETTLE_MS) { this.stopAll(); this.turn(); if ((this.state as State) === 'turn') this.noteOnly(midi); }
       return;
     }
+    // A reading card played to you (Hear it, or its own demo): a key stops it and is your note (the tour, 2026-10-18: keys
+    // during Hear it were swallowed and the card went out of step). Untimed: your next note; music only, counted: its
+    // first note starts it. (Not in its first moment: the key that brought it.)
+    if (this.state === 'demo' && this.reading() && this.card && !dialogOpen() && time - this.demoAt >= RESULT_SETTLE_MS && (!this.card.timed || this.demoThen === 'read')) {
+      this.stopAll();
+      this.dropHeardNames();
+      if (this.demoThen === 'read') { this.showToRead(); this.startOnFirst(midi, time, input); return; }
+      this.turn();
+      if ((this.state as State) === 'turn') this.noteOnly(midi);
+      return;
+    }
     // The card's demo, from the second card on: a key skips to the count-in (not in its first moment: the key that brought it).
     if (this.state === 'demo') { if (this.canSkipDemo() && !dialogOpen() && time - this.demoAt >= RESULT_SETTLE_MS) { this.stopAll(); this.turn(); } return; }
     // A card's result: the key goes on to the next card (and is its first note, if it waits for one): never swallowed.
@@ -1108,8 +1120,7 @@ export class Drill {
     // The music (also for name cards: now you see what it was), the missed notes ringed; at "keys, no music" none (the keys
     // say it), and by ear none either (owner, 2026-10-17: no staff at that level, ever; the counts say it).
     const ear = this.level.rung === 5 && !c.find && !c.phrase;
-    // (a reading card: every note's letter under it, owner 2026-10-18, where names are shown)
-    const letters = this.reading(c) && this.names() && this.level.rung !== 0 && this.level.rung !== 5;
+    const letters = this.reading(c) && this.names() && this.level.rung !== 0 && this.level.rung !== 5; // (each note's letter in its head)
     if (!c.find) void this.drawCard(this.level.rung !== 0 && this.level.rung !== 5 && !c.phrase, marks, letters ? 'all' : new Set());
     this.beats(line ? { notes: line, extra, beatMs: c.beatMs, barBeats: c.barBeats, end: c.end } : null);
     const shownKeys = this.keysShown() && !c.rhythm;
@@ -1158,7 +1169,7 @@ export class Drill {
     // Single notes and intervals (owner, 2026-10-18: no waiting): a card with a slip was named as it happened and played
     // right in the end, so it goes on by itself too, a moment later (its name on show); the misses again at the set's end.
     if (this.set.cards && this.pos >= c.steps.length) {
-      this.status('✓ Played', joinWords(iv, text, 'Next card…'), 'ok');
+      this.status('Played, with a slip', joinWords(iv, text, 'Next card…')); // (not green: green is right first time)
       const card = c;
       this.later(iv ? 2200 : 1300, () => { if (this.card === card && this.state === 'result') this.nextCard(); });
       return;

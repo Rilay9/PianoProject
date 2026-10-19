@@ -15,6 +15,9 @@ import { MARK, ringMissed } from '../result-marks';
 
 const SPLIT = 60; // middle C: lower notes go to the bass staff
 const DIVISIONS = 8; // per quarter note: a 32nd note is one
+/** The letters in the noteheads: a colour that stands out on a black head, a hollow one and the marks' blue and green. */
+const LETTER_INK = '#f97316';
+const letterText = (p: string) => p.replace(/-?\d+$/, '').replace('#', '♯').replace(/^([A-G])b/, '$1♭');
 
 /** The written notes for a length in quarter notes: one note if it is one, otherwise notes tied together (a half tied to an eighth). */
 const VALUES: [number, string, boolean][] = [[4, 'whole', false], [3, 'half', true], [2, 'half', false], [1.5, 'quarter', true], [1, 'quarter', false],
@@ -37,9 +40,6 @@ function pitchXml(p: string): string {
   return `<pitch><step>${m[1]}</step>${alter ? `<alter>${alter}</alter>` : ''}<octave>${m[3]}</octave></pitch>`;
 }
 
-/** A note's letter as a lyric under it (C, F♯, B♭): a card's names (owner, 2026-10-18: "tell me what the notes were in key names"). */
-const lyric = (text: string) => `<lyric number="1"><syllabic>single</syllabic><text>${text}</text></lyric>`;
-const letterText = (p: string) => p.replace(/-?\d+$/, '').replace('#', '♯').replace(/^([A-G])b/, '$1♭');
 
 /** The notes of one group on one staff (a rest if none fall there), lasting `beats` quarter notes; colorOf: a note's own colour; staccato: drawn with its dot; named: its letters under it. */
 /** A chord symbol over the music (MusicXML harmony): C, Am, G7, Cmaj7, F♯m7. */
@@ -62,12 +62,11 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
     const tail = `<duration>${Math.round(v.beats * DIVISIONS)}</duration>${ties}<voice>${staff}</voice><type>${v.type}</type>${v.dot ? '<dot/>' : ''}`;
     if (!group.length) return `<note><rest/>${tail}<staff>${staff}</staff></note>`;
     // (a chord's letters, low to high, under its first note: one lyric a note would be drawn on top of each other)
-    const letters = named && first ? lyric([...group].sort((a, b) => midiOf(a) - midiOf(b)).map(letterText).join(' ')) : '';
     const symbol = named && first && chordName ? harmonyXml(chordName, staff) : '';
     return symbol + group.map((p, i) => {
       const c = colorOf(p) ?? color;
       return `<note${c ? ` color="${c}"` : ''}>${i ? '<chord/>' : ''}${pitchXml(p)}${tail}` +
-        `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff>${tied}${i ? '' : letters}</note>`;
+        `${c ? `<notehead color="${c}">normal</notehead>` : ''}<staff>${staff}</staff>${tied}</note>`;
     }).join('');
   }).join('');
 }
@@ -77,6 +76,7 @@ function groupXml(group: string[], beats: number, staff: number, color: string |
  * fifths: its time signature and key, drawn (otherwise each bar is as long as what is in it, no signature shown).
  */
 /** named: the groups (numbered across all the items, as marks are) whose letters are written under them, or 'all'. */
+/** named: the groups (numbered across the items, as marks are) whose chord names are written over them, or 'all'. */
 export function itemsXml(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, named: Set<number> | 'all' = new Set()): string {
   let gi = 0; // each group's number across all the items, for marks ("group:midi" -> colour)
   const groups = items.flatMap((it, i) => it.groups.map((g, k) => ({
@@ -199,6 +199,8 @@ export class ExerciseNotation {
   /** rhythm: the first item as a rhythm card on a one-line staff (rhythmXml); letters: with each note's letter under it. */
   async show(items: Item[], lit: number[] = [], passage = false, meter?: { beats: number; beatType: number }, fifths = 0, marks: Record<string, string> = {}, rhythm = false, letters = false, named: Set<number> | 'all' = new Set()): Promise<void> {
     const request = ++this.request;
+    // (one item of notes: its named groups' letters written in their noteheads after each drawing)
+    this.labelsFor = !rhythm && items.length === 1 && (named === 'all' || named.size) ? { item: items[0], named } : null;
     if (!items.length) { this.clear(); return; }
     this.box.classList.remove('off');
     this.onShown(true);
@@ -233,6 +235,58 @@ export class ExerciseNotation {
   /** Something floating over the bottom changed height: fit the card again. */
   refit(): void { if (this.loaded && this.mode === 'card') this.fitCard(); }
 
+  private labelsFor: { item: Item; named: Set<number> | 'all' } | null = null;
+  /**
+   * Letters in the noteheads (owner, 2026-10-18: "just put them smaller in a standout color in the regular sized note
+   * heads … Worst comes to worst I can't read them"): each named group's notes get their letter, small, in orange, in
+   * the head as drawn; the music keeps its size and place. A note is matched to its group by when it starts (a tied-on
+   * part is not lettered); a chord's heads, lowest first, to its notes, lowest first.
+   */
+  private labelNotes(): void {
+    const spec = this.labelsFor, svg = this.small.querySelector('svg');
+    if (!spec || !svg) return;
+    const { item, named } = spec;
+    const beats = item.beats ?? item.groups.map(() => 1);
+    const starts: number[] = [];
+    beats.reduce((at, b) => { starts.push(at); return at + b; }, 0);
+    type GNote = { sourceNote: { isRest(): boolean; halfTone: number; NoteTie?: { StartNote: unknown } }; getSVGGElement?(): SVGGElement | undefined };
+    type Entry = { relInMeasureTimestamp: { RealValue: number }; graphicalVoiceEntries: { notes: GNote[] }[] };
+    type Measure = { parentSourceMeasure: { AbsoluteTimestamp: { RealValue: number } }; staffEntries: Entry[] };
+    const sheet = (this.osmd as unknown as { GraphicSheet?: { MeasureList: Measure[][] } }).GraphicSheet;
+    for (const row of sheet?.MeasureList ?? []) for (const m of row) {
+      if (!m) continue;
+      for (const e of m.staffEntries) {
+        const q = (m.parentSourceMeasure.AbsoluteTimestamp.RealValue + e.relInMeasureTimestamp.RealValue) * 4;
+        const gi = starts.findIndex((x) => Math.abs(x - q) < 1e-3);
+        if (gi < 0 || !(named === 'all' || named.has(gi))) continue;
+        for (const ve of e.graphicalVoiceEntries) {
+          const notes = ve.notes.filter((n) => !n.sourceNote.isRest() && (!n.sourceNote.NoteTie || n.sourceNote.NoteTie.StartNote === n.sourceNote));
+          const g = notes[0]?.getSVGGElement?.();
+          if (!g) continue;
+          const heads = [...g.querySelectorAll<SVGGraphicsElement>('.vf-notehead')].map((h) => h.getBBox()).filter((b) => b.height > 0).sort((a, b) => b.y - a.y);
+          [...notes].sort((a, b) => a.sourceNote.halfTone - b.sourceNote.halfTone).forEach((n, k) => {
+            const b = heads[k], spelled = item.groups[gi].find((p) => midiOf(p) === n.sourceNote.halfTone + 12);
+            if (!b || !spelled) return;
+            const text = letterText(spelled);
+            const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            t.setAttribute('x', String(b.x + b.width / 2));
+            t.setAttribute('y', String(b.y + b.height / 2));
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('dominant-baseline', 'central');
+            t.setAttribute('font-family', 'system-ui, sans-serif');
+            t.setAttribute('font-weight', '800');
+            t.setAttribute('font-size', String(b.height * (text.length > 1 ? 0.62 : 0.82)));
+            t.setAttribute('fill', LETTER_INK);
+            t.setAttribute('pointer-events', 'none');
+            t.classList.add('note-letter');
+            t.textContent = text;
+            svg.append(t);
+          });
+        }
+      }
+    }
+  }
+
   /** Lays the music out at the chosen size across the room's width, then brings the lit item into view. */
   private draw(): void {
     if (this.mode === 'card') { this.drawCard(); return; }
@@ -244,7 +298,7 @@ export class ExerciseNotation {
     this.box.style.paddingBottom = `${reserve}px`;
     this.osmd.EngravingRules.RenderSingleHorizontalStaffline = this.line;
     this.small.style.flex = this.line ? 'none' : '';
-    this.osmd.render(); ringMissed(this.small); // (missed notes ringed as well as grey: result-marks.ts)
+    this.osmd.render(); ringMissed(this.small); this.labelNotes(); // (missed notes ringed as well as grey: result-marks.ts)
     const lit = [...this.small.querySelectorAll<SVGElement>('[fill="#2563eb"]')];
     if (!lit.length) { if (this.line) this.box.scrollLeft = this.box.scrollWidth; return; } // the newest end in view
     const box = this.box.getBoundingClientRect();
@@ -285,7 +339,7 @@ export class ExerciseNotation {
     this.small.style.width = `${page}px`; // (4000: wide enough that a card's bars stay on one line)
     this.small.style.flex = 'none'; // (a flex item would shrink back to the room's width and wrap the card)
     this.osmd.zoom = 1.1;
-    this.osmd.render(); ringMissed(this.small); // (missed notes ringed as well as grey: result-marks.ts)
+    this.osmd.render(); ringMissed(this.small); this.labelNotes(); // (missed notes ringed as well as grey: result-marks.ts)
     this.osmd.EngravingRules.RenderXMeasuresPerLineAkaSystem = 0; // (Simon's build mode wraps by width as before)
     const svg = this.small.querySelector('svg');
     this.small.style.width = '';
@@ -303,8 +357,9 @@ export class ExerciseNotation {
   /** The scale a card of this size is drawn at in the room (the room above what floats over the bottom). */
   private scaleFor(w: number, h: number): number {
     const room = { w: this.box.clientWidth - 16, h: this.box.clientHeight - this.reserve() - 8 };
-    // Drawn at OSMD zoom 1.1 = 11 px a staff space; the score's biggest size is 1.8 (18 px): never bigger.
-    const most = 1.8 / 1.1;
+    // Drawn at OSMD zoom 1.1 = 11 px a staff space. A card fills its room up to 3 (30 px a staff space; owner, 2026-10-18:
+    // "I'll be making the music bigger anyways. Idk why you have it that small": it stopped at the score's 1.8).
+    const most = 3 / 1.1;
     const fit = Math.min(room.w / w, room.h / h);
     return Math.max(0.1, this.share > 1 ? Math.min(fit, most * this.share) : Math.min(fit, most) * this.share);
   }

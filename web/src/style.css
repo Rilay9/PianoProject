@@ -1270,7 +1270,7 @@ dialog.lookup[open] { display: flex; }
 .lk-fig { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .lk-row { display: block; flex: 0 1 auto; min-width: 0; max-width: 100%; padding: 4px; border: 1px solid transparent; border-radius: 8px; background: none; color: inherit; cursor: pointer; text-align: left; }
 .lk-row:active { border-color: var(--accent); }
-.lk-staff { display: block; height: auto; }
+.lk-staff { display: block; height: auto; filter: var(--music-filter); } /* (dark theme: the music inverted, as on every screen; it was black on dark grey, 2026-10-18) */
 .lk-body .lk-chords { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .lk-keys { display: block; flex: none; max-width: 100%; height: auto; }
 .lk-chords .lk-fig { flex-direction: column; align-items: center; gap: 2px; }

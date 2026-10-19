@@ -375,7 +375,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-result').hidden = true;
     $('fl-last').textContent = '';
     status();
-    say('', rhythm() ? `${keyboardConnected() ? 'Any key' : sidewaysQuery.matches ? 'A tap on the music' : 'A tap on the pad'} for its first note starts it there; Start gives a bar of count-in first` : 'Its first note starts it there; Start gives a bar of count-in first', '');
+    say('', `${rhythm() ? (keyboardConnected() ? 'Play any key' : sidewaysQuery.matches ? 'Tap the music' : 'Tap the pad') : 'Play the first note'} to start, or press Start for a count-in`, '');
     tools();
     app.stayAwake();
   }

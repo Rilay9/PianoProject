@@ -475,15 +475,24 @@ letter-name or letters cards):
 - **As you go** (notes only): the notes played turn green on the staff, the one due blue.
 - **A wrong key, at once**: the key flashes red and the line says both in key names and where the note sits: "That's D ·
   This note is F: on the 4th line up of the bass staff" (the right letter in the wrong octave: "That's E, an octave too
-  high"; a black key: "That's C♯ (a black key)"; a chord: "This chord is C E G"); the due note's letter is written under
-  it; a second miss on the same note outlines its key. (Help 0, or names not taught: "Not that one"; by ear: nothing on
+  high"; a black key: "That's C♯ (a black key)"; a chord: "This chord is C E G"); the due note's letter is written in
+  its head; a second miss on the same note outlines its key. (Help 0, or names not taught: "Not that one"; by ear: nothing on
   the keys.) Worked out from the pitch (`staff-words.ts`).
-- **The result** writes every note's letter under it (and a chord set's chord names over its chords), and names the
+- **Letters in the noteheads** (owner, 2026-10-18/19, after letters under the staff, enlarged lettered heads and letters
+  in the bar all looked wrong: "just put them smaller in a standout color in the regular sized note heads"): each letter
+  small, orange, inside its head as drawn, a chord's in each of its heads; the music keeps its size and place. A card of
+  one note or chord with no written rhythm is drawn as whole notes. Cards are drawn as big as the room allows (up to 30
+  px a staff space; owner: "Idk why you have it that small"); A− makes them smaller.
+- **The result** writes every note's letter in its head (and a card of several chords their names over them; a card of one
+  chord has none: its name is the card's), and names the
   slips: "F: you played D · A: you played G"; a timed card's wrong keys by letter, a chord card's slips by chord ("F late
   · C missed", "D7 (F♯ C) late").
-- **Hear it** writes every letter under the card (and the chord names over it) while it plays; they go at your first key.
+- **Hear it** writes every note's letter in its head (and chord names over a card's chords) while it plays and after;
+  they go at your first key.
+  **A key while it plays stops it and is your note** (untimed), or (music only, counted) its first note starts the card.
 - **No waiting**: a clean reading card goes straight on (0.45 s); single-note and interval cards go on by themselves
-  even after a slip (it was named as it happened), an interval card saying its name ("E up to G: a 3rd, space to space").
+  even after a slip ("Played, with a slip", not green: it was named as it happened), an interval card saying its name
+  ("E up to G: a 3rd, space to space").
 - **Music only, counted**: the card waits to be read; **its first note starts it**, the clock from that note (a wrong
   first key is named and starts nothing); *Count in* gives a bar of clicks first.
 - **📖 Look it up** in the header opens the reference panel (§0) over the card, which waits.
@@ -1411,8 +1420,8 @@ lists them under "Note reading" and "Intervals" as "… dealt again and again ·
 `intervals-all` (2nds to octaves, both clefs), `intervals-together`.
 
 **Chord names over chords** (2026-10-18): a `"kind": "chords"` set's item whose name gives one chord symbol per chord
-("C – F – G7 – C", or "Am" for one chord; a root, ♯ or ♭, and m, 7, m7 or maj7) has those names written over its chords
-wherever its letters are written (Hear it, a wrong key, the result).
+("C – F – G7 – C"; a root, ♯ or ♭, and m, 7, m7 or maj7; a card of one chord has none, its name being the card's) has
+those names written over its chords wherever its letters are written (Hear it, a wrong key, the result).
 
 **Made-up tunes** (owner, 2026-10-18: the week's lesson, "generate way more than needed"; `exercise/melody.ts`): a
 `"kind": "melodies"` set with `generate` instead of `items` (or a list of them, their cards together: both hands):
