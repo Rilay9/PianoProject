@@ -61,5 +61,12 @@
     "composer": "The White Stripes",
     "file": "seven-nation-army-riff.musicxml",
     "status": "The riff E E G E D C B in the left hand, the guitar’s octave; the common teaching rhythm (some write the middle three notes as a triplet)."
+  },
+  {
+    "id": "chasing-cars-chorus",
+    "title": "Chasing Cars (chorus)",
+    "composer": "Snow Patrol",
+    "file": "chasing-cars-chorus.musicxml",
+    "status": "The chorus’s first half, moved from A to C; pitches agree in Hooktheory’s piano roll and three kalimba tabs (“just” a step up, as three give); rhythm from Hooktheory only, the lead-in’s as the next phrase’s. Left-hand chords C, G7, F added."
   }
 ]

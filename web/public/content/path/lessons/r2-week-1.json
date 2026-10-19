@@ -218,6 +218,17 @@
     },
     {
       "kind": "text",
+      "text": "## C review: Chasing Cars\n*Snow Patrol, 2006.* The chorus, moved to C so it sits in C position: the right hand only ever plays C, D, E and F (fingers 1 to 4), over the chords you know, C, G7 and F, one a bar. Each phrase starts before the bar line: two quick notes and a longer one on beats 3 and 4, then a long note on beat 1. Learn it in Wait for me, then Play along slowly; the record is at 104."
+    },
+    {
+      "kind": "step",
+      "id": "chasing-cars",
+      "title": "Chasing Cars",
+      "activity": "w1-chasing-cars",
+      "about": "Melody with your right hand in C position, one chord a bar with your left."
+    },
+    {
+      "kind": "text",
       "text": "## Ode to Joy in G\nYou know this tune. Now in G position, with G and D7 under it."
     },
     {

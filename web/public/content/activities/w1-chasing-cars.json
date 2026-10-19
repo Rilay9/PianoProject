@@ -1,0 +1,9 @@
+{
+  "title": "Chasing Cars",
+  "screen": "score",
+  "piece": "chasing-cars-chorus",
+  "settings": {
+    "mode": "wait",
+    "hands": "both"
+  }
+}

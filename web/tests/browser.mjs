@@ -4890,7 +4890,7 @@ try {
 
   // 1. Every step's activity opens on its screen, with no page errors and nothing said against it.
   try {
-    const want = { 'w1-read-c-bass': 'exercise', 'w1-read-c-time': 'flow', 'w1-read-g-right': 'exercise', 'w1-read-g-left': 'exercise', 'w1-read-g-time': 'flow', 'w1-rhythm-1': 'flow', 'w1-rhythm-2': 'flow', 'w1-rhythm-3': 'flow', 'w1-rhythm-4': 'flow', 'w1-chords-c': 'exercise', 'w1-chords-g': 'exercise', 'w1-chord-changes': 'exercise', 'w1-four-chords': 'lab', 'w1-ode': 'score', 'w1-saints': 'score', 'w1-seven-nation-army': 'score', 'w1-someone-you-loved': 'score' };
+    const want = { 'w1-read-c-bass': 'exercise', 'w1-read-c-time': 'flow', 'w1-read-g-right': 'exercise', 'w1-read-g-left': 'exercise', 'w1-read-g-time': 'flow', 'w1-rhythm-1': 'flow', 'w1-rhythm-2': 'flow', 'w1-rhythm-3': 'flow', 'w1-rhythm-4': 'flow', 'w1-chords-c': 'exercise', 'w1-chords-g': 'exercise', 'w1-chord-changes': 'exercise', 'w1-four-chords': 'lab', 'w1-chasing-cars': 'score', 'w1-ode': 'score', 'w1-saints': 'score', 'w1-seven-nation-army': 'score', 'w1-someone-you-loved': 'score' };
     const bad = [];
     for (const [id, screen] of Object.entries(want)) {
       const { ctx, page, errors } = await wkTab(`?activity=${id}`, { width: 390, height: 844 });
@@ -4902,7 +4902,7 @@ try {
       if (errors.length) bad.push(`${id}: ${errors[0]}`);
       await ctx.close();
     }
-    ok('week: each of the 17 steps\' activities opens on its screen (Drills, Read in time, the lab, the score with its notes drawn), no page errors, nothing said against it', !bad.length, bad.join(' | '));
+    ok('week: each of the 18 steps\' activities opens on its screen (Drills, Read in time, the lab, the score with its notes drawn), no page errors, nothing said against it', !bad.length, bad.join(' | '));
   } catch (e) { ok('week: the opening part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
 
   // 2. Read in time, rhythm: taps by position on the pad, judged as they land; the score line; Stop; Keep going.
@@ -5014,7 +5014,7 @@ try {
     const { ctx, page, errors } = await wkTab('?page=lesson&lesson=r2-week-1', { width: 360, height: 780 });
     const look = await page.evaluate(() => ({ steps: document.querySelectorAll('.les-step').length, optional: document.querySelectorAll('.les-step-state.optional').length, rw: document.querySelectorAll('.les-rw').length, keys: document.querySelectorAll('.les-diagram').length, kb: document.querySelectorAll('.les-playkeys').length, bad: [...document.querySelectorAll('.les-bad')].map((e) => e.textContent), h: document.scrollingElement.scrollHeight }));
     await page.screenshot({ path: join(WK, 'lesson-top-360x780.png') });
-    ok('week: the lesson page: 17 steps (1 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 17 && look.optional === 1 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
+    ok('week: the lesson page: 18 steps (1 optional), 2 Read / Watch boxes, 6 key pictures, 2 keyboards to play, nothing refused, no page errors', look.steps === 18 && look.optional === 1 && look.rw === 2 && look.keys === 6 && look.kb === 2 && !look.bad.length && errors.length === 0, JSON.stringify({ look, errors }));
     await ctx.close();
   } catch (e) { ok('week: the lesson page part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
   } // (end of `--only week`)

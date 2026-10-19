@@ -443,7 +443,7 @@ The six capabilities the owner's lesson 1 spec lists (app-features §3, §4, §6
   every note in its five, bars exact, a note first, the home key last, only steps, thirds and repeats; refusals); rhythm
   sets given as a list of specs (each card answers to one). content.mjs: generated melodies and lists of specs read by the
   app's own readers; refused: a black-key position, `items` beside `generate`. browser.mjs `--only week` (16): each of the
-  17 steps' activities opens on its screen (scores with notes drawn); Read in time at 360×780 and 844×390 with touch: the
+  18 steps' activities opens on its screen (scores with notes drawn); Read in time at 360×780 and 844×390 with touch: the
   layout (pad on screen, two lines inside the screen), the count-in, taps by position judged as they land (early, late,
   missed, an extra tap counted for the exercise it fell in), Stop's summary and log entry, Keep going; reading in time
   with a stand-in keyboard (a wrong key marked, two octaves of keys); Drills' Keep going after a set of chord cards; the
