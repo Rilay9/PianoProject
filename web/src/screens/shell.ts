@@ -147,11 +147,13 @@ export function createShell(app: App, d: ShellDeps) {
   }
 
   $('home-settings').addEventListener('click', () => openPage('settings'));
+  // Settings from a lesson too (owner, 2026-10-24: "I couldn't reach any of the settings"); ← there comes back to it.
+  $('lesson-settings').addEventListener('click', () => openPage('settings'));
   for (const id of ['settings-back', 'exercises-back', 'lesson-back']) $(id).addEventListener('click', () => nav.back());
   $('lesson-switch').addEventListener('click', () => void openSwitch(lessonPage.lessonId));
   // One line-icon set (owner, 2026-10-15): the tabs, ⚙, Settings' sections.
   for (const b of tabsNav.querySelectorAll<HTMLButtonElement>('button[data-tab]')) b.querySelector('svg')?.replaceWith(icon(b.dataset.tab as IconName, ''));
-  $('home-settings').replaceChildren(icon('settings'));
+  for (const id of ['home-settings', 'lesson-settings']) $(id).replaceChildren(icon('settings'));
   for (const [sec, name] of [['Sound', 'sound'], ['Keyboard', 'practice'], ['Look', 'look'], ['Your data', 'data']] as [string, IconName][]) {
     const p = [...document.querySelectorAll<HTMLElement>('#v-settings .set-sec')].find((x) => x.textContent === sec);
     p?.prepend(icon(name));

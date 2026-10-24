@@ -25,10 +25,14 @@ import type { NoteEvent, Beat } from '../sound';
 import type { TapInput } from '../calibration';
 import { clicksBetween, FlowJudge, place, scoreWords, shouldSpeedUp, TEMPO_MAX, TEMPO_MIN, TEMPO_STEP, WINDOW_MS, type ExerciseScore, type FlowNote, type NoteResult, type Placed } from '../flow/engine';
 import { FlowView, clefOf as flowClef } from '../flow/view';
+import { flowDisplay, saveFlowDisplay, FLOW_SIZE_MAX, FLOW_SIZE_MIN, type FlowDisplay } from '../flow/display';
+import { applyTheme, currentDevice, DEVICE_NAMES, savePieceSetting, settingsFor, type Theme } from '../settings';
 import { wrongWords } from '../staff-words';
 import { midiOf } from '../exercise/items';
 
-export type FlowScreen = Screen & { open(stillWanted?: () => boolean, activity?: { set: string; settings: FlowPreset; title?: string }, setId?: string): Promise<void>; close(): void; readonly isOpen: boolean; debug(): unknown };
+export type FlowScreen = Screen & { open(stillWanted?: () => boolean, activity?: { set: string; settings: FlowPreset; title?: string }, setId?: string): Promise<void>; close(): void; readonly isOpen: boolean;
+  /** Display (Settings → Display: Read in time's look on this kind of screen). */
+  openDisplay(): void; debug(): unknown };
 
 interface Stored { tempo: Record<string, number>; mode: 'along' | 'read'; autoSpeed: boolean; holds: boolean }
 const KEY = 'piano-web.flow.v1';
@@ -317,7 +321,13 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     $('fl-go').textContent = running ? '■ Stop' : '▶ Start';
     $('fl-loop').hidden = !running;
     $('fl-pad').hidden = !rhythm() || keyboardConnected();
-    $('fl-keyboard').hidden = rhythm();
+    // Display and 📖 in the top bar, as on the score; on a phone upright the title needs that room (cut to a word at 360
+    // px: 2026-10-24), so they join the choices.
+    const display = $('fl-display'), lookup = $('fl-lookup'), head = $('fl-faster').parentElement!, upright = currentDevice() === 'phone-upright';
+    if (upright && display.parentElement === head) $('fl-holds').after(display, lookup);
+    if (!upright && display.parentElement !== head) $('fl-faster').after(lookup, display);
+    $('fl-keyboard').hidden = rhythm() || (flowDisplay().under === 'nothing' && keyboardConnected());
+    view.setSize(flowDisplay().size);
     $('fl-help').textContent = rhythm()
       ? `${keyboardConnected() ? 'Play any key' : 'Tap the pad'} for each note. Dots: green on time, orange early ← or late →, grey missed.`
       : 'Play each note in time with the click. Dots: green on time, orange early ← or late →, red a wrong key, grey missed.';
@@ -348,6 +358,37 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     tools();
   });
 
+  // ---- Display (owner, 2026-10-24: the display options on every mode): theme, size, the keys; from the top bar, or
+  // from Settings → Display with the screen shut (its look on this kind of screen, kept as you leave it).
+  const displayDialog = $<HTMLDialogElement>('fl-display-dialog');
+  function fillDisplay(): void {
+    const d = flowDisplay();
+    $('fl-display-title').textContent = 'Display: Read in time';
+    $('fl-display-where').textContent = `On a ${DEVICE_NAMES[currentDevice()]}, kept as you leave it.${currentDevice() === 'tablet' ? '' : ' Turn the phone for the other way\'s look.'}`;
+    $<HTMLOutputElement>('fld-size').value = `${Math.round(d.size * 100)}%`;
+    $<HTMLButtonElement>('fld-smaller').disabled = d.size <= FLOW_SIZE_MIN + 1e-9;
+    $<HTMLButtonElement>('fld-larger').disabled = d.size >= FLOW_SIZE_MAX - 1e-9 || (isOpen && d.size >= 1 && view.filled);
+    const values: Record<string, string> = { 'fld-theme': settingsFor('').theme, 'fld-under': d.under };
+    for (const [name, value] of Object.entries(values)) for (const r of displayDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  }
+  function openDisplay(): void { fillDisplay(); displayDialog.showModal(); }
+  const stepSize = (delta: number) => {
+    const d = flowDisplay();
+    saveFlowDisplay({ size: Math.round(Math.min(FLOW_SIZE_MAX, Math.max(FLOW_SIZE_MIN, d.size + delta)) * 100) / 100 });
+    if (isOpen) tools();
+    fillDisplay();
+  };
+  $('fl-display').addEventListener('click', () => { if (isOpen) openDisplay(); });
+  $('fld-smaller').addEventListener('click', () => stepSize(-0.1));
+  $('fld-larger').addEventListener('click', () => stepSize(0.1));
+  displayDialog.addEventListener('change', (e) => {
+    const r = e.target as HTMLInputElement;
+    if (r.name === 'fld-theme') { savePieceSetting('', 'theme', r.value as Theme); applyTheme(); }
+    else if (r.name === 'fld-under') saveFlowDisplay({ under: r.value as FlowDisplay['under'] });
+    if (isOpen) tools();
+    fillDisplay();
+  });
+
   // ---- opening and closing ---------------------------------------------------------------------------------------
   async function open(stillWanted: () => boolean = () => true, activity?: { set: string; settings: FlowPreset; title?: string }, setId?: string): Promise<void> {
     const got = await allSets(app).catch(() => ({ sets: [] as ItemSet[], problems: ['the sets could not be read'] }));
@@ -369,6 +410,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     firstItem = set.items[Math.floor(Math.random() * set.items.length)];
     const first = place(0, firstItem, 0, preset?.tempo ?? stored.tempo[set.id] ?? set.tempo ?? 80, rhythm());
     keys.setRange(rhythm() ? [60, 72] : first.notes.map((n) => n.key ?? 60));
+    view.setSize(flowDisplay().size); // (before drawing: the size chosen in Display)
     view.show(first, null, rhythm());
     shownEx = -1;
     scores = []; streak = 0;
@@ -402,6 +444,7 @@ export function createFlowScreen(app: App, closed: () => void): FlowScreen {
     open,
     close,
     get isOpen() { return isOpen; },
+    openDisplay,
     key: (e: KeyEvent) => keys.midiKey(e.midi, e.on, midi.down, e.time),
     command(c: Command): void {
       if (c === 'mash') { if (running) stop('Stopped by a mash'); }

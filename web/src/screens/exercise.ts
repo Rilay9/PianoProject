@@ -3,7 +3,7 @@
 // its own keyboard. The sets are content files (content/sets, exercise/items.ts), read when it first opens.
 
 import { $, base, type App, type Screen, type KeyRange } from '../app';
-import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, CARD_MIN as EX_CARD_MIN, type ExerciseDisplay } from '../exercise/display';
+import { exerciseDisplay, saveExerciseDisplay, SIZE_MIN as EX_SIZE_MIN, SIZE_MAX as EX_SIZE_MAX, CARD_MIN as EX_CARD_MIN, CARD_MAX as EX_CARD_MAX, type ExerciseDisplay } from '../exercise/display';
 import { Drill, NO_KEYBOARD, type DrillLevel } from '../exercise/drill';
 import { loadSets, type ItemSet } from '../exercise/items';
 import { ExerciseKeys } from '../exercise/keys';
@@ -21,13 +21,15 @@ import type { ChosenKeys, Fingers } from '../activity';
 import type { KeyEvent } from '../midi';
 import * as nav from '../nav';
 import type { Command } from '../remote';
-import { currentDevice, settingsFor } from '../settings';
+import { applyTheme, currentDevice, DEVICE_NAMES, savePieceSetting, settingsFor, type Theme } from '../settings';
 
 export type ExerciseScreen = Screen & {
   /** activity: a set with a preset level (activity.ts), in force while it is open (its task and names: log.ts stepFor). */
   open(kind: 'simon' | 'drill', stillWanted?: () => boolean, activity?: ExerciseActivity): Promise<void>;
   close(): void;
   readonly isOpen: boolean;
+  /** Display for Drills or Simon (Settings → Display: that way's look on this kind of screen). */
+  openDisplay(kind: 'simon' | 'drill'): void;
   /** For checks. */
   debug(): { simon: number[][]; drill: ReturnType<Drill['debug']>; pad: RhythmPad['lastTap']; keys: ReturnType<ExerciseKeys['where']> };
 };
@@ -99,12 +101,17 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
   let exerciseKind: 'simon' | 'drill' = 'simon';
   const isOpen = () => !$('exercise').hidden;
 
-  // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear it, the keyboard in Level.
+  // The exercise screen's look, per kind of screen (exercise/display.ts): A−/A+ by Hear it; size, keyboard and theme in Display.
   function fillExerciseDisplay(): void {
     // Sideways the size and Hear tools join the one bar of what it says and its buttons; otherwise their own row.
     const tools = $('ex-tools'), sideways = currentDevice() === 'phone-sideways';
     if (sideways && tools.parentElement !== $('ex-overlay')) $('ex-overlay').append(tools);
     if (!sideways && tools.parentElement !== $('exercise')) $('exercise').insertBefore(tools, $('ex-keys'));
+    // Display: in the top bar, as on the score; on a phone upright the bar has no room for it, so it sits with the size
+    // buttons (owner, 2026-10-24: "the display option doesn't show up in landscape or portrait for drills").
+    const display = $('ex-display'), upright = currentDevice() === 'phone-upright';
+    if (upright && display.parentElement !== tools) tools.append(display);
+    if (!upright && display.parentElement === tools) $('ex-level').after(display);
     // And the score line (Card 2 of 10 · 1 clean · Music only) joins the header row.
     const head = $('exercise').querySelector<HTMLElement>('.fp-head')!, line = $('exercise').querySelector<HTMLElement>('.ex-score')!;
     if (sideways && line.parentElement !== head) head.insertBefore(line, $('ex-level'));
@@ -118,13 +125,13 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     const card = exerciseKind === 'drill';
     exerciseNotation.setMode(card ? 'card' : 'build');
     if (card) exerciseNotation.setShare(d.card); else exerciseNotation.setZoom(d.zoom);
-    // Help 0 and 1 light the keys, so the keyboard stays for them even when set to Nothing.
+    // Help 0 and 1 light the keys, so the keyboard stays for them even when set to Nothing (each way its own choice).
     const rung = exerciseKind === 'drill' ? drill.levelNow.rung : simon.levelNow.rung;
     // A rhythm set: the pad instead of the keys, always (it is what you tap; owner, 2026-10-16).
     const rhythm = exerciseKind === 'drill' && drill.rhythmNow;
     // (a finger-number card's keys always show: its hand's keys are shaded on them, owner 2026-10-17)
     const fingerCards = exerciseKind === 'drill' && drill.phrasesNow;
-    $('ex-keyboard').classList.toggle('off', rhythm || (d.under === 'nothing' && rung > 1 && !fingerCards));
+    $('ex-keyboard').classList.toggle('off', rhythm || ((card ? d.under : d.simonUnder) === 'nothing' && rung > 1 && !fingerCards));
     exerciseKeys.refresh(); // (the keys shown or hidden: their ‹ › with them)
     if ($('ex-pad').hidden !== !rhythm) { $('ex-pad').hidden = !rhythm; if (!rhythm) pad.release(); }
     // The timing check offered once, the first time a rhythm set opens (owner, 2026-10-16), unless one is kept already.
@@ -134,33 +141,71 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     exerciseKeys.setNames(rung !== 0 && rung !== 5 && namesShown(exerciseKind === 'drill' ? 'drills' : 'simon') && !(exerciseKind === 'drill' && (drill.findNow || drill.phrasesNow)));
     if (exerciseKind === 'simon') simon.readyLine(); else drill.readyLine();
     fillTask();
-    // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (tablets: on up to filling the room).
-    const [now, lo, hi] = card ? [d.card, EX_CARD_MIN, cardMost()] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX];
+    // A−/A+: Simon's fixed size, or how much of the biggest a drill card is drawn at (above 100%: on up to filling the room).
+    const [now, lo, hi] = sizeRange(exerciseKind, d);
     $<HTMLOutputElement>('ex-size').value = `${Math.round(now * 100)}%`;
     $<HTMLButtonElement>('ex-smaller').disabled = now <= lo + 1e-9;
     $<HTMLButtonElement>('ex-larger').disabled = now >= hi - 1e-9 || (card && now >= 1 && exerciseNotation.filled);
+    if (displayDialog.open) fillDisplayDialog();
   }
-  /** A drill card's biggest share: the score's biggest size, or on a tablet up to 3× that (as far as the room allows) (owner, 2026-10-12). */
-  const cardMost = () => (currentDevice() === 'tablet' ? 3 : 1);
+  /** The size now and its range: Simon's fixed size, or a drill card's share of the biggest (owner, 2026-10-24: above
+   * 100% on every kind of screen, as far as the room allows; tablets had it since 2026-10-12). */
+  const sizeRange = (kind: 'simon' | 'drill', d: ExerciseDisplay): [number, number, number] => (kind === 'drill' ? [d.card, EX_CARD_MIN, EX_CARD_MAX] : [d.zoom, EX_SIZE_MIN, EX_SIZE_MAX]);
   // The frosted panel floats over the bottom of the music (upright and tablets): drill cards fit above it, Simon keeps
   // the lit item clear of it, and Simon's dots sit above it. reserve: how much of the music's box it covers.
+  // The room kept for it only grows while a set is played (owner, 2026-10-24: the card shrank and moved after a right
+  // answer, when the panel lost its Skip button and the card was centred in the taller room left); measured afresh
+  // when the screen opens or turns, and when another set starts.
   const overlayFloats = () => getComputedStyle($('ex-overlay')).position === 'absolute';
+  let reserveMost = 0;
+  const freshReserve = () => { reserveMost = 0; };
   exerciseNotation.reserve = () => {
     if (!overlayFloats()) return 0;
-    return Math.max(0, Math.round($('ex-notation').getBoundingClientRect().bottom - $('ex-overlay').getBoundingClientRect().top));
+    reserveMost = Math.max(reserveMost, Math.round($('ex-notation').getBoundingClientRect().bottom - $('ex-overlay').getBoundingClientRect().top));
+    return reserveMost;
   };
   new ResizeObserver(() => {
     $('exercise').style.setProperty('--ex-overlay-h', `${overlayFloats() ? $('ex-overlay').offsetHeight : 0}px`);
     exerciseNotation.refit();
   }).observe($('ex-overlay'));
-  const stepExerciseSize = (delta: number) => {
-    const d = exerciseDisplay();
-    if (exerciseKind === 'drill') saveExerciseDisplay({ card: Math.round(Math.min(cardMost(), Math.max(EX_CARD_MIN, d.card + delta)) * 100) / 100 });
-    else saveExerciseDisplay({ zoom: Math.round(Math.min(EX_SIZE_MAX, Math.max(EX_SIZE_MIN, d.zoom + delta)) * 100) / 100 });
-    fillExerciseDisplay();
+  const stepExerciseSize = (kind: 'simon' | 'drill', delta: number) => {
+    const [now, lo, hi] = sizeRange(kind, exerciseDisplay()), next = Math.round(Math.min(hi, Math.max(lo, now + delta)) * 100) / 100;
+    saveExerciseDisplay(kind === 'drill' ? { card: next } : { zoom: next });
+    if (isOpen()) fillExerciseDisplay(); else fillDisplayDialog();
   };
-  $('ex-smaller').addEventListener('click', () => stepExerciseSize(-0.1));
-  $('ex-larger').addEventListener('click', () => stepExerciseSize(0.1));
+  $('ex-smaller').addEventListener('click', () => stepExerciseSize(exerciseKind, -0.1));
+  $('ex-larger').addEventListener('click', () => stepExerciseSize(exerciseKind, 0.1));
+
+  // Display (owner, 2026-10-24: "the display option doesn't show up in landscape or portrait for drills"): the theme, the
+  // music's size and what is under it, for the way on screen; from Settings → Display, for Drills or Simon with the
+  // screen shut (their look on this kind of screen: the screen keeps it as you leave it, so it is the default too).
+  const displayDialog = $<HTMLDialogElement>('ex-display-dialog');
+  let displayKind: 'simon' | 'drill' = 'drill';
+  function fillDisplayDialog(): void {
+    const d = exerciseDisplay(), card = displayKind === 'drill', here = isOpen() && exerciseKind === displayKind;
+    $('ex-display-title').textContent = `Display: ${card ? 'Drills' : 'Simon'}`;
+    $('ex-display-where').textContent = `On a ${DEVICE_NAMES[currentDevice()]}, kept as you leave it.${currentDevice() === 'tablet' ? '' : ' Turn the phone for the other way\'s look.'}`;
+    const [now, lo, hi] = sizeRange(displayKind, d);
+    $<HTMLOutputElement>('exd-size').value = `${Math.round(now * 100)}%`;
+    $<HTMLButtonElement>('exd-smaller').disabled = now <= lo + 1e-9;
+    $<HTMLButtonElement>('exd-larger').disabled = now >= hi - 1e-9 || (card && here && now >= 1 && exerciseNotation.filled);
+    $('exd-size-note').textContent = card
+      ? `100% is the score's biggest size, or less where the card does not fit; above 100% the card grows as far as its room allows${here && card && now >= 1 && exerciseNotation.filled ? ' (this card fills it now)' : ''}.`
+      : '100% is the score\'s own size; the music builds from the left and wraps.';
+    const values: Record<string, string> = { 'exd-theme': settingsFor('').theme, 'exd-under': card ? d.under : d.simonUnder };
+    for (const [name, value] of Object.entries(values)) for (const r of displayDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
+  }
+  function openDisplay(kind: 'simon' | 'drill'): void { displayKind = kind; fillDisplayDialog(); displayDialog.showModal(); }
+  $('ex-display').addEventListener('click', () => openDisplay(exerciseKind));
+  $('exd-smaller').addEventListener('click', () => stepExerciseSize(displayKind, -0.1));
+  $('exd-larger').addEventListener('click', () => stepExerciseSize(displayKind, 0.1));
+  displayDialog.addEventListener('change', (e) => {
+    const r = e.target as HTMLInputElement;
+    if (r.name === 'exd-theme') { savePieceSetting('', 'theme', r.value as Theme); applyTheme(); }
+    else if (r.name === 'exd-under') saveExerciseDisplay(displayKind === 'drill' ? { under: r.value as ExerciseDisplay['under'] } : { simonUnder: r.value as ExerciseDisplay['simonUnder'] });
+    if (isOpen()) fillExerciseDisplay(); // (the keyboard shown or hidden)
+    fillDisplayDialog();
+  });
 
   let sets: ItemSet[] | null = null;
   const levelDialog = $<HTMLDialogElement>('ex-level-dialog');
@@ -229,6 +274,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     $('ex-kind').textContent = `${kind === 'drill' ? 'Drills' : 'Simon'}▾`;
     $('ex-after').hidden = true;
     $('exercise').hidden = false;
+    freshReserve();
     fillExerciseDisplay();
     exerciseKeys.choose(activity?.keys); // (the activity's keys while it lasts; your own set, or none, the screen's own)
     // Finger numbers on the keys while the activity lasts (its `fingers`, 2026-10-16).
@@ -281,7 +327,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if (t?.name === 'exercise') nav.replaceTop({ ...t, params: { ...t.params, ...params } });
   }
   // (another set may be a rhythm set, or not: the pad or the keys, fitted again)
-  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); fillExerciseDisplay(); } });
+  $<HTMLSelectElement>('ex-set').addEventListener('change', () => { if (isOpen()) { placeAddress({ set: $<HTMLSelectElement>('ex-set').value }); freshReserve(); fillExerciseDisplay(); } });
 
   const drillDialog = $<HTMLDialogElement>('drill-dialog');
   /** The help rungs' words, for sets of notes and (owner, 2026-10-16) for rhythm sets, which have the pad and no rung 4. */
@@ -315,7 +361,6 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
       label.hidden = rhythm && r.value === '4';
     }
     drillDialog.querySelector<HTMLInputElement>('input[name="d-onTime"][value="notes"]')!.parentElement!.hidden = rhythm;
-    $('d-under-set').hidden = rhythm || find || fingers;
     $('d-note').textContent = find
       ? 'A "find it" card names a place on the keys in words; any key of the group it names counts. There is no clock.'
       : letterCards
@@ -325,7 +370,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
       : rhythm
       ? 'A rhythm card: tap the pad (or any key) for each note, and keep your finger down for a long note (a half or whole note is held). Taps are judged in time.'
       : 'A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app\'s.';
-    const values: Record<string, string> = { 'd-rung': String(l.rung), 'd-start': l.start, 'd-metronome': l.metronome ? 'on' : 'off', 'd-onTime': l.onTime, 'd-cards': String(l.cards), 'd-under': exerciseDisplay().under };
+    const values: Record<string, string> = { 'd-rung': String(l.rung), 'd-start': l.start, 'd-metronome': l.metronome ? 'on' : 'off', 'd-onTime': l.onTime, 'd-cards': String(l.cards) };
     for (const [name, value] of Object.entries(values)) for (const r of drillDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
     $<HTMLOutputElement>('d-bpm').value = `♩ ${drill.tempo}`;
   }
@@ -337,7 +382,6 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     else if (r.name === 'd-metronome') drill.setLevel({ metronome: r.value === 'on' });
     else if (r.name === 'd-onTime') drill.setLevel({ onTime: r.value as DrillLevel['onTime'] });
     else if (r.name === 'd-cards') drill.setLevel({ cards: Number(r.value) });
-    else if (r.name === 'd-under') saveExerciseDisplay({ under: r.value as ExerciseDisplay['under'] });
     fillExerciseDisplay();
     fillDrillDialog();
   });
@@ -347,7 +391,6 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     if (exerciseKind === 'drill') { fillDrillDialog(); drillDialog.showModal(); return; }
     const level = simon.levelNow;
     const pairs: [string, string][] = [['ex-rung', String(level.rung)], ['ex-match', level.match], ['ex-miss', level.miss], ['ex-speed', level.speed], ['ex-onMiss', level.onMiss], ['ex-onNew', level.onNew]];
-    pairs.push(['ex-under', exerciseDisplay().under]);
     for (const [name, value] of pairs) {
       for (const r of levelDialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)) r.checked = r.value === value;
     }
@@ -361,13 +404,13 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     else if (r.name === 'ex-speed') simon.setLevel({ speed: r.value as SimonLevel['speed'] });
     else if (r.name === 'ex-onMiss') simon.setLevel({ onMiss: r.value as SimonLevel['onMiss'] });
     else if (r.name === 'ex-onNew') simon.setLevel({ onNew: r.value as SimonLevel['onNew'] });
-    else if (r.name === 'ex-under') saveExerciseDisplay({ under: r.value as ExerciseDisplay['under'] });
     fillExerciseDisplay(); // the help rung and the keyboard choice both decide whether the keyboard shows
   });
 
   return {
     open,
     close,
+    openDisplay,
     get isOpen() { return isOpen(); },
     key: (e: KeyEvent) => exerciseKeys.midiKey(e.midi, e.on, midi.down, e.time), // the keyboard's own time
     command(c: Command): void {
@@ -377,7 +420,7 @@ export function createExerciseScreen(app: App, closed: () => void, calibrate: ()
     // The keys the music uses (the remote's edge keys outside them are commands); any octave counting: all of them.
     musicRange: (): KeyRange | null => ((exerciseKind === 'drill' ? drill.anyOctaveNow : simon.anyOctaveNow) ? { lo: 0, hi: 127 } : exerciseKeys.span),
     // Turning the phone can change the kind of screen, and each has its own look.
-    resized: () => { if (isOpen()) { exerciseKeys.resized(); fillExerciseDisplay(); } },
+    resized: () => { if (isOpen()) { freshReserve(); exerciseKeys.resized(); fillExerciseDisplay(); } },
     // A panel (Level) over the game or the card: it pauses, and carries on when it closes (owner, 2026-10-15).
     panel: (open: boolean) => { if (exerciseKind === 'drill') drill.panel(open); else simon.panel(open); },
     get busy() { return isOpen(); },

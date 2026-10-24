@@ -27,7 +27,7 @@ After a step you see how it went this time and, after earlier tries, your best s
 
 A step with nothing to judge (Free play, or listening in Watch) counts as visited once you have played a key there, or heard the music to its end.
 
-**Switch…** picks another lesson. Back or ← takes you back the way you came.
+**Switch…** picks another lesson; **⚙** opens Settings (← brings you back to the lesson). Back or ← takes you back the way you came.
 
 # The score {#score}
 For reading and playing a piece, with what comes next always in view.
@@ -79,6 +79,7 @@ A memory game. The app gives you a chain (notes, chords, intervals…), and you 
 - **Level:** how much help (0 keys and sound, with no music … 5 by ear), what must match, what a miss costs, the speed. Opening it pauses the game.
 - **0 Keys + sound, no music** is for before you read music: you hear each item and see its keys light up, and no notes are written or named anywhere. Copy what you see and hear. A miss shows the wrong key in red and the right one outlined in blue. From 1 on, the music is shown too.
 - You can play on the keys on the screen or on a MIDI keyboard. With *Nothing* under the music (help 2 to 5), play on a MIDI keyboard.
+- **Display:** the theme, the music's size and what is under it (on a phone held upright it sits beside A− A+).
 - **By ear (help 5):** a miss plays the note again: try other keys until one matches. Nothing is named or shown, and a miss costs nothing; a chain found by trying is good practice, not a best.
 - **Simon ▾** switches to Drills, with the same set.
 
@@ -89,7 +90,8 @@ Flashcards. Each card is one short thing to play at once: music to read, a name,
 - A right card moves on by itself. A card with slips shows them, with a one-line key: grey (ringed) missed, orange early, late or let go early; on the keys, a wrong key red and a missed one outlined in blue. Then **Again** or **Next** (a key goes on too).
 - **Hear it** and **Show me** help, but the card then doesn't count as clean.
 - At the end: each card's result, the misses again, or a new set.
-- Play on a MIDI keyboard, or tap the keys on the screen (Level → Under the music: Keyboard). With neither, Ready says so.
+- Play on a MIDI keyboard, or tap the keys on the screen (Display → Under the music: Keyboard). With neither, Ready says so.
+- **Display:** the theme, the card's size (above 100% it grows as far as the room allows) and what is under the music. On a phone held upright it sits beside A− A+.
 - **Level:** help, how a card starts, the metronome, On time, cards per set, tempo. Opening it pauses the card.
 - **Help 0, Keys + sound, no music:** each card is played to you with its keys lit, and no music is written, even after the card: the keys show what was wrong (red) and what was missed (outlined in blue).
 - From the second card of a set, a key or a tap while a card is played to you skips to its count-in.
@@ -157,10 +159,11 @@ The app's own settings, from ⚙ on Home.
 - **Sound:** where the piano plays (the phone or your MIDI keyboard), the piano and click volumes, the click sound.
 - **Keyboard controls:** learn your keyboard's lowest and highest key, so they work as buttons (back and start); a mash of keys stops. The first time a MIDI keyboard connects, the app offers to set them up there and then.
 - **Look:** Light, Auto (as the phone is) or Dark.
+- **Display:** the look of Pieces, Drills, Simon and Read in time, the same panel as each one's Display, for the way you hold the phone now (turn it to set the other). For Pieces it is the default: a piece you gave a look of its own keeps it.
 - **Your data:** export the practice log, back up your settings, progress and library to one file and restore it, and what is saved for offline.
 - **Help:** this page, and Show tips again.
 
-A piece's own choices (size, tempo, hands, fingering) stay on its screen.
+A piece's own choices (tempo, hands, fingering, a look of its own) stay on its screen.
 
 # Installing and offline {#install}
 Install the app (in Chrome: menu ⋮ → Install app, or the card on Home) to keep your progress and the pieces you add safe on this device, and to play offline.

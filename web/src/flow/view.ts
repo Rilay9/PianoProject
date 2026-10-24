@@ -46,6 +46,8 @@ class Line {
   private notesAt = new Map<number, { x: number; y: number }>(); // group index -> where its mark goes
   private endX = 0;
   placed: Placed | null = null;
+  /** Drawn as big as it fits (a size above 100% can do no more). */
+  filled = false;
   constructor(cls: string) {
     this.el = document.createElement('div');
     this.el.className = `fl-line ${cls}`;
@@ -56,8 +58,9 @@ class Line {
     this.cursorLine.style.display = 'none';
   }
 
-  /** maxH: the height this line may take (px; the box's half, less a gap): the music is scaled to fit it too. */
-  draw(p: Placed | null, clef: Clef, width: number, maxH = Infinity): void {
+  /** maxH: the height this line may take (px; the box's half, less a gap): the music is scaled to fit it too. share:
+   * the size chosen in Display (flow/display.ts), a share of that; above 1, the cap raised as far as the room allows. */
+  draw(p: Placed | null, clef: Clef, width: number, maxH = Infinity, share = 1): void {
     this.placed = p;
     this.el.replaceChildren();
     this.groups = [];
@@ -75,7 +78,9 @@ class Line {
     // height allows, made smaller only when its natural width would not fit across, and centred.
     const barW = (meter.beats * (4 / meter.beatType)) * QUARTER_ROOM + BAR_PAD;
     const w = 8 + head + bars * barW;
-    const scale = Math.max(0.5, Math.min(MAX_SCALE, Number.isFinite(maxH) ? maxH / h : 1.5, width / w));
+    const fit = Math.min(Number.isFinite(maxH) ? maxH / h : 1.5, width / w);
+    const scale = Math.max(0.5 * Math.min(1, share), share > 1 ? Math.min(fit, MAX_SCALE * share) : Math.min(fit, MAX_SCALE) * share);
+    this.filled = scale >= fit - 1e-6;
     const host = document.createElement('div');
     this.el.append(host);
     const renderer = new VF.Renderer(host, VF.Renderer.Backends.SVG);
@@ -203,6 +208,11 @@ export class FlowView {
   private now = new Line('now');
   private next = new Line('next');
   private rhythm = false;
+  /** The size chosen in Display (flow/display.ts): drawn again at once. */
+  private share = 1;
+  setSize(share: number): void { if (share !== this.share) { this.share = share; this.redraw(); } }
+  /** The line is as big as the room allows (A+ can do no more). */
+  get filled(): boolean { return this.now.filled; }
   constructor(private readonly box: HTMLElement) {
     box.replaceChildren(this.now.el, this.next.el);
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => this.redraw()).observe(box);
@@ -213,7 +223,7 @@ export class FlowView {
    * notes need. (upcoming: kept for the screen's call; not drawn.) */
   show(current: Placed | null, _upcoming: Placed | null, rhythm: boolean): void {
     this.rhythm = rhythm;
-    this.now.draw(current, clefOf(current, rhythm), this.width(), this.lineHeight());
+    this.now.draw(current, clefOf(current, rhythm), this.width(), this.lineHeight(), this.share);
     this.next.draw(null, 'treble', 0);
   }
   /** The line's height: the whole box. */
@@ -221,7 +231,7 @@ export class FlowView {
   private redraw(): void {
     // (a turn or a resize: drawn again at the new width; the marks so far are kept by the screen and put back)
     const cur = this.now.placed;
-    this.now.draw(cur, clefOf(cur, this.rhythm), this.width(), this.lineHeight());
+    this.now.draw(cur, clefOf(cur, this.rhythm), this.width(), this.lineHeight(), this.share);
     this.onRedraw?.();
   }
   onRedraw?: () => void;

@@ -22,7 +22,7 @@ import { autoDelete, endStep, entries, entryCount, exportLog, setAutoDelete, set
 import { setEdgeSource, setKeyboards } from './key-words';
 import * as nav from './nav';
 import { KeyRemote } from './remote';
-import { clearPreset, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
+import { clearPreset, currentDevice, DEVICE_NAMES, presetPiece, savePieceSetting, settingsFor, type Click, type PianoOut, type ScoreSettings, type Theme } from './settings';
 import { isSafe, load as loadLibrary, record as libraryRecord, touch } from './library/store';
 import { CLEANUP } from './screens/full-setup';
 import { addedLine, ensurePiece, takeAdded } from './library/catalogue';
@@ -403,8 +403,9 @@ const logCount = () => { const n = entryCount(); $('export-log-count').textConte
 $('export-log').addEventListener('click', () => download(`practice-log-${new Date().toISOString().slice(0, 10)}.json`, 'application/json', exportLog()));
 $<HTMLInputElement>('log-autodelete').addEventListener('change', (e) => { setAutoDelete((e.target as HTMLInputElement).checked); logCount(); });
 
-// ---- Settings (⚙ on Home; owner, 2026-10-15): app-wide only, in the app's own stores (settings.ts piano-web.app.v1,
-// the remote, the log, the backup). The Tempo panel inside a piece changes the same piano and click settings.
+// ---- Settings (⚙ on Home; owner, 2026-10-15): app-wide, in the app's own stores (settings.ts piano-web.app.v1, the
+// remote, the log, the backup); and each mode's Display (owner, 2026-10-24: "so I can set the defaults per mode"), the
+// same panel as on its screen, for this kind of screen. The Tempo panel inside a piece changes the same piano and click settings.
 function fillSettings(): void {
   calibration.fill();
   const s = settingsFor('');
@@ -421,6 +422,7 @@ function fillSettings(): void {
   logCount();
   $('set-offline').textContent = offlineState();
   $('set-tips-note').textContent = 'Tips you have seen show again';
+  $('set-disp-note').textContent = `For a ${DEVICE_NAMES[currentDevice()]}${currentDevice() === 'tablet' ? '' : ' (turn the phone to set the other way\'s look)'}. The same as each screen's own Display; a piece given a look of its own keeps it.`;
   void fillFull();
 }
 /** The full PDMX set on this phone (owner, 2026-10-15): its size, and Remove. Not in the backup. */
@@ -460,6 +462,12 @@ const appSetting = <K extends 'pianoOut' | 'click' | 'theme' | 'pianoVolume' | '
 };
 for (const b of document.querySelectorAll<HTMLButtonElement>('#v-settings [data-out]')) b.addEventListener('click', () => { if (b.dataset.out === 'keyboard') void midi.start().catch(() => {}).then(fillSettings); appSetting('pianoOut', b.dataset.out as PianoOut); });
 for (const b of document.querySelectorAll<HTMLButtonElement>('#v-settings [data-click]')) b.addEventListener('click', () => appSetting('click', b.dataset.click as Click));
+$('set-disp-score').addEventListener('click', () => scoreScreen.openDefaults());
+$('set-disp-drills').addEventListener('click', () => exerciseScreen.openDisplay('drill'));
+$('set-disp-simon').addEventListener('click', () => exerciseScreen.openDisplay('simon'));
+$('set-disp-flow').addEventListener('click', () => flowScreen.openDisplay());
+// (the theme can change in any Display: the Settings page's own Theme row follows when the panel closes)
+for (const id of ['settings', 'ex-display-dialog', 'fl-display-dialog']) $(id).addEventListener('close', () => { if (shell.showing && !$('v-settings').hidden) fillSettings(); });
 for (const b of document.querySelectorAll<HTMLButtonElement>('#v-settings [data-theme-pick]')) b.addEventListener('click', () => appSetting('theme', b.dataset.themePick as Theme));
 $<HTMLInputElement>('set-piano-vol').addEventListener('change', (e) => appSetting('pianoVolume', Number((e.target as HTMLInputElement).value) / 100));
 $<HTMLInputElement>('set-click-vol').addEventListener('change', (e) => appSetting('clickVolume', Number((e.target as HTMLInputElement).value) / 100));

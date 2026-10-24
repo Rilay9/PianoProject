@@ -131,13 +131,17 @@ scrolling and honest states.
   there, nor in Practise as…). Inside, **Practise as…** (the "Drills▾" / "Simon▾" button
   on the exercise screen) switches the same set to the other way. ← comes back to Exercises. On a tablet the kinds are
   two columns (V02).
-- **Settings** (⚙ on Home; app-wide only): piano plays through (phone / MIDI keyboard; said when there is none to play
+- **Settings** (⚙ on Home): piano plays through (phone / MIDI keyboard; said when there is none to play
   through), piano and click volume, **tap timing** (owner, 2026-10-16: what the timing check kept for screen taps and
   for a MIDI keyboard, *Check* to run it, *Reset* to forget both; §1 "Timing as heard"), click sound, Keyboard controls (§7), theme, export practice log (with its count)
   and "delete entries older than a month", back up, restore, what is saved for offline, and Help (How the app works, Show
   tips again: §7d). The same stores as before
   (`piano-web.app.v1`, the remote, the log, the backup); the Tempo panel inside a piece keeps its piano-out and volume
-  controls (the same settings).
+  controls (the same settings). **Display** (owner, 2026-10-24: "I'd like those settings to also show up in settings in
+  home so I can set the defaults per mode"): Pieces, Drills, Simon and Read in time, each opening that mode's own Display
+  panel for this kind of screen (a phone upright or sideways, a tablet: turn the phone to set the other). Pieces edits the
+  default look (`settings.v2` `defaults`; a piece given a look of its own keeps it; the panel has no Make default or
+  Reset there); the others edit the look their screen keeps as you leave it, which is the same thing as its default.
 
 ---
 
@@ -447,7 +451,9 @@ it has notes: C4 and C5 are two keys). **Speed:** steady, or quickening as
 the chain grows. **Playback:** after a miss the whole chain or from the miss; when it grows the whole chain or only
 the new item (you always play it all). Display: size A−/A+ (fixed size, building from the left; long chains wrap and
 scroll; on a phone sideways one line that scrolls sideways, the dots in the bottom bar), keyboard or nothing under
-the music. With no MIDI keyboard and more keys than fit, the keys move along the piano with ‹ › (§4 "Moving the keys"; at help 0 and 1 they move to show the chain before it is given).
+the music: in the **Display** panel (owner, 2026-10-24, with Drills: theme, music size, keyboard or nothing; Simon's
+keyboard choice its own since then, the one it shared with Drills kept), opened from the top bar, or on a phone upright
+from beside A−/A+ (the top bar has no room there); also Settings → Display → Simon. With no MIDI keyboard and more keys than fit, the keys move along the piano with ‹ › (§4 "Moving the keys"; at help 0 and 1 they move to show the chain before it is given).
 
 **Content:** item sets (§6). Small units only; passages from pieces belong in Memorise. Rhythm sets (§4) are never
 offered in Simon (it has no rhythm): its set menu leaves them out, and a link or step naming one in Simon says so.
@@ -464,7 +470,7 @@ header's **Drills▾** is *Practise as…*: the same set in Simon (owner, 2026-1
 Back from Simon to Drills in a lesson step's set, the step's own level comes back (F22). Cards are played on a MIDI
 keyboard or by tapping the keys on the screen. With nothing to play on (no MIDI keyboard connected, or MIDI not allowed,
 and no keys on the screen: Nothing under the music, help above 1) the Ready screen says "No MIDI keyboard found: choose
-Keyboard under the music (Level) to play on the screen, or plug one in." until a keyboard is seen or the keys are shown
+Keyboard under the music (Display) to play on the screen, or plug one in." until a keyboard is seen or the keys are shown
 (F17; owner, 2026-10-15: it said "Cards are judged from a MIDI keyboard; none is connected." with the keys showing too,
 which was false). Simon says the same in the same case (§7d). **A MIDI prompt not answered** (ChatGPT's live review of lesson 1, 2026-10-16): Simon, Drills, Memorise and the lab
 never wait on the browser still asking to allow MIDI (`midi.ts` `startSoon`): after 1.5 s they open as with no keyboard,
@@ -551,11 +557,19 @@ a retry or with help, Set done adds "clean: right the first time, with no help".
 press *Finish* (an endless run: practice, logged as such; the set before is already logged, and a lesson step already
 counted it). At Set done the pad (or the keys) gives
 up room so every card's line shows. A name to play
-is drawn flashcard-size; with the result the music appears and the name sits small above it. On a tablet A+ can
-make a card bigger than the score's biggest size, up to filling the room. A card never grows,
+is drawn flashcard-size; with the result the music appears and the name sits small above it. A+ can make a card
+bigger than 100% on every kind of screen (a tablet since 2026-10-12, phones since the owner's "the option for it to go
+higher than 100%", 2026-10-24), up to filling the room (A+ greys out there). A card never grows,
 so it is drawn on one line, or on two when that comes out bigger (2026-10-17), centred and as big as the room allows
-(never past the score's biggest size, 180%);
-A−/A+ make it smaller than that (Simon instead keeps one size and builds from the left).
+at 100% (never past 30 px a staff space);
+A− makes it smaller than that (Simon instead keeps one size and builds from the left). **It keeps its size and place
+through its result** (owner, 2026-10-24: "it shrinks/moves a little bit … after you hit a correct one"): the card is
+centred in the room above the frosted panel, and that panel is shorter with the result (no Skip), so the room kept for
+the panel only grows while a set is played, measured afresh when the screen opens or turns or another set starts.
+**Display** (owner, 2026-10-24: "the display option doesn't show up in landscape or portrait for drills"): theme (the
+whole app's), music size (A−/A+, as beside Hear it), keyboard or nothing under the music (moved here from the Level
+panel). In the top bar beside Level; on a phone upright beside A−/A+, the top bar having no room. Also Settings →
+Display → Drills.
 **The Level panel over a card** (owner, 2026-10-15): keys count nothing while it is open, and the card carries on when
 it closes: one waiting for your first note, or a notes-only card, waits on (the 8 s hint counts from the close); one
 being played to you is played again; a count-in starts again; a card whose clock was running starts its try again
@@ -895,7 +909,14 @@ or a MIDI keyboard).
   as the bar between cards starts (a bar to read it), a rhythm's a beat before it. **Size** (owner: "as visible as possible
   without making it hard to read due to stretching"): each bar at its natural width (a quarter note's room as engravers
   space it, a little more for tapping), the line as tall as the height allows, smaller only when that width would not fit
-  across, centred: never pulled wide to fill the screen.
+  across, centred: never pulled wide to fill the screen. **Display** (owner, 2026-10-24: the display options on every
+  mode; `flow/display.ts`, `piano-web.flow-display.v1`, per kind of screen): theme, **music size** (100% as above, up
+  to 2.4× the drawn size; A− to 50%; above 100% it grows past that cap only where the room allows, so A+ greys out
+  where the line already fills it, as upright, where the width decides), and **keyboard or nothing** under the music
+  (Nothing hides the keys only while a MIDI keyboard is connected; a rhythm set shows its pad either way). In the top
+  bar sideways and on a tablet; on a phone upright with the choices under it, 📖 beside it (the title needs the bar's
+  room: at 360 px it was cut to a word). Also
+  Settings → Display → Read in time.
 - **A mark on every tap, as it lands**: a dot over its note, green on time (±100 ms), orange early (←) or late (→) up to
   its window (260 ms, never past 45 % of the gap to a neighbour), red a wrong key, a grey ring missed; a grey tick for a
   tap near no note (an extra tap, counted for the exercise whose stretch it fell in). Only *when* is judged unless
@@ -1594,7 +1615,7 @@ placeholders for checking the app, not lesson content.
 - Saved data: `piano-web.settings.v2` (score look, per screen type and song), `piano-web.songs.v1` (playing
   choices per song), `piano-web.app.v1`
   (app-wide: theme, volumes, click, piano output), `piano-web.marks.v1` (fingering), `piano-web.memorise.v1`,
-  `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.freeplay.v1`,
+  `piano-web.simon.v1`, `piano-web.drills.v1`, `piano-web.exercise-display.v1`, `piano-web.flow-display.v1`, `piano-web.freeplay.v1`,
   `piano-web.remote.v1`, `piano-web.lab.v1`, `piano-web.log.v1`, `piano-web.library.v1` (the library's sort), `piano-web.pdf.v1` (the PDF reader, per PDF), `piano-web.path.v1` (the path: steps done and how, steps tried, the
   lesson you are on; §8c), `piano-web.metronome.v1` (the metronome's tempo and beats), `piano-web.hints.v1` (tips seen or used and the install card, §7d) (all in a backup; not `piano-web.offline.v1`, what this device has saved for offline). The library's own database (§5c) is in the backup too.
   **The stores as a contract** (for a new screen or mode; 2026-10-15): each key belongs to one module, which reads it
@@ -1613,7 +1634,7 @@ placeholders for checking the app, not lesson content.
   | `piano-web.marks.v1` | `marks.ts` | `{ <piece id>: { fingerings: [{ m, rel, midi, staff, finger }] } }` (§1) |
   | `piano-web.memorise.v1` | `memorise.ts` | `{ options, progress: { "<piece>\|<hands>\|<chunk>": {…} }, learned: { "<piece>\|<hands>": [bar index…] }, marks, look, pieces }` |
   | `piano-web.simon.v1`, `piano-web.drills.v1` | `exercise/simon.ts`, `drill.ts` | Simon `{ level, best: { "<set>\|<level>": longest }, set }`; Drills `{ level, tempo: { <set>: bpm }, best: { "<set>\|<level>\|<cards>": { clean, of } }, set }` |
-  | `piano-web.exercise-display.v1`, `freeplay.v1`, `remote.v1`, `library.v1`, `metronome.v1` | their screens | that screen's choices |
+  | `piano-web.exercise-display.v1`, `flow-display.v1`, `freeplay.v1`, `remote.v1`, `library.v1`, `metronome.v1` | their screens | that screen's choices (the two displays per kind of screen: `{ "phone-upright" \| … : { zoom, card, under, simonUnder } }`, `{ …: { size, under } }`) |
   | `piano-web.lab.v1` | `screens/lab.ts` | `{ chart, role, step, clean, speed, help, parts, dropouts }` |
   | `piano-web.log.v1` | `log.ts` | `{ autoDelete, entries: [entry…] }` (§7b) |
   | `piano-web.pdf.v1` | `screens/pdf.ts` | `{ <piece id>: { line, part, cuts (the lines per page), angles, margins, splits, view (whole/split per screen), spacing, size, edgeMusic } }` |
@@ -1633,7 +1654,7 @@ are content for later (§8c `tip`).
   its own button):
   - *No keyboard* (states, said while true; every one "No MIDI keyboard found: <what to do>.", §7e): Play along, Ladder
     and Rhythm, Drills' Ready and Wait for me as §1 and §4 say; Memorise "No MIDI keyboard found: play on the keys
-    below." (or "…: show the keyboard in Settings, or plug one in."); **Simon's Ready** says "No MIDI keyboard found: choose Keyboard under the music (Level) to play on the
+    below." (or "…: show the keyboard in Settings, or plug one in."); **Simon's Ready** says "No MIDI keyboard found: choose Keyboard under the music (Display) to play on the
     screen, or plug one in." only when there is no keyboard and no keys on the screen (Simon counts the screen's keys:
     Nothing under the music, help above 1), and so do Drills' (§4); **Wait for me turned sideways mid-run** with no keyboard says §1's sideways line.
   - *Your keyboard's ends* (stored, once; owner, 2026-10-16): the first time a MIDI keyboard connects and its lowest and
@@ -2042,7 +2063,7 @@ template. `web/src/lesson/read.ts` (the reader), `blocks.ts` (the drawings), `pa
 **Reached:** the Path tab (*You are here* with Carry on; this week's practice: minutes and days from the practice log,
 and steps done in the rung, all as plain counts: time is time, not mastery; then the rungs as sections, the one you are
 on open, the others folded with a ▸; each lesson one tap away, done or not, with "k of m steps done"); Home's Up next;
-**Switch…** (from Path, Home and a lesson page): the rung's lessons (*Revisit* a done one, *Open* the one you are on, one
+**⚙ on a lesson page** (owner, 2026-10-24: "I couldn't reach any of the settings"): Settings over the lesson, ← back to it at the same place. **Switch…** (from Path, Home and a lesson page): the rung's lessons (*Revisit* a done one, *Open* the one you are on, one
 started or one behind you, *Skip ahead* only to one after the one you are on, not started: V30; none on the lesson's own
 page for itself) and the other rungs; Back, Esc, ✕ or Close close it (V19); opening a lesson there makes it the one you are on
 (owner, 2026-10-15), and earlier progress is kept. When a lesson's last step is done, the one you are on moves to the

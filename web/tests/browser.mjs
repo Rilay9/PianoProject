@@ -4,7 +4,7 @@
 //
 // usage: npm run check:browser              (builds, serves on :5194, runs every case)
 //        node tests/browser.mjs --url http://localhost:5196/PianoProject/   (a build served elsewhere: no build, no server)
-//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills; also lessons, consistency, walkfix, movekeys, lesson1caps, week)
+//        node tests/browser.mjs --only rhythm   (one section: rhythm sets in Drills; also lessons, consistency, walkfix, movekeys, lesson1caps, week, display)
 // PIANO_CHROMIUM names a Chromium when Playwright's own build is not installed (a cloud session: /opt/pw-browsers/chromium).
 // Not here: the library store's lost update (F03; shown with the store module through the dev server, 0 of 10 before,
 // 10 of 10 after) and the PDF Adjust stale draw (F04; no way found to force it).
@@ -2727,7 +2727,7 @@ try {
         ready[name] = await page.evaluate(() => document.getElementById('ex-status').textContent);
         await ctx.close();
       }
-      const line = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+      const line = 'No MIDI keyboard found: choose Keyboard under the music (Display) to play on the screen, or plug one in.';
       ok('F17: Drills’ Ready says there is nothing to play on only with no keyboard and no keys on the screen (not with the keys shown, nor with a keyboard)', ready['no keys shown, MIDI not allowed'] === line && ready['no keys shown, none connected'] === line && ready['keys shown, no keyboard'] === '' && ready['no keys shown, a keyboard'] === '', JSON.stringify(ready));
     }
 
@@ -3068,7 +3068,7 @@ try {
         errs += errors.length;
         await ctx.close();
       }
-      const NO = 'No MIDI keyboard found: choose Keyboard under the music (Level) to play on the screen, or plug one in.';
+      const NO = 'No MIDI keyboard found: choose Keyboard under the music (Display) to play on the screen, or plug one in.';
       ok('hint #1, Simon: Ready says there is nothing to play on only with no keyboard and no keys on the screen', got['no keys, no keyboard'] === NO && got['keys shown, no keyboard'] !== NO && got['no keys, a keyboard'] !== NO, JSON.stringify(got));
       ok('hint #1 Simon: no page errors', errs === 0, String(errs));
     }
@@ -5021,6 +5021,121 @@ try {
     await ctx.close();
   } catch (e) { ok('week: the lesson page part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
   } // (end of `--only week`)
+  // ---- Display on every mode (owner, 2026-10-24: "none of the display options are showing up during the lessons or
+  // drills", "the option for it to go higher than 100%", "it shrinks/moves a little bit in that drill screen … after
+  // you hit a correct one", "those settings to also show up in settings in home so I can set the defaults per mode").
+  if (!only || only === 'display') { // (`--only display` runs this section alone)
+    async function dsPage(url, viewport = { width: 390, height: 844 }) {
+      const ctx = await browser.newContext({ viewport, hasTouch: true, serviceWorkers: 'block' });
+      const page = await ctx.newPage();
+      await page.addInitScript(() => {
+        const input = { id: 't', name: 'Test keys', state: 'connected', onmidimessage: null };
+        const access = { inputs: new Map([[input.id, input]]), outputs: new Map(), onstatechange: null };
+        Object.defineProperty(Navigator.prototype, 'requestMIDIAccess', { value: async () => access, configurable: true });
+        window.__key = (m, on) => input.onmidimessage?.({ data: new Uint8Array([on ? 0x90 : 0x80, m, on ? 90 : 0]), timeStamp: performance.now() });
+      });
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      await page.goto(`${BASE}${url}`); await page.waitForTimeout(2500);
+      await tapStart(page);
+      return { ctx, page, errors };
+    }
+    const click = (page, sel) => page.evaluate((s) => document.querySelector(s).click(), sel);
+    /** Tap to start, as a finger does (a script's click leaves it over the screen). */
+    const tapStart = async (page) => { if (await page.locator('#tap-to-start').isVisible().catch(() => false)) await page.locator('#tap-to-start').click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(400); };
+    /** Where a button is: on screen whole, and not under another (the top bar's title keeps some room). */
+    const placeOf = (page, id) => page.evaluate((id) => { const e = document.getElementById(id), r = e.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { shown: !!e.offsetParent, inside: r.left >= 0 && r.right <= innerWidth + 1 && r.top >= 0 && r.bottom <= innerHeight + 1, onTop: top === e || e.contains(top), w: Math.round(r.width) }; }, id);
+
+    // 1. A drill card keeps its size and place from its turn through a right answer to the result (upright the panel
+    //    under it lost its Skip button and the card, centred above it, moved 25 px down; 2026-10-24).
+    try {
+      const { ctx, page, errors } = await dsPage('?activity=f3-notes');
+      const D = () => page.evaluate(() => window.__pianoDebug.drill());
+      for (let i = 0; i < 40 && (await D()).state !== 'turn'; i++) { if (i === 5) await click(page, '#ex-start'); await page.waitForTimeout(200); }
+      const card = () => page.evaluate(() => { const r = document.querySelector('#ex-notation svg').getBoundingClientRect(); return [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)].join(','); });
+      const seen = [];
+      for (let c = 0; c < 2; c++) {
+        seen.push({ state: (await D()).state, card: await card(), panel: await page.evaluate(() => document.getElementById('ex-overlay').offsetHeight) });
+        for (const st of (await D()).steps) { await page.evaluate((ks) => ks.forEach((k) => window.__key(k, true)), st.keys); await page.waitForTimeout(80); await page.evaluate((ks) => ks.forEach((k) => window.__key(k, false)), st.keys); await page.waitForTimeout(100); }
+        for (let i = 0; i < 20 && (await D()).state === 'turn'; i++) await page.waitForTimeout(50);
+        seen.push({ state: (await D()).state, card: await card(), panel: await page.evaluate(() => document.getElementById('ex-overlay').offsetHeight) });
+        for (let i = 0; i < 40 && (await D()).state !== 'turn'; i++) await page.waitForTimeout(150);
+        await page.waitForTimeout(300);
+      }
+      const result = seen.filter((x) => x.state === 'result'), turns = seen.filter((x) => x.state === 'turn');
+      // (each result against the turn before it: the same card, so the same size and place; the panel did change)
+      const still = seen.every((x, i) => x.state !== 'result' || (i > 0 && seen[i - 1].card === x.card));
+      ok('display: a drill card stays the same size and in the same place through a right answer (upright, the panel under it shorter)', result.length >= 1 && turns.length >= 1 && still && result.some((x, i) => x.panel < turns[0].panel) && errors.length === 0, JSON.stringify({ seen, errors }));
+      await ctx.close();
+    } catch (e) { ok('display: the drill card part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
+
+    // 2. Display on Drills and Read in time, upright and sideways: on screen, whole, not covered; Read in time's title
+    //    keeps its room; the panel opens. A card goes above 100% (to filling its room, then A+ stops).
+    for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }, { width: 360, height: 740 }]) {
+      const at = `${viewport.width}×${viewport.height}`;
+      try {
+        const { ctx, page, errors } = await dsPage('?activity=f3-notes', viewport);
+        const where = await placeOf(page, 'ex-display');
+        await click(page, '#ex-display'); await page.waitForTimeout(300);
+        const panel = await page.evaluate(() => ({ open: document.getElementById('ex-display-dialog').open, title: document.getElementById('ex-display-title').textContent }));
+        await page.keyboard.press('Escape'); await page.waitForTimeout(200);
+        const sizes = [];
+        for (let i = 0; i < 25; i++) { const x = await page.evaluate(() => ({ v: document.getElementById('ex-size').value, off: document.getElementById('ex-larger').disabled })); sizes.push(x.v); if (x.off) break; await click(page, '#ex-larger'); await page.waitForTimeout(150); }
+        const top = parseInt(sizes.at(-1), 10);
+        const fills = await page.evaluate(() => { const n = document.getElementById('ex-notation'), r = n.querySelector('svg').getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), roomW: n.clientWidth - 16 }; });
+        ok(`display, ${at}: Drills has Display on screen (not covered) and it opens; A+ goes above 100% (to ${top}%) and stops once the card fills its room`, where.shown && where.inside && where.onTop && panel.open && /Drills/.test(panel.title) && top > 100 && errors.length === 0, JSON.stringify({ where, panel, sizes, fills, errors }));
+        await page.goto(`${BASE}?activity=f3-tunes-time`); await page.waitForTimeout(2500); await tapStart(page);
+        const fl = await placeOf(page, 'fl-display'), title = await page.evaluate(() => document.getElementById('fl-title').getBoundingClientRect().width);
+        await click(page, '#fl-display'); await page.waitForTimeout(300);
+        const flPanel = await page.evaluate(() => document.getElementById('fl-display-dialog').open);
+        ok(`display, ${at}: Read in time has Display on screen (not covered) and it opens; its title keeps its room (at least 50 px; squeezed by Display it had about 10)`, fl.shown && fl.inside && fl.onTop && flPanel && title >= 50 && errors.length === 0, JSON.stringify({ fl, title, flPanel, errors }));
+        await ctx.close();
+      } catch (e) { ok(`display, ${at}: the Display buttons part ran to its end`, false, String(e).split('\n')[0].slice(0, 200)); }
+    }
+
+    // 3. Settings → Display: each mode's look set there is what its screen opens with; Drills' keyboard choice is not Simon's.
+    try {
+      const { ctx, page, errors } = await dsPage('?page=settings');
+      await click(page, '#set-disp-score'); await page.waitForTimeout(200);
+      const piecesPanel = await page.evaluate(() => ({ title: document.getElementById('settings-title').textContent, songButtons: !document.getElementById('make-default').hidden }));
+      await click(page, '#settings input[name="spacing"][value="open"]'); await click(page, '#settings input[name="barNumbers"][value="every"]');
+      await click(page, '#settings .dlg-x');
+      await click(page, '#set-disp-drills'); await page.waitForTimeout(200);
+      await click(page, '#ex-display-dialog input[name="exd-under"][value="nothing"]'); await click(page, '#exd-larger');
+      const drillSize = await page.evaluate(() => document.getElementById('exd-size').value);
+      await click(page, '#ex-display-dialog .dlg-x');
+      await click(page, '#set-disp-simon'); await page.waitForTimeout(200);
+      const simonUnder = await page.evaluate(() => document.querySelector('#ex-display-dialog input[name="exd-under"]:checked').value);
+      await click(page, '#ex-display-dialog .dlg-x');
+      await click(page, '#set-disp-flow'); await page.waitForTimeout(200);
+      await click(page, '#fld-smaller'); await click(page, '#fld-smaller');
+      await click(page, '#fl-display-dialog .dlg-x');
+      await page.goto(`${BASE}?piece=bach-bwv514`); await page.waitForTimeout(2500);
+      await page.evaluate(() => document.getElementById('tap-to-start')?.click());
+      await click(page, '#open-settings'); await page.waitForTimeout(200);
+      const piece = await page.evaluate(() => ({ title: document.getElementById('settings-title').textContent, spacing: document.querySelector('#settings input[name="spacing"]:checked').value, bars: document.querySelector('#settings input[name="barNumbers"]:checked').value }));
+      await page.goto(`${BASE}?activity=f3-notes`); await page.waitForTimeout(2500);
+      const drill = await page.evaluate(() => ({ keysOff: document.getElementById('ex-keyboard').classList.contains('off'), size: document.getElementById('ex-size').value }));
+      await page.goto(`${BASE}?activity=f3-tunes-time`); await page.waitForTimeout(2500);
+      const flow = await page.evaluate(() => ({ w: Math.round(document.querySelector('#fl-music svg').getBoundingClientRect().width), room: document.getElementById('fl-music').clientWidth }));
+      ok('display: Settings → Display → Pieces is the default look (spacing, bar numbers) a piece opens with; its panel there has no song buttons', piecesPanel.title === 'Display: Pieces' && !piecesPanel.songButtons && piece.title === 'Display' && piece.spacing === 'open' && piece.bars === 'every', JSON.stringify({ piecesPanel, piece }));
+      ok('display: Settings → Display → Drills (no keyboard, 110%) is what Drills opens with; Simon keeps its own keyboard choice', drillSize === '110%' && drill.keysOff && drill.size === '110%' && simonUnder === 'keyboard', JSON.stringify({ drillSize, drill, simonUnder }));
+      ok('display: Settings → Display → Read in time at 80% draws its line smaller than the room', flow.w > 0 && flow.w < flow.room * 0.9 && errors.length === 0, JSON.stringify({ flow, errors }));
+      await ctx.close();
+    } catch (e) { ok('display: the Settings part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
+    // 4. Settings from a lesson (owner, 2026-10-24: "I couldn't reach any of the settings"): ⚙ in its top bar opens
+    //    Settings, ← comes back to the same lesson.
+    try {
+      const { ctx, page, errors } = await dsPage('?page=lesson&lesson=f3-treble');
+      const where = await placeOf(page, 'lesson-settings');
+      await click(page, '#lesson-settings'); await page.waitForTimeout(500);
+      const opened = await page.evaluate(() => ({ settings: !document.getElementById('v-settings').hidden, display: !!document.getElementById('set-disp-drills').offsetParent }));
+      await click(page, '#settings-back'); await page.waitForTimeout(800);
+      const back = await page.evaluate(() => ({ lesson: !document.getElementById('v-lesson').hidden, title: document.querySelector('#lesson-body .les-title')?.textContent ?? '' }));
+      ok('display: a lesson page\'s ⚙ is on screen and opens Settings (its Display rows there); ← comes back to the lesson', where.shown && where.inside && where.onTop && opened.settings && opened.display && back.lesson && /treble/i.test(back.title) && errors.length === 0, JSON.stringify({ where, opened, back, errors }));
+      await ctx.close();
+    } catch (e) { ok('display: the lesson Settings part ran to its end', false, String(e).split('\n')[0].slice(0, 200)); }
+  } // (end of `--only display`)
 } finally {
   await browser?.close();
   stop();

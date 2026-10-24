@@ -268,6 +268,19 @@ export function savePieceSetting<K extends keyof ScoreSettings>(pieceId: string,
   write(stored);
 }
 
+/** The default look on this kind of screen: what a song with no look of its own is drawn with. */
+export function defaultsFor(device = currentDevice()): ScoreSettings { return settingsFor('\u0000', device); } // (no song has that id)
+
+/** Saves a default for every song on this kind of screen (Settings → Display → Pieces, owner 2026-10-24); a song with
+ * its own look keeps it. An app-wide setting is the app's, a playing choice every song's default. */
+export function saveDefault<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K], device = currentDevice()): void {
+  if (isAppWide(key)) { writeApp({ ...readApp(), [key]: value }); return; }
+  if (isSongWide(key)) { const songs = readSongs(); songs['*'] = { ...songs['*'], [key]: value }; writeSongs(songs); return; }
+  const stored = read();
+  stored[device].defaults = { ...stored[device].defaults, [key]: value };
+  write(stored);
+}
+
 /** Makes this song's look the default on this kind of screen (its playing choices stay its own). */
 export function makeDefaults(pieceId: string, device = currentDevice()): void {
   const stored = read();
@@ -281,4 +294,11 @@ export function resetPiece(pieceId: string, device = currentDevice()): void {
   const stored = read();
   delete stored[device].pieces[pieceId];
   write(stored);
+}
+
+/** Light, dark, or as the phone is (app-wide): the stylesheet reads data-theme on the page. */
+export function applyTheme(): void {
+  const theme = settingsFor('').theme; // app-wide: the same for every song
+  if (theme === 'system') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = theme;
 }

@@ -85,7 +85,7 @@ export interface SimonParts {
 type State = 'ready' | 'showing' | 'turn' | 'miss' | 'over' | 'done';
 
 /** Simon's Ready line when there is nothing to play on (the screen's keys count in Simon, so only with them hidden). */
-export const NO_KEYS = noKeyboard('choose Keyboard under the music (Level) to play on the screen, or plug one in');
+export const NO_KEYS = noKeyboard('choose Keyboard under the music (Display) to play on the screen, or plug one in'); // (in Display since 2026-10-24)
 
 export class Simon {
   private sets: ItemSet[] = [];

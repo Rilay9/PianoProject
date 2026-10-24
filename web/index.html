@@ -152,7 +152,7 @@
   <!-- The exercise screen (Simon now, the drills later): what and how far on top, the item in the middle,
        the keyboard at the bottom. -->
   <section id="exercise" class="exercise" aria-label="Exercise" hidden>
-    <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button><button id="ex-level" type="button" class="btn">Level</button></div>
+    <div class="fp-head"><button id="ex-done" type="button" class="btn back" aria-label="Back">←</button><button id="ex-kind" type="button" class="btn ex-kind" aria-haspopup="dialog" aria-label="Practise as…">Simon ▾</button><select id="ex-set" aria-label="What to practise"></select><button id="ex-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button><button id="ex-level" type="button" class="btn">Level</button><button id="ex-display" type="button" class="btn" aria-haspopup="dialog">Display</button></div>
     <div class="ex-score"><span id="ex-left"></span><span id="ex-mid"></span><span id="ex-right"></span></div>
     <p id="ex-task" class="step-task" hidden></p>
     <div class="ex-prompt">
@@ -208,7 +208,7 @@
   <!-- Read in time (owner, 2026-10-18; screens/flow.ts): rhythm and reading exercises one after another on a running
        click, each tap marked as it lands. -->
   <section id="flow" class="flow" aria-label="Read in time" hidden>
-    <div class="fp-head"><button id="fl-done" type="button" class="btn back" aria-label="Back">←</button><span id="fl-title" class="title"></span><span class="fl-sp"></span><button id="fl-slower" type="button" class="btn" aria-label="Slower">−</button><output id="fl-bpm"></output><button id="fl-faster" type="button" class="btn" aria-label="Faster">+</button><button id="fl-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button></div>
+    <div class="fp-head"><button id="fl-done" type="button" class="btn back" aria-label="Back">←</button><span id="fl-title" class="title"></span><span class="fl-sp"></span><button id="fl-slower" type="button" class="btn" aria-label="Slower">−</button><output id="fl-bpm"></output><button id="fl-faster" type="button" class="btn" aria-label="Faster">+</button><button id="fl-lookup" type="button" class="btn lk-open" aria-label="Look it up" title="Look it up">📖</button><button id="fl-display" type="button" class="btn" aria-haspopup="dialog">Display</button></div>
     <p id="fl-task" class="step-task" hidden></p>
     <div id="fl-music" class="fl-music"></div>
     <!-- (sideways: a column beside the music; upright it is laid out in the page's own order) -->
@@ -421,11 +421,6 @@
         <label><input type="radio" name="d-cards" value="0"> Until I stop</label>
       </fieldset>
       <div class="row"><span>Tempo</span><button id="d-slower" type="button" class="btn">−5</button><output id="d-bpm"></output><button id="d-faster" type="button" class="btn">+5</button></div>
-      <h3>Display</h3>
-      <fieldset id="d-under-set" class="row"><legend>Under the music</legend>
-        <label><input type="radio" name="d-under" value="keyboard"> Keyboard</label>
-        <label><input type="radio" name="d-under" value="nothing"> Nothing</label>
-      </fieldset>
       <p id="d-note" class="note">A card with written rhythm is judged in time; one without, as its set says (the right notes, or steady beats). The click sound and volume are the app's.</p>
       <p class="help-row"><button type="button" class="lnk" data-help="drills">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
@@ -441,6 +436,48 @@
       <p id="calib-status" class="ex-status"></p>
       <p id="calib-sub" class="note"></p>
       <div class="actions"><button type="button" id="calib-start" class="btn">Start</button><button value="close">Done</button></div>
+    </form>
+  </dialog>
+
+  <!-- Display for Drills and Simon, and for Read in time (owner, 2026-10-24: "the display option doesn't show up in
+       landscape or portrait for drills"): opened from the screen's top bar, and from Settings → Display for each one's
+       look on this kind of screen (screens/exercise.ts, screens/flow.ts). -->
+  <dialog id="ex-display-dialog" aria-labelledby="ex-display-title">
+    <form method="dialog">
+      <h2 id="ex-display-title">Display</h2>
+      <p id="ex-display-where" class="note"></p>
+      <fieldset class="row"><legend>Theme (whole app)</legend>
+        <label><input type="radio" name="exd-theme" value="system"> As the phone</label>
+        <label><input type="radio" name="exd-theme" value="light"> Light</label>
+        <label><input type="radio" name="exd-theme" value="dark"> Dark</label>
+      </fieldset>
+      <div class="row"><span>Music size</span><button id="exd-smaller" type="button" class="btn" aria-label="Smaller music">A−</button><output id="exd-size"></output><button id="exd-larger" type="button" class="btn" aria-label="Larger music">A+</button></div>
+      <p id="exd-size-note" class="note"></p>
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="exd-under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="exd-under" value="nothing"> Nothing</label>
+      </fieldset>
+      <p class="note">With Nothing, play on your MIDI keyboard. Help 0 and 1 still show the keyboard, since their lit keys are the help.</p>
+      <div class="actions"><button value="close">Done</button></div>
+    </form>
+  </dialog>
+  <dialog id="fl-display-dialog" aria-labelledby="fl-display-title">
+    <form method="dialog">
+      <h2 id="fl-display-title">Display</h2>
+      <p id="fl-display-where" class="note"></p>
+      <fieldset class="row"><legend>Theme (whole app)</legend>
+        <label><input type="radio" name="fld-theme" value="system"> As the phone</label>
+        <label><input type="radio" name="fld-theme" value="light"> Light</label>
+        <label><input type="radio" name="fld-theme" value="dark"> Dark</label>
+      </fieldset>
+      <div class="row"><span>Music size</span><button id="fld-smaller" type="button" class="btn" aria-label="Smaller music">A−</button><output id="fld-size"></output><button id="fld-larger" type="button" class="btn" aria-label="Larger music">A+</button></div>
+      <p class="note">100% is as big as the line fits on the screen, up to a large size; above 100% it grows past that only where there is room left. A− makes it smaller.</p>
+      <fieldset class="row"><legend>Under the music</legend>
+        <label><input type="radio" name="fld-under" value="keyboard"> Keyboard</label>
+        <label><input type="radio" name="fld-under" value="nothing"> Nothing</label>
+      </fieldset>
+      <p class="note">With Nothing, play on your MIDI keyboard. A rhythm set shows its pad, not the keys, either way.</p>
+      <div class="actions"><button value="close">Done</button></div>
     </form>
   </dialog>
 
@@ -497,12 +534,6 @@
         <label><input type="radio" name="ex-onNew" value="all"> The whole chain</label>
         <label><input type="radio" name="ex-onNew" value="new"> Only the new one</label>
       </fieldset>
-      <h3>Display</h3>
-      <fieldset class="row"><legend>Under the music</legend>
-        <label><input type="radio" name="ex-under" value="keyboard"> Keyboard</label>
-        <label><input type="radio" name="ex-under" value="nothing"> Nothing</label>
-      </fieldset>
-      <p class="note">With Nothing, play on your MIDI keyboard. Help 0 and 1 still show the keyboard, since their lit keys are the help.</p>
       <p class="help-row"><button type="button" class="lnk" data-help="simon">How this screen works</button></p>
       <div class="actions"><button value="close">Done</button></div>
     </form>
@@ -783,6 +814,14 @@
           <div class="set-list"><button id="set-remote" type="button" class="set-row"><span class="set-name">Keyboard controls<small>Your lowest and highest key as buttons; a mash stops</small></span><span class="set-go">›</span></button></div>
           <p class="set-sec">Look</p>
           <div class="set-list"><div class="set-row"><span class="set-name">Theme</span><span class="seg" role="group" aria-label="Theme"><button type="button" data-theme-pick="light">Light</button><button type="button" data-theme-pick="system">Auto</button><button type="button" data-theme-pick="dark">Dark</button></span></div></div>
+          <p class="set-sec">Display</p>
+          <div class="set-list">
+            <button id="set-disp-score" type="button" class="set-row"><span class="set-name">Pieces<small>Size, spacing, layout, marker, what is under the music</small></span><span class="set-go">›</span></button>
+            <button id="set-disp-drills" type="button" class="set-row"><span class="set-name">Drills<small>Size of the cards, what is under the music</small></span><span class="set-go">›</span></button>
+            <button id="set-disp-simon" type="button" class="set-row"><span class="set-name">Simon<small>Size of the music, what is under it</small></span><span class="set-go">›</span></button>
+            <button id="set-disp-flow" type="button" class="set-row"><span class="set-name">Read in time<small>Size of the music, what is under it</small></span><span class="set-go">›</span></button>
+          </div>
+          <p id="set-disp-note" class="note"></p>
           <p class="set-sec">Your data</p>
           <div class="set-list">
             <button id="export-log" type="button" class="set-row"><span class="set-name">Export practice log<small id="export-log-count">For Claude to plan your next lesson</small></span><span class="set-go">›</span></button>
@@ -798,7 +837,7 @@
             <button id="set-help" type="button" class="set-row"><span class="set-name">How the app works<small>What each screen is for, and the taps nothing on screen shows</small></span><span class="set-go">›</span></button>
             <button id="set-tips" type="button" class="set-row"><span class="set-name">Show tips again<small id="set-tips-note">Tips you have seen show again</small></span><span class="set-go">›</span></button>
           </div>
-          <p class="note">A piece's own choices (size, tempo, hands, fingering) stay on its screen. The Tempo panel inside a piece changes the same piano and click settings.</p>
+          <p class="note">A piece's own choices (tempo, hands, and a look you give it alone) stay on its screen. The Tempo panel inside a piece changes the same piano and click settings.</p>
         </div>
       </div>
       <div id="v-exercises" class="view" hidden>
@@ -807,7 +846,7 @@
         <div id="exercises-body" class="view-body"></div>
       </div>
       <div id="v-lesson" class="view" hidden>
-        <div class="fp-head view-head"><button id="lesson-back" type="button" class="btn" aria-label="Back">←</button><span id="lesson-where" class="title"></span><button id="lesson-switch" type="button" class="btn" aria-haspopup="dialog">Switch…</button></div>
+        <div class="fp-head view-head"><button id="lesson-back" type="button" class="btn" aria-label="Back">←</button><span id="lesson-where" class="title"></span><button id="lesson-switch" type="button" class="btn" aria-haspopup="dialog">Switch…</button><button id="lesson-settings" type="button" class="btn" aria-label="Settings">⚙</button></div>
         <div id="lesson-body" class="view-body lesson-body"></div>
         <div id="lesson-bar" class="lesson-bar"><span id="lesson-bar-note" class="lesson-bar-note"></span><button id="lesson-next" type="button" class="btn main"></button></div>
       </div>

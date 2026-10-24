@@ -20,7 +20,7 @@ import type { StepNotes } from '../follow';
 import { keysToShow, type ChosenKeys, type ScorePreset } from '../activity';
 import { TIPS, tipDue, tipShown, tipUsed } from '../hints';
 import {
-  clearPreset, currentDevice, DEVICE_NAMES, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, presetPiece, resetPiece, savePieceSetting, setPreset, settingsFor,
+  applyTheme, clearPreset, currentDevice, defaultsFor, DEVICE_NAMES, saveDefault, hasPieceOverride, LAYOUT_NAMES, LAYOUTS, makeDefaults, presetPiece, resetPiece, savePieceSetting, setPreset, settingsFor,
   slotChoices, type BarNumbers, type Layout, type Lines, type Marker, type MarkerFollows, type ScoreSettings, type Spacing, type Theme, type Under, type Hands, type Click, type ClickOn, type Mode, type OnTime, type PianoOut,
 } from '../settings';
 
@@ -101,6 +101,8 @@ export type ScoreScreen = Screen & {
   openMetronome(): void;
   /** The light or dark theme (app-wide) applied. */
   applyTheme(): void;
+  /** Display for every piece's default look on this kind of screen (Settings → Display → Pieces). */
+  openDefaults(): void;
   /** A tap on the music happened here and now (its click is not passed on to what appears under the finger). */
   readonly lastTap: { x: number; y: number; t: number };
 };
@@ -125,12 +127,6 @@ export function createScoreScreen(app: App): ScoreScreen {
     strip.show(borrower ? borrower.stepNotes(notes) : notes);
   };
 
-  /** Light, dark, or as the phone is (app-wide): the stylesheet reads data-theme on the page. */
-  function applyTheme(): void {
-    const theme = settingsFor('').theme; // app-wide: the same for every song
-    if (theme === 'system') delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = theme;
-  }
   /** "bar 3" or "bars 3–6". */
   const barsLabel = (a: number, b: number) => (a === b ? `bar ${a}` : `bars ${a}–${b}`);
 
@@ -1123,9 +1119,20 @@ export function createScoreScreen(app: App): ScoreScreen {
     return label;
   }
 
+  /** Whose look the Display panel changes: this song's (from the score's top bar), or the default on this kind of screen
+   * (Settings → Display → Pieces, owner 2026-10-24: "set the defaults per mode"), with no song drawn behind it. */
+  let panelFor: 'song' | 'defaults' = 'song';
+  const panelLook = () => (panelFor === 'defaults' ? defaultsFor() : settingsFor(currentPiece().id));
+  function panelChange<K extends keyof ScoreSettings>(key: K, value: ScoreSettings[K]): void {
+    if (panelFor === 'defaults') { saveDefault(key, value); fillPanel(); return; }
+    change(key, value);
+  }
+  function openDefaults(): void { panelFor = 'defaults'; fillPanel(); settingsDialog.showModal(); }
+  settingsDialog.addEventListener('close', () => { panelFor = 'song'; });
+
   function fillPanel(): void {
     const piece = currentPiece();
-    const s = settingsFor(piece.id);
+    const s = panelLook();
     const device = currentDevice();
     const legendOf = (id: string) => $(id).querySelector('legend')!;
     $('layout-choices').replaceChildren(legendOf('layout-choices'), ...LAYOUTS[device].map((l) => radio('layout', l, LAYOUT_NAMES[l])));
@@ -1146,8 +1153,12 @@ export function createScoreScreen(app: App): ScoreScreen {
     $<HTMLInputElement>('s-fingering').checked = s.fingering;
     $<HTMLInputElement>('s-lyrics').checked = s.lyrics;
     for (const input of settingsDialog.querySelectorAll<HTMLInputElement>('input[name="lines"]')) input.checked = input.value === String(s.lines);
-    const where = DEVICE_NAMES[device];
-    $<HTMLParagraphElement>('override-note').textContent = hasPieceOverride(piece.id)
+    const where = DEVICE_NAMES[device], defaults = panelFor === 'defaults';
+    $('settings-title').textContent = defaults ? 'Display: Pieces' : 'Display';
+    $('make-default').hidden = $('reset-piece').hidden = defaults;
+    $<HTMLParagraphElement>('override-note').textContent = defaults
+      ? `The default look on a ${where}: every piece without a look of its own.${device === 'tablet' ? '' : ' Turn the phone for the other way\'s look.'}`
+      : hasPieceOverride(piece.id)
       ? `${piece.title} has its own settings on a ${where}.`
       : `Using the default settings for a ${where}.`;
   }
@@ -1155,12 +1166,13 @@ export function createScoreScreen(app: App): ScoreScreen {
   $<HTMLInputElement>('s-size').addEventListener('input', (e) => {
     $<HTMLOutputElement>('s-size-out').value = `${Math.round(Number((e.target as HTMLInputElement).value) * 100)}%`;
   });
-  $<HTMLInputElement>('s-size').addEventListener('change', (e) => change('size', Number((e.target as HTMLInputElement).value)));
+  $<HTMLInputElement>('s-size').addEventListener('change', (e) => panelChange('size', Number((e.target as HTMLInputElement).value)));
   settingsDialog.addEventListener('change', (e) => {
     const input = e.target as HTMLInputElement;
-    if (input.name === 'spacing') change('spacing', input.value as Spacing);
-    else if (input.name === 'layout') change('layout', input.value as Layout);
-    else if (input.name === 'slots') change('slots', Number(input.value));
+    if (input.name === 'spacing') panelChange('spacing', input.value as Spacing);
+    else if (input.name === 'layout') panelChange('layout', input.value as Layout);
+    else if (input.name === 'slots') panelChange('slots', Number(input.value));
+    else if ((input.name === 'marker' || input.name === 'markerFollows') && panelFor === 'defaults') panelChange(input.name, input.value as Marker & MarkerFollows);
     else if (input.name === 'marker' || input.name === 'markerFollows') {
       savePieceSetting(currentPiece().id, input.name, input.value as Marker & MarkerFollows);
       const s = settingsFor(currentPiece().id);
@@ -1168,13 +1180,14 @@ export function createScoreScreen(app: App): ScoreScreen {
       fillPanel();
       fillBars();
     }
-    else if (input.name === 'under') change('under', input.value as Under);
-    else if (input.name === 'theme') { savePieceSetting(currentPiece().id, 'theme', input.value as Theme); applyTheme(); }
-    else if (input.name === 'barNumbers') change('barNumbers', input.value as BarNumbers);
-    else if (input.name === 'lines') change('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
-    else if (input.id === 's-tempoMarks') change('tempoMarks', input.checked);
-    else if (input.id === 's-fingering') change('fingering', input.checked);
-    else if (input.id === 's-lyrics') change('lyrics', input.checked);
+    else if (input.name === 'under') panelChange('under', input.value as Under);
+    else if (input.name === 'theme') { savePieceSetting('', 'theme', input.value as Theme); applyTheme(); } // (app-wide)
+    else if (input.name === 'barNumbers') panelChange('barNumbers', input.value as BarNumbers);
+    else if (input.name === 'lines') panelChange('lines', (/^\d+$/.test(input.value) ? Number(input.value) : input.value) as Lines);
+    else if (input.id === 's-tempoMarks') panelChange('tempoMarks', input.checked);
+    else if (input.id === 's-fingering') panelChange('fingering', input.checked);
+    else if (input.id === 's-lyrics') panelChange('lyrics', input.checked);
+    else if (input.id === 's-musicWhilePlaying' && panelFor === 'defaults') panelChange('musicWhilePlaying', input.checked);
     else if (input.id === 's-musicWhilePlaying') { savePieceSetting(currentPiece().id, 'musicWhilePlaying', input.checked); fillPanel(); fillBars(); }
   });
   $('make-default').addEventListener('click', makeCurrentDefault);
@@ -1242,6 +1255,7 @@ export function createScoreScreen(app: App): ScoreScreen {
       $('t-metronome-set').scrollIntoView({ block: 'start' });
     },
     applyTheme,
+    openDefaults,
     lastTap,
   };
 }
