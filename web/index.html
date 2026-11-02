@@ -828,7 +828,8 @@
             <label class="set-row"><span class="set-name">Delete practice log entries older than a month</span><input id="log-autodelete" type="checkbox"></label>
             <button id="backup" type="button" class="set-row"><span class="set-name">Back up<small>Settings, progress and your library, in one file</small></span><span class="set-go">›</span></button>
             <button id="restore" type="button" class="set-row"><span class="set-name">Restore from a backup…<small>Adds what this device lacks; what it has stays</small></span><span class="set-go">›</span></button>
-            <input id="restore-file" type="file" accept=".zip,.json,application/zip,application/json,application/octet-stream" hidden>
+            <!-- (no type filter, owner 2026-11-02: Android's picker goes by a file's labelled type and could hide a backup; a wrong file is refused by name) -->
+            <input id="restore-file" type="file" hidden>
             <div class="set-row stack"><span class="set-name">Saved for offline</span><span id="set-offline" class="set-val"></span></div>
             <div id="set-full" class="set-row" hidden><span class="set-name">Full PDMX set<small id="set-full-size"></small><small id="set-full-cleanup" class="set-warn" hidden></small></span><button id="set-full-remove" type="button" class="btn danger">Remove</button></div>
           </div>

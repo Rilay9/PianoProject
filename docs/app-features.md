@@ -1590,7 +1590,8 @@ placeholders for checking the app, not lesson content.
   stays (object by object; the practice log keeps every run from both, once); library records merge (favourite if
   either, tags joined, the later last-opened) and missing files are put back: a piece this phone lacks, and a file
   (or a MIDI piece's original) lost from a piece it still lists (2026-10-15; the file goes back with this phone's
-  record when it is the same file, else with the backup's). An older .json backup restores the same way.
+  record when it is the same file, else with the backup's). An older .json backup restores the same way. Restore's picker shows
+  every file (no type filter since 2026-11-02, as for the full PDMX zips); a file that isn't a backup is refused by name.
   **The file** (`piano-backup-<yyyy-mm-dd>.zip`; a real one was made and read on 2026-10-15): a zip whose entries are
   stored, not compressed (no Zip64, so under 4 GB), holding
   - `backup.json`: `{ "app": "piano-web", "version": 2, "saved": "<ISO time>", "data": { "<storage key>": "<its value,
