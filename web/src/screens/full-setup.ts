@@ -22,8 +22,10 @@ export interface FullSetup {
 
 export function createFullSetup(app: App, deps: { done(): void }): FullSetup {
   const input = Object.assign(document.createElement('input'), { type: 'file', multiple: true, hidden: true, id: 'lib-zip-file' });
-  // (zip and octet-stream too: Android may label a .zip either way and grey it out otherwise)
-  input.accept = '.zip,application/zip,application/x-zip-compressed,application/octet-stream';
+  // No `accept` filter (owner, 2026-11-02: "the pdmx zip file picker isn't showing the zip folders in the destination"):
+  // Android's picker filters by the type a file is labelled with, not its name, and a zip copied by cable or from Drive
+  // can be labelled otherwise and left out or greyed. Every file shows; each picked one is read (library/full.ts look),
+  // and one that is not a PDMX zip is named as such.
   document.body.append(input);
   let choice: 'a' | 'all' = 'a';
   let copying = false;
@@ -45,7 +47,7 @@ export function createFullSetup(app: App, deps: { done(): void }): FullSetup {
     if (copying || rows.length || said) out.push(...progress);
     // The steps, one a line (P13).
     const steps = el('ol', 'lib-steps');
-    for (const t of ['On the PC, Claude makes the zip files.', 'Copy them to this phone or tablet (a cable, or Google Drive).', 'Pick them here, once.']) steps.append(el('li', '', t));
+    for (const t of ['On the PC, Claude makes the zip files.', 'Copy them to this phone or tablet (a cable, or Google Drive).', 'Pick them here, once: the picker shows every file, so choose the pdmx zips (any other file is turned down).']) steps.append(el('li', '', t));
     out.push(steps);
     if (addingParts) {
       out.push(el('p', 'note', 'Band and ensemble scores: the pdmx-b zips, about 1.2 GB. Several-part scores open with the usual warning (the top staff is taken as your right hand).'));

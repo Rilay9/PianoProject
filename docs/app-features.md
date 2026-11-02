@@ -1198,7 +1198,8 @@ or a MIDI keyboard).
   - **Setup**, offered on the tab while the set isn't on this phone: the steps, one a line (Claude makes the zips on
     the PC, copy them to the phone, pick them here once), two choices (piano, lead sheets and melodies: the pdmx-a zips, about
     0.8 GB; everything, with band and ensemble scores: + the pdmx-b zips, about 2.0 GB), why the app keeps its own copy,
-    and Pick the zip files…; in a browser tab only, before copying (owner, 2026-10-15): "Your browser may delete this
+    and Pick the zip files… (the picker shows every file, with no type filter: owner, 2026-11-02, the zips were missing
+    from it, as Android's picker filters by a file's labelled type, not its name); in a browser tab only, before copying (owner, 2026-10-15): "Your browser may delete this
     copy when the phone runs low on space. Installing the app keeps it." A picked file is known by its own
     `pdmx-zip.json`, not its name; a file that isn't one of
     the set's zips, is from another making of the set than the zips already copied, isn't part of the choice, was
