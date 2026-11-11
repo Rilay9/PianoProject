@@ -1,0 +1,65 @@
+{
+  "title": "Reading the bass staff: Hurt's intro",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "The left hand reads the lower staff, with the **bass clef**. *Hurt*'s intro is a good first piece for it: three shapes, each a leap up.\n\n**By the end** you can read the bass staff from A up to D and play the intro from the music."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the intro by key names"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Hurt's intro, by key names",
+      "activity": "sg-hurt-names",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# The bass staff\nThe **bass clef** has two dots either side of the fourth line up: notes on that line are the F below middle C. Its lines, from the bottom, are G B D F A; its spaces A C E G.\n\nThe intro's notes:\n\n- **A** in the bottom space, and **A** again on the top line,\n- **C** in the second space,\n- **D** on the middle line,\n- **E** in the third space,\n- **G** in the top space,\n- **middle C** on its own short line above the staff (a *ledger line*), and **D** just above it."
+    },
+    {
+      "kind": "score",
+      "piece": "u-b4fb760e5610",
+      "bars": "1-4",
+      "keys": true,
+      "tempo": 72,
+      "caption": "Hurt, the intro: the left hand alone. ▶ to hear it."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "The bass staff from A to D",
+      "activity": "sg-hurt-notes",
+      "about": "Twenty cards.",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
+      "kind": "text",
+      "text": "# Intervals: 4ths, 5ths and octaves\nThe distance between two notes is an **interval**, counted in letters including both ends. From A up to E is a **5th** (A B C D E). From E up to the next A is a **4th**. From A to the A above is an **octave**, eight letters: a 5th and a 4th make an octave. Each of the intro's groups is that: low note, a 5th up, a 4th more to the octave."
+    },
+    {
+      "kind": "step",
+      "id": "intervals",
+      "title": "4ths, 5ths and octaves",
+      "activity": "sg-hurt-intervals",
+      "about": "Twenty cards: read the leap, play both notes."
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "Hurt's intro, from the music",
+      "activity": "sg-hurt-left",
+      "about": "Wait for me, left hand, bars 1–4."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You read the bass staff as if it were treble.** The same line means a different note: on the bass staff the top line is A, not F.\n- **The leaps land on the wrong key.** Look at the shape: every group is low, a 5th up, then the octave.\n\n**Until the next lesson:** the bass note cards and the intro, each day."
+    }
+  ]
+}

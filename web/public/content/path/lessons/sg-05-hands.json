@@ -1,0 +1,65 @@
+{
+  "title": "Both hands: Hurt's verse",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "The verse adds the tune in the right hand over the intro's left hand.\n\n**By the end** you can play bars 5–8 of *Hurt* with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the intro"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Hurt's intro, left hand",
+      "activity": "sg-hurt-left",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# The tune\nThe right hand uses five notes: A, C, D, E and G. On the treble staff A is in the second space, C in the third, D on the fourth line, E in the top space, and **G** sits just above the top line. The tune starts on beat 4 of bar 5 with E, and moves mostly by step and skip within those notes.\n\nIts rhythm has eighths, quarters and half notes, and some notes start between beats. Tap it first."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm",
+      "title": "The verse's rhythm",
+      "activity": "sg-hurt-rhythm-right",
+      "about": "Two cards: bars 5–6 and 7–8.",
+      "target": {
+        "clean": 3
+      },
+      "doneWhen": "3 of the 4 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The tune, right hand",
+      "activity": "sg-hurt-right",
+      "about": "Wait for me, right hand: the app plays the left hand."
+    },
+    {
+      "kind": "text",
+      "text": "# Together\nThe left hand plays the same two bars as the intro, twice. Let it run on its own while you read the right hand. Wait for me waits for both hands at each step."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 5–8, both hands",
+      "activity": "sg-hurt-both",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "In time, with a keyboard",
+      "activity": "sg-hurt-along",
+      "about": "Optional: Play along at ♩ 66.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **The hands wait for each other.** Play bar 5 alone, hands together, until it flows, then add bar 6.\n- **Your eyes jump between staves.** Read the right hand; the left hand repeats, so trust it.\n\n**Until the next lesson:** the verse once a day."
+    }
+  ]
+}

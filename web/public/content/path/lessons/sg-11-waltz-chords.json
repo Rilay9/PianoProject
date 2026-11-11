@@ -1,0 +1,53 @@
+{
+  "title": "Always With Me: chords and your first flat",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "Back to the waltz, now reading its chords: six of them, and a black key in the key signature.\n\n**By the end** you can name and play its six chords and play bars 1–10 with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the first eight bars"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "Bars 1–8, both hands",
+      "activity": "sg-awm-both",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# A flat\nThe **♭** at the start of each staff, on the B line or space, is the key signature: every B is played as **B flat**, the black key just left of B. The left hand's B♭ chord uses it.\n\n# The chords\nBars 1–10 go **F, F, F, C, Dm, Am, B♭, F, Gm, C**. The arrangement plays each chord above the bass note, not always from its letter up; learn them as it voices them:\n\n- **F**: F A C\n- **C**: G C E\n- **Dm**: A D F\n- **Am**: A C E\n- **B♭**: F B♭ D\n- **Gm**: G B♭ D"
+    },
+    {
+      "kind": "step",
+      "id": "chords",
+      "title": "The six chords, by name",
+      "activity": "sg-awm-chords",
+      "about": "Twelve cards.",
+      "target": {
+        "clean": 10
+      },
+      "doneWhen": "10 of the 12 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "Bars 1–10, left hand",
+      "activity": "sg-awm-left-10",
+      "about": "Wait for me, left hand."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 1–10, both hands",
+      "activity": "sg-awm-both-10",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You play B, not B flat.** The key signature means every B.\n- **The chord after the bass note is wrong.** Say the chord's name on beat 1 before you play it.\n\n**Until the next lesson:** the ten bars once a day."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Smells Like Teen Spirit's chords, left hand: Em and C",
+  "kind": "chords",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "E3 G3 B3",
+      "name": "Em",
+      "short": "Em"
+    },
+    "2": {
+      "notes": "C3 E3 G3",
+      "name": "C",
+      "short": "C"
+    }
+  }
+}

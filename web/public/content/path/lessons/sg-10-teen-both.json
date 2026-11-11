@@ -1,0 +1,43 @@
+{
+  "title": "Smells Like Teen Spirit: both hands",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "Now the two parts together: a chord held under each bar while the riff moves above it.\n\n**By the end** you can play bars 3–9 with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the riff"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "The riff, right hand",
+      "activity": "sg-teen-right",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# Together\nThe left hand changes chord only on beat 1 of each bar and then holds. Put it down with the bar's first right-hand note, and let the right hand play on while it holds."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 3–9, both hands",
+      "activity": "sg-teen-both",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "In time, with a keyboard",
+      "activity": "sg-teen-along",
+      "about": "Optional: Play along at ♩ 70.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **The left hand lets go too early.** Hold each chord for the whole bar.\n- **The tied notes trip you up with both hands.** Slow down; Wait for me waits.\n\n**Until the next lesson:** the seven bars once a day."
+    }
+  ]
+}

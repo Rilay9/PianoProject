@@ -1,0 +1,61 @@
+{
+  "title": "Numb: the left hand, and both hands",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "The left hand of Numb plays four chords one note at a time: the same four chords as countless pop songs.\n\n**By the end** you can play bars 1–4 with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the riff"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "The riff, right hand",
+      "activity": "sg-numb-right",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# Am, F, C, G\nOne chord a bar: **A minor, F, C, G**. In bar 1 the left hand plays **A E A C A E**: up the A minor chord and back. Each bar does the same with its chord. Learn the chords as triads first (fingers 5 3 1)."
+    },
+    {
+      "kind": "step",
+      "id": "chords",
+      "title": "Am, F, C and G, by name",
+      "activity": "sg-numb-chords",
+      "about": "Twelve cards.",
+      "target": {
+        "clean": 10
+      },
+      "doneWhen": "10 of the 12 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "The left hand",
+      "activity": "sg-numb-left",
+      "about": "Wait for me, left hand, bars 1–4."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 1–4, both hands",
+      "activity": "sg-numb-both",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "both8",
+      "title": "Bars 1–8, both hands",
+      "activity": "sg-numb-both-8",
+      "about": "Optional: on into the next four bars.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **The left hand's pattern runs ahead.** Play just the first note of each bar with the right hand's notes until the bars line up.\n- **Too much at once.** Loop one bar on the score and build up.\n\n**Until the next lesson:** both hands once a day."
+    }
+  ]
+}

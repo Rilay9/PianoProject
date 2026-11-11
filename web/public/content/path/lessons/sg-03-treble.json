@@ -1,0 +1,76 @@
+{
+  "title": "Reading the treble staff: The Final Countdown from the music",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "You know the riff's keys and its rhythm. Now you'll read them from music, the way most songs are written down.\n\n**By the end** you can read A B C D E F on the treble staff at sight and play the riff from the music."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the riff's rhythm"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "The riff's rhythm",
+      "activity": "sg-fc-rhythm",
+      "about": "A few cards."
+    },
+    {
+      "kind": "text",
+      "text": "# The staff\nMusic is written on a **staff**: five lines and the four spaces between them. A note sits **on a line** (the line through its middle) or **in a space**. Higher on the staff is higher on the keyboard: one step up, line to space or space to line, is the next white key up.\n\nThe **treble clef** at the start curls round the second line up: notes on that line are the G above middle C. The right hand usually reads this staff.\n\nThe riff's notes, from the bottom:\n\n- **A** in the second space,\n- **B** on the middle line,\n- **C** in the third space,\n- **D** on the fourth line,\n- **E** in the top space,\n- **F** on the top line."
+    },
+    {
+      "kind": "score",
+      "piece": "u-779bb4f3a816",
+      "bars": "1-4",
+      "keys": true,
+      "caption": "The riff's first four bars. ▶ to hear them; watch the notes light on the staff."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "A to F on the staff",
+      "activity": "sg-fc-notes",
+      "about": "Twenty cards, one note each.",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
+      "kind": "text",
+      "text": "# Steps and skips\nGood readers read the **shape**. A **step** is to the next line or space (the next key); a **skip** is line to line or space to space (skipping a key). The riff is mostly steps, E D E, and one big leap: from E down to A, the top space to the second space."
+    },
+    {
+      "kind": "step",
+      "id": "intervals",
+      "title": "Steps and skips",
+      "activity": "w1-intervals-treble-2-3",
+      "about": "Twenty cards of 2nds (steps) and 3rds (skips)."
+    },
+    {
+      "kind": "text",
+      "text": "# The riff from the music\nIn **Wait for me** the music waits for each note. On a phone, hold it upright to play on the screen's keys, or connect a keyboard."
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The riff, from the music",
+      "activity": "sg-fc-right",
+      "about": "Wait for me, right hand, bars 1–8."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "In time, with a keyboard",
+      "activity": "sg-fc-along",
+      "about": "Optional: Play along at ♩ 90, judged in time.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You mix up E and F.** E is in the top space, F on the top line.\n- **You count up from the bottom for every note.** Learn two landmarks: B on the middle line, F on the top line.\n\n**Until the next lesson:** the note cards for a minute, then the riff from the music."
+    }
+  ]
+}

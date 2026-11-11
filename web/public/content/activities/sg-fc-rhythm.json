@@ -1,0 +1,12 @@
+{
+  "title": "The Final Countdown: the riff's rhythm",
+  "screen": "drills",
+  "set": "song-fc-rhythm",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "normal",
+    "cards": 8
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Hurt: the verse's rhythm",
+  "screen": "drills",
+  "set": "song-hurt-rhythm-right",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "normal",
+    "cards": 4
+  }
+}

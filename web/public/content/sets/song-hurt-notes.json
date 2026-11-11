@@ -1,0 +1,9 @@
+{
+  "title": "Hurt's left-hand notes: the bass staff from A up to D",
+  "kind": "notes",
+  "generate": {
+    "clef": "bass",
+    "from": "A2",
+    "to": "D4"
+  }
+}

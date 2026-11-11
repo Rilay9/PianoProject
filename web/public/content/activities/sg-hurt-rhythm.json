@@ -1,0 +1,12 @@
+{
+  "title": "Hurt: the intro's rhythm",
+  "screen": "drills",
+  "set": "song-hurt-rhythm",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "normal",
+    "cards": 4
+  }
+}

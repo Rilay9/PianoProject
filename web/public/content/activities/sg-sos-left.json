@@ -1,0 +1,11 @@
+{
+  "title": "The Sound of Silence, left hand",
+  "screen": "score",
+  "piece": "u-287be7009063",
+  "bars": "3-6",
+  "settings": {
+    "mode": "wait",
+    "hands": "left",
+    "tempo": 90
+  }
+}

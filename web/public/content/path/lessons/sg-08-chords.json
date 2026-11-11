@@ -1,0 +1,85 @@
+{
+  "title": "Chords: The Final Countdown with the band",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "A **chord** is three or more notes played together. The Final Countdown's riff sits over four chords, and all four are the same shape in your hand.\n\n**By the end** you can play A minor, F, D minor and G, change between them in time, and accompany the band."
+    },
+    {
+      "kind": "text",
+      "text": "# Warm up: the riff from the music"
+    },
+    {
+      "kind": "step",
+      "id": "warmup",
+      "title": "The Final Countdown riff",
+      "activity": "sg-fc-right",
+      "about": "Once through."
+    },
+    {
+      "kind": "text",
+      "text": "# One shape, four places\nTake every other white key: a note, skip one, a note, skip one, a note. With your left hand, fingers **5 3 1**. That shape is a **triad**. Start it on A and it is **A minor** (A C E); on F it is **F** (F A C); on D it is **D minor** (D F A); on G it is **G** (G B D). The letter it starts on names the chord.\n\nIn the song each chord lasts two bars: **Am, F, Dm, G**."
+    },
+    {
+      "kind": "keys",
+      "notes": "A2 C3 E3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "A minor: A C E."
+    },
+    {
+      "kind": "keys",
+      "notes": "F2 A2 C3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "F: F A C."
+    },
+    {
+      "kind": "keys",
+      "notes": "D3 F3 A3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "D minor: D F A."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 B2 D3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "G: G B D."
+    },
+    {
+      "kind": "step",
+      "id": "chords",
+      "title": "The four chords, by name",
+      "activity": "sg-fc-chords",
+      "about": "Twelve cards: a name comes up, you play it.",
+      "target": {
+        "clean": 10
+      },
+      "doneWhen": "10 of the 12 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "changes",
+      "title": "The chords in time",
+      "activity": "sg-fc-changes",
+      "about": "Eight cards of four bars: one chord a bar, on the click."
+    },
+    {
+      "kind": "text",
+      "text": "# With the band\nDrums and bass play the song's chords; you play each chord on beat 1. The band keeps going, so look at the next chord before the bar ends. *Show me first* plays a round for you."
+    },
+    {
+      "kind": "step",
+      "id": "band",
+      "title": "The Final Countdown with the band",
+      "activity": "sg-fc-band",
+      "about": "Accompaniment lab: chords on the beat."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **The three notes don't sound together.** Find all three keys first, then press.\n- **You're late for the change.** Read the next chord on beat 3.\n\n**Until the next lesson:** the chords with the band each day."
+    }
+  ]
+}

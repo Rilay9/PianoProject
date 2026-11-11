@@ -1,0 +1,100 @@
+{
+  "title": "Smells Like Teen Spirit: chords and your first sharp",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "Nirvana's song: big held chords in the left hand and a syncopated riff in the right, with a black key in it.\n\n**By the end** you can play the left hand's chords and the right hand's riff, each alone."
+    },
+    {
+      "kind": "text",
+      "text": "# Hear it first"
+    },
+    {
+      "kind": "score",
+      "piece": "u-51c9fb34f31b",
+      "bars": "3-9",
+      "keys": true,
+      "caption": "Smells Like Teen Spirit, a piano arrangement (PDMX), bars 3–9. ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# Two chords\nThe left hand holds a chord for each whole bar: **E minor** (E G B) and **C** (C E G), one after the other. They're the triad shape from last lesson, fingers 5 3 1: from E minor, move the whole hand down to C."
+    },
+    {
+      "kind": "keys",
+      "notes": "E3 G3 B3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "E minor: E G B."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 E3 G3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "C: C E G."
+    },
+    {
+      "kind": "step",
+      "id": "chords",
+      "title": "E minor and C, by name",
+      "activity": "sg-teen-chords",
+      "about": "Ten cards."
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "The chords, left hand",
+      "activity": "sg-teen-left",
+      "about": "Wait for me, left hand, bars 4–9."
+    },
+    {
+      "kind": "text",
+      "text": "# Your first sharp\nThe sign at the start of each staff, **♯** on an F line, is a **key signature**: every F in the piece is played as **F sharp**, the black key just right of F. The riff uses it: its notes are F♯, G, A, B, C, D and E."
+    },
+    {
+      "kind": "keys",
+      "notes": "F4 F#4 G4",
+      "fingers": "- - -",
+      "names": "letters",
+      "caption": "F, F sharp and G: F sharp is the black key between them."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "G to E on the staff",
+      "activity": "sg-teen-notes",
+      "about": "Twenty cards (the white keys; F sharp you add by the key signature).",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
+      "kind": "text",
+      "text": "# Syncopation\nThe riff's notes often start on the \"and\", between beats, and are **tied** (a curve joining two notes) over the next beat: you play once and hold through. That off-beat push is **syncopation**. Tap it first."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm",
+      "title": "The riff's rhythm",
+      "activity": "sg-teen-rhythm",
+      "about": "Two cards from the song.",
+      "target": {
+        "clean": 3
+      },
+      "doneWhen": "3 of the 4 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The riff, right hand",
+      "activity": "sg-teen-right",
+      "about": "Wait for me, right hand, bars 3–6."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You play F, not F sharp.** The key signature means every F; look for it at the start of each line.\n- **Tied notes get played twice.** Play the first, hold through the second.\n\n**Until the next lesson:** chords and riff, each alone, each day."
+    }
+  ]
+}

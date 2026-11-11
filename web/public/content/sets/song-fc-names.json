@@ -1,0 +1,15 @@
+{
+  "title": "The Final Countdown riff, by key names",
+  "kind": "melodies",
+  "view": "names",
+  "order": "passage",
+  "tempo": 100,
+  "items": {
+    "1": {
+      "notes": "E5, D5, E5, A4, F5, E5, F5, E5, D5 / E5, D5, E5, A4, D5, C5, D5, C5, B4, D5",
+      "beats": "0.5 0.5 2 2 0.5 0.5 1 1 2 / 0.5 0.5 2 2 0.5 0.5 1 1 1 1",
+      "hand": "right",
+      "name": "The riff, bars 1–8"
+    }
+  }
+}

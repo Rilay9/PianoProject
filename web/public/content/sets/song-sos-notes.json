@@ -1,0 +1,9 @@
+{
+  "title": "The Sound of Silence's notes: middle C up to D, treble staff",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "C4",
+    "to": "D5"
+  }
+}

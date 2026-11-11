@@ -1,0 +1,9 @@
+{
+  "title": "Teen Spirit's riff: G up to E on the treble staff",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "G4",
+    "to": "E5"
+  }
+}

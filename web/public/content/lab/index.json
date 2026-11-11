@@ -2,7 +2,8 @@
   "charts": [
     "charts/blues-c.json",
     "charts/pop-c.json",
-    "charts/four-chords-c.json"
+    "charts/four-chords-c.json",
+    "charts/final-countdown.json"
   ],
   "styles": [
     "styles/shuffle.json",

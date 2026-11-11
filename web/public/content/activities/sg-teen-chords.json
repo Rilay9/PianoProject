@@ -1,0 +1,10 @@
+{
+  "title": "E minor and C, by name",
+  "screen": "drills",
+  "set": "song-teen-chords",
+  "level": {
+    "rung": 4,
+    "onTime": "notes",
+    "cards": 10
+  }
+}

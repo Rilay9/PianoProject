@@ -29,6 +29,37 @@
       ]
     },
     {
+      "id": "songs-1",
+      "title": "Songs: keys, rhythm and reading",
+      "lessons": [
+        "sg-01-keys",
+        "sg-02-beat",
+        "sg-03-treble",
+        "sg-04-bass",
+        "sg-05-hands"
+      ]
+    },
+    {
+      "id": "songs-2",
+      "title": "Songs: more reading, 3/4 time",
+      "lessons": [
+        "sg-06-silence",
+        "sg-07-waltz"
+      ]
+    },
+    {
+      "id": "songs-3",
+      "title": "Songs: chords, sharps and flats",
+      "lessons": [
+        "sg-08-chords",
+        "sg-09-teen",
+        "sg-10-teen-both",
+        "sg-11-waltz-chords",
+        "sg-12-numb",
+        "sg-13-numb-both"
+      ]
+    },
+    {
       "id": "test-app",
       "title": "Test: the app's lesson pages",
       "test": true,

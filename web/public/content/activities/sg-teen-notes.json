@@ -1,0 +1,10 @@
+{
+  "title": "G up to E on the treble staff",
+  "screen": "drills",
+  "set": "song-teen-notes",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

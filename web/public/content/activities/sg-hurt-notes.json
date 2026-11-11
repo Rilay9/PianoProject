@@ -1,0 +1,10 @@
+{
+  "title": "The bass staff from A up to D",
+  "screen": "drills",
+  "set": "song-hurt-notes",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

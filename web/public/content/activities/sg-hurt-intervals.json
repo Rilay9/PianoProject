@@ -1,0 +1,10 @@
+{
+  "title": "4ths, 5ths and octaves",
+  "screen": "drills",
+  "set": "song-hurt-intervals",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

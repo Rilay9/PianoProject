@@ -1,0 +1,13 @@
+{
+  "title": "Hurt's intro, by key names",
+  "screen": "drills",
+  "set": "song-hurt-names",
+  "miss": "quiet",
+  "help": [
+    "show-key",
+    "names"
+  ],
+  "level": {
+    "cards": 2
+  }
+}

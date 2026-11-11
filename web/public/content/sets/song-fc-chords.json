@@ -1,0 +1,27 @@
+{
+  "title": "The Final Countdown's chords, left hand: Am, F, Dm, G",
+  "kind": "chords",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "A2 C3 E3",
+      "name": "Am",
+      "short": "Am"
+    },
+    "2": {
+      "notes": "F2 A2 C3",
+      "name": "F",
+      "short": "F"
+    },
+    "3": {
+      "notes": "D3 F3 A3",
+      "name": "Dm",
+      "short": "Dm"
+    },
+    "4": {
+      "notes": "G2 B2 D3",
+      "name": "G",
+      "short": "G"
+    }
+  }
+}

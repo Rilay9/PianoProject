@@ -1,0 +1,15 @@
+{
+  "title": "Hurt's leaps: 4ths, 5ths and octaves, bass clef",
+  "kind": "intervals",
+  "generate": {
+    "clef": "bass",
+    "from": "A2",
+    "to": "D4",
+    "sizes": [
+      4,
+      5,
+      8
+    ],
+    "direction": "up"
+  }
+}

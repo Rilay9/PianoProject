@@ -1,0 +1,11 @@
+{
+  "title": "Hurt: the intro's rhythm, left hand",
+  "kind": "rhythm",
+  "tempo": 72,
+  "items": {
+    "1": {
+      "musicxml": "song-hurt-rhythm-1-2.musicxml",
+      "name": "Bars 1–2"
+    }
+  }
+}

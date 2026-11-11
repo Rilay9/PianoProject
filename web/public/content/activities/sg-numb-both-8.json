@@ -1,0 +1,11 @@
+{
+  "title": "Numb, both hands, bars 1–8",
+  "screen": "score",
+  "piece": "u-cf6fbd42ea9b",
+  "bars": "1-8",
+  "settings": {
+    "mode": "wait",
+    "hands": "both",
+    "tempo": 90
+  }
+}

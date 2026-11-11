@@ -1,0 +1,25 @@
+{
+  "title": "The Final Countdown: its chords in time",
+  "kind": "chords",
+  "order": "pool",
+  "tempo": 72,
+  "rhythm": 4,
+  "items": {
+    "1": {
+      "notes": "A2 C3 E3, A2 C3 E3, F2 A2 C3, F2 A2 C3",
+      "name": "Am – Am – F – F"
+    },
+    "2": {
+      "notes": "D3 F3 A3, D3 F3 A3, G2 B2 D3, G2 B2 D3",
+      "name": "Dm – Dm – G – G"
+    },
+    "3": {
+      "notes": "F2 A2 C3, F2 A2 C3, D3 F3 A3, D3 F3 A3",
+      "name": "F – F – Dm – Dm"
+    },
+    "4": {
+      "notes": "G2 B2 D3, G2 B2 D3, A2 C3 E3, A2 C3 E3",
+      "name": "G – G – Am – Am"
+    }
+  }
+}

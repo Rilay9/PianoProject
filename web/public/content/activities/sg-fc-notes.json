@@ -1,0 +1,10 @@
+{
+  "title": "A to F on the treble staff",
+  "screen": "drills",
+  "set": "song-fc-notes",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

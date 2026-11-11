@@ -1,0 +1,9 @@
+{
+  "title": "The Final Countdown's notes: A to F on the treble staff",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "A4",
+    "to": "F5"
+  }
+}

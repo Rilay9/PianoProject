@@ -1,0 +1,76 @@
+{
+  "title": "Three beats in a bar: Always With Me",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "The theme from *Spirited Away* is a waltz: three beats in each bar, not four.\n\n**By the end** you can count and tap music in 3/4 and play the first eight bars with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Hear it first"
+    },
+    {
+      "kind": "score",
+      "piece": "u-d40ea5d27757",
+      "bars": "1-8",
+      "keys": true,
+      "caption": "Always With Me, from Spirited Away (a PDMX arrangement). ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# 3/4 time\n**3/4** means three quarter-note beats in a bar: count 1 2 3, 1 2 3, with the weight on 1. A **dotted half note** fills a whole bar of 3/4.\n\nThe tune uses eighths, quarters and one **dotted quarter** in bar 3: a beat and a half, held over the second beat."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm",
+      "title": "The tune's rhythm",
+      "activity": "sg-awm-rhythm",
+      "about": "Three cards from the song.",
+      "target": {
+        "clean": 4
+      },
+      "doneWhen": "4 of the 6 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "rhythm-34",
+      "title": "More in 3/4",
+      "activity": "w1-rhythm-2",
+      "about": "Read in time: dotted halves and 3/4, made up fresh.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# The tune\nThe tune starts on beat 3 of bar 2 and stays between middle C and the C above: C D E F G A, and C at the top. It starts **F G A F C**: up by steps, then a leap of a 5th up to C."
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The tune, right hand",
+      "activity": "sg-awm-right",
+      "about": "Wait for me, right hand, bars 2–8."
+    },
+    {
+      "kind": "text",
+      "text": "# The waltz left hand\nEvery bar of the left hand goes **low note, chord, chord**: \"oom-pah-pah\". In bar 1 the low note is the **F** just below the bass staff, then the chord **F A C** twice."
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "The waltz left hand",
+      "activity": "sg-awm-left",
+      "about": "Wait for me, left hand, bars 1–4."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 1–8, both hands",
+      "activity": "sg-awm-both",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You count four.** Say \"1 2 3\" out loud for a bar before starting.\n- **The left hand's jump is late.** Move on beat 3, as the second chord ends.\n\n**Until the next lesson:** the eight bars once a day."
+    }
+  ]
+}

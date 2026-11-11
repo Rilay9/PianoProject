@@ -1,0 +1,9 @@
+{
+  "title": "The Final Countdown with the band",
+  "screen": "lab",
+  "chart": "final-countdown",
+  "preset": {
+    "role": "accomp",
+    "step": "beat1"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Smells Like Teen Spirit: the riff's rhythm",
+  "screen": "drills",
+  "set": "song-teen-rhythm",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "normal",
+    "cards": 4
+  }
+}

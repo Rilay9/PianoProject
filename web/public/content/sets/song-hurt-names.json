@@ -1,0 +1,15 @@
+{
+  "title": "Hurt, the intro, by key names",
+  "kind": "melodies",
+  "view": "names",
+  "order": "passage",
+  "tempo": 80,
+  "items": {
+    "1": {
+      "notes": "A2, E3, A3, C3, G3, C4, D3, A3, D4 / A2, E3, A3, C3, G3, C4, D3, A3, D4",
+      "beats": "0.5 0.5 3 0.5 0.5 1 0.5 0.5 1 / 0.5 0.5 3 0.5 0.5 1 0.5 0.5 1",
+      "hand": "left",
+      "name": "Left hand, bars 1–4"
+    }
+  }
+}

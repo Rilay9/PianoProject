@@ -1,0 +1,15 @@
+{
+  "title": "Numb: the riff's rhythm",
+  "kind": "rhythm",
+  "tempo": 92,
+  "items": {
+    "1": {
+      "musicxml": "song-numb-rhythm-1-2.musicxml",
+      "name": "Bars 1–2"
+    },
+    "2": {
+      "musicxml": "song-numb-rhythm-3-4.musicxml",
+      "name": "Bars 3–4"
+    }
+  }
+}

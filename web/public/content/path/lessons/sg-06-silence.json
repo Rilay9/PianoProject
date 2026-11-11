@@ -1,0 +1,76 @@
+{
+  "title": "The Sound of Silence: reading by shape",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "A song you know well, in a range you'll use a lot: from middle C up. Its tune climbs by skips, which is the skill this lesson trains.\n\n**By the end** you can read middle C to D on the treble staff and play bars 3–6 with both hands."
+    },
+    {
+      "kind": "text",
+      "text": "# Hear it first"
+    },
+    {
+      "kind": "score",
+      "piece": "u-287be7009063",
+      "bars": "1-7",
+      "keys": true,
+      "caption": "The Sound of Silence, a piano arrangement (PDMX). ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# Middle C and up\nBelow the treble staff: **middle C** on its own ledger line, **D** just under the bottom line. Then **E** on the bottom line, **F** in the bottom space, **G** on the second line, **A** in the second space, **B** on the middle line, **C** in the third space, **D** on the fourth line."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "Middle C up to D",
+      "activity": "sg-sos-notes",
+      "about": "Twenty cards.",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
+      "kind": "text",
+      "text": "# Climbing by skips\nThe tune of bar 3 goes **D D F F A A**, then G: each pair a skip higher, line to line or space to space. Bar 5 is the same shape from C: **C C E E G G**, then F. Bar 7 again from F: **F F A A C C**. Read the first note and the shape, not every letter.\n\nThe tune is eighth notes (two to a beat) and half notes, and each phrase starts after a beat's rest."
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The tune, right hand",
+      "activity": "sg-sos-right",
+      "about": "Wait for me, right hand, bars 3–7."
+    },
+    {
+      "kind": "text",
+      "text": "# The left hand: a chord, one note at a time\nThe left hand plays the notes of a chord one after another, low to high and back: in bar 3 **D A F A**, twice. Bars 5–6 are **C G E G**. Each pattern is the three notes of a chord (D F A, then C E G). The key signature has one flat, B♭, but no B comes in these bars."
+    },
+    {
+      "kind": "step",
+      "id": "left",
+      "title": "The left hand",
+      "activity": "sg-sos-left",
+      "about": "Wait for me, left hand, bars 3–6."
+    },
+    {
+      "kind": "step",
+      "id": "both",
+      "title": "Bars 3–6, both hands",
+      "activity": "sg-sos-both",
+      "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "tunes",
+      "title": "Reading in time",
+      "activity": "f3-tunes-time",
+      "about": "Optional: made-up tunes from middle C, one after another with the click.",
+      "optional": true
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You start the tune on the beat.** Each phrase starts after a quarter rest.\n- **You read every letter.** Find the first note, then follow the skips.\n\n**Until the next lesson:** the tune and the left hand, each day."
+    }
+  ]
+}

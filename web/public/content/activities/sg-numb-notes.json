@@ -1,0 +1,10 @@
+{
+  "title": "Above the staff, up to high C",
+  "screen": "drills",
+  "set": "song-numb-notes",
+  "level": {
+    "rung": 3,
+    "onTime": "notes",
+    "cards": 20
+  }
+}

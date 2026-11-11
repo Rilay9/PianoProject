@@ -1,0 +1,10 @@
+{
+  "title": "Am, F, C and G, by name",
+  "screen": "drills",
+  "set": "song-numb-chords",
+  "level": {
+    "rung": 4,
+    "onTime": "notes",
+    "cards": 12
+  }
+}

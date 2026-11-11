@@ -1,0 +1,13 @@
+{
+  "title": "The Final Countdown riff, by key names",
+  "screen": "drills",
+  "set": "song-fc-names",
+  "miss": "quiet",
+  "help": [
+    "show-key",
+    "names"
+  ],
+  "level": {
+    "cards": 2
+  }
+}

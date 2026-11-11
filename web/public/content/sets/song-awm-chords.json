@@ -1,0 +1,37 @@
+{
+  "title": "Always With Me's chords, left hand, as the arrangement voices them",
+  "kind": "chords",
+  "order": "pool",
+  "items": {
+    "1": {
+      "notes": "F3 A3 C4",
+      "name": "F",
+      "short": "F"
+    },
+    "2": {
+      "notes": "G3 C4 E4",
+      "name": "C",
+      "short": "C"
+    },
+    "3": {
+      "notes": "A3 D4 F4",
+      "name": "Dm",
+      "short": "Dm"
+    },
+    "4": {
+      "notes": "A3 C4 E4",
+      "name": "Am",
+      "short": "Am"
+    },
+    "5": {
+      "notes": "F3 Bb3 D4",
+      "name": "B♭",
+      "short": "B♭"
+    },
+    "6": {
+      "notes": "G3 Bb3 D4",
+      "name": "Gm",
+      "short": "Gm"
+    }
+  }
+}

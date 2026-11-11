@@ -1,0 +1,74 @@
+{
+  "title": "Keys and letters: The Final Countdown",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "This course teaches the same skills as the step-by-step course, in the same order, but every skill comes from a song: the riff you practise is the riff from the record.\n\n**By the end** of this lesson you can name any white key on the piano and play the riff of *The Final Countdown* by its key names."
+    },
+    {
+      "kind": "text",
+      "text": "# Hear it first"
+    },
+    {
+      "kind": "score",
+      "piece": "u-779bb4f3a816",
+      "bars": "1-8",
+      "keys": true,
+      "caption": "The Final Countdown, the opening riff (a PDMX lead sheet). ▶ to hear it and watch the keys."
+    },
+    {
+      "kind": "text",
+      "text": "# The map: groups of black keys\nThe black keys come in groups: two together, then three together, over and over up the keyboard. They are your map. Every white key is named from where it sits next to a group.\n\nThe white keys are named with the first seven letters, **A B C D E F G**, going up (to the right), then starting again at A. **C** is the white key just left of a group of two. **F** is just left of a group of three. **A** is between the upper two keys of a group of three."
+    },
+    {
+      "kind": "image",
+      "src": "media/black-key-groups.svg",
+      "alt": "A keyboard with the groups of two and three black keys outlined",
+      "caption": "Groups of two and three black keys: C sits left of each two, F left of each three."
+    },
+    {
+      "kind": "step",
+      "id": "find",
+      "title": "Find each key by its letter",
+      "activity": "f1-find",
+      "about": "Twelve cards: a letter comes up, you find it."
+    },
+    {
+      "kind": "text",
+      "text": "# The riff\nThe riff uses six white keys, from A up to F: A B C D E F. Put your right thumb on the A above the middle of the keyboard (the A between the upper two black keys of a group of three) and let one finger rest on each key up to E. F is one key past your little finger: reach up to it with finger 5 and come back."
+    },
+    {
+      "kind": "keys",
+      "notes": "A4 B4 C5 D5 E5 F5",
+      "fingers": "1 2 3 4 5 5",
+      "names": "letters",
+      "caption": "The riff's six keys: thumb on A, finger 5 on E, and finger 5 reaching up to F."
+    },
+    {
+      "kind": "text",
+      "text": "Its notes, in order: **E D E A**, then **F E F E D**, **E D E A**, then **D C D C B D**. The riff is said in pairs: a fast little turn, then a long note. On the cards the letters come up one phrase at a time; play each when you've read it. Hear it plays the card for you if you're stuck."
+    },
+    {
+      "kind": "step",
+      "id": "names",
+      "title": "The riff by its key names",
+      "activity": "sg-fc-names",
+      "about": "Two phrases of letters; Hear it if you're stuck."
+    },
+    {
+      "kind": "text",
+      "text": "# Another riff: Seven Nation Army\nThe White Stripes' riff, in your left hand: **E E G E D C B**. Its first note is the E below middle C. In Wait for me the music waits for each key."
+    },
+    {
+      "kind": "step",
+      "id": "sna",
+      "title": "Seven Nation Army, left hand",
+      "activity": "w1-seven-nation-army",
+      "about": "Wait for me, left hand."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You can't find A.** Find a group of three black keys; A is the white key between its upper two.\n- **You play D for E.** E is just right of a group of two, D in the middle of it.\n\n**Until the next lesson:** the riff by names once a day, and the find-a-key cards for a minute."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Always With Me: the tune's rhythm",
+  "screen": "drills",
+  "set": "song-awm-rhythm",
+  "level": {
+    "rung": 2,
+    "start": "clicks",
+    "metronome": true,
+    "onTime": "normal",
+    "cards": 6
+  }
+}

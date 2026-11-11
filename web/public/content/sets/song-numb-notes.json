@@ -1,0 +1,9 @@
+{
+  "title": "Numb's riff: up to high C, above the treble staff",
+  "kind": "notes",
+  "generate": {
+    "clef": "treble",
+    "from": "E5",
+    "to": "C6"
+  }
+}

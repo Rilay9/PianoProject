@@ -1,0 +1,11 @@
+{
+  "title": "Always With Me, the waltz left hand",
+  "screen": "score",
+  "piece": "u-d40ea5d27757",
+  "bars": "1-4",
+  "settings": {
+    "mode": "wait",
+    "hands": "left",
+    "tempo": 100
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "title": "Numb: notes above the staff",
+  "blocks": [
+    {
+      "kind": "text",
+      "text": "Linkin Park's piano riff sits high, above the treble staff, on short extra lines.\n\n**By the end** you can read up to high C above the staff and play the riff with your right hand."
+    },
+    {
+      "kind": "text",
+      "text": "# Hear it first"
+    },
+    {
+      "kind": "score",
+      "piece": "u-cf6fbd42ea9b",
+      "bars": "1-4",
+      "keys": true,
+      "caption": "Numb, a piano arrangement (PDMX): the riff (the score shows it from bar 1; the music starts with three quick notes just before). ▶ to hear it."
+    },
+    {
+      "kind": "text",
+      "text": "# Ledger lines above\nAbove the top line (F) the staff goes on with short **ledger lines**, just for the notes that need them: **G** sits just above the top line, **A** on the first ledger line, **B** above it, **C** on the second ledger line. The riff uses **E** (top space), G, A, B and C."
+    },
+    {
+      "kind": "step",
+      "id": "notes",
+      "title": "Above the staff, up to high C",
+      "activity": "sg-numb-notes",
+      "about": "Twenty cards.",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
+      "kind": "text",
+      "text": "# The rhythm\nThe riff starts with a pickup, three eighth notes E G E before bar 1, then long notes tied across the beat: syncopation again, as in Teen Spirit."
+    },
+    {
+      "kind": "step",
+      "id": "rhythm",
+      "title": "The riff's rhythm",
+      "activity": "sg-numb-rhythm",
+      "about": "Two cards from the song.",
+      "target": {
+        "clean": 3
+      },
+      "doneWhen": "3 of the 4 cards clean in one set"
+    },
+    {
+      "kind": "step",
+      "id": "right",
+      "title": "The riff, right hand",
+      "activity": "sg-numb-right",
+      "about": "Wait for me, right hand, bars 1–4."
+    },
+    {
+      "kind": "text",
+      "text": "# If this happens\n- **You lose count of the ledger lines.** A is the first, C the second: count lines, not spaces.\n- **The tied notes get played twice.** Play once and hold.\n\n**Until the next lesson:** the note cards and the riff, each day."
+    }
+  ]
+}
