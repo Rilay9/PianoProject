@@ -1,12 +1,11 @@
 {
   "title": "Hurt: the intro's rhythm",
-  "screen": "drills",
-  "set": "song-hurt-rhythm",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 4
+  "screen": "score",
+  "piece": "u-b4fb760e5610",
+  "bars": "1-4",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "left",
+    "tempo": 66
   }
 }

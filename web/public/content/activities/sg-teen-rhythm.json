@@ -1,12 +1,11 @@
 {
   "title": "Smells Like Teen Spirit: the riff's rhythm",
-  "screen": "drills",
-  "set": "song-teen-rhythm",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 4
+  "screen": "score",
+  "piece": "u-51c9fb34f31b",
+  "bars": "3-6",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "right",
+    "tempo": 70
   }
 }

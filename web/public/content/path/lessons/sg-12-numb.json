@@ -14,7 +14,7 @@
       "piece": "u-cf6fbd42ea9b",
       "bars": "1-4",
       "keys": true,
-      "caption": "Numb, a piano arrangement (PDMX): the riff (the score shows it from bar 1; the music starts with three quick notes just before). ▶ to hear it."
+      "caption": "Numb, a piano arrangement (PDMX): the riff from bar 1 (the music starts with three quick notes just before it). ▶ to hear it."
     },
     {
       "kind": "text",
@@ -33,18 +33,18 @@
     },
     {
       "kind": "text",
-      "text": "# The rhythm\nThe riff starts with a pickup, three eighth notes E G E before bar 1, then long notes tied across the beat: syncopation again, as in Teen Spirit."
+      "text": "# The rhythm\nThe riff starts with a pickup, three eighth notes E G E before bar 1, then long notes tied across the beat: syncopation again, as in Teen Spirit. Play its rhythm first, on any key."
     },
     {
       "kind": "step",
       "id": "rhythm",
       "title": "The riff's rhythm",
       "activity": "sg-numb-rhythm",
-      "about": "Two cards from the song.",
+      "about": "Rhythm mode: any key counts; only the timing is judged. Right hand, bars 1–4.",
       "target": {
-        "clean": 3
+        "onTime": 0.8
       },
-      "doneWhen": "3 of the 4 cards clean in one set"
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "step",
@@ -52,6 +52,17 @@
       "title": "The riff, right hand",
       "activity": "sg-numb-right",
       "about": "Wait for me, right hand, bars 1–4."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "The riff in time",
+      "activity": "sg-numb-right-along",
+      "about": "Play along at ♩ 84, right hand.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",

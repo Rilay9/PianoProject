@@ -1,12 +1,11 @@
 {
   "title": "Always With Me: the tune's rhythm",
-  "screen": "drills",
-  "set": "song-awm-rhythm",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 6
+  "screen": "score",
+  "piece": "u-d40ea5d27757",
+  "bars": "2-8",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "right",
+    "tempo": 90
   }
 }

@@ -32,6 +32,21 @@
       "doneWhen": "10 of the 12 cards clean in one set"
     },
     {
+      "kind": "text",
+      "text": "# Ledger lines below\nThe left hand goes low: in bar 3 its lowest note is the **C two ledger lines below the bass staff**. Below the bottom line (G) come **F** just under it, **E** on the first ledger line, **D** under that, **C** on the second. The ledger-line cards cover both staves, above and below."
+    },
+    {
+      "kind": "step",
+      "id": "ledger",
+      "title": "Ledger lines, both clefs",
+      "activity": "w1-notes-ledger",
+      "about": "Twenty cards.",
+      "target": {
+        "clean": 16
+      },
+      "doneWhen": "16 of the 20 cards clean in one set"
+    },
+    {
       "kind": "step",
       "id": "left",
       "title": "The left hand",
@@ -44,6 +59,17 @@
       "title": "Bars 1–4, both hands",
       "activity": "sg-numb-both",
       "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "Bars 1–4 in time",
+      "activity": "sg-numb-along",
+      "about": "Play along at ♩ 84, both hands.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "step",

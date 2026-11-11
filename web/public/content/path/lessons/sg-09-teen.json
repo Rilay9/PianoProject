@@ -72,18 +72,18 @@
     },
     {
       "kind": "text",
-      "text": "# Syncopation\nThe riff's notes often start on the \"and\", between beats, and are **tied** (a curve joining two notes) over the next beat: you play once and hold through. That off-beat push is **syncopation**. Tap it first."
+      "text": "# Syncopation\nThe riff's notes often start on the \"and\", between beats, and are **tied** (a curve joining two notes) over the next beat: you play once and hold through. That off-beat push is **syncopation**. Play its rhythm first, on any key."
     },
     {
       "kind": "step",
       "id": "rhythm",
       "title": "The riff's rhythm",
       "activity": "sg-teen-rhythm",
-      "about": "Two cards from the song.",
+      "about": "%s Right hand, bars 3–6.",
       "target": {
-        "clean": 3
+        "onTime": 0.8
       },
-      "doneWhen": "3 of the 4 cards clean in one set"
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "step",
@@ -91,6 +91,38 @@
       "title": "The riff, right hand",
       "activity": "sg-teen-right",
       "about": "Wait for me, right hand, bars 3–6."
+    },
+    {
+      "kind": "text",
+      "text": "# G position\nWith one sharp, F♯, this song is in the world of **G major**. Its riff's middle, **G A B C D**, is **G position**: right thumb on the G above middle C, one finger a key up to D. (The riff also reaches down to F♯ and up to E.) The left hand's G position: little finger on the G on the bass staff's bottom line, thumb on D.\n\nMade-up tunes in G position, fresh every card, to read it without counting."
+    },
+    {
+      "kind": "keys",
+      "notes": "G4 A4 B4 C5 D5",
+      "fingers": "1 2 3 4 5",
+      "names": "letters",
+      "caption": "Right hand, G position: thumb on G."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 A2 B2 C3 D3",
+      "fingers": "5 4 3 2 1",
+      "names": "letters",
+      "caption": "Left hand, G position: little finger on G."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-right",
+      "title": "G position, right hand",
+      "activity": "w1-read-g-right",
+      "about": "Ten made-up tunes, untimed."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-left",
+      "title": "G position, left hand",
+      "activity": "w1-read-g-left",
+      "about": "Ten made-up tunes, untimed."
     },
     {
       "kind": "text",

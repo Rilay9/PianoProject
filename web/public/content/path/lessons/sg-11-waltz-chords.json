@@ -46,6 +46,17 @@
       "about": "Wait for me, both hands."
     },
     {
+      "kind": "step",
+      "id": "along",
+      "title": "Bars 1–10 in time",
+      "activity": "sg-awm-along-10",
+      "about": "Play along at ♩ 90, both hands.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
+    },
+    {
       "kind": "text",
       "text": "# If this happens\n- **You play B, not B flat.** The key signature means every B.\n- **The chord after the bass note is wrong.** Say the chord's name on beat 1 before you play it.\n\n**Until the next lesson:** the ten bars once a day."
     }

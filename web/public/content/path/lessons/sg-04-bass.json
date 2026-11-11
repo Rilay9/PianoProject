@@ -52,6 +52,13 @@
     },
     {
       "kind": "step",
+      "id": "intervals-23",
+      "title": "Steps and skips on the bass staff",
+      "activity": "w1-intervals-bass-2-3",
+      "about": "Twenty cards of 2nds and 3rds."
+    },
+    {
+      "kind": "step",
       "id": "left",
       "title": "Hurt's intro, from the music",
       "activity": "sg-hurt-left",

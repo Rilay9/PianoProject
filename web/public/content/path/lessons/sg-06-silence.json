@@ -62,11 +62,46 @@
     },
     {
       "kind": "step",
-      "id": "tunes",
-      "title": "Reading in time",
-      "activity": "f3-tunes-time",
-      "about": "Optional: made-up tunes from middle C, one after another with the click.",
-      "optional": true
+      "id": "along",
+      "title": "Bars 3–6 in time",
+      "activity": "sg-sos-along",
+      "about": "Play along at ♩ 84, both hands.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
+    },
+    {
+      "kind": "text",
+      "text": "# C position\nBar 5's tune, **C C E E G G F**, sits under one hand position: **C position**, right thumb on middle C and one finger a key up to G. The left hand has a C position too: little finger on the C below middle C, thumb on G. A hand position lets you read without looking down: each finger already sits on its note.\n\nTo make reading automatic, made-up tunes in C position, fresh every card: first the left hand untimed, then both hands one after another with the click."
+    },
+    {
+      "kind": "keys",
+      "notes": "C4 D4 E4 F4 G4",
+      "fingers": "1 2 3 4 5",
+      "names": "letters",
+      "caption": "Right hand, C position: thumb on middle C."
+    },
+    {
+      "kind": "keys",
+      "notes": "C3 D3 E3 F3 G3",
+      "fingers": "5 4 3 2 1",
+      "names": "letters",
+      "caption": "Left hand, C position: little finger on the C below middle C."
+    },
+    {
+      "kind": "step",
+      "id": "read-c-left",
+      "title": "C position, left hand",
+      "activity": "w1-read-c-bass",
+      "about": "Ten made-up tunes, untimed."
+    },
+    {
+      "kind": "step",
+      "id": "read-c-time",
+      "title": "C position, both clefs, in time",
+      "activity": "w1-read-c-time",
+      "about": "Read in time: made-up tunes on a running click."
     },
     {
       "kind": "text",

@@ -1,9 +1,9 @@
 {
-  "title": "Smells Like Teen Spirit: both hands",
+  "title": "Smells Like Teen Spirit: both hands, and the chords of G",
   "blocks": [
     {
       "kind": "text",
-      "text": "Now the two parts together: a chord held under each bar while the riff moves above it.\n\n**By the end** you can play bars 3–9 with both hands."
+      "text": "Now the two parts together: a chord held under each bar while the riff moves above it. Then the three main chords of G major.\n\n**By the end** you can play bars 3–9 with both hands, and play G, C and D7 and change between them in time."
     },
     {
       "kind": "text",
@@ -30,10 +30,59 @@
     {
       "kind": "step",
       "id": "along",
-      "title": "In time, with a keyboard",
+      "title": "Bars 3–9 in time",
       "activity": "sg-teen-along",
-      "about": "Optional: Play along at ♩ 70.",
-      "optional": true
+      "about": "Play along at ♩ 70, both hands.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
+    },
+    {
+      "kind": "text",
+      "text": "# The chords of G major\nIn G major the three main chords are **G** (G B D), **C** (here G C E: the same C, its notes rearranged so the hand barely moves) and **D7** (F♯ C D: the D chord with a C added, which pulls back to G). Learn them by name, then change between them in time, with the C-major chords from earlier mixed in."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 B2 D3",
+      "fingers": "5 3 1",
+      "names": "letters",
+      "caption": "G: G B D."
+    },
+    {
+      "kind": "keys",
+      "notes": "G2 C3 E3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "C as G C E."
+    },
+    {
+      "kind": "keys",
+      "notes": "F#2 C3 D3",
+      "fingers": "5 2 1",
+      "names": "letters",
+      "caption": "D7 as F♯ C D."
+    },
+    {
+      "kind": "step",
+      "id": "chords-g",
+      "title": "G, C and D7, by name",
+      "activity": "w1-chords-g",
+      "about": "Nine cards."
+    },
+    {
+      "kind": "step",
+      "id": "changes",
+      "title": "Changing chords in time",
+      "activity": "w1-chord-changes",
+      "about": "Eight cards of four bars, C and G major."
+    },
+    {
+      "kind": "step",
+      "id": "read-g-time",
+      "title": "G position, both clefs, in time",
+      "activity": "w1-read-g-time",
+      "about": "Read in time: made-up tunes on a running click."
     },
     {
       "kind": "text",

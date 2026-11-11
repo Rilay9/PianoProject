@@ -1,12 +1,11 @@
 {
   "title": "Hurt: the verse's rhythm",
-  "screen": "drills",
-  "set": "song-hurt-rhythm-right",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 4
+  "screen": "score",
+  "piece": "u-b4fb760e5610",
+  "bars": "5-8",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "right",
+    "tempo": 66
   }
 }

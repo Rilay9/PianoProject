@@ -14,7 +14,7 @@
       "id": "warmup",
       "title": "The riff's rhythm",
       "activity": "sg-fc-rhythm",
-      "about": "A few cards."
+      "about": "Rhythm mode: any key counts; only the timing is judged. Once through."
     },
     {
       "kind": "text",
@@ -51,6 +51,17 @@
     },
     {
       "kind": "text",
+      "text": "Counting letters, from E down to A is a **5th** (E D C B A): the riff's leap. Bigger intervals on the staff: a **4th** goes line to space or space to line, two keys between; a **5th** goes line to line or space to space, three keys between."
+    },
+    {
+      "kind": "step",
+      "id": "intervals-45",
+      "title": "4ths and 5ths",
+      "activity": "w1-intervals-treble-4-5",
+      "about": "Twenty cards."
+    },
+    {
+      "kind": "text",
       "text": "# The riff from the music\nIn **Wait for me** the music waits for each note. On a phone, hold it upright to play on the screen's keys, or connect a keyboard."
     },
     {
@@ -63,10 +74,13 @@
     {
       "kind": "step",
       "id": "along",
-      "title": "In time, with a keyboard",
+      "title": "The riff in time",
       "activity": "sg-fc-along",
-      "about": "Optional: Play along at ♩ 90, judged in time.",
-      "optional": true
+      "about": "Play along at ♩ 90: notes and timing judged.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",

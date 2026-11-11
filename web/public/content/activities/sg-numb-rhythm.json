@@ -1,12 +1,11 @@
 {
   "title": "Numb: the riff's rhythm",
-  "screen": "drills",
-  "set": "song-numb-rhythm",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 4
+  "screen": "score",
+  "piece": "u-cf6fbd42ea9b",
+  "bars": "1-4",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "right",
+    "tempo": 84
   }
 }

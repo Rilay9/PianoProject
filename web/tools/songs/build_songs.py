@@ -3,8 +3,8 @@ songs like Numb, Hurt, The Sound of Silence, The Final Countdown and Smells Like
 
 Everything comes from the PDMX catalogue files themselves (web/public/catalogue/<id>.mxl), never typed by hand:
   1. it CHECKS each fact the lessons state (the notes of a passage, its rhythm, its chords): one that is not so stops it;
-  2. it writes the song-made drill cards: letter-name cards (sets/song-*-names.json) and rhythm cards (sets/song-*.musicxml
-     with their sets), each cut from the passage the lesson plays.
+  2. it writes the song-made letter-name cards (sets/song-*-names.json), cut from the passage the lesson plays. (Rhythm
+     is practised on the score in Rhythm mode, on the piano: owner, 2026-11-11, no tap-pad cards.)
 
     python3 -I web/tools/songs/build_songs.py      (from the repo root; needs music21 and lxml)
 
@@ -175,18 +175,4 @@ if __name__ == '__main__':
         "items": {"1": {**names_card(FC, 1, [(1, 4), (5, 8)], 'right'), "name": "The riff, bars 1–8"}}})
     put('song-hurt-names.json', {"title": "Hurt, the intro, by key names", "kind": "melodies", "view": "names", "order": "passage", "tempo": 80,
         "items": {"1": {**names_card(HURT, 2, [(1, 2), (3, 4)], 'left'), "name": "Left hand, bars 1–4"}}})
-    rhythm_file(FC, 1, 1, 2, 'song-fc-rhythm-1-2.musicxml', 'The Final Countdown, bars 1-2')
-    rhythm_file(FC, 1, 3, 4, 'song-fc-rhythm-3-4.musicxml', 'The Final Countdown, bars 3-4')
-    rhythm_file(FC, 1, 7, 8, 'song-fc-rhythm-7-8.musicxml', 'The Final Countdown, bars 7-8')
-    rhythm_file(FC, 1, 9, 10, 'song-fc-rhythm-9-10.musicxml', 'The Final Countdown, bars 9-10')
-    rhythm_file(HURT, 2, 1, 2, 'song-hurt-rhythm-1-2.musicxml', 'Hurt, bars 1-2, left hand')
-    rhythm_file(HURT, 1, 5, 6, 'song-hurt-rhythm-5-6.musicxml', 'Hurt, bars 5-6, right hand')
-    rhythm_file(HURT, 1, 7, 8, 'song-hurt-rhythm-7-8.musicxml', 'Hurt, bars 7-8, right hand')
-    rhythm_file(AWM, 1, 2, 3, 'song-awm-rhythm-2-3.musicxml', 'Always With Me, bars 2-3')
-    rhythm_file(AWM, 1, 4, 5, 'song-awm-rhythm-4-5.musicxml', 'Always With Me, bars 4-5')
-    rhythm_file(AWM, 1, 7, 8, 'song-awm-rhythm-7-8.musicxml', 'Always With Me, bars 7-8')
-    rhythm_file(TEEN, 1, 3, 4, 'song-teen-rhythm-3-4.musicxml', 'Smells Like Teen Spirit, bars 3-4')
-    rhythm_file(TEEN, 1, 5, 6, 'song-teen-rhythm-5-6.musicxml', 'Smells Like Teen Spirit, bars 5-6')
-    rhythm_file(NUMB, 1, 1, 2, 'song-numb-rhythm-1-2.musicxml', 'Numb, bars 1-2')
-    rhythm_file(NUMB, 1, 3, 4, 'song-numb-rhythm-3-4.musicxml', 'Numb, bars 3-4')
-    print('written: song letter cards and rhythm cards in content/sets')
+    print('written: song letter cards in content/sets')

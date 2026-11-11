@@ -3,7 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "Last lesson you played the riff's keys. Now its **rhythm**: how long each note lasts against a steady beat. You'll use it in every song from here.\n\n**By the end** you can tap the rhythm of The Final Countdown's riff and of Hurt's intro in time, and you know quarter, eighth, half, dotted half and whole notes and rests."
+      "text": "Last lesson you played the riff's keys. Now its **rhythm**: how long each note lasts against a steady beat. You'll use it in every song from here.\n\n**By the end** you can play the rhythm of The Final Countdown's riff and of Hurt's intro in time, and you know quarter, eighth, half, dotted half and whole notes and rests."
     },
     {
       "kind": "text",
@@ -27,15 +27,19 @@
       "caption": "Note values and how many beats each lasts in 4/4."
     },
     {
+      "kind": "text",
+      "text": "Play the riff's rhythm on the piano: in **Rhythm** mode any key counts and only *when* you play is judged, so all your attention goes on the timing. ▶ plays it first if you want to hear it."
+    },
+    {
       "kind": "step",
       "id": "fc-rhythm",
       "title": "The riff's rhythm",
       "activity": "sg-fc-rhythm",
-      "about": "Four two-bar cards from the song: hear each, then tap it on the pad.",
+      "about": "Rhythm mode: any key counts; only the timing is judged.",
       "target": {
-        "clean": 6
+        "onTime": 0.8
       },
-      "doneWhen": "6 of the 8 cards clean in one set"
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",
@@ -46,11 +50,11 @@
       "id": "hurt-rhythm",
       "title": "Hurt's intro rhythm",
       "activity": "sg-hurt-rhythm",
-      "about": "The intro's two bars: hear, then tap.",
+      "about": "Rhythm mode: any key counts; only the timing is judged. Left hand, bars 1–4.",
       "target": {
-        "clean": 3
+        "onTime": 0.8
       },
-      "doneWhen": "3 of the 4 cards clean in one set"
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",
@@ -65,26 +69,7 @@
     },
     {
       "kind": "text",
-      "text": "# More rhythm, made up fresh\nTo make the beat automatic: rhythms made up for you, one after another on a running click. Tap along first, then switch to Read."
-    },
-    {
-      "kind": "step",
-      "id": "rhythm-1",
-      "title": "Quarters, halves, wholes and rests",
-      "activity": "w1-rhythm-1",
-      "about": "Read in time: a round of eight."
-    },
-    {
-      "kind": "step",
-      "id": "rhythm-3",
-      "title": "Eighth notes",
-      "activity": "w1-rhythm-3",
-      "about": "Read in time: a round of eight.",
-      "optional": true
-    },
-    {
-      "kind": "text",
-      "text": "# If this happens\n- **You rush the rests.** Count them out loud: rests are beats too.\n- **The long note in Hurt is cut short.** Keep your finger down through \"2 3 4\".\n\n**Until the next lesson:** a round of rhythm each day."
+      "text": "# If this happens\n- **You rush the rests.** Count them out loud: rests are beats too.\n- **The long note in Hurt is cut short.** Keep your finger down through \"2 3 4\".\n\n**Until the next lesson:** both rhythms once a day."
     }
   ]
 }

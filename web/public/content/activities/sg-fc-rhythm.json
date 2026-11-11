@@ -1,12 +1,11 @@
 {
   "title": "The Final Countdown: the riff's rhythm",
-  "screen": "drills",
-  "set": "song-fc-rhythm",
-  "level": {
-    "rung": 2,
-    "start": "clicks",
-    "metronome": true,
-    "onTime": "normal",
-    "cards": 8
+  "screen": "score",
+  "piece": "u-779bb4f3a816",
+  "bars": "1-8",
+  "settings": {
+    "mode": "rhythm",
+    "hands": "right",
+    "tempo": 90
   }
 }

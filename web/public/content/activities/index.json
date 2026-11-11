@@ -106,5 +106,10 @@
   "sg-numb-chords.json",
   "sg-numb-left.json",
   "sg-numb-both.json",
-  "sg-numb-both-8.json"
+  "sg-numb-both-8.json",
+  "sg-sos-along.json",
+  "sg-awm-along.json",
+  "sg-awm-along-10.json",
+  "sg-numb-along.json",
+  "sg-numb-right-along.json"
 ]

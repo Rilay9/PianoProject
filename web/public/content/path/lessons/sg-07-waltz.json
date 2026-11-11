@@ -3,7 +3,7 @@
   "blocks": [
     {
       "kind": "text",
-      "text": "The theme from *Spirited Away* is a waltz: three beats in each bar, not four.\n\n**By the end** you can count and tap music in 3/4 and play the first eight bars with both hands."
+      "text": "The theme from *Spirited Away* is a waltz: three beats in each bar, not four.\n\n**By the end** you can count and play music in 3/4 and play the first eight bars with both hands."
     },
     {
       "kind": "text",
@@ -18,26 +18,18 @@
     },
     {
       "kind": "text",
-      "text": "# 3/4 time\n**3/4** means three quarter-note beats in a bar: count 1 2 3, 1 2 3, with the weight on 1. A **dotted half note** fills a whole bar of 3/4.\n\nThe tune uses eighths, quarters and one **dotted quarter** in bar 3: a beat and a half, held over the second beat."
+      "text": "# 3/4 time\n**3/4** means three quarter-note beats in a bar: count 1 2 3, 1 2 3, with the weight on 1. A **dotted half note** fills a whole bar of 3/4.\n\nThe tune uses eighths, quarters and one **dotted quarter** in bar 3: a beat and a half, held over the second beat. Play its rhythm first, on any key."
     },
     {
       "kind": "step",
       "id": "rhythm",
       "title": "The tune's rhythm",
       "activity": "sg-awm-rhythm",
-      "about": "Three cards from the song.",
+      "about": "Rhythm mode: any key counts; only the timing is judged. Right hand, bars 2–8.",
       "target": {
-        "clean": 4
+        "onTime": 0.8
       },
-      "doneWhen": "4 of the 6 cards clean in one set"
-    },
-    {
-      "kind": "step",
-      "id": "rhythm-34",
-      "title": "More in 3/4",
-      "activity": "w1-rhythm-2",
-      "about": "Read in time: dotted halves and 3/4, made up fresh.",
-      "optional": true
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",
@@ -67,6 +59,17 @@
       "title": "Bars 1–8, both hands",
       "activity": "sg-awm-both",
       "about": "Wait for me, both hands."
+    },
+    {
+      "kind": "step",
+      "id": "along",
+      "title": "Bars 1–8 in time",
+      "activity": "sg-awm-along",
+      "about": "Play along at ♩ 90, both hands.",
+      "target": {
+        "onTime": 0.8
+      },
+      "doneWhen": "80% of the notes on time in one run"
     },
     {
       "kind": "text",
